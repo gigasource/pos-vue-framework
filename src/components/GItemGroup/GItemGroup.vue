@@ -5,9 +5,24 @@
 <script>
   export default {
     name: 'GItemGroup',
-    data() {
-      return {}
-    }
+    props: {
+      activeClass: {
+        type: String,
+				default: 'item--active'
+			},
+			mandatory: Boolean,
+			value: [String, Number, Boolean, Object, Array]
+		},
+		computed: {
+      computedValue: {
+        get() {
+          return this.value;
+				},
+				set(value) {
+          this.$emit('input', value);
+				}
+			}
+		}
   }
 </script>
 

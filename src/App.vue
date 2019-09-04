@@ -4,7 +4,7 @@
 </template>
 
 <script>
-
+// Todo: functional API: v-input default props, basic events
 export default {
   name: 'app',
 }

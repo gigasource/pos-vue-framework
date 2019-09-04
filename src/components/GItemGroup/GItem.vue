@@ -5,8 +5,10 @@
 <script>
   export default {
     name: 'GItem',
-    data() {
-      return {}
+    props: {
+      activeClass: String,
+			disabled: Boolean,
+      value: [String, Number, Boolean, Object, Array]
     }
   }
 </script>
