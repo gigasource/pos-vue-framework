@@ -35,18 +35,9 @@
       }
     },
 		methods: {
-      onFocus (event) {
-        this.isFocused = true;
-        this.$emit('focus', event);
-      },
-      onBlur (event) {
-        this.isFocused = false;
-        this.$emit('blur', event);
-      },
       onChange(event) {
         this.$emit('change', event);
-      },
-      onKeydown: () => {}, // Override default with noop
+      }
 		}
   }
 </script>

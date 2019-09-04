@@ -11,7 +11,17 @@
 			readonly: Boolean,
 			label: String,
       value: [String, Boolean, Number, Array, Object],
-		}
+		},
+    computed: {
+      computedValue: {
+        get() {
+          return this.value;
+        },
+        set (value) {
+          this.$emit('input', value);
+        }
+      }
+    }
   }
 </script>
 

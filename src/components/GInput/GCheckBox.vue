@@ -5,9 +5,11 @@
 <script>
   export default {
     name: 'GCheckBox',
-    data() {
-      return {}
-    }
+    props: {
+      disabled: Boolean,
+			readonly: Boolean,
+      value: [String, Boolean, Number, Array, Object],
+		}
   }
 </script>
 
