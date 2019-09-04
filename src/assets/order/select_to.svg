@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="20px" viewBox="0 0 27 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>🔹 Icon Color</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-4.2%" y="-26.8%" width="107.4%" height="157.1%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="2.-Order" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Order-case-1-v2-after-split-1" transform="translate(-722.000000, -70.000000)" fill="#FFFFFF">
+            <g id="active-seat" filter="url(#filter-1)" transform="translate(715.000000, 50.000000)">
+                <g id="select-to" transform="translate(11.000000, 22.000000)">
+                    <g id="menu">
+                        <g>
+                            <g id="-Round-/-Navigation-/-menu">
+                                <path d="M5,12 L18,12 C18.55,12 19,11.55 19,11 C19,10.45 18.55,10 18,10 L5,10 C4.45,10 4,10.45 4,11 C4,11.55 4.45,12 5,12 Z M10,7 L18,7 C18.55,7 19,6.55 19,6 C19,5.45 18.55,5 18,5 L10,5 C9.45,5 9,5.45 9,6 C9,6.55 9.45,7 10,7 Z M4,1 C4,1.55 4.45,2 5,2 L18,2 C18.55,2 19,1.55 19,1 C19,0.45 18.55,0 18,0 L5,0 C4.45,0 4,0.45 4,1 Z M0.2925,0.71 C-0.0975,1.1 -0.0975,1.73 0.2925,2.12 L4.1725,6 L0.2925,9.88 C-0.0975,10.27 -0.0975,10.9 0.2925,11.29 C0.6825,11.68 1.3125,11.68 1.7025,11.29 L6.2925,6.7 C6.6825,6.31 6.6825,5.68 6.2925,5.29 L1.7025,0.7 C1.3225,0.32 0.6825,0.32 0.2925,0.71 Z" id="🔹-Icon-Color"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
