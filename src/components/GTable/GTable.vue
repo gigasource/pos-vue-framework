@@ -27,7 +27,6 @@
     computed: {
       tableClass() {
         return {
-          'ta-center': true,
           'table-bordered': this.bordered,
           'table-striped': this.striped
         }

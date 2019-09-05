@@ -87,6 +87,22 @@ p {
   position: fixed;
 }
 
+.top {
+    top: 0;
+}
+
+.bottom {
+    bottom: 0;
+}
+
+.right {
+    right: 0;
+}
+
+.left {
+    left: 0;
+}
+
 .ff-muli {
   font-family: "Muli", sans-serif;
 }
@@ -3132,6 +3148,12 @@ textarea {
   transition: 0.5s;
   border-radius: 2rem;
 }
+
+.switch__small {
+    width: 2.25rem;
+    height: 0.875rem;
+}
+
 .switch-round {
   position: absolute;
   top: 0;
@@ -3270,10 +3292,8 @@ table {
   border-collapse: collapse;
 }
 
-thead th {
-  border: none;
-  background: none;
-  font-weight: bold;
+th {
+    text-align: left;
 }
 
 td {

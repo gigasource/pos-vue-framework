@@ -1,13 +1,26 @@
 <template>
-	
+	<div :class="layoutClass">
+	</div>
 </template>
 
 <script>
   export default {
     name: 'GLayout',
-    data() {
-      return {}
-    }
+    props: {
+      row: {
+        type: Boolean,
+				default: true,
+			},
+			column: Boolean,
+		},
+		computed: {
+      layoutClass() {
+        return {
+          'row-flex': !this.column,
+					'col-flex': this.column
+				}
+			}
+		}
   }
 </script>
 
