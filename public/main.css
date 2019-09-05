@@ -67,6 +67,14 @@ p {
   transform-origin: top right;
 }
 
+.overflow-x {
+    overflow-x: auto;
+}
+
+.overflow-y {
+    overflow-y: auto;
+}
+
 .r {
   position: relative;
 }
@@ -3134,6 +3142,7 @@ textarea {
   cursor: pointer;
   transition: 0.5s;
   border-radius: 2rem;
+    background-color: #a1a1a1;
 }
 .switch-round:before {
   position: absolute;
@@ -3142,12 +3151,18 @@ textarea {
   width: 50%;
   left: 0;
   bottom: -25%;
-  background-color: #046eff;
+  background-color: #d6d6d6;
   transition: 0.5s;
   border-radius: 100%;
 }
 .switch-input:checked + .switch-slider:before, .switch-input:checked + .switch-round:before {
   transform: translateX(100%);
+}
+.switch-input:checked + .switch-round {
+    background-color: #92beff;
+}
+.switch-input:checked + .switch-round:before {
+    background-color: #046eff;
 }
 .switch .first-side {
   position: absolute;
