@@ -1,5 +1,10 @@
 <template>
-<!--	TODO: slot(label)-->
+	<div class="col-flex">
+		<span>{{label}}</span>
+		<div :class="radioGroupClass">
+			<slot></slot>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -25,7 +30,17 @@
 			},
       row: Boolean,
       value: [String, Boolean, Number, Array, Object]
-    }
+    },
+		computed: {
+      radioGroupClass() {
+        return {
+          'col-flex': !this.row,
+					'row-flex': this.row,
+					'disabled': this.disabled,
+					'readonly': this.readonly
+				}
+			}
+		}
   }
 </script>
 

@@ -1,5 +1,9 @@
 <template>
-	
+	<label :for="id" class="radio-red fs-small">
+		<input :id="id" :name="name" type="radio">
+		<span class="checkmark"></span>
+		{{label}}
+	</label>
 </template>
 
 <script>
@@ -22,6 +26,7 @@
 			activeClass: {
         type: String,
 				default: 'radio--active'
+        //TODO custom color active
 			}
     },
     computed: {
