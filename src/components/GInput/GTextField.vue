@@ -18,7 +18,9 @@
 						 @mousedown="$emit('mousedown', $event)"
 			/>
 			<span class="textfield-icon">
-				<slot name="append"></slot>
+				<slot name="append">
+					<img v-if="clearable" src="../../assets/delivery/cancel.svg">
+				</slot>
 			</span>
 		</div>
 	</div>
