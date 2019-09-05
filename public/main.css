@@ -2788,7 +2788,6 @@ p {
 }
 
 button {
-  border: none;
   outline: none;
   font-family: "Muli", sans-serif;
   font-weight: 700;
@@ -3278,12 +3277,12 @@ thead th {
 }
 
 td {
-  vertical-align: top;
+  vertical-align: center;
   padding: 0.25rem 0 1rem 0;
 }
 
 tr {
-  border-bottom: 0.05rem solid #d6d6d6;
+  /*border-bottom: 0.05rem solid #d6d6d6;*/
 }
 
 .divider {
@@ -3295,15 +3294,16 @@ tr {
 }
 
 .table-striped tr:nth-child(even) {
-  background-color: rgba(9, 9, 9, 0.2);
+  background-color: #eeeeee;
 }
 
 .table-striped tr:nth-child(odd) {
-  background-color: rgba(9, 9, 9, 0.5);
+  background-color: #ffffff;
 }
 
-.table-striped tr:first-child {
-  background-color: transparent;
+.table-bordered td,
+.table-bordered th {
+  border: 0.05rem solid #d6d6d6;
 }
 
 .table-delivery td:nth-child(1),
