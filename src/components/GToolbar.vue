@@ -1,6 +1,6 @@
 <template>
 	<div :class="toolbarClass" :style="toolbarStyle">
-		<slot name="content"></slot>
+		<slot></slot>
 	</div>
 </template>
 
