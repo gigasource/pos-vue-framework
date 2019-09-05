@@ -11,12 +11,14 @@
       raised: Boolean,
 			depressed: Boolean,
 			disabled: Boolean,
+			flat: Boolean,
 			icon: Boolean,
 			outline: Boolean,
 			dashed: Boolean,
 			width: String,
 			height: String,
 			color: String,
+			textColor: String,
 		},
     computed: {
       buttonClass() {
@@ -41,6 +43,12 @@
 				  Object.assign(style, {'border-color': this.color, color: this.color});
 				} else if(this.color) {
 				  Object.assign(style, {'background-color': this.color});
+				}
+				if(this.flat) {
+          Object.assign(style, {'border-color': 'transparent', 'background-color': 'transparent'});
+				}
+				if(this.textColor){
+          Object.assign(style, {color: this.textColor});
 				}
         return style;
 			}
