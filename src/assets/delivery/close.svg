@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>close</title>
+    <desc>Created with Sketch.</desc>
+    <g id="3.-Delivery" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Customer-Information" transform="translate(-798.000000, -29.000000)">
+            <g id="Ω" transform="translate(192.000000, 0.000000)">
+                <g id="close" transform="translate(613.000000, 36.016100) scale(1, -1) translate(-613.000000, -36.016100) translate(601.000000, 24.016100)">
+                    <polygon id="Shape" fill="#000000" opacity="0.539999962" points="19 17.6 17.6 19 12 13.4 6.4 19 5 17.6 10.6 12 5 6.4 6.4 5 12 10.6 17.6 5 19 6.4 13.4 12"></polygon>
+                    <polygon id="bounds" points="24 0 0 0 0 24 24 24"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

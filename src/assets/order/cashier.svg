@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="19px" viewBox="0 0 25 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>cashier (2)</title>
+    <desc>Created with Sketch.</desc>
+    <g id="2.-Order" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Quick-Order" transform="translate(-446.000000, -561.000000)">
+            <g id="3-copy-6" transform="translate(434.000000, 550.000000)">
+                <g id="cashier-(2)" transform="translate(12.000000, 11.000000)">
+                    <g transform="translate(12.500000, 9.500000) rotate(-180.000000) translate(-12.500000, -9.500000) ">
+                        <path d="M23.4375,1.58333333 L23.4375,12.6666667 L1.5625,12.6666667 L1.5625,1.58333333 C1.5625,0.708557104 2.26173398,6.36646291e-12 3.125,6.36646291e-12 L21.875,6.36646291e-12 C22.738266,6.36646291e-12 23.4375,0.708557104 23.4375,1.58333333 Z" id="Path" fill="#40A2E7" fill-rule="nonzero"></path>
+                        <polygon id="Path" fill="#168DE2" fill-rule="nonzero" points="1.5625 9.5 23.4375 9.5 23.4375 12.6666667 1.5625 12.6666667"></polygon>
+                        <path d="M23.4375,19 L1.5625,19 C0.699233984,19 -6.36646291e-12,18.2914429 -6.36646291e-12,17.4166667 L-6.36646291e-12,12.6666667 C-6.36646291e-12,11.7918904 0.699233984,11.0833333 1.5625,11.0833333 L23.4375,11.0833333 C24.300766,11.0833333 25,11.7918904 25,12.6666667 L25,17.4166667 C25,18.2914429 24.300766,19 23.4375,19 Z" id="Path" fill="#77959E" fill-rule="nonzero"></path>
+                        <path d="M13.28125,15.8333333 L11.71875,15.8333333 C11.2874985,15.8333333 10.9375,15.4786682 10.9375,15.0416667 C10.9375,14.6046651 11.2874985,14.25 11.71875,14.25 L13.28125,14.25 C13.7125015,14.25 14.0625,14.6046651 14.0625,15.0416667 C14.0625,15.4786682 13.7125015,15.8333333 13.28125,15.8333333 Z" id="Path" fill="#57565C" fill-rule="nonzero"></path>
+                        <g id="Group" transform="translate(2.880859, 1.385417)" fill="#FFFFFF" fill-rule="nonzero">
+                            <polygon id="Path" points="5.45696821e-12 -3.18323146e-12 5.6640625 -3.18323146e-12 5.6640625 7.32291667 5.45696821e-12 7.32291667"></polygon>
+                            <polygon id="Path" points="6.68945312 2.13731255e-11 9.03320312 2.13731255e-11 9.03320312 7.32291667 6.68945312 7.32291667"></polygon>
+                            <polygon id="Path" points="16.6503906 2.18278728e-11 19.0429687 2.18278728e-11 19.0429687 7.32291667 16.6503906 7.32291667"></polygon>
+                            <polygon id="Path" points="13.3300781 2.27373675e-11 15.6738281 2.27373675e-11 15.6738281 7.32291667 13.3300781 7.32291667"></polygon>
+                            <polygon id="Path" points="10.0097656 2.27373675e-11 12.3535156 2.27373675e-11 12.3535156 7.32291667 10.0097656 7.32291667"></polygon>
+                        </g>
+                        <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="4.6875 12.6666667 6.25 12.6666667 6.25 14.25 4.6875 14.25"></polygon>
+                        <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="1.5625 12.6666667 3.125 12.6666667 3.125 14.25 1.5625 14.25"></polygon>
+                        <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="1.5625 15.8333333 3.125 15.8333333 3.125 17.4166667 1.5625 17.4166667"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

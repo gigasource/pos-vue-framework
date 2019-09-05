@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>Group 8</title>
+    <desc>Created with Sketch.</desc>
+    <g id="4.-Reservation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Reservation-by-month" transform="translate(-892.000000, -301.000000)">
+            <g id="Group-5" transform="translate(801.000000, 297.000000)">
+                <g id="Group-8" transform="translate(91.000000, 4.000000)">
+                    <rect id="Rectangle" fill="#FF4452" x="0" y="0" width="15" height="15" rx="4"></rect>
+                    <g id="Note" transform="translate(4.000000, 4.000000)" fill="#F8F8F8">
+                        <path d="M-2.7533531e-14,6.08947368 L-2.7533531e-14,7.36947368 C-2.7533531e-14,7.48736842 0.0926315789,7.58 0.210526316,7.58 L1.49052632,7.58 C1.54526316,7.58 1.6,7.55894737 1.63789474,7.51684211 L6.23578947,2.92315789 L4.65684211,1.34421053 L0.0631578947,5.93789474 C0.0210526316,5.98 -2.7533531e-14,6.03052632 -2.7533531e-14,6.08947368 Z" id="Path"></path>
+                        <path d="M7.45684211,1.70210526 C7.62105263,1.53789474 7.62105263,1.27263158 7.45684211,1.10842105 L6.47157895,0.123157895 C6.30736842,-0.0410526316 6.04210526,-0.0410526316 5.87789474,0.123157895 L5.10736842,0.893684211 L6.68631579,2.47263158 L7.45684211,1.70210526 Z" id="Path"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

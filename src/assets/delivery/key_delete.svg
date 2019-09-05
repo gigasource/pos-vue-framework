@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="18px" viewBox="0 0 24 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>delete</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="delete_boarder_light" transform="translate(-27.000000, -24.000000)" fill="#7B868B">
+            <g id="Group">
+                <path d="M49,24 L34.1,24 C33.4,24 32.8,24.3 32.4,24.9 L27,33 L32.4,41.1 C32.8,41.6 33.4,42 34.1,42 L49,42 C50.1,42 51,41.1 51,40 L51,26 C51,24.9 50.1,24 49,24 L49,24 Z M46,36.6 L44.6,38 L41,34.4 L37.4,38 L36,36.6 L39.6,33 L36,29.4 L37.4,28 L41,31.6 L44.6,28 L46,29.4 L42.4,33 L46,36.6 L46,36.6 Z" id="delete"></path>
+            </g>
+        </g>
+    </g>
+</svg>
