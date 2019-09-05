@@ -20,24 +20,27 @@
       return {
 				defaultClass: {
 				  'row-flex': true,
-				  'bg-lgray-5': true,
 					'pa-2': true,
+					'abs': true,
+					'w-100': true,
 				}
 			}
     },
 		computed: {
       toolbarClass() {
         let actualClass = this.defaultClass;
-				if(this.tile) {
-				  Object.assign(actualClass, {'btrr-3': true, 'btlr-3': true});
-				}
-				return actualClass;
+				return {
+				  ...actualClass,
+					top: this.top,
+					bottom: !this.top,
+					'bg-black': this.dark,
+					'bg-lgray-5': !this.dark,
+					'btrr-3': this.tile,
+					'btlr-3': this.tile,
+        }
 			},
 			toolbarStyle() {
-        let style = {position: 'absolute', bottom: 0, width: '100%'};
-        if(this.dark) {
-          Object.assign(style, {'background-color': 'rgba(0, 0, 0, 0.92)'});
-				}
+        let style = {};
         if(this.height) {
           Object.assign(style, {height: this.height});
 				}

@@ -1,5 +1,5 @@
 <template>
-	<label :for="id" class="radio-red fs-small">
+	<label :for="id" :class="radioClass">
 		<input :id="id" :name="name" type="radio">
 		<span class="checkmark"></span>
 		{{label}}
@@ -37,6 +37,14 @@
         set (value) {
           this.$emit('input', value);
         }
+      },
+      radioClass() {
+        let defaultClasses = {'radio-red': true, 'fs-small': true};
+        return {
+          ...defaultClasses,
+					readonly: this.readonly,
+					disabled: this.disabled
+				};
       }
     },
 		methods: {

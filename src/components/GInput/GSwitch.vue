@@ -1,7 +1,7 @@
 <template>
 	<div class="col-flex">
 		<p class="fw-400 fs-small-2">{{label}}</p>
-		<label class="switch br-4 mt-2" :style="switchStyle">
+		<label :class="switchClass">
 			<input :id="id" class="switch-input" type="checkbox" :value="value">
 			<span class="switch-round"></span>
 		</label>
@@ -27,15 +27,13 @@
           this.$emit('input', value);
         }
       },
-      switchStyle() {
-        let style = {width: '2.25rem', height: '0.875rem'};
-        if(this.readonly) {
-          Object.assign(style, {'pointer-events': 'none'});
-				}
-        if(this.disabled) {
-          Object.assign(style, {'pointer-events': 'none', 'opacity': '0.2'});
-				}
-        return style;
+      switchClass() {
+        let defaultClasses = {switch: true, 'switch__small': true, 'br-4': true, 'mt-2': true};
+        return {
+          ...defaultClasses,
+					readonly: this.readonly,
+					disabled: this.disabled
+				};
 			}
 		}
   }
