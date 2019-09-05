@@ -1,13 +1,18 @@
 <template>
-	
+	<div v-show="show">
+		<slot></slot>
+	</div>
 </template>
 
 <script>
   export default {
     name: 'GExpansionPanelContent',
-    data() {
-      return {}
-    }
+    props:{
+      show:{
+        type: Boolean,
+				default: false,
+      }
+		}
   }
 </script>
 

@@ -1,5 +1,9 @@
 <template>
-	
+	<div class="col-flex">
+		<slot>
+
+		</slot>
+	</div>
 </template>
 
 <script>

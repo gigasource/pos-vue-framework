@@ -29,7 +29,7 @@
         if(!this.inset){
           Object.assign(style, {width: '100%'});
 				} else {
-          Object.assign(style, {'margin': '1rem 5%'});
+          Object.assign(style, {'margin': '0.5rem 5%'});
 				}
         if((!this.dashed && !this.dotted) || this.solid){
           Object.assign(style, {'border-style': 'solid'});
