@@ -1,12 +1,14 @@
 <template>
-		<label :class="checkBoxClass">
-			<input type="checkbox">
-			<span class="checkmark"></span>
-			{{label}}
-		</label>
+	<label :class="checkBoxClass">
+		<input type="checkbox">
+		<span class="checkmark"></span>
+		{{label}}
+	</label>
 </template>
 
 <script>
+  import { computed } from '@vue/composition-api';
+
   export default {
     name: 'GCheckBox',
     props: {
@@ -14,29 +16,28 @@
       required: Boolean,
       disabled: Boolean,
       readonly: Boolean,
-      value: String
+      value: [String, Boolean, Number, Array, Object]
     },
-    computed: {
-      computedValue: {
-        get() {
-          return this.value;
-        },
-        set (value) {
-          this.$emit('input', value);
+    setup(props, { emit }) {
+      const computedValue = computed({
+        get: () => props.value,
+        set: (value) => {
+          emit('input', value);
         }
-      },
-			checkBoxClass() {
-        let defaultClasses = {'fs-small-2': true, 'mb-2': true, 'check-box-square': true};
+      });
+      const checkBoxClass = computed(() => {
+        const defaultClasses = { 'fs-small-2': true, 'mb-2': true, 'check-box-square': true };
         return {
           readonly: this.readonly,
-					disabled: this.disabled,
-					...defaultClasses
-				};
+          disabled: this.disabled,
+          ...defaultClasses
+        };
+			});
+			return {
+        computedValue,
+				checkBoxClass
 			}
     },
-    data() {
-      return {}
-    }
   }
 </script>
 

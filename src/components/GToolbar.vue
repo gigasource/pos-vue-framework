@@ -1,50 +1,53 @@
 <template>
-	<div :class="toolbarClass" :style="toolbarStyle">
+	<div :class="classes" :style="[toolbarHeightStyle]">
 		<slot></slot>
 	</div>
 </template>
 
 <script>
+  import { computed } from '@vue/composition-api';
+
   export default {
     name: 'GToolbar',
-		props: {
+    props: {
       top: {
         type: Boolean,
-				default: false
-			},
-			tile: Boolean,
-			height: String,
-			dark: Boolean,
-		},
-    data() {
-      return {
-				defaultClass: {
-				  'row-flex': true,
-					'pa-2': true,
-					'abs': true,
-					'w-100': true,
-				}
-			}
+        default: false
+      },
+      tile: Boolean,
+      height: String,
+      dark: Boolean,
     },
-		computed: {
-      toolbarClass() {
-        let actualClass = this.defaultClass;
-				return {
-				  ...actualClass,
-					top: this.top,
-					bottom: !this.top,
-					'bg-black': this.dark,
-					'bg-lgray-5': !this.dark,
-					'btrr-3': this.tile,
-					'btlr-3': this.tile,
-        }
-			},
-			toolbarStyle() {
-        let style = {};
-        if(this.height) {
-          Object.assign(style, {height: this.height});
+		setup({top, dark, tile, height}) {
+      const classes = computed(() => {
+        const defaultClasses = {
+          'row-flex': true,
+          'pa-2': true,
+          'abs': true,
+          'w-100': true,
+        };
+        return {
+          top: top,
+          bottom: !top,
+          'bg-black': dark,
+          'bg-lgray-5': dark,
+          'btrr-3': tile,
+          'btlr-3': tile,
+          ...defaultClasses,
 				}
-        return style;
+			});
+
+      const toolbarHeightStyle = computed(() => {
+        if (height) {
+          return {
+            height
+					}
+				}
+			});
+
+      return {
+        classes,
+				toolbarHeightStyle
 			}
 		}
   }
