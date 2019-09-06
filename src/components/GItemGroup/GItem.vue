@@ -1,5 +1,5 @@
 <template>
-	
+	<slot :active="isActive" :toggle="toggle"></slot>
 </template>
 
 <script>
@@ -7,8 +7,18 @@
     name: 'GItem',
     props: {
       activeClass: String,
-			disabled: Boolean,
-      value: [String, Number, Boolean, Object, Array]
+      disabled: Boolean,
+      value: {
+        required: false
+      }
+    },
+    data: () => ({
+      isActive: false,
+    }),
+    methods: {
+      toggle() {
+        this.isActive = !this.isActive;
+      }
     }
   }
 </script>

@@ -35,7 +35,6 @@
 </template>
 
 <script>
-// Todo: functional API: v-input default props, basic events
 
 import GTextField from './components/GInput/GTextField';
 import GButton from './components/GButton';
