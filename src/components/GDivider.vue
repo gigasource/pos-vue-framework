@@ -1,45 +1,47 @@
 <template>
-	<div :class="dividerClass" :style="dividerStyle"></div>
+	<div :class="classes" :style="dividerColorStyle"></div>
 </template>
 
 <script>
+  import { computed } from '@vue/composition-api';
+
   export default {
     name: 'GDivider',
     props: {
       dashed: Boolean,
 			dotted: Boolean,
-			solid: Boolean,
+			solid: {
+        type: Boolean,
+				default: true
+      },
 			inset: Boolean,
-			color: String,
+			color: {
+        type: String,
+				default: '#000000'
+      },
 		},
-		computed: {
-      //TODO modify dashed
-      dividerClass() {
-        return {
-          'w-90': this.inset,
-					'b-dashed': this.dashed,
-					'b-dotted': this.dotted,
+		setup({ dashed, dotted, solid, inset, color}){
+			const classes = computed(() => {
+			  const defaultClass = {
+			    'divider': true
 				}
-			},
-			dividerStyle() {
-        let style = {
-          height: '1px',
-					'border-width': '0.5px',
-				};
-        if(!this.inset){
-          Object.assign(style, {width: '100%'});
-				} else {
-          Object.assign(style, {'margin': '0.5rem 5%'});
+			  return {
+					...defaultClass,
+					'w-100': !inset,
+					'divider__inset': inset,
+					'b-dashed': dashed,
+					'b-dotted': dotted,
+					'b-solid': solid && !dashed && !dotted
 				}
-        if((!this.dashed && !this.dotted) || this.solid){
-          Object.assign(style, {'border-style': 'solid'});
+			});
+			const dividerColorStyle = computed(() => {
+			  return {
+			    'border-color': color
 				}
-        if(this.color) {
-          Object.assign(style, {'border-color': this.color});
-				} else {
-          Object.assign(style, {'border-color': 'black'});
-				}
-        return style;
+			});
+			return {
+			  classes,
+				dividerColorStyle
 			}
 		}
   }

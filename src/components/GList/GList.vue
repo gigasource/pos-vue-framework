@@ -1,26 +1,40 @@
 <template>
-	<div class="col-flex align-items-center overflow-y" :style="listStyle">
+	<div :class="classes" :style="listStyle">
 		<slot></slot>
 	</div>
 </template>
 
 <script>
+  import { computed } from '@vue/composition-api';
+
   export default {
     name: 'GList',
     props: {
 			height: String,
 			width: String,
 		},
-		computed: {
-			listStyle() {
-			  let style = {};
-			  if(this.height){
-			    Object.assign(style, {'height': this.height});
-				}
-        if(this.width){
-          Object.assign(style, {'width': this.width});
+		setup({ height, width }) {
+      const classes = computed(() => {
+        const defaultClasses = {
+          'list': true,
+        };
+        return {
+          ...defaultClasses
+        }
+      });
+      const listStyle = computed(() => {
+        let style = {};
+        if(height){
+          Object.assign(style, {'height': height});
+        }
+        if(width){
+          Object.assign(style, {'width': width});
         }
         return style;
+			});
+			return {
+			  classes,
+				listStyle
 			}
 		}
   }

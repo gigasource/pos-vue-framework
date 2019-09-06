@@ -1,5 +1,5 @@
 <template>
-	<div class="flex-grow-1 transparent"></div>
+	<div class="spacer"></div>
 </template>
 
 <script>

@@ -1,22 +1,36 @@
 <template>
-	<div class="row-flex align-items-center" :style="itemStyle">
+	<div :class="classes" :style="[itemHeightStyle]">
 		<slot></slot>
 	</div>
 </template>
 
 <script>
+  import { computed } from '@vue/composition-api';
+
   export default {
     name: 'GListItem',
     props: {
 			height: String,
 		},
-		computed: {
-			itemStyle() {
-			  let style = {};
-			  if(this.height) {
-			    Object.assign(style, {'height': this.height});
+		setup({ height }) {
+      const classes = computed(() => {
+        const defaultClasses = {
+          'list-item': true,
+				};
+        return {
+          ...defaultClasses
 				}
-			  return style;
+			});
+      const itemHeightStyle = computed(() => {
+        if(height) {
+          return {
+            height
+					}
+				}
+			});
+      return {
+        classes,
+				itemHeightStyle
 			}
 		}
   }

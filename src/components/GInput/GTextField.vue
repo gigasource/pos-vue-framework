@@ -17,7 +17,7 @@
 			/>
 			<span class="textfield-icon">
 				<slot name="append"></slot>
-				<img v-if="isDirty" src="../../assets/delivery/cancel.svg" @click="clearValue">
+				<img class="ml-1" v-if="isDirty" src="../../assets/delivery/cancel.svg" @click="clearValue">
 			</span>
 		</div>
 	</div>
