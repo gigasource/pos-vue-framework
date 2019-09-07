@@ -46,7 +46,7 @@
 
       function activate() {
         isActive.value = !isActive.value;
-      };
+      }
 
       return {
         computedValue,

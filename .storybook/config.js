@@ -1,5 +1,6 @@
 import { configure } from '@storybook/vue';
 
+import '../public/main.css';
 // automatically import all files ending in *.stories.js
 const req = require.context('../stories', true, /\.stories\.js$/);
 function loadStories() {

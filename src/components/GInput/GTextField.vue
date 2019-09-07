@@ -6,7 +6,7 @@
 		<div class="r">
 			<input type="text"
 						 class="textfield br-2 bg-lgray-5 pa-2 fs-small fw-700"
-						 v-model="computedValue"
+						 :value="lazyValue"
 						 :placeholder="placeholder"
 						 ref="input"
 						 @input="onInput"
@@ -17,15 +17,16 @@
 			/>
 			<span class="textfield-icon">
 				<slot name="append"></slot>
-				<img v-if="isDirty" src="../../assets/delivery/cancel.svg" @click="clearValue">
+				<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="clearValue">
 			</span>
 		</div>
 	</div>
 </template>
 
 <script>
-  import { keyCodes } from '@/utils/helpers';
+  import { keyCodes } from '../../utils/helpers';
 
+  //todo: input - number
   export default {
     name: 'GTextField',
     props: {
@@ -39,26 +40,27 @@
     },
 		data() {
        return {
-         showClearBtn: false
+				 lazyValue: ''
 			 }
 		},
     computed: {
-      computedValue: {
+      internalValue: {
         get() {
-          return this.value;
+          return this.lazyValue
         },
         set(value) {
-          this.$emit('input', value);
+          this.lazyValue = value;
+          this.$emit('input', this.lazyValue)
         }
       },
 			isDirty() {
-        return (this.computedValue && this.computedValue.toString().length > 0)
+        return (this.lazyValue && this.lazyValue.toString().length > 0)
 			}
     },
     methods: {
       //TODO input-number
       onInput(event) {
-
+				this.internalValue = event.target.value;
 			},
       onChange(event) {
         this.$emit('change', event);
@@ -81,7 +83,7 @@
       },
       onKeyDown(event) {
         if (event.keyCode === keyCodes.enter && this.isDirty()) {
-          this.$emit('change', this.computedValue);
+          this.$emit('change', this.internalValue);
         }
         this.$emit('keydown', event)
       },
@@ -97,9 +99,14 @@
         this.$emit('mousedown', event)
       },
       clearValue() {
-        this.computedValue = '';
+        this.internalValue = '';
 			}
-    }
+    },
+		watch: {
+			value(val) {
+			  this.lazyValue = val;
+			}
+		}
   }
 </script>
 

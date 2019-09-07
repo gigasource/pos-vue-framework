@@ -5,9 +5,9 @@
 <script>
   export default {
     name: 'GSidebar',
-    data() {
-      return {}
-    }
+			data() {
+				return {}
+			}
   }
 </script>
 
