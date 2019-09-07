@@ -21,18 +21,17 @@
 		setup({top, dark, tile, height}) {
       const classes = computed(() => {
         const defaultClasses = {
-          'row-flex': true,
-          'pa-2': true,
-          'abs': true,
-          'w-100': true,
+          'tool-bar': true,
         };
         return {
           top: top,
           bottom: !top,
           'bg-black': dark,
-          'bg-lgray-5': dark,
-          'btrr-3': tile,
-          'btlr-3': tile,
+          'bg-lgray-5': !dark,
+          'btrr-3': tile && !top,
+          'btlr-3': tile && !top,
+          'bbrr-3': tile && top,
+          'bblr-3': tile && top,
           ...defaultClasses,
 				}
 			});
@@ -41,9 +40,9 @@
         if (height) {
           return {
             height
-					}
-				}
-			});
+          }
+        }
+      });
 
       return {
         classes,

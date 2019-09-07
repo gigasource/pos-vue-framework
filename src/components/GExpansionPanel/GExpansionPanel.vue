@@ -1,8 +1,6 @@
 <template>
-	<div class="col-flex">
-		<slot>
-
-		</slot>
+	<div class="col-flex" @click="show = !show">
+		<slot :show="show"></slot>
 	</div>
 </template>
 
@@ -10,7 +8,9 @@
   export default {
     name: 'GExpansionPanel',
     data() {
-      return {}
+      return {
+        show: false,
+			}
     }
   }
 </script>
