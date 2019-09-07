@@ -1,5 +1,7 @@
 <template>
-	<slot :active="isActive" :toggle="toggle"></slot>
+	<div>
+		<slot :active="isActive" :disabled="disabled" :toggle="toggle" :item="item" :class="itemClass"></slot>
+	</div>
 </template>
 
 <script>
@@ -10,14 +12,26 @@
       disabled: Boolean,
       value: {
         required: false
-      }
+      },
+			item: null,
+      isActive: Boolean,
     },
     data: () => ({
-      isActive: false,
+
     }),
+		computed: {
+      itemClass() {
+        return {
+          [this.activeClass]: this.isActive
+				}
+			}
+		},
     methods: {
       toggle() {
-        this.isActive = !this.isActive;
+        //todo: mandatory
+        if (this.disabled) return;
+        console.log('clicked');
+        this.$emit('toggle', this.item);
       }
     }
   }
