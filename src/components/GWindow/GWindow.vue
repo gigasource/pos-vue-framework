@@ -21,9 +21,19 @@
       items: Array,
       value: Number
     },
+		computed: {
+      computedValue: {
+        get() {
+          return this.value;
+				},
+				set(value) {
+          this.$emit('input', value);
+				}
+			}
+		},
     methods: {
       isActiveWindow(window) {
-				return this.items[this.value] === window;
+        return this.items[this.value] === window;
       }
     }
   }
