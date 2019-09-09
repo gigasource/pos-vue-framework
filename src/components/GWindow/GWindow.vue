@@ -3,7 +3,7 @@
 		<slot>
 			<template v-for="item in items">
 				<g-window-item v-show="isActiveWindow(item)">
-					<slot name="item">
+					<slot name="item" :item="item">
 					</slot>
 				</g-window-item>
 			</template>
@@ -19,7 +19,7 @@
     components: { GWindowItem },
     props: {
       items: Array,
-      value: Number
+      value: null
     },
 		computed: {
       computedValue: {
