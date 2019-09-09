@@ -8,7 +8,6 @@
   export default {
     name: 'GItem',
     props: {
-      activeClass: String,
       disabled: Boolean,
       value: {
         required: false

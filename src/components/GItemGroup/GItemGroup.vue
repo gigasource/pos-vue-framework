@@ -2,8 +2,8 @@
 	<div>
 		<slot>
 			<template v-for="(item, index) in items">
-				<g-item :item="item" :active-class="activeClass" :is-active="isActiveItem(item)" @toggle="toggleItem">
-					<slot name="item" :item="item" :index="index" :toggle="toggleItem"></slot>
+				<g-item :item="item" :is-active="isActiveItem(item)" @toggle="toggleItem">
+					<slot name="item" :item="item" :index="index" :toggle="toggleItem" :active="isActiveItem(item)"></slot>
 				</g-item>
 			</template>
 		</slot>
@@ -19,11 +19,6 @@
     name: 'GItemGroup',
     components: { GItem },
     props: {
-      activeClass: {
-        type: String,
-        default: 'item--active' //todo: change to correct css class
-      },
-      //todo: disabledClass ?
       mandatory: Boolean,
       multiple: Boolean,
       //todo: return item/index
@@ -40,6 +35,16 @@
       //todo: internal value for usage without v-model
       internalValue: {
         get() {
+					if (this.returnItem) {
+            if (this.value) {
+              if (this.multiple && !Array.isArray(this.value)) {
+                this.value = [this.value];
+              }
+              return this.value;
+            }
+            return this.multiple ? [] : null;
+					}
+
         },
         set() {
         }
