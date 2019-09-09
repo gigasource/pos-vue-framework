@@ -33,7 +33,7 @@
 		},
     methods: {
       isActiveWindow(window) {
-        return this.items[this.value] === window;
+        return this.value === window;
       }
     }
   }
