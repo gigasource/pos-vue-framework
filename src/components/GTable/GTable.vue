@@ -5,13 +5,11 @@
 				<th v-for="(header, i) in headers" :key="i">{{header}}</th>
 			</tr>
 		</slot>
-		<tbody>
 			<slot name="body">
 				<tr v-for="(item, i) in items" :key="i">
 					<td v-for="(value) in item">{{value}}</td>
 				</tr>
 			</slot>
-		</tbody>
 	</table>
 </template>
 

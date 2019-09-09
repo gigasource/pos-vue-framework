@@ -28,6 +28,7 @@
           'bs-0': this.depressed,
           'disabled': this.disabled,
           'br-100': this.icon,
+					'pa-0': this.icon,
           'btn-outline': this.outline,
           'b-dashed': this.dashed
         }
@@ -46,7 +47,7 @@
             color: this.color
           });
         } else if (this.color) {
-          Object.assign(style, { 'background-color': this.color });
+          Object.assign(style, { 'border-color': 'transparent', 'background-color': this.color });
         }
         if (this.flat) {
           Object.assign(style, {

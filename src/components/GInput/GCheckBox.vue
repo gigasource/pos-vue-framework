@@ -1,5 +1,5 @@
 <template>
-	<label :class="checkBoxClass" @click.prevent="activate">
+	<label :class="checkBoxClass" class="fs-small-2 mb-2 check-box-square" @click.prevent="activate">
 		<input type="checkbox">
 		<span :class="checkmarkClass"></span>
 		{{label}}
@@ -26,18 +26,14 @@
       let isActive = ref(false);
       const computedValue = computed({
         get: () => props.value,
-        set: (value) => {
-          emit('input', value);
-        }
+        set: value => emit('input', value)
       });
-      const checkBoxClass = computed(() => {
-        const defaultClasses = { 'fs-small-2': true, 'mb-2': true, 'check-box-square': true };
-        return {
-          readonly: props.readonly,
-          disabled: props.disabled,
-          ...defaultClasses
-        };
-      });
+
+      const checkBoxClass = computed(() => ({
+        readonly: props.readonly,
+        disabled: props.disabled,
+      }));
+
       const checkmarkClass = computed(() => ({
           checkmark: !isActive.value,
           [props.activeClass]: isActive.value

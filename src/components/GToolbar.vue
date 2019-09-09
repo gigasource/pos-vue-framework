@@ -18,7 +18,7 @@
       height: String,
       dark: Boolean,
     },
-		setup({top, dark, tile, height}) {
+    setup({ top, dark, tile, height }) {
       const classes = computed(() => {
         const defaultClasses = {
           'tool-bar': true,
@@ -33,8 +33,8 @@
           'bbrr-3': tile && top,
           'bblr-3': tile && top,
           ...defaultClasses,
-				}
-			});
+        }
+      });
 
       const toolbarHeightStyle = computed(() => {
         if (height) {
@@ -46,9 +46,9 @@
 
       return {
         classes,
-				toolbarHeightStyle
-			}
-		}
+        toolbarHeightStyle
+      }
+    }
   }
 </script>
 

@@ -1,5 +1,6 @@
 <template>
-	<div :class="layoutClass">
+	<div :class="layoutClass" class="w-100 h-100">
+		<slot></slot>
 	</div>
 </template>
 
@@ -12,12 +13,13 @@
 				default: true,
 			},
 			column: Boolean,
+			fluid: Boolean,
 		},
 		computed: {
       layoutClass() {
         return {
           'row-flex': !this.column,
-					'col-flex': this.column
+					'col-flex': this.column,
 				}
 			}
 		}
