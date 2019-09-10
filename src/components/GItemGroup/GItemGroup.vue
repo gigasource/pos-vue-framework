@@ -1,23 +1,27 @@
 <template>
-	<div>
-		<slot>
+	<g-layout>
+		<slot :toggle="toggleItem" :active="isActiveItem">
 			<template v-for="(item, index) in items">
-				<g-item :item="item" :is-active="isActiveItem(item)" @toggle="toggleItem">
+				<g-item :item="item" :is-active="isActiveItem(item)" @toggle="toggleItem" :key="index">
 					<slot name="item" :item="item" :index="index" :toggle="toggleItem" :active="isActiveItem(item)"></slot>
 				</g-item>
 			</template>
 		</slot>
-	</div>
+	</g-layout>
 </template>
 
 <script>
   //todo: root element
   import GItem from '@/components/GItemGroup/GItem';
   import _ from 'lodash';
+  import GLayout from '@/components/GLayout';
+  import vModel from '@/components/common/vModel';
+  import { computed } from '@vue/composition-api';
+  import groupable from '@/components/GItemGroup/groupable';
 
   export default {
     name: 'GItemGroup',
-    components: { GItem },
+    components: { GLayout, GItem },
     props: {
       mandatory: Boolean,
       multiple: Boolean,
@@ -26,76 +30,27 @@
       value: null,
       items: Array
     },
-    data() {
-      return {
-        //internalValue: this.value !== undefined ? this.value : this.multiple ? [] : null
-      }
-    },
-    computed: {
-      //todo: internal value for usage without v-model
-      internalValue: {
-        get() {
-					if (this.returnItem) {
-            if (this.value) {
-              if (this.multiple && !Array.isArray(this.value)) {
-                this.value = [this.value];
-              }
-              return this.value;
+    setup(props, context) {
+      const model = computed({
+        get: () => {
+          if (props.value) {
+            if (props.multiple && !Array.isArray(props.value)) {
+              props.value = [props.value];
             }
-            return this.multiple ? [] : null;
-					}
-
-        },
-        set() {
-        }
-      },
-      computedValue: {
-        get() {
-          if (this.value) {
-            if (this.multiple && !Array.isArray(this.value)) {
-              this.value = [this.value];
-            }
-            return this.value;
+            return props.value;
           }
-          return this.multiple ? [] : null;
+          return props.multiple ? [] : null;
         },
-        set(value) {
-          this.$emit('input', value);
+        set: (value) => {
+          context.emit('input', value);
         }
-      }
-    },
-    methods: {
-      toggleItem(item) {
-        if (this.multiple) {
-          this.updateMultiple(item);
-        } else {
-          this.updateSingle(item);
-        }
-      },
-      updateSingle(item) {
-        const isSame = item === this.computedValue;
-        if (isSame && this.mandatory) {
-          return;
-        }
-        this.computedValue = isSame ? null : item;
-      },
-      updateMultiple(item) {
-        const clonedValue = _.clone(this.computedValue);
-        const itemIndex = clonedValue.findIndex((i) => i === item);
-        //item exists + mandatory
-        if (itemIndex > -1 && this.mandatory && clonedValue.length - 1 < 1) {
-          return;
-        }
+      });
 
-        if (itemIndex > -1) {
-          clonedValue.splice(itemIndex, 1);
-        } else {
-          clonedValue.push(item);
-        }
-        this.computedValue = clonedValue;
-      },
-      isActiveItem(item) {
-        return this.multiple ? this.computedValue.includes(item) : this.computedValue === item;
+			const { toggleItem, isActiveItem } = groupable(props, model);
+
+      return {
+        toggleItem,
+        isActiveItem
       }
     }
   }

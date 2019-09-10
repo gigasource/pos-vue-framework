@@ -5,34 +5,31 @@
 </template>
 
 <script>
+  import { computed } from '@vue/composition-api';
+
   export default {
     name: 'GItem',
     props: {
       disabled: Boolean,
-      value: {
-        required: false
-      },
 			item: null,
       isActive: Boolean,
     },
-    data: () => ({
+		setup(props, {emit}) {
+      const {disabled, activeClass, isActive, item} = props;
+      const itemClass = computed(() => ({
+				[activeClass]: isActive
+			}));
 
-    }),
-		computed: {
-      itemClass() {
-        return {
-          [this.activeClass]: this.isActive
-				}
+			const toggle = () => {
+        if (disabled) return;
+        emit('toggle', item);
+			};
+
+			return {
+			  itemClass,
+				toggle
 			}
-		},
-    methods: {
-      toggle() {
-        //todo: mandatory
-        if (this.disabled) return;
-        console.log('clicked');
-        this.$emit('toggle', this.item);
-      }
-    }
+		}
   }
 </script>
 
