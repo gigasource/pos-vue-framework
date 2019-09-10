@@ -2995,8 +2995,9 @@ button {
   height: 83.3333%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
+  /*grid-template-rows: repeat(4, 1fr);*/
   grid-auto-rows: 1fr;
+  grid-auto-columns: 1fr;
   grid-gap: 0.125rem;
   /*grid-template-areas: "key7 key8  key9" "key4 key5  key6" "key1 key2  key3" "key0 enter enter";*/
 }
@@ -3011,8 +3012,6 @@ button {
   justify-content: center;
   align-items: center;
   margin-top: 0.125rem;
-  background-color: #ffffff;
-  border: 0.05rem solid #39475a;
 }
 
 .key-number__extra {
@@ -3361,34 +3360,34 @@ tr {
   width: 8%;
 }
 
-.keyboard {
-  display: flex;
-  flex-direction: column;
-  padding: 0.25rem;
-}
+/*.keyboard {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  padding: 0.25rem;*/
+/*}*/
 
-.key {
-  background-clip: padding-box;
-  border: 0.25rem solid transparent;
-  border-radius: 0.5rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-}
-.key.key-normal {
-  flex: 0 0 9.0909090909%;
-  max-width: 9.0909090909%;
-}
-.key.key-extra {
-  flex: 0 0 13.6363636364%;
-  max-width: 13.6363636364%;
-}
-.key.key-space {
-  flex: 0 0 54.5454545455%;
-  max-width: 54.5454545455%;
-}
+/*.key {*/
+/*  background-clip: padding-box;*/
+/*  border: 0.25rem solid transparent;*/
+/*  border-radius: 0.5rem;*/
+/*  display: inline-flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  font-family: "Roboto", sans-serif;*/
+/*  font-weight: 400;*/
+/*}*/
+/*.key.key-normal {*/
+/*  flex: 0 0 9.0909090909%;*/
+/*  max-width: 9.0909090909%;*/
+/*}*/
+/*.key.key-extra {*/
+/*  flex: 0 0 13.6363636364%;*/
+/*  max-width: 13.6363636364%;*/
+/*}*/
+/*.key.key-space {*/
+/*  flex: 0 0 54.5454545455%;*/
+/*  max-width: 54.5454545455%;*/
+/*}*/
 
 .spacer {
     flex-grow: 1;

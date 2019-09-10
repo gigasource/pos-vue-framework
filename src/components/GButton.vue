@@ -24,6 +24,7 @@
     computed: {
       buttonClass() {
         return {
+          'fs-small': true,
           'btn-raised': this.raised,
           'bs-0': this.depressed,
           'disabled': this.disabled,

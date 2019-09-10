@@ -15,21 +15,21 @@
 										</tr>
 									</template>
 									<template v-slot:body>
-										<template v-for="i in 12">
-											<g-expansion-panel v-if="items[i-1]" class="table-row-group">
+										<template v-for="item in items">
+											<g-expansion-panel class="table-row-group">
 												<template v-slot:default="{show}">
 													<g-expansion-panel-header class="table-row" :isActive="show">
-														<td style="padding: 0.5rem">{{ items[i-1] ? items[i-1].name : '' }}</td>
-														<td style="padding: 0.5rem">{{ items[i-1] ? items[i-1].quantity : '' }}</td>
-														<td style="padding: 0.5rem">{{ items[i-1] ? items[i-1].price : '' }}</td>
-														<td style="padding: 0.5rem">{{ items[i-1] ? items[i-1].total : '' }}</td>
+														<td style="padding: 0.5rem">{{ item.name }}</td>
+														<td style="padding: 0.5rem">{{ item.quantity }}</td>
+														<td style="padding: 0.5rem">{{ item.price }}</td>
+														<td style="padding: 0.5rem">{{ item.total }}</td>
 													</g-expansion-panel-header>
 													<g-expansion-panel-content :show="show" class="table-row">
 														<td colspan="4" class="bg-blue-8 pa-2">
 															<g-layout row>
 																<div class="col-4 row-flex">
 																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500">-</g-button>
-																	<div class="bg-white ba-blue-7 blue-7 ba-thin ta-center col-3">{{ items[i-1] ? items[i-1].quantity : '' }}</div>
+																	<div class="bg-white ba-blue-7 blue-7 ba-thin ta-center col-3">{{ item.quantity}}</div>
 																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500">+</g-button>
 																</div>
 																<div class="col-8 row-flex justify-end">
@@ -43,7 +43,9 @@
 													</g-expansion-panel-content>
 												</template>
 											</g-expansion-panel>
-											<tr v-if="!items[i-1]">
+										</template>
+										<template v-if="items.length < 12">
+											<tr v-for="i in (12 - items.length)">
 												<td colspan="4" style="height: 2rem"></td>
 											</tr>
 										</template>
@@ -83,15 +85,15 @@
 						</g-button>
 						<g-button color="#ffffff" width="15%" class="mr-2">
 							<img src="./assets/order/bureau.svg">
-							<span class="ml-1">More</span>
+							<span class="ml-1 fs-small-2">More</span>
 						</g-button>
 						<g-button color="#ffffff" width="30%" class="mr-2">
 							<img src="./assets/delivery/list.svg">
-							<span class="ml-1">Order History</span>
+							<span class="ml-1 fs-small-2">Order History</span>
 						</g-button>
 						<g-button color="#ffffff" width="35%">
 							<img src="./assets/delivery/more.svg">
-							<span class="ml-1">Exchange/Refund</span>
+							<span class="ml-1 fs-small-2">Exchange/Refund</span>
 						</g-button>
 					</g-toolbar>
 				</g-layout>
@@ -99,20 +101,20 @@
 			<div class="col-6 bl-lgray-4 blw-1">
 				<g-layout column>
 					<div class="row-2 col-flex pa-2 bg-category-menu">
-						<g-layout row class="flex-equal mb-1">
+						<g-layout row class="flex-equal pb-1">
 							<g-button class="flex-equal mr-1" color="#ff4452" textColor="#ffffff">Featured Products</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Hauptgerichte</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Heißgetränk</g-button>
 							<g-button class="w-10" color="#d6d6d6" textColor="#2f1ac3">&gt;</g-button>
 						</g-layout>
-						<g-layout row class="flex-equal mb-1">
+						<g-layout row class="flex-equal">
 							<g-button class="flex-equal mr-1" color="#ffffff">Bier, Side, Gin Genuss</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Wein, Cocktails</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Longdrinks, Wishkeys, Tequila</g-button>
 							<g-button class="w-10" color="#d6d6d6" textColor="#2f1ac3">&lt;</g-button>
 						</g-layout>
 					</div>
-					<div class="row-5 pa-1">
+					<div class="row-5 pt-1 pl-1 pr-1">
 						<g-layout row>
 							<g-layout column class="col-3">
 								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
@@ -152,9 +154,18 @@
 							</g-layout>
 						</g-layout>
 					</div>
-					<div class="row-5 pa-1">
+					<div class="row-5 pl-1 pr-1 pb-1">
 						<g-layout row>
-							<g-number-keyboard class="col-6"></g-number-keyboard>
+							<g-number-keyboard class="col-6" v-model="product" :items="keyNumbers">
+								<template v-slot:screen>
+									<div class="number-key-show ba-blue-9 ba-thin bg-lgray-5">
+										<div class="number-key-screen col-6">
+											<label for="number_key_output" class="number-key-text bg-white ba-blue-9 ba-thin w-100 br-2 white fs-small-2 fw-400 pl-2"></label>
+										</div>
+										<input id="number_key_output" class="number-key-text col-5 self-center ta-right bg-lgray-5 fs-large-2 fw-700" style="border: none; outline: none" v-model="product">
+									</div>
+								</template>
+							</g-number-keyboard>
 							<g-layout column class="col-3 pl-1">
 								<g-button class="flex-equal mb-1" color="#eeeeee"></g-button>
 								<g-button class="flex-equal mb-1" color="#39475a" outline>Check Stack</g-button>
@@ -213,6 +224,24 @@
           { name: 'Product item 4', quantity: 1, price: '€0.50', total: '€0.50' },
           { name: 'Product item 5', quantity: 2, price: '€0.50', total: '€1.00' },
           { name: 'Product item 6', quantity: 1, price: '€5.52', total: '€5.52' },
+        ],
+				product: 0,
+				label: '',
+				keyNumbers: [
+          { content: '7', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '8', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '9', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '4', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '5', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '6', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '1', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '2', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '3', classes: 'key-number bg-white ba-blue-9 ba-thin' },
+          { content: '0', classes: 'key-number bg-white ba-blue-9 ba-thin' , style: 'grid-area: 1/4/2/5'},
+          { content: '00', classes: 'key-number bg-white ba-blue-9 ba-thin', style: 'grid-area: 2/4/3/5' },
+          { content: 'x', classes: 'key-number bg-white ba-blue-9 ba-thin', action: 'delete', style: 'grid-area: 3/4/5/5; background-color: #ff4452'},
+          { content: 'C', classes: 'key-number bg-white ba-blue-9 ba-thin', action: 'clear' },
+          { content: '&crarr;', classes: 'key-number key-number__extra bg-black white', action: 'enter' }
         ]
       }
     }
