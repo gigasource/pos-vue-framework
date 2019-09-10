@@ -3,8 +3,7 @@
 		<slot>
 			<template v-for="item in items">
 				<g-window-item v-show="isActiveWindow(item)">
-					<slot name="item" :item="item">
-					</slot>
+					<slot name="item" :item="item"></slot>
 				</g-window-item>
 			</template>
 		</slot>
@@ -12,7 +11,8 @@
 </template>
 
 <script>
-  import GWindowItem from '@/components/GWindow/GWindowItem';
+  import GWindowItem from '../GWindow/GWindowItem';
+  import vModel from '@/components/common/vModel';
 
   export default {
     name: 'GWindow',
@@ -21,21 +21,15 @@
       items: Array,
       value: null
     },
-		computed: {
-      computedValue: {
-        get() {
-          return this.value;
-				},
-				set(value) {
-          this.$emit('input', value);
-				}
+		setup(props, context) {
+      const { model } = vModel(props, context);
+      const isActiveWindow = (window) => model.value === window;
+
+      return {
+        model,
+				isActiveWindow
 			}
-		},
-    methods: {
-      isActiveWindow(window) {
-        return this.value === window;
-      }
-    }
+		}
   }
 </script>
 
