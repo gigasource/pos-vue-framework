@@ -14,35 +14,36 @@
 
 <script>
   import GKeyboard from './GKeyboard';
+
   export default {
     name: 'GNumberKeyboard',
     components: { GKeyboard },
     props: {
       label: String,
       value: [String, Number],
-			items: {
+      items: {
         type: null,
-				default:() => [
-          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin',action: (value, append) => (value + append) },
-          { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value) => value.substring(0, value.length-1)},
-          { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: () => '0' },
-          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style:'background-color: #000000' }
+        default: () => [
+          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key9"'},
+          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key8"' },
+          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key9"' },
+          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key4"' },
+          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key5"' },
+          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key6"' },
+          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key1"' },
+          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key2"' },
+          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key3"' },
+          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key0"' },
+          { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key0"0' },
+          { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1), style: 'grid-area: "keyX"' },
+          { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0', style: 'grid-area: "keyC"' },
+          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style: 'grid-area: "Enter"; background-color: #000000' }
         ]
-			},
-			template: {
+      },
+      template: {
         type: String,
-				default: 'grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1ft; grid-auto-columns: 1fr'
-			}
+        default: 'grid-template-areas: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 key00 keyX" "keyC Enter Enter"'
+      }
     },
     computed: {
       computedNumber: {
@@ -50,11 +51,11 @@
           return '' + this.value;
         },
         set(value) {
-          if(value.length === 0){
+          if (value.length === 0) {
             value = '0';
-					} else {
+          } else {
             value = '' + parseInt(value);
-					}
+          }
           this.$emit('input', value);
         }
       }

@@ -1,9 +1,8 @@
 <template>
 	<div class="keyboard__template" :style="template">
 		<g-button v-for="item in items" :class="item.classes" class="key" :style="item.style" @click="click(item)">
-			<template v-if="item.img">
-				<img class="h-80" :src="getImg(item.img)">
-			</template>
+			<!-- TODO: responsive height for img -->
+			<img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
 			<template v-if="item.content">
 				<span v-if="item.content.length > 0 && item.content.length > index" v-html="item.content[index]"></span>
 				<span v-else v-html="item.content[0]"></span>
