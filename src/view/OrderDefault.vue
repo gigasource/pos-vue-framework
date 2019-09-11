@@ -157,21 +157,13 @@
 					<div class="row-5 pl-1 pr-1 pb-1">
 						<g-layout row>
 							<g-number-keyboard class="col-6" v-model="product" :items="keyNumbers">
-								<template v-slot:screen>
-									<div class="number-key-show ba-blue-9 ba-thin bg-lgray-5">
-										<div class="number-key-screen col-6">
-											<label for="number_key_output" class="number-key-text bg-white ba-blue-9 ba-thin w-100 br-2 white fs-small-2 fw-400 pl-2"></label>
-										</div>
-										<input id="number_key_output" class="number-key-text col-5 self-center ta-right bg-lgray-5 fs-large-2 fw-700" style="border: none; outline: none" v-model="product">
-									</div>
-								</template>
 							</g-number-keyboard>
 							<g-layout column class="col-3 pl-1">
 								<g-button class="flex-equal mb-1" color="#eeeeee"></g-button>
 								<g-button class="flex-equal mb-1" color="#39475a" outline>Check Stack</g-button>
 								<g-button class="flex-equal mb-1" color="#39475a" outline>Price Change</g-button>
 								<g-button class="flex-equal mb-1" color="#39475a" outline>Credit Card</g-button>
-								<g-button class="row-4" color="#fb755c" text-color="#ffffff">Quick Cash</g-button>
+								<g-button style="height: calc(33.3333% - 2.5px)" color="#fb755c" text-color="#ffffff">Quick Cash</g-button>
 							</g-layout>
 							<g-layout column class="col-3 pl-1">
 								<g-button class="flex-equal mb-1" color="#eeeeee"></g-button>
@@ -228,21 +220,22 @@
         product: 0,
         label: '',
         keyNumbers: [
-          { content: '7', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '8', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '9', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '4', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '5', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '6', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '1', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '2', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '3', classes: 'key-number bg-white ba-blue-9 ba-thin' },
-          { content: '0', classes: 'key-number bg-white ba-blue-9 ba-thin' , style: 'grid-area: 1/4/2/5'},
-          { content: '00', classes: 'key-number bg-white ba-blue-9 ba-thin', style: 'grid-area: 2/4/3/5' },
-          { content: 'x', classes: 'key-number bg-white ba-blue-9 ba-thin', action: 'delete', style: 'grid-area: 3/4/5/5; background-color: #ff4452'},
-          { content: 'C', classes: 'key-number bg-white ba-blue-9 ba-thin', action: 'clear' },
-          { content: '&crarr;', classes: 'key-number key-number__extra bg-black white', action: 'enter' }
-        ]
+          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
+          { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin',action: (value, append) => (value + append) },
+          { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin',action: (value) => value.substring(0, value.length-1)},
+          { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin',action: () => '0' },
+          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style:'background-color: #000000; border-color: black' }
+        ],
+				template: 'grid',
       }
     }
   }

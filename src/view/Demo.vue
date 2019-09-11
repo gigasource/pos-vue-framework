@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<input :value="text">
-		<g-keyboard v-model="text"></g-keyboard>
+		<g-keyboard v-model="text" class="bg-lgray-7"></g-keyboard>
 	</div>
 </template>
 
