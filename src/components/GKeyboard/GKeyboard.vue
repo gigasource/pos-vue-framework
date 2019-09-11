@@ -1,66 +1,77 @@
 <template>
-	<div class="keyboard__template">
-		<div v-for="item in items" :class="item.type" class="key" :style="item.style" @click="click(item.action, item.content)">
-			<template v-if="item.content">
-				<span v-html="item.content"></span>
-			</template>
+	<div class="keyboard__template" :style="template">
+		<g-button v-for="item in items" :class="item.classes" class="key" :style="item.style" @click="click(item)">
 			<template v-if="item.img">
 				<img class="h-80" :src="getImg(item.img)">
 			</template>
-		</div>
+			<template v-if="item.content">
+				<span v-if="item.content.length > 0 && item.content.length > index" v-html="item.content[index]"></span>
+				<span v-else v-html="item.content[0]"></span>
+			</template>
+		</g-button>
 	</div>
 </template>
 
 <script>
+  import GButton from '../GButton';
   export default {
     name: 'GKeyboard',
+    components: { GButton },
     props: {
       value: String,
+			template: {
+        type: String,
+				default: 'grid-template-areas: "q q w w e e r r t t y y u u i i o o p p del del" ' +
+																			'". a a s s d d f f g g h h j j k k l l enter enter enter" ' +
+																			'"shift1 shift1 z z x x c c v v b b n n m m ep ep qm qm shift2 shift2" ' +
+																			'"num1 num1 splash splash space space space space space space space space space space space space com com dot dot num2 num2"'
+			},
+      items: {
+        type: Array,
+				default: () => [
+          { content: ['q', 'Q'], img: '', classes: 'key-normal', style: 'grid-area: q', action: (value, append) => (value + append) },
+          { content: ['w', 'W'], img: '', classes: 'key-normal', style: 'grid-area: w', action: (value, append) => (value + append) },
+          { content: ['e', 'E'], img: '', classes: 'key-normal', style: 'grid-area: e', action: (value, append) => (value + append) },
+          { content: ['r', 'R'], img: '', classes: 'key-normal', style: 'grid-area: r', action: (value, append) => (value + append) },
+          { content: ['t', 'T'], img: '', classes: 'key-normal', style: 'grid-area: t', action: (value, append) => (value + append) },
+          { content: ['y', 'Y'], img: '', classes: 'key-normal', style: 'grid-area: y', action: (value, append) => (value + append) },
+          { content: ['u', 'U'], img: '', classes: 'key-normal', style: 'grid-area: u', action: (value, append) => (value + append) },
+          { content: ['i', 'I'], img: '', classes: 'key-normal', style: 'grid-area: i', action: (value, append) => (value + append) },
+          { content: ['o', 'O'], img: '', classes: 'key-normal', style: 'grid-area: o', action: (value, append) => (value + append) },
+          { content: ['p', 'P'], img: '', classes: 'key-normal', style: 'grid-area: p', action: (value, append) => (value + append) },
+          { content: [''], img: 'delivery/key_delete', classes: 'key-normal', style: 'grid-area: del; background-color: #e0e3e5', action: (value) => value.substring(0, value.length-1)},
+          { content: ['a', 'A'], img: '', classes: 'key-normal', style: 'grid-area: a', action: (value, append) => (value + append) },
+          { content: ['s', 'S'], img: '', classes: 'key-normal', style: 'grid-area: s', action: (value, append) => (value + append) },
+          { content: ['d', 'D'], img: '', classes: 'key-normal', style: 'grid-area: d', action: (value, append) => (value + append) },
+          { content: ['f', 'F'], img: '', classes: 'key-normal', style: 'grid-area: f', action: (value, append) => (value + append) },
+          { content: ['g', 'G'], img: '', classes: 'key-normal', style: 'grid-area: g', action: (value, append) => (value + append) },
+          { content: ['h', 'H'], img: '', classes: 'key-normal', style: 'grid-area: h', action: (value, append) => (value + append) },
+          { content: ['j', 'J'], img: '', classes: 'key-normal', style: 'grid-area: j', action: (value, append) => (value + append) },
+          { content: ['k', 'K'], img: '', classes: 'key-normal', style: 'grid-area: k', action: (value, append) => (value + append) },
+          { content: ['l', 'L'], img: '', classes: 'key-normal', style: 'grid-area: l', action: (value, append) => (value + append) },
+          { content: [], img: 'delivery/arrow', classes: 'key-large', style: 'grid-area: enter; background-color: #ff4452', type: 'enter'},
+          { content: [], img: 'delivery/key_shift', classes: 'key-normal', style: 'grid-area: shift1; background-color: #e0e3e5', type: 'shift', action: (isShift) => (!isShift)},
+          { content: ['z', 'Z'], img: '', classes: 'key-normal', style: 'grid-area: z', action: (value, append) => (value + append) },
+          { content: ['x', 'X'], img: '', classes: 'key-normal', style: 'grid-area: x', action: (value, append) => (value + append) },
+          { content: ['c', 'C'], img: '', classes: 'key-normal', style: 'grid-area: c', action: (value, append) => (value + append) },
+          { content: ['v', 'V'], img: '', classes: 'key-normal', style: 'grid-area: v', action: (value, append) => (value + append) },
+          { content: ['b', 'B'], img: '', classes: 'key-normal', style: 'grid-area: b', action: (value, append) => (value + append) },
+          { content: ['n', 'N'], img: '', classes: 'key-normal', style: 'grid-area: n', action: (value, append) => (value + append) },
+          { content: ['m', 'M'], img: '', classes: 'key-normal', style: 'grid-area: m', action: (value, append) => (value + append) },
+          { content: ['!'], img: '', classes: 'key-normal', style: 'grid-area: ep', action: (value) => (value + '!') },
+          { content: ['?'], img: '', classes: 'key-normal', style: 'grid-area: qm', action: (value) => (value + '?') },
+          { content: [], img: 'delivery/key_shift', classes: 'key-normal', style: 'grid-area: shift2; background-color: #e0e3e5', type: 'shift', action: (isShift) => (!isShift)},
+          { content: ['?123'], img: '', classes: 'key-normal', style: 'grid-area: num1; background-color: #e0e3e5', action: () => null },
+          { content: ['/'], img: '', classes: 'key-normal', style: 'grid-area: splash; background-color: #e0e3e5', action: (value) => (value + '/') },
+          { img: '', classes: 'key-space', style: 'grid-area: space', action: (value) => (value + ' ') },
+          { content: ['.com'], img: '', classes: 'key-normal', style: 'grid-area: com; background-color: #e0e3e5', action: (value) => (value + '.com') },
+          { content: ['.'], img: '', classes: 'key-normal', style: 'grid-area: dot; background-color: #e0e3e5', action: (value) => (value + '.') },
+          { content: ['?123'], img: '', classes: 'key-normal', style: 'grid-area: num2; background-color: #e0e3e5', action: () => null },
+        ]
+			},
     },
     data() {
       return {
-        items: [
-          { content: 'q', img: '', type: 'key-normal', style: 'grid-area: q' },
-          { content: 'w', img: '', type: 'key-normal', style: 'grid-area: w' },
-          { content: 'e', img: '', type: 'key-normal', style: 'grid-area: e' },
-          { content: 'r', img: '', type: 'key-normal', style: 'grid-area: r' },
-          { content: 't', img: '', type: 'key-normal', style: 'grid-area: t' },
-          { content: 'y', img: '', type: 'key-normal', style: 'grid-area: y' },
-          { content: 'u', img: '', type: 'key-normal', style: 'grid-area: u' },
-          { content: 'i', img: '', type: 'key-normal', style: 'grid-area: i' },
-          { content: 'o', img: '', type: 'key-normal', style: 'grid-area: o' },
-          { content: 'p', img: '', type: 'key-normal', style: 'grid-area: p' },
-          { content: '', img: 'delivery/key_delete', type: 'key-normal', style: 'grid-area: del; background-color: #e0e3e5', action: 'delete' },
-          // {content: '', img: '', type: 'key-small'},
-          { content: 'a', img: '', type: 'key-normal', style: 'grid-area: a' },
-          { content: 's', img: '', type: 'key-normal', style: 'grid-area: s' },
-          { content: 'd', img: '', type: 'key-normal', style: 'grid-area: d' },
-          { content: 'f', img: '', type: 'key-normal', style: 'grid-area: f' },
-          { content: 'g', img: '', type: 'key-normal', style: 'grid-area: g' },
-          { content: 'h', img: '', type: 'key-normal', style: 'grid-area: h' },
-          { content: 'j', img: '', type: 'key-normal', style: 'grid-area: j' },
-          { content: 'k', img: '', type: 'key-normal', style: 'grid-area: k' },
-          { content: 'l', img: '', type: 'key-normal', style: 'grid-area: l' },
-          { content: '', img: 'delivery/arrow', type: 'key-large', style: 'grid-area: enter; background-color: #ff4452', action: 'enter' },
-          { content: '', img: 'delivery/key_shift', type: 'key-normal', style: 'grid-area: shift1; background-color: #e0e3e5', action: 'shift' },
-          { content: 'z', img: '', type: 'key-normal', style: 'grid-area: z' },
-          { content: 'x', img: '', type: 'key-normal', style: 'grid-area: x' },
-          { content: 'c', img: '', type: 'key-normal', style: 'grid-area: c' },
-          { content: 'v', img: '', type: 'key-normal', style: 'grid-area: v' },
-          { content: 'b', img: '', type: 'key-normal', style: 'grid-area: b' },
-          { content: 'n', img: '', type: 'key-normal', style: 'grid-area: n' },
-          { content: 'm', img: '', type: 'key-normal', style: 'grid-area: m' },
-          { content: '!', img: '', type: 'key-normal', style: 'grid-area: ep', action: 'symbol' },
-          { content: '?', img: '', type: 'key-normal', style: 'grid-area: qm', action: 'symbol' },
-          { content: '', img: 'delivery/key_shift', type: 'key-normal', style: 'grid-area: shift2; background-color: #e0e3e5', action: 'shift' },
-          { content: '?123', img: '', type: 'key-normal', style: 'grid-area: num1; background-color: #e0e3e5', action: 'number' },
-          { content: '/', img: '', type: 'key-normal', style: 'grid-area: splash; background-color: #e0e3e5', action: 'symbol' },
-          { content: '', img: '', type: 'key-space', style: 'grid-area: space', action: 'space' },
-          { content: '.com', img: '', type: 'key-normal', style: 'grid-area: com; background-color: #e0e3e5', action: 'symbol' },
-          { content: '.', img: '', type: 'key-normal', style: 'grid-area: dot; background-color: #e0e3e5', action: 'symbol' },
-          { content: '?123', img: '', type: 'key-normal', style: 'grid-area: num2; background-color: #e0e3e5', action: 'number' },
-        ],
-        text: '',
         isShift: false,
       }
     },
@@ -72,67 +83,32 @@
 				set(value) {
           this.$emit('input', value);
 				}
+			},
+			index() {
+          return this.isShift ? '1' : '0';
 			}
 		},
     methods: {
       getImg(name) {
         return require('../../assets/' + name + '.svg');
       },
-      click(action, content) {
-        if (action === 'space') {
-          this.computedValue += ' ';
-        } else if (action === 'delete') {
-          this.computedValue = this.computedValue.substring(0, this.computedValue.length - 1);
-        } else if (action === 'shift') {
-          this.isShift = !this.isShift;
-          this.swapItemContentCase(this.isShift);
-        } else if (action === 'enter') {
-          this.$emit('submit', this.computedValue);
-        } else if (action === 'number') {
-
-        } else if (action === 'symbol') {
-          this.computedValue += content;
-        } else {
-          this.computedValue += content;
-          if (this.isShift) {
-            this.isShift = false;
-            this.swapItemContentCase(this.isShift);
-          }
-        }
+      click(item) {
+        if(item.type === 'shift'){
+          this.isShift = item.action(this.isShift);
+				} else if(item.type === 'enter') {
+          this.$emit('submit', this.value);
+				} else {
+          this.computedValue = item.content ? item.action(this.computedValue, item.content[this.index]) : item.action(this.computedValue);
+				}
       },
-      swapItemContentCase(isShift) {
-        for (let item of this.items) {
-          if (isShift) {
-            item.content = item.content.toUpperCase();
-          } else {
-            item.content = item.content.toLowerCase();
-          }
-        }
-      }
     }
   }
 </script>
 
 <style scoped>
-	.keyboard {
-		display: grid;
-		grid-template-columns: repeat(22, 1fr);
-		grid-auto-columns: 1fr;
-		grid-auto-rows: 1fr;
-		grid-gap: 4px;
-		background-color: #ebeff0;
-		padding: 4px;
-	}
-
 	.keyboard__template {
 		display: grid;
-		grid-template-areas: "q q w w e e r r t t y y u u i i o o p p del del"
-												". a a s s d d f f g g h h j j k k l l enter enter enter"
-												"shift1 shift1 z z x x c c v v b b n n m m ep ep qm qm shift2 shift2"
-												"num1 num1 splash splash space space space space space space space space space space space space com com dot dot num2 num2";
 		grid-gap: 4px;
-		padding: 4px;
-		background-color: #ebeff0;
 	}
 
 	.key {
