@@ -4,12 +4,12 @@
 			<div class="col-6">
 				<g-layout column class="r">
 					<g-container class="h-90">
-						<g-layout column class="justify-between">
+						<g-layout column class="justify-around">
 							<div class="row-10 table-scroll table-rounded">
 								<g-table striped class="table">
 									<template v-slot:header>
 										<tr>
-											<th v-for="(header, i) in headers" :key="i" class="pl-2 fs-small fw-700 bg-white" style="position: sticky; top: 0; z-index: 2">
+											<th v-for="(header, i) in headers" :key="i" class="pl-2 fs-small fw-700 bg-white" style="position: sticky; top: 0; z-index: 2; height: 2rem">
 												{{header}}
 											</th>
 										</tr>
@@ -19,20 +19,20 @@
 											<g-expansion-panel class="table-row-group">
 												<template v-slot:default="{show}">
 													<g-expansion-panel-header class="table-row" :isActive="show">
-														<td style="padding: 0.5rem">{{ item.name }}</td>
-														<td style="padding: 0.5rem">{{ item.quantity }}</td>
-														<td style="padding: 0.5rem">{{ item.price }}</td>
-														<td style="padding: 0.5rem">{{ item.total }}</td>
+														<td style="height: 2.75rem; padding: 0.5rem">{{ item.name }}</td>
+														<td style="height: 2.75rem; padding: 0.5rem;">{{ item.quantity }}</td>
+														<td style="height: 2.75rem; padding: 0.5rem;">{{ item.price }}</td>
+														<td style="height: 2.75rem; padding: 0.5rem; font-weight: 700">{{ item.total }}</td>
 													</g-expansion-panel-header>
 													<g-expansion-panel-content :show="show" class="table-row">
-														<td colspan="4" class="bg-blue-8 pa-2">
+														<td colspan="4" class="bg-blue-8 pl-2 pr-2" style="height: 2.5rem">
 															<g-layout row>
-																<div class="col-4 row-flex">
-																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500">-</g-button>
-																	<div class="bg-white ba-blue-7 blue-7 ba-thin ta-center col-3">{{ item.quantity}}</div>
-																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500">+</g-button>
+																<div class="col-3 row-flex">
+																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">-</g-button>
+																	<div class="bg-white ba-blue-7 blue-7 ba-thin col-3" style="display: inline-flex; align-items: center; justify-content: center">{{ item.quantity}}</div>
+																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">+</g-button>
 																</div>
-																<div class="col-8 row-flex justify-end">
+																<div class="col-9 row-flex justify-end">
 																	<g-button color="#92beff">
 																		<img src="../assets/delivery/delete.svg">
 																		<span class="ml-2 red-1">Remove item</span>
@@ -46,7 +46,7 @@
 										</template>
 										<template v-if="items.length < 12">
 											<tr v-for="i in (12 - items.length)">
-												<td colspan="4" style="height: 2rem"></td>
+												<td colspan="4" style="height: 2.75rem"></td>
 											</tr>
 										</template>
 									</template>
@@ -54,76 +54,95 @@
 							</div>
 							<div class="h-12">
 								<g-layout row>
-									<div class="col-6 br-black brw-thin pa-2 fw-400 fs-small col-flex justify-between">
-										<p class="row-flex pa-1">
+									<div class="col-6 pa-2 pr-4 pl-4 fw-400 col-flex justify-between">
+										<p class="row-6 row-flex pa-1">
 											<span class="col-6 ta-left">Discount</span>
 											<span class="col-6 ta-right">- €0.50</span>
 										</p>
-										<p class="row-flex pa-1">
-											<span class="col-6 ta-left">Tax</span>
-											<span class="col-6 ta-right">€0.50</span>
+										<p class="row-6 row-flex pa-1">
+											<span class="col-6 ta-left self-end">Tax</span>
+											<span class="col-6 ta-right self-end">€0.50</span>
 										</p>
 									</div>
-									<div class="col-6 pa-2 fw-400 fs-small col-flex justify-between">
-										<p class="row-flex pa-1">
+									<g-divider vertical inset></g-divider>
+									<div class="col-6 pa-2 pr-4 pl-4 fw-400 col-flex justify-between">
+										<p class="row-6 row-flex pa-1">
 											<span class="col-6 ta-left">Sub-total</span>
 											<span class="col-6 ta-right fw-700">€40.00</span>
 										</p>
-										<p class="row-flex pa-1">
-											<span class="col-6 ta-left">Total</span>
-											<span class="col-6 ta-right red-1 fw-700 fs-large">€40.50</span>
+										<p class="row-6 row-flex pa-1">
+											<span class="col-6 ta-left self-end">Total</span>
+											<span class="col-6 ta-right red-1 fw-700 fs-large self-end">€40.50</span>
 										</p>
 									</div>
 								</g-layout>
 							</div>
 						</g-layout>
 					</g-container>
-					<g-toolbar tile height="10%">
-						<g-button color="#eeeeee" width="20%">
+					<g-toolbar tile height="8%">
+						<g-button color="#212121" width="20%" class="mr-2 btn__centered">
 							<img src="../assets/order/back.svg">
-							<span class="ml-1">Back</span>
+							<span class="ml-2 white">Back</span>
 						</g-button>
-						<g-button color="#ffffff" width="15%" class="mr-2">
-							<img src="../assets/order/bureau.svg">
-							<span class="ml-1 fs-small-2">More</span>
+						<g-button color="#ffffff" width="15%" class="mr-2 btn__centered">
+							<img src="../assets/order/menu.svg">
+							<span class="ml-2 dgray-2">More</span>
 						</g-button>
-						<g-button color="#ffffff" width="30%" class="mr-2">
-							<img src="../assets/delivery/list.svg">
-							<span class="ml-1 fs-small-2">Order History</span>
-						</g-button>
-						<g-button color="#ffffff" width="35%">
-							<img src="../assets/delivery/more.svg">
-							<span class="ml-1 fs-small-2">Exchange/Refund</span>
+						<g-button color="#ffffff" width="23%" class="mr-2 btn__centered">
+							<img src="../assets/order/folder.svg">
+							<span class="ml-2 dgray-2">Saved list</span>
 						</g-button>
 					</g-toolbar>
 				</g-layout>
 			</div>
-			<div class="col-6 bl-lgray-4 blw-1">
+			<div class="col-6" style="box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);">
 				<g-layout column>
 					<div class="row-2 col-flex pa-2 bg-category-menu">
 						<g-layout row class="flex-equal pb-1">
 							<g-button class="flex-equal mr-1" color="#ff4452" textColor="#ffffff">Featured Products</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Hauptgerichte</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Heißgetränk</g-button>
-							<g-button class="w-10" color="#d6d6d6" textColor="#2f1ac3">&gt;</g-button>
+							<g-button class="w-10" color="#d6d6d6" textColor="#2f1ac3">
+								<img src="../assets/order/next.svg">
+							</g-button>
 						</g-layout>
 						<g-layout row class="flex-equal">
 							<g-button class="flex-equal mr-1" color="#ffffff">Bier, Side, Gin Genuss</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Wein, Cocktails</g-button>
 							<g-button class="flex-equal mr-1" color="#ffffff">Longdrinks, Wishkeys, Tequila</g-button>
-							<g-button class="w-10" color="#d6d6d6" textColor="#2f1ac3">&lt;</g-button>
+							<g-button class="w-10" color="#d6d6d6" textColor="#2f1ac3">
+								<img src="../assets/order/prev.svg">
+							</g-button>
 						</g-layout>
 					</div>
 					<div class="row-5 pt-1 pl-1 pr-1">
 						<g-layout row>
 							<g-layout column class="col-3">
-								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#ffd3d5">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#ffd3d5">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#ffd3d5">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#ffd3d5">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#ffd3d5">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#ffd3d5">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#ffd3d5">Tiramisu</g-button>
+							</g-layout>
+							<g-layout column class="col-3 pl-1">
+								<g-button class="flex-equal mb-1" color="#95ffef">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#95ffef">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#95ffef">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#95ffef">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#95ffef">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#95ffef">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#95ffef">Tiramisu</g-button>
+							</g-layout>
+							<g-layout column class="col-3 pl-1">
+								<g-button class="flex-equal mb-1" color="#9ddaff">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#9ddaff">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#9ddaff">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#9ddaff">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#9ddaff">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#9ddaff">Tiramisu</g-button>
+								<g-button class="flex-equal mb-1" color="#9ddaff">Tiramisu</g-button>
 							</g-layout>
 							<g-layout column class="col-3 pl-1">
 								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
@@ -133,43 +152,33 @@
 								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
 								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
 								<g-button class="flex-equal mb-1" color="#ffe7a7">Tiramisu</g-button>
-							</g-layout>
-							<g-layout column class="col-3 pl-1">
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-							</g-layout>
-							<g-layout column class="col-3 pl-1">
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
-								<g-button class="flex-equal mb-1" color="#b5ff6a">Tiramisu</g-button>
 							</g-layout>
 						</g-layout>
 					</div>
 					<div class="row-5 pl-1 pr-1 pb-1">
 						<g-layout row>
 							<g-number-keyboard class="col-6" v-model="product" :items="keyNumbers">
+								<template v-slot:screen>
+									<div class="number-key-show ba-dgray-4 ba-thin bg-lgray-2" style="height: calc(16.6667% - 3.4px)">
+										<div class="number-key-screen col-6">
+											<label for="number_key_output" class="number-key-text bg-dgray-9 ba-blue-9 ba-thin w-100 br-2 white fs-small-2 fw-400 pl-2">{{label}}</label>
+										</div>
+										<input id="number_key_output" class="number-key-text col-6 self-center ta-right bg-lgray-5 fs-large-2 fw-700 pr-2" style="border: none; outline: none" v-model="product">
+									</div>
+								</template>
 							</g-number-keyboard>
 							<g-layout column class="col-3 pl-1">
-								<g-button class="flex-equal mb-1" color="#eeeeee"></g-button>
-								<g-button class="flex-equal mb-1" color="#39475a" outline>Check Stack</g-button>
-								<g-button class="flex-equal mb-1" color="#39475a" outline>Price Change</g-button>
-								<g-button class="flex-equal mb-1" color="#39475a" outline>Credit Card</g-button>
-								<g-button style="height: calc(33.3333% - 2.5px)" color="#fb755c" text-color="#ffffff">Quick Cash</g-button>
+								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Note</g-button>
+								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Check Stack</g-button>
+								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Price Change</g-button>
+								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Credit Card</g-button>
+								<g-button style="height: calc(33.3333% - 2.5px); font-size: 1.25rem" color="#fa6400" text-color="#ffffff">Quick Cash</g-button>
 							</g-layout>
 							<g-layout column class="col-3 pl-1">
-								<g-button class="flex-equal mb-1" color="#eeeeee"></g-button>
-								<g-button class="flex-equal mb-1" color="#39475a" outline>Guest Info</g-button>
-								<g-button class="flex-equal mb-1" color="#39475a" outline>Discount</g-button>
-								<g-button class="flex-equal mb-1" color="#39475a" outline>Plastic Refund</g-button>
+								<g-button class="flex-equal mb-1" color="#efefef"></g-button>
+								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Guest Info</g-button>
+								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Discount</g-button>
+								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Plastic Refund</g-button>
 								<g-button class="flex-equal mb-1" color="#046eff" text-color="#ffffff">Save</g-button>
 								<g-button class="flex-equal" color="#ff264a" text-color="#ffffff">Pay</g-button>
 							</g-layout>
@@ -184,15 +193,8 @@
 
 <script>
 
-  import GTextField from '@/components/GInput/GTextField';
   import GButton from '@/components/GButton';
-  import GDivider from '@/components/GDivider';
   import GToolbar from '@/components/GToolbar';
-  import GList from '@/components/GList/GList';
-  import GSwitch from '@/components/GInput/GSwitch';
-  import GListItem from '@/components/GList/GListItem';
-  import GRadioGroup from '@/components/GInput/GRadioGroup';
-  import GRadio from '@/components/GInput/GRadio';
   import GTable from '@/components/GTable/GTable';
   import GNumberKeyboard from '@/components/GKeyboard/GNumberKeyboard';
   import GLayout from '@/components/GLayout';
@@ -200,10 +202,11 @@
   import GExpansionPanel from '@/components/GExpansionPanel/GExpansionPanel';
   import GExpansionPanelHeader from '@/components/GExpansionPanel/GExpansionPanelHeader';
   import GExpansionPanelContent from '@/components/GExpansionPanel/GExpansionPanelContent';
+  import GDivider from '../components/GDivider';
 
   export default {
     name: 'OrderDefault',
-    components: { GExpansionPanelContent, GExpansionPanelHeader, GExpansionPanel, GContainer, GLayout, GNumberKeyboard, GRadio, GRadioGroup, GListItem, GSwitch, GList, GToolbar, GDivider, GButton, GTextField, GTable },
+    components: { GDivider, GExpansionPanelContent, GExpansionPanelHeader, GExpansionPanel, GContainer, GLayout, GNumberKeyboard, GToolbar, GButton, GTable },
     data() {
       return {
         text: 'OK',
@@ -256,7 +259,7 @@
 	}
 
 	.table-rounded {
-		border: 1px solid #a1a1a1;
+		border: 1px solid #e8e8e8;
 		border-radius: 8px;
 	}
 

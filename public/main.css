@@ -3418,6 +3418,11 @@ tr {
 }
 
 .divider__inset {
-    width: 90%;
-    margin: 0.5rem 5%;
+    width: calc(100% - 16px);
+    margin: 0 0.5rem;
+}
+
+.divider__inset-vertical {
+    height: calc(100% - 16px);
+    margin: 0.5rem 0;
 }

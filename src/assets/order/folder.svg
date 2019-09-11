@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>folder</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ico/saved-list" transform="translate(-5.000000, -5.000000)" fill-rule="nonzero">
+            <g id="folder" transform="translate(5.000000, 5.000000)">
+                <polygon id="Path" fill="#1271FF" points="8.6440678 5.08474576 6.94915254 2.71186441 0.169491525 2.71186441 0.169491525 5.08474576 0.169491525 20 19.8305085 20 19.8305085 7.45762712 10.3389831 7.45762712"></polygon>
+                <polygon id="Path" fill="#EBBA16" points="10.3389831 7.45762712 19.8305085 7.45762712 19.8305085 5.08474576 8.6440678 5.08474576"></polygon>
+                <polygon id="Path" fill="#556080" points="19.8305085 3.72881356 9.66101695 3.72881356 7.96610169 1.3559322 1.18644068 1.3559322 1.18644068 2.71186441 6.94915254 2.71186441 8.6440678 5.08474576 19.8305085 5.08474576"></polygon>
+                <polygon id="Path" fill="#424A60" points="19.8305085 2.37288136 10.6779661 2.37288136 8.98305085 0 2.20338983 0 2.20338983 1.3559322 7.96610169 1.3559322 9.66101695 3.72881356 19.8305085 3.72881356"></polygon>
+                <rect id="Rectangle" fill="#EDEADA" x="9.3220339" y="12.2033898" width="8.81355932" height="6.10169492"></rect>
+                <g id="Group" transform="translate(10.847458, 13.559322)" fill="#CEC9AE">
+                    <rect id="Rectangle" x="0.169491525" y="0" width="3.38983051" height="1"></rect>
+                    <rect id="Rectangle" x="0.169491525" y="1.3559322" width="5.42372881" height="1"></rect>
+                    <rect id="Rectangle" x="0.169491525" y="2.71186441" width="5.42372881" height="1"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
