@@ -27,7 +27,6 @@
 			activeClass: {
         type: String,
 				default: 'radio__active'
-        //TODO custom color active
 			}
     },
     computed: {

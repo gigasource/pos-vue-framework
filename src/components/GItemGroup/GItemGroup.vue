@@ -11,7 +11,6 @@
 </template>
 
 <script>
-  //todo: root element
   import GItem from '@/components/GItemGroup/GItem';
   import _ from 'lodash';
   import GLayout from '@/components/GLayout';
