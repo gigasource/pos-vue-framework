@@ -5,9 +5,7 @@
 			<router-link to="/order-default">OrderDefault</router-link>
 			<router-link to="/groupable">Groupable</router-link>
 		</g-layout>
-		<g-container>
-			<router-view></router-view>
-		</g-container>
+		<router-view></router-view>
 	</div>
 </template>
 
