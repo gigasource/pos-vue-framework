@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from '@/App';
-import Demo from '@/view/Demo';
+import Demo from '@/view/KeyboardDemo';
 import OrderDefault from '@/view/OrderDefault';
 import Groupable from '@/view/Groupable';
 
