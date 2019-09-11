@@ -19,16 +19,19 @@
         type: String,
 				default: '#000000'
       },
+			vertical:  Boolean,
 		},
-		setup({ dashed, dotted, solid, inset, color}){
+		setup({ dashed, dotted, solid, inset, color, vertical}){
 			const classes = computed(() => {
 			  const defaultClass = {
 			    'divider': true
 				}
 			  return {
 					...defaultClass,
-					'w-100': !inset,
-					'divider__inset': inset,
+					'w-100': !inset && !vertical,
+					'h-100': !inset && vertical,
+					'divider__inset': inset && !vertical,
+					'divider__inset-vertical': inset && vertical,
 					'b-dashed': dashed,
 					'b-dotted': dotted,
 					'b-solid': solid && !dashed && !dotted
