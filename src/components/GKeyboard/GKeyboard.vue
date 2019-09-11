@@ -1,6 +1,6 @@
 <template>
 	<div class="keyboard__template" :style="template">
-		<g-button v-for="item in items" :class="item.classes" class="key" :style="item.style" @click="click(item)">
+		<g-button v-for="(item, i) in items" :key="i" :class="item.classes" class="key" :style="item.style" @click="click(item)">
 			<!-- TODO: responsive height for img -->
 			<img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
 			<template v-if="item.content">
