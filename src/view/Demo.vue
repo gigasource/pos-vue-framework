@@ -6,10 +6,10 @@
 </template>
 
 <script>
-  import GContainer from '../src/components/GContainer';
-  import GLayout from '../src/components/GLayout';
-  import GButton from '../src/components/GButton';
-  import GKeyboard from '../src/components/GKeyboard/GKeyboard';
+  import GContainer from '../components/GContainer';
+  import GLayout from '../components/GLayout';
+  import GButton from '../components/GButton';
+  import GKeyboard from '../components/GKeyboard/GKeyboard';
 
   export default {
     name: 'Demo',
