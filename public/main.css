@@ -2970,15 +2970,14 @@ button {
 .number-key {
   display: flex;
   flex-direction: column;
-  padding: 0.125rem;
 }
 .number-key-show {
-  height: 16.6667%;
   max-width: 100%;
   border-radius: 0.25rem;
   flex: 0 1 auto;
   display: flex;
   flex-direction: row;
+  margin-bottom: 0.25rem;
 }
 .number-key-screen {
   border-radius: 0.25rem;
@@ -3011,7 +3010,6 @@ button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin-top: 0.125rem;
 }
 
 .key-number__extra {
