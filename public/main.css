@@ -2811,6 +2811,7 @@ button {
   outline: none;
   font-family: "Muli", sans-serif;
   font-weight: 700;
+  font-size: 0.875rem;
   background: #eeeeee;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -3033,7 +3034,7 @@ textarea {
   padding-left: 0.5rem;
   padding-right: 2rem;
   height: 80%;
-  width: 90%;
+  width: 100%;
 }
 .textfield::placeholder {
   color: #1d1d26;
@@ -3044,10 +3045,19 @@ textarea {
 }
 .textfield-icon {
   position: absolute;
-  right: 12%;
+  right: 2%;
   top: 15%;
   height: 70%;
 }
+
+.textfield__large::placeholder {
+  color: #1d1d26;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-style: normal;
+  opacity: 0.2;
+}
+
 
 .input-text {
   width: 100%;
