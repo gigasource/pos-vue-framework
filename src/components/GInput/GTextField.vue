@@ -39,23 +39,24 @@
       disabled: Boolean,
       readonly: Boolean,
       clearable: Boolean,
-			rules: Function,
-			errorMessage: String,
+      rules: Function,
+      errorMessage: String,
       value: [String, Number],
-			large: Boolean,
-			textColor: {
+      large: Boolean,
+      textColor: {
         type: String,
-				default: '#000000'
-			},
-			bordered: Boolean,
-			centered: Boolean,
+        default: '#000000'
+      },
+      bordered: Boolean,
+      centered: Boolean,
     },
-		data() {
-       return {
-				 lazyValue: '',
-				 isFocused: false
-			 }
-		},
+    data() {
+      return {
+        lazyValue: '',
+        hasMouseDown: false,
+        isFocused: false
+      }
+    },
     computed: {
       internalValue: {
         get() {
@@ -66,16 +67,16 @@
           this.$emit('input', this.lazyValue)
         }
       },
-			isDirty() {
+      isDirty() {
         return (this.lazyValue && this.lazyValue.toString().length > 0)
-			},
-			isValidInput: _.debounce(() => {
-			  if (this.rules && typeof this.rules === 'function') {
-					return this.rules(this.lazyValue);
-				}
-			  return true;
-			}, 500),
-      classes () {
+      },
+      isValidInput: _.debounce(() => {
+        if (this.rules && typeof this.rules === 'function') {
+          return this.rules(this.lazyValue);
+        }
+        return true;
+      }, 500),
+      classes() {
         return {
           'fs-small': !this.large,
           'pa-2': !this.large,
@@ -85,32 +86,38 @@
           'ta-center': this.centered,
         }
       },
-      styles () {
+      styles() {
         let style = {};
-        if(this.textColor){
-          Object.assign(style, {'color': this.textColor} );
+        if (this.textColor) {
+          Object.assign(style, { 'color': this.textColor });
         }
-        if(this.bordered){
-          Object.assign(style, {'border': '1px solid #c9c9c9'} );
+        if (this.bordered) {
+          Object.assign(style, { 'border': '1px solid #c9c9c9' });
         }
         return style;
       }
     },
-		created() {
+    created() {
       this.lazyValue = this.value;
       this.unwatch = this.$watch('value', (newValue) => {
         this.lazyValue = newValue;
-			})
+      })
+    },
+    beforeDestroy() {
+      this.unwatch()
     },
     methods: {
       //TODO input-number
       onInput(event) {
-				this.internalValue = event.target.value;
-			},
+        this.internalValue = event.target.value;
+      },
       onChange(event) {
         this.$emit('change', event);
       },
       onClick(event) {
+        if (this.disabled || this.isFocused) {
+          return;
+        }
         this.$refs.input.focus();
         this.isFocused = true;
       },
@@ -120,10 +127,11 @@
         }
         if (document.activeElement !== this.$refs.input) {
           this.$refs.input.focus();
-        } else {
-          this.$emit('focus', event);
         }
-        this.isFocused = true;
+        if (!this.isFocused) {
+          this.$emit('focus', event);
+          this.isFocused = true;
+        }
       },
       onBlur(event) {
         this.$emit('blur', event);
@@ -136,6 +144,7 @@
         this.$emit('keydown', event)
       },
       onMouseDown(event) {
+        this.hasMouseDown = true;
         if (event.target !== this.$refs.input) {
           event.preventDefault();
           event.stopPropagation();
@@ -143,16 +152,16 @@
         this.$emit('mousedown', event)
       },
       onMouseUp(event) {
-        this.onFocus();
-        this.$emit('mouseup', event)
+        if (this.hasMouseDown) {
+          this.onFocus();
+          this.hasMouseDown = false;
+          this.$emit('mouseup', event)
+        }
       },
       clearValue() {
         this.internalValue = '';
-			}
-    },
-		beforeDestroy() {
-      this.unwatch()
-		}
+      }
+    }
   }
 </script>
 
