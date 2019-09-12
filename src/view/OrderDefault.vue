@@ -15,26 +15,26 @@
 										</tr>
 									</template>
 									<template v-slot:body>
-										<g-expansion-panel-group v-model="activeItem" class="table-row-group" >
+										<g-expansion-panel-group v-model="activeItem">
 											<template v-slot:default="{toggle, isActive}">
-												<g-expansion-panel class="table-row-group" v-for="item in items" @click.native="toggle(item)">
-													<g-expansion-panel-header class="table-row">
-														<td style="height: 2.75rem; padding: 0.5rem">{{ item.name }}</td>
-														<td style="height: 2.75rem; padding: 0.5rem">{{ item.quantity }}</td>
-														<td style="height: 2.75rem; padding: 0.5rem">{{ item.price }}</td>
-														<td style="height: 2.75rem; padding: 0.5rem; font-weight: 700">{{ item.total }}</td>
+												<g-expansion-panel class="table-row-group" v-for="item in items">
+													<g-expansion-panel-header class="table-row" :is-active="isActive(item)" @click.native="toggle(item)">
+														<td style="height: 2.75rem; padding: 0.75rem">{{ item.name }}</td>
+														<td style="height: 2.75rem; padding: 0.75rem">{{ item.quantity }}</td>
+														<td style="height: 2.75rem; padding: 0.75rem">{{ item.price }}</td>
+														<td style="height: 2.75rem; padding: 0.75rem; font-weight: 700">{{ item.total }}</td>
 													</g-expansion-panel-header>
 													<g-expansion-panel-content v-show="isActive(item)" class="table-row">
-														<td colspan="4" class="bg-blue-8 pl-2 pr-2" style="height: 2.5rem">
+														<td colspan="4" class="pl-2 pr-2" style="height: 3rem; background-color: rgba(20, 113, 255, 0.2)">
 															<g-layout row>
-																<div class="col-3 row-flex">
+																<div class="col-4 row-flex">
 																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">-</g-button>
 																	<div class="bg-white ba-blue-7 blue-7 ba-thin col-3" style="display: inline-flex; align-items: center; justify-content: center">{{ item.quantity}}</div>
 																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">+</g-button>
 																</div>
-																<div class="col-9 row-flex justify-end">
-																	<g-button color="#92beff">
-																		<img src="../assets/delivery/delete.svg">
+																<div class="col-8 row-flex justify-end">
+																	<g-button flat>
+																		<img src="../assets/order/remove.svg">
 																		<span class="ml-2 red-1">Remove item</span>
 																	</g-button>
 																</div>
@@ -80,7 +80,7 @@
 						</g-layout>
 					</g-container>
 					<g-toolbar tile height="8%">
-						<g-button color="#212121" width="20%" class="mr-2 btn__centered">
+						<g-button color="#212121" width="20%" class="mr-2 btn__centered" @click="back">
 							<img src="../assets/order/back.svg">
 							<span class="ml-2 white">Back</span>
 						</g-button>
@@ -163,7 +163,7 @@
 										<div class="number-key-screen col-6">
 											<label for="number_key_output" class="number-key-text bg-dgray-9 ba-blue-9 ba-thin w-100 br-2 white fs-small-2 fw-400 pl-2">{{label}}</label>
 										</div>
-										<input id="number_key_output" class="number-key-text col-6 self-center ta-right bg-lgray-5 fs-large-2 fw-700 pr-2" style="border: none; outline: none" v-model="product">
+										<input id="number_key_output" class="number-key-text col-6 self-center ta-right bg-lgray-2 fs-large-2 fw-700 pr-2" style="border: none; outline: none; direction: rtl" v-model="product">
 									</div>
 								</template>
 							</g-number-keyboard>
@@ -193,15 +193,9 @@
 
 <script>
 
-  import GTextField from '@/components/GInput/GTextField';
   import GButton from '@/components/GButton';
   import GDivider from '@/components/GDivider';
   import GToolbar from '@/components/GToolbar';
-  import GList from '@/components/GList/GList';
-  import GSwitch from '@/components/GInput/GSwitch';
-  import GListItem from '@/components/GList/GListItem';
-  import GRadioGroup from '@/components/GInput/GRadioGroup';
-  import GRadio from '@/components/GInput/GRadio';
   import GTable from '@/components/GTable/GTable';
   import GNumberKeyboard from '@/components/GKeyboard/GNumberKeyboard';
   import GLayout from '@/components/GLayout';
@@ -248,7 +242,12 @@
         ],
 				template: 'grid',
       }
-    }
+    },
+		methods: {
+      back() {
+        this.$router.push('/');
+			}
+		}
   }
 </script>
 

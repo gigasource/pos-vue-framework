@@ -5,7 +5,7 @@
 				<div class="number-key-screen col-6">
 					<label for="number_key_output" class="number-key-text bg-dgray-9 ba-blue-9 ba-thin w-100 br-2 white fs-small-2 fw-400 pl-2">{{label}}</label>
 				</div>
-				<input id="number_key_output" class="number-key-text col-6 self-center ta-right bg-dgray-9 fs-large-2 fw-700 pr-2" style="border: none; outline: none" v-model="computedNumber">
+				<input id="number_key_output" class="number-key-text col-6 self-center ta-right bg-dgray-9 fs-large-2 fw-700 pr-2" style="border: none; outline: none; direction: rtl" v-model="computedNumber">
 			</div>
 		</slot>
 		<g-keyboard :items="items" v-model="computedNumber" :template="template" class="flex-grow-1"></g-keyboard>
@@ -54,6 +54,7 @@
           if (value.length === 0) {
             value = '0';
           } else {
+            //TODO: bigint > 2^53
             value = '' + parseInt(value);
           }
           this.$emit('input', value);

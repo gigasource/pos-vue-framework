@@ -15,17 +15,17 @@
 										</tr>
 									</template>
 									<template v-slot:body>
-										<template v-for="item in items">
-											<g-expansion-panel class="table-row-group">
-												<template v-slot:default="{show}">
-													<g-expansion-panel-header class="table-row" :isActive="show">
+										<g-expansion-panel-group v-model="activeItem">
+											<template v-slot:default="{toggle, isActive}">
+												<g-expansion-panel class="table-row-group" v-for="item in items">
+													<g-expansion-panel-header class="table-row" :is-active="isActive(item)" @click.native="toggle(item)">
 														<td style="height: 2.75rem; padding: 0.75rem">{{ item.name }}</td>
-														<td style="height: 2.75rem; padding: 0.75rem;">{{ item.quantity }}</td>
-														<td style="height: 2.75rem; padding: 0.75rem;">{{ item.price }}</td>
+														<td style="height: 2.75rem; padding: 0.75rem">{{ item.quantity }}</td>
+														<td style="height: 2.75rem; padding: 0.75rem">{{ item.price }}</td>
 														<td style="height: 2.75rem; padding: 0.75rem; font-weight: 700">{{ item.total }}</td>
 													</g-expansion-panel-header>
-													<g-expansion-panel-content :show="show" class="table-row">
-														<td colspan="4" class="pl-2 pr-2" style="height: 3rem; background-color: #1471ff">
+													<g-expansion-panel-content v-show="isActive(item)" class="table-row">
+														<td colspan="4" class="pl-2 pr-2" style="height: 3rem; background-color: rgba(20, 113, 255, 0.2)">
 															<g-layout row>
 																<div class="col-4 row-flex">
 																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">-</g-button>
@@ -33,7 +33,7 @@
 																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">+</g-button>
 																</div>
 																<div class="col-8 row-flex justify-end">
-																	<g-button color="#92beff">
+																	<g-button flat>
 																		<img src="../assets/order/remove.svg">
 																		<span class="ml-2 red-1">Remove item</span>
 																	</g-button>
@@ -41,9 +41,9 @@
 															</g-layout>
 														</td>
 													</g-expansion-panel-content>
-												</template>
-											</g-expansion-panel>
-										</template>
+												</g-expansion-panel>
+											</template>
+										</g-expansion-panel-group>
 										<template v-if="items.length < 12">
 											<tr v-for="i in (12 - items.length)">
 												<td colspan="4" style="height: 2.75rem"></td>
@@ -82,7 +82,7 @@
 						</g-layout>
 					</g-container>
 					<g-toolbar tile height="8%">
-						<g-button color="#212121" width="25%" class="mr-2 btn__centered justify-center">
+						<g-button color="#212121" width="25%" class="mr-2 btn__centered justify-center" @click="back()">
 							<img src="../assets/order/back.svg">
 							<span class="ml-2 white">Back</span>
 						</g-button>
@@ -169,10 +169,11 @@
   import GTabs from '../components/GTabs/GTabs';
   import GTab from '../components/GTabs/GTab';
   import GTabItem from '../components/GTabs/GTabItem';
+  import GExpansionPanelGroup from '../components/GExpansionPanel/GExpansionPanelGroup';
 
   export default {
     name: 'Payment',
-    components: { GTabItem, GTab, GTabs, GKeyboard, GTextField, GDivider, GExpansionPanelContent, GExpansionPanelHeader, GExpansionPanel, GContainer, GLayout, GNumberKeyboard, GToolbar, GButton, GTable },
+    components: { GExpansionPanelGroup, GTabItem, GTab, GTabs, GKeyboard, GTextField, GDivider, GExpansionPanelContent, GExpansionPanelHeader, GExpansionPanel, GContainer, GLayout, GNumberKeyboard, GToolbar, GButton, GTable },
     data() {
       return {
         headers: ['Name', 'Qty', 'Each', 'Total'],
@@ -232,6 +233,9 @@
 			toggleTab(toggle, item){
         this.amount = item.amount;
         toggle(item);
+			},
+			back() {
+        this.$router.push('/');
 			}
 		},
 		created() {
