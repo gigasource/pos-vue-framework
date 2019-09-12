@@ -15,16 +15,16 @@
 										</tr>
 									</template>
 									<template v-slot:body>
-										<template v-for="item in items">
-											<g-expansion-panel class="table-row-group">
-												<template v-slot:default="{show}">
-													<g-expansion-panel-header class="table-row" :isActive="show">
+										<g-expansion-panel-group v-model="activeItem" class="table-row-group" >
+											<template v-slot:default="{toggle, isActive}">
+												<g-expansion-panel class="table-row-group" v-for="item in items" @click.native="toggle(item)">
+													<g-expansion-panel-header class="table-row">
 														<td style="height: 2.75rem; padding: 0.5rem">{{ item.name }}</td>
-														<td style="height: 2.75rem; padding: 0.5rem;">{{ item.quantity }}</td>
-														<td style="height: 2.75rem; padding: 0.5rem;">{{ item.price }}</td>
+														<td style="height: 2.75rem; padding: 0.5rem">{{ item.quantity }}</td>
+														<td style="height: 2.75rem; padding: 0.5rem">{{ item.price }}</td>
 														<td style="height: 2.75rem; padding: 0.5rem; font-weight: 700">{{ item.total }}</td>
 													</g-expansion-panel-header>
-													<g-expansion-panel-content :show="show" class="table-row">
+													<g-expansion-panel-content v-show="isActive(item)" class="table-row">
 														<td colspan="4" class="bg-blue-8 pl-2 pr-2" style="height: 2.5rem">
 															<g-layout row>
 																<div class="col-3 row-flex">
@@ -41,9 +41,9 @@
 															</g-layout>
 														</td>
 													</g-expansion-panel-content>
-												</template>
-											</g-expansion-panel>
-										</template>
+												</g-expansion-panel>
+											</template>
+										</g-expansion-panel-group>
 										<template v-if="items.length < 12">
 											<tr v-for="i in (12 - items.length)">
 												<td colspan="4" style="height: 2.75rem"></td>
@@ -193,8 +193,15 @@
 
 <script>
 
+  import GTextField from '@/components/GInput/GTextField';
   import GButton from '@/components/GButton';
+  import GDivider from '@/components/GDivider';
   import GToolbar from '@/components/GToolbar';
+  import GList from '@/components/GList/GList';
+  import GSwitch from '@/components/GInput/GSwitch';
+  import GListItem from '@/components/GList/GListItem';
+  import GRadioGroup from '@/components/GInput/GRadioGroup';
+  import GRadio from '@/components/GInput/GRadio';
   import GTable from '@/components/GTable/GTable';
   import GNumberKeyboard from '@/components/GKeyboard/GNumberKeyboard';
   import GLayout from '@/components/GLayout';
@@ -202,11 +209,11 @@
   import GExpansionPanel from '@/components/GExpansionPanel/GExpansionPanel';
   import GExpansionPanelHeader from '@/components/GExpansionPanel/GExpansionPanelHeader';
   import GExpansionPanelContent from '@/components/GExpansionPanel/GExpansionPanelContent';
-  import GDivider from '../components/GDivider';
+  import GExpansionPanelGroup from '../components/GExpansionPanel/GExpansionPanelGroup';
 
   export default {
     name: 'OrderDefault',
-    components: { GDivider, GExpansionPanelContent, GExpansionPanelHeader, GExpansionPanel, GContainer, GLayout, GNumberKeyboard, GToolbar, GButton, GTable },
+    components: { GExpansionPanelGroup, GDivider, GExpansionPanelContent, GExpansionPanelHeader, GExpansionPanel, GContainer, GLayout, GNumberKeyboard, GToolbar, GButton, GTable },
     data() {
       return {
         text: 'OK',
@@ -220,23 +227,24 @@
           { name: 'Product item 5', quantity: 2, price: '€0.50', total: '€1.00' },
           { name: 'Product item 6', quantity: 1, price: '€5.52', total: '€5.52' },
         ],
+				activeItem: null,
         product: 0,
         label: '',
         keyNumbers: [
-          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin' ,action: (value, append) => (value + append) },
-          { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin',action: (value, append) => (value + append) },
-          { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin',action: (value) => value.substring(0, value.length-1)},
-          { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin',action: () => '0' },
-          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style:'background-color: #000000; border-color: black' }
+          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
+          { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1) },
+          { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0' },
+          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style: 'background-color: #000000; border-color: black' }
         ],
 				template: 'grid',
       }

@@ -1,7 +1,7 @@
 <template>
 	<div class="row-flex align-items-center pa-2" :class="classes">
 		<slot></slot>
-		<slot name="append-icon"></slot>
+		<slot name="expand-icon"></slot>
 	</div>
 </template>
 

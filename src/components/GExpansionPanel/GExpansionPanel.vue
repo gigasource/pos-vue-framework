@@ -1,17 +1,24 @@
 <template>
-	<div class="col-flex" @click="show = !show">
-		<slot :show="show"></slot>
+	<div class="col-flex" @click="toggle">
+		<slot :toggle="toggle"></slot>
 	</div>
 </template>
 
 <script>
   export default {
     name: 'GExpansionPanel',
-    data() {
-      return {
-        show: false,
+    props: {
+      item: null
+		},
+		setup({ item }, { emit }) {
+      const toggle = () => {
+        emit('toggle', item);
+			};
+
+			return {
+        toggle
 			}
-    }
+		}
   }
 </script>
 
