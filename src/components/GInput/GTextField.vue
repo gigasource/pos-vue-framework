@@ -1,11 +1,13 @@
 <template>
 	<div @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-		<label class="fw-400 dgray-3 fs-small-2 mb-2">
+		<label class="fw-400 dgray-3 fs-small-2">
 			<slot name="label">{{label}}</slot>
 		</label>
-		<div class="r">
+		<div class="r mt-1">
 			<input type="text"
-						 class="textfield br-2 bg-lgray-5 pa-2 fs-small fw-700"
+						 class="textfield br-2 bg-lgray-5 fw-700"
+						 :class="classes"
+						 :style="styles"
 						 :value="lazyValue"
 						 :placeholder="placeholder"
 						 ref="input"
@@ -39,7 +41,14 @@
       clearable: Boolean,
 			rules: Function,
 			errorMessage: String,
-      value: [String, Number]
+      value: [String, Number],
+			large: Boolean,
+			textColor: {
+        type: String,
+				default: '#000000'
+			},
+			bordered: Boolean,
+			centered: Boolean,
     },
 		data() {
        return {
@@ -65,14 +74,34 @@
 					return this.rules(this.lazyValue);
 				}
 			  return true;
-			}, 500)
+			}, 500),
+      classes () {
+        return {
+          'fs-small': !this.large,
+          'pa-2': !this.large,
+          'fs-large-3': this.large,
+          'pa-3': this.large,
+          'textfield__large': this.large,
+          'ta-center': this.centered,
+        }
+      },
+      styles () {
+        let style = {};
+        if(this.textColor){
+          Object.assign(style, {'color': this.textColor} );
+        }
+        if(this.bordered){
+          Object.assign(style, {'border': '1px solid #c9c9c9'} );
+        }
+        return style;
+      }
     },
 		created() {
       this.lazyValue = this.value;
       this.unwatch = this.$watch('value', (newValue) => {
         this.lazyValue = newValue;
 			})
-		},
+    },
     methods: {
       //TODO input-number
       onInput(event) {
@@ -123,7 +152,7 @@
     },
 		beforeDestroy() {
       this.unwatch()
-    }
+		}
   }
 </script>
 

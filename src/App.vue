@@ -4,6 +4,7 @@
 			<router-link to="/demo">Demo</router-link>
 			<router-link to="/order-default">OrderDefault</router-link>
 			<router-link to="/groupable">Groupable</router-link>
+			<router-link to="/payment">Payment</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
