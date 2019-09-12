@@ -27,6 +27,7 @@
 
 <script>
   import { keyCodes } from '../../utils/helpers';
+  import _ from 'lodash';
 
   //todo: input - number
   export default {
@@ -38,6 +39,8 @@
       disabled: Boolean,
       readonly: Boolean,
       clearable: Boolean,
+			rules: Function,
+			errorMessage: String,
       value: [String, Number],
 			large: Boolean,
 			textColor: {
@@ -49,7 +52,8 @@
     },
 		data() {
        return {
-				 lazyValue: ''
+				 lazyValue: '',
+				 isFocused: false
 			 }
 		},
     computed: {
@@ -65,26 +69,38 @@
 			isDirty() {
         return (this.lazyValue && this.lazyValue.toString().length > 0)
 			},
-			classes () {
+			isValidInput: _.debounce(() => {
+			  if (this.rules && typeof this.rules === 'function') {
+					return this.rules(this.lazyValue);
+				}
+			  return true;
+			}, 500),
+      classes () {
         return {
           'fs-small': !this.large,
           'pa-2': !this.large,
           'fs-large-3': this.large,
           'pa-3': this.large,
-					'textfield__large': this.large,
-					'ta-center': this.centered,
-				}
-			},
-			styles () {
+          'textfield__large': this.large,
+          'ta-center': this.centered,
+        }
+      },
+      styles () {
         let style = {};
         if(this.textColor){
           Object.assign(style, {'color': this.textColor} );
-				}
+        }
         if(this.bordered){
           Object.assign(style, {'border': '1px solid #c9c9c9'} );
-				}
+        }
         return style;
-			}
+      }
+    },
+		created() {
+      this.lazyValue = this.value;
+      this.unwatch = this.$watch('value', (newValue) => {
+        this.lazyValue = newValue;
+			})
     },
     methods: {
       //TODO input-number
@@ -96,6 +112,7 @@
       },
       onClick(event) {
         this.$refs.input.focus();
+        this.isFocused = true;
       },
       onFocus(event) {
         if (!this.$refs.input) {
@@ -106,9 +123,11 @@
         } else {
           this.$emit('focus', event);
         }
+        this.isFocused = true;
       },
       onBlur(event) {
         this.$emit('blur', event);
+        this.isFocused = false;
       },
       onKeyDown(event) {
         if (event.keyCode === keyCodes.enter && this.isDirty()) {
@@ -125,19 +144,14 @@
       },
       onMouseUp(event) {
         this.onFocus();
-        this.$emit('mousedown', event)
+        this.$emit('mouseup', event)
       },
       clearValue() {
         this.internalValue = '';
 			}
     },
-		watch: {
-			value(val) {
-			  this.lazyValue = val;
-			}
-		},
-		created() {
-      this.lazyValue = this.value;
+		beforeDestroy() {
+      this.unwatch()
 		}
   }
 </script>
