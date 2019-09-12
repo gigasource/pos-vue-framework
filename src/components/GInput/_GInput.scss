@@ -1,0 +1,239 @@
+//Text field
+input[type=text] {
+  outline: none;
+  border: transparent;
+  font-family: "Muli", sans-serif;
+}
+
+textarea {
+  outline: none;
+  border: transparent;
+  resize: none;
+  font-family: "Muli", sans-serif;
+}
+
+.textfield {
+  padding-left: 0.5rem;
+  padding-right: 2rem;
+  height: 80%;
+  width: 100%;
+
+  &::placeholder {
+    color: $dgray-2;
+    font-size: 0.75rem;
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.5;
+  }
+
+  &-icon {
+    position: absolute;
+    right: 2%;
+    top: 15%;
+    height: 70%;
+  }
+
+  &__large::placeholder {
+    color: $dgray-2;
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-style: normal;
+    opacity: 0.2;
+  }
+}
+
+//Switch
+.switch {
+  position: relative;
+  display: inline-block;
+
+  &-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  &-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    transition: 0.5s;
+    border-radius: 2rem;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: 100%;
+      width: 50%;
+      left: 0;
+      bottom: 0;
+      background-color: $blue-7;
+      transition: 0.5s;
+      border-radius: 2rem;
+    }
+  }
+
+  &__small {
+    width: 2.25rem;
+    height: 0.875rem;
+  }
+
+  &-round {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    transition: 0.5s;
+    border-radius: 2rem;
+    background-color: $lgray-4;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: 150%;
+      width: 50%;
+      left: 0;
+      bottom: -25%;
+      background-color: $lgray-3;
+      transition: 0.5s;
+      border-radius: 100%;
+    }
+  }
+
+  &-input:checked + &-slider:before,
+  &-input:checked + &-round:before {
+    transform: translateX(100%);
+  }
+
+  &-input:checked + &-round {
+    background-color: $blue-8;
+  }
+
+  &-input:checked + &-round:before {
+    background-color: $blue-7;
+  }
+
+  & .first-side {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    height: 100%;
+    width: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & .second-side {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 5;
+    height: 100%;
+    width: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+//Check box
+.check-box-square {
+  position: relative;
+  padding-left: 1.5rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  & input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  & .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 0.25rem;
+    height: 1rem;
+    width: 1rem;
+    background-color: $lgray-5;
+  }
+
+  & .check-box__active:after {
+    content: "";
+    position: absolute;
+    top: 0.2rem;
+    left: 0.375rem;
+    width: 0.25rem;
+    height: 0.375rem;
+    border: solid $white;
+    border-width: 0 0.125rem 0.125rem 0;
+    transform: rotate(45deg);
+  }
+
+  & .check-box__active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 0.25rem;
+    height: 1rem;
+    width: 1rem;
+    background-color: $blue-7;
+  }
+}
+
+//Radio
+.radio {
+  position: relative;
+  padding-left: 2rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  & input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  & .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 100%;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: #ffffff;
+    border: 0.05rem solid #a1a1a1;
+  }
+
+  & &__active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 100%;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: #ffffff;
+    border: 0.05rem solid #ff4452;
+  }
+
+  & &__active:after {
+    content: "";
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 100%;
+    background-color: #ff4452;
+  }
+}

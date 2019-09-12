@@ -1,0 +1,52 @@
+.keyboard__template {
+  display: grid;
+  grid-gap: 4px;
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 4px;
+  font-family: "Roboto", sans-serif;
+}
+
+.key-number {
+  background-clip: padding-box;
+  border-radius: 0.25rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.number-key {
+  display: flex;
+  flex-direction: column;
+
+  &-show {
+    max-width: 100%;
+    border-radius: 0.25rem;
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0.25rem;
+  }
+
+  &-screen {
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    text-align: center;
+    display: flex;
+    outline: none;
+  }
+
+  &-text {
+    display: inline-flex;
+    align-items: center;
+  }
+}

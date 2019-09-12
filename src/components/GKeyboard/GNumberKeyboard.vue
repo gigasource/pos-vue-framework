@@ -37,7 +37,7 @@
           { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: "key0"0' },
           { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1), style: 'grid-area: "keyX"' },
           { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0', style: 'grid-area: "keyC"' },
-          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style: 'grid-area: "Enter"; background-color: #000000' }
+          { content: ['&crarr;'], classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: "Enter"; background-color: #000000' }
         ]
       },
       template: {

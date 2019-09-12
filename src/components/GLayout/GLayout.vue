@@ -1,5 +1,5 @@
 <template>
-	<div :class="layoutClass" class="w-100 h-100">
+	<div :class="layoutClass" class="layout">
 		<slot></slot>
 	</div>
 </template>

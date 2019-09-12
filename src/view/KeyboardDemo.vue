@@ -6,9 +6,9 @@
 </template>
 
 <script>
-  import GContainer from '../components/GContainer';
-  import GLayout from '../components/GLayout';
-  import GButton from '../components/GButton';
+  import GContainer from '../components/GLayout/GContainer';
+  import GLayout from '../components/GLayout/GLayout';
+  import GButton from '../components/GButton/GButton';
   import GKeyboard from '../components/GKeyboard/GKeyboard';
 
   export default {

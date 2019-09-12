@@ -1,0 +1,44 @@
+.layout {
+  width: 100%;
+  height: 100%;
+}
+
+.spacer {
+  flex-grow: 1;
+  visibility: hidden;
+}
+
+.container {
+  padding: 0.5rem;
+}
+
+.side-bar {
+  position: absolute;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  background: url("../../assets/order/bg_right.svg");
+}
+
+.tool-bar {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 0.5rem;
+}
+
+.divider {
+  border-width: 0.5px;
+}
+
+.divider__inset {
+  width: calc(100% - 16px);
+  margin: 0 0.5rem;
+}
+
+.divider__inset-vertical {
+  height: calc(100% - 16px);
+  margin: 0.5rem 0;
+}

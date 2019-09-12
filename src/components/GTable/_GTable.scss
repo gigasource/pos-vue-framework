@@ -1,0 +1,42 @@
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  vertical-align: center;
+  padding: 0.25rem;
+}
+
+td {
+  font-weight: normal;
+}
+
+.table-row-group {
+  display: table-row-group;
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-striped tr:nth-child(even) {
+  background-color: $lgray-5;
+}
+
+.table-striped tr:nth-child(odd) {
+  background-color: $white;
+}
+
+.table-striped > div:nth-child(even) {
+  background-color: $lgray-5;
+}
+
+.table-striped > div:nth-child(odd) {
+  background-color: $white;
+}
+
+.table-bordered td,
+.table-bordered th {
+  border: 0.05rem solid $lgray-3;
+}

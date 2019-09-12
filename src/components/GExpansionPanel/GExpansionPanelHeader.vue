@@ -1,5 +1,5 @@
 <template>
-	<div class="row-flex align-items-center pa-2" :class="classes">
+	<div class="expansion-panel-header" :class="classes">
 		<slot></slot>
 		<slot name="expand-icon"></slot>
 	</div>

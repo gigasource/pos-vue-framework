@@ -12,8 +12,8 @@
 
 <script>
 
-  import GLayout from '@/components/GLayout';
-  import GContainer from '@/components/GContainer';
+  import GLayout from '@/components/GLayout/GLayout';
+  import GContainer from '@/components/GLayout/GContainer';
   export default {
     name: 'app',
     components: { GContainer, GLayout },

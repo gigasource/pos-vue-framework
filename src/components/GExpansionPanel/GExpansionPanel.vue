@@ -1,5 +1,5 @@
 <template>
-	<div class="col-flex" @click="toggle">
+	<div class="expansion-panel" @click="toggle">
 		<slot :toggle="toggle"></slot>
 	</div>
 </template>

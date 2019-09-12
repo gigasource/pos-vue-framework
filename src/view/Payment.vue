@@ -154,16 +154,16 @@
 </template>
 
 <script>
-  import GButton from '@/components/GButton';
-  import GToolbar from '@/components/GToolbar';
+  import GButton from '@/components/GButton/GButton';
+  import GToolbar from '@/components/GLayout/GToolbar';
   import GTable from '@/components/GTable/GTable';
   import GNumberKeyboard from '@/components/GKeyboard/GNumberKeyboard';
-  import GLayout from '@/components/GLayout';
-  import GContainer from '@/components/GContainer';
+  import GLayout from '@/components/GLayout/GLayout';
+  import GContainer from '@/components/GLayout/GContainer';
   import GExpansionPanel from '@/components/GExpansionPanel/GExpansionPanel';
   import GExpansionPanelHeader from '@/components/GExpansionPanel/GExpansionPanelHeader';
   import GExpansionPanelContent from '@/components/GExpansionPanel/GExpansionPanelContent';
-  import GDivider from '../components/GDivider';
+  import GDivider from '../components/GLayout/GDivider';
   import GTextField from '../components/GInput/GTextField';
   import GKeyboard from '../components/GKeyboard/GKeyboard';
   import GTabs from '../components/GTabs/GTabs';

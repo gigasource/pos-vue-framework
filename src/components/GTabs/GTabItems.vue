@@ -10,7 +10,7 @@
   import GWindow from '../GWindow/GWindow';
   import GTabItem from '@/components/GTabs/GTabItem';
   import vModel from '@/components/common/vModel';
-  import GLayout from '@/components/GLayout';
+  import GLayout from '@/components/GLayout/GLayout';
   import { computed } from '@vue/composition-api';
   import _ from 'lodash';
   export default {

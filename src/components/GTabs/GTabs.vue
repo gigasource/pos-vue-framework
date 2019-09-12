@@ -24,9 +24,9 @@
   import GTabItems from '../GTabs/GTabItems';
   import vModel from '../common/vModel';
   import GTab from '../GTabs/GTab';
-  import GButton from '../GButton';
+  import GButton from '../GButton/GButton';
   import groupable from '../GItemGroup/groupable';
-  import GLayout from '../GLayout';
+  import GLayout from '../GLayout/GLayout';
 
   export default {
     name: 'GTabs',

@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Muli:200,400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+//Font
+$font-family-montserrat:  'Montserrat', sans-serif;
+$font-family-muli:        'Muli', sans-serif;
+$font-family-roboto:      'Roboto', sans-serif;
+$font-family-base:        $font-family-muli;
+$font-size-base:          1rem !default;
+$font-weight-base:        600 !default;
+$font-weight-1:           100;
+$font-weight-2:           200;
+$font-weight-3:           300;
+$font-weight-4:           400;
+$font-weight-5:           500;
+$font-weight-6:           600;
+$font-weight-7:           700;
+$font-weight-8:           800;
+$font-weight-9:           900;
+
+//Color
+$transparent: transparent;
+$black:       #000000;
+$white:       #ffffff;
+$gray:        rgba(151, 151, 151, 0.3);
+$gray-1:      #979797;
+$dgray-1:     #393939;
+$dgray-2:     #1d1d26;
+$dgray-3:     #1d1d1d;
+$dgray-4:     #8191a8;
+$dgray-5:     #cecece;
+$dgray-6:     rgba(9, 9, 9, 0.2);
+$dgray-7:     rgba(9, 9, 9, 0.5);
+$dgray-8:     #c4c4c4;
+$dgray-9:     #e4e4e4;
+$lgray-1:     #dce1e6;
+$lgray-2:     #eef1f7;
+$lgray-3:     #d6d6d6;
+$lgray-4:     #a1a1a1;
+$lgray-5:     #eeeeee;
+$lgray-6:     #f0f0f0;
+$lgray-7:     #ebeff0;
+$lgray-8:     #717171;
+$lgray-9:     #e0e3e5;
+$red-1:       #ff4452;
+$red-2:       #ffd3d5;
+$red-3:       #ff0242;
+$red-4:       #ff264a;
+$red-5:       #fff4f4;
+$orange-1:    #fbb148;
+$orange-2:    #ffe7a7;
+$orange-3:    #fb755c;
+$orange-4:    #ffb002;
+$orange-5:    #f9b524;
+$green-1:     #6fff4f;
+$green-2:     #97e544;
+$green-3:     #b5ec7a;
+$green-4:     #b5ff6a;
+$green-5:     #7ed321;
+$green-6:     #4d9700;
+$pink-1:      #ff87e9;
+$cyan-1:      #73f8f8;
+$cyan-2:      #95ffef;
+$blue-1:      #9ddaff;
+$blue-2:      #2f1ac3;
+$blue-3:      #007ff0;
+$blue-4:      #6c57ff;
+$blue-5:      #348fcb;
+$blue-6:      #3900cb;
+$blue-7:      #046eff;
+$blue-8:      #92beff;
+$blue-9:      #39475a;
+$purple-1:    #d8c6ff;
+$purple-2:    #b620e0;
+$purple-3:    #c700e8;
+$brown:       rgba(216, 216, 216, 0.3);
+
+$colors: (
+        "transparent":  $transparent,
+        "black":        $black,
+        "white":        $white,
+        "gray":         $gray,
+        "gray-1":       $gray-1,
+        "dgray-1":      $dgray-1,
+        "dgray-2":      $dgray-2,
+        "dgray-3":      $dgray-3,
+        "dgray-4":      $dgray-4,
+        "dgray-5":      $dgray-5,
+        "dgray-6":      $dgray-6,
+        "dgray-7":      $dgray-7,
+        "dgray-8":      $dgray-8,
+        "dgray-9":      $dgray-9,
+        "lgray-1":      $lgray-1,
+        "lgray-2":      $lgray-2,
+        "lgray-3":      $lgray-3,
+        "lgray-4":      $lgray-4,
+        "lgray-5":      $lgray-5,
+        "lgray-6":      $lgray-6,
+        "lgray-7":      $lgray-7,
+        "lgray-8":      $lgray-8,
+        "lgray-9":      $lgray-9,
+        "red-1":        $red-1,
+        "red-2":        $red-2,
+        "red-3":        $red-3,
+        "red-4":        $red-4,
+        "red-5":        $red-5,
+        "orange-1":     $orange-1,
+        "orange-2":     $orange-2,
+        "orange-3":     $orange-3,
+        "orange-4":     $orange-4,
+        "orange-5":     $orange-5,
+        "green-1":      $green-1,
+        "green-2":      $green-2,
+        "green-3":      $green-3,
+        "green-4":      $green-4,
+        "green-5":      $green-5,
+        "green-6":      $green-6,
+        "pink-1":       $pink-1,
+        "cyan-1":       $cyan-1,
+        "cyan-2":       $cyan-2,
+        "blue-1":       $blue-1,
+        "blue-2":       $blue-2,
+        "blue-3":       $blue-3,
+        "blue-4":       $blue-4,
+        "blue-5":       $blue-5,
+        "blue-6":       $blue-6,
+        "blue-7":       $blue-7,
+        "blue-8":       $blue-8,
+        "blue-9":       $blue-9,
+        "purple-1":     $purple-1,
+        "purple-2":     $purple-2,
+        "purple-3":     $purple-3,
+        "brown":        $brown,
+);
+
+//Spacing
+$spacer: 1rem !default;
+$spacers: (
+        "0": 0,
+        "1": $spacer * 0.25,
+        "2": $spacer * 0.5,
+        "3": $spacer,
+        "4": $spacer * 1.5,
+        "5": $spacer * 2,
+);
+
+//Border
+$border-width-base: 1rem !default;
+$border-widths: (
+        "0" :     0,
+        "1" :     $border-width-base * 0.125,
+        "2" :     $border-width-base * 0.25,
+        "3" :     $border-width-base * 0.5,
+        "4" :     $border-width-base,
+        "5" :     $border-width-base * 2,
+        "thin" :  $border-width-base * 0.05,
+);
+
+//Size
+$percentages: (
+        "10":   10%,
+        "25":   25%,
+        "50":   50%,
+        "75":   75%,
+        "100":  100%,
+        "33":   33.3333%,
+        "66":   66.6667%,
+        "12":   12.5%,
+        "20":   20%,
+        "30":   30%,
+        "40":   40%,
+        "60":   60%,
+        "70":   70%,
+        "80":   80%,
+        "90":   90%,
+);
+
+//Grid
+$grid-columns: 12 !default;
+
+//Box shadow
+$box-shadow-1: 0 2px 4px 0 rgba(131, 146, 167, 0.2);
+$box-shadow-2: 0 0 8px 0 rgba(131, 146, 167, 0.2);
+$box-shadow-3: 0 5px 20px 0 rgba(255, 38, 74, 0.54);
+$box-shadow-4: 0 0 6px 0 rgba(252, 182, 62, 0.59);
+$box-shadow-5: 0 0 4px 0 $blue-7;
+
+//Button
+$btn-border-radius: 0.5rem !default;
+$btn-font-size: $font-size-base;
+$btn-font-family: $font-family-base;
+$btn-font-weight: $font-weight-7;

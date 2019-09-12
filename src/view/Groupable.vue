@@ -49,19 +49,19 @@
 
 <script>
 
-  import GButton from '../components/GButton';
-  import GDivider from '../components/GDivider';
+  import GButton from '../components/GButton/GButton';
+  import GDivider from '../components/GLayout/GDivider';
   import GRadioGroup from '../components/GInput/GRadioGroup';
   import GRadio from '../components/GInput/GRadio';
   import GItemGroup from '../components/GItemGroup/GItemGroup';
   import GItem from '../components/GItemGroup/GItem';
-  import GContainer from '../components/GContainer';
+  import GContainer from '../components/GLayout/GContainer';
   import GWindow from '../components/GWindow/GWindow';
   import GTabs from '../components/GTabs/GTabs';
   import GTab from '../components/GTabs/GTab';
   import GTabItem from '../components/GTabs/GTabItem';
   import GTabItems from '../components/GTabs/GTabItems';
-  import GLayout from '../components/GLayout';
+  import GLayout from '../components/GLayout/GLayout';
 
   export default {
     name: 'Groupable',

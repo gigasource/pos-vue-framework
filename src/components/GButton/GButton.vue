@@ -25,10 +25,9 @@
       buttonClass() {
         return {
           'btn-raised': this.raised,
-          'bs-0': this.depressed,
+          'btn-depressed': this.depressed,
           'disabled': this.disabled,
-          'br-100': this.icon,
-					'pa-0': this.icon,
+          'btn-icon': this.icon,
           'btn-outline': this.outline,
           'b-dashed': this.dashed
         }
