@@ -21,7 +21,11 @@
 				<slot name="append"></slot>
 				<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="clearValue">
 			</span>
+			<span class="textfield-after">
+				<slot name="after" :isValidInput="isValidInput"></slot>
+			</span>
 		</div>
+		<p v-if="isValidInput === false" class="textfield-error">{{errorMessage}}</p>
 	</div>
 </template>
 
@@ -54,7 +58,8 @@
       return {
         lazyValue: '',
         hasMouseDown: false,
-        isFocused: false
+        isFocused: false,
+				isValidInput: undefined
       }
     },
     computed: {
@@ -70,18 +75,10 @@
       isDirty() {
         return (this.lazyValue && this.lazyValue.toString().length > 0)
       },
-      isValidInput: _.debounce(() => {
-        if (this.rules && typeof this.rules === 'function') {
-          return this.rules(this.lazyValue);
-        }
-        return true;
-      }, 500),
       classes() {
         return {
           'fs-small': !this.large,
           'pa-2': !this.large,
-          'fs-large-3': this.large,
-          'pa-3': this.large,
           'textfield__large': this.large,
           'ta-center': this.centered,
         }
@@ -93,6 +90,11 @@
         }
         if (this.bordered) {
           Object.assign(style, { 'border': '1px solid #c9c9c9' });
+        }
+        if (this.isValidInput === false) {
+          Object.assign(style, { 'border': '1px solid #ff4452' });
+				} else if (this.isValidInput === true) {
+          Object.assign(style, { 'border': '1px solid #1271ff' });
         }
         return style;
       }
@@ -161,7 +163,15 @@
       clearValue() {
         this.internalValue = '';
       }
-    }
+    },
+		watch: {
+      internalValue: _.debounce(function()  {
+          if (this.rules && typeof this.rules === 'function') {
+            this.isValidInput = this.rules(this.internalValue);
+          }
+        }, 500)
+
+		}
   }
 </script>
 

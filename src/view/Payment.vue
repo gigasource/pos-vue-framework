@@ -115,7 +115,7 @@
 							</template>
 						</g-text-field>
 				</g-layout>
-					<g-tabs v-model="activeItem" class="flex-grow-1">
+					<g-tabs v-model="tabActiveItem" class="flex-grow-1">
 						<template v-slot:tabs="{toggle, isActive}">
 							<g-layout row class="row-3 mt-5">
 								<g-tab v-for="(item, i) in tabItems" class="flex-grow-1 mr-1">
@@ -214,15 +214,16 @@
 					{content: 'Master Card', img: 'order/master_card', amount: ''},
 				],
 				activeItem: null,
+				tabActiveItem: null,
 			}
 		},
 		computed: {
       keyboardModel: {
         get() {
-          return this.activeItem.amount;
+          return this.tabActiveItem.amount;
 				},
 				set(value) {
-          this.activeItem.amount = value;
+          this.tabActiveItem.amount = value;
 				}
 			}
 		},
@@ -239,7 +240,7 @@
 			}
 		},
 		created() {
-      this.activeItem = this.tabItems[0];
+      this.tabActiveItem = this.tabItems[0];
 		}
   }
 </script>
