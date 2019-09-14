@@ -238,7 +238,7 @@
           { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append) },
           { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1) },
           { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0' },
-          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style: 'background-color: #000000; border-color: black' }
+          { content: ['&crarr;'], classes: 'key-number key-number__extra white', type: 'enter', action: () => null, style: 'background-color: #000000; border-color: black; grid-area: Enter' }
         ],
 				template: 'grid',
       }
