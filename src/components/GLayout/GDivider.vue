@@ -34,7 +34,7 @@
 					'divider__inset-vertical': inset && vertical,
 					'b-dashed': dashed,
 					'b-dotted': dotted,
-					'b-solid': solid || (!dashed && !dotted)
+					'b-solid': solid && !dashed && !dotted
 				}
 			});
 			const dividerColorStyle = computed(() => {
