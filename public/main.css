@@ -2302,6 +2302,10 @@ p {
   border-style: dashed;
 }
 
+.b-solid {
+  border-style: solid;
+}
+
 .w-10 {
   width: 10%;
   max-width: 10%;
@@ -3278,6 +3282,27 @@ td {
 .table-bordered td,
 .table-bordered th {
   border: 0.05rem solid #d6d6d6;
+}
+
+.dialog-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 100vh;
+  width: 100vw;
+}
+.dialog-wrapper__light {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+.dialog-wrapper__dark {
+  background-color: rgba(0, 0, 0, 0.92);
+}
+.dialog-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /*# sourceMappingURL=main.css.map */

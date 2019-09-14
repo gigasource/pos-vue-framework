@@ -285,6 +285,10 @@
   border-style: dashed;
 }
 
+.b-solid {
+  border-style: solid;
+}
+
 //Size
 @each $percentage, $value in $percentages {
   .w-#{$percentage} {
