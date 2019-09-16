@@ -5,11 +5,22 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  user-select: none;
 }
 
 @media (min-height: 900px) {
   html {
     font-size: 24px;
+  }
+}
+@media (min-width: 600px) {
+  html {
+    font-size: 12px;
+  }
+}
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
   }
 }
 body {
@@ -2803,6 +2814,254 @@ p {
   align-content: stretch;
 }
 
+/*!
+ * Waves v0.6.0
+ * http://fian.my.id/Waves
+ *
+ * Copyright 2014 Alfiana E. Sibuea and other contributors
+ * Released under the MIT license
+ * https://github.com/fians/Waves/blob/master/LICENSE
+ */
+.waves-effect {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: middle;
+  z-index: 1;
+  transition: 0.3s ease-out;
+}
+.waves-effect .waves-ripple {
+  position: absolute;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.7s ease-out;
+  transition-property: transform, opacity;
+  transform: scale(0);
+  pointer-events: none;
+}
+.waves-effect.waves-transparent .waves-ripple {
+  background-color: transparent;
+}
+.waves-effect.waves-black .waves-ripple {
+  background-color: #000000;
+}
+.waves-effect.waves-white .waves-ripple {
+  background-color: #ffffff;
+}
+.waves-effect.waves-gray .waves-ripple {
+  background-color: rgba(151, 151, 151, 0.3);
+}
+.waves-effect.waves-gray-1 .waves-ripple {
+  background-color: #979797;
+}
+.waves-effect.waves-dgray-1 .waves-ripple {
+  background-color: #393939;
+}
+.waves-effect.waves-dgray-2 .waves-ripple {
+  background-color: #1d1d26;
+}
+.waves-effect.waves-dgray-3 .waves-ripple {
+  background-color: #1d1d1d;
+}
+.waves-effect.waves-dgray-4 .waves-ripple {
+  background-color: #8191a8;
+}
+.waves-effect.waves-dgray-5 .waves-ripple {
+  background-color: #cecece;
+}
+.waves-effect.waves-dgray-6 .waves-ripple {
+  background-color: rgba(9, 9, 9, 0.2);
+}
+.waves-effect.waves-dgray-7 .waves-ripple {
+  background-color: rgba(9, 9, 9, 0.5);
+}
+.waves-effect.waves-dgray-8 .waves-ripple {
+  background-color: #c4c4c4;
+}
+.waves-effect.waves-dgray-9 .waves-ripple {
+  background-color: #e4e4e4;
+}
+.waves-effect.waves-lgray-1 .waves-ripple {
+  background-color: #dce1e6;
+}
+.waves-effect.waves-lgray-2 .waves-ripple {
+  background-color: #eef1f7;
+}
+.waves-effect.waves-lgray-3 .waves-ripple {
+  background-color: #d6d6d6;
+}
+.waves-effect.waves-lgray-4 .waves-ripple {
+  background-color: #a1a1a1;
+}
+.waves-effect.waves-lgray-5 .waves-ripple {
+  background-color: #eeeeee;
+}
+.waves-effect.waves-lgray-6 .waves-ripple {
+  background-color: #f0f0f0;
+}
+.waves-effect.waves-lgray-7 .waves-ripple {
+  background-color: #ebeff0;
+}
+.waves-effect.waves-lgray-8 .waves-ripple {
+  background-color: #717171;
+}
+.waves-effect.waves-lgray-9 .waves-ripple {
+  background-color: #e0e3e5;
+}
+.waves-effect.waves-red-1 .waves-ripple {
+  background-color: #ff4452;
+}
+.waves-effect.waves-red-2 .waves-ripple {
+  background-color: #ffd3d5;
+}
+.waves-effect.waves-red-3 .waves-ripple {
+  background-color: #ff0242;
+}
+.waves-effect.waves-red-4 .waves-ripple {
+  background-color: #ff264a;
+}
+.waves-effect.waves-red-5 .waves-ripple {
+  background-color: #fff4f4;
+}
+.waves-effect.waves-orange-1 .waves-ripple {
+  background-color: #fbb148;
+}
+.waves-effect.waves-orange-2 .waves-ripple {
+  background-color: #ffe7a7;
+}
+.waves-effect.waves-orange-3 .waves-ripple {
+  background-color: #fb755c;
+}
+.waves-effect.waves-orange-4 .waves-ripple {
+  background-color: #ffb002;
+}
+.waves-effect.waves-orange-5 .waves-ripple {
+  background-color: #f9b524;
+}
+.waves-effect.waves-green-1 .waves-ripple {
+  background-color: #6fff4f;
+}
+.waves-effect.waves-green-2 .waves-ripple {
+  background-color: #97e544;
+}
+.waves-effect.waves-green-3 .waves-ripple {
+  background-color: #b5ec7a;
+}
+.waves-effect.waves-green-4 .waves-ripple {
+  background-color: #b5ff6a;
+}
+.waves-effect.waves-green-5 .waves-ripple {
+  background-color: #7ed321;
+}
+.waves-effect.waves-green-6 .waves-ripple {
+  background-color: #4d9700;
+}
+.waves-effect.waves-pink-1 .waves-ripple {
+  background-color: #ff87e9;
+}
+.waves-effect.waves-cyan-1 .waves-ripple {
+  background-color: #73f8f8;
+}
+.waves-effect.waves-cyan-2 .waves-ripple {
+  background-color: #95ffef;
+}
+.waves-effect.waves-blue-1 .waves-ripple {
+  background-color: #9ddaff;
+}
+.waves-effect.waves-blue-2 .waves-ripple {
+  background-color: #2f1ac3;
+}
+.waves-effect.waves-blue-3 .waves-ripple {
+  background-color: #007ff0;
+}
+.waves-effect.waves-blue-4 .waves-ripple {
+  background-color: #6c57ff;
+}
+.waves-effect.waves-blue-5 .waves-ripple {
+  background-color: #348fcb;
+}
+.waves-effect.waves-blue-6 .waves-ripple {
+  background-color: #3900cb;
+}
+.waves-effect.waves-blue-7 .waves-ripple {
+  background-color: #046eff;
+}
+.waves-effect.waves-blue-8 .waves-ripple {
+  background-color: #92beff;
+}
+.waves-effect.waves-blue-9 .waves-ripple {
+  background-color: #39475a;
+}
+.waves-effect.waves-purple-1 .waves-ripple {
+  background-color: #d8c6ff;
+}
+.waves-effect.waves-purple-2 .waves-ripple {
+  background-color: #b620e0;
+}
+.waves-effect.waves-purple-3 .waves-ripple {
+  background-color: #c700e8;
+}
+.waves-effect.waves-brown .waves-ripple {
+  background-color: rgba(216, 216, 216, 0.3);
+}
+.waves-effect input[type=button], .waves-effect input[type=reset], .waves-effect input[type=submit] {
+  border: 0;
+  font-style: normal;
+  font-size: inherit;
+  text-transform: inherit;
+  background: none;
+}
+.waves-effect img {
+  position: relative;
+  z-index: -1;
+}
+
+.waves-notransition {
+  transition: none !important;
+}
+
+.waves-circle {
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+}
+
+.waves-input-wrapper {
+  border-radius: 0.2em;
+  vertical-align: bottom;
+}
+.waves-input-wrapper .waves-button-input {
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.waves-circle {
+  text-align: center;
+  width: 2.5em;
+  height: 2.5em;
+  line-height: 2.5em;
+  border-radius: 50%;
+  -webkit-mask-image: none;
+}
+
+.waves-block {
+  display: block;
+}
+
+/* Firefox Bug: link not triggered */
+.waves-effect .waves-ripple {
+  z-index: -1;
+}
+
 button {
   outline: none;
   font-family: "Muli", sans-serif;
@@ -2812,6 +3071,7 @@ button {
   border-radius: 0.5rem;
   cursor: pointer;
   color: #1d1d1d;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn {
@@ -2940,6 +3200,9 @@ textarea {
   font-weight: 600;
   font-style: normal;
   opacity: 0.2;
+}
+.textfield.textfield__active {
+  border: 0.05rem solid #046eff;
 }
 
 .switch {

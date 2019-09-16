@@ -4,11 +4,24 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  user-select: none;
 }
 
 @media (min-height: 900px) {
   html {
     font-size: 24px;
+  }
+}
+
+@media (min-width: 600px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
   }
 }
 
@@ -66,3 +79,5 @@ p {
   transform: rotate(-90deg);
   transform-origin: top right;
 }
+
+//TODO: disable default android keyboard

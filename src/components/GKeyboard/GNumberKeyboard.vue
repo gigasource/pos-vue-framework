@@ -42,7 +42,7 @@
       },
       template: {
         type: String,
-        default: 'grid-template-areas: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 key00 keyX" "keyC Enter Enter"'
+        default: 'grid-template: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 key00 keyX" "keyC Enter Enter"/ 1fr 1fr 1fr; grid-template-rows: repeat(5, 1fr)'
       }
     },
     computed: {

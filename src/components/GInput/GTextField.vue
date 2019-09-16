@@ -25,7 +25,7 @@
 				<slot name="after" :isValidInput="isValidInput"></slot>
 			</span>
 		</div>
-		<p v-if="isValidInput === false" class="textfield-error">{{errorMessage}}</p>
+		<p v-show="isValidInput === false" class="textfield-error">{{errorMessage}}</p>
 	</div>
 </template>
 
@@ -53,6 +53,7 @@
       },
       bordered: Boolean,
       centered: Boolean,
+			active: Boolean,
     },
     data() {
       return {
@@ -81,6 +82,7 @@
           'pa-2': !this.large,
           'textfield__large': this.large,
           'ta-center': this.centered,
+					'textfield__active': this.active
         }
       },
       styles() {
@@ -93,9 +95,7 @@
         }
         if (this.isValidInput === false) {
           Object.assign(style, { 'border': '1px solid #ff4452' });
-				} else if (this.isValidInput === true) {
-          Object.assign(style, { 'border': '1px solid #1271ff' });
-        }
+				}
         return style;
       }
     },

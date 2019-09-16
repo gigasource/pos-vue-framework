@@ -61,6 +61,10 @@ textarea {
     font-style: normal;
     opacity: 0.2;
   }
+
+  &.textfield__active {
+    border: 0.05rem solid $blue-7;
+  }
 }
 
 //Switch
