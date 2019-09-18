@@ -17,7 +17,7 @@
 									<template v-slot:body>
 										<g-expansion-panel-group v-model="activeItem">
 											<template v-slot:default="{toggle, isActive}">
-												<g-expansion-panel class="table-row-group" v-for="item in items">
+												<g-expansion-panel class="table-row-group" v-for="(item, index) in items" :key="index">
 													<g-expansion-panel-header class="table-row" :is-active="isActive(item)" @click.native="toggle(item)">
 														<td style="height: 2.75rem; padding: 0.75rem">{{ item.name }}</td>
 														<td style="height: 2.75rem; padding: 0.75rem">{{ item.quantity }}</td>

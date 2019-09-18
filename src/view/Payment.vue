@@ -17,7 +17,7 @@
 									<template v-slot:body>
 										<g-expansion-panel-group v-model="activeItem">
 											<template v-slot:default="{toggle, isActive}">
-												<g-expansion-panel class="table-row-group" v-for="item in items">
+												<g-expansion-panel class="table-row-group" v-for="(item, index) in items" :key="index">
 													<g-expansion-panel-header class="table-row" :is-active="isActive(item)" @click.native="toggle(item)">
 														<td style="height: 2.75rem; padding: 0.75rem">{{ item.name }}</td>
 														<td style="height: 2.75rem; padding: 0.75rem">{{ item.quantity }}</td>
@@ -118,7 +118,7 @@
 					<g-tabs v-model="tabActiveItem" class="flex-grow-1">
 						<template v-slot:tabs="{toggle, isActive}">
 							<g-layout row class="row-3 mt-5">
-								<g-tab v-for="(item, i) in tabItems" class="flex-grow-1 mr-1">
+								<g-tab v-for="(item, i) in tabItems" :key="i" class="flex-grow-1 mr-1">
 									<g-button class="btn__centered w-100 h-100" outline :class="{'button__active': isActive(item)}" @click="toggleTab(toggle, item)">
 										<img class="col-4" :src="getImg(item.img)">
 										<span class="ml-2">{{item.content}}</span>

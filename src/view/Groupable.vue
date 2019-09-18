@@ -27,7 +27,7 @@
 
 		<g-tabs v-model="activeItem">
 			<template v-slot:tabs="{toggle, isActive}">
-				<g-tab v-for="(item, index) in items">
+				<g-tab v-for="(item, index) in items" :key="index">
 					<g-button width="200px"
 										@click="toggle(item)"
 										:key="index"
