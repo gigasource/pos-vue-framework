@@ -16,3 +16,27 @@ export const keyCodes = Object.freeze({
   pageup: 33,
   pagedown: 34,
 });
+
+export function addOnceEventListener (el, eventName, cb, options){
+  const once = (event) => {
+    cb(event);
+    el.removeEventListener(eventName, once, options);
+  };
+
+  el.addEventListener(eventName, once, options);
+}
+
+let passiveSupported = false;
+try {
+  if (typeof window !== 'undefined') {
+    const testListenerOpts = Object.defineProperty({}, 'passive', {
+      get: () => {
+        passiveSupported = true
+      },
+    })
+
+    window.addEventListener('testListener', testListenerOpts, testListenerOpts)
+    window.removeEventListener('testListener', testListenerOpts, testListenerOpts)
+  }
+} catch (e) { console.warn(e) }
+export { passiveSupported }

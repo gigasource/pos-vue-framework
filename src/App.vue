@@ -6,6 +6,7 @@
 			<router-link to="/groupable">Groupable</router-link>
 			<router-link to="/payment">Payment</router-link>
 			<router-link to="/dialog">Dialog demo</router-link>
+			<router-link to="/slider">Slider demo</router-link>
 			<router-link to="/menu-demo">Menu</router-link>
 		</g-layout>
 		<router-view></router-view>
