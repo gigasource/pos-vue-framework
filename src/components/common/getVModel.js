@@ -1,6 +1,6 @@
 import { computed } from '@vue/composition-api';
 
-function vModel(props, context) {
+function getVModel(props, context) {
   let model = computed({
     get: () => props.value,
     set: value => {
@@ -13,4 +13,4 @@ function vModel(props, context) {
   }
 }
 
-export default vModel;
+export default getVModel;

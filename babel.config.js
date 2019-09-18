@@ -1,5 +1,6 @@
 module.exports = {
   presets: [
-    '@vue/app'
+    'vca-jsx',
+    '@vue/app',
   ]
 }
