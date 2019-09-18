@@ -14,7 +14,7 @@
   import GItem from '@/components/GItemGroup/GItem';
   import _ from 'lodash';
   import GLayout from '@/components/GLayout/GLayout';
-  import vModel from '@/components/common/vModel';
+  import getVModel from '@/components/common/getVModel';
   import { computed } from '@vue/composition-api';
   import groupable from '@/components/GItemGroup/groupable';
 

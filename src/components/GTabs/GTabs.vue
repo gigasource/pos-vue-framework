@@ -22,7 +22,7 @@
   import GItemGroup from '../GItemGroup/GItemGroup';
   import GWindow from '../GWindow/GWindow';
   import GTabItems from '../GTabs/GTabItems';
-  import vModel from '../common/vModel';
+  import getVModel from '../common/getVModel';
   import GTab from '../GTabs/GTab';
   import GButton from '../GButton/GButton';
   import groupable from '../GItemGroup/groupable';
@@ -36,7 +36,7 @@
       value: null
     },
     setup(props, context) {
-      const { model } = vModel(props, context);
+      const { model } = getVModel(props, context);
       const { toggleItem, isActiveItem } = groupable({ mandatory: true, multiple: false }, model);
 
       return {

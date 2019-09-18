@@ -9,7 +9,7 @@
 <script>
   import GWindow from '../GWindow/GWindow';
   import GTabItem from '@/components/GTabs/GTabItem';
-  import vModel from '@/components/common/vModel';
+  import getVModel from '@/components/common/getVModel';
   import GLayout from '@/components/GLayout/GLayout';
   import { computed } from '@vue/composition-api';
   import _ from 'lodash';
@@ -21,7 +21,7 @@
 			value: null
 		},
 		setup(props, context) {
-      const { model } = vModel(props, context);
+      const { model } = getVModel(props, context);
 			const isActiveItem = (item) => model.value === item;
 			return {
 			  isActiveItem,

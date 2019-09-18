@@ -12,7 +12,7 @@
 
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import vModel from '@/components/common/vModel';
+  import getVModel from '@/components/common/getVModel';
 
   export default {
     name: 'GWindow',
@@ -22,7 +22,7 @@
       value: null
     },
 		setup(props, context) {
-      const { model } = vModel(props, context);
+      const { model } = getVModel(props, context);
       const isActiveWindow = (window) => model.value === window;
 
       return {

@@ -8,6 +8,7 @@
 
 <script>
   import { computed, ref } from '@vue/composition-api';
+  import getVModel from '../common/getVModel';
 
   export default {
     name: 'GCheckBox',
@@ -22,12 +23,9 @@
         default: 'check-box__active'
       }
     },
-    setup(props, { emit }) {
+    setup(props, context) {
       let isActive = ref(false);
-      const computedValue = computed({
-        get: () => props.value,
-        set: value => emit('input', value)
-      });
+      const { vModel } = getVModel(props, context);
 
       const checkBoxClass = computed(() => ({
         readonly: props.readonly,
@@ -45,7 +43,7 @@
       }
 
       return {
-        computedValue,
+        vModel,
         checkBoxClass,
         checkmarkClass,
         activate
