@@ -8,7 +8,7 @@
 
 <script>
   import { computed, ref } from '@vue/composition-api';
-  import getVModel from '../common/getVModel';
+  import getVModel from '../../mixins/getVModel';
 
   export default {
     name: 'GCheckBox',

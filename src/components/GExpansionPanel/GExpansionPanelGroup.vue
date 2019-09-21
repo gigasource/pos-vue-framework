@@ -13,7 +13,7 @@
 
 <script>
   import GExpansionPanel from './GExpansionPanel';
-  import groupable from '../GItemGroup/groupable';
+  import groupable from '../../mixins/groupable';
   import { Fragment } from 'vue-fragment'
   import { computed } from '@vue/composition-api';
 

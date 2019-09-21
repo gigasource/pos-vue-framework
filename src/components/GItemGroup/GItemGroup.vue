@@ -12,11 +12,9 @@
 
 <script>
   import GItem from '@/components/GItemGroup/GItem';
-  import _ from 'lodash';
   import GLayout from '@/components/GLayout/GLayout';
-  import getVModel from '@/components/common/getVModel';
   import { computed } from '@vue/composition-api';
-  import groupable from '@/components/GItemGroup/groupable';
+  import groupable from '../../mixins/groupable';
 
   export default {
     name: 'GItemGroup',

@@ -22,10 +22,10 @@
   import GItemGroup from '../GItemGroup/GItemGroup';
   import GWindow from '../GWindow/GWindow';
   import GTabItems from '../GTabs/GTabItems';
-  import getVModel from '../common/getVModel';
+  import getVModel from '../../mixins/getVModel';
   import GTab from '../GTabs/GTab';
   import GButton from '../GButton/GButton';
-  import groupable from '../GItemGroup/groupable';
+  import groupable from '../../mixins/groupable';
   import GLayout from '../GLayout/GLayout';
 
   export default {
