@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@vue/babel-preset-jsx": "^1.1.0",
-    "@vue/composition-api": "0.3.1",
+    "@vue/composition-api": "0.3.2",
     "core-js": "2.6.9",
     "lodash": "4.17.15",
     "sass": "^1.22.12",
