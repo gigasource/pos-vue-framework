@@ -26,6 +26,16 @@ export function addOnceEventListener (el, eventName, cb, options){
   el.addEventListener(eventName, once, options);
 }
 
+export function convertToUnit (str, unit = 'px') {
+  if (str == null || str === '') {
+    return undefined
+  } else if (isNaN(+str)) {
+    return String(str)
+  } else {
+    return `${Number(str)}${unit}`
+  }
+}
+
 let passiveSupported = false;
 try {
   if (typeof window !== 'undefined') {
@@ -39,4 +49,5 @@ try {
     window.removeEventListener('testListener', testListenerOpts, testListenerOpts)
   }
 } catch (e) { console.warn(e) }
+
 export { passiveSupported }
