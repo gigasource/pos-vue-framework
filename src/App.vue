@@ -1,5 +1,5 @@
 <template>
-	<div id="app" class="vertical-body-responsive-wrapper">
+	<div id="app" class="vertical-body-responsive-wrapper" data-app>
 		<g-layout column v-if="$route.path === '/'">
 			<router-link to="/keyboard-demo">Keyboard Demo</router-link>
 			<router-link to="/order-default">OrderDefault</router-link>
