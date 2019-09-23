@@ -14,7 +14,8 @@
     props: {
       // basic
 			...{
-        value: Boolean
+        value: Boolean,
+				lazy: Boolean
 			},
       // positioning
       ...{
@@ -70,7 +71,7 @@
       const { model: isActive } = getVModel(props, context);
       const { updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
 				menuableState } = menuable(props, context);
-      detachable(props, context);
+      const { attachToRoot } =detachable(props, context);
 
       const content = ref(null);
       const el = ref(null);
@@ -82,8 +83,14 @@
 				...menuableState
       });
 
-      onMounted(() => {
+      function initContent() {
         updateDimensions();
+        attachToRoot();
+      }
+
+      onMounted(() => {
+        if (props.lazy) return
+        initContent();
       });
 
       const calculatedLeft = computed(() => {
@@ -129,6 +136,7 @@
       }))
 
       function activate(event) {
+        if (props.lazy) initContent();
         const activator = event.target || event.currentTarget;
         state.absoluteX = event.clientX;
         state.absoluteY = event.clientY;
@@ -164,7 +172,7 @@
         }
       })
 
-      //equates v-show="value" in template
+      //equates to v-show="value" in template
       const vShowDirective = computed(() => {
         return {
           name: 'show',
