@@ -14,14 +14,13 @@
 </template>
 
 <script>
-  import GMenu from '../components/GMenu/GMenu';
   import GButton from '../components/GButton/GButton';
   import GLayout from '../components/GLayout/GLayout';
   import GMenuFunctional from '../components/GMenu/GMenuFunctional';
 
   export default {
     name: 'MenuDemo',
-    components: { GMenuFunctional, GLayout, GButton, GMenu },
+    components: { GMenuFunctional, GLayout, GButton },
     data() {
       return {
         showMenu: false,
