@@ -1,8 +1,8 @@
 <template>
 	<g-layout class="align-items-center justify-center">
-		<g-menu v-model="showMenu2" top lazy>
-			<template v-slot:activator="{activate}">
-				<g-button @click="activate" width="100px" height="50px">Activator</g-button>
+		<g-menu v-model="showMenu2" lazy open-on-hover open-delay="500" close-delay="500">
+			<template v-slot:activator="{toggleContent}">
+				<g-button @click="toggleContent" width="100px" height="50px">Activator</g-button>
 			</template>
 			<div style="background-color: #ffe7a7">
 				<g-layout column>
