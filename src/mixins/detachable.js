@@ -1,9 +1,6 @@
 import { onMounted } from '@vue/composition-api';
 
 export default function detachable(props, context) {
-  onMounted(() => {
-    attachToRoot()
-  })
 
   function attachToRoot() {
     const content = context.refs.content
@@ -16,5 +13,9 @@ export default function detachable(props, context) {
     }
 
     target.insertBefore(content, target.firstChild)
+  }
+
+  return {
+    attachToRoot
   }
 }

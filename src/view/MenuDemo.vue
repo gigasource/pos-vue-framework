@@ -1,6 +1,6 @@
 <template>
-	<g-layout class="align-items-end justify-end">
-		<g-menu-functional v-model="showMenu2" top>
+	<g-layout class="align-items-center justify-center">
+		<g-menu v-model="showMenu2" top lazy>
 			<template v-slot:activator="{activate}">
 				<g-button @click="activate" width="100px" height="50px">Activator</g-button>
 			</template>
@@ -9,19 +9,18 @@
 					<g-button v-for="i in 5" :key="i">Content Button {{i}}</g-button>
 				</g-layout>
 			</div>
-		</g-menu-functional>
+		</g-menu>
 	</g-layout>
 </template>
 
 <script>
-  import GMenu from '../components/GMenu/GMenu';
   import GButton from '../components/GButton/GButton';
   import GLayout from '../components/GLayout/GLayout';
-  import GMenuFunctional from '../components/GMenu/GMenuFunctional';
+  import GMenu from '../components/GMenu/GMenu';
 
   export default {
     name: 'MenuDemo',
-    components: { GMenuFunctional, GLayout, GButton, GMenu },
+    components: { GMenu, GLayout, GButton },
     data() {
       return {
         showMenu: false,

@@ -1,130 +1,212 @@
-<template>
-	<div class="r">
-		<slot name="activator" :click="activate"></slot>
-		<div v-show="computedValue" :style="styles" v-click-outside:[clickOutsideDirective.args]="clickOutsideDirective.value" ref="content">
-			<slot><p>text</p></slot>
-		</div>
-	</div>
-</template>
-
 <script>
-  import GLayout from '../GLayout/GLayout';
+  import getVModel from '../../mixins/getVModel';
+  import { computed, createElement as h, onMounted, reactive, ref } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
+  import menuable from '../../mixins/menuable';
+  import { convertToUnit } from '../../utils/helpers';
+  import detachable from '../../mixins/detachable';
 
   export default {
     name: 'GMenu',
-    components: { GLayout },
     directives: {
       ClickOutside
     },
-    data() {
-      return {
-        absoluteX: 0,
-        absoluteY: 0,
-        top: 0
+    props: {
+      // basic
+      ...{
+        value: Boolean,
+        lazy: Boolean
+      },
+      // positioning
+      ...{
+        auto: Boolean,
+        top: Boolean,
+        bottom: Boolean,
+        left: Boolean,
+        right: Boolean,
+        offsetX: {
+          type: Boolean,
+        },
+        offsetY: {
+          type: Boolean,
+          default: true
+        },
+        nudgeLeft: {
+          type: [Number, String],
+          default: 0
+        },
+        nudgeRight: {
+          type: [Number, String],
+          default: 0
+        },
+        nudgeTop: {
+          type: [Number, String],
+          default: 0
+        },
+        nudgeBottom: {
+          type: [Number, String],
+          default: 0
+        },
+        positionX: [Number, String],
+        positionY: [Number, String],
+        allowOverflow: Boolean,
+        offsetOverflow: Boolean
+      },
+      // hover-able
+      ...{
+        openOnHover: Boolean,
+      },
+      // sizing
+      ...{
+        maxWidth: [Number, String],
+        minWidth: [Number, String],
+        maxHeight: {
+          type: [Number, String],
+          default: 'auto'
+        },
+        minHeight: [Number, String],
       }
     },
-    props: {
-      positionX: [Number, String],
-      positionY: [Number, String],
-      offsetX: {
-        type: Boolean
-      },
-      offsetY: {
-        type: Boolean,
-        default: true
-      },
-      value: Boolean,
-    },
-    computed: {
-      computedValue: {
-        get() {
-          return this.value
-        },
-        set(value) {
-          this.$emit('input', value)
+    setup(props, context) {
+      const { model: isActive } = getVModel(props, context);
+      const {
+        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
+        menuableState
+      } = menuable(props, context);
+      const { attachToRoot } = detachable(props, context);
+
+      const content = ref(null);
+      const el = ref(null);
+      const activator = ref(null);
+      const state = reactive({
+        top: 0,
+        absoluteX: 0,
+        absoluteY: 0,
+        ...menuableState
+      });
+
+      function initContent() {
+        updateDimensions();
+        attachToRoot();
+      }
+
+      onMounted(() => {
+        if (props.lazy) return
+        initContent();
+      });
+
+      const calculatedLeft = computed(() => {
+        const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
+        return convertToUnit(calcXOverflow(computedLeft.value, menuWidth)) || '0'
+      })
+
+      const calculatedTop = computed(() => {
+        return convertToUnit(calcYOverFlow(computedTop.value)) || '0'
+      })
+
+      const calculatedMaxWidth = computed(() => {
+        return convertToUnit(props.maxWidth) || '0'
+      })
+
+      const calculatedMinWidth = computed(() => {
+        if (props.minWidth) return convertToUnit(props.minWidth) || '0'
+
+        const minWidth = Math.min(dimensions.content.width, state.pageWidth);
+        const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
+        return convertToUnit(Math.min(_calculatedMaxWidth, minWidth)) || 0;
+      })
+
+      const calculatedMaxHeight = computed(() => {
+        return convertToUnit(props.maxHeight) || '0';
+      })
+
+      const contentStyles = computed(() => ({
+        top: calculatedTop.value,
+        left: calculatedLeft.value,
+        maxHeight: calculatedMaxHeight.value,
+        minWidth: calculatedMinWidth.value,
+        maxWidth: calculatedMaxWidth.value,
+        zIndex: '10',
+        position: 'absolute',
+        display: 'inline-block',
+        'max-width': '80%',
+        'overflow-y': 'auto',
+        'overflow-x': 'hidden',
+        'contain': 'content'
+      }))
+
+      function activate(event) {
+        if (props.lazy) initContent();
+        const activator = event.target || event.currentTarget;
+        state.absoluteX = event.clientX;
+        state.absoluteY = event.clientY;
+        if (!activator) return
+        state.top = dimensions.activator.height;
+        isActive.value = !isActive.value;
+        context.refs.content.scrollTop = context.refs.content.scrollHeight
+        updateDimensions();
+      }
+
+      const clickOutsideDirective = computed(() => {
+        //callback to close menu when clicked outside
+        const closeConditional = (e) => {
+          const target = e.target;
+          return isActive.value && !content.value.contains(target)
         }
-      },
-      computedTop() {
-        let top = 0;
-        if (this.offsetY) {
-          top += -this.absolutePosition().height;
-        }
-      },
-      styles() {
-        return {
-          top: this.top + 'px',
-          left: '0',
-          zIndex: '10',
-          position: 'absolute',
-          display: 'inline-block',
-          'max-width': '80%',
-          'overflow-y': 'auto',
-          'overflow-x': 'hidden',
-          'contain': 'content'
-        }
-      },
-      clickOutsideDirective() {
+
         return {
           name: 'click-outside',
           value: () => {
-            this.computedValue = false
+            isActive.value = false
           },
-          args: {
-            closeConditional: this.closeConditional,
-            include: () => [this.$el],
+          arg: {
+            closeConditional: closeConditional,
+            include: () => [context.refs.el]
           },
         }
-      },
-    },
-    methods: {
-      genActivatorListeners() {
-        //todo: open on hover
-      },
-      closeConditional(e) {
-        const target = e.target
-        return this.computedValue && !this.$refs.content.contains(target)
-      },
-      absolutePosition: () => ({
-        top: this.positionY || this.absoluteY,
-        bottom: this.positionY || this.absoluteY,
-        left: this.positionX || this.absoluteX,
-        right: this.positionX || this.absoluteX,
-        height: 0,
-        width: 0,
-      }),
-      activate(event) {
-        const activator = event.target || event.currentTarget;
-        this.absoluteX = event.clientX;
-        this.absoluteY = event.clientY;
-        if (!activator) {
-          return;
-        }
-        const activatorDimensions = this.measure(activator);
-        activatorDimensions.offsetLeft = activator.offsetLeft;
-        activatorDimensions.offsetTop = 0;
-        this.top = activatorDimensions.height;
-        this.computedValue = !this.computedValue;
-      },
-      measure(el) {
-        const rect = this.getRoundedBoundedClientRect(el);
-        const style = window.getComputedStyle(el);
-        rect.left = parseInt(style.marginLeft);
-        rect.top = parseInt(style.marginTop);
+      })
 
-        return rect
-      },
-      getRoundedBoundedClientRect(el) {
-        const rect = el.getBoundingClientRect();
+      //equates to v-show="value" in template
+      const vShowDirective = computed(() => {
         return {
-          top: Math.round(rect.top),
-          left: Math.round(rect.left),
-          bottom: Math.round(rect.bottom),
-          right: Math.round(rect.right),
-          width: Math.round(rect.width),
-          height: Math.round(rect.height),
+          name: 'show',
+          value: props.value
         }
-      },
+      })
+
+      const genContent = () => {
+        const defaultSlotContent = context.slots.default && context.slots.default() || 'fallback text';
+        return h('div',
+          {
+            style: contentStyles.value,
+            ref: 'content',
+            directives: [
+              vShowDirective.value, clickOutsideDirective.value
+            ]
+          },
+          [defaultSlotContent]
+        )
+      }
+
+      const genActivator = () => {
+        return h('div',
+          { ref: 'activator' },
+          context.slots.activator({
+            activate
+          }))
+      }
+
+      return () => h(
+        'div',
+        {
+          style: {
+            display: 'inline'
+          },
+          staticClass: 'r',
+          ref: 'el'
+        },
+        [genActivator(), genContent()]
+      )
     }
   }
 </script>
