@@ -7,7 +7,7 @@
   import detachable from '../../mixins/detachable';
 
   export default {
-    name: 'GMenuFunctional',
+    name: 'GMenu',
     directives: {
       ClickOutside
     },
