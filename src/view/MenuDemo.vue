@@ -1,5 +1,5 @@
 <template>
-	<g-layout class="align-items-end justify-end">
+	<g-layout class="align-items-center justify-center">
 		<g-menu-functional v-model="showMenu2" top lazy>
 			<template v-slot:activator="{activate}">
 				<g-button @click="activate" width="100px" height="50px">Activator</g-button>

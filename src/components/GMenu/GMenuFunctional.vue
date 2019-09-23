@@ -13,12 +13,13 @@
     },
     props: {
       // basic
-			...{
+      ...{
         value: Boolean,
-				lazy: Boolean
-			},
+        lazy: Boolean
+      },
       // positioning
       ...{
+        auto: Boolean,
         top: Boolean,
         bottom: Boolean,
         left: Boolean,
@@ -30,48 +31,49 @@
           type: Boolean,
           default: true
         },
+        nudgeLeft: {
+          type: [Number, String],
+          default: 0
+        },
+        nudgeRight: {
+          type: [Number, String],
+          default: 0
+        },
+        nudgeTop: {
+          type: [Number, String],
+          default: 0
+        },
+        nudgeBottom: {
+          type: [Number, String],
+          default: 0
+        },
         positionX: [Number, String],
         positionY: [Number, String],
-				allowOverflow: Boolean,
-				offsetOverflow: Boolean
+        allowOverflow: Boolean,
+        offsetOverflow: Boolean
       },
-			// hover-able
+      // hover-able
       ...{
         openOnHover: Boolean,
       },
-			// sizing
-			...{
-			  maxWidth: [Number, String],
-			  minWidth: [Number, String],
-				maxHeight: {
-			    type: [Number, String],
-					default: 'auto'
-				},
-			  minHeight: [Number, String],
-			}
-    },
-    props1: {
-      top: Boolean,
-      bottom: Boolean,
-      left: Boolean,
-      right: Boolean,
-      openOnHover: Boolean,
-      positionX: [Number, String],
-      positionY: [Number, String],
-      offsetX: {
-        type: Boolean
-      },
-      offsetY: {
-        type: Boolean,
-        default: true
-      },
-      value: Boolean
+      // sizing
+      ...{
+        maxWidth: [Number, String],
+        minWidth: [Number, String],
+        maxHeight: {
+          type: [Number, String],
+          default: 'auto'
+        },
+        minHeight: [Number, String],
+      }
     },
     setup(props, context) {
       const { model: isActive } = getVModel(props, context);
-      const { updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
-				menuableState } = menuable(props, context);
-      const { attachToRoot } =detachable(props, context);
+      const {
+        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
+        menuableState
+      } = menuable(props, context);
+      const { attachToRoot } = detachable(props, context);
 
       const content = ref(null);
       const el = ref(null);
@@ -80,7 +82,7 @@
         top: 0,
         absoluteX: 0,
         absoluteY: 0,
-				...menuableState
+        ...menuableState
       });
 
       function initContent() {
@@ -95,37 +97,35 @@
 
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
-				return convertToUnit(calcXOverflow(computedLeft.value, menuWidth)) || '0'
-			})
+        return convertToUnit(calcXOverflow(computedLeft.value, menuWidth)) || '0'
+      })
 
-			const calculatedTop = computed(() => {
-				return convertToUnit(calcYOverFlow(computedTop.value)) || '0'
-			})
+      const calculatedTop = computed(() => {
+        return convertToUnit(calcYOverFlow(computedTop.value)) || '0'
+      })
 
-			const calculatedMaxWidth = computed(() => {
-			  return convertToUnit(props.maxWidth) || '0'
-			})
+      const calculatedMaxWidth = computed(() => {
+        return convertToUnit(props.maxWidth) || '0'
+      })
 
-			const calculatedMinWidth = computed(() => {
-			  if (props.minWidth) {
-			    return convertToUnit(props.minWidth) || '0'
-				}
+      const calculatedMinWidth = computed(() => {
+        if (props.minWidth) return convertToUnit(props.minWidth) || '0'
 
-			  const minWidth = Math.min(dimensions.content.width, state.pageWidth);
-			  const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
-				return convertToUnit(Math.min(_calculatedMaxWidth, minWidth)) || 0;
-			})
+        const minWidth = Math.min(dimensions.content.width, state.pageWidth);
+        const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
+        return convertToUnit(Math.min(_calculatedMaxWidth, minWidth)) || 0;
+      })
 
-			const calculatedMaxHeight = computed(() => {
-			  return convertToUnit(props.maxHeight) || '0';
-			})
+      const calculatedMaxHeight = computed(() => {
+        return convertToUnit(props.maxHeight) || '0';
+      })
 
       const contentStyles = computed(() => ({
         top: calculatedTop.value,
         left: calculatedLeft.value,
-				maxHeight: calculatedMaxHeight.value,
-				minWidth: calculatedMinWidth.value,
-				maxWidth: calculatedMaxWidth.value,
+        maxHeight: calculatedMaxHeight.value,
+        minWidth: calculatedMinWidth.value,
+        maxWidth: calculatedMaxWidth.value,
         zIndex: '10',
         position: 'absolute',
         display: 'inline-block',
@@ -140,9 +140,7 @@
         const activator = event.target || event.currentTarget;
         state.absoluteX = event.clientX;
         state.absoluteY = event.clientY;
-        if (!activator) {
-          return;
-        }
+        if (!activator) return
         state.top = dimensions.activator.height;
         isActive.value = !isActive.value;
         context.refs.content.scrollTop = context.refs.content.scrollHeight
@@ -151,10 +149,8 @@
 
       const clickOutsideDirective = computed(() => {
         //callback to close menu when clicked outside
-				const closeConditional = (e) => {
+        const closeConditional = (e) => {
           const target = e.target;
-
-          //return false
           return isActive.value && !content.value.contains(target)
         }
 
@@ -165,9 +161,7 @@
           },
           arg: {
             closeConditional: closeConditional,
-            include: () => {
-              return [context.refs.el]
-            },
+            include: () => [context.refs.el]
           },
         }
       })
@@ -207,7 +201,7 @@
         {
           style: {
             display: 'inline'
-					},
+          },
           staticClass: 'r',
           ref: 'el'
         },

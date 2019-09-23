@@ -39,12 +39,10 @@ export default function menuable(props, context) {
     const contentDimensions = dimensions.content;
     let top = 0;
 
-    if (props.top) {
-      top += activatorDimensions.height - contentDimensions.height;
-    }
-    if (props.offsetY) {
-      top += props.top ? -activatorDimensions.height : activatorDimensions.height;
-    }
+    if (props.top) top += activatorDimensions.height - contentDimensions.height
+    if (props.offsetY) top += props.top ? -activatorDimensions.height : activatorDimensions.height
+    if (props.nudgeTop) top -= parseInt(props.nudgeTop)
+    if (props.nudgeBottom) top += parseInt(props.nudgeBottom)
     top += activatorDimensions.top + menuableState.pageYOffset;
 
     return top;
@@ -66,6 +64,8 @@ export default function menuable(props, context) {
 
       left += props.left ? -maxWidth : activatorDimensions.width
     }
+    if (props.nudgeLeft) left -= parseInt(props.nudgeLeft)
+    if (props.nudgeRight) left += parseInt(props.nudgeRight)
 
     return left;
   });
@@ -98,18 +98,6 @@ export default function menuable(props, context) {
 
     return top
   }
-
-  const isOutOfViewport = (elem) => {
-    const bounding = elem.getBoundingClientRect();
-    const out = {};
-    out.top = bounding.top < 0;
-    out.left = bounding.left < 0;
-    out.bottom = bounding.bottom > (window.innerHeight || document.documentElement.clientHeight);
-    out.right = bounding.right > (window.innerWidth || document.documentElement.clientWidth);
-
-    return out;
-  };
-
 
   function updateDimensions() {
     menuableState.pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
