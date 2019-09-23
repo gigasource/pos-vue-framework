@@ -4,6 +4,7 @@
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
+  import detachable from '../../mixins/detachable';
 
   export default {
     name: 'GMenuFunctional',
@@ -69,6 +70,7 @@
       const { model: isActive } = getVModel(props, context);
       const { updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
 				menuableState } = menuable(props, context);
+      detachable(props, context);
 
       const content = ref(null);
       const el = ref(null);
@@ -82,18 +84,7 @@
 
       onMounted(() => {
         updateDimensions();
-        attachToRoot();
       });
-
-      function attachToRoot() {
-        const content = context.refs.content
-        if (!content) return
-
-        const target = document.querySelector('[data-app]')
-        if (!target) console.warn('Unable to locate root element')
-
-        target.insertBefore(content, target.firstChild)
-      }
 
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
