@@ -1,10 +1,6 @@
 ##Todo
 - transition
 - CSS
-- content positioning
-    - nudge top/bottom/left/right
-    - auto (center)
-- open on hover
 - close/open delay
 
 ##Done
@@ -14,6 +10,8 @@
 - [x] attach content to root (solve page overflow)
 - [x] click outside to close
 - [x] lazy loading (defer logic until toggle)
+- [x] nudge top/bottom/left/right
+- [x] open on hover
 
 ##Roadmap
 - attach to DOM (query selector)
