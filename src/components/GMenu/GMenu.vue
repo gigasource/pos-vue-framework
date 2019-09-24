@@ -5,6 +5,7 @@
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
+  import delayable from '../../mixins/delayable';
 
   export default {
     name: 'GMenu',
@@ -52,9 +53,13 @@
         allowOverflow: Boolean,
         offsetOverflow: Boolean
       },
-      // hover-able
+      // toggling
       ...{
         openOnHover: Boolean,
+        closeOnClick: {
+          type: Boolean,
+          default: true
+        }
       },
       // sizing
       ...{
@@ -68,7 +73,18 @@
           default: 'auto'
         },
         minHeight: [Number, String],
-      }
+      },
+			// delay
+			...{
+        openDelay: {
+          type: [Number, String],
+					default: 0
+				},
+				closeDelay: {
+          type: [Number, String],
+					default: 0
+				}
+			}
     },
     setup(props, context) {
       const { model: isActive } = getVModel(props, context);
@@ -77,14 +93,14 @@
         menuableState
       } = menuable(props, context);
       const { attachToRoot } = detachable(props, context);
+      const { runDelay } = delayable(props)
 
       const content = ref(null);
       const el = ref(null);
       const activator = ref(null);
       const state = reactive({
         top: 0,
-        absoluteX: 0,
-        absoluteY: 0,
+				hasJustFocused: false,
         ...menuableState
       });
 
@@ -97,6 +113,10 @@
         if (props.lazy) return
         initContent();
       });
+
+			watch(() => state.hasJustFocused, (newVal) => {
+        console.log(newVal)
+      })
 
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
@@ -131,26 +151,22 @@
         maxWidth: calculatedMaxWidth.value ,
       }))
 
-      function activate(event) {
+      function toggleContent(event) {
         if (props.lazy) initContent();
         const activator = event.target || event.currentTarget;
-        state.absoluteX = event.clientX;
-        state.absoluteY = event.clientY;
         if (!activator) return
-        state.top = dimensions.activator.height;
+
         isActive.value = !isActive.value;
-        context.refs.content.scrollTop = context.refs.content.scrollHeight
         updateDimensions();
       }
 
-      const clickOutsideDirective = computed(() => {
+      const genDirectives = () => {
         //callback to close menu when clicked outside
         const closeConditional = (e) => {
           const target = e.target;
-          return isActive.value && !content.value.contains(target)
+          return isActive.value && context.refs.content && !context.refs.content.contains(target)
         }
-
-        return {
+        const clickOutsideDirective = {
           name: 'click-outside',
           value: () => {
             isActive.value = false
@@ -160,27 +176,32 @@
             include: () => [context.refs.el]
           },
         }
-      })
-
-      //equates to v-show="value" in template
-      const vShowDirective = computed(() => {
-        return {
+        //equates to v-show="value" in template
+        const vShowDirective = {
           name: 'show',
           value: props.value
         }
-      })
+
+        const directives = [vShowDirective]
+        if (!props.openOnHover && props.closeOnClick) directives.push(clickOutsideDirective)
+        return directives;
+      }
 
       const genContent = () => {
         const defaultSlotContent = context.slots.default && context.slots.default() || 'fallback text';
+        const options = {
+          style: contentStyles.value,
+          staticClass: 'menu-content',
+          ref: 'content',
+          directives: genDirectives(),
+					on: {}
+        }
+        if (props.openOnHover && !props.disabled) {
+          options.on.mouseenter = mouseEnterHandler
+          options.on.mouseleave = mouseLeaveHandler
+        }
         return h('div',
-          {
-            style: contentStyles.value,
-						staticClass: 'menu-content',
-            ref: 'content',
-            directives: [
-              vShowDirective.value, clickOutsideDirective.value
-            ]
-          },
+          options,
           [defaultSlotContent]
         )
       }
@@ -189,16 +210,41 @@
         return h('div',
           { ref: 'activator' },
           context.slots.activator({
-            activate
+            toggleContent
           }))
+      }
+
+      const mouseEnterHandler = (event) => {
+        runDelay('open', () => {
+          if (state.hasJustFocused || isActive.value) return
+          toggleContent(event);
+          state.hasJustFocused = true;
+        })
+      }
+      const mouseLeaveHandler = (event) => {
+				runDelay('close', () => {
+          if (context.refs.content && context.refs.content.contains(event.relatedTarget)) return
+          isActive.value = false
+					state.hasJustFocused = false
+        })
+      }
+
+      function getElOptions() {
+        const options = {
+          staticClass: 'menu',
+          ref: 'el',
+					on: {}
+        }
+        if (props.openOnHover && !props.disabled) {
+          options.on.mouseenter = mouseEnterHandler
+          options.on.mouseleave = mouseLeaveHandler
+        }
+        return options
       }
 
       return () => h(
         'div',
-        {
-          staticClass: 'menu',
-          ref: 'el'
-        },
+        getElOptions(),
         [genActivator(), genContent()]
       )
     }
