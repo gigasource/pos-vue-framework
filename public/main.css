@@ -3634,4 +3634,18 @@ td {
   justify-content: center;
 }
 
+.menu {
+  display: inline;
+  position: relative;
+}
+.menu-content {
+  z-index: 10;
+  position: absolute;
+  display: inline-block;
+  max-width: 80%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  contain: content;
+}
+
 /*# sourceMappingURL=main.css.map */

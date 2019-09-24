@@ -58,7 +58,10 @@
       },
       // sizing
       ...{
-        maxWidth: [Number, String],
+        maxWidth: {
+         type: [Number, String],
+					default: '80%'
+				},
         minWidth: [Number, String],
         maxHeight: {
           type: [Number, String],
@@ -125,14 +128,7 @@
         left: calculatedLeft.value,
         maxHeight: calculatedMaxHeight.value,
         minWidth: calculatedMinWidth.value,
-        maxWidth: calculatedMaxWidth.value,
-        zIndex: '10',
-        position: 'absolute',
-        display: 'inline-block',
-        'max-width': '80%',
-        'overflow-y': 'auto',
-        'overflow-x': 'hidden',
-        'contain': 'content'
+        maxWidth: calculatedMaxWidth.value ,
       }))
 
       function activate(event) {
@@ -179,6 +175,7 @@
         return h('div',
           {
             style: contentStyles.value,
+						staticClass: 'menu-content',
             ref: 'content',
             directives: [
               vShowDirective.value, clickOutsideDirective.value
@@ -199,10 +196,7 @@
       return () => h(
         'div',
         {
-          style: {
-            display: 'inline'
-          },
-          staticClass: 'r',
+          staticClass: 'menu',
           ref: 'el'
         },
         [genActivator(), genContent()]
