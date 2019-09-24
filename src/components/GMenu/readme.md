@@ -1,8 +1,8 @@
-##Todo
+## Todo
 - transition
 - CSS
 
-##Done
+## Done
 - [x] align t/b/l/r
 - [x] offset-X/Y
 - [x] activator slot
@@ -13,10 +13,10 @@
 - [x] open on hover
 - [x] close/open delay
 
-##Roadmap
+## Roadmap
 - attach to DOM (query selector)
 
-##To be considered
+## To be considered
 - return-value (for g-select)
 - content focus & key event
 - absolute position (open menu at clicked location)
