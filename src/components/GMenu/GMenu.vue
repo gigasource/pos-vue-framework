@@ -63,7 +63,10 @@
       },
       // sizing
       ...{
-        maxWidth: [Number, String],
+        maxWidth: {
+         type: [Number, String],
+					default: '80%'
+				},
         minWidth: [Number, String],
         maxHeight: {
           type: [Number, String],
@@ -141,14 +144,7 @@
         left: calculatedLeft.value,
         maxHeight: calculatedMaxHeight.value,
         minWidth: calculatedMinWidth.value,
-        maxWidth: calculatedMaxWidth.value,
-        zIndex: '10',
-        position: 'absolute',
-        display: 'inline-block',
-        'max-width': '80%',
-        'overflow-y': 'auto',
-        'overflow-x': 'hidden',
-        'contain': 'content'
+        maxWidth: calculatedMaxWidth.value ,
       }))
 
       function toggleContent(event) {
@@ -191,6 +187,7 @@
         const defaultSlotContent = context.slots.default && context.slots.default() || 'fallback text';
         const options = {
           style: contentStyles.value,
+          staticClass: 'menu-content',
           ref: 'content',
           directives: genDirectives(),
 					on: {}
@@ -230,10 +227,7 @@
 
       function getElOptions() {
         const options = {
-          style: {
-            display: 'inline'
-          },
-          staticClass: 'r',
+          staticClass: 'menu',
           ref: 'el',
 					on: {}
         }
