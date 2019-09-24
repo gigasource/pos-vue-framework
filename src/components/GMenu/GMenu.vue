@@ -111,10 +111,6 @@
         initContent();
       });
 
-			watch(() => state.hasJustFocused, (newVal) => {
-        console.log(newVal)
-      })
-
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
         return convertToUnit(calcXOverflow(computedLeft.value, menuWidth)) || '0'

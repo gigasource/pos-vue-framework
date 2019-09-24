@@ -1,7 +1,6 @@
 ##Todo
 - transition
 - CSS
-- close/open delay
 
 ##Done
 - [x] align t/b/l/r
@@ -12,6 +11,7 @@
 - [x] lazy loading (defer logic until toggle)
 - [x] nudge top/bottom/left/right
 - [x] open on hover
+- [x] close/open delay
 
 ##Roadmap
 - attach to DOM (query selector)
