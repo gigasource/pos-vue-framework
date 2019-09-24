@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed, createElement as h, onMounted, reactive, ref } from '@vue/composition-api';
+  import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
