@@ -1,6 +1,6 @@
 # pos-vue-framework
 
-##Todo
+## Todo
 - g-text-field status (error, success)
 - dropdown menu
 - paper (sheet)

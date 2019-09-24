@@ -4,11 +4,11 @@
 			<template v-slot:activator="{toggleContent}">
 				<g-button @click="toggleContent" width="100px" height="50px">Activator</g-button>
 			</template>
-			<div style="background-color: #ffe7a7">
-				<g-layout column>
-					<g-button v-for="i in 5" :key="i">Content Button {{i}}</g-button>
-				</g-layout>
-			</div>
+			<g-list>
+				<g-list-item v-for="i in 5" :key="i">
+					<g-button>button {{i}}</g-button>
+				</g-list-item>
+			</g-list>
 		</g-menu>
 	</g-layout>
 </template>
@@ -17,10 +17,12 @@
   import GButton from '../components/GButton/GButton';
   import GLayout from '../components/GLayout/GLayout';
   import GMenu from '../components/GMenu/GMenu';
+  import GList from '../components/GList/GList';
+  import GListItem from '../components/GList/GListItem';
 
   export default {
     name: 'MenuDemo',
-    components: { GMenu, GLayout, GButton },
+    components: { GListItem, GList, GMenu, GLayout, GButton },
     data() {
       return {
         showMenu: false,
