@@ -95,9 +95,11 @@
       const { attachToRoot } = detachable(props, context);
       const { runDelay } = delayable(props)
 
+			//template refs
       const content = ref(null);
       const el = ref(null);
       const activator = ref(null);
+
       const state = reactive({
         top: 0,
 				hasJustFocused: false,

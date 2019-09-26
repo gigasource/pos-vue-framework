@@ -17,7 +17,7 @@
       required: Boolean,
       disabled: Boolean,
       readonly: Boolean,
-      value: [String, Boolean, Number, Array, Object],
+      value: null,
       activeClass: {
         type: String,
         default: 'check-box__active'

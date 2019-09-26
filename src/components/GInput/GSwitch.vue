@@ -16,7 +16,7 @@
       disabled: Boolean,
 			readonly: Boolean,
 			label: String,
-      value: [String, Boolean, Number, Array, Object],
+      value: null,
 		},
 		computed: {
       computedValue: {
