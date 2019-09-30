@@ -381,20 +381,8 @@ $colors: (
         color: $color_value ;
       }
       //border
-      .ba-#{$color_name} {
+      .b-#{$color_name} {
         border-color: $color_value;
-      }
-      .bt-#{$color_name} {
-        border-top-color: $color_value;
-      }
-      .bb-#{$color_name} {
-        border-bottom-color: $color_value;
-      }
-      .br-#{$color_name} {
-        border-right-color: $color_value;
-      }
-      .bl-#{$color_name} {
-        border-left-color: $color_value;
       }
     } @else if $color_name != "shades" {
       //background
@@ -579,12 +567,6 @@ $gradient-colors: (
                 'direction' : -90deg,
         ),
 );
-
-// gradient directional
-// @mixin gradient-directional($start-color: $gray-700, $end-color: $gray-800, $deg: 45deg) {
-//   background-image: linear-gradient($deg, $start-color, $end-color);
-//   background-repeat: repeat-x;
-// }
 
 /*
   Gradient color mixin
