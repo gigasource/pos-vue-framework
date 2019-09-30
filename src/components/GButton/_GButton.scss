@@ -3,10 +3,10 @@ button {
   font-family: $font-family-base;
   font-weight: $font-weight-base;
   font-size: 0.875rem;
-  background: $lgray-5;
+  background: #eeeeee;
   border-radius: 0.5rem;
   cursor: pointer;
-  color: $dgray-3;
+  color: #1d1d1d;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -44,7 +44,7 @@ button {
     top: 0;
     border-style: solid;
     border-width: 0 1.25rem 1.25rem 0;
-    border-color: transparent $red-1 transparent transparent;
+    border-color: transparent #ff4452 transparent transparent;
   }
 
   &__checked {

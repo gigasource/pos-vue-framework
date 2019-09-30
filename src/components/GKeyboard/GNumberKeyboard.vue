@@ -1,11 +1,8 @@
 <template>
 	<div class="number-key">
 		<slot name="screen">
-			<div class="number-key-show ba-dgray-4 ba-thin bg-lgray-2" style="height: calc(16.6667% - 4px)">
-				<div class="number-key-screen col-6">
-					<label for="number_key_output" class="number-key-text bg-dgray-9 ba-blue-9 ba-thin w-100 br-2 white fs-small-2 fw-400 pl-2">{{label}}</label>
-				</div>
-				<input id="number_key_output" class="number-key-text col-6 self-center ta-right bg-dgray-9 fs-large-2 fw-700 pr-2" style="border: none; outline: none; direction: rtl" v-model="computedNumber">
+			<div class="number-key-show ba-dgray-4 ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
+				<input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pr-2" style="border: none; outline: none; direction: rtl" v-model="computedNumber">
 			</div>
 		</slot>
 		<g-keyboard :items="items" v-model="computedNumber" :template="template" class="flex-grow-1"></g-keyboard>

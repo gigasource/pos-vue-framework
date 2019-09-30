@@ -95,20 +95,6 @@
   font-style: italic;
 }
 
-//Color
-@each $color, $value in $colors {
-  .#{$color} {
-    color: $value;
-  }
-}
-
-//Background color
-@each $color, $value in $colors {
-  .bg-#{$color} {
-    background-color: $value;
-  }
-}
-
 //Background clip
 .bgc-border {
   background-clip: border-box;
@@ -253,29 +239,6 @@
   }
 }
 
-//border color
-@each $color, $value in $colors {
-  .ba-#{$color} {
-    border-color: $value;
-  }
-
-  .bt-#{$color} {
-    border-top-color: $value;
-  }
-
-  .bb-#{$color} {
-    border-bottom-color: $value;
-  }
-
-  .br-#{$color} {
-    border-right-color: $value;
-  }
-
-  .bl-#{$color} {
-    border-left-color: $value;
-  }
-}
-
 //Border style {
 .b-dotted {
   border-style: dotted;
@@ -305,26 +268,6 @@
 //Shadow
 .bs-0 {
   box-shadow: none;
-}
-
-.bs-1 {
-  box-shadow:  $box-shadow-1;
-}
-
-.bs-2 {
-  box-shadow:  $box-shadow-2;
-}
-
-.bs-3 {
-  box-shadow: $box-shadow-3;
-}
-
-.bs-4 {
-  box-shadow: $box-shadow-4;
-}
-
-.bs-5 {
-  box-shadow: $box-shadow-5;
 }
 
 //Opacity

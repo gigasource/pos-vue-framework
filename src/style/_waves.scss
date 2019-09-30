@@ -1,4 +1,3 @@
-
 /*!
  * Waves v0.6.0
  * http://fian.my.id/Waves
@@ -25,11 +24,11 @@
     border-radius: 50%;
     width: 20px;
     height: 20px;
-    margin-top:-10px;
-    margin-left:-10px;
+    margin-top: -10px;
+    margin-left: -10px;
     opacity: 0;
 
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     transition: all 0.7s ease-out;
     transition-property: transform, opacity;
     transform: scale(0);
@@ -37,9 +36,22 @@
   }
 
   // Waves Colors
-  @each $color, $value in $colors {
+  @each $color_name, $color in $colors {
+    @each $color_type, $color_value in $color {
+      @if $color_type == "base" {
+        &.waves-#{$color_name} .waves-ripple {
+          background-color: $color_value !important;
+        }
+      } @else if $color_name != "shades" {
+        &.waves-#{$color_name}-#{$color_type} .waves-ripple {
+          background-color: $color_value !important;
+        }
+      }
+    }
+  }
+  @each $color, $color_value in $shades {
     &.waves-#{$color} .waves-ripple {
-      background-color: $value;
+      background-color: $color_value !important;
     }
   }
 

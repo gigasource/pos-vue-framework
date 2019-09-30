@@ -27,7 +27,7 @@
           top: top,
           bottom: !top,
           'bg-black': dark,
-          'bg-lgray-5': !dark,
+          'bg-grey-lighten-3': !dark,
           'btrr-3': tile && !top,
           'btlr-3': tile && !top,
           'bbrr-3': tile && top,

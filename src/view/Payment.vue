@@ -1,5 +1,5 @@
 <template>
-	<div id="app" class="vertical-body-responsive-wrapper">
+	<div id="app" class="body-wrapper__responsive__vertical">
 		<g-layout row>
 			<div class="col-6">
 				<g-layout column class="r">
@@ -28,14 +28,14 @@
 														<td colspan="4" class="pl-2 pr-2" style="height: 3rem; background-color: rgba(20, 113, 255, 0.2)">
 															<g-layout row>
 																<div class="col-4 row-flex">
-																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">-</g-button>
-																	<div class="bg-white ba-blue-7 blue-7 ba-thin col-3" style="display: inline-flex; align-items: center; justify-content: center">{{ item.quantity}}</div>
-																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">+</g-button>
+																	<g-button class="btn__small-rounded bg-transparent ba-grey-darken-3 ba-thin fw-500 self-center">-</g-button>
+																	<div class="bg-white ba-blue blue ba-thin col-3" style="display: inline-flex; align-items: center; justify-content: center">{{ item.quantity}}</div>
+																	<g-button class="btn__small-rounded bg-transparent ba-grey-darken-3 ba-thin fw-500 self-center">+</g-button>
 																</div>
 																<div class="col-8 row-flex justify-end">
 																	<g-button flat>
 																		<img src="../assets/order/remove.svg">
-																		<span class="ml-2 red-1">Remove item</span>
+																		<span class="ml-2 red">Remove item</span>
 																	</g-button>
 																</div>
 															</g-layout>
@@ -73,7 +73,7 @@
 											</p>
 											<p class="row-6 row-flex pa-1">
 												<span class="col-6 ta-left self-end">Total</span>
-												<span class="col-6 ta-right red-1 fw-700 fs-large self-end">€40.50</span>
+												<span class="col-6 ta-right red fw-700 fs-large self-end">€40.50</span>
 											</p>
 										</div>
 									</g-layout>

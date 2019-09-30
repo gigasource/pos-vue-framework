@@ -1,5 +1,5 @@
 <template>
-	<div id="app" class="vertical-body-responsive-wrapper">
+	<div id="app" class="body-wrapper__responsive__vertical">
 		<g-layout row>
 			<div class="col-6">
 				<g-layout column class="r">
@@ -28,14 +28,14 @@
 														<td colspan="4" class="pl-2 pr-2" style="height: 3rem; background-color: rgba(20, 113, 255, 0.2)">
 															<g-layout row>
 																<div class="col-4 row-flex">
-																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">-</g-button>
-																	<div class="bg-white ba-blue-7 blue-7 ba-thin col-3" style="display: inline-flex; align-items: center; justify-content: center">{{ item.quantity}}</div>
-																	<g-button class="btn__small-rounded bg-transparent ba-dgray-2 ba-thin fw-500 self-center">+</g-button>
+																	<g-button class="btn__small-rounded bg-transparent ba-grey ba-thin fw-500 self-center">-</g-button>
+																	<div class="bg-white ba-blue blue ba-thin col-3" style="display: inline-flex; align-items: center; justify-content: center">{{ item.quantity}}</div>
+																	<g-button class="btn__small-rounded bg-transparent ba-grey ba-thin fw-500 self-center">+</g-button>
 																</div>
 																<div class="col-8 row-flex justify-end">
 																	<g-button flat>
 																		<img src="../assets/order/remove.svg">
-																		<span class="ml-2 red-1">Remove item</span>
+																		<span class="ml-2 red">Remove item</span>
 																	</g-button>
 																</div>
 															</g-layout>
@@ -72,7 +72,7 @@
 										</p>
 										<p class="row-6 row-flex pa-1">
 											<span class="col-6 ta-left self-end">Total</span>
-											<span class="col-6 ta-right red-1 fw-700 fs-large self-end">€40.50</span>
+											<span class="col-6 ta-right red fw-700 fs-large self-end">€40.50</span>
 										</p>
 									</div>
 								</g-layout>
@@ -86,11 +86,11 @@
 						</g-button>
 						<g-button color="#ffffff" width="15%" class="mr-2 btn__centered">
 							<img src="../assets/order/menu.svg">
-							<span class="ml-2 dgray-2">More</span>
+							<span class="ml-2">More</span>
 						</g-button>
 						<g-button color="#ffffff" width="23%" class="mr-2 btn__centered">
 							<img src="../assets/order/folder.svg">
-							<span class="ml-2 dgray-2">Saved list</span>
+							<span class="ml-2">Saved list</span>
 						</g-button>
 					</g-toolbar>
 				</g-layout>
@@ -157,16 +157,7 @@
 					</div>
 					<div class="row-5 pl-1 pr-1 pb-1">
 						<g-layout row>
-							<g-number-keyboard class="col-6" v-model="product" :items="keyNumbers">
-								<template v-slot:screen>
-									<div class="number-key-show ba-dgray-4 ba-thin bg-lgray-2" style="height: calc(16.6667% - 3.4px)">
-										<div class="number-key-screen col-6">
-											<label for="number_key_output" class="number-key-text bg-dgray-9 ba-blue-9 ba-thin w-100 br-2 white fs-small-2 fw-400 pl-2">{{label}}</label>
-										</div>
-										<input id="number_key_output" class="number-key-text col-6 self-center ta-right bg-lgray-2 fs-large-2 fw-700 pr-2" style="border: none; outline: none; direction: rtl" v-model="product">
-									</div>
-								</template>
-							</g-number-keyboard>
+							<g-number-keyboard class="col-6" v-model="product" :items="keyNumbers"></g-number-keyboard>
 							<g-layout column class="col-3 pl-1">
 								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Note</g-button>
 								<g-button class="flex-equal mb-1" color="#8191ab" text-color="#1c1c1c" outline style="background-color: #efefef">Check Stack</g-button>

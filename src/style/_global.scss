@@ -28,7 +28,7 @@
 body {
   font-weight: $font-weight-base;
   font-family: $font-family-base;
-  color: $dgray-3;
+  color: #1d1d1d;
   margin: 0;
 }
 
@@ -51,7 +51,7 @@ p {
   visibility: hidden !important;
 }
 
-.vertical-body-responsive-wrapper {
+.body-wrapper__responsive__vertical {
   display: flex;
   flex-direction: column;
   height: 100vh;

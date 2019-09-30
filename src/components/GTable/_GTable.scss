@@ -21,22 +21,22 @@ td {
 }
 
 .table-striped tr:nth-child(even) {
-  background-color: $lgray-5;
+  background-color: #eeeeee;
 }
 
 .table-striped tr:nth-child(odd) {
-  background-color: $white;
+  background-color: #ffffff;
 }
 
 .table-striped > div:nth-child(even) {
-  background-color: $lgray-5;
+  background-color: #eeeeee;
 }
 
 .table-striped > div:nth-child(odd) {
-  background-color: $white;
+  background-color: #ffffff;
 }
 
 .table-bordered td,
 .table-bordered th {
-  border: 0.05rem solid $lgray-3;
+  border: 0.05rem solid #d6d6d6;
 }

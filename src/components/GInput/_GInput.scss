@@ -19,7 +19,7 @@ textarea {
   width: 100%;
 
   &::placeholder {
-    color: $dgray-2;
+    color: #1d1d26;
     font-size: 0.75rem;
     font-weight: 400;
     font-style: italic;
@@ -42,7 +42,7 @@ textarea {
 
   &-error {
     text-align: center;
-    color: $red-1;
+    color: #ff4452;
     margin-top: 0.25rem;
     font-size: 0.875rem;
     font-style: italic;
@@ -55,7 +55,7 @@ textarea {
   }
 
   &__large::placeholder {
-    color: $dgray-2;
+    color: #1d1d26;
     font-size: 1.25rem;
     font-weight: 600;
     font-style: normal;
@@ -63,7 +63,7 @@ textarea {
   }
 
   &.textfield__active {
-    border: 0.05rem solid $blue-7;
+    border: 0.05rem solid #046eff;
   }
 }
 
@@ -95,7 +95,7 @@ textarea {
       width: 50%;
       left: 0;
       bottom: 0;
-      background-color: $blue-7;
+      background-color: #046eff;
       transition: 0.5s;
       border-radius: 2rem;
     }
@@ -115,7 +115,7 @@ textarea {
     cursor: pointer;
     transition: 0.5s;
     border-radius: 2rem;
-    background-color: $lgray-4;
+    background-color: #a1a1a1;
 
     &:before {
       position: absolute;
@@ -124,7 +124,7 @@ textarea {
       width: 50%;
       left: 0;
       bottom: -25%;
-      background-color: $lgray-3;
+      background-color: #d6d6d6;
       transition: 0.5s;
       border-radius: 100%;
     }
@@ -136,11 +136,11 @@ textarea {
   }
 
   &-input:checked + &-round {
-    background-color: $blue-8;
+    background-color: #92beff;
   }
 
   &-input:checked + &-round:before {
-    background-color: $blue-7;
+    background-color: #046eff;
   }
 
   & .first-side {
@@ -189,7 +189,7 @@ textarea {
     border-radius: 0.25rem;
     height: 1rem;
     width: 1rem;
-    background-color: $lgray-5;
+    background-color: #eeeeee;
   }
 
   & .check-box__active:after {
@@ -199,7 +199,7 @@ textarea {
     left: 0.375rem;
     width: 0.25rem;
     height: 0.375rem;
-    border: solid $white;
+    border: solid #ffffff;
     border-width: 0 0.125rem 0.125rem 0;
     transform: rotate(45deg);
   }
@@ -211,7 +211,7 @@ textarea {
     border-radius: 0.25rem;
     height: 1rem;
     width: 1rem;
-    background-color: $blue-7;
+    background-color: #046eff;
   }
 }
 
@@ -303,7 +303,7 @@ textarea {
     transform: translateY(-50%);
     user-select: none;
     border-radius: 50%;
-    border: 1px solid $lgray-5;
+    border: 1px solid #eeeeee;
 
     &-container {
       outline: none;
@@ -319,7 +319,7 @@ textarea {
       width: 24px;
       height: 24px;
       border-radius: 50% 50% 0;
-      border: 1px solid $lgray-5;
+      border: 1px solid #eeeeee;
       position: absolute;
       left: 0;
       bottom: 100%;
