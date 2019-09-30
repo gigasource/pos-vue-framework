@@ -406,20 +406,8 @@ $colors: (
         color: $color_value;
       }
       //border
-      .ba-#{$color_name}-#{$color_type} {
+      .b-#{$color_name}-#{$color_type} {
         border-color: $color_value;
-      }
-      .bt-#{$color_name}-#{$color_type} {
-        border-top-color: $color_value;
-      }
-      .bb-#{$color_name}-#{$color_type} {
-        border-bottom-color: $color_value;
-      }
-      .br-#{$color_name}-#{$color_type} {
-        border-right-color: $color_value;
-      }
-      .bl-#{$color_name}-#{$color_type} {
-        border-left-color: $color_value;
       }
     }
   }
@@ -433,20 +421,8 @@ $colors: (
   .#{$color} {
     color: $color_value;
   }
-  .ba-#{$color} {
+  .b-#{$color} {
     border-color: $color_value;
-  }
-  .bt-#{$color} {
-    border-top-color: $color_value;
-  }
-  .bb-#{$color} {
-    border-bottom-color: $color_value;
-  }
-  .br-#{$color} {
-    border-right-color: $color_value;
-  }
-  .bl-#{$color} {
-    border-left-color: $color_value;
   }
 }
 
