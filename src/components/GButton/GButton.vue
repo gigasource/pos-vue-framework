@@ -22,6 +22,7 @@
       text: String
     },
     computed: {
+      // susceptible to change per usage -> use composition/HOC
       buttonClass() {
         return {
           'btn-raised': this.raised,

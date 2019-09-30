@@ -70,7 +70,7 @@
   import GButton from '../components/GButton/GButton';
   import GTextField from '../components/GInput/GTextField';
   import GLayout from '../components/GLayout/GLayout';
-  import GToolbar from '../components/GLayout/GToolbar';
+  import GToolbar from '../components/GToolbar/GToolbar';
   import GSpacer from '../components/GLayout/GSpacer';
   import GKeyboard from '../components/GKeyboard/GKeyboard';
   import GTabs from '../components/GTabs/GTabs';

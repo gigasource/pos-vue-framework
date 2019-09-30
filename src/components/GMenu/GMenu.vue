@@ -95,9 +95,11 @@
       const { attachToRoot } = detachable(props, context);
       const { runDelay } = delayable(props)
 
+			//template refs
       const content = ref(null);
       const el = ref(null);
       const activator = ref(null);
+
       const state = reactive({
         top: 0,
 				hasJustFocused: false,
@@ -113,10 +115,6 @@
         if (props.lazy) return
         initContent();
       });
-
-			watch(() => state.hasJustFocused, (newVal) => {
-        console.log(newVal)
-      })
 
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))

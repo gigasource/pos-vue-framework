@@ -195,7 +195,7 @@
 
   import GButton from '@/components/GButton/GButton';
   import GDivider from '@/components/GLayout/GDivider';
-  import GToolbar from '@/components/GLayout/GToolbar';
+  import GToolbar from '@/components/GToolbar/GToolbar';
   import GTable from '@/components/GTable/GTable';
   import GNumberKeyboard from '@/components/GKeyboard/GNumberKeyboard';
   import GLayout from '@/components/GLayout/GLayout';
