@@ -1,12 +1,12 @@
 <template>
-	<div>
-		<slot></slot>
-	</div>
+	<g-card>test</g-card>
 </template>
 
 <script>
+  import GCard from '../components/GCard/GCard';
   export default {
-    name: 'GCard',
+    name: 'CardDemo',
+    components: { GCard },
     data() {
       return {}
     }
