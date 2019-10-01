@@ -1,8 +1,8 @@
 <template>
 	<div style="display: flex">
-		<g-card outlined>
+		<g-card outlined min-width="250px">
 			<g-card-title>
-				<p>I'm a title</p>
+				<p>GCard Outlined</p>
 			</g-card-title>
 			<g-card-text>
 				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
@@ -10,6 +10,7 @@
 					you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to
 					find a way to escape.</p>
 			</g-card-text>
+			<hr />
 			<g-card-actions>
 				<g-button>DON'T CLICK!</g-button>
 				<g-button>CLICK ME!</g-button>
@@ -18,7 +19,7 @@
 
 		<g-card disabled>
 			<g-card-title>
-				<p>I'm a title</p>
+				<p>GCard Disabled</p>
 			</g-card-title>
 			<g-card-text>
 				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
@@ -26,6 +27,41 @@
 					you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to
 					find a way to escape.</p>
 			</g-card-text>
+			<hr />
+			<g-card-actions>
+				<g-button>DON'T CLICK!</g-button>
+				<g-button>CLICK ME!</g-button>
+			</g-card-actions>
+		</g-card>
+
+		<g-card flat>
+			<g-card-title>
+				<p>GCard flat</p>
+			</g-card-title>
+			<g-card-text>
+				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
+					making
+					you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to
+					find a way to escape.</p>
+			</g-card-text>
+			<hr />
+			<g-card-actions>
+				<g-button>DON'T CLICK!</g-button>
+				<g-button>CLICK ME!</g-button>
+			</g-card-actions>
+		</g-card>
+
+		<g-card raised>
+			<g-card-title>
+				<p>GCard Raised</p>
+			</g-card-title>
+			<g-card-text>
+				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
+					making
+					you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to
+					find a way to escape.</p>
+			</g-card-text>
+			<hr />
 			<g-card-actions>
 				<g-button>DON'T CLICK!</g-button>
 				<g-button>CLICK ME!</g-button>

@@ -22,10 +22,12 @@
       loading: Boolean,
       flat: Boolean,
       hover: Boolean,
-			minWidth: Number,
-      maxWidth: Number,
-      minHeight: Number,
-      maxHeight: Number,
+			minWidth: String,
+      maxWidth: String,
+      minHeight: String,
+      maxHeight: String,
+      width: String,
+      height: String,
       img: String,
       link: Boolean,
       loaderHeight: {
@@ -51,18 +53,18 @@
 			styles() {
         let style = {};
 				if(this.minWidth) {
-
+					Object.assign(style, {'min-width': this.minWidth});
 				}
 				if(this.minHeight) {
-
+          Object.assign(style, {'min-height': this.minHeight});
 				}
 
 				if(this.maxWidth) {
-
+          Object.assign(style, {'max-width': this.maxWidth});
 				}
 
 				if(this.maxHeight) {
-
+          Object.assign(style, {'max-height': this.maxHeight});
 				}
 				return style;
 			}
