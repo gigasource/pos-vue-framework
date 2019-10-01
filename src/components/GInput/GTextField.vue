@@ -165,6 +165,7 @@
       }
     },
 		watch: {
+      // validate after change
       internalValue: _.debounce(function()  {
           if (this.rules && typeof this.rules === 'function') {
             this.isValidInput = this.rules(this.internalValue);
