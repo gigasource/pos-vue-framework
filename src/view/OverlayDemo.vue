@@ -1,19 +1,19 @@
 <template>
-    <div>
-        <g-button @click="overlay = !overlay">Show Overlay</g-button>
-        <h1>Hello World</h1>
-        <g-overlay :value="overlay" color="black" opacity="0.5" z-index="-1">
-            <g-button width="100" height="50" @click="overlay = false">Close</g-button>
+    <g-layout class="justify-center">
+        <g-button width="100px" height="50px" @click="overlay = !overlay">Show Overlay</g-button>
+        <g-overlay :value="overlay" color="teal" opacity="0.8">
+            <g-button width="100px" height="50px" @click="overlay = false">Close</g-button>
         </g-overlay>
-    </div>
+    </g-layout>
 </template>
 
 <script>
     import GOverlay from "../components/GOverlay/GOverlay";
     import GButton from "../components/GButton/GButton";
+    import GLayout from "../components/GLayout/GLayout";
     export default {
         name: "OverlayDemo",
-        components: {GButton, GOverlay},
+        components: {GLayout, GButton, GOverlay},
         data() {
             return {
                 overlay: false
