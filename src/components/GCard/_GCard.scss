@@ -1,0 +1,88 @@
+.g-card {
+  display: block;
+  max-width: 100%;
+  min-width: 20%;
+  outline: none;
+  text-decoration: none;
+  transition-property: box-shaow, opacity;
+  overflow-wrap: break-word;
+  position: relative;
+  white-space: normal;
+  margin: .5rem 1rem 1rem 0.5rem;
+  width: 300px;
+  height: auto;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  -webkit-transition: -webkit-box-shadow .25s;
+  -moz-transition: box-shadow .25s;
+  -o-transition: box-shadow .25s;
+  transition: -webkit-box-shadow .25s;
+  transition: box-shadow .25s, -webkit-box-shadow .25s;
+
+ //On card hovering default
+  // &:hover {
+  //   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  // }
+
+  &-content {
+    padding: 1rem;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /*
+       Card title
+   */
+
+  &_title {
+    font-size: 24px;
+    font-weight: 300;
+  }
+
+  /*
+  Card text
+  */
+
+  &_text {
+    font-size: 16px;
+    font-weight: 200;
+    margin-top: 5px;
+  }
+
+  &_actions {
+    font-size: 16px;
+    font-weight: 200;
+    margin-top: 10px;
+  }
+
+  &-flat {
+    @include elevation(0);
+  }
+
+  &-hover {
+    cursor: pointer;
+    transition: box-shadow .4s cubic-bezier(.25, .8, .25, 1);
+
+    &:hover {
+      @include elevation(8);
+    }
+  }
+
+  &-disabled {
+    pointer-events: none;
+    user-select: none;
+  }
+
+  &-loading {
+    overflow: hidden
+  }
+
+  &-outlined {
+    box-shadow: none;
+    border: 1px solid map-get($grey, 'lighten-1')
+  }
+
+  &-raised {
+    @include elevation(8);
+  }
+
+}
