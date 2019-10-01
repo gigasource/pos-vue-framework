@@ -1,6 +1,6 @@
 <template>
-	<div style="display: flex">
-		<g-card outlined min-width="250px">
+	<div style="display: flex;">
+		<g-card outlined min-width="250px" min-height="250px">
 			<g-card-title>
 				<p>GCard Outlined</p>
 			</g-card-title>

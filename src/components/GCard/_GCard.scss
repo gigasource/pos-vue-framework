@@ -1,5 +1,6 @@
 .g-card {
   display: block;
+  background-color: map_get($shades, 'white');
   max-width: 100%;
   min-width: 20%;
   outline: none;

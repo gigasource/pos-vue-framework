@@ -6259,6 +6259,7 @@ td {
 
 .g-card {
   display: block;
+  background-color: #FFFFFF;
   max-width: 100%;
   min-width: 20%;
   outline: none;
