@@ -64,7 +64,7 @@
 			</g-card-actions>
 		</g-card>
 
-		<g-card raised ripple background-color="#009688">
+		<g-card raised  background-color="#009688">
 			<g-card-title>
 				<p>GCard Raised</p>
 			</g-card-title>

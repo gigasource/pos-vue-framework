@@ -26,7 +26,6 @@
       },
       //styles
       ...{
-        ripple: Boolean,
         minWidth: String,
         maxWidth: String,
         minHeight: String,
@@ -56,7 +55,6 @@
           'g-card-disabled': props.loading || props.disabled,
           'g-card-outlined': props.outlined,
           'g-card-raised': props.raised,
-          'g-card-ripple': props.ripple,
         };
 				classes[elevationClassName] = true;
         return classes;
