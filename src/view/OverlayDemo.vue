@@ -1,7 +1,7 @@
 <template>
     <g-layout class="justify-center">
         <g-button width="100px" height="50px" @click="overlay = !overlay">Show Overlay</g-button>
-        <g-overlay :value="overlay" color="teal" opacity="0.8">
+        <g-overlay v-model="overlay" color="teal" opacity="0.8">
             <g-button width="100px" height="50px" @click="overlay = false">Close</g-button>
         </g-overlay>
     </g-layout>
