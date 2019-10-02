@@ -1,0 +1,27 @@
+.dialog2 {
+  pointer-events: auto;
+  overflow-y: hidden;
+
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 6;
+  }
+
+  &-content {
+    display: none;
+
+  }
+
+  &-content__active {
+    display: flex;
+    pointer-events: auto;
+  }
+}
