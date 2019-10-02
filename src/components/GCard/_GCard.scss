@@ -3,6 +3,7 @@
   background-color: map_get($shades, 'white');
   max-width: 100%;
   min-width: 15%;
+  height: fit-content;
   outline: none;
   text-decoration: none;
   transition-property: box-shaow, opacity;
@@ -11,7 +12,6 @@
   white-space: normal;
   margin: 0.5rem 0.5rem 0.5rem 0.5rem;
   width: 300px;
-  height: auto;
   border-radius: 2px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   -webkit-transition: -webkit-box-shadow .25s;
@@ -54,6 +54,7 @@
     font-size: 16px;
     font-weight: 200;
     margin-top: 5px;
+    overflow: auto;
   }
 
   &-text > * {
