@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
 
   export default {
     name: "GOverlay",
