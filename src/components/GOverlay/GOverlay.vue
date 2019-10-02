@@ -8,6 +8,7 @@
 </template>
 
 <script>
+  import getVModel from '../../mixins/getVModel';
   import { computed } from '@vue/composition-api';
 
   export default {
@@ -31,15 +32,17 @@
         default: 5,
       }
     },
-		setup(props) {
-      const computedOpacity = computed(() => props.value ? props.opacity : 0);
+		setup(props, context) {
+			const { model: isActive } = getVModel(props, context);
+
+      const computedOpacity = computed(() => isActive.value ? props.opacity : 0);
 
       const overlayStyle = computed(() => ({
         zIndex: props.zIndex
       }));
 
       const overlayClass = computed(() => ({
-        'overlay__active': props.value,
+        'overlay__active': isActive.value,
         'overlay__absolute': props.absolute
       }));
 
