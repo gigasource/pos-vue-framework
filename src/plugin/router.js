@@ -7,6 +7,7 @@ import Payment from '@/view/Payment';
 import MenuDemo from '@/view/MenuDemo';
 import Dialog from '@/view/DialogDemo';
 import SliderDemo from '../view/SliderDemo';
+import CardDemo from '../view/CardDemo';
 import OverlayDemo from "../view/OverlayDemo";
 import Dialog2Demo from '../view/Dialog2Demo';
 
@@ -19,7 +20,8 @@ const routes = [
   { path: '/slider', name: 'Slider', component: SliderDemo},
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
   { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
-  { path: '/dialog2-demo', name: 'Dialog2 Demo', component: Dialog2Demo}
+  { path: '/dialog2-demo', name: 'Dialog2 Demo', component: Dialog2Demo},
+  { path: '/card-demo', name: 'Card demo', component: CardDemo},
 ];
 
 const router = new VueRouter({
