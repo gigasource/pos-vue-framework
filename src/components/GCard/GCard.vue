@@ -31,7 +31,7 @@
         minHeight: String,
         maxHeight: String,
         width: String,
-        elevation: Number,
+        elevation: String,
         height: String,
         img: String,
         link: Boolean,
