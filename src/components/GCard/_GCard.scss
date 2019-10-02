@@ -37,16 +37,12 @@
        Card title
    */
 
-  &_title {
+  &-title {
     font-size: 24px;
     font-weight: 300;
   }
 
-  &_text > * {
-    margin: 2px 2px 2px 2px;
-  }
-
-  &_title > * {
+  &-title > * {
     margin: 2px 2px 2px 2px;
   }
 
@@ -54,27 +50,31 @@
   Card text
   */
 
-  &_text {
+  &-text {
     font-size: 16px;
     font-weight: 200;
     margin-top: 5px;
   }
 
-  &_actions {
+  &-text > * {
+    margin: 2px 2px 2px 2px;
+  }
+
+  &-actions {
     font-size: 16px;
     font-weight: 200;
     margin-top: 10px;
   }
 
-  &_actions > * {
+  &-actions > * {
     margin: 2px 2px 2px 2px;
   }
 
-  &-flat {
+  &__flat {
     @include elevation(0);
   }
 
-  &-hover {
+  &__hover {
     cursor: pointer;
     transition: box-shadow .4s cubic-bezier(.25, .8, .25, 1);
 
@@ -83,21 +83,21 @@
     }
   }
 
-  &-disabled {
+  &__disabled {
     pointer-events: none;
     user-select: none;
   }
 
-  &-loading {
+  &__loading {
     overflow: hidden
   }
 
-  &-outlined {
+  &__outlined {
     box-shadow: none;
     border: 1px solid map_get($grey, 'lighten-1')
   }
 
-  &-raised {
+  &__raised {
     @include elevation(8);
   }
 
@@ -105,7 +105,7 @@
   $elevationMin: 1;
   $elevationMax: 24;
   @for $i from $elevationMin through $elevationMax {
-    &-elevation-#{$i} {
+    &__elevation-#{$i} {
       @include elevation($i)
     }
   }

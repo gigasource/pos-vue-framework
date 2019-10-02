@@ -45,16 +45,16 @@
     }, setup(props, context) {
 
       let classes = computed(() => {
-        let elevationClassName = props.elevation ? `g-card-elevation-${props.elevation}` : `elevation-2`;
+        let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : `g-card__elevation-2`;
 				let classes = {
           'g-card': true,
-          'g-card-flat': props.flat,
-          'g-card-hover': props.hover,
-          'g-card-link': props.isClickable,
-          'g-card-loading': props.loading,
-          'g-card-disabled': props.loading || props.disabled,
-          'g-card-outlined': props.outlined,
-          'g-card-raised': props.raised,
+          'g-card__flat': props.flat,
+          'g-card__hover': props.hover,
+          'g-card__link': props.isClickable,
+          'g-card__loading': props.loading,
+          'g-card__disabled': props.loading || props.disabled,
+          'g-card__outlined': props.outlined,
+          'g-card__raised': props.raised,
         };
 				classes[elevationClassName] = true;
         return classes;

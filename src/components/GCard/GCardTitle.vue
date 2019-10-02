@@ -1,5 +1,5 @@
 <template>
-	<div class="g-card_title">
+	<div class="g-card-title">
 		<slot></slot>
 	</div>
 </template>
