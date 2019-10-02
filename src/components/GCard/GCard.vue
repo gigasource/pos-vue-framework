@@ -45,7 +45,7 @@
     }, setup(props, context) {
 
       let classes = computed(() => {
-        let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : `g-card__elevation-2`;
+        let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : '';
 				let classes = {
           'g-card': true,
           'g-card__flat': props.flat,
