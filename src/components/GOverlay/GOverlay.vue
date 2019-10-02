@@ -31,7 +31,7 @@
         default: 5,
       }
     },
-		setup(props, context) {
+		setup(props) {
       const computedOpacity = computed(() => props.value ? props.opacity : 0);
 
       const overlayStyle = computed(() => ({
