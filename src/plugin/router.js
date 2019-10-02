@@ -8,6 +8,7 @@ import MenuDemo from '@/view/MenuDemo';
 import Dialog from '@/view/DialogDemo';
 import SliderDemo from '../view/SliderDemo';
 import CardDemo from '../view/CardDemo';
+import OverlayDemo from "../view/OverlayDemo";
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -17,6 +18,7 @@ const routes = [
   { path: '/dialog', name: 'Dialog', component: Dialog},
   { path: '/slider', name: 'Slider', component: SliderDemo},
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
+  { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
   { path: '/card-demo', name: 'Card demo', component: CardDemo}
 ];
 

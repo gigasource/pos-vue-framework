@@ -64,9 +64,9 @@
       // sizing
       ...{
         maxWidth: {
-         type: [Number, String],
-					default: '80%'
-				},
+          type: [Number, String],
+          default: '80%'
+        },
         minWidth: [Number, String],
         maxHeight: {
           type: [Number, String],
@@ -74,17 +74,17 @@
         },
         minHeight: [Number, String],
       },
-			// delay
-			...{
+      // delay
+      ...{
         openDelay: {
           type: [Number, String],
-					default: 0
-				},
-				closeDelay: {
+          default: 0
+        },
+        closeDelay: {
           type: [Number, String],
-					default: 0
-				}
-			}
+          default: 0
+        }
+      }
     },
     setup(props, context) {
       const { model: isActive } = getVModel(props, context);
@@ -95,14 +95,14 @@
       const { attachToRoot } = detachable(props, context);
       const { runDelay } = delayable(props)
 
-			//template refs
+      //template refs
       const content = ref(null);
       const el = ref(null);
       const activator = ref(null);
 
       const state = reactive({
         top: 0,
-				hasJustFocused: false,
+        hasJustFocused: false,
         ...menuableState
       });
 
@@ -146,7 +146,7 @@
         left: calculatedLeft.value,
         maxHeight: calculatedMaxHeight.value,
         minWidth: calculatedMinWidth.value,
-        maxWidth: calculatedMaxWidth.value ,
+        maxWidth: calculatedMaxWidth.value,
       }))
 
       function toggleContent(event) {
@@ -192,7 +192,7 @@
           staticClass: 'menu-content',
           ref: 'content',
           directives: genDirectives(),
-					on: {}
+          on: {}
         }
         if (props.openOnHover && !props.disabled) {
           options.on.mouseenter = mouseEnterHandler
@@ -220,31 +220,30 @@
         })
       }
       const mouseLeaveHandler = (event) => {
-				runDelay('close', () => {
+        runDelay('close', () => {
           if (context.refs.content && context.refs.content.contains(event.relatedTarget)) return
           isActive.value = false
-					state.hasJustFocused = false
+          state.hasJustFocused = false
         })
       }
 
-      function getElOptions() {
+      return () => {
         const options = {
           staticClass: 'menu',
           ref: 'el',
-					on: {}
+          on: {}
         }
         if (props.openOnHover && !props.disabled) {
           options.on.mouseenter = mouseEnterHandler
           options.on.mouseleave = mouseLeaveHandler
         }
-        return options
-      }
 
-      return () => h(
-        'div',
-        getElOptions(),
-        [genActivator(), genContent()]
-      )
+        return h(
+          'div',
+          options,
+          [genActivator(), genContent()]
+        )
+      }
     }
   }
 </script>
