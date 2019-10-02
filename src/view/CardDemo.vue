@@ -1,6 +1,6 @@
 <template>
 	<div style="display: flex;">
-		<g-card outlined min-width="250px" min-height="250px">
+		<g-card outlined max-height="450px">
 			<g-card-title>
 				<p>GCard Outlined</p>
 			</g-card-title>
@@ -36,7 +36,7 @@
 
 		<g-card flat>
 			<g-card-title>
-				<p>GCard flat</p>
+				<p>GCard Flat</p>
 			</g-card-title>
 			<g-card-text>
 				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed

@@ -8,21 +8,17 @@
 </template>
 
 <script>
-  import GCardText from './GCardText';
-  import GCardTitle from './GCardTitle';
-  import GCardActions from './GCardActions';
-  import GTextField from '../GInput/GTextField';
+  import { computed } from '@vue/composition-api';
 
   export default {
     name: 'GCard',
-    components: { GTextField, GCardActions, GCardTitle, GCardText },
     props: {
       disabled: Boolean,
       isClickable: Boolean,
       loading: Boolean,
       flat: Boolean,
       hover: Boolean,
-			minWidth: String,
+      minWidth: String,
       maxWidth: String,
       minHeight: String,
       maxHeight: String,
@@ -36,41 +32,44 @@
       },
       outlined: Boolean,
       raised: Boolean,
-    },
-    computed: {
-      classes() {
-        return {
-          'g-card': true,
-          'g-card-flat': this.flat,
-          'g-card-hover': this.hover,
-          'g-card-link': this.isClickable,
-          'g-card-loading': this.loading,
-          'g-card-disabled': this.loading || this.disabled,
-          'g-card-outlined': this.outlined,
-          'g-card-raised': this.raised,
-        }
-      },
-			styles() {
+    }, setup(props, context) {
+
+      let classes = computed(() => ({
+        'g-card': true,
+        'g-card-flat': props.flat,
+        'g-card-hover': props.hover,
+        'g-card-link': props.isClickable,
+        'g-card-loading': props.loading,
+        'g-card-disabled': props.loading || props.disabled,
+        'g-card-outlined': props.outlined,
+        'g-card-raised': props.raised,
+      }));
+
+      let styles = computed(() => {
         let style = {};
-				if(this.minWidth) {
-					Object.assign(style, {'min-width': this.minWidth});
-				}
-				if(this.minHeight) {
-          Object.assign(style, {'min-height': this.minHeight});
-				}
 
-				if(this.maxWidth) {
-          Object.assign(style, {'max-width': this.maxWidth});
-				}
+        if (props.minWidth) {
+          Object.assign(style, { 'min-width': props.minWidth });
+        }
+        if (props.minHeight) {
+          Object.assign(style, { 'min-height': props.minHeight });
+        }
 
-				if(this.maxHeight) {
-          Object.assign(style, {'max-height': this.maxHeight});
-				}
-				return style;
-			}
+        if (props.maxWidth) {
+          Object.assign(style, { 'max-width': props.maxWidth });
+        }
+
+        if (props.maxHeight) {
+          Object.assign(style, { 'max-height': props.maxHeight });
+        }
+        return style;
+      });
+
+      return {
+        styles,
+        classes
+      }
     }
-
-
   }
 </script>
 

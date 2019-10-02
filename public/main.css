@@ -6278,6 +6278,7 @@ td {
   -o-transition: box-shadow 0.25s;
   transition: -webkit-box-shadow 0.25s;
   transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+  overflow: auto;
   /*
        Card title
    */
@@ -6293,6 +6294,12 @@ td {
   font-size: 24px;
   font-weight: 300;
 }
+.g-card_text > * {
+  margin: 2px 2px 2px 2px;
+}
+.g-card_title > * {
+  margin: 2px 2px 2px 2px;
+}
 .g-card_text {
   font-size: 16px;
   font-weight: 200;
@@ -6302,6 +6309,9 @@ td {
   font-size: 16px;
   font-weight: 200;
   margin-top: 10px;
+}
+.g-card_actions > * {
+  margin: 2px 2px 2px 2px;
 }
 .g-card-flat {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);

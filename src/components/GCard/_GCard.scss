@@ -19,11 +19,7 @@
   -o-transition: box-shadow .25s;
   transition: -webkit-box-shadow .25s;
   transition: box-shadow .25s, -webkit-box-shadow .25s;
-
- //On card hovering default
-  // &:hover {
-  //   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  // }
+  overflow: auto;
 
   &-content {
     padding: 1rem;
@@ -37,6 +33,14 @@
   &_title {
     font-size: 24px;
     font-weight: 300;
+  }
+
+  &_text > * {
+    margin: 2px 2px 2px 2px;
+  }
+
+  &_title > * {
+    margin: 2px 2px 2px 2px;
   }
 
   /*
@@ -53,6 +57,10 @@
     font-size: 16px;
     font-weight: 200;
     margin-top: 10px;
+  }
+
+  &_actions > * {
+    margin: 2px 2px 2px 2px;
   }
 
   &-flat {
@@ -85,5 +93,4 @@
   &-raised {
     @include elevation(8);
   }
-
 }
