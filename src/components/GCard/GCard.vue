@@ -16,8 +16,10 @@
       disabled: Boolean,
       isClickable: Boolean,
       loading: Boolean,
+      backgroundColor: String,
       flat: Boolean,
       hover: Boolean,
+      color: String,
       minWidth: String,
       maxWidth: String,
       minHeight: String,
@@ -48,9 +50,22 @@
       let styles = computed(() => {
         let style = {};
 
+        if (props.img) {
+          Object.assign(style, { 'background-image': `url("${props.img}"` });
+        }
+
+        if (props.backgroundColor) {
+          Object.assign(style, { 'background-color': props.backgroundColor });
+        }
+
+        if (props.color) {
+          Object.assign(style, { 'color': props.color });
+        }
+
         if (props.minWidth) {
           Object.assign(style, { 'min-width': props.minWidth });
         }
+
         if (props.minHeight) {
           Object.assign(style, { 'min-height': props.minHeight });
         }
