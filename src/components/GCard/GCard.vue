@@ -9,6 +9,7 @@
 
 <script>
   import { computed } from '@vue/composition-api';
+  import { convertToUnit } from '../../utils/helpers';
 
   export default {
     name: 'GCard',
@@ -26,19 +27,14 @@
       },
       //styles
       ...{
-        minWidth: String,
-        maxWidth: String,
-        minHeight: String,
-        maxHeight: String,
-        width: String,
-        elevation: String,
-        height: String,
+        minWidth: [String, Number],
+        maxWidth: [String, Number],
+        minHeight: [String, Number],
+        maxHeight: [String, Number],
+        width: [String, Number],
+        elevation: [String, Number],
+        height: [String, Number],
         img: String,
-        link: Boolean,
-        loaderHeight: {
-          type: [Number, String],
-          default: 4,
-        },
         outlined: Boolean,
         raised: Boolean,
       }
@@ -65,13 +61,13 @@
       let styles = computed(() => {
         return {
           ...props.img ? { 'background-image': `url("${props.img}"` } : null,
-          ...props.backgroundColor ? { 'background-color': props.backgroundColor } : null,
+          ...props.backgroundColor ? { 'background-color': convertToUnit(props.backgroundColor) } : null,
           ...props.color ? { 'color': props.color } : null,
           ...props.tile ? { 'border': 'none' } : null,
-          ...props.minWidth ? { 'min-width': props.minWidth } : null,
-          ...props.minHeight ? { 'min-height': props.minHeight } : null,
-          ...props.maxWidth ? { 'max-width': props.maxWidth } : null,
-          ...props.maxHeight ? { 'max-height': props.maxHeight } : null,
+          ...props.minWidth ? { 'min-width': convertToUnit(props.minWidth) } : null,
+          ...props.minHeight ? { 'min-height': convertToUnit(props.minHeight) } : null,
+          ...props.maxWidth ? { 'max-width': convertToUnit(props.maxWidth) } : null,
+          ...props.maxHeight ? { 'max-height': convertToUnit(props.maxHeight) } : null,
         };
       });
 
