@@ -13,71 +13,66 @@
   export default {
     name: 'GCard',
     props: {
-      disabled: Boolean,
-      isClickable: Boolean,
-      loading: Boolean,
-      backgroundColor: String,
-      flat: Boolean,
-      hover: Boolean,
-      color: String,
-      minWidth: String,
-      maxWidth: String,
-      minHeight: String,
-      maxHeight: String,
-      width: String,
-      height: String,
-      img: String,
-      link: Boolean,
-      loaderHeight: {
-        type: [Number, String],
-        default: 4,
+      //classes
+      ...{
+        disabled: Boolean,
+        isClickable: Boolean,
+        loading: Boolean,
+        backgroundColor: String,
+        flat: Boolean,
+        hover: Boolean,
+        color: String,
+        tile: Boolean,
       },
-      outlined: Boolean,
-      raised: Boolean,
+      //styles
+      ...{
+        ripple: Boolean,
+        minWidth: String,
+        maxWidth: String,
+        minHeight: String,
+        maxHeight: String,
+        width: String,
+        elevation: Number,
+        height: String,
+        img: String,
+        link: Boolean,
+        loaderHeight: {
+          type: [Number, String],
+          default: 4,
+        },
+        outlined: Boolean,
+        raised: Boolean,
+      }
     }, setup(props, context) {
 
-      let classes = computed(() => ({
-        'g-card': true,
-        'g-card-flat': props.flat,
-        'g-card-hover': props.hover,
-        'g-card-link': props.isClickable,
-        'g-card-loading': props.loading,
-        'g-card-disabled': props.loading || props.disabled,
-        'g-card-outlined': props.outlined,
-        'g-card-raised': props.raised,
-      }));
+      let classes = computed(() => {
+        let elevationClassName = props.elevation ? `g-card-elevation-${props.elevation}` : `elevation-2`;
+				let classes = {
+          'g-card': true,
+          'g-card-flat': props.flat,
+          'g-card-hover': props.hover,
+          'g-card-link': props.isClickable,
+          'g-card-loading': props.loading,
+          'g-card-disabled': props.loading || props.disabled,
+          'g-card-outlined': props.outlined,
+          'g-card-raised': props.raised,
+          'g-card-ripple': props.ripple,
+        };
+				classes[elevationClassName] = true;
+        return classes;
+      });
 
       let styles = computed(() => {
-        let style = {};
-
-        if (props.img) {
-          Object.assign(style, { 'background-image': `url("${props.img}"` });
-        }
-
-        if (props.backgroundColor) {
-          Object.assign(style, { 'background-color': props.backgroundColor });
-        }
-
-        if (props.color) {
-          Object.assign(style, { 'color': props.color });
-        }
-
-        if (props.minWidth) {
-          Object.assign(style, { 'min-width': props.minWidth });
-        }
-
-        if (props.minHeight) {
-          Object.assign(style, { 'min-height': props.minHeight });
-        }
-
-        if (props.maxWidth) {
-          Object.assign(style, { 'max-width': props.maxWidth });
-        }
-
-        if (props.maxHeight) {
-          Object.assign(style, { 'max-height': props.maxHeight });
-        }
-        return style;
+        return {
+          ...props.img ? { 'background-image': `url("${props.img}"` } : null,
+          ...props.backgroundColor ? { 'background-color': props.backgroundColor } : null,
+          ...props.color ? { 'color': props.color } : null,
+          ...props.tile ? { 'border': 'none' } : null,
+          ...props.minWidth ? { 'min-width': props.minWidth } : null,
+          ...props.minHeight ? { 'min-height': props.minHeight } : null,
+          ...props.maxWidth ? { 'max-width': props.maxWidth } : null,
+          ...props.maxHeight ? { 'max-height': props.maxHeight } : null,
+        };
       });
 
       return {

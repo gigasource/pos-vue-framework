@@ -1,8 +1,8 @@
 <template>
-	<div style="display: flex;">
-		<g-card outlined max-height="450px">
+	<div style="display: flex; flex-wrap: wrap;">
+		<g-card outlined hover>
 			<g-card-title>
-				<p>GCard Outlined</p>
+				<p>GCard Outlined/Hover</p>
 			</g-card-title>
 			<g-card-text>
 				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
@@ -16,9 +16,9 @@
 			</g-card-actions>
 		</g-card>
 
-		<g-card outlined max-height="450px" img="https://picsum.photos/200/300">
+		<g-card outlined img="https://picsum.photos/200/300" color="white" hover>
 			<g-card-title>
-				<p>GCard Outlined</p>
+				<p>GCard Outlined/Image Background/Hover</p>
 			</g-card-title>
 			<g-card-text>
 				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
@@ -32,7 +32,7 @@
 			</g-card-actions>
 		</g-card>
 
-		<g-card disabled background-color="blue" color="white">
+		<g-card disabled background-color="#ffc107" color="white" tile>
 			<g-card-title>
 				<p>GCard Disabled</p>
 			</g-card-title>
@@ -48,9 +48,9 @@
 			</g-card-actions>
 		</g-card>
 
-		<g-card flat>
+		<g-card flat elevation="24">
 			<g-card-title>
-				<p>GCard Flat</p>
+				<p>GCard Flat/Elevation=24</p>
 			</g-card-title>
 			<g-card-text>
 				<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
@@ -64,7 +64,7 @@
 			</g-card-actions>
 		</g-card>
 
-		<g-card raised>
+		<g-card raised ripple background-color="#009688">
 			<g-card-title>
 				<p>GCard Raised</p>
 			</g-card-title>
