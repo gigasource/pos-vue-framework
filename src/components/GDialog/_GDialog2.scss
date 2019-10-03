@@ -17,11 +17,43 @@
 
   &-content {
     display: none;
+    max-width: 90%;
+    max-height: 90%;
 
+    > .g-card {
+      height: auto;
+      overflow-y: auto;
+
+      > .g-card-title {
+        font-size: 2em;
+        font-weight: 500;
+      }
+    }
   }
 
   &-content__active {
     display: flex;
     pointer-events: auto;
   }
+
+  &-content__scrollable {
+    > .g-card {
+      display: flex;
+      flex: 1 1 100%;
+      flex-direction: column;
+      max-height: 100%;
+      max-width: 100%;
+
+      > .g-card-title, .g-card-actions {
+        flex: 0 0 auto
+      }
+
+      > .g-card-text {
+        backface-visibility: hidden;
+        flex: 1 1 auto;
+        overflow-y: auto;
+      }
+    }
+  }
+
 }

@@ -1,19 +1,20 @@
 <template>
-	<div class="dialog2">
-		<div class="dialog2-wrapper">
-			<div class="dialog2-content" :class="contentClasses" v-click-outside ref="content" v-click-outside:[directiveArgs]="directiveValue">
+	<div ref="el" class="dialog2">
+		<div ref="wrapper" class="dialog2-wrapper">
+			<div class="dialog2-content" :class="contentClasses" :style="contentStyles" ref="content" v-click-outside:[directiveArgs]="directiveValue">
 				<slot></slot>
 			</div>
 		</div>
-		<g-overlay class="dialog2-overlay" v-if="!hideOverlay" v-model="isActive"></g-overlay>
-	<div>
-		<slot class="dialog2-activator" name="activator" :toggleOverlay="toggleDialog"></slot>
-	</div>
+		<g-overlay ref="overlay" class="dialog2-overlay" v-if="!hideOverlay" v-model="isActive"></g-overlay>
+		<div ref="activator">
+			<slot name="activator" :toggleOverlay="toggleDialog"></slot>
+		</div>
 	</div>
 </template>
 
 <script>
   import getVModel from '../../mixins/getVModel';
+  import detachable from '../../mixins/detachable';
   import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import GOverlay from '../GOverlay/GOverlay';
@@ -30,34 +31,61 @@
 				default: false
 			},
       hideOverlay: Boolean,
+			scrollable: Boolean,
+
+      maxWidth: {
+        type: [String, Number],
+        default: 'none',
+      },
+
+      width: {
+        type: [String, Number],
+        default: 'auto',
+      },
 		},
 		setup (props, context) {
       const { model: isActive } = getVModel(props, context);
+      const { attachToRoot, attachToParent } = detachable(props, context);
+
+      onMounted(() => {
+        attachToRoot(context.refs.overlay.$el);
+        attachToRoot(context.refs.wrapper);
+        attachToParent();
+			});
 
       function toggleDialog() {
         isActive.value = !isActive.value;
 			}
 
 			const contentClasses = computed(() => ({
-				'dialog2-content__active': isActive.value
+				'dialog2-content__active': isActive.value,
+				'dialog2-content__scrollable': props.scrollable
 			}));
 
+
+      const contentStyles = computed(() => ({
+        maxWidth: props.maxWidth === 'none' ? undefined : props.maxWidth,
+        width: props.width === 'auto' ? undefined : props.width,
+			}));
+
+      // Click outside
       const closeConditional = (e) => {
         const target = e.target;
         return isActive.value && context.refs.content && !context.refs.content.contains(target)
-      }
+      };
       const directiveValue = () => {
         isActive.value = false
-      }
+      };
 			const directiveArgs = {
         closeConditional,
 				include: () => []
-      }
+      };
 
       return {
         isActive,
 				toggleDialog,
 				contentClasses,
+				contentStyles,
         directiveValue,
 				directiveArgs
 			}
