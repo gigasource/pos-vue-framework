@@ -7,6 +7,7 @@ import Payment from '@/view/Payment';
 import MenuDemo from '@/view/MenuDemo';
 import Dialog from '@/view/DialogDemo';
 import SliderDemo from '../view/SliderDemo';
+import ToolTipDemo from '../view/ToolTipDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -15,7 +16,8 @@ const routes = [
   { path: '/payment', name: 'Payment', component: Payment},
   { path: '/dialog', name: 'Dialog', component: Dialog},
   { path: '/slider', name: 'Slider', component: SliderDemo},
-  { path: '/menu-demo', name: 'Menu', component: MenuDemo}
+  { path: '/menu-demo', name: 'Menu', component: MenuDemo},
+  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo}
 ];
 
 const router = new VueRouter({
