@@ -32,10 +32,10 @@
   &-title {
     font-size: 24px;
     font-weight: 300;
+    padding: 16px 16px 8px;
   }
 
   &-title > * {
-    padding: 16px;
     margin: 2px 2px 2px 2px;
   }
 
@@ -46,13 +46,12 @@
   &-text {
     font-size: 16px;
     font-weight: 200;
-    margin-top: 5px;
     overflow: auto;
     width: 100%;
+    padding: 8px 16px 8px 16px;
   }
 
   &-text > * {
-    padding: 16px;
     margin: 2px 2px 2px 2px;
   }
 
@@ -60,11 +59,11 @@
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    padding: 8px;
+    padding: 8px 16px 8px 16px;
   }
 
   &-actions > * {
-    margin: 0px 5px 5px 5px;
+    margin: 5px 5px 5px 0px;
   }
 
   &__flat {
