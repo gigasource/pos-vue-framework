@@ -11,7 +11,7 @@ module.exports = {
     '<rootDir>/src'
   ],
   moduleFileExtensions: [
-    'js', 'json', 'vue'
+    'js', 'vue'
   ],
   moduleDirectories: [
     'node_modules'
@@ -23,7 +23,7 @@ module.exports = {
     '**/__tests__/*.test.js'
   ],
   transform: {
-    '^.*\\.vue$': "<rootDir>/node_modules/vue-jest",
+    '^.*\\.vue$': "vue-jest",
     '^.+\\.js$': "<rootDir>/node_modules/babel-jest"
   },
   transformIgnorePatterns: ['<rootDir>/node_modules']

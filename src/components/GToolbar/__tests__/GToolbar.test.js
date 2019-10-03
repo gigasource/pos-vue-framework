@@ -21,4 +21,9 @@ describe('Toolbar', () => {
     const wrapper = mountFunction()
     expect(wrapper.html()).toMatchSnapshot()
   })
+
+  it('should has tool-bar class', function () {
+    const wrapper = mountFunction()
+    expect(wrapper.contains('tool-bar'))
+  });
 })
