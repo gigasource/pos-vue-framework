@@ -1,0 +1,109 @@
+.g-card {
+  display: block;
+  background-color: map_get($shades, 'white');
+  max-width: 100%;
+  min-width: 15%;
+  outline: none;
+  text-decoration: none;
+  transition-property: box-shaow, opacity;
+  overflow-wrap: break-word;
+  position: relative;
+  white-space: normal;
+  margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+  width: 300px;
+  height: fit-content;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  -webkit-transition: -webkit-box-shadow .25s;
+  -moz-transition: box-shadow .25s;
+  -o-transition: box-shadow .25s;
+  transition: -webkit-box-shadow .25s;
+  transition: box-shadow .25s, -webkit-box-shadow .25s;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  /*
+       Card title
+   */
+
+  &-title {
+    font-size: 24px;
+    font-weight: 300;
+    padding: 16px 16px 8px;
+  }
+
+  &-title > * {
+    margin: 2px 2px 2px 2px;
+  }
+
+  /*
+  Card text
+  */
+
+  &-text {
+    font-size: 16px;
+    font-weight: 200;
+    overflow: auto;
+    width: 100%;
+    padding: 8px 16px 8px 16px;
+  }
+
+  &-text > * {
+    margin: 2px 2px 2px 2px;
+  }
+
+  &-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px 16px 8px 16px;
+  }
+
+  &-actions > * {
+    margin: 5px 5px 5px 0px;
+  }
+
+  &__flat {
+    @include elevation(0);
+  }
+
+  &__hover {
+    cursor: pointer;
+    transition: box-shadow .4s cubic-bezier(.25, .8, .25, 1);
+
+    &:hover {
+      @include elevation(8);
+    }
+  }
+
+  &__disabled {
+    pointer-events: none;
+    user-select: none;
+  }
+
+  &__loading {
+    overflow: hidden
+  }
+
+  &__outlined {
+    box-shadow: none;
+    border: 1px solid map_get($grey, 'lighten-1')
+  }
+
+  &__raised {
+    @include elevation(8);
+  }
+
+  //Generate elevation classes
+  $elevationMin: 1;
+  $elevationMax: 24;
+  @for $i from $elevationMin through $elevationMax {
+    &__elevation-#{$i} {
+      @include elevation($i)
+    }
+  }
+
+}

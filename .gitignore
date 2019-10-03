@@ -20,3 +20,5 @@ yarn-error.log*
 *.sln
 *.sw?
 *.iml
+/public/main.css.map
+/public/main.css
