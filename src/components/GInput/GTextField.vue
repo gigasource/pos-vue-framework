@@ -37,24 +37,28 @@
   export default {
     name: 'GTextField',
     props: {
-      label: String,
+    	...{
+				label: String,
+				disabled: Boolean,
+				readOnly: Boolean,
+				appendIcon: String,
+				prependIcon: String,
+			},
       required: Boolean,
       placeholder: String,
-      disabled: Boolean,
-      readonly: Boolean,
       clearable: Boolean,
       rules: Function,
       errorMessage: String,
-      value: [String, Number],
       large: Boolean,
-      textColor: {
+			textColor: {
         type: String,
         default: '#000000'
       },
-      bordered: Boolean,
-      centered: Boolean,
+			bordered: Boolean,
+			centered: Boolean,
 			active: Boolean,
-    },
+			value: [String, Number],
+		},
     data() {
       return {
         lazyValue: '',

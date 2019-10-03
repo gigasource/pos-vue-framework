@@ -9,6 +9,7 @@ import Dialog from '@/view/DialogDemo';
 import SliderDemo from '../view/SliderDemo';
 import CardDemo from '../view/CardDemo';
 import OverlayDemo from "../view/OverlayDemo";
+import InputDemo from "../view/InputDemo";
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -19,7 +20,8 @@ const routes = [
   { path: '/slider', name: 'Slider', component: SliderDemo},
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
   { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
-  { path: '/card-demo', name: 'Card demo', component: CardDemo}
+  { path: '/card-demo', name: 'Card demo', component: CardDemo},
+  { path: '/input-demo', name: 'InputDemo', component: InputDemo}
 ];
 
 const router = new VueRouter({

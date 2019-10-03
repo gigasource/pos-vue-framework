@@ -10,6 +10,7 @@
 			<router-link to="/menu-demo">Menu</router-link>
 			<router-link to="/card-demo">Card</router-link>
 			<router-link to="/overlay-demo">Overlay</router-link>
+			<router-link to="/input-demo">InputDemo</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

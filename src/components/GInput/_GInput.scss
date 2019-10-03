@@ -3,6 +3,7 @@ input[type=text] {
   outline: none;
   border: transparent;
   font-family: "Muli", sans-serif;
+  color: #00acc1;
 }
 
 textarea {
@@ -19,7 +20,7 @@ textarea {
   width: 100%;
 
   &::placeholder {
-    color: #1d1d26;
+    color: #641d26;
     font-size: 0.75rem;
     font-weight: 400;
     font-style: italic;
