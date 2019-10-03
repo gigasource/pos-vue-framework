@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<style>
+		@import url("https://fonts.googleapis.com/css?family=Muli:200,400,700&display=swap");
+		.checkbox-wrapper {
+			margin-bottom: 4px;
+		}
+		.checkbox {
+			position: relative;
+			padding-left: 24px;
+			cursor: pointer;
+			user-select: none;
+			-webkit-tap-highlight-color: transparent;
+			font-family: "Muli", sans-serif;
+			font-weight: 400;
+		}
+		.checkbox input {
+			position: absolute;
+			opacity: 0;
+			cursor: pointer;
+		}
+
+		.checkmark {
+			color: inherit;
+		}
+
+		.checkbox .checkmark:before {
+			position: absolute;
+			content: "\F131";
+			top: 0;
+			left: 0;
+			font-size: 21px;
+			font-family: "Material Design Icons";
+			color: #717171;
+		}
+
+		.checkbox input:checked + .checkmark:before {
+			content: "\F132";
+			color: inherit;
+		}
+
+		.checkbox-ripple {
+			position: absolute;
+			display: none;
+			top: -8px;
+			left: -8px;
+			font-size: 32px;
+			opacity: 0.6;
+		}
+
+		.checkbox-ripple:before {
+			position: absolute;
+			top: 0;
+			left: 0;
+			content: "\F12F";
+		}
+
+		.checkbox .checkmark:before:hover + .checkbox-ripple {
+			display: block;
+		}
+	</style>
+</head>
+<body>
+<fieldset>
+	<legend>Check box</legend>
+	<div class="checkbox-wrapper">
+		<label class="checkbox">
+			<input type="checkbox">
+			<span class="checkmark"></span>
+			Normal
+		</label>
+	</div>
+
+	<div class="checkbox-wrapper">
+		<label class="checkbox red">
+			<input type="checkbox">
+			<span class="checkmark"></span>
+			<div class="checkbox-ripple"></div>
+			<span class="checkbox-label">Color Red</span>
+		</label>
+	</div>
+</fieldset>
+</body>
+</html>
