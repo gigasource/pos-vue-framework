@@ -54,7 +54,7 @@
       const { activeZIndex, getMaxZIndex} = stackable(props, context);
 
       const zIndex = computed(() => {
-        return !isActive.value ? 6 : getMaxZIndex(context.refs.content) + 2
+        return !isActive.value ? 6 : getMaxZIndex(context.refs.wrapper) + 2
 			});
       const overlayZIndex = computed(() => zIndex.value - 1);
 
@@ -91,8 +91,12 @@
 
       // Click outside
       const closeConditional = (e) => {
-        const target = e.target;
-        return isActive.value && context.refs.content && !context.refs.content.contains(target)
+        if (!isActive.value) return false;
+        const clickedInsideContent = context.refs.content.contains(e.target);
+				if (clickedInsideContent) return false;
+
+				// If z-index of current element is lower than the current active z-index then do not close when click outside
+        return getZIndex(context.refs.wrapper) >= getMaxZIndex(context.refs.wrapper);
       };
       const directiveValue = () => {
         if (!props.persistent) {
