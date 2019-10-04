@@ -6,7 +6,10 @@ export function factory(prop, event) {
 
     // mixin function
     return function(props, context) {
-        let isActive = props[prop]
+        // TODO: model: { prop, event }
+
+        // TODO: Check to ensure that behavior is the same as mixins
+        let isActive = !!props[prop]
         watch(() => props[prop], (val) => {
             isActive = !!val
         })
