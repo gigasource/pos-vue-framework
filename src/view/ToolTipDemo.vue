@@ -29,7 +29,7 @@
                     <template #activator="{on}">
                         <button v-on="on">Open delay 500</button>
                     </template>
-                    <span>Open delay 200</span>
+                    <span>Open delay 500</span>
                 </g-tool-tip>
 
                 <br>
@@ -37,7 +37,7 @@
                     <template #activator="{on}">
                         <button v-on="on">Close delay 500</button>
                     </template>
-                    <span>Close delay 2000</span>
+                    <span>Close delay 500</span>
                 </g-tool-tip>
             </div>
         </div>
