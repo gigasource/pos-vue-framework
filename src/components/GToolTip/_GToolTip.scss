@@ -23,6 +23,10 @@
     pointer-events: none;
   }
 
+  &__activator {
+    display: inline-block;
+  }
+
   &--fixed {
     position: fixed
   }

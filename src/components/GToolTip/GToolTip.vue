@@ -283,9 +283,12 @@
                 return listeners
             }
 
+            /**
+             * Generate activator component
+             */
             const genActivator = () => {
                 return h('div',
-                    { ref: 'activator' },
+                    { ref: 'activator', staticClass: 'g-tooltip__activator' },
                     context.slots.activator({
                         on: genActivatorListeners()
                     }))
