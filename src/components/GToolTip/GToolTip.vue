@@ -18,6 +18,8 @@
 <script>
     import { onBeforeMount, computed, createElement as h, onMounted, reactive } from '@vue/composition-api'
     import menuable  from '../../mixins/menuable';
+    import delayable from '../../mixins/delayable';
+    import colorable from '../../mixins/colorable';
     import { convertToUnit } from '../../utils/helpers';
 
     export default {
@@ -85,14 +87,12 @@
                 // positionable
                 absolute: Boolean,
                 bottom: Boolean,
-                fixed: {
-                    type: Boolean,
-                    default: false,
-                },
+                fixed: Boolean,
                 left: Boolean,
                 right: Boolean,
                 top: Boolean,
             },
+            // tooltip
             closeDelay: {
                 type: [Number, String],
                 default: 0,
@@ -114,32 +114,30 @@
             zIndex: {
                 default: null,
             },
+            color: [String],
         },
         setup(props, context) {
-            const {
-                updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
-                menuableState,
-            } = menuable(props, context);
-
-            const { activator, content } = dimensions
+            // tool tip state
             const state = reactive({
-                isActive: true
+                isActive: false
             })
 
-            /**
-             * Calculate left position
-             *
-             */
+            // composition api
+            const {
+                updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState,
+            } = menuable(props, context);
+            const { runDelay } = delayable(props, state)
+            // Positioning
             const calculatedLeft = computed(() => {
                 const unknown = !props.bottom && !props.left && !props.top && !props.right
-                const activatorLeft = props.attach !== false ? activator.offsetLeft : activator.left
+                const activatorLeft = props.attach !== false ? dimensions.activator.offsetLeft : dimensions.activator.left
                 let left = 0
                 if (props.top || props.bottom || unknown) {
-                    left = activatorLeft + (activator.width / 2) -  (content.width / 2)
+                    left = activatorLeft + (dimensions.activator.width / 2) -  (dimensions.content.width / 2)
                 } else if (props.left || props.right) {
                     left = (
                         activatorLeft +
-                        (props.right ? activator.width : -content.width) +
+                        (props.right ? dimensions.activator.width : -dimensions.content.width) +
                         (props.right ? 10 : -10)
                     )
                 }
@@ -148,35 +146,26 @@
                 return `${calcXOverflow(left, dimensions.content.width)}px`
             })
 
-            /**
-             * Calculate top position of tooltip
-             *
-             */
             const calculatedTop = computed(() => {
-                const activatorTop = props.attach !== false ? activator.offsetTop : activator.top
+                const activatorTop = props.attach !== false ? dimensions.activator.offsetTop : dimensions.activator.top
+                console.log(`activatorTop: ${activatorTop}`)
                 let top = 0
                 if (props.top || props.bottom) {
                     top = (
                         activatorTop +
-                        (props.bottom ? activator.height : -content.height) +
+                        (props.bottom ? dimensions.activator.height : -dimensions.content.height) +
                         (props.bottom ? 10 : -10)
                     )
                 } else if (props.left || props.right) {
-                    top = (
-                        activatorTop +
-                        (activator.height / 2) -
-                        (content.height / 2)
-                    )
+                    top = activatorTop + (dimensions.activator.height / 2) - (dimensions.content.height / 2)
+                } else {
+                    top = activatorTop -dimensions.content.height - 10
                 }
                 if (props.nudgeTop) top -= parseInt(props.nudgeTop)
                 if (props.nudgeBottom) top += parseInt(props.nudgeBottom)
                 return `${calcYOverFlow(top + menuableState.pageYOffset)}px`
             })
 
-            /**
-             * Get tooltip classes
-             * @type {Ref<any>}
-             */
             const tooltipClasses = computed(() => {
                 return {
                     'g-tooltip--top': props.top,
@@ -217,13 +206,13 @@
                 // if (getSlotType(props, 'activator', true) === 'v-slot') {
                 //     console.error(`v-tooltip's activator slot must be bound, try '<template #activator="data"><v-btn v-on="data.on>'`, props)
                 // }
-                // implement detachable
-                // moving content & activator out of tooltip
-                updateDimensions()
 
+
+                // moving content & activator out of tooltip (detach)
                 context.root.$nextTick(() => {
+                    context.root.$el.insertBefore(context.refs.content, context.root.$el.firstChild)
                     context.refs.el.parentNode.insertBefore(context.refs.activator, context.refs.el)
-                    context.refs.el.parentNode.insertBefore(context.refs.content, context.refs.el)
+                    updateDimensions()
                 })
             })
 
@@ -248,15 +237,13 @@
                 if (props.openOnHover) {
                     listeners.mouseenter = (e/*: MouseEvent*/) => {
                         // getActivator(e)
-                        // runDelay('open')
                         updateDimensions()
-                        state.isActive = true
+                        runDelay('open')
                     }
                     listeners.mouseleave = (e/*: MouseEvent*/) => {
                         // getActivator(e)
-                        // runDelay('close')
                         updateDimensions()
-                        state.isActive = false
+                        runDelay('close')
                     }
                 } else {
                     listeners.click = (e/*: MouseEvent*/) => {
@@ -266,18 +253,19 @@
                     }
                 }
 
-                listeners.focus = (e /*: Event*/) => {
-                    // getActivator(e)
-                    // runDelay('open')
-                }
-                listeners.blur = (e/*: Event*/) => {
-                    // getActivator(e)
-                    // runDelay('close')
-                }
+                // listeners.focus = (e /*: Event*/) => {
+                //     // getActivator(e)
+                //     runDelay('open')
+                // }
+                // listeners.blur = (e/*: Event*/) => {
+                //     // getActivator(e)
+                //     runDelay('close')
+                // }
+
                 listeners.keydown = (e/*: KeyboardEvent*/) => {
                     if (e.keyCode === keyCodes.esc) {
                         // getActivator(e)
-                        // runDelay('close')
+                        runDelay('close')
                     }
                 }
                 return listeners
@@ -294,28 +282,30 @@
                     }))
             }
 
-            const computedContent = computed(() => {
-                let content = state.isActive ? context.slots.default() : undefined
-                return content
-            })
+            /**
+             * Return Default Slot if state.isActive, otherwise, undefined
+             * @type {Ref<any>}
+             */
+            // const computedContent = computed(() => {
+            //     return state.isActive ? context.slots.default() : undefined
+            // })
 
-            // RENDER
             return () => {
-                const tooltip = h('div', /*props.setBackgroundColor(props.color,*/ {
+                const tooltip = h('div', colorable.setBackgroundColor(props.color, {
                     staticClass: 'g-tooltip__content',
                     class: {
                         [props.contentClass]: true,
                         menuable__content__active: state.isActive,
-                        'g-tooltip__content--fixed': props.fixed, // menuableState.activatorFixed
+                        // 'g-tooltip__content--fixed': menuableState.activatorFixed
                     },
                     style: tooltipContentStyles.value,
                     // attrs: props.getScopeIdAttrs(),
-                    // directives: [{
-                    //     name: 'show',
-                    //     value: menuableState.isContentActive,
-                    // }],
+                    directives: [{
+                        name: 'show',
+                        value: state.isActive,
+                    }],
                     ref: 'content',
-                }, computedContent.value)
+                }), context.slots.default());
 
                 return h(props.tag, {
                     staticClass: 'g-tooltip',
