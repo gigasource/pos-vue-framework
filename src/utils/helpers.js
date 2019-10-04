@@ -36,6 +36,12 @@ export function convertToUnit (str, unit = 'px') {
   }
 }
 
+export function getZIndex(el) {
+  const index = window.getComputedStyle(el).getPropertyValue('z-index');
+  if (!index) return getZIndex(el.parentNode);
+  return index
+}
+
 let passiveSupported = false;
 try {
   if (typeof window !== 'undefined') {

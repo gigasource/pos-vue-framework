@@ -1,11 +1,11 @@
 <template>
 	<div ref="el" class="dialog2">
-		<div ref="wrapper" class="dialog2-wrapper">
+		<div ref="wrapper" class="dialog2-wrapper" :class="wrapperClasses" :style="wrapperStyles">
 			<div class="dialog2-content" :class="contentClasses" :style="contentStyles" ref="content" v-click-outside:[directiveArgs]="directiveValue">
 				<slot></slot>
 			</div>
 		</div>
-		<g-overlay ref="overlay" class="dialog2-overlay" v-if="renderOverlay" v-model="isActive"></g-overlay>
+		<g-overlay ref="overlay" class="dialog2-overlay" v-if="renderOverlay" v-model="isActive" :z-index="overlayZIndex"></g-overlay>
 		<div ref="activator">
 			<slot name="activator" :toggleOverlay="toggleDialog"></slot>
 		</div>
@@ -14,7 +14,9 @@
 
 <script>
   import getVModel from '../../mixins/getVModel';
+  import { getZIndex } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
+  import stackable from '../../mixins/stackable';
   import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import GOverlay from '../GOverlay/GOverlay';
@@ -41,6 +43,7 @@
         default: 'auto',
       },
 
+			persistent: Boolean,
       hideOverlay: Boolean,
       scrollable: Boolean,
 			fullscreen: Boolean,
@@ -48,6 +51,12 @@
 		setup (props, context) {
       const { model: isActive } = getVModel(props, context);
       const { attachToRoot, attachToParent } = detachable(props, context);
+      const { activeZIndex, getMaxZIndex} = stackable(props, context);
+
+      const zIndex = computed(() => {
+        return !isActive.value ? 6 : getMaxZIndex(context.refs.content) + 2
+			});
+      const overlayZIndex = computed(() => zIndex.value - 1);
 
 			const renderOverlay = ref(!props.hideOverlay && !props.fullscreen);
 
@@ -72,13 +81,23 @@
         width: props.width === 'auto' || props.fullscreen ? undefined : props.width,
 			}));
 
+      const wrapperClasses = computed(() => ({
+				'dialog2-wrapper__active': isActive.value
+			}));
+
+      const wrapperStyles = computed(() => ({
+				zIndex: zIndex.value
+			}));
+
       // Click outside
       const closeConditional = (e) => {
         const target = e.target;
         return isActive.value && context.refs.content && !context.refs.content.contains(target)
       };
       const directiveValue = () => {
-        isActive.value = false
+        if (!props.persistent) {
+          isActive.value = false
+        }
       };
 			const directiveArgs = {
         closeConditional,
@@ -88,9 +107,12 @@
       return {
         isActive,
 				renderOverlay,
+				overlayZIndex,
 				toggleDialog,
 				contentClasses,
 				contentStyles,
+				wrapperClasses,
+				wrapperStyles,
         directiveValue,
 				directiveArgs
 			}
