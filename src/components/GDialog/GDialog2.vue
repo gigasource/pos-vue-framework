@@ -5,7 +5,7 @@
 				<slot></slot>
 			</div>
 		</div>
-		<g-overlay ref="overlay" class="dialog2-overlay" v-if="!hideOverlay" v-model="isActive"></g-overlay>
+		<g-overlay ref="overlay" class="dialog2-overlay" v-if="renderOverlay" v-model="isActive"></g-overlay>
 		<div ref="activator">
 			<slot name="activator" :toggleOverlay="toggleDialog"></slot>
 		</div>
@@ -30,8 +30,6 @@
 			  type: Boolean,
 				default: false
 			},
-      hideOverlay: Boolean,
-			scrollable: Boolean,
 
       maxWidth: {
         type: [String, Number],
@@ -42,13 +40,19 @@
         type: [String, Number],
         default: 'auto',
       },
+
+      hideOverlay: Boolean,
+      scrollable: Boolean,
+			fullscreen: Boolean,
 		},
 		setup (props, context) {
       const { model: isActive } = getVModel(props, context);
       const { attachToRoot, attachToParent } = detachable(props, context);
 
+			const renderOverlay = ref(!props.hideOverlay && !props.fullscreen);
+
       onMounted(() => {
-        attachToRoot(context.refs.overlay.$el);
+        if (renderOverlay.value) attachToRoot(context.refs.overlay.$el);
         attachToRoot(context.refs.wrapper);
         attachToParent();
 			});
@@ -59,13 +63,13 @@
 
 			const contentClasses = computed(() => ({
 				'dialog2-content__active': isActive.value,
-				'dialog2-content__scrollable': props.scrollable
+				'dialog2-content__scrollable': props.scrollable,
+				'dialog2-content__fullscreen': props.fullscreen
 			}));
 
-
       const contentStyles = computed(() => ({
-        maxWidth: props.maxWidth === 'none' ? undefined : props.maxWidth,
-        width: props.width === 'auto' ? undefined : props.width,
+        maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : props.maxWidth,
+        width: props.width === 'auto' || props.fullscreen ? undefined : props.width,
 			}));
 
       // Click outside
@@ -83,6 +87,7 @@
 
       return {
         isActive,
+				renderOverlay,
 				toggleDialog,
 				contentClasses,
 				contentStyles,

@@ -16,20 +16,21 @@ export default function detachable(props, context) {
   }
 
   function attachToParent(node) {
-    let nodes;
+    let nodes = [];
 
     if(!node) {
-      nodes = context.refs.activator.childNodes;
+      for (let childNode of context.refs.activator.childNodes){
+        nodes.push(childNode)
+      }
+      context.refs.el.removeChild(context.refs.activator);
     } else {
       nodes = [node]
     }
 
-    while (nodes.length > 0) {
-      const childNode = nodes[0];
+    for (let childNode of nodes) {
       if (!context.refs.el.parentNode) return;
 
       const target = context.refs.el === context.refs.el.parentNode.firstChild ? context.refs.el : context.refs.el.nextSibling;
-      //const target = context.refs.el;
       context.refs.el.parentNode.insertBefore(childNode, target);
     }
   }
