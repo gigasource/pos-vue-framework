@@ -73,7 +73,7 @@ button {
     position: fixed;
   }
 
-  &__fixed {
+  &__absolute {
     position: absolute;
   }
 
@@ -176,6 +176,15 @@ button {
         height: #{$size}px;
         width: #{$size}px;
       }
+    }
+
+    //Fab icon size
+    @each $name, $size in $fab-icon-sizes {
+        &.i{
+          width: #{$size}px;
+          height: #{$size}px;
+        }
+
     }
   }
 

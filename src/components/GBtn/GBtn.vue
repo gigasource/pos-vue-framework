@@ -62,7 +62,7 @@
           'g-btn-fab': props.fab,
           'g-btn-icon': props.icon,
           'g-btn-top': props.top,
-          'g-btn-fixed': props.fixed,
+          'g-btn__fixed': props.fixed,
           'g-btn__absolute': props.absolute,
           'g-btn__bottom': props.bottom,
           'g-btn__left': props.left,
