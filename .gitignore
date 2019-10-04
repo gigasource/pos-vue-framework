@@ -21,3 +21,5 @@ yarn-error.log*
 *.sw?
 *.iml
 /coverage/
+/public/main.css.map
+/public/main.css

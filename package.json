@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "compile-sass": "sass src/style/main.scss:public/main.css",
+    "watch-sass": "nodemon -e scss -x \" npm run compile-sass\",
     "test": "jest"
   },
   "dependencies": {
@@ -31,6 +32,8 @@
     "babel-loader": "^8.0.6",
     "babel-preset-vca-jsx": "^0.3.2",
     "babel-preset-vue": "^2.0.2",
+    "nodemon": "^1.19.3",
+    "vue-template-compiler": "2.6.10",
     "jest": "^24.9.0",
     "vue-jest": "^3.0.5",
     "vue-template-compiler": "^2.6.10"
