@@ -2,14 +2,14 @@
     <div>
         <div>
             <h3>1) Click to toggle tooltip</h3>
-            <g-tool-tip right>
+            <g-tool-tip right speech-bubble>
                 <template #activator="{on}">
                     <button v-on="on">Click to toggle tool tip</button>
                 </template>
-                <span>Content</span>
+                <span>ABCD</span>
             </g-tool-tip>
         </div>
-        <br/>
+
         <div>
             <h3>2) Open on hover</h3>
 
@@ -46,30 +46,28 @@
             <h3>3) Positioning</h3>
             <div>
                 <h4>3.1) Align</h4>
-                <g-tool-tip open-on-hover right>
+                <g-tool-tip open-on-hover right speech-bubble>
                     <template #activator="{on}">
                         <button v-on="on">Align right</button>
                     </template>
                     <span>Align right</span>
                 </g-tool-tip>
 
-
-                <g-tool-tip open-on-hover top>
+                <g-tool-tip open-on-hover top speech-bubble color="#ff4444">
                     <template #activator="{on}">
                         <button v-on="on">Align top</button>
                     </template>
                     <span>Align top</span>
                 </g-tool-tip>
 
-
-                <g-tool-tip open-on-hover left>
+                <g-tool-tip open-on-hover left speech-bubble>
                     <template #activator="{on}">
                         <button v-on="on">Align left</button>
                     </template>
                     <span>Align left</span>
                 </g-tool-tip>
 
-                <g-tool-tip open-on-hover bottom>
+                <g-tool-tip open-on-hover bottom speech-bubble>
                     <template #activator="{on}">
                         <button v-on="on">Align bottom</button>
                     </template>
@@ -111,7 +109,7 @@
 
         <div>
             <h3>4) Coloring</h3>
-            <g-tool-tip open-on-hover color="#ff4444">
+            <g-tool-tip open-on-hover right color="#ff4444" speech-bubble>
                 <template #activator="{on}">
                     <button v-on="on">Tooltip color #ff4444</button>
                 </template>

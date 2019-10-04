@@ -8,7 +8,6 @@ $transition: (
         'swing': cubic-bezier(0.25, 0.8, 0.5, 1)
 ) !default;
 
-$tooltip-background-color: rgba(map-get($grey, 'darken-2'), 0.9) !default;
 $tooltip-text-color: map-get($shades, 'white') !default;
 $tooltip-border-radius: $border-radius-root !default;
 $tooltip-font-size: 14px !default;

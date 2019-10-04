@@ -8,20 +8,85 @@
     display: inline;
   }
 
+  $contentPaddingTopBottom: 5px;
+  $contentPaddingLeftRight: 16px;
+  $speechBubbleArrowSize: 8px;
+
   &__content {
-    background: $tooltip-background-color;
     color: $tooltip-text-color;
     border-radius: $tooltip-border-radius;
     font-size: $tooltip-font-size;
     line-height: round($tooltip-font-size * 1.6);
     display: inline-block;
-    padding: 5px 16px;
+    padding: $contentPaddingTopBottom $contentPaddingLeftRight;
     position: absolute;
     text-transform: initial;
     width: auto;
     opacity: 1;
     pointer-events: none;
+
+    $speechBubble: null;
+    &__speech-bubble {
+      $speechBubble: &;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: .4em;
+
+      &:after {
+        width: 0;
+        height: 0;
+        content: '';
+        position: absolute;
+        border: $speechBubbleArrowSize solid transparent;
+      }
+    }
+
+    &__speech-bubble--top {
+      &:after {
+        top: 0;
+        left: 50%;
+        border-bottom-color: inherit;
+        border-top: 0;
+        margin-left: -($speechBubbleArrowSize);
+        margin-top: -($speechBubbleArrowSize + $contentPaddingTopBottom);
+      }
+    }
+
+    &__speech-bubble--left {
+      &:after {
+        left: 0;
+        top: 50%;
+        border-right-color: inherit;
+        border-left: 0;
+        margin-top: -($speechBubbleArrowSize);
+        margin-left: -($speechBubbleArrowSize + $contentPaddingLeftRight);
+      }
+    }
+
+    &__speech-bubble--right {
+      &:after {
+        right: 0;
+        top: 50%;
+        border-left-color: inherit;
+        border-right: 0;
+        margin-top: -($speechBubbleArrowSize);
+        margin-right: -($speechBubbleArrowSize + $contentPaddingLeftRight);;
+      }
+    }
+
+    &__speech-bubble--bottom {
+      &:after {
+        bottom: 0;
+        left: 50%;
+        border-top-color: inherit;
+        border-bottom: 0;
+        margin-left: -($speechBubbleArrowSize);
+        margin-bottom: -($speechBubbleArrowSize + $contentPaddingTopBottom);
+      }
+    }
   }
+
 
   &__activator {
     display: inline-block;
