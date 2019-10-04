@@ -2,7 +2,7 @@ button {
   outline: none;
   font-family: $font-family-base;
   font-weight: $font-weight-base;
-  font-size: 0.875rem;
+  //font-size: 0.875rem;
   //background: #eeeeee;
   height: 36px;
   cursor: pointer;
@@ -32,9 +32,9 @@ button {
   user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-
   @include elevation(2);
-  min-height: 36px;
+
+
   //min-width: #{round(36 * 1.777777777777778)}px; // default ratio
   padding: 0 #{round(36 / 2.25)}px;
 
@@ -56,8 +56,41 @@ button {
     background-color: #eeeeee;
   }
 
-  &:not(.g-btn--disabled) {
+  &:not(.g-btn__disabled) {
     will-change: box-shadow;
+  }
+
+  //Generate elevation
+  $elevationMin: 1;
+  $elevationMax: 24;
+  @for $i from $elevationMin through $elevationMax {
+    &__elevation-#{$i} {
+      @include elevation($i)
+    }
+  }
+
+  &__fixed {
+    position: fixed;
+  }
+
+  &__fixed {
+    position: absolute;
+  }
+
+  &__right {
+    right: map-get($grid-gutters, 'lg');
+  }
+
+  &__left {
+    left: map-get($grid-gutters, 'lg');
+  }
+
+  &__top {
+    top: map-get($grid-gutters, 'lg');
+  }
+
+  &__bottom {
+    bottom: map-get($grid-gutters, 'lg');
   }
 
   &__disabled,
@@ -69,19 +102,15 @@ button {
     opacity: 0.5;
   }
 
-  &__outlined {
-    color: currentColor;
-    border: $btn-outline-border-width solid currentColor;
+  &__outlined.g-btn__disabled {
+   border-color: rgba(0, 0, 0, 0.26) !important;
   }
+
 
   &__outlined,
   &__flat {
     background-color: transparent;
     @include elevation(0);
-  }
-
-  &__tile {
-    border-radius: 0;
   }
 
   &__small-rounded {
@@ -119,9 +148,11 @@ button {
   }
 
   &__raised {
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    &:active{
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+      0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    }
   }
 
   &__depressed {
@@ -129,14 +160,34 @@ button {
   }
 
   &-fab {
-    min-height: 0;
-    min-width: 0;
     padding: 0;
     border-radius: 100px;
+
+    @each $name, $size in $fab-sizes {
+      &.g-size__#{$name} {
+        height: #{$size}px;
+        width: #{$size}px;
+      }
+    }
+
+    //Fab icon size
+    @each $name, $size in $fab-icon-sizes {
+      &.g-icon-size__#{$name} {
+        height: #{$size}px;
+        width: #{$size}px;
+      }
+    }
+  }
+
+  &__block {
+    display: flex;
+    flex: 1 0 auto;
+    min-width: 100% !important;
+    max-width: 100%;
   }
 
   &__rounded {
-    border-radius: $btn-rounded-border-radius
+    border-radius: $btn-rounded-border-radius;
   }
 
   &-icon {
@@ -144,5 +195,20 @@ button {
     height: 1.5rem;
     border-radius: 1.5rem;
     padding: 0;
+  }
+
+  //Generate font-size
+  @each $name, $size in $btn-font-sizes {
+    &.g-size__#{$name} {
+      font-size: $size;
+    }
+  }
+
+  @each $name, $size in $btn-sizes {
+    &:not(.g-btn-fab).g-size__#{$name} {
+      height: #{$size}px;
+      min-width: #{round($size * 1.777777777777778)}px; // default ratio
+      padding: 0 #{$size / 2.25}px;
+    }
   }
 }
