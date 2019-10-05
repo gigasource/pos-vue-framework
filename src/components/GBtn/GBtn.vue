@@ -61,7 +61,7 @@
           'g-btn__tile': props.tile,
           'g-btn-fab': props.fab,
           'g-btn-icon': props.icon,
-          'g-btn-top': props.top,
+          'g-btn__top': props.top,
           'g-btn__fixed': props.fixed,
           'g-btn__absolute': props.absolute,
           'g-btn__bottom': props.bottom,

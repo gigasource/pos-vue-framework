@@ -21,7 +21,7 @@
 		<p>An element with position: fixed; is positioned relative to the viewport, which means it always stays in the same place even if the page is scrolled:</p>
 		<p>An element with position: fixed; is positioned relative to the viewport, which means it always stays in the same place even if the page is scrolled:</p>
 		<g-btn outlined absolute raised x-large color="blue">ABSOLUTE BUTTON</g-btn>
-		<g-btn rounded fixed left top raised x-large color="blue">FIXED BUTTON</g-btn>
+		<g-btn rounded fixed top left raised x-large color="blue">FIXED BUTTON</g-btn>
 		<p>An element with position: fixed; is positioned relative to the viewport, which means it always stays in the same place even if the page is scrolled:</p>
 		<p>An element with position: fixed; is positioned relative to the viewport, which means it always stays in the same place even if the page is scrolled:</p>
 		<p>An element with position: fixed; is positioned relative to the viewport, which means it always stays in the same place even if the page is scrolled:</p>
