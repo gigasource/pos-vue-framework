@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Menu should has activator mounted on root 1`] = `"<div id=\\"app\\" data-app=\\"\\"><div><div class=\\"menu\\"><div><button class=\\"\\">Activator</button></div><div class=\\"menu-content\\" style=\\"top: 0px; left: 0px; max-height: auto; min-width: 0px; max-width: 80%; display: none;\\"> <p>Content slot</p></div></div></div></div>"`;
+
+exports[`Menu should render 1`] = `"<div data-app=\\"\\"><div class=\\"menu\\"><div><button class=\\"\\" style=\\"height: 50px; width: 100px;\\">Activator</button></div></div></div>"`;
