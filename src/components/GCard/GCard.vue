@@ -1,9 +1,7 @@
 <template>
 	<div :class="classes" :style="styles">
-		<div class="g-card-content">
-			<slot name="default"></slot>
-			<slot name="progress"></slot>
-		</div>
+		<slot name="default"></slot>
+		<slot name="progress"></slot>
 	</div>
 </template>
 
@@ -32,6 +30,7 @@
         minHeight: [String, Number],
         maxHeight: [String, Number],
         width: [String, Number],
+				borderRadius: [String, Number],
         elevation: [String, Number],
         height: [String, Number],
         img: String,
@@ -52,7 +51,7 @@
           'g-card__outlined': props.outlined,
           'g-card__raised': props.raised,
         };
-        if(elevationClassName) {
+        if (elevationClassName) {
           classes[elevationClassName] = true;
         }
         return classes;
@@ -64,6 +63,7 @@
           ...props.backgroundColor ? { 'background-color': convertToUnit(props.backgroundColor) } : null,
           ...props.color ? { 'color': props.color } : null,
           ...props.tile ? { 'border': 'none' } : null,
+          ...props.borderRadius ? { 'border-radius': props.borderRadius } : null,
           ...props.minWidth ? { 'min-width': convertToUnit(props.minWidth) } : null,
           ...props.minHeight ? { 'min-height': convertToUnit(props.minHeight) } : null,
           ...props.maxWidth ? { 'max-width': convertToUnit(props.maxWidth) } : null,
