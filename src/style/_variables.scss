@@ -4,139 +4,139 @@
 
 //Font
 $font-family-montserrat: 'Montserrat', sans-serif;
-$font-family-muli: 'Muli', sans-serif;
-$font-family-roboto: 'Roboto', sans-serif;
-$font-family-base: $font-family-muli;
-$font-size-base: 1rem !default;
-$font-weight-base: 600 !default;
-$font-weight-1: 100;
-$font-weight-2: 200;
-$font-weight-3: 300;
-$font-weight-4: 400;
-$font-weight-5: 500;
-$font-weight-6: 600;
-$font-weight-7: 700;
-$font-weight-8: 800;
-$font-weight-9: 900;
+$font-family-muli:       'Muli', sans-serif;
+$font-family-roboto:     'Roboto', sans-serif;
+$font-family-base:       $font-family-muli;
+$font-size-base:         1rem !default;
+$font-weight-base:       600 !default;
+$font-weight-1:          100;
+$font-weight-2:          200;
+$font-weight-3:          300;
+$font-weight-4:          400;
+$font-weight-5:          500;
+$font-weight-6:          600;
+$font-weight-7:          700;
+$font-weight-8:          800;
+$font-weight-9:          900;
 
 //Spacing
-$spacer: 1rem !default;
+$spacer:      1rem !default;
 $spacers: (
-        "0": 0,
-        "1": $spacer * 0.25,
-        "2": $spacer * 0.5,
-        "3": $spacer,
-        "4": $spacer * 1.5,
-        "5": $spacer * 2,
+        "0":  0,
+        "1":  $spacer * 0.25,
+        "2":  $spacer * 0.5,
+        "3":  $spacer,
+        "4":  $spacer * 1.5,
+        "5":  $spacer * 2,
 );
 
 //Border
 $border-width-base: 1rem !default;
 $border-widths: (
-        "0" : 0,
-        "1" : $border-width-base * 0.125,
-        "2" : $border-width-base * 0.25,
-        "3" : $border-width-base * 0.5,
-        "4" : $border-width-base,
-        "5" : $border-width-base * 2,
-        "thin" : $border-width-base * 0.05,
+        "0" :       0,
+        "1" :       $border-width-base * 0.125,
+        "2" :       $border-width-base * 0.25,
+        "3" :       $border-width-base * 0.5,
+        "4" :       $border-width-base,
+        "5" :       $border-width-base * 2,
+        "thin" :    $border-width-base * 0.05,
 );
 
 //Size
 $percentages: (
-        "10": 10%,
-        "25": 25%,
-        "50": 50%,
-        "75": 75%,
-        "100": 100%,
-        "33": 33.3333%,
-        "66": 66.6667%,
-        "12": 12.5%,
-        "20": 20%,
-        "30": 30%,
-        "40": 40%,
-        "60": 60%,
-        "70": 70%,
-        "80": 80%,
-        "90": 90%,
+        "10":       10%,
+        "25":       25%,
+        "50":       50%,
+        "75":       75%,
+        "100":      100%,
+        "33":       33.3333%,
+        "66":       66.6667%,
+        "12":       12.5%,
+        "20":       20%,
+        "30":       30%,
+        "40":       40%,
+        "60":       60%,
+        "70":       70%,
+        "80":       80%,
+        "90":       90%,
 );
 
 //Grid
-$grid-columns: 12 !default;
+$grid-columns:      12 !default;
 
 
 //Button
 $btn-border-radius: 0.5rem !default;
-$btn-font-size: $font-size-base;
-$btn-font-family: $font-family-base;
-$btn-font-weight: $font-weight-7;
+$btn-font-size:     $font-size-base;
+$btn-font-family:   $font-family-base;
+$btn-font-weight:   $font-weight-7;
 
-//Newly added for button
+//Added for button
 $transition: (
-        'fast-out-slow-in': cubic-bezier(0.4, 0, 0.2, 1),
+        'fast-out-slow-in':   cubic-bezier(0.4, 0, 0.2, 1),
         'linear-out-slow-in': cubic-bezier(0, 0, 0.2, 1),
         'fast-out-linear-in': cubic-bezier(0.4, 0, 1, 1),
-        'ease-in-out': cubic-bezier(0.4, 0, 0.6, 1),
-        'fast-in-fast-out': cubic-bezier(0.25, 0.8, 0.25, 1),
-        'swing': cubic-bezier(0.25, 0.8, 0.5, 1)
+        'ease-in-out':        cubic-bezier(0.4, 0, 0.6, 1),
+        'fast-in-fast-out':   cubic-bezier(0.25, 0.8, 0.25, 1),
+        'swing':              cubic-bezier(0.25, 0.8, 0.5, 1)
 ) !default;
 
 /*
 * Button variables
 */
-$btn-active-opacity: 0.18 !default;
-$btn-focus-opacity: 0.24 !default;
-$btn-hover-opacity: 0.08 !default;
-$btn-letter-spacing: .0892857143em !default;
-$btn-icon-font-size: 18px !default;
-$btn-icon-padding: 12px !default;
-$btn-outline-border-width: thin !default;
+$btn-active-opacity:        0.18 !default;
+$btn-focus-opacity:         0.24 !default;
+$btn-hover-opacity:         0.08 !default;
+$btn-letter-spacing:        .0892857143em !default;
+$btn-icon-font-size:        18px !default;
+$btn-icon-padding:          12px !default;
+$btn-outline-border-width:  thin !default;
 $btn-rounded-border-radius: 28px !default;
 $btn-sizes: (
-        'x-small': 20,
-        'small': 28,
-        'default': 36,
-        'large': 44,
-        'x-large': 52
+        'x-small':  20,
+        'small':    28,
+        'default':  36,
+        'large':    44,
+        'x-large':  52
 ) !default;
 $btn-font-sizes: (
         'x-small': .625rem,
-        'small': .75rem,
+        'small':   .75rem,
         'default': .875rem,
-        'large': .875rem,
+        'large':   .875rem,
         'x-large': 1rem
 ) !default;
 $fab-sizes: (
         'x-small': 32,
-        'small': 40,
+        'small':   40,
         'default': 56,
-        'large': 64,
+        'large':   64,
         'x-large': 72
 ) !default;
 $fab-icon-sizes: (
         'x-small': 18,
-        'small': 24,
+        'small':   24,
         'default': 24,
-        'large': 28,
+        'large':   28,
         'x-large': 32
 ) !default;
-$btn-transition-duration: 0.28s !default;
-$btn-transition-fn: map-get($transition, 'fast-out-slow-in') !default;
-$btn-transition: opacity 0.2s map-get($transition, 'ease-in-out') !default;
+$btn-transition-duration:   0.28s !default;
+$btn-transition-fn:         map-get($transition, 'fast-out-slow-in') !default;
+$btn-transition:            opacity 0.2s map-get($transition, 'ease-in-out') !default;
 
 //Button
-$grid-gutter: $spacer * 6 !default;
+$grid-gutter:               $spacer * 6 !default;
 $grid-gutters: (
-        'xs': $grid-gutter / 12,
-        'sm': $grid-gutter / 6,
-        'md': $grid-gutter / 3,
-        'lg': $grid-gutter * 2/3,
-        'xl': $grid-gutter
+        'xs':               $grid-gutter / 12,
+        'sm':               $grid-gutter / 6,
+        'md':               $grid-gutter / 3,
+        'lg':               $grid-gutter * 2/3,
+        'xl':               $grid-gutter
 ) !default;
 
 /*
 * End of button variables
 */
 //Z index
-$z-index-menu: 10;
-$z-index-dialog: 100;
+$z-index-menu:    10;
+$z-index-dialog:  100;
