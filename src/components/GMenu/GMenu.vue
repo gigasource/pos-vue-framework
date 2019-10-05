@@ -103,6 +103,7 @@
       const state = reactive({
         top: 0,
         hasJustFocused: false,
+        isFirstRender: true,
         ...menuableState
       });
 
@@ -150,7 +151,12 @@
       }))
 
       function toggleContent(event) {
-        if (props.lazy) initContent();
+        if (props.lazy) {
+          state.isFirstRender = false
+          context.root.$nextTick(() => {
+            initContent()
+          })
+        }
         const activator = event.target || event.currentTarget;
         if (!activator) return
 
@@ -238,10 +244,14 @@
           options.on.mouseleave = mouseLeaveHandler
         }
 
+        const children = state.isFirstRender && props.lazy
+          ? () => ([genActivator()])
+          : () => ([genActivator(), genContent()])
+
         return h(
           'div',
           options,
-          [genActivator(), genContent()]
+          children()
         )
       }
     }

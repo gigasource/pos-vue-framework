@@ -66,6 +66,7 @@
 			padding: 5px 0;
 			line-height: 24px;
 			font-size: 16px;
+			user-select: text;
 		}
 
 		.tf:focus-within::after {
@@ -76,6 +77,9 @@
 		.tf-input:focus + .tf-label,
 		.tf-input:placeholder-shown + .tf-label {
 			transform: translateY(-16px) scale(0.75);
+		}
+
+		.tf-input:focus + .tf-label {
 			color: #1867c0;
 		}
 
@@ -172,6 +176,9 @@
 		.tf__filled .tf-input:focus + .tf-label,
 		.tf__filled .tf-input:placeholder-shown + .tf-label {
 			transform: translateY(-12px) scale(0.75);
+		}
+
+		.tf__filled .tf-input:focus + .tf-label {
 			color: #1867c0;
 		}
 
@@ -214,6 +221,10 @@
 			width: auto;
 		}
 
+		.tf__outlined .tf-input:placeholder-shown legend {
+			width: auto;
+		}
+
 		.tf__outlined .tf-label {
 			top: 4px;
 		}
@@ -253,18 +264,26 @@
 			border-radius: 9999px;
 		}
 
+		.tf__outlined.tf__rounded legend {
+			margin-left: 8px;
+		}
+
 		.tf__filled.tf__rounded .tf-label {
 			left: 16px;
 		}
+
 		.tf__outlined.tf__rounded .tf-label {
 			left: 8px;
 		}
+
 		.tf__outlined.tf__rounded:focus-within .tf-label {
-			left: 0;
+			left: 8px;
 		}
+
 		.tf__filled.tf__rounded .tf-input {
 			padding-left: 16px;
 		}
+
 		.tf__outlined.tf__rounded .tf-input {
 			padding-left: 8px;
 		}
@@ -296,18 +315,26 @@
 			border-top-right-radius: 16px;
 		}
 
+		.tf__outlined.tf__shaped legend {
+			margin-left: 8px;
+		}
+
 		.tf__filled.tf__shaped .tf-label {
 			left: 16px;
 		}
+
 		.tf__outlined.tf__shaped .tf-label {
 			left: 8px;
 		}
+
 		.tf__outlined.tf__shaped:focus-within .tf-label {
-			left: 0;
+			left: 8px;
 		}
+
 		.tf__filled.tf__shaped .tf-input {
 			padding-left: 16px;
 		}
+
 		.tf__outlined.tf__shaped .tf-input {
 			padding-left: 8px;
 		}
@@ -319,25 +346,114 @@
 		}
 
 		.tf-wrapper.tf__solo.tf__outlined legend {
-			width: 0 ;
+			width: 0 !important;
 		}
+
 		.tf-wrapper.tf__solo.tf__outlined .tf {
 			box-shadow: none;
 		}
+
 		.tf-wrapper.tf__solo.tf__outlined {
 			border-radius: 4px;
 			box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 		}
 
-		.tf-wrapper.tf__solo.tf__flat .tf{
+		.tf-wrapper.tf__solo.tf__flat .tf {
 			border: none;
 			box-shadow: none;
+		}
+
+		.bs-tf-wrapper {
+			display: block;
+			cursor: text;
+			width: calc(100% - 10px);
+			margin: 4px 5px 8px;
+		}
+
+		.bs-tf-label {
+			display: inline-block;
+			margin-bottom: 4px;
+			font-weight: 400;
+		}
+
+		.bs-tf-input-group,
+		.bs-tf-input-prepend,
+		.bs-tf-input-append {
+			display: flex;
+		}
+
+		.bs-tf-input-prepend,
+		.bs-tf-input-prepend > *:first-child {
+			border-top-left-radius: 4px;
+			border-bottom-left-radius: 4px;
+		}
+
+		.bs-tf-input-prepend > * {
+			border-right: none !important;
+		}
+
+		.bs-tf-input-append > * {
+			border-left: none !important;
+			z-index: -1; /*display under input box shadow*/
+		}
+
+		.bs-tf-input-append,
+		.bs-tf-input-append > *:last-child {
+			border-top-right-radius: 4px;
+			border-bottom-right-radius: 4px;
+		}
+
+		.bs-tf-input-text {
+			display: flex;
+			align-items: center;
+			padding: 6px 12px;
+			font-size: 14px;
+			line-height: 1.5;
+			font-weight: 400;
+			color: #495057;
+			background-color: #e9ecef;
+			white-space: nowrap;
+			text-align: center;
+			border: 1px solid #ced4da;
+		}
+
+		.bs-tf-input {
+			display: block;
+			flex: 1 1 auto;
+			padding: 6px 12px;
+			line-height: 1.5;
+			font-size: 16px;
+			border: 1px solid #ced4da !important;
+			background-color: #fff;
+			background-clip: padding-box;
+			color: #495057;
+			border-radius: 4px;
+			transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+		}
+
+		.bs-tf-input:focus {
+			outline: 0;
+			border-color: #80bdff !important;
+			box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+		}
+
+		.bs-tf-message {
+			display: block;
+			font-size: 80%;
+			font-weight: 400;
+			margin-top: 2px;
+			color: #6c757d;
 		}
 	</style>
 	<script>
     document.addEventListener('DOMContentLoaded', function () {
       let inputs = document.getElementsByClassName('tf-input');
       for (const input of inputs) {
+        let legend = input.parentElement.previousElementSibling;
+        const wrapper = legend.parentElement.parentElement;
+        if (wrapper.classList.contains('tf__outlined') && input.placeholder && legend.tagName.toLowerCase() === 'legend') {
+          legend.style.width = 'auto';
+        }
         input.addEventListener('change', function () {
           let label = this.nextElementSibling;
           if (!label.classList.contains('tf-label__active')) {
@@ -346,7 +462,6 @@
           if (!this.value) {
             label.classList.remove('tf-label__active');
           }
-          let legend = label.parentElement.previousElementSibling;
           if (legend.tagName.toLowerCase() === 'legend') {
             if (this.value) {
               legend.style.width = 'auto';
@@ -356,6 +471,19 @@
           }
         });
       }
+      let bsInputs = document.getElementsByClassName('bs-tf-input');
+      for (const bsInput of bsInputs) {
+        const prepend = bsInput.previousElementSibling;
+        const append = bsInput.nextElementSibling;
+        if (prepend.childElementCount > 0) {
+          bsInput.style.borderBottomLeftRadius = '0';
+          bsInput.style.borderTopLeftRadius = '0';
+        }
+        if (append.childElementCount > 0) {
+          bsInput.style.borderBottomRightRadius = '0';
+          bsInput.style.borderTopRightRadius = '0';
+				}
+			}
     });
 	</script>
 </head>
@@ -905,6 +1033,68 @@
 				this is a hint/message
 			</div>
 		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Bootstrap</legend>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Normal</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Prepend text</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+					<span class="bs-tf-input-text">1</span>
+					<span class="bs-tf-input-text">2</span>
+					<span class="bs-tf-input-text">3</span>
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Append text</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+					<span class="bs-tf-input-text">1</span>
+					<span class="bs-tf-input-text">2</span>
+					<span class="bs-tf-input-text">3</span>
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Both append & prepend</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+					<span class="bs-tf-input-text">Email: </span>
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+					<span class="bs-tf-input-text">@example.com</span>
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
 
 	</fieldset>
 </div>

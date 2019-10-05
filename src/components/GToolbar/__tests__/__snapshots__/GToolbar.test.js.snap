@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Toolbar should render 1`] = `"<div class=\\"bottom bg-grey-lighten-3 tool-bar\\"></div>"`;
