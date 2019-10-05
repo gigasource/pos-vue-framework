@@ -53,7 +53,7 @@ button {
   }
 
   &:before {
-    background-color: #f5f5f5;
+    background-color: currentColor;
   }
 
   &:not(.g-btn__disabled) {
@@ -215,7 +215,7 @@ button {
   }
 
   @each $name, $size in $btn-sizes {
-    &:not(.g-btn-fab).g-size__#{$name} {
+    &:not(.g-btn-fab):not(.g-btn-rounded).g-size__#{$name} {
       height: #{$size}px;
       min-width: #{round($size * 1.777777777777778)}px; // default ratio
       padding: 0 #{$size / 2.25}px;
