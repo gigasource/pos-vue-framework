@@ -13,7 +13,7 @@ describe('Menu', () => {
     const vm = new Vue({
       template: `
         <div data-app>
-          <g-menu v-model="showMenu" lazy open-on-hover open-delay="500" close-delay="500">
+          <g-menu v-model="showMenu" open-on-hover open-delay="500" close-delay="500">
             <template v-slot:activator="{toggleContent}">
               <g-button @click="toggleContent" width="100" height="50">Activator</g-button>
             </template>
@@ -35,6 +35,32 @@ describe('Menu', () => {
     expect(vm.$children[0].$scopedSlots.default).toBeTruthy()
     expect(vm.$children[0].$scopedSlots.activator).toBeTruthy()
   })
+
+  it('should hide menu when lazy loading', function () {
+    const vm = new Vue({
+      template: `
+        <div data-app>
+          <g-menu v-model="showMenu" lazy>
+            <template v-slot:activator="{toggleContent}">
+              <g-button @click="toggleContent" width="100" height="50">Activator</g-button>
+            </template>
+            <g-list>
+              <g-list-item v-for="i in 5" :key="i">
+                <g-button>button {{i}}</g-button>
+              </g-list-item>
+            </g-list>
+          </g-menu>
+        </div>
+      `,
+      components: { GListItem, GList, GMenu, GButton },
+      data() {
+        return {
+          showMenu: false
+        }
+      }
+    }).$mount();
+    expect(vm.$el.querySelector('.menu-content')).toBe(null)
+  });
 
   //fixme: detachable cannot find root el
   it('should activate on click', function () {
@@ -62,10 +88,7 @@ describe('Menu', () => {
       // expect(vm.$el.outerHTML).toMatchSnapshot()
       const button = vm.$el.querySelector('button')
       button.click()
-      expect(vm.showMenu = true)
+      expect(vm.showMenu).toBe(true)
     })
   });
-
-
-
 })
