@@ -27,6 +27,7 @@ describe('Menu', () => {
         }
       }
     }).$mount(createElement());
+    expect(vm.$el.outerHTML).toMatchSnapshot()
     expect(vm.$children[0].$scopedSlots.default).toBeTruthy()
     expect(vm.$children[0].$scopedSlots.activator).toBeTruthy()
   })
@@ -53,6 +54,7 @@ describe('Menu', () => {
         }
       }
     }).$mount(createElement());
+    expect(vm.$el.outerHTML).toMatchSnapshot()
     expect(vm.$el.firstChild.className).toBe('menu-content')
   });
 
@@ -75,6 +77,7 @@ describe('Menu', () => {
         }
       }
     }).$mount(createElement());
+    expect(vm.$el.outerHTML).toMatchSnapshot()
     expect(vm.$el.querySelector('.menu-content')).toBe(null)
   });
 
@@ -100,7 +103,7 @@ describe('Menu', () => {
       }
     }).$mount(createElement());
     vm.$nextTick(() => {
-      // expect(vm.$el.outerHTML).toMatchSnapshot()
+      expect(vm.$el.outerHTML).toMatchSnapshot()
       const button = vm.$el.querySelector('button')
       button.click()
       expect(vm.showMenu).toBe(true)
