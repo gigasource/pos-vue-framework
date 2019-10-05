@@ -1,67 +1,44 @@
 <template>
-  <!--  <div class="tf-wrapper" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">-->
-  <!--    <div class="tf-prepend__outer"></div>-->
-  <!--    <div class="tf">-->
-  <!--      <div class="tf-prepend__inner">-->
-  <!--        <slot></slot>-->
-  <!--      </div>-->
-  <!--      <input id="input" type="text"-->
-  <!--             class="textfield br-2 bg-lgray-5 fw-700"-->
-  <!--             :class="classes"-->
-  <!--             :style="styles"-->
-  <!--             :value="lazyValue"-->
-  <!--             :placeholder="placeholder"-->
-  <!--             ref="input"-->
-  <!--             @input="onInput"-->
-  <!--             @change="onChange"-->
-  <!--             @focus="onFocus"-->
-  <!--             @blur="onBlur"-->
-  <!--             @keydown="onKeyDown">-->
-  <!--      <label for="input" class="tf-label">-->
-  <!--        <slot name="label">{{label}}</slot>-->
-  <!--      </label>-->
-  <!--      <div class="tf-append__inner">-->
-  <!--        <slot></slot>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--    <div class="tf-append__outer">-->
-  <!--      <slot></slot>-->
-  <!--    </div>-->
-  <!--    <div class="tf-hint">-->
-  <!--      <slot></slot>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <div @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-    <label :class="labelStyles" >
-      <slot name="label">{{label}}</slot>
-    </label>
-    <div class="r mt-1">
-      <input type="text"
-             class="textfield br-2 bg-lgray-5 fw-700"
-             :class="classes"
-             :style="styles"
-             v-model="internalValue"
-             :placeholder="placeholder"
-             ref="input"
-             @change="onChange"
-             @focus="onFocus"
-             @blur="onBlur"
-             @keydown="onKeyDown"
-      />
-      <span class="textfield-icon">
-				<slot name="append"></slot>
-				<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick">
-			</span>
-      <span class="textfield-after">
-				<slot name="after" :isValidInput="isValidInput"></slot>
-			</span>
+    <div class="tf-wrapper" :class="tfClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown" >
+      <div class="tf-prepend__outer"></div>
+      <fieldset>
+        <div class="tf" >
+        <div class="tf-prepend__inner">
+          <slot>{{prefix}}</slot>
+        </div>
+          <span class="tf-affix"></span>
+          <input id="input" type="text"
+                 class="tf-input"
+                 :type="type"
+                 :label="label"
+                 v-model="internalValue"
+                 :placeholder="placeholder"
+                 ref="input"
+                 @change="onChange"
+                 @focus="onFocus"
+                 @blur="onBlur"
+                 @keydown="onKeyDown">
+          <label for="input" class="tf-label" :class="labelClasses" >
+            <slot name="label">{{label}}</slot>
+          </label>
+          <span class="tf-affix">{{suffix}}</span>
+          <div class="tf-append__inner">
+          <slot></slot>
+        </div>
+        </div>
+      </fieldset>
+      <div class="tf-append__outer" @click="onClearIconClick">
+        <slot></slot>
+        <img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" >
+      </div>
+      <div class="tf-error" v-if="(isValidInput===false)">{{errorMessage}}</div>
+      <div class="tf-hint" v-if="isValidInput === true && !solo" :class="hintClasses">{{hint}}</div>
+      <div v-show="counter"  class="tf-counter">{{counterValue}} / {{maxlength}}</div>
     </div>
-    <p v-show="isValidInput === false" class="textfield-error">{{errorMessage}}</p>
-  </div>
 </template>
 
 <script>
-  import {computed, onUpdated, ref} from '@vue/composition-api';
+  import {ref} from '@vue/composition-api';
   import getGInput from "./GInput";
   import getGInputField from "./GInputField";
   import {keyCodes} from '../../utils/helpers';
@@ -80,7 +57,11 @@
       placeholder: String,
       clearable: Boolean,
       rules: Function,
+      hint: String,
+      persistent: Boolean,
       errorMessage: String,
+      counter: Boolean,
+      maxlength: String,
 
       // display
       large: Boolean,
@@ -92,46 +73,48 @@
       centered: Boolean,
       active: Boolean,
 
+      //styles
+      filled : Boolean,
+      outlined: Boolean,
+      solo: Boolean,
+      shaped: Boolean,
+      rounded: Boolean,
+      flat: Boolean,
+
       // basic props
       value: [String, Number],
+      type:{
+        type: String,
+        default: 'text',
+      },
+      prefix: String,
+      suffix: String,
     },
     setup(props, context) {
-      const {listeners, isDisabled, hasLabel} = getGInput(props, context)
-      const {counterValue, isDirty, isLabelActive, isFocused, onClick, onFocus, onBlur, internalValue, isValidInput}
-          = getGInputField(props, context)
+      const {listeners} = getGInput(props, context)
+      const {counterValue,
+              isDirty,
+              isLabelActive,
+              isFocused,
+              hasIcon,
+              onClick,
+              onFocus,
+              onBlur,
+              internalValue,
+              isValidInput,
+              onClearIconClick,
+              labelClasses,
+              prependClasses,
+              tfClasses,
+              hintClasses}
+        = getGInputField(props, context)
 
       // template refs
       const input = ref(null)
 
-      // fixme: move to field input mixins: done
-      const {classes, styles, labelStyles} = getGInputField(props, context)
-
       // event listeners
       const {onChange} = listeners
-      // const isFocused = ref(false);
-      // function onClick(event) {
-      //   if (props.disabled || isFocused.value) {
-      //     return;
-      //   }
-      //   context.refs.input.focus();
-      //   isFocused.value = true;
-      // }
-      // function onFocus(event) {
-      //   if (!context.refs.input) {
-      //     return;
-      //   }
-      //   if (document.activeElement !== context.refs.input) {
-      //     context.refs.input.focus();
-      //   }
-      //   if (!isFocused.value) {
-      //     context.emit('focus', event);
-      //     isFocused.value = true;
-      //   }
-      // }
-      // function onBlur(event) {
-      //   context.emit('blur', event);
-      //   isFocused.value = false;
-      // }
+
       function onKeyDown(event) {
         if (event.keyCode === keyCodes.enter && props.isDirty()) {
           context.emit('change', internalValue.value);
@@ -152,16 +135,11 @@
         }
       }
 
-      const {onClearIconClick} = getGInputField(props, context)
-
-      onUpdated(() => {
-        console.log(`internalValue: ${internalValue.value}`)
-      })
-
       return {
-        classes,
-        styles,
-        labelStyles,
+        labelClasses,
+        prependClasses,
+        tfClasses,
+        hintClasses,
         internalValue,
         counterValue,
         isLabelActive,
@@ -176,11 +154,12 @@
         onClearIconClick,
         isDirty,
         isValidInput,
+        hasIcon,
       }
     }
   }
 </script>
 
 <style scoped>
-  @import "GInputField.scss";
+  @import "_GInputField.scss";
 </style>

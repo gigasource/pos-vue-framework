@@ -5,7 +5,7 @@
 		</label>
 		<div class="r mt-1">
 			<input type="text"
-						 class="textfield br-2 bg-lgray-5 fw-700"
+						 class="tf"
 						 :class="classes"
 						 :style="styles"
 						 :value="lazyValue"

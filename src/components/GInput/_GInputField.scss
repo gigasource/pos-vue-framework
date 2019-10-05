@@ -5,6 +5,8 @@
   width: calc(100% - 10px);
   margin: 16px 5px 24px;
   position: relative;
+
+
 }
 
 .tf-wrapper fieldset {
@@ -14,9 +16,6 @@
   margin: 0;
 }
 
-.tf-wrapper legend {
-  display: none;
-}
 
 .tf {
   position: relative;
@@ -47,12 +46,13 @@
 
 .tf-label {
   position: absolute;
+  display: block;
   top: 8px;
   left: 0;
   transform-origin: top left;
   transition: 0.4s ease-out;
   pointer-events: none;
-  color: #3f51b5;
+  color: rgba(0, 0, 0, 0.32);
 }
 
 .tf-input {
@@ -69,12 +69,12 @@
 
 .tf-input:focus + .tf-label,
 .tf-input:placeholder-shown + .tf-label {
-  transform: translateY(-16px) scale(0.75);
+  transform: translateY(-18px) scale(0.75);
   color: #1867c0;
 }
 
 .tf-label__active {
-  transform: translateY(-16px) scale(0.75);
+  transform: translateY(-21px) scale(0.75);
 }
 
 .tf-icon__active {
@@ -113,8 +113,29 @@
 
 .tf-hint {
   position: absolute;
+  bottom: -10px;
+  opacity: 0;
+  left: 0;
+  font-size: 12px;
+  font-weight: 400;
+  transition: 0.4s ease-out;
+}
+.tf-hint__active{
+  opacity: 1;
+  transform: translateY(8px);
+}
+.tf-error {
+  position: absolute;
   bottom: -18px;
   left: 0;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.tf-counter {
+  position: absolute;
+  bottom: -18px;
+  right: 0;
   font-size: 12px;
   font-weight: 400;
 }
@@ -209,7 +230,7 @@
 }
 
 .tf__outlined .tf-label {
-  top: 4px;
+  top: 9px;
 }
 
 .tf__outlined .tf-prepend__inner.tf-icon__active ~ .tf-label {
@@ -326,4 +347,21 @@
 .tf-wrapper.tf__solo.tf__flat .tf{
   border: none;
   box-shadow: none;
+}
+.tf-wrapper-disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+.tf-wrapper-readonly {
+  pointer-events: none;
+}
+input[type=password] {
+  outline: none;
+  border: transparent;
+  font-family: "Muli", sans-serif;
+}
+.tf-affix{
+  line-height: 24px;
+  font-size: 16px;
+  padding: 5px 0px 0px 0px ;
 }
