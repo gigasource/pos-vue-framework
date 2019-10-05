@@ -1,29 +1,21 @@
 // import Vue from 'vue'
-import { createElement } from '@vue/composition-api';
 const Vue = require('vue/dist/vue.common.js')
 const plugin = require('@vue/composition-api').default
-// const {createElement} = require('@vue/composition-api')
 Vue.use(plugin)
 
 import GMenu from '../GMenu';
 import GButton from '../../GButton/GButton';
 import GListItem from '../../GList/GListItem';
 import GList from '../../GList/GList';
-// const GMenu =  require('../GMenu');
 
 describe('Menu', () => {
-  it('should render', () => {
-    // const vm = new Vue({
-    //   setup() {
-    //     return () => createElement('div', ['test'])
-    //   }
-    // }).$mount()
-    const vm0 = new Vue({
+  it('should render default and activator slots', () => {
+    const vm = new Vue({
       template: `
         <div data-app>
           <g-menu v-model="showMenu" lazy open-on-hover open-delay="500" close-delay="500">
             <template v-slot:activator="{toggleContent}">
-              <g-button @click="toggleContent" width="100px" height="50px">Activator</g-button>
+              <g-button @click="toggleContent" width="100" height="50">Activator</g-button>
             </template>
             <g-list>
               <g-list-item v-for="i in 5" :key="i">
@@ -39,10 +31,41 @@ describe('Menu', () => {
           showMenu: false
         }
       }
-    });
-    const vm = vm0.$mount()
-    // const wrapper = mountFunction()
-    // expect(wrapper.html()).toMatchSnapshot()
-    expect(vm.$el.outerHTML).toMatchSnapshot()
+    }).$mount();
+    expect(vm.$children[0].$scopedSlots.default).toBeTruthy()
+    expect(vm.$children[0].$scopedSlots.activator).toBeTruthy()
   })
+
+  //fixme: detachable cannot find root el
+  it('should activate on click', function () {
+    const vm = new Vue({
+      template: `
+        <div>
+          <div data-app>
+            <g-menu v-model="showMenu">
+              <template v-slot:activator="{toggleContent}">
+                <g-button @click="toggleContent">Activator</g-button>
+              </template>
+              <p>Content slot</p>
+            </g-menu>
+          </div>
+        </div>
+      `,
+      components: { GListItem, GList, GMenu, GButton },
+      data() {
+        return {
+          showMenu: false
+        }
+      }
+    }).$mount();
+    vm.$nextTick(() => {
+      // expect(vm.$el.outerHTML).toMatchSnapshot()
+      const button = vm.$el.querySelector('button')
+      button.click()
+      expect(vm.showMenu = true)
+    })
+  });
+
+
+
 })

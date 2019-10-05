@@ -28,4 +28,20 @@ describe('Button', () => {
     expect(wrapper.html()).toMatchSnapshot()
   })
 
+  it('should emit click event', () => {
+    const wrapper = mountFunction()
+    wrapper.trigger('click')
+    expect(wrapper.emitted()).toBeTruthy()
+  });
+
+  it('should have correct style', function () {
+    const wrapper = mountFunction({
+      propsData: {
+        height: 40,
+        width: 100,
+        color: 'blue'
+      }
+    })
+    expect(wrapper.html()).toMatchSnapshot()
+  });
 })
