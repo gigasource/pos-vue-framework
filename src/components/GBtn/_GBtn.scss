@@ -39,20 +39,6 @@ button {
   padding: 0 #{round(36 / 2.25)}px;
 
   &:before {
-    border-radius: inherit;
-    bottom: 0;
-    color: inherit;
-    content: '';
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: $btn-transition;
-  }
-
-  &:before {
     background-color: currentColor;
   }
 
@@ -109,42 +95,7 @@ button {
 
   &__outlined,
   &__flat {
-    background-color: transparent;
     @include elevation(0);
-  }
-
-  &__small-rounded {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 9999px;
-    outline: none;
-    margin: 0 auto;
-    padding: 0 0 0.125rem 0;
-    font-size: $font-size-base * 1.25;
-    line-height: 0;
-  }
-
-  &__centered {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  &__red-corner:after {
-    content: '';
-    width: 0;
-    height: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border-style: solid;
-    border-width: 0 1.25rem 1.25rem 0;
-    border-color: transparent #ff4452 transparent transparent;
-  }
-
-  &__checked {
-    position: absolute;
-    right: 0;
-    top: -1rem;
   }
 
   &__raised {
