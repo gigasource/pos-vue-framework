@@ -43,12 +43,11 @@
         maxWidth: [String, Number],
         minHeight: [String, Number],
         minWidth: [String, Number],
-
         block: Boolean,
         width: [String, Number],
         height: [String, Number],
         color: String,
-        backgroundColor: String
+        backgroundColor: String,
       }
     },
     setup(props, context) {
@@ -95,7 +94,11 @@
         }
 
         classes[size] = true;
-				classes[iconSize] = true;
+        classes[iconSize] = true;
+
+        if (props.backgroundColor) {
+          classes[props.backgroundColor] = true;
+        }
 
         let elevationClassName = props.elevation ? `g-btn__elevation-${props.elevation}` : null;
         if (elevationClassName) {
