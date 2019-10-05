@@ -6,7 +6,7 @@ button {
   //background: #eeeeee;
   height: 36px;
   cursor: pointer;
-  color: #1d1d1d;
+  color: rgba(0, 0, 0, .87);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -53,7 +53,7 @@ button {
   }
 
   &:before {
-    background-color: #eeeeee;
+    background-color: #f5f5f5;
   }
 
   &:not(.g-btn__disabled) {
@@ -103,7 +103,7 @@ button {
   }
 
   &__outlined.g-btn__disabled {
-   border-color: rgba(0, 0, 0, 0.26) !important;
+    border-color: rgba(0, 0, 0, 0.26) !important;
   }
 
 
@@ -148,7 +148,7 @@ button {
   }
 
   &__raised {
-    &:active{
+    &:active {
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
       0px 2px 2px 0px rgba(0, 0, 0, 0.14),
       0px 1px 5px 0px rgba(0, 0, 0, 0.12);
@@ -162,7 +162,7 @@ button {
   &-fab {
     padding: 0;
     border-radius: 100px;
-
+    //Set fab size
     @each $name, $size in $fab-sizes {
       &.g-size__#{$name} {
         height: #{$size}px;
@@ -171,22 +171,23 @@ button {
     }
 
     //Fab icon size
-    @each $name, $size in $fab-icon-sizes {
-      &.g-icon-size__#{$name} {
-        height: #{$size}px;
-        width: #{$size}px;
-      }
-    }
+    //@each $name, $size in $fab-icon-sizes {
+    //  &.g-icon-size__#{$name} {
+    //    height: #{$size}px;
+    //    width: #{$size}px;
+    //  }
+    //}
 
     //Fab icon size
     @each $name, $size in $fab-icon-sizes {
-        &.i{
-          width: #{$size}px;
-          height: #{$size}px;
-        }
-
+      &.g-icon-size__#{$name} > *{
+        font-size: #{$size}px;
+        width: #{$size}px;
+        height: #{$size}px;
+      }
     }
   }
+
 
   &__block {
     display: flex;

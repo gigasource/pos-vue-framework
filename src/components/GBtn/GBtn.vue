@@ -74,19 +74,28 @@
           'g-btn__outlined': props.outlined,
         };
 
+
         let size = '';
+        let iconSize = '';
         if (props.large) {
-          size = `g-size__large`;
+          size = 'g-size__large';
+          iconSize = props.fab ? 'g-icon-size__large' : null;
         } else if (props.small) {
-          size = `g-size__small`;
+          size = 'g-size__small';
+          iconSize = props.fab ? 'g-icon-size__small' : null;
         } else if (props.xSmall) {
-          size = `g-size__x-small`;
+          size = 'g-size__x-small';
+          iconSize = props.fab ? 'g-icon-size__x-small' : null;
         } else if (props.xLarge) {
-          size = `g-size__x-large`;
+          size = 'g-size__x-large';
+          iconSize = props.fab ? 'g-icon-size__x-large' : null;
         } else {
           size = 'g-size__default';
+          iconSize = props.fab ? 'g-icon-size__default' : null;
         }
+
         classes[size] = true;
+				classes[iconSize] = true;
 
         let elevationClassName = props.elevation ? `g-btn__elevation-${props.elevation}` : null;
         if (elevationClassName) {
@@ -101,8 +110,8 @@
       });
       let styles = computed(() => {
         return {
-          ...props.color ? { 'background-color': props.color.replace('-', ''), 'color': 'white' } : null,
-          ...props.outlined ? { 'color': `${props.color}`, 'border': `thin solid ${props.color}`, 'background-color': 'transparent' } : null,
+          ...props.color ? { 'background-color': props.color.replace('-', ''), 'color': '#fff' } : null,
+          ...props.outlined ? { 'color': `${props.color}`, 'border': `thin solid currentColor`, 'background-color': 'transparent' } : null,
           ...props.width ? { 'width': convertToUnit(props.width) } : null,
           ...props.height ? { 'height': convertToUnit(props.height) } : null,
           ...props.maxWidth ? { 'width': convertToUnit(props.maxWidth) } : null,
