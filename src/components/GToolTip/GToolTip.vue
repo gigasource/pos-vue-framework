@@ -13,35 +13,6 @@
   const TRANSITION_DEFAULT_ACTIVE = 'scale-transition'
   const TRANSITION_DEFAULT_DEACTIVE = 'fade-transition'
 
-  // SPEECH BUBBLE
-  // generate speech bubble content
-  const generateSpeechBubble = (props, children) => {
-    return h('div', {
-      staticClass: getSpeechBubbleStaticClassName(props),
-      style: {
-        [getBubbleBorderColorProp(props)]: props.color
-      }
-    }, children)
-  }
-  const getSpeechBubbleStaticClassName = (props) => {
-    return `${TOOLTIP_CONTENT_SPEECH_BUBBLE_STATIC_CLASS} ${TOOLTIP_CONTENT_SPEECH_BUBBLE_STATIC_CLASS}--${getBubbleArrowPosition(props)}`
-  }
-  const getBubbleArrowPosition = (props) => {
-    if (props.top) return 'bottom'
-    if (props.left) return 'right'
-    if (props.right) return 'left'
-    if (props.bottom) return 'top'
-    return ''
-  }
-  const getBubbleBorderColorProp = (props) => {
-    let direction = 'top'
-    if (props.top) direction = 'top'
-    else if (props.left) direction = 'left'
-    else if (props.right) direction = 'right'
-    else if (props.bottom) direction = 'bottom'
-    return `border-${direction}-color`
-  }
-
   export default {
     name: 'GToolTip',
     props: {
@@ -118,7 +89,6 @@
           type: Boolean,
           default: false,
         },
-
         // delay
         closeDelay: {
           type: [Number, String],
@@ -128,7 +98,6 @@
           type: [Number, String],
           default: 0,
         },
-
       },
       /*look & feel*/           ...{
         // transition name
@@ -159,8 +128,7 @@
       const computedTooltipContent = computed(() => {
         if (!context.slots.default || typeof context.slots.default !== 'function')
           return []
-        const defaultSlot = context.slots.default()
-        return props.speechBubble ? [generateSpeechBubble(props, defaultSlot)] : [defaultSlot]
+        return props.speechBubble ? [speechBubble.value] : [context.slots.default()]
       })
       // generate tooltip style
       const tooltipContentStyles = computed(() => {
@@ -228,6 +196,34 @@
         if (props.nudgeBottom) top += parseInt(props.nudgeBottom)
         return `${calcYOverFlow(top + menuableState.pageYOffset)}px`
       })
+      // SPEECH BUBBLE
+      // generate speech bubble content
+      const speechBubble = computed(() => {
+        return h('div', {
+          staticClass: getSpeechBubbleStaticClassName.value,
+          style: {
+            [getBubbleBorderColorProp.value]: props.color
+          }
+        }, context.slots.default())
+      })
+      const getSpeechBubbleStaticClassName = computed(() => {
+        return `${TOOLTIP_CONTENT_SPEECH_BUBBLE_STATIC_CLASS} ${TOOLTIP_CONTENT_SPEECH_BUBBLE_STATIC_CLASS}--${getBubbleArrowPosition.value}`
+      })
+      const getBubbleArrowPosition = computed(() => {
+        if (props.top) return 'bottom'
+        if (props.left) return 'right'
+        if (props.right) return 'left'
+        if (props.bottom) return 'top'
+        return ''
+      })
+      const getBubbleBorderColorProp = computed(() => {
+        let direction = 'top'
+        if (props.top) direction = 'top'
+        else if (props.left) direction = 'left'
+        else if (props.right) direction = 'right'
+        else if (props.bottom) direction = 'bottom'
+        return `border-${direction}-color`
+      })
 
       //// ACTIVATOR ////
       // generate activator listener
@@ -250,7 +246,6 @@
             state.isActive = !state.isActive
           }
         }
-
         return listeners
       }
       // generate activator component
