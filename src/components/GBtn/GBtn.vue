@@ -48,6 +48,7 @@
         height: [String, Number],
         color: String,
         backgroundColor: String,
+				gradient: String,
       }
     },
     setup(props, context) {
@@ -96,8 +97,8 @@
         classes[size] = true;
         classes[iconSize] = true;
 
-        if (props.backgroundColor) {
-          classes[props.backgroundColor] = true;
+        if (props.gradient) {
+          classes[props.gradient] = true;
         }
 
         let elevationClassName = props.elevation ? `g-btn__elevation-${props.elevation}` : null;
