@@ -65,20 +65,20 @@
       const overlayZIndex = computed(() => zIndex.value - 1);
 
 
-      // Lazy/Eager
-			// TODO: convert to bootable mixin
-      const isBooted = reactive({
-        value: false
-      });
-      const lazyRender = computed(() => isBooted.value || !props.lazy);
-
-
       // Show/hide overlay
 			// TODO: convert to overlayable mixin
 			const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen && lazyRender.value);
 
 
-			function initComponent() {
+
+      // Lazy/Eager
+      // TODO: convert to bootable mixin
+      const isBooted = reactive({
+        value: false
+      });
+      const lazyRender = computed(() => isBooted.value || !props.lazy);
+
+      function initComponent() {
         context.refs.wrapper.addEventListener('keydown', onKeydown);
         if (renderOverlay.value) attachToRoot(context.refs.overlay.$el);
         attachToRoot(context.refs.wrapper);
@@ -90,18 +90,22 @@
         initComponent();
 			});
 
+			watch(isActive, newVal => {
+			  if (newVal) {
+          if (props.lazy) {
+            isBooted.value = true;
+            context.root.$nextTick(() => {
+              initComponent();
+            })
+          }
+          context.root.$nextTick(() => {
+            context.refs.wrapper.focus();
+          });
+				}
+			})
 
       function toggleDialog() {
-        if (props.lazy) {
-          isBooted.value = true;
-          context.root.$nextTick(() => {
-            initComponent();
-					})
-				}
         isActive.value = !isActive.value;
-        context.root.$nextTick(() => {
-            context.refs.wrapper.focus();
-				});
 			}
 
 
