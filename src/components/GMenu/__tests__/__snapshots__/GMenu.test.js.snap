@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Menu should activate on click 1`] = `"<div><div data-app=\\"\\"><div class=\\"menu\\"><div><button>Activator</button></div></div></div></div>"`;
+exports[`Menu should activate on click 1`] = `"<div><div data-app=\\"\\"><div class=\\"menu-content\\" style=\\"top: 0px; left: 0px; max-height: auto; min-width: 0px; max-width: 80%; display: none;\\"> <div>content</div></div><div class=\\"menu\\"><div><button>Activator</button></div></div></div></div>"`;
 
 exports[`Menu should attach content to root dom 1`] = `"<div data-app=\\"\\"><div class=\\"menu-content\\" style=\\"top: 0px; left: 0px; max-height: auto; min-width: 0px; max-width: 80%; display: none;\\"> <div>content</div></div><div><div class=\\"menu\\"><div><button>Activator</button></div></div></div></div>"`;
 
