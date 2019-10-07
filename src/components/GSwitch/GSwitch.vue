@@ -37,10 +37,16 @@
       let isActive = ref(false);
       const internalValue = computed(() => props.inputValue);
       const isSelectedArray = Array.isArray(internalValue.value);
-      const value = computed(() => props.value ? props.value : (internalValue.value && !isSelectedArray ? internalValue.value : isActive.value));
+      const value = computed(() => (
+        props.value
+					? props.value
+					: (internalValue.value && !isSelectedArray ? internalValue.value : true)
+				));
       if (internalValue.value && isSelectedArray) {
         isActive.value = internalValue.value.some(v => v === value.value)
-      } else if (internalValue.value === true || internalValue.value === 'true' || (internalValue.value === value.value)) {
+      } else if (internalValue.value === true
+									|| internalValue.value === 'true'
+									|| (internalValue.value === value.value)) {
         isActive.value = true;
       }
 

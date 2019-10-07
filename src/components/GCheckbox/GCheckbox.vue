@@ -35,10 +35,14 @@
       let isActive = ref(false);
       const internalValue = computed(() => props.inputValue);
       const isSelectedArray = Array.isArray(internalValue.value);
-      const trueValue = props.value ? cloneDeep(props.value) : (internalValue.value && !isSelectedArray ? internalValue.value : isActive.value);
+      const trueValue = props.value
+													? cloneDeep(props.value)
+													: (internalValue.value && !isSelectedArray ? internalValue.value : true);
       if (internalValue.value && isSelectedArray) {
         isActive.value = internalValue.value.some(v => v === trueValue)
-      } else if (internalValue.value === true || internalValue.value === 'true' || (internalValue.value === trueValue)) {
+      } else if (internalValue.value === true
+									|| internalValue.value === 'true'
+									|| (internalValue.value === trueValue)) {
         isActive.value = true;
       }
       let isDeterminate = ref(true);
