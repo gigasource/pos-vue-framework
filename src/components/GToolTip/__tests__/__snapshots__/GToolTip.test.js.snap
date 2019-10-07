@@ -1,0 +1,722 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tooltip 1) Render -  Activator - Activator will be rendered if activator slot is set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 1) Render -  Activator - Activator won't be rendered if activator slot is not set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 1) Render -  Content -  Content will be rendered if default slot is set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 1) Render -  Content -  Content won't be rendered if default slot is not set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 1) Render -  Content -  Speech bubble content will be rendered if absolute is not exists 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <div class="g-tooltip__content__speech-bubble g-tooltip__content__speech-bubble--bottom"
+           style="border-top-color: #616161;"
+      >
+        <span>
+          Tooltip content
+        </span>
+      </div>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 1) Render -  Content -  Speech bubble content will be rendered if absolute is not exists 2`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should ignore all alignment setting if absolute is set 1`] = `
+<div style="padding-top: 500px; padding-left: 500px;">
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should ignore all alignment setting if absolute is set 2`] = `
+<div style="padding-top: 500px; padding-left: 500px;">
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should ignore all alignment setting if absolute is set 3`] = `
+<div style="padding-top: 500px; padding-left: 500px;">
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should ignore all alignment setting if absolute is set 4`] = `
+<div style="padding-top: 500px; padding-left: 500px;">
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should ignore all nudge setting if absolute is set 1`] = `
+<div style="padding-top: 500px; padding-left: 500px;">
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 0px, top: 0px 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 0px, top: 0px 2`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 0px, top: 0px if absolute is not set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 0px, top: 100px 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 100px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 0px, top: 100px 2`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 100px, top: 0px 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 100px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 100px, top: 0px 2`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 100px, top: 100px 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 100px; max-width: auto; opacity: 0; top: 100px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 2) Position -  Absolute -  Should set tooltip style with left: 100px, top: 100px 2`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="max-width: auto; opacity: 0; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 3) Color -  Should be set - speech bubble tooltip with explicit position is bottom by default 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 10px; z-index: 999; background-color: rgb(250, 250, 250); border-color: #fafafa; display: none;"
+    >
+      <div class="g-tooltip__content__speech-bubble g-tooltip__content__speech-bubble--top"
+           style="border-bottom-color: #fafafa;"
+      >
+        <span>
+          Tooltip content
+        </span>
+      </div>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 3) Color -  Should be set - speech bubble tooltip with explicit position is left by default 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(250, 250, 250); border-color: #fafafa; display: none;"
+    >
+      <div class="g-tooltip__content__speech-bubble g-tooltip__content__speech-bubble--right"
+           style="border-left-color: #fafafa;"
+      >
+        <span>
+          Tooltip content
+        </span>
+      </div>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 3) Color -  Should be set - speech bubble tooltip with explicit position is right by default 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(250, 250, 250); border-color: #fafafa; display: none;"
+    >
+      <div class="g-tooltip__content__speech-bubble g-tooltip__content__speech-bubble--left"
+           style="border-right-color: #fafafa;"
+      >
+        <span>
+          Tooltip content
+        </span>
+      </div>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 3) Color -  Should be set - speech bubble tooltip with explicit position is top by default 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(250, 250, 250); border-color: #fafafa; display: none;"
+    >
+      <div class="g-tooltip__content__speech-bubble g-tooltip__content__speech-bubble--bottom"
+           style="border-top-color: #fafafa;"
+      >
+        <span>
+          Tooltip content
+        </span>
+      </div>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 3) Color -  Should be set - speech bubble tooltip with implicit position is top by default 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(250, 250, 250); border-color: #fafafa; display: none;"
+    >
+      <div class="g-tooltip__content__speech-bubble g-tooltip__content__speech-bubble--bottom"
+           style="border-top-color: #fafafa;"
+      >
+        <span>
+          Tooltip content
+        </span>
+      </div>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 3) Color -  Should be set for normal tooltip 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(250, 250, 250); border-color: #fafafa; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 4) Behavior -  Should be close by click if open-on-hover is not set while tooltip is open 1`] = `
+<div>
+  <div class="g-tooltip__content"
+       style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+  >
+    <span>
+      Tooltip content
+    </span>
+  </div>
+  <div class="g-tooltip__activator">
+    <button>
+      Click me
+    </button>
+  </div>
+  <span class="g-tooltip">
+  </span>
+</div>
+`;
+
+exports[`Tooltip 4) Behavior -  Should be open by click if open-on-hover is not set while tooltip is close 1`] = `
+<div>
+  <div class="g-tooltip__content"
+       style="left: 0px; max-width: auto; opacity: 1; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161;"
+  >
+    <span>
+      Tooltip content
+    </span>
+  </div>
+  <div class="g-tooltip__activator">
+    <button>
+      Click me
+    </button>
+  </div>
+  <span class="g-tooltip">
+  </span>
+</div>
+`;
+
+exports[`Tooltip 4) Behavior -  Should not toggle by click if open-on-hover is set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 4) Behavior -  close-delay 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 4) Behavior -  close-delay 2`] = `
+<div>
+  <div class="g-tooltip__content"
+       style="left: 0px; max-width: auto; opacity: 1; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161;"
+  >
+    <span>
+      Tooltip content
+    </span>
+  </div>
+  <div class="g-tooltip__activator">
+    <button>
+      Click me
+    </button>
+  </div>
+  <span class="g-tooltip">
+  </span>
+</div>
+`;
+
+exports[`Tooltip 4) Behavior -  open-delay 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 4) Behavior -  open-delay 2`] = `
+<div>
+  <div class="g-tooltip__content"
+       style="left: 0px; max-width: auto; opacity: 1; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161;"
+  >
+    <span>
+      Tooltip content
+    </span>
+  </div>
+  <div class="g-tooltip__activator">
+    <button>
+      Click me
+    </button>
+  </div>
+  <span class="g-tooltip">
+  </span>
+</div>
+`;
+
+exports[`Tooltip 5) Max, min -  Should generate max-width: 100 if max-width="100" 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: 100px; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 5) Max, min -  Should generate max-width: auto if max-width not set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 5) Max, min -  Should generate min-width: 100 if min-width="100" 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; min-width: 100px; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
+
+exports[`Tooltip 5) Max, min -  Should not generate min-width: (any) if min-width not set 1`] = `
+<div>
+  <span class="g-tooltip">
+    <div class="g-tooltip__content"
+         style="left: 0px; max-width: auto; opacity: 0; top: 0px; z-index: 999; background-color: rgb(97, 97, 97); border-color: #616161; display: none;"
+    >
+      <span>
+        Tooltip content
+      </span>
+    </div>
+    <div class="g-tooltip__activator">
+      <button>
+        Click me
+      </button>
+    </div>
+  </span>
+</div>
+`;
