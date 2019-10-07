@@ -6,12 +6,83 @@
   import { convertToUnit } from '../../utils/helpers';
 
   // constants
-  const TOOLTIP_STATIC_CLASS = 'g-tooltip'
-  const TOOLTIP_ACTIVATOR_STATIC_CLASS = 'g-tooltip__activator'
-  const TOOLTIP_CONTENT_STATIC_CLASS = 'g-tooltip__content'
-  const TOOLTIP_CONTENT_SPEECH_BUBBLE_STATIC_CLASS = 'g-tooltip__content__speech-bubble'
-  const TRANSITION_DEFAULT_ACTIVE = 'scale-transition'
-  const TRANSITION_DEFAULT_DEACTIVE = 'fade-transition'
+  export const TOOLTIP_STATIC_CLASS = 'g-tooltip'
+  export const TOOLTIP_ACTIVATOR_STATIC_CLASS = 'g-tooltip__activator'
+  export const TOOLTIP_CONTENT_STATIC_CLASS = 'g-tooltip__content'
+  export const TOOLTIP_CONTENT_SPEECH_BUBBLE_STATIC_CLASS = 'g-tooltip__content__speech-bubble'
+  export const TRANSITION_DEFAULT_ACTIVE = 'scale-transition'
+  export const TRANSITION_DEFAULT_DEACTIVE = 'fade-transition'
+  const CONTENT_PADDING = 10;
+
+  /**
+   * Calculate Left offset of Tooltip
+   * @param props
+   * @param dimensions
+   * @param calcXOverflow
+   * @returns {string}
+   */
+  /*@private, @TestOnly*/ export const calculateLeftImplement = (props, dimensions, calcXOverflow) => {
+    // absolute positioning
+    if (props.absolute)
+      return (props.absoluteX || 0) + 'px'
+
+    // calculate base on activator and content
+    const unknown = !props.bottom && !props.left && !props.top && !props.right
+    const activatorLeft = props.attach !== false ? dimensions.activator.offsetLeft : dimensions.activator.left
+    let left = 0
+    if (props.top || props.bottom || unknown) {
+      left = (
+          activatorLeft +
+          (dimensions.activator.width / 2) - (dimensions.content.width / 2)
+      )
+    } else if (props.left || props.right) {
+      left = (
+          activatorLeft +
+          (props.right ? dimensions.activator.width : -dimensions.content.width) +
+          (props.right ? CONTENT_PADDING : -CONTENT_PADDING)
+      )
+    }
+    if (props.nudgeLeft) left -= parseInt(props.nudgeLeft)
+    if (props.nudgeRight) left += parseInt(props.nudgeRight)
+    return `${calcXOverflow(left, dimensions.content.width)}px`
+  }
+
+  /**
+   * Calculate Top offset of Tooltip
+   * @param props
+   * @param dimensions
+   * @param menuableState
+   * @param calcYOverFlow
+   * @returns {string}
+   */
+  /*@private, @TestOnly*/ export const calculatedTopImplement = (props, dimensions, menuableState, calcYOverFlow) => {
+    // absolute positioning
+    if (props.absolute)
+      return (props.absoluteY || 0) + 'px'
+
+    // calculate position base on activator and content
+    const activatorTop = props.attach !== false ? dimensions.activator.offsetTop : dimensions.activator.top
+    let top = 0
+    if (props.top || props.bottom) {
+      top = (
+          activatorTop +
+          (props.bottom ? dimensions.activator.height : -dimensions.content.height) +
+          (props.bottom ? CONTENT_PADDING : -CONTENT_PADDING)
+      )
+    } else if (props.left || props.right) {
+      top = (
+          activatorTop +
+          (dimensions.activator.height / 2) - (dimensions.content.height / 2)
+      )
+    } else {
+      // if position is not set, tooltip will be shown on top by default
+      top = (
+          activatorTop - dimensions.content.height - CONTENT_PADDING)
+    }
+    if (props.nudgeTop) top -= parseInt(props.nudgeTop)
+    if (props.nudgeBottom) top += parseInt(props.nudgeBottom)
+    return `${calcYOverFlow(top + menuableState.pageYOffset)}px`
+  }
 
   export default {
     name: 'GToolTip',
@@ -37,7 +108,6 @@
         right: Boolean,
         // tooltip show above of activator
         top: Boolean,
-
 
         // offset tooltip content with tooltip activator
 
@@ -123,78 +193,33 @@
         menuableState,
       } = menuable(props, context)
 
+
       //// TOOLTIP CONTENT ////
       // generate tooltip content component
       const computedTooltipContent = computed(() => {
         if (!context.slots.default || typeof context.slots.default !== 'function')
           return []
-        return props.speechBubble ? [speechBubble.value] : [context.slots.default()]
+        return props.speechBubble && !props.absolute ? [speechBubble.value] : [context.slots.default()]
       })
       // generate tooltip style
       const tooltipContentStyles = computed(() => {
-        return {
+        let output = {
           left: calculatedLeft.value,
           maxWidth: convertToUnit(props.maxWidth),
           minWidth: convertToUnit(props.minWidth),
           opacity: state.isActive ? 1 : 0,
           top: calculatedTop.value,
-          zIndex: props.zIndex || 999 // Old value: Stackable.activeZIndex
+          zIndex: 999
         }
+        return output
       })
-      const CONTENT_PADDING = 10;
       // Calculate x position for tooltip content
       const calculatedLeft = computed(() => {
-        // absolute positioning
-        if (props.absolute)
-          return (props.absoluteX || 0) + 'px'
-
-        // calculate base on activator and content
-        const unknown = !props.bottom && !props.left && !props.top && !props.right
-        const activatorLeft = props.attach !== false ? dimensions.activator.offsetLeft : dimensions.activator.left
-        let left = 0
-        if (props.top || props.bottom || unknown) {
-          left = (
-              activatorLeft +
-              (dimensions.activator.width / 2) - (dimensions.content.width / 2)
-          )
-        } else if (props.left || props.right) {
-          left = (
-              activatorLeft +
-              (props.right ? dimensions.activator.width : -dimensions.content.width) +
-              (props.right ? CONTENT_PADDING : -CONTENT_PADDING)
-          )
-        }
-        if (props.nudgeLeft) left -= parseInt(props.nudgeLeft)
-        if (props.nudgeRight) left += parseInt(props.nudgeRight)
-        return `${calcXOverflow(left, dimensions.content.width)}px`
+        return calculateLeftImplement(props, dimensions, calcXOverflow)
       })
       // Calculate y position for tooltip content
       const calculatedTop = computed(() => {
-        // absolute positioning
-        if (props.absolute)
-          return (props.absoluteY || 0) + 'px'
-
-        // calculate position base on activator and content
-        const activatorTop = props.attach !== false ? dimensions.activator.offsetTop : dimensions.activator.top
-        let top = 0
-        if (props.top || props.bottom) {
-          top = (
-              activatorTop +
-              (props.bottom ? dimensions.activator.height : -dimensions.content.height) +
-              (props.bottom ? CONTENT_PADDING : -CONTENT_PADDING)
-          )
-        } else if (props.left || props.right) {
-          top = (
-              activatorTop +
-              (dimensions.activator.height / 2) - (dimensions.content.height / 2)
-          )
-        } else {
-          top = (
-              activatorTop - dimensions.content.height - CONTENT_PADDING)
-        }
-        if (props.nudgeTop) top -= parseInt(props.nudgeTop)
-        if (props.nudgeBottom) top += parseInt(props.nudgeBottom)
-        return `${calcYOverFlow(top + menuableState.pageYOffset)}px`
+        return calculatedTopImplement(props, dimensions, menuableState, calcYOverFlow);
       })
       // SPEECH BUBBLE
       // generate speech bubble content
@@ -214,7 +239,7 @@
         if (props.left) return 'right'
         if (props.right) return 'left'
         if (props.bottom) return 'top'
-        return ''
+        return 'bottom' // if position is not set, tooltip will be shown on top by default
       })
       const getBubbleBorderColorProp = computed(() => {
         let direction = 'top'
@@ -222,8 +247,10 @@
         else if (props.left) direction = 'left'
         else if (props.right) direction = 'right'
         else if (props.bottom) direction = 'bottom'
+        else direction = 'top' // if position is not set, tooltip will be shown on top by default
         return `border-${direction}-color`
       })
+
 
       //// ACTIVATOR ////
       // generate activator listener
@@ -257,6 +284,7 @@
             }) : undefined)
       }
 
+
       //// LIFECYCLE HOOK ////
       onMounted(() => {
         context.root.$nextTick(() => {
@@ -274,6 +302,7 @@
         if (props.transition) return props.transition
         return state.isActive ? TRANSITION_DEFAULT_ACTIVE : TRANSITION_DEFAULT_DEACTIVE
       })
+
 
       //// RENDER FUNCTION ////
       return () => {
