@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "npm i -g @vue/cli-service @vue/cli-plugin-babel vue-template-compiler",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "compile-sass": "sass src/style/main.scss:public/main.css",
-    "watch-sass": "nodemon -e scss -x \" npm run compile-sass\""
+    "watch-sass": "nodemon -e scss -x \" npm run compile-sass\"",
+    "test": "jest"
   },
   "dependencies": {
     "@vue/babel-preset-jsx": "^1.1.0",
@@ -20,15 +22,24 @@
     "vue-router": "^3.1.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
     "@vue/cli-plugin-babel": "3.11.0",
-    "@vue/cli-service": "3.11.0",
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "autoprefixer": "^9.6.2",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "10.0.3",
+    "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "babel-preset-vca-jsx": "^0.3.2",
     "babel-preset-vue": "^2.0.2",
+    "jest": "^24.9.0",
+    "jsdom": "^15.1.1",
+    "jsdom-global": "^3.0.2",
     "nodemon": "^1.19.3",
-    "vue-template-compiler": "2.6.10"
+    "prettier": "^1.18.2",
+    "vue-jest": "^3.0.5",
+    "vue-template-compiler": "^2.6.10"
   },
   "postcss": {
     "plugins": {
