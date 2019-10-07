@@ -31,13 +31,16 @@
         inputValue = props.inputValue
       }
       const model = inject('model', inputValue);
+
       const defaultName = 'radio-name';
       let name = inject('name', defaultName);
       if (!name) {
         //default for undefined name
         name = defaultName;
       }
+
       const multiple = inject('multiple', false);
+
       const isActive = computed({
         get: () => {
           if (multiple) {
@@ -58,9 +61,11 @@
           }
         }
       });
+
       const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass();
+
       const classes = computed(() => ({
         'g-radio__readonly': props.readonly,
         'g-radio__disabled': props.disabled,

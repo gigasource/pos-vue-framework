@@ -34,7 +34,6 @@
       value: null
     },
     setup(props, context) {
-      let isActive = ref(false);
       const internalValue = computed(() => props.inputValue);
       const isSelectedArray = Array.isArray(internalValue.value);
       const value = computed(() => (
@@ -42,6 +41,8 @@
 					? props.value
 					: (internalValue.value && !isSelectedArray ? internalValue.value : true)
 				));
+
+      let isActive = ref(false);
       if (internalValue.value && isSelectedArray) {
         isActive.value = internalValue.value.some(v => v === value.value)
       } else if (internalValue.value === true
@@ -53,6 +54,7 @@
       const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass('background');
+
       const classes = computed(() => ({
         readonly: props.readonly,
         disabled: props.disabled,
