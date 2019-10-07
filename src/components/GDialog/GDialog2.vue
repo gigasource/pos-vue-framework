@@ -17,7 +17,7 @@
   import { getZIndex } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import stackable from '../../mixins/stackable';
-  import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { computed, onMounted, reactive, watch } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import GOverlay from '../GOverlay/GOverlay';
 
