@@ -23,23 +23,42 @@
       disabled: Boolean,
       readonly: Boolean,
       value: null,
-			inputValue: null
+      inputValue: null
     },
     setup(props, context) {
       let inputValue = {};
-      if(props.inputValue) {
+      if (props.inputValue) {
         inputValue = props.inputValue
-			}
+      }
       const model = inject('model', inputValue);
-      const name = inject('name', 'radio-name');
+      const defaultName = 'radio-name';
+      let name = inject('name', defaultName);
+      if (!name) {
+        //default for undefined name
+        name = defaultName;
+      }
+      const multiple = inject('multiple', false);
       const isActive = computed({
-				get: () => (props.value && (model.value === props.value || model === props.value)),
-				set: (val) => {
-				  if(val === true)
-				  	context.parent.$emit('input', props.value);
-				}
+        get: () => {
+          if (multiple) {
+            return model.value.some(v => v === props.value);
+          } else {
+            return props.value && (model.value === props.value || model === props.value);
+          }
+        },
+        set: (val) => {
+          if (val === true) {
+            if (multiple) {
+              if (!model.value.some(v => v === props.value)) {
+                context.parent.$emit('input', [...model.value, props.value]);
+              }
+            } else {
+              context.parent.$emit('input', props.value);
+            }
+          }
+        }
       });
-      const {getColorType, convertColorClass} = colorHandler(props.color);
+      const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass();
       const classes = computed(() => ({
@@ -66,7 +85,7 @@
       return {
         name,
         classes,
-				styles,
+        styles,
         activate,
       }
     }

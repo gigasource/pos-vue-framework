@@ -26,6 +26,11 @@
 				<g-radio label="Radio c" value="c" color="amber accent 3"></g-radio>
 				<g-radio label="Radio d" value="d" color="rgba(242, 29, 97, 0.8)"></g-radio>
 			</g-radio-group>
+			 Mutliple Value: {{rvalue3}}
+			<g-radio-group v-model="rvalue3" name="radio3" label="Multiple Radio" multiple>
+				<g-radio label="Radio 1" value="1"></g-radio>
+				<g-radio label="Radio 2" value="2"></g-radio>
+			</g-radio-group>
 			State
 			<g-radio label="Radio disabled off" disabled></g-radio>
 			<g-radio label="Radio disabled on" value="a" input-value="a" disabled></g-radio>
@@ -66,6 +71,7 @@
 				cbvalue5: ['CB1', 'CB2'],
 				rvalue: 'a',
 				rvalue2: 'c',
+        rvalue3: null,
 				svalue: [],
       }
     }

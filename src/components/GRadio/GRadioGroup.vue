@@ -14,33 +14,38 @@
 
   export default {
     name: 'GRadioGroup',
-		props: {
+    props: {
       label: String,
-			name: String,
-			disabled: Boolean,
-			readonly: Boolean,
-			row: Boolean,
-			value: null,
-		},
-		setup(props, context) {
-      const model = computed({
-        get: () => props.value,
-				set: (value) => {
-          context.emit('input', value);
-				}
-			});
-      provide('model', model);
+      name: String,
+      disabled: Boolean,
+      readonly: Boolean,
+      multiple: Boolean,
+      row: Boolean,
+      value: null,
+    },
+    setup(props, context) {
       provide('name', props.name);
+      provide('multiple', props.multiple);
+      const model = computed(() => (
+        (props.multiple && !Array.isArray(props.value))
+					? (props.value ? [props.value] : [])
+					: props.value
+			));
+      //change value to array if multiple
+			if(props.multiple)
+      	context.emit('input', model.value);
+      provide('model', model);
+
       const classes = computed(() => ({
         readonly: props.readonly,
-				disabled: props.disabled,
-				'g-radio-group__horizontal': props.row,
-			}));
+        disabled: props.disabled,
+        'g-radio-group__horizontal': props.row,
+      }));
 
       return {
         classes
-			}
-		}
+      }
+    }
   }
 </script>
 
