@@ -1,6 +1,6 @@
 <template>
 	<div ref="el" class="dialog2">
-		<div ref="wrapper" class="dialog2-wrapper" v-if="lazyRender" :class="wrapperClasses" :style="wrapperStyles">
+		<div ref="wrapper" class="dialog2-wrapper" v-if="lazyRender" :class="wrapperClasses" :style="wrapperStyles" :tabindex="tabIndex">
 			<div class="dialog2-content" :class="contentClasses" :style="contentStyles" ref="content" v-click-outside:[directiveArgs]="directiveValue">
 				<slot></slot>
 			</div>
@@ -78,8 +78,8 @@
 			const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen && lazyRender.value);
 
 
-			// Change mount point of content and activator
 			function initComponent() {
+        context.refs.wrapper.addEventListener('keydown', onKeydown);
         if (renderOverlay.value) attachToRoot(context.refs.overlay.$el);
         attachToRoot(context.refs.wrapper);
         attachToParent();
@@ -96,9 +96,12 @@
           isBooted.value = true;
           context.root.$nextTick(() => {
             initComponent();
-					});
+					})
 				}
         isActive.value = !isActive.value;
+        context.root.$nextTick(() => {
+            context.refs.wrapper.focus();
+				});
 			}
 
 
@@ -142,6 +145,16 @@
 				include: () => []
       };
 
+			// Press ESC key
+			const tabIndex = computed(() => isActive.value ? 0 : undefined);
+
+			function onKeydown(e) {
+				if (e.keyCode === 27) {
+          isActive.value = !isActive.value;
+				}
+        context.root.$emit('keydown', e);
+			}
+
       return {
         isActive,
 				renderOverlay,
@@ -153,6 +166,7 @@
 				wrapperStyles,
         directiveValue,
 				directiveArgs,
+				tabIndex,
 				lazyRender
 			}
 		}
