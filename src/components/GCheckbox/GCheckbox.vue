@@ -49,8 +49,8 @@
       const type = getColorType();
       const colorClass = convertColorClass();
       const checkboxClass = computed(() => ({
-        readonly: props.readonly,
-        disabled: props.disabled,
+        'g-checkbox__readonly': props.readonly,
+      	'g-checkbox__disabled': props.disabled,
         'g-checkbox__required': !isActive.value && props.required,
         'g-checkbox__indeterminate': !isDeterminate.value,
         [colorClass]: !!type && type === 'class',

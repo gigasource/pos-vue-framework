@@ -26,6 +26,9 @@
 				<g-radio label="Radio c" value="c" color="amber accent 3"></g-radio>
 				<g-radio label="Radio d" value="d" color="rgba(242, 29, 97, 0.8)"></g-radio>
 			</g-radio-group>
+			State
+			<g-radio label="Radio disabled" disabled></g-radio>
+			<g-radio label="Radio readonly" readonly></g-radio>
 		</fieldset>
 		<fieldset>
 			<legend>Switch</legend>
@@ -34,6 +37,11 @@
 			<g-switch v-model="svalue" value="red" label="Switch Color Red" color="red"></g-switch>
 			<g-switch v-model="svalue" value="flat" label="Flat Switch" flat></g-switch>
 			<g-switch v-model="svalue" value="inset" label="Inset Switch" inset></g-switch>
+			State
+			<g-switch label="Switch disabled on" input-value="true" disabled></g-switch>
+			<g-switch label="Switch disabled off"  disabled></g-switch>
+			<g-switch label="Switch readonly on" input-value="true" readonly></g-switch>
+			<g-switch label="Switch readonly off" readonly></g-switch>
 		</fieldset>
 	</div>
 </template>

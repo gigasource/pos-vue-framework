@@ -25,7 +25,7 @@
       value: null
     },
     setup(props, context) {
-      const model = inject('model');
+      const model = inject('model', {});
       const name = inject('name', 'radio-name');
       const isActive = computed({
 				get: () => (model.value === props.value),
@@ -38,8 +38,8 @@
       const type = getColorType();
       const colorClass = convertColorClass();
       const classes = computed(() => ({
-        readonly: props.readonly,
-        disabled: props.disabled,
+        'g-radio__readonly': props.readonly,
+        'g-radio__disabled': props.disabled,
         [colorClass]: !!type && type === 'class',
         'g-radio__active': isActive.value,
       }));

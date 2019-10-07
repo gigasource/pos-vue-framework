@@ -83,4 +83,16 @@
   & input:hover ~ &-hover:before {
     transform: scale(1.2);
   }
+
+  &__disabled {
+    pointer-events: none;
+
+    & > .g-radio-checkmark {
+      opacity: 0.42;
+    }
+  }
+
+  &__readonly {
+    pointer-events: none;
+  }
 }

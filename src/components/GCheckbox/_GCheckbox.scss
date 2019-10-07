@@ -76,6 +76,18 @@
   &__required &-checkmark:before {
     color: red !important;
   }
+
+  &__disabled {
+    pointer-events: none;
+
+    & > .g-checkbox-checkmark {
+      opacity: 0.42;
+    }
+  }
+
+  &__readonly {
+    pointer-events: none;
+  }
 }
 
 
