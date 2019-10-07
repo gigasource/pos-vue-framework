@@ -46,7 +46,7 @@
 
       const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
-      const colorClass = convertColorClass('backg');
+      const colorClass = convertColorClass('background');
       const classes = computed(() => ({
         readonly: props.readonly,
         disabled: props.disabled,
