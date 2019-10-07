@@ -9,9 +9,9 @@
 			State:
 			<g-checkbox label="indeterminate" v-model="cbvalue2" color="#ff4452" indeterminate></g-checkbox>
 			<g-checkbox label="required" v-model="cbvalue3" required></g-checkbox>
-			<g-checkbox label="readonly off" v-model="cbvalue3" color="cyan lighten 3" readonly></g-checkbox>
+			<g-checkbox label="readonly off" color="cyan lighten 3" readonly></g-checkbox>
 			<g-checkbox label="readonly on" v-model="cbvalue4" color="cyan lighten 3" readonly></g-checkbox>
-			<g-checkbox label="disabled off" v-model="cbvalue3" disabled></g-checkbox>
+			<g-checkbox label="disabled off" disabled></g-checkbox>
 			<g-checkbox label="disabled on" v-model="cbvalue4" disabled></g-checkbox>
 		</fieldset>
 		<fieldset>

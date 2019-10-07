@@ -32,12 +32,13 @@
       value: null
     },
     setup(props, context) {
-      let isActive = ref(false);
       const internalValue = computed(() => props.inputValue);
       const isSelectedArray = Array.isArray(internalValue.value);
       const trueValue = props.value
 													? cloneDeep(props.value)
 													: (internalValue.value && !isSelectedArray ? internalValue.value : true);
+
+      let isActive = ref(false);
       if (internalValue.value && isSelectedArray) {
         isActive.value = internalValue.value.some(v => v === trueValue)
       } else if (internalValue.value === true
@@ -45,13 +46,35 @@
 									|| (internalValue.value === trueValue)) {
         isActive.value = true;
       }
+
       let isDeterminate = ref(true);
       if(props.indeterminate) {
         isDeterminate.value = false;
 			}
+
+      watch(internalValue, (newVal) => {
+        if(isSelectedArray && Array.isArray(props.value)) {
+          if(isEqual(sortBy(newVal), sortBy(props.value))) {
+            isDeterminate.value = true;
+            isActive.value = true;
+          } else if (isSelectedArray && newVal.length === 0){
+            isDeterminate.value = true;
+            isActive.value = false;
+          } else {
+            isDeterminate.value = false;
+            isActive.value = false;
+          }
+        } else if (newVal && isSelectedArray) {
+          isActive.value = newVal.some(v => v === trueValue)
+        } else if (newVal === true || newVal === 'true' || (newVal === trueValue)) {
+          isActive.value = true;
+        }
+      });
+
       const {getColorType, convertColorClass} = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass();
+
       const checkboxClass = computed(() => ({
         'g-checkbox__readonly': props.readonly,
       	'g-checkbox__disabled': props.disabled,
@@ -72,20 +95,21 @@
       function activate() {
         isActive.value = !isActive.value;
         isDeterminate.value = true;
-        if (isSelectedArray && !Array.isArray(trueValue)) {
+        const value = cloneDeep(trueValue);
+        if (isSelectedArray && !Array.isArray(value)) {
           const arrValue = internalValue.value;
-          const index = arrValue.findIndex(v => v === trueValue);
+          const index = arrValue.findIndex(v => v === value);
           if (isActive.value && index === -1) {
-            arrValue.push(trueValue);
+            arrValue.push(value);
           } else if (!isActive.value && index > -1) {
             arrValue.splice(index, 1);
           }
           context.emit('input', arrValue);
         } else {
           if (isActive.value) {
-            context.emit('input', trueValue);
+            context.emit('input', value);
           } else {
-            if(Array.isArray(trueValue)) {
+            if(Array.isArray(value)) {
               context.emit('input', []);
 						} else {
               context.emit('input', null);
@@ -94,30 +118,12 @@
         }
       }
 
-			watch(internalValue, (newVal) => {
-			  if(isSelectedArray && Array.isArray(props.value)) {
-			    if(isEqual(sortBy(newVal), sortBy(props.value))) {
-			      isDeterminate.value = true;
-			      isActive.value = true;
-					} else if (isSelectedArray && newVal.length === 0){
-			      isDeterminate.value = true;
-			      isActive.value = false;
-					} else {
-			      isDeterminate.value = false;
-			      isActive.value = false;
-					}
-				} else if (newVal && isSelectedArray) {
-          isActive.value = newVal.some(v => v === props.value)
-        } else if (newVal === true || newVal === 'true' || (newVal === props.value)) {
-          isActive.value = true;
-        }
-			});
-
       return {
         checkboxClass,
         checkboxStyle,
         isActive,
-        activate
+        activate,
+				trueValue
       }
     },
   }
