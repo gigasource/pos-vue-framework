@@ -22,7 +22,9 @@ export default function detachable(props, context) {
       for (let childNode of context.refs.activator.childNodes){
         nodes.push(childNode)
       }
-      context.refs.el.removeChild(context.refs.activator);
+
+      // If el contain activator, remove the activator div
+      if(context.refs.activator.parentNode === context.refs.el) context.refs.el.removeChild(context.refs.activator);
     } else {
       nodes = [node]
     }

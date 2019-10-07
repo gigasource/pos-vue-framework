@@ -1,6 +1,6 @@
 <template>
 	<div ref="el" class="dialog2">
-		<div ref="wrapper" class="dialog2-wrapper" :class="wrapperClasses" :style="wrapperStyles">
+		<div ref="wrapper" class="dialog2-wrapper" v-if="lazyRender" :class="wrapperClasses" :style="wrapperStyles">
 			<div class="dialog2-content" :class="contentClasses" :style="contentStyles" ref="content" v-click-outside:[directiveArgs]="directiveValue">
 				<slot></slot>
 			</div>
@@ -33,6 +33,7 @@
 				default: false
 			},
 
+			// Sizing
       maxWidth: {
         type: [String, Number],
         default: 'none',
@@ -43,33 +44,65 @@
         default: 'auto',
       },
 
+			// Styling
 			persistent: Boolean,
       hideOverlay: Boolean,
       scrollable: Boolean,
 			fullscreen: Boolean,
+
+			// Lazy/Eager
+			lazy: Boolean,
 		},
 		setup (props, context) {
       const { model: isActive } = getVModel(props, context);
       const { attachToRoot, attachToParent } = detachable(props, context);
-      const { activeZIndex, getMaxZIndex} = stackable(props, context);
+      const { getMaxZIndex } = stackable(props, context);
 
+      // Stacking
       const zIndex = computed(() => {
         return !isActive.value ? 6 : getMaxZIndex(context.refs.wrapper) + 2
 			});
       const overlayZIndex = computed(() => zIndex.value - 1);
 
-			const renderOverlay = ref(!props.hideOverlay && !props.fullscreen);
 
-      onMounted(() => {
+      // Lazy/Eager
+			// TODO: convert to bootable mixin
+      const isBooted = reactive({
+        value: false
+      });
+      const lazyRender = computed(() => isBooted.value || !props.lazy);
+
+
+      // Show/hide overlay
+			// TODO: convert to overlayable mixin
+			const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen && lazyRender.value);
+
+
+			// Change mount point of content and activator
+			function initComponent() {
         if (renderOverlay.value) attachToRoot(context.refs.overlay.$el);
         attachToRoot(context.refs.wrapper);
         attachToParent();
+			}
+
+      onMounted(() => {
+        if (props.lazy) return;
+        initComponent();
 			});
 
+
       function toggleDialog() {
+        if (props.lazy) {
+          isBooted.value = true;
+          context.root.$nextTick(() => {
+            initComponent();
+					});
+				}
         isActive.value = !isActive.value;
 			}
 
+
+			// Dynamic Classes and Styles
 			const contentClasses = computed(() => ({
 				'dialog2-content__active': isActive.value,
 				'dialog2-content__scrollable': props.scrollable,
@@ -88,6 +121,7 @@
       const wrapperStyles = computed(() => ({
 				zIndex: zIndex.value
 			}));
+
 
       // Click outside
       const closeConditional = (e) => {
@@ -118,7 +152,8 @@
 				wrapperClasses,
 				wrapperStyles,
         directiveValue,
-				directiveArgs
+				directiveArgs,
+				lazyRender
 			}
 		}
   }

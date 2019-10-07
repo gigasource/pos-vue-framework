@@ -1,7 +1,9 @@
 <template>
 	<div class="outerdiv">
-		<g-button width="100px" height="50px" @click="dialog = true">Dialog</g-button>
-		<g-dialog2 v-model="dialog" width="500px">
+		<g-dialog2 v-model="dialog" width="500px" lazy>
+			<template v-slot:activator="{toggleOverlay}">
+				<g-button width="100px" height="50px" @click="toggleOverlay">Dialog</g-button>
+			</template>
 			<g-card flat elevation="16">
 				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
 					Privacy Policy
@@ -86,8 +88,10 @@
 <!--			</g-card>-->
 <!--		</g-dialog2>-->
 
-		<g-button width="100px" height="50px" @click="dialogFullscreen = true">Dialog Fullscreen</g-button>
-		<g-dialog2 v-model="dialogFullscreen" width="500px" scrollable fullscreen>
+		<g-dialog2 v-model="dialogFullscreen" width="500px" scrollable fullscreen lazy>
+			<template v-slot:activator="{toggleOverlay}">
+				<g-button width="100px" height="50px" @click="toggleOverlay">Dialog Fullscreen</g-button>
+			</template>
 			<g-card flat elevation="16">
 				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
 					Privacy Policy
