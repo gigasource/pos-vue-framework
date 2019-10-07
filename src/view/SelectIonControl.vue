@@ -27,8 +27,10 @@
 				<g-radio label="Radio d" value="d" color="rgba(242, 29, 97, 0.8)"></g-radio>
 			</g-radio-group>
 			State
-			<g-radio label="Radio disabled" disabled></g-radio>
-			<g-radio label="Radio readonly" readonly></g-radio>
+			<g-radio label="Radio disabled off" disabled></g-radio>
+			<g-radio label="Radio disabled on" value="a" input-value="a" disabled></g-radio>
+			<g-radio label="Radio readonly off" readonly></g-radio>
+			<g-radio label="Radio readonly on" value="a" input-value="a" readonly></g-radio>
 		</fieldset>
 		<fieldset>
 			<legend>Switch</legend>

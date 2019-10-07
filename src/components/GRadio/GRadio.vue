@@ -22,13 +22,18 @@
       color: String,
       disabled: Boolean,
       readonly: Boolean,
-      value: null
+      value: null,
+			inputValue: null
     },
     setup(props, context) {
-      const model = inject('model', {});
+      let inputValue = {};
+      if(props.inputValue) {
+        inputValue = props.inputValue
+			}
+      const model = inject('model', inputValue);
       const name = inject('name', 'radio-name');
       const isActive = computed({
-				get: () => (model.value === props.value),
+				get: () => (props.value && (model.value === props.value || model === props.value)),
 				set: (val) => {
 				  if(val === true)
 				  	context.parent.$emit('input', props.value);
@@ -59,11 +64,10 @@
       }
 
       return {
-        model,
         name,
         classes,
 				styles,
-        activate
+        activate,
       }
     }
   }
