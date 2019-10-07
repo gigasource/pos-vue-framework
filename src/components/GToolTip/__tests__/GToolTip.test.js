@@ -5,7 +5,6 @@ Vue.use(plugin)
 
 // Import your components after all of above import
 import GToolTip from '../GToolTip'
-import { calculateLeftImplement, calculatedTopImplement} from '../GToolTip';
 
 describe('Tooltip', () => {
   function prepare(template) {
@@ -16,29 +15,7 @@ describe('Tooltip', () => {
   }
 
   describe('1) Render - ', () => {
-    describe('Activator -', () => {
-      it('Activator will be rendered if activator slot is set', () => {
-        const dom = prepare('<div><g-tool-tip><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
-        expect(dom.$el.outerHTML).toMatchSnapshot();
-      })
-
-      it('Activator won\'t be rendered if activator slot is not set', () => {
-        const dom = prepare('<div><g-tool-tip><span>Tooltip content</span></g-tool-tip></div>');
-        expect(dom.$el.outerHTML).toMatchSnapshot();
-      })
-    })
-
     describe('Content - ', () => {
-      it('Content will be rendered if default slot is set', () => {
-        const dom = prepare('<div><g-tool-tip><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
-        expect(dom.$el.outerHTML).toMatchSnapshot();
-      })
-
-      it('Content won\'t be rendered if default slot is not set', () => {
-        const dom = prepare('<div><g-tool-tip><template #activator="{on}"><button v-on="on">Click me</button></template></g-tool-tip></div>');
-        expect(dom.$el.outerHTML).toMatchSnapshot();
-      })
-
       it('Speech bubble content will be rendered if absolute is not exists', () => {
         let dom = prepare('<div><g-tool-tip speech-bubble><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
