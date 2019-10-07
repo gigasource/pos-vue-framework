@@ -293,6 +293,10 @@
   opacity: 0.2;
 }
 
+.readonly {
+  pointer-events: none;
+}
+
 .nowrap {
   white-space: nowrap;
 }

@@ -374,11 +374,11 @@ $colors: (
     @if $color_type == "base" {
       //background
       .bg-#{$color_name} {
-        background-color: $color_value ;
+        background-color: $color_value !important;
       }
       //text
       .#{$color_name} {
-        color: $color_value ;
+        color: $color_value !important;
       }
       //border
       .b-#{$color_name} {
@@ -387,15 +387,15 @@ $colors: (
     } @else if $color_name != "shades" {
       //background
       .bg-#{$color_name}-#{$color_type} {
-        background-color: $color_value;
+        background-color: $color_value !important;
       }
       //text
       .#{$color_name}-#{$color_type} {
-        color: $color_value;
+        color: $color_value  !important;
       }
       //border
       .b-#{$color_name}-#{$color_type} {
-        border-color: $color_value;
+        border-color: $color_value  !important;
       }
     }
   }
@@ -404,13 +404,13 @@ $colors: (
 // Shade classes
 @each $color, $color_value in $shades {
   .bg-#{$color} {
-    background-color: $color_value;
+    background-color: $color_value !important;
   }
   .#{$color} {
-    color: $color_value;
+    color: $color_value !important;
   }
   .b-#{$color} {
-    border-color: $color_value;
+    border-color: $color_value !important;
   }
 }
 
