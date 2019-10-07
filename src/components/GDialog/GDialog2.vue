@@ -5,7 +5,7 @@
 				<slot></slot>
 			</div>
 		</div>
-		<g-overlay ref="overlay" class="dialog2-overlay" v-if="renderOverlay" v-model="isActive" :z-index="overlayZIndex"></g-overlay>
+		<g-overlay ref="overlay" v-if="renderOverlay" v-model="isActive" :z-index="overlayZIndex"></g-overlay>
 		<div ref="activator">
 			<slot name="activator" :toggleOverlay="toggleDialog"></slot>
 		</div>
