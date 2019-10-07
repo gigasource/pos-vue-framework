@@ -1,14 +1,14 @@
-const createElement = require('../../../tests/setup').createElement
-const Vue = require('vue/dist/vue.common.js')
-const plugin = require('@vue/composition-api').default
-Vue.use(plugin)
+import Vue from 'vue/dist/vue.common.js'
+import VueCompositionApi from '@vue/composition-api'
+// init plugin first
+Vue.use(VueCompositionApi)
 
+const createElement = require('../../../tests/setup').createElement
+// import component here
 import GMenu from '../GMenu';
 
 describe('Menu', () => {
-  it('should render default and activator slots', () => {
-    const vm = new Vue({
-      template: `
+  const template = `
         <div data-app>
           <g-menu v-model="showMenu">
             <template v-slot:activator="{toggleContent}">
@@ -16,8 +16,17 @@ describe('Menu', () => {
             </template>
             <div>content</div>
           </g-menu>
-        </div>
-      `,
+        </div>`
+
+  afterEach(() => {
+    // clear document body after each test to prevent content slots from
+    // mounting on the first div with [data-app] attr
+    document.body.innerHTML = ''
+  })
+
+  it('should render default and activator slots', () => {
+    const vm = new Vue({
+      template,
       components: { GMenu },
       data() {
         return {
@@ -25,25 +34,14 @@ describe('Menu', () => {
         }
       }
     }).$mount(createElement());
+    expect(vm.$el.outerHTML).toMatchSnapshot()
     expect(vm.$children[0].$scopedSlots.default).toBeTruthy()
     expect(vm.$children[0].$scopedSlots.activator).toBeTruthy()
   })
 
-  //fixme: test fails when run as file
   it('should attach content to root dom', function () {
     const vm = new Vue({
-      template: `
-        <div data-app>
-          <div>
-            <g-menu v-model="showMenu">
-              <template v-slot:activator="{toggleContent}">
-                <button @click="toggleContent">Activator</button>
-              </template>
-              <div>content</div>
-            </g-menu>
-          </div>
-        </div>
-      `,
+      template,
       components: { GMenu },
       data() {
         return {
@@ -51,6 +49,7 @@ describe('Menu', () => {
         }
       }
     }).$mount(createElement());
+    expect(vm.$el.outerHTML).toMatchSnapshot()
     expect(vm.$el.firstChild.className).toBe('menu-content')
   });
 
@@ -73,23 +72,13 @@ describe('Menu', () => {
         }
       }
     }).$mount(createElement());
+    expect(vm.$el.outerHTML).toMatchSnapshot()
     expect(vm.$el.querySelector('.menu-content')).toBe(null)
   });
 
   it('should activate on click', function () {
     const vm = new Vue({
-      template: `
-        <div>
-          <div data-app>
-            <g-menu v-model="showMenu">
-              <template v-slot:activator="{toggleContent}">
-                <button @click="toggleContent">Activator</button>
-              </template>
-              <div>content</div>
-            </g-menu>
-          </div>
-        </div>
-      `,
+      template,
       components: { GMenu },
       data() {
         return {
@@ -98,7 +87,7 @@ describe('Menu', () => {
       }
     }).$mount(createElement());
     vm.$nextTick(() => {
-      // expect(vm.$el.outerHTML).toMatchSnapshot()
+      expect(vm.$el.outerHTML).toMatchSnapshot()
       const button = vm.$el.querySelector('button')
       button.click()
       expect(vm.showMenu).toBe(true)
