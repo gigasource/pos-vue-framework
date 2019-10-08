@@ -160,7 +160,7 @@
 				if (e.keyCode === 27) {
           isActive.value = !isActive.value;
 				}
-        context.root.$emit('keydown', e);
+        context.emit('keydown', e);
 			}
 
       return {
