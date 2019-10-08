@@ -26,7 +26,6 @@ export default (props, context) => {
 
   // methods
   function genButtonClasses(isAllowed, isFloating, isSelected, isCurrent) {
-    // TODO: v- stuff
     return {
       'g-size--default': !isFloating,
       'g-btn--active': isSelected,
