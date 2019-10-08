@@ -5,7 +5,6 @@
 			<router-link to="/order-default">OrderDefault</router-link>
 			<router-link to="/groupable">Groupable</router-link>
 			<router-link to="/payment">Payment</router-link>
-			<router-link to="/dialog">Dialog demo</router-link>
 			<router-link to="/slider">Slider demo</router-link>
 			<router-link to="/menu-demo">Menu</router-link>
 			<router-link to="/card-demo">Card</router-link>
