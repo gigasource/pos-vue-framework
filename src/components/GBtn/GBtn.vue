@@ -46,6 +46,7 @@
         block: Boolean,
         width: [String, Number],
         height: [String, Number],
+        textColor: String,
         color: String,
         backgroundColor: String,
 				gradient: String,
@@ -114,6 +115,8 @@
       });
       let styles = computed(() => {
         return {
+          ...props.textColor ? { 'color': props.color.replace('-', '')} : null,
+          ...props.backgroundColor ? { 'background-color': props.color.replace('-', '')} : null,
           ...props.color ? { 'background-color': props.color.replace('-', ''), 'color': '#fff' } : null,
           ...props.outlined ? { 'color': `${props.color}`, 'border': `thin solid currentColor`, 'background-color': 'transparent' } : null,
           ...props.width ? { 'width': convertToUnit(props.width) } : null,
