@@ -51,3 +51,7 @@ try {
 } catch (e) { console.warn(e) }
 
 export { passiveSupported }
+
+export function createRange (length) {
+  return Array.from({ length }, (v, k) => k)
+}
