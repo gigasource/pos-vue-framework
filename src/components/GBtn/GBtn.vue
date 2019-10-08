@@ -94,9 +94,13 @@
           size = 'g-size__default';
           iconSize = props.fab ? 'g-icon-size__default' : null;
         }
+				if(size) {
+          classes[size] = true;
+        }
 
-        classes[size] = true;
-        classes[iconSize] = true;
+				if(iconSize) {
+          classes[iconSize] = true;
+        }
 
         if (props.gradient) {
           classes[props.gradient] = true;
@@ -111,20 +115,21 @@
         if (waveColor) {
           classes[waveColor] = true;
         }
+
         return classes;
       });
       let styles = computed(() => {
         return {
-          ...props.textColor ? { 'color': props.color.replace('-', '')} : null,
+          ...props.textColor ? { 'color': props.textColor.replace('-', '')} : null,
           ...props.backgroundColor ? { 'background-color': props.color.replace('-', '')} : null,
           ...props.color ? { 'background-color': props.color.replace('-', ''), 'color': '#fff' } : null,
           ...props.outlined ? { 'color': `${props.color}`, 'border': `thin solid currentColor`, 'background-color': 'transparent' } : null,
           ...props.width ? { 'width': convertToUnit(props.width) } : null,
           ...props.height ? { 'height': convertToUnit(props.height) } : null,
-          ...props.maxWidth ? { 'width': convertToUnit(props.maxWidth) } : null,
-          ...props.maxHeight ? { 'height': convertToUnit(props.maxHeight) } : null,
-          ...props.minWidth ? { 'width': convertToUnit(props.minWidth) } : null,
-          ...props.minHeight ? { 'height': convertToUnit(props.minHeight) } : null,
+          ...props.maxWidth ? { 'maxWidth': convertToUnit(props.maxWidth) } : null,
+          ...props.maxHeight ? { 'maxHeight': convertToUnit(props.maxHeight) } : null,
+          ...props.minWidth ? { 'minWidth': convertToUnit(props.minWidth) } : null,
+          ...props.minHeight ? { 'minHeight': convertToUnit(props.minHeight) } : null,
           ...props.fab ? { 'min-height': 0, 'min-width': 0 } : null,
           ...props.tile ? { 'border-radius': 0 } : null,
           ...props.flat ? {
