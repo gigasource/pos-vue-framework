@@ -5,7 +5,7 @@
 				<slot></slot>
 			</div>
 		</div>
-		<g-overlay ref="overlay" v-if="renderOverlay" v-model="isActive" :z-index="overlayZIndex"></g-overlay>
+		<g-overlay ref="overlay" v-if="renderOverlay" v-model="isActive" :z-index="overlayZIndex" :color="overlayColor" :opacity="overlayOpacity"></g-overlay>
 		<div ref="activator">
 			<slot name="activator" :toggleOverlay="toggleDialog"></slot>
 		</div>
@@ -33,7 +33,7 @@
 				default: false
 			},
 
-			// Sizing
+			// Dialog Sizing
       maxWidth: {
         type: [String, Number],
         default: 'none',
@@ -44,7 +44,7 @@
         default: 'auto',
       },
 
-			// Styling
+			// Dialog functionality
 			persistent: Boolean,
       hideOverlay: Boolean,
       scrollable: Boolean,
@@ -52,6 +52,10 @@
 
 			// Lazy/Eager
 			lazy: Boolean,
+
+			// Overlay styling
+			overlayColor: String,
+			overlayOpacity: [Number, String]
 		},
 		setup (props, context) {
       const { model: isActive } = getVModel(props, context);
