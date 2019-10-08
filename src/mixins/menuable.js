@@ -75,6 +75,8 @@ export default function menuable(props, context) {
 
     if ((!props.left || props.right) && xOverflow > 0) {
       left = Math.max(left - xOverflow, 0)
+    } else {
+      left = Math.max(left, 0)
     }
     return left
   }
