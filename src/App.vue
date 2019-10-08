@@ -9,7 +9,7 @@
 			<router-link to="/menu-demo">Menu</router-link>
 			<router-link to="/card-demo">Card</router-link>
 			<router-link to="/overlay-demo">Overlay</router-link>
-			<router-link to="/dialog2-demo">Dialog2 Demo</router-link>
+			<router-link to="/dialog-demo">Dialog Demo</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

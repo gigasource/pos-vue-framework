@@ -1,7 +1,7 @@
 <template>
-	<div ref="el" class="dialog2">
-		<div ref="wrapper" class="dialog2-wrapper" v-if="lazyRender" :class="wrapperClasses" :style="wrapperStyles" :tabindex="tabIndex">
-			<div class="dialog2-content" :class="contentClasses" :style="contentStyles" ref="content" v-click-outside:[directiveArgs]="directiveValue">
+	<div ref="el" class="dialog">
+		<div ref="wrapper" class="dialog-wrapper" v-if="lazyRender" :class="wrapperClasses" :style="wrapperStyles" :tabindex="tabIndex">
+			<div class="dialog-content" :class="contentClasses" :style="contentStyles" ref="content" v-click-outside:[directiveArgs]="directiveValue">
 				<slot></slot>
 			</div>
 		</div>
@@ -22,7 +22,7 @@
   import GOverlay from '../GOverlay/GOverlay';
 
   export default {
-    name: 'GDialog2',
+    name: 'GDialog',
     components: { GOverlay },
     directives: {
       ClickOutside
@@ -115,9 +115,9 @@
 
 			// Dynamic Classes and Styles
 			const contentClasses = computed(() => ({
-				'dialog2-content__active': isActive.value,
-				'dialog2-content__scrollable': props.scrollable,
-				'dialog2-content__fullscreen': props.fullscreen
+				'dialog-content__active': isActive.value,
+				'dialog-content__scrollable': props.scrollable,
+				'dialog-content__fullscreen': props.fullscreen
 			}));
 
       const contentStyles = computed(() => ({
@@ -126,7 +126,7 @@
 			}));
 
       const wrapperClasses = computed(() => ({
-				'dialog2-wrapper__active': isActive.value
+				'dialog-wrapper__active': isActive.value
 			}));
 
       const wrapperStyles = computed(() => ({

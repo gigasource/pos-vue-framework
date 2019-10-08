@@ -1,4 +1,4 @@
-.dialog2 {
+.dialog {
   pointer-events: auto;
   overflow-y: hidden;
 
@@ -19,7 +19,7 @@
   &-content {
     display: none;
 
-    &:not(.dialog2-content__fullscreen) {
+    &:not(.dialog-content__fullscreen) {
       max-width: 90%;
       max-height: 90%;
     }

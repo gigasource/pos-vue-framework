@@ -12,7 +12,7 @@ export default function stackable(props, context) {
     const zis = [stackMinZIndex.value];
 
     const activeElements = [
-      ...document.getElementsByClassName('dialog2-wrapper__active'),
+      ...document.getElementsByClassName('dialog-wrapper__active'),
     ];
 
     for (let index = 0; index < activeElements.length; index++) {
