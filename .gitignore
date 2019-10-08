@@ -20,3 +20,6 @@ yarn-error.log*
 *.sln
 *.sw?
 *.iml
+/coverage/
+/public/main.css.map
+/public/main.css

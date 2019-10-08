@@ -7,6 +7,9 @@ import Payment from '@/view/Payment';
 import MenuDemo from '@/view/MenuDemo';
 import Dialog from '@/view/DialogDemo';
 import SliderDemo from '../view/SliderDemo';
+import CardDemo from '../view/CardDemo';
+import ButtonDemo from '../view/ButtonDemo';
+import OverlayDemo from "../view/OverlayDemo";
 import PulseDemo from '../view/PulseDemo';
 
 const routes = [
@@ -17,7 +20,11 @@ const routes = [
   { path: '/dialog', name: 'Dialog', component: Dialog},
   { path: '/slider', name: 'Slider', component: SliderDemo},
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
-  { path: '/pulse-demo', name: 'Pulse', component: PulseDemo}
+  { path: '/menu-demo', name: 'Menu', component: MenuDemo},
+  { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
+  { path: '/card', name: 'Card', component: CardDemo},
+  { path: '/button', name: 'Button', component: ButtonDemo},
+  { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
 ];
 
 const router = new VueRouter({

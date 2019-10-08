@@ -9,6 +9,9 @@
 			<router-link to="/slider">Slider demo</router-link>
 			<router-link to="/menu-demo">Menu</router-link>
 			<router-link to="/pulse-demo">Pulse</router-link>
+			<router-link to="/card">Card</router-link>
+			<router-link to="/overlay-demo">Overlay</router-link>
+			<router-link to="/button">Button</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

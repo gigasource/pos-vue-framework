@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Template</title>
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<style>
+		.tf-wrapper {
+			display: flex;
+			align-items: center;
+			cursor: text;
+			width: calc(100% - 10px);
+			margin: 16px 5px 24px;
+			position: relative;
+		}
+
+		.tf-wrapper fieldset {
+			width: 100%;
+			border: 0;
+			padding: 0;
+			margin: 0;
+		}
+
+		.tf-wrapper legend {
+			display: none;
+		}
+
+		.tf {
+			position: relative;
+			flex: 1 1 auto;
+			color: rgba(0, 0, 0, 0.54);
+			display: flex;
+		}
+
+		.tf::before {
+			position: absolute;
+			content: '';
+			bottom: -1px;
+			width: 100%;
+			height: 1px;
+			background-color: rgba(0, 0, 0, 0.87);
+		}
+
+		.tf::after {
+			position: absolute;
+			content: '';
+			bottom: -1px;
+			width: 100%;
+			height: 1px;
+			background-color: #1867c0;
+			transform: scale(0);
+			transition: 0.4s ease-out;
+		}
+
+		.tf-label {
+			position: absolute;
+			top: 8px;
+			left: 0;
+			transform-origin: top left;
+			transition: 0.4s ease-out;
+			pointer-events: none;
+		}
+
+		.tf-input {
+			width: 100%;
+			padding: 5px 0;
+			line-height: 24px;
+			font-size: 16px;
+			user-select: text;
+		}
+
+		.tf:focus-within::after {
+			height: 2px;
+			transform: scale(1);
+		}
+
+		.tf-input:focus + .tf-label,
+		.tf-input:placeholder-shown + .tf-label {
+			transform: translateY(-16px) scale(0.75);
+		}
+
+		.tf-input:focus + .tf-label {
+			color: #1867c0;
+		}
+
+		.tf-label__active {
+			transform: translateY(-16px) scale(0.75);
+		}
+
+		.tf-icon__active {
+			flex: 0 0 4%;
+		}
+
+		.tf-prepend__outer {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.tf-append__outer {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.tf-prepend__inner,
+		.tf-append__inner {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.tf-prepend__inner img,
+		.tf-prepend__outer img,
+		.tf-append__inner img,
+		.tf-append__outer img {
+			height: 24px;
+		}
+
+		.tf-prepend__inner.tf-icon__active ~ .tf-label {
+			left: 4%;
+		}
+
+		.tf-hint {
+			position: absolute;
+			bottom: -18px;
+			left: 0;
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		.tf-wrapper.tf__solo .tf {
+			border-radius: 4px;
+			/*elevation 2*/
+			box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+		}
+
+		.tf__solo .tf::before,
+		.tf__solo .tf::after,
+		.tf__solo .tf-label {
+			display: none;
+		}
+
+		.tf__solo .tf-input {
+			padding: 8px;
+			border-radius: 4px;
+		}
+
+		.tf__solo .tf-hint {
+			left: 4px;
+		}
+
+		.tf__filled .tf {
+			background-color: rgba(0, 0, 0, 0.06);
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+		}
+
+		.tf__filled .tf-input {
+			background-color: transparent;
+			border: inherit;
+			padding: 12px 8px 4px;
+			line-height: 32px;
+			vertical-align: bottom;
+		}
+
+		.tf__filled .tf-label {
+			left: 4px;
+			top: 16px;
+		}
+
+		.tf__filled .tf-prepend__inner.tf-icon__active ~ .tf-label {
+			left: calc(4% + 4px);
+		}
+
+		.tf__filled .tf-input:focus + .tf-label,
+		.tf__filled .tf-input:placeholder-shown + .tf-label {
+			transform: translateY(-12px) scale(0.75);
+		}
+
+		.tf__filled .tf-input:focus + .tf-label {
+			color: #1867c0;
+		}
+
+		.tf__filled .tf-label__active {
+			transform: translateY(-12px) scale(0.75);
+		}
+
+		.tf-wrapper.tf__outlined fieldset {
+			display: flex;
+			flex: 1 1 auto;
+			position: relative;
+			border: 1px solid rgba(0, 0, 0, 0.87);
+			border-radius: 4px;
+			padding: 0 8px;
+			transition: 0.2s ease-in;
+			width: 100%;
+		}
+
+		.tf-wrapper.tf__outlined legend {
+			display: block;
+			width: 0;
+			height: 0;
+			color: transparent;
+			font-size: 0.75em;
+			transform-origin: top left;
+			padding: 2px 0;
+			transition: 0.8s cubic-bezier(.44, .88, .37, .28);
+		}
+
+		.tf__outlined .tf::before,
+		.tf__outlined .tf::after {
+			display: none;
+		}
+
+		.tf__outlined:focus-within fieldset {
+			border: 2px solid #1867c0;
+		}
+
+		.tf__outlined:focus-within legend {
+			width: auto;
+		}
+
+		.tf__outlined .tf-input:placeholder-shown legend {
+			width: auto;
+		}
+
+		.tf__outlined .tf-label {
+			top: 4px;
+		}
+
+		.tf__outlined .tf-prepend__inner.tf-icon__active ~ .tf-label {
+			left: calc(4% + 8px);
+		}
+
+		.tf__outlined .tf-prepend__inner.tf-icon__active ~ .tf-label__active {
+			left: 0;
+		}
+
+		.tf__outlined:focus-within .tf-prepend__inner.tf-icon__active ~ .tf-label {
+			left: 0;
+		}
+
+		.tf__outlined .tf-input {
+			border-radius: inherit;
+		}
+
+		.tf__solo.tf__rounded .tf,
+		.tf__outlined.tf__rounded .tf,
+		.tf__filled.tf__rounded .tf {
+			border-radius: 9999px;
+		}
+
+		.tf__solo.tf__rounded .tf-input {
+			margin: 0 16px;
+		}
+
+		.tf__filled.tf__rounded .tf::before,
+		.tf__filled.tf__rounded .tf::after {
+			display: none;
+		}
+
+		.tf__outlined.tf__rounded fieldset {
+			border-radius: 9999px;
+		}
+
+		.tf__outlined.tf__rounded legend {
+			margin-left: 8px;
+		}
+
+		.tf__filled.tf__rounded .tf-label {
+			left: 16px;
+		}
+
+		.tf__outlined.tf__rounded .tf-label {
+			left: 8px;
+		}
+
+		.tf__outlined.tf__rounded:focus-within .tf-label {
+			left: 8px;
+		}
+
+		.tf__filled.tf__rounded .tf-input {
+			padding-left: 16px;
+		}
+
+		.tf__outlined.tf__rounded .tf-input {
+			padding-left: 8px;
+		}
+
+		.tf__solo.tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.tf__outlined.tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.tf__filled.tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint {
+			left: calc(4% + 16px);
+		}
+
+		.tf__solo.tf__shaped .tf,
+		.tf__outlined.tf__shaped .tf,
+		.tf__filled.tf__shaped .tf {
+			border-top-left-radius: 16px;
+			border-top-right-radius: 16px;
+		}
+
+		.tf__solo.tf__shaped .tf-input {
+			margin: 0 16px;
+		}
+
+		.tf__filled.tf__shaped .tf::before,
+		.tf__filled.tf__shaped .tf::after {
+			display: none;
+		}
+
+		.tf__outlined.tf__shaped fieldset {
+			border-top-left-radius: 16px;
+			border-top-right-radius: 16px;
+		}
+
+		.tf__outlined.tf__shaped legend {
+			margin-left: 8px;
+		}
+
+		.tf__filled.tf__shaped .tf-label {
+			left: 16px;
+		}
+
+		.tf__outlined.tf__shaped .tf-label {
+			left: 8px;
+		}
+
+		.tf__outlined.tf__shaped:focus-within .tf-label {
+			left: 8px;
+		}
+
+		.tf__filled.tf__shaped .tf-input {
+			padding-left: 16px;
+		}
+
+		.tf__outlined.tf__shaped .tf-input {
+			padding-left: 8px;
+		}
+
+		.tf__solo.tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.tf__outlined.tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.tf__filled.tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint {
+			left: calc(4% + 16px);
+		}
+
+		.tf-wrapper.tf__solo.tf__outlined legend {
+			width: 0 !important;
+		}
+
+		.tf-wrapper.tf__solo.tf__outlined .tf {
+			box-shadow: none;
+		}
+
+		.tf-wrapper.tf__solo.tf__outlined {
+			border-radius: 4px;
+			box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+		}
+
+		.tf-wrapper.tf__solo.tf__flat .tf {
+			border: none;
+			box-shadow: none;
+		}
+
+		.bs-tf-wrapper {
+			display: block;
+			cursor: text;
+			width: calc(100% - 10px);
+			margin: 4px 5px 8px;
+		}
+
+		.bs-tf-label {
+			display: inline-block;
+			margin-bottom: 4px;
+			font-weight: 400;
+		}
+
+		.bs-tf-input-group,
+		.bs-tf-input-prepend,
+		.bs-tf-input-append {
+			display: flex;
+		}
+
+		.bs-tf-input-prepend,
+		.bs-tf-input-prepend > *:first-child {
+			border-top-left-radius: 4px;
+			border-bottom-left-radius: 4px;
+		}
+
+		.bs-tf-input-prepend > * {
+			border-right: none !important;
+		}
+
+		.bs-tf-input-append > * {
+			border-left: none !important;
+			z-index: -1; /*display under input box shadow*/
+		}
+
+		.bs-tf-input-append,
+		.bs-tf-input-append > *:last-child {
+			border-top-right-radius: 4px;
+			border-bottom-right-radius: 4px;
+		}
+
+		.bs-tf-input-text {
+			display: flex;
+			align-items: center;
+			padding: 6px 12px;
+			font-size: 14px;
+			line-height: 1.5;
+			font-weight: 400;
+			color: #495057;
+			background-color: #e9ecef;
+			white-space: nowrap;
+			text-align: center;
+			border: 1px solid #ced4da;
+		}
+
+		.bs-tf-input {
+			display: block;
+			flex: 1 1 auto;
+			padding: 6px 12px;
+			line-height: 1.5;
+			font-size: 16px;
+			border: 1px solid #ced4da !important;
+			background-color: #fff;
+			background-clip: padding-box;
+			color: #495057;
+			border-radius: 4px;
+			transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+		}
+
+		.bs-tf-input:focus {
+			outline: 0;
+			border-color: #80bdff !important;
+			box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+		}
+
+		.bs-tf-message {
+			display: block;
+			font-size: 80%;
+			font-weight: 400;
+			margin-top: 2px;
+			color: #6c757d;
+		}
+	</style>
+	<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let inputs = document.getElementsByClassName('tf-input');
+      for (const input of inputs) {
+        let legend = input.parentElement.previousElementSibling;
+        const wrapper = legend.parentElement.parentElement;
+        if (wrapper.classList.contains('tf__outlined') && input.placeholder && legend.tagName.toLowerCase() === 'legend') {
+          legend.style.width = 'auto';
+        }
+        input.addEventListener('change', function () {
+          let label = this.nextElementSibling;
+          if (!label.classList.contains('tf-label__active')) {
+            label.classList.add('tf-label__active');
+          }
+          if (!this.value) {
+            label.classList.remove('tf-label__active');
+          }
+          if (legend.tagName.toLowerCase() === 'legend') {
+            if (this.value) {
+              legend.style.width = 'auto';
+            } else {
+              legend.style.width = null;
+            }
+          }
+        });
+      }
+      let bsInputs = document.getElementsByClassName('bs-tf-input');
+      for (const bsInput of bsInputs) {
+        const prepend = bsInput.previousElementSibling;
+        const append = bsInput.nextElementSibling;
+        if (prepend.childElementCount > 0) {
+          bsInput.style.borderBottomLeftRadius = '0';
+          bsInput.style.borderTopLeftRadius = '0';
+        }
+        if (append.childElementCount > 0) {
+          bsInput.style.borderBottomRightRadius = '0';
+          bsInput.style.borderTopRightRadius = '0';
+				}
+			}
+    });
+	</script>
+</head>
+<body>
+<div class="body-wrapper__responsive__vertical">
+	<h4 class="red">Textfield</h4>
+	<fieldset>
+		<legend>Default</legend>
+
+		<div class="tf-wrapper">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input id="input1" type="text" class="tf-input">
+					<label for="input1" class="tf-label">Normal</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper">
+			<div class="tf-prepend__outer tf-icon__active">
+				<img alt src="../src/assets/order/avatar.svg">
+			</div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner">
+					</div>
+					<input id="input2" type="text" class="tf-input">
+					<label for="input2" class="tf-label">Prepend outer icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner tf-icon__active">
+						<img alt src="../src/assets/order/avatar.svg">
+					</div>
+					<input id="input3" type="text" class="tf-input">
+					<label for="input3" class="tf-label">Prepend inner icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input id="input5" type="text" class="tf-input">
+					<label for="input5" class="tf-label">Append inner icon</label>
+					<div class="tf-append__inner tf-icon__active">
+						<img alt src="../src/assets/order/cancel.svg">
+					</div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input id="input6" type="text" class="tf-input">
+					<label for="input6" class="tf-label">Append outer icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer tf-icon__active">
+				<img alt src="../src/assets/order/cancel.svg">
+			</div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Solo</legend>
+
+		<div class="tf-wrapper tf__solo">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input" placeholder="Normal">
+					<label class="tf-label"></label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__solo">
+			<div class="tf-prepend__outer tf-icon__active">
+				<img alt src="../src/assets/order/avatar.svg">
+			</div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner">
+					</div>
+					<input type="text" class="tf-input" placeholder="Prepend outer icon">
+					<label class="tf-label"></label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__solo">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner tf-icon__active">
+						<img alt src="../src/assets/order/avatar.svg">
+					</div>
+					<input type="text" class="tf-input" placeholder="Prepend inner icon">
+					<label class="tf-label"></label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__solo">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input" placeholder="Append inner icon">
+					<label class="tf-label"></label>
+					<div class="tf-append__inner tf-icon__active">
+						<img alt src="../src/assets/order/cancel.svg">
+					</div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__solo">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input" placeholder="Append outer icon">
+					<label class="tf-label"></label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer tf-icon__active">
+				<img alt src="../src/assets/order/cancel.svg">
+			</div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Filled</legend>
+
+		<div class="tf-wrapper tf__filled">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Normal</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__filled">
+			<div class="tf-prepend__outer tf-icon__active">
+				<img alt src="../src/assets/order/avatar.svg">
+			</div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner">
+					</div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Prepend outer icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__filled">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner tf-icon__active">
+						<img alt src="../src/assets/order/avatar.svg">
+					</div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Prepend inner icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__filled">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Append inner icon</label>
+					<div class="tf-append__inner tf-icon__active">
+						<img alt src="../src/assets/order/cancel.svg">
+					</div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__filled">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend></legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Append outer icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer tf-icon__active">
+				<img alt src="../src/assets/order/cancel.svg">
+			</div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Outlined</legend>
+
+		<div class="tf-wrapper tf__outlined">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Normal</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Normal</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__outlined">
+			<div class="tf-prepend__outer tf-icon__active">
+				<img alt src="../src/assets/order/avatar.svg">
+			</div>
+			<fieldset>
+				<legend>Prepend outer icon</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Prepend outer icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__outlined">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Prepend inner icon</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner tf-icon__active">
+						<img alt src="../src/assets/order/avatar.svg">
+					</div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Prepend inner icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__outlined">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Append inner icon</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Append inner icon</label>
+					<div class="tf-append__inner tf-icon__active">
+						<img alt src="../src/assets/order/cancel.svg">
+					</div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__outlined">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Append outer icon</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Append outer icon</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer tf-icon__active">
+				<img alt src="../src/assets/order/cancel.svg">
+			</div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Rounded (work with solo, filled, outlined)</legend>
+
+		<div class="tf-wrapper tf__solo tf__rounded">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Solo rounded</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input" placeholder="Solo rounded">
+					<label class="tf-label">Solo rounded</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__filled tf__rounded">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Filled rounded</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Filled rounded</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__outlined tf__rounded">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Outlined rounded</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Outlined rounded</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Shaped (work with solo, filled, outlined)</legend>
+
+		<div class="tf-wrapper tf__solo tf__shaped">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Solo rounded</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input" placeholder="Solo rounded">
+					<label class="tf-label">Solo rounded</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__filled tf__shaped">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Filled rounded</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Filled rounded</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__outlined tf__shaped">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Outlined rounded</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input">
+					<label class="tf-label">Outlined rounded</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Other</legend>
+
+		<div class="tf-wrapper tf__solo tf__outlined">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Solo outlined</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input" placeholder="Solo outlined">
+					<label class="tf-label">Solo outlined</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+		<div class="tf-wrapper tf__solo tf__flat">
+			<div class="tf-prepend__outer"></div>
+			<fieldset>
+				<legend>Solo outlined</legend>
+				<div class="tf">
+					<div class="tf-prepend__inner"></div>
+					<input type="text" class="tf-input" placeholder="Solo flat">
+					<label class="tf-label">Solo flat</label>
+					<div class="tf-append__inner"></div>
+				</div>
+			</fieldset>
+			<div class="tf-append__outer"></div>
+			<div class="tf-hint">
+				this is a hint/message
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Bootstrap</legend>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Normal</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Prepend text</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+					<span class="bs-tf-input-text">1</span>
+					<span class="bs-tf-input-text">2</span>
+					<span class="bs-tf-input-text">3</span>
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Append text</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+					<span class="bs-tf-input-text">1</span>
+					<span class="bs-tf-input-text">2</span>
+					<span class="bs-tf-input-text">3</span>
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
+		<div class="bs-tf-wrapper">
+			<label class="bs-tf-label">Both append & prepend</label>
+			<div class="bs-tf-input-group">
+				<div class="bs-tf-input-prepend">
+					<span class="bs-tf-input-text">Email: </span>
+				</div>
+				<input class="bs-tf-input" type="text" placeholder="Placeholder">
+				<div class="bs-tf-input-append">
+					<span class="bs-tf-input-text">@example.com</span>
+				</div>
+			</div>
+			<span class="bs-tf-message">this is a message</span>
+		</div>
+
+
+	</fieldset>
+</div>
+</body>
+</html>

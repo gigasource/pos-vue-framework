@@ -1,11 +1,9 @@
 # pos-vue-framework
 
-## Todo
-- g-text-field status (error, success)
-- dropdown menu
-- paper (sheet)
-- select input
-- chips
-- badges
-- sheet (with elevation)
-- calendar
+## Init project
+For existing directories, delete `node_modules` folder first.
+```shell script
+npm install
+npm run watch-sass
+npm run serve
+```
