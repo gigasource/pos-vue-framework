@@ -8,15 +8,19 @@
 			<router-link to="/dialog">Dialog demo</router-link>
 			<router-link to="/slider">Slider demo</router-link>
 			<router-link to="/menu-demo">Menu</router-link>
-			<router-link to="/card-demo">Card</router-link>
+			<router-link to="/pulse-demo">Pulse</router-link>
+			<router-link to="/card">Card</router-link>
 			<router-link to="/overlay-demo">Overlay</router-link>
-			<router-link to="/date-picker">DatePicker</router-link>
+      <router-link to="/tool-tip-demo">Tooltip demo</router-link>
+			<router-link to="/button">Button</router-link>
+      <router-link to="/date-picker">DatePicker</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
 </template>
 
 <script>
+
   import GLayout from '@/components/GLayout/GLayout';
   import GContainer from '@/components/GLayout/GContainer';
   export default {
