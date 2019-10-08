@@ -8,9 +8,7 @@ const createElement = require('../../../tests/setup').createElement
 import GMenu from '../GMenu';
 
 describe('Menu', () => {
-  it('should render default and activator slots', () => {
-    const vm = new Vue({
-      template: `
+  const template = `
         <div data-app>
           <g-menu v-model="showMenu">
             <template v-slot:activator="{toggleContent}">
@@ -18,8 +16,17 @@ describe('Menu', () => {
             </template>
             <div>content</div>
           </g-menu>
-        </div>
-      `,
+        </div>`
+
+  afterEach(() => {
+    // clear document body after each test to prevent content slots from
+    // mounting on the first div with [data-app] attr
+    document.body.innerHTML = ''
+  })
+
+  it('should render default and activator slots', () => {
+    const vm = new Vue({
+      template,
       components: { GMenu },
       data() {
         return {
@@ -32,21 +39,9 @@ describe('Menu', () => {
     expect(vm.$children[0].$scopedSlots.activator).toBeTruthy()
   })
 
-  //fixme: test fails when run as file
   it('should attach content to root dom', function () {
     const vm = new Vue({
-      template: `
-        <div data-app>
-          <div>
-            <g-menu v-model="showMenu">
-              <template v-slot:activator="{toggleContent}">
-                <button @click="toggleContent">Activator</button>
-              </template>
-              <div>content</div>
-            </g-menu>
-          </div>
-        </div>
-      `,
+      template,
       components: { GMenu },
       data() {
         return {
@@ -83,18 +78,7 @@ describe('Menu', () => {
 
   it('should activate on click', function () {
     const vm = new Vue({
-      template: `
-        <div>
-          <div data-app>
-            <g-menu v-model="showMenu">
-              <template v-slot:activator="{toggleContent}">
-                <button @click="toggleContent">Activator</button>
-              </template>
-              <div>content</div>
-            </g-menu>
-          </div>
-        </div>
-      `,
+      template,
       components: { GMenu },
       data() {
         return {
