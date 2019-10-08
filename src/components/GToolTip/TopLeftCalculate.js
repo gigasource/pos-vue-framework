@@ -4,20 +4,20 @@ const CONTENT_PADDING = 10;
  * Calculate Left offset of Tooltip
  * @param props
  * @param dimensions
- * @param calcXOverflow
+ * @param calcXOverflowCallback
  * @returns {string}
  */
-export const calcLeft = (props, dimensions, calcXOverflow) => {
+export const calcLeft = (props, dimensions, calcXOverflowCallback) => {
   // absolute positioning
   if (props.absolute) {
     return (props.absoluteX || 0) + 'px'
   }
 
   // calculate base on activator and content
-  const unknown = !props.bottom && !props.left && !props.top && !props.right
+  const unknownAlignment = !props.bottom && !props.left && !props.top && !props.right
   const activatorLeft = props.attach !== false ? dimensions.activator.offsetLeft : dimensions.activator.left
   let left = 0
-  if (props.top || props.bottom || unknown) {
+  if (props.top || props.bottom || unknownAlignment) {
     left = (
         activatorLeft +
         (dimensions.activator.width / 2) - (dimensions.content.width / 2)
@@ -35,7 +35,7 @@ export const calcLeft = (props, dimensions, calcXOverflow) => {
   if (props.nudgeRight) {
     left += parseInt(props.nudgeRight)
   }
-  return `${calcXOverflow(left, dimensions.content.width)}px`
+  return `${calcXOverflowCallback(left, dimensions.content.width)}px`
 }
 
 /**
@@ -43,10 +43,10 @@ export const calcLeft = (props, dimensions, calcXOverflow) => {
  * @param props
  * @param dimensions
  * @param menuableState
- * @param calcYOverFlow
+ * @param calcYOverFlowCallback
  * @returns {string}
  */
-export const calcTop = (props, dimensions, menuableState, calcYOverFlow) => {
+export const calcTop = (props, dimensions, menuableState, calcYOverFlowCallback) => {
   // absolute positioning
   if (props.absolute) {
     return (props.absoluteY || 0) + 'px'
@@ -77,5 +77,5 @@ export const calcTop = (props, dimensions, menuableState, calcYOverFlow) => {
   if (props.nudgeBottom) {
     top += parseInt(props.nudgeBottom)
   }
-  return `${calcYOverFlow(top + menuableState.pageYOffset)}px`
+  return `${calcYOverFlowCallback(top + menuableState.pageYOffset)}px`
 }

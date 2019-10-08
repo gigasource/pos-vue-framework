@@ -12,6 +12,7 @@ export default (props, context) => {
     return props.speechBubble && !props.absolute
   })
   const getBubbleBorderColorProp = computed(() => {
+    // if position is not set, tooltip will be shown on top by default
     let direction = 'top'
     if (props.top) {
       direction = 'top'
@@ -21,9 +22,7 @@ export default (props, context) => {
       direction = 'right'
     } else if (props.bottom) {
       direction = 'bottom'
-    } else {
-      direction = 'top'
-    } // if position is not set, tooltip will be shown on top by default
+    }
     return `border-${direction}-color`
   })
   const speechBubbleClass = computed(() => {
