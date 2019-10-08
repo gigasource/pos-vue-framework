@@ -51,3 +51,7 @@ try {
 } catch (e) { console.warn(e) }
 
 export { passiveSupported }
+
+export function upperFirst (str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
