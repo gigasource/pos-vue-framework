@@ -84,6 +84,7 @@
 				</div>
 				<g-card-actions>
 					<g-button @click="dialogScrollable = false">I accept</g-button>
+					<g-button @click="dialog = true">Open Dialog</g-button>
 				</g-card-actions>
 			</g-card>
 		</g-dialog2>
@@ -107,7 +108,7 @@
 				</div>
 				<g-card-actions>
 					<g-button @click="dialogFullscreen = false">I accept</g-button>
-					<g-button @click="dialog = true">Open Dialog</g-button>
+					<g-button @click="dialogScrollable = true">Open Dialog</g-button>
 				</g-card-actions>
 			</g-card>
 		</g-dialog2>
