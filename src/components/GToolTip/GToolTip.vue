@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import { computed, onMounted, reactive } from '@vue/composition-api'
+  import { computed, onMounted, reactive, onBeforeUnmount } from '@vue/composition-api'
   import { setBackgroundColor } from '../../mixins/colorable';
   import { calcTop, calcLeft } from './TopLeftCalculate';
   import { convertToUnit } from '../../utils/helpers';
@@ -184,6 +184,11 @@
             state.isActive = !state.isActive
           }
         }
+
+        listeners.blur = (e) => {
+          runDelay('close')
+        }
+
         return listeners
       })
 
@@ -204,6 +209,10 @@
           context.refs.el.parentNode.insertBefore(context.refs.activator, context.refs.el)
           updateDimensions()
         })
+      })
+
+      onBeforeUnmount(() => {
+        context.root.$el.removeChild(context.refs.content)
       })
 
       // template data
