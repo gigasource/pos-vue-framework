@@ -185,9 +185,8 @@
           }
         }
 
-        listeners.blur = (e) => {
-          runDelay('close')
-        }
+        //behaviour like click-outside
+        listeners.blur = () => runDelay('close')
 
         return listeners
       })
@@ -211,9 +210,8 @@
         })
       })
 
-      onBeforeUnmount(() => {
-        context.root.$el.removeChild(context.refs.content)
-      })
+      //remove tooltip when unmount
+      onBeforeUnmount(() => context.root.$el.removeChild(context.refs.content))
 
       // template data
       return {
