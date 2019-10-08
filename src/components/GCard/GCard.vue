@@ -62,7 +62,7 @@
           ...props.img ? { 'background-image': `url("${props.img}"` } : null,
           ...props.backgroundColor ? { 'background-color': convertToUnit(props.backgroundColor) } : null,
           ...props.color ? { 'color': props.color } : null,
-          ...props.tile ? { 'border': 'none' } : null,
+          ...props.tile ? { 'border-radius': '0px'} : null,
           ...props.borderRadius ? { 'border-radius': props.borderRadius } : null,
           ...props.minWidth ? { 'min-width': convertToUnit(props.minWidth) } : null,
           ...props.minHeight ? { 'min-height': convertToUnit(props.minHeight) } : null,
