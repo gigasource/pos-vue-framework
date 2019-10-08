@@ -17,7 +17,7 @@ export const keyCodes = Object.freeze({
   pagedown: 34,
 });
 
-export function addOnceEventListener (el, eventName, cb, options){
+export function addOnceEventListener(el, eventName, cb, options) {
   const once = (event) => {
     cb(event);
     el.removeEventListener(eventName, once, options);
@@ -26,7 +26,7 @@ export function addOnceEventListener (el, eventName, cb, options){
   el.addEventListener(eventName, once, options);
 }
 
-export function convertToUnit (str, unit = 'px') {
+export function convertToUnit(str, unit = 'px') {
   if (str == null || str === '') {
     return undefined
   } else if (isNaN(+str)) {
@@ -34,6 +34,30 @@ export function convertToUnit (str, unit = 'px') {
   } else {
     return `${Number(str)}${unit}`
   }
+}
+
+export function convertToGradient(degVal = '45deg, ', colorArr) {
+  if (degVal == null || degVal === '') {
+    return undefined;
+  } else if (isNaN(+degVal)) {
+    degVal = !degVal.includes('deg') ? String(degVal) + 'deg' : String(degVal);
+  } else {
+    degVal = !degVal.includes('deg') ? `${Number(degVal)}deg` : `${Number(degVal)}`;
+  }
+
+  console.log(degVal);
+
+  let gradientString = '';
+  colorArr.length > 0 && colorArr.forEach(function (value, idx) {
+    if (idx == 0) {
+      gradientString = `linear-gradient(` + degVal + ',' + value + ',';
+    } else if (idx == colorArr.length - 1) {
+      gradientString = gradientString + value + ')';
+    } else {
+      gradientString = gradientString + value + ',';
+    }
+  });
+  return gradientString;
 }
 
 let passiveSupported = false;
@@ -48,6 +72,8 @@ try {
     window.addEventListener('testListener', testListenerOpts, testListenerOpts)
     window.removeEventListener('testListener', testListenerOpts, testListenerOpts)
   }
-} catch (e) { console.warn(e) }
+} catch (e) {
+  console.warn(e)
+}
 
 export { passiveSupported }
