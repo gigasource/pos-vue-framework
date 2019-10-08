@@ -1,8 +1,8 @@
 <template>
 	<div class="outerdiv">
 		<g-dialog v-model="dialog" width="500px">
-			<template v-slot:activator="{toggleOverlay}">
-				<g-button width="100px" height="50px" @click="toggleOverlay">Dialog</g-button>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog</g-button>
 			</template>
 			<g-card flat elevation="16">
 				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
@@ -21,8 +21,8 @@
 		</g-dialog>
 
 		<g-dialog v-model="dialogHideOverlay" width="500px" hide-overlay>
-			<template v-slot:activator="{toggleOverlay}">
-				<g-button width="100px" height="50px" @click="toggleOverlay">Dialog Hide Overlay</g-button>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Hide Overlay</g-button>
 			</template>
 			<g-card flat elevation="16">
 				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
@@ -41,8 +41,8 @@
 		</g-dialog>
 
 		<g-dialog v-model="dialogOverflow" width="500px">
-			<template v-slot:activator="{toggleOverlay}">
-				<g-button width="100px" height="50px" @click="toggleOverlay">Dialog Overflow</g-button>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Overflow</g-button>
 			</template>
 			<g-card flat elevation="16">
 				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
@@ -65,8 +65,8 @@
 		</g-dialog>
 
 		<g-dialog v-model="dialogScrollable" width="500px" scrollable>
-			<template v-slot:activator="{toggleOverlay}">
-				<g-button width="100px" height="50px" @click="toggleOverlay">Dialog Scrollable</g-button>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Scrollable</g-button>
 			</template>
 			<g-card flat elevation="16">
 				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">

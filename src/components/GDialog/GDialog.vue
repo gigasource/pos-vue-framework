@@ -7,7 +7,7 @@
 		</div>
 		<g-overlay ref="overlay" v-if="renderOverlay" v-model="isActive" :z-index="overlayZIndex" :color="overlayColor" :opacity="overlayOpacity"></g-overlay>
 		<div ref="activator">
-			<slot name="activator" :toggleOverlay="toggleDialog"></slot>
+			<slot name="activator" :toggleDialog="toggleDialog"></slot>
 		</div>
 	</div>
 </template>
