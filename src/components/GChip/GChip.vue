@@ -1,5 +1,7 @@
 <template>
-	<slot name="default"></slot>
+	<div :class="classes" :style="styles">
+		<slot name="default">{{text}}</slot>
+	</div>
 </template>
 
 <script>
@@ -30,10 +32,24 @@
       value: null,
       xLarge: Boolean,
       xSmall: Boolean
-
     },
     setup(props, context) {
+      let classes = computed(() => {
+        let _classes = {
+          'g-chip': true,
+				};
+        return _classes;
+      });
 
+      let styles = computed(() => {
+        let _styles = {};
+        return _styles;
+      });
+
+      return {
+        classes,
+        styles
+      }
     }
   }
 </script>

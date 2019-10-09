@@ -13,6 +13,8 @@
 			<router-link to="/overlay-demo">Overlay</router-link>
       <router-link to="/tool-tip-demo">Tooltip demo</router-link>
 			<router-link to="/button">Button</router-link>
+			<router-link to="/chip">Chip</router-link>
+
 		</g-layout>
 		<router-view></router-view>
 	</div>

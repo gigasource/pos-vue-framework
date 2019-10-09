@@ -1,0 +1,171 @@
+@import "";
+.g-chip:not(.g-chip__outlined) {
+  color: rgba(map-get($shades, 'black'), 0.87);
+  border-color: rgba(map-get($shades, 'black'), 0.12);
+  background: #e0e0e0;
+  align-items: center;
+  cursor: default;
+  display: inline-flex;
+  line-height: 20px;
+  max-width: 100%;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-decoration: none;
+  transition-duration: $chip-transition-duration;
+  transition-property: box-shadow, opacity;
+  transition-timing-function: $chip-transition-fn;
+  vertical-align: middle;
+  white-space: nowrap;
+
+
+  // Important is needed to account for new avatar structure
+  .g-avatar {
+    height: $chip-avatar-size !important;
+    min-width: $chip-avatar-size !important;
+    width: $chip-avatar-size !important;
+  }
+
+  //TODO: Icon not yet defined
+  .g-icon {
+    font-size: $chip-icon-size;
+  }
+
+  .g-avatar,
+  .g-icon {
+
+    &__left {
+      margin-left: $chip-icon-margin-before;
+      margin-right: $chip-icon-margin-after;
+    }
+
+    &__right {
+      margin-left: $chip-icon-margin-after;
+      margin-right: $chip-icon-margin-before;
+    }
+
+  +rtl() {
+    &--left {
+      margin-left: $chip-icon-margin-after;
+      margin-right: $chip-icon-margin-before;
+    }
+
+    &--right {
+      margin-left: $chip-icon-margin-before;
+      margin-right: $chip-icon-margin-after;
+    }
+  }
+  }
+
+  .g-chip-content {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+    max-width: 100%;
+  }
+
+  // Elements
+  .g-chip__close.g-icon {
+    font-size: $chip-close-size;
+    max-height: $chip-close-size;
+    max-width: $chip-close-size;
+    user-select: none;
+
+    &.g-icon__right {
+      margin-right: $chip-icon-right-margin-after;
+    }
+
+  + rtl() {
+    margin-left: $chip-icon-right-margin-after;
+    margin-right: $chip-icon-right-margin-before;
+  }
+
+    &:hover,
+    &:focus,
+    &:active {
+      opacity: .72
+    }
+  }
+
+
+}
+
+.g-chip-label {
+  border-radius: $chip-label-border-radius !important;
+}
+
+.g-chip.g-chip__outlined {
+  border-width: $icon-outlined-border-width;
+  border-style: solid;
+
+  &:not(g-chip__active):before {
+    opacity: 0;
+  }
+
+  &.g-chip__active:before {
+    opacity: 0.08;
+  }
+
+  .g-icon {
+    color: inherit;
+
+    // Needs increased specificity
+    &.g-chip.g-chip {
+      background-color: transparent !important;
+    }
+  }
+}
+
+
+// Needs increased specificity
+// to overwrite theme color
+.g-chip.g-chip__selected {
+  background: transparent;
+
+  &:after {
+    opacity: .28;
+  }
+}
+
+
+.g-chip__active {
+  .g-icon {
+    color: inherit;
+  }
+}
+
+.g-chip__link {
+  &::before {
+    transition: opacity $primary-transition;
+  }
+
+  &:focus::before {
+    opacity: $chip-link-focus-opacity;
+  }
+}
+
+.g-chip__clickable {
+  cursor: pointer;
+
+  &:active {
+    @include elevation(2);
+  }
+}
+
+
+.g-chip__disabled {
+  opacity: .4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.g-chip {
+  @each $name, $size in $icon-sizes {
+    &.v-size__#{$name} {
+      border-radius: #{map-get($size, 'height') / 2}px;
+      font-size: #{map-get($size, 'font-size')}px;
+      height: #{map-get($size, 'height')}px;
+    }
+  }
+}
