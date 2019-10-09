@@ -29,7 +29,7 @@
       //style
       ...{
         elevation: { type: [String, Number], default: 4 },
-				gradientDeg: {type: String, default: '45deg'},
+        gradientDeg: { type: String, default: '45deg' },
         absolute: Boolean,
         fixed: Boolean,
         top: Boolean,
@@ -122,7 +122,7 @@
       });
 
       let styles = computed(() => {
-				let _styles = {
+        let _styles = {
           ...props.textColor && { color: props.textColor.replace('-', '') },
           ...props.backgroundColor && { backgroundColor: props.color.replace('-', '') },
           ...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
@@ -143,9 +143,9 @@
         };
 
         // Params: linear-gradient(45deg, yellow, green)
-				if(props.gradient && !props.gradient.toString().includes('-')) {
-          _styles['background-image'] = convertToGradient(props.gradientDeg, props.gradient.toString().split(','));
-				}
+        if (props.gradient && !props.gradient.toString().includes('-')) {
+          _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientDeg);
+        }
 
         return _styles;
       });

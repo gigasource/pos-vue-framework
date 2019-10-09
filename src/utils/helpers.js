@@ -27,7 +27,7 @@ export function addOnceEventListener(el, eventName, cb, options) {
 }
 
 export function convertToUnit(str, unit = 'px') {
-  if (str == null || str === '') {
+  if (!str) {
     return undefined
   } else if (isNaN(+str)) {
     return String(str)
@@ -36,20 +36,18 @@ export function convertToUnit(str, unit = 'px') {
   }
 }
 
-export function convertToGradient(angle = '45deg', colorArr) {
-  if (angle == null || angle === '') {
-    return undefined;
-  } else if (isNaN(+angle)) {
-    angle = !angle.includes('deg') ? `${String(angle)}deg` : String(angle);
-  } else {
+export function convertToGradient(colorArr, angle = '45deg') {
+  if (!colorArr) {
+    return
+  } else if (!!Number(+angle)) {
     angle = !angle.includes('deg') ? `${Number(angle)}deg` : `${Number(angle)}`;
   }
 
-  return colorArr.length > 0 && colorArr.reduce((acc, curVal, idx, arr) => {
-    if (idx === arr.length - 1) {
+  return colorArr.length > 0 && colorArr.reduce((acc, curVal, index, arr) => {
+    if (index === arr.length - 1) {
       curVal = `${curVal})`;
     }
-    return `${acc}` + `, ${curVal}`;
+    return `${acc}, ${curVal}`;
   }, `linear-gradient(${angle}`);
 }
 
@@ -60,7 +58,7 @@ try {
       get: () => {
         passiveSupported = true
       },
-    })
+    });
 
     window.addEventListener('testListener', testListenerOpts, testListenerOpts)
     window.removeEventListener('testListener', testListenerOpts, testListenerOpts)
