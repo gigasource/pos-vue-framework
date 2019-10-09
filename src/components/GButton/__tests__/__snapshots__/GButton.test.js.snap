@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button should have correct style 1`] = `"<button class=\\"\\" style=\\"border-color: transparent; background-color: blue;\\"></button>"`;
+
+exports[`Button should have raised class 1`] = `"<button class=\\"btn-raised\\"></button>"`;

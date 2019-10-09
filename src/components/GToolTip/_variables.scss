@@ -1,0 +1,13 @@
+$border-radius-root: 4px !default;
+$transition: (
+        'fast-out-slow-in': cubic-bezier(0.4, 0, 0.2, 1),
+        'linear-out-slow-in': cubic-bezier(0, 0, 0.2, 1),
+        'fast-out-linear-in': cubic-bezier(0.4, 0, 1, 1),
+        'ease-in-out': cubic-bezier(0.4, 0, 0.6, 1),
+        'fast-in-fast-out': cubic-bezier(0.25, 0.8, 0.25, 1),
+        'swing': cubic-bezier(0.25, 0.8, 0.5, 1)
+) !default;
+
+$tooltip-text-color: map-get($shades, 'white') !default;
+$tooltip-border-radius: $border-radius-root !default;
+$tooltip-font-size: 14px !default;

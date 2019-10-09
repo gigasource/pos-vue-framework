@@ -1,0 +1,175 @@
+button {
+  outline: none;
+  font-family: $font-family-base;
+  font-weight: $font-weight-base;
+  //font-size: 0.875rem;
+  //background: #eeeeee;
+  height: 36px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, .87);
+  -webkit-tap-highlight-color: transparent;
+}
+
+//Vuetify
+.g-btn {
+  //background-clip: padding-box;
+  align-items: center;
+  border: none;
+  border-radius: 4px;
+  display: inline-flex;
+  //flex: 1 0 auto;
+  font-weight: $btn-font-weight;
+  justify-content: center;
+  max-width: 100%;
+  outline: 0;
+  position: relative;
+  text-decoration: none;
+  text-indent: $btn-letter-spacing;
+  text-transform: uppercase;
+  transition-duration: $btn-transition-duration;
+  transition-property: box-shadow, transform, opacity;
+  transition-timing-function: $btn-transition-fn;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  @include elevation(2);
+
+
+  //min-width: #{round(36 * 1.777777777777778)}px; // default ratio
+  padding: 0 #{round(36 / 2.25)}px;
+
+  &:before {
+    background-color: currentColor;
+  }
+
+  &:not(.g-btn__disabled) {
+    will-change: box-shadow;
+  }
+
+  //Generate elevation
+  $elevationMin: 1;
+  $elevationMax: 24;
+  @for $i from $elevationMin through $elevationMax {
+    &__elevation-#{$i} {
+      @include elevation($i)
+    }
+  }
+
+  &__fixed {
+    position: fixed;
+  }
+
+  &__absolute {
+    position: absolute;
+  }
+
+  &__right {
+    right: map-get($grid-gutters, 'lg');
+  }
+
+  &__left {
+    left: map-get($grid-gutters, 'lg');
+  }
+
+  &__top {
+    top: map-get($grid-gutters, 'lg');
+  }
+
+  &__bottom {
+    bottom: map-get($grid-gutters, 'lg');
+  }
+
+  &__disabled,
+  &:disabled {
+    pointer-events: none;
+    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0.12) !important;
+    color: rgba(0, 0, 0, 0.26) !important;
+    opacity: 0.5;
+  }
+
+  &__outlined.g-btn__disabled {
+    border-color: rgba(0, 0, 0, 0.26) !important;
+  }
+
+
+  &__outlined,
+  &__flat {
+    @include elevation(0);
+  }
+
+  &__raised {
+    &:active {
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+      0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &__depressed {
+    box-shadow: none;
+  }
+
+  &-fab {
+    padding: 0;
+    border-radius: 100px;
+    //Set fab size
+    @each $name, $size in $fab-sizes {
+      &.g-size__#{$name} {
+        height: #{$size}px;
+        width: #{$size}px;
+      }
+    }
+
+    //Fab icon size
+    //@each $name, $size in $fab-icon-sizes {
+    //  &.g-icon-size__#{$name} {
+    //    height: #{$size}px;
+    //    width: #{$size}px;
+    //  }
+    //}
+
+    //Fab icon size
+    @each $name, $size in $fab-icon-sizes {
+      &.g-icon-size__#{$name} > *{
+        font-size: #{$size}px;
+        width: #{$size}px;
+        height: #{$size}px;
+      }
+    }
+  }
+
+
+  &__block {
+    display: flex;
+    flex: 1 0 auto;
+    min-width: 100% !important;
+    max-width: 100%;
+  }
+
+  &__rounded {
+    border-radius: $btn-rounded-border-radius;
+  }
+
+  &-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1.5rem;
+    padding: 0;
+  }
+
+  //Generate font-size
+  @each $name, $size in $btn-font-sizes {
+    &.g-size__#{$name} {
+      font-size: $size;
+    }
+  }
+
+  @each $name, $size in $btn-sizes {
+    &:not(.g-btn-fab):not(.g-btn-rounded).g-size__#{$name} {
+      height: #{$size}px;
+      min-width: #{round($size * 1.777777777777778)}px; // default ratio
+      padding: 0 #{$size / 2.25}px;
+    }
+  }
+}
