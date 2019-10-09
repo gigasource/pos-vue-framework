@@ -67,14 +67,12 @@
   transform: scale(1);
 }
 
-.tf-input:focus + .tf-label,
-.tf-input:placeholder-shown + .tf-label {
-  transform: translateY(-18px) scale(0.75);
-  color: #1867c0;
-}
+
 
 .tf-label__active {
-  transform: translateY(-21px) scale(0.75);
+  background-color: white;
+  transform: translateY(-18px) scale(0.75);
+  color: #1867c0;
 }
 
 .tf-icon__active {

@@ -4,6 +4,7 @@
                              prefix="prefix"
                              suffix="?"
                              type="password"
+                             persistent
                              outlined
                              shaped
                              hint="Hey I'm nonsense hint!"

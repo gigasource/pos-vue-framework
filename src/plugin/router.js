@@ -12,6 +12,7 @@ import ButtonDemo from '../view/ButtonDemo';
 import OverlayDemo from "../view/OverlayDemo";
 import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
+import InputDemo from "../view/InputDemo";
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -25,7 +26,8 @@ const routes = [
   { path: '/card', name: 'Card', component: CardDemo},
   { path: '/button', name: 'Button', component: ButtonDemo},
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
-  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo}
+  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
+  { path: '/input', name: 'Input', component: InputDemo},
 ];
 
 const router = new VueRouter({

@@ -3,7 +3,6 @@ import _ from "lodash";
 
 
 export default function getGInputField(props, context) {
-//todo: separate input vs text field logic
   //compute class for text field
   const tfClasses = computed(() => (props.disabled ? {'tf-wrapper-disabled' : true} : {
     'tf__filled' : props.filled,
@@ -40,6 +39,20 @@ export default function getGInputField(props, context) {
   const isDirty = computed(() => internalValue.value && internalValue.value.toString().length > 0)
   const isLabelActive = computed(() => isDirty.value || isFocused.value)
   const labelClasses = computed(() => isLabelActive.value ? {'tf-label__active': true}:{})
+
+  //Label positioning
+  const prefixRef = ref(null)
+  const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
+  const labelStyles = computed(() =>{
+    if(isLabelActive.value){
+    return{'transform': 'translateY(-18px)  scale(0.75)'}
+  }
+    if (props.prefix  ){
+      return{'left': prefixWidth.value+'px'}
+    }
+
+  })
+
   //Label with Icon
   const hasIcon = computed(() => props.prependIcon )
   const prependClasses = computed(() => hasIcon.value
@@ -68,7 +81,6 @@ export default function getGInputField(props, context) {
     if (!isFocused.value) context.refs.input.focus();
     isFocused.value = true;
     context.emit('click', event);
-    console.log(isLabelActive.value)
   }
 
   function onFocus(event) {
@@ -99,6 +111,8 @@ export default function getGInputField(props, context) {
     tfClasses,
     hintClasses,
     labelClasses,
+    labelStyles,
+    prefixRef,
     prependClasses,
     internalValue,
     counterValue,
