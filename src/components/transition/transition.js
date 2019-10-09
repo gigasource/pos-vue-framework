@@ -27,6 +27,32 @@ export const GSlideXReverseTransition = createSimpleTransition('slide-x-reverse-
 export const GSlideYTransition = createSimpleTransition('slide-y-transition');
 export const GSlideYReverseTransition = createSimpleTransition('slide-y-reverse-transition');
 
+//Animation
+export const GBounceDownAnimation = createSimpleTransition('bounceDown');
+export const GBounceUpAnimation = createSimpleTransition('bounceUp');
+export const GBounceRightAnimation = createSimpleTransition('bounceRight');
+export const GBounceLeftAnimation = createSimpleTransition('bounceLeft');
+export const GFadeDownAnimation = createSimpleTransition('fadeDown');
+export const GFadeUpAnimation = createSimpleTransition('fadeUp');
+export const GFadeRightAnimation = createSimpleTransition('fadeRight');
+export const GFadeLeftAnimation = createSimpleTransition('fadeLeft');
+export const GFlipXAnimation = createSimpleTransition('flipX');
+export const GFlipYAnimation = createSimpleTransition('flipY');
+export const GLightSpeedRightAnimation = createSimpleTransition('lightSpeedRight');
+export const GLightSpeedLeftAnimation = createSimpleTransition('lightSpeedLeft');
+export const GRollAnimation = createSimpleTransition('roll');
+export const GRotateAnimation = createSimpleTransition('rotate');
+export const GRotateDownAnimation = createSimpleTransition('rotateDown');
+export const GRotateUpAnimation = createSimpleTransition('rotateUp');
+export const GRotateRightAnimation = createSimpleTransition('rotateRight');
+export const GRotateLeftAnimation = createSimpleTransition('rotateLeft');
+export const GZoomAnimation = createSimpleTransition('zoom');
+export const GZoomDownAnimation = createSimpleTransition('zoomDown');
+export const GZoomUpAnimation = createSimpleTransition('zoomUp');
+export const GZoomRightAnimation = createSimpleTransition('zoomRight');
+export const GZoomLeftAnimation = createSimpleTransition('zoomLeft');
+
+
 // JavaScript transitions
 export const GExpandTransition = createJavaScriptTransition('expand-transition', ExpandTransitionGenerator());
 export const GExpandXTransition = createJavaScriptTransition('expand-x-transition', ExpandTransitionGenerator('', true));
@@ -50,6 +76,29 @@ export default {
   GSlideYReverseTransition,
   GTabReverseTransition,
   GTabTransition,
+  GBounceDownAnimation,
+  GBounceUpAnimation,
+  GBounceRightAnimation,
+  GBounceLeftAnimation,
+  GFadeDownAnimation,
+  GFadeUpAnimation,
+  GFadeRightAnimation,
+  GFadeLeftAnimation,
+  GFlipXAnimation,
+  GFlipYAnimation,
+  GLightSpeedRightAnimation,
+  GLightSpeedLeftAnimation,
+  GRollAnimation,
+  GRotateAnimation,
+  GRotateDownAnimation,
+  GRotateUpAnimation,
+  GRotateRightAnimation,
+  GRotateLeftAnimation,
+  GZoomAnimation,
+  GZoomDownAnimation,
+  GZoomUpAnimation,
+  GZoomRightAnimation,
+  GZoomLeftAnimation,
   GExpandTransition,
   GExpandXTransition,
 }
