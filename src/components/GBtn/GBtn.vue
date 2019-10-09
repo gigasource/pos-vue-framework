@@ -7,7 +7,7 @@
 
 <script>
   import { computed } from '@vue/composition-api';
-  import { convertToUnit } from '../../utils/helpers';
+  import { convertToGradient, convertToUnit } from '../../utils/helpers';
 
   export default {
     name: 'GBtn',
@@ -29,6 +29,7 @@
       //style
       ...{
         elevation: { type: [String, Number], default: 4 },
+        gradientAngle: { type: String, default: '45deg' },
         absolute: Boolean,
         fixed: Boolean,
         top: Boolean,
@@ -49,12 +50,12 @@
         textColor: String,
         color: String,
         backgroundColor: String,
-				gradient: String,
+        gradient: String,
       }
     },
     setup(props, context) {
       let classes = computed(() => {
-        let classes = {
+        let _classes = {
           'g-btn': true,
           'waves-effect': true,
           'g-btn__raised': props.raised,
@@ -75,7 +76,6 @@
           'g-btn__outlined': props.outlined,
         };
 
-
         let size = '';
         let iconSize = '';
         if (props.large) {
@@ -94,45 +94,60 @@
           size = 'g-size__default';
           iconSize = props.fab ? 'g-icon-size__default' : null;
         }
+        if (size) {
+          _classes[size] = true;
+        }
 
-        classes[size] = true;
-        classes[iconSize] = true;
+        if (iconSize) {
+          _classes[iconSize] = true;
+        }
 
         if (props.gradient) {
-          classes[props.gradient] = true;
+          if (props.gradient.toString().includes('-')) {
+            _classes[props.gradient] = true;
+          }
         }
 
         let elevationClassName = props.elevation ? `g-btn__elevation-${props.elevation}` : null;
         if (elevationClassName) {
-          classes[elevationClassName] = true;
+          _classes[elevationClassName] = true;
         }
 
         let waveColor = props.color ? `waves-${props.color}` : null;
         if (waveColor) {
-          classes[waveColor] = true;
+          _classes[waveColor] = true;
         }
-        return classes;
+
+        return _classes;
       });
+
       let styles = computed(() => {
-        return {
-          ...props.textColor ? { 'color': props.color.replace('-', '')} : null,
-          ...props.backgroundColor ? { 'background-color': props.color.replace('-', '')} : null,
-          ...props.color ? { 'background-color': props.color.replace('-', ''), 'color': '#fff' } : null,
-          ...props.outlined ? { 'color': `${props.color}`, 'border': `thin solid currentColor`, 'background-color': 'transparent' } : null,
-          ...props.width ? { 'width': convertToUnit(props.width) } : null,
-          ...props.height ? { 'height': convertToUnit(props.height) } : null,
-          ...props.maxWidth ? { 'width': convertToUnit(props.maxWidth) } : null,
-          ...props.maxHeight ? { 'height': convertToUnit(props.maxHeight) } : null,
-          ...props.minWidth ? { 'width': convertToUnit(props.minWidth) } : null,
-          ...props.minHeight ? { 'height': convertToUnit(props.minHeight) } : null,
-          ...props.fab ? { 'min-height': 0, 'min-width': 0 } : null,
-          ...props.tile ? { 'border-radius': 0 } : null,
-          ...props.flat ? {
-            'border-color': 'transparent',
-            'background-color': 'transparent',
-            'color': props.color ? props.color : 'black'
-          } : null,
+        let _styles = {
+          ...props.textColor && { color: props.textColor.replace('-', '') },
+          ...props.backgroundColor && { backgroundColor: props.color.replace('-', '') },
+          ...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
+          ...props.outlined && { color: `${props.color}`, border: `thin solid currentColor`, backgroundColor: 'transparent' },
+          ...props.width && { width: convertToUnit(props.width) },
+          ...props.height && { height: convertToUnit(props.height) },
+          ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
+          ...props.maxHeight && { maxHeight: convertToUnit(props.maxHeight) },
+          ...props.minWidth && { minWidth: convertToUnit(props.minWidth) },
+          ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
+          ...props.fab && { minHeight: 0, minWidth: 0 },
+          ...props.tile && { borderRadius: 0 },
+          ...props.flat && {
+            borderColor: 'transparent',
+            backgroundColor: 'transparent',
+            color: props.color ? props.color : 'black'
+          },
+        };
+
+        // Params: linear-gradient(45deg, yellow, green)
+        if (props.gradient && !props.gradient.toString().includes('-')) {
+          _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
         }
+
+        return _styles;
       });
 
       let onClick = (event) => {
