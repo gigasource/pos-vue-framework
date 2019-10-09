@@ -5,12 +5,13 @@
 				 v-if="renderContent"
 				 :class="wrapperClasses"
 				 :style="wrapperStyles"
-				 :tabindex="tabIndex">
+				 :tabindex="tabIndex"
+				 @keydown="onKeydown">
 			<div ref="content"
 					 class="dialog-content"
 					 :class="contentClasses"
 					 :style="contentStyles"
-					 v-click-outside:[directiveArgs]="directiveValue">
+					 v-click-outside:[clickOutsideDirective.arg]="clickOutsideDirective.value">
 				<slot></slot>
 			</div>
 		</div>
@@ -98,7 +99,6 @@
       const renderContent = computed(() => isBooted.value || !props.lazy);
 
       function initComponent() {
-        context.refs.wrapper.addEventListener('keydown', onKeydown);
         if (renderOverlay.value) attachToRoot(context.refs.overlay.$el);
         attachToRoot(context.refs.wrapper);
         attachToParent();
@@ -149,7 +149,7 @@
 			}));
 
 
-      // Click outside
+      // Close conditional for click outside directive
       const closeConditional = (e) => {
         if (!isActive.value) return false;
         const clickedInsideContent = context.refs.content.contains(e.target);
@@ -158,19 +158,23 @@
 				// If z-index of current element is lower than the current active z-index then do not close when click outside
         return getZIndex(context.refs.wrapper) >= getMaxZIndex(context.refs.wrapper);
       };
-      const directiveValue = () => {
-        if (!props.persistent) {
-          isActive.value = false
-        }
-      };
-			const directiveArgs = {
-        closeConditional,
-				include: () => []
-      };
 
-			// Press ESC key
+      const clickOutsideDirective = {
+				value: () => {
+					if (!props.persistent) {
+						isActive.value = false
+					}
+				},
+				arg: {
+					closeConditional,
+					include: () => []
+				}
+			}
+
+			// Set the wrapper div tabindex to 0 when active, to make wrapper div focusable
 			const tabIndex = computed(() => isActive.value ? 0 : undefined);
 
+			// Change active state when press ESC
 			function onKeydown(e) {
 				if (e.key === 'Escape') {
           isActive.value = !isActive.value;
@@ -182,15 +186,15 @@
         isActive,
 				renderOverlay,
 				overlayZIndex,
+				renderContent,
 				toggleDialog,
 				contentClasses,
 				contentStyles,
 				wrapperClasses,
 				wrapperStyles,
-        directiveValue,
-				directiveArgs,
+				clickOutsideDirective,
 				tabIndex,
-				renderContent
+				onKeydown
 			}
 		}
   }

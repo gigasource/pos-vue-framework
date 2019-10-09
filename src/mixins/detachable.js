@@ -19,16 +19,15 @@ export default function detachable(props, context) {
     let nodes = [];
 
     if(!node) {
-      for (let childNode of context.refs.activator.childNodes){
-        nodes.push(childNode)
-      }
+      nodes = [...context.refs.activator.childNodes];
 
-      // If el contain activator, remove the activator div
+      // If element contain activator, remove the activator div
       if(context.refs.activator.parentNode === context.refs.el) context.refs.el.removeChild(context.refs.activator);
     } else {
       nodes = [node]
     }
 
+    // Attach nodes to element's parent
     for (let childNode of nodes) {
       if (!context.refs.el.parentNode) return;
 
