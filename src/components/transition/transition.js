@@ -6,50 +6,50 @@ import {
 
 
 // Component specific transitions
-export const VCarouselTransition = createSimpleTransition('carousel-transition');
-export const VCarouselReverseTransition = createSimpleTransition('carousel-reverse-transition');
-export const VTabTransition = createSimpleTransition('tab-transition');
-export const VTabReverseTransition = createSimpleTransition('tab-reverse-transition');
-export const VMenuTransition = createSimpleTransition('menu-transition');
-export const VFabTransition = createSimpleTransition('fab-transition', 'center center', 'out-in');
+export const GCarouselTransition = createSimpleTransition('carousel-transition');
+export const GCarouselReverseTransition = createSimpleTransition('carousel-reverse-transition');
+export const GTabTransition = createSimpleTransition('tab-transition');
+export const GTabReverseTransition = createSimpleTransition('tab-reverse-transition');
+export const GMenuTransition = createSimpleTransition('menu-transition');
+export const GFabTransition = createSimpleTransition('fab-transition', 'center center', 'out-in');
 
 // Generic transitions
-export const VDialogTransition = createSimpleTransition('dialog-transition');
-export const VDialogBottomTransition = createSimpleTransition('dialog-bottom-transition');
-export const VFadeTransition = createSimpleTransition('fade-transition');
-export const VScaleTransition = createSimpleTransition('scale-transition');
-export const VScrollXTransition = createSimpleTransition('scroll-x-transition');
-export const VScrollXReverseTransition = createSimpleTransition('scroll-x-reverse-transition');
-export const VScrollYTransition = createSimpleTransition('scroll-y-transition');
-export const VScrollYReverseTransition = createSimpleTransition('scroll-y-reverse-transition');
-export const VSlideXTransition = createSimpleTransition('slide-x-transition');
-export const VSlideXReverseTransition = createSimpleTransition('slide-x-reverse-transition');
-export const VSlideYTransition = createSimpleTransition('slide-y-transition');
-export const VSlideYReverseTransition = createSimpleTransition('slide-y-reverse-transition');
+export const GDialogTransition = createSimpleTransition('dialog-transition');
+export const GDialogBottomTransition = createSimpleTransition('dialog-bottom-transition');
+export const GFadeTransition = createSimpleTransition('fade-transition');
+export const GScaleTransition = createSimpleTransition('scale-transition');
+export const GScrollXTransition = createSimpleTransition('scroll-x-transition');
+export const GScrollXReverseTransition = createSimpleTransition('scroll-x-reverse-transition');
+export const GScrollYTransition = createSimpleTransition('scroll-y-transition');
+export const GScrollYReverseTransition = createSimpleTransition('scroll-y-reverse-transition');
+export const GSlideXTransition = createSimpleTransition('slide-x-transition');
+export const GSlideXReverseTransition = createSimpleTransition('slide-x-reverse-transition');
+export const GSlideYTransition = createSimpleTransition('slide-y-transition');
+export const GSlideYReverseTransition = createSimpleTransition('slide-y-reverse-transition');
 
 // JavaScript transitions
-export const VExpandTransition = createJavaScriptTransition('expand-transition', ExpandTransitionGenerator());
-export const VExpandXTransition = createJavaScriptTransition('expand-x-transition', ExpandTransitionGenerator('', true));
+export const GExpandTransition = createJavaScriptTransition('expand-transition', ExpandTransitionGenerator());
+export const GExpandXTransition = createJavaScriptTransition('expand-x-transition', ExpandTransitionGenerator('', true));
 
 export default {
-  VCarouselTransition,
-  VCarouselReverseTransition,
-  VDialogTransition,
-  VDialogBottomTransition,
-  VFabTransition,
-  VFadeTransition,
-  VMenuTransition,
-  VScaleTransition,
-  VScrollXTransition,
-  VScrollXReverseTransition,
-  VScrollYTransition,
-  VScrollYReverseTransition,
-  VSlideXTransition,
-  VSlideXReverseTransition,
-  VSlideYTransition,
-  VSlideYReverseTransition,
-  VTabReverseTransition,
-  VTabTransition,
-  VExpandTransition,
-  VExpandXTransition,
+  GCarouselTransition,
+  GCarouselReverseTransition,
+  GDialogTransition,
+  GDialogBottomTransition,
+  GFabTransition,
+  GFadeTransition,
+  GMenuTransition,
+  GScaleTransition,
+  GScrollXTransition,
+  GScrollXReverseTransition,
+  GScrollYTransition,
+  GScrollYReverseTransition,
+  GSlideXTransition,
+  GSlideXReverseTransition,
+  GSlideYTransition,
+  GSlideYReverseTransition,
+  GTabReverseTransition,
+  GTabTransition,
+  GExpandTransition,
+  GExpandXTransition,
 }

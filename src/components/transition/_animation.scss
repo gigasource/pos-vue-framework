@@ -1,0 +1,91 @@
+//Transition
+@import "transition";
+
+//Animation
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+
+  &.infinite {
+    animation-iteration-count: infinite;
+  }
+
+  &.delay-1s {
+    animation-delay: 1s;
+  }
+
+  &.delay-2s {
+    animation-delay: 2s;
+  }
+
+  &.delay-3s {
+    animation-delay: 3s;
+  }
+
+  &.delay-4s {
+    animation-delay: 4s;
+  }
+
+  &.delay-5s {
+    animation-delay: 5s;
+  }
+
+  &.fast {
+    animation-duration: 800ms;
+  }
+
+  &.faster {
+    animation-duration: 500ms;
+  }
+
+  &.slow {
+    animation-duration: 2s;
+  }
+
+  &.slower {
+    animation-duration: 3s;
+  }
+}
+
+@mixin animation-default() {
+  &-enter-active,
+  &-leave-active {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+  }
+}
+
+//Bounce
+@import "./animation/bounce";
+//Fade
+@import "./animation/fade";
+//Flash
+@import "./animation/flash";
+//Flip
+@import "./animation/flip";
+//Heart Beat
+@import "./animation/heartBeat";
+//Jello
+@import "./animation/jello";
+//Light Speed
+@import "./animation/lightSpeed";
+//Pulse
+@import "./animation/pulse";
+//Roll
+@import "./animation/roll";
+//Rotate
+@import "./animation/rotate";
+//Rubber Band
+@import "./animation/rubberBand";
+//Scroll
+@import "./animation/scroll";
+//Slide
+@import "./animation/slide";
+//Swing
+@import "./animation/swing";
+//Tada
+@import "./animation/tada";
+//Wobble
+@import "./animation/wobble";
+//Zoom
+@import "./animation/zoom";

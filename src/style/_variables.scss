@@ -72,7 +72,14 @@ $percentages: (
 //Grid
 $grid-columns:      12 !default;
 
-//Transition
+
+//Button
+$btn-border-radius: 0.5rem !default;
+$btn-font-size:     $font-size-base;
+$btn-font-family:   $font-family-base;
+$btn-font-weight:   $font-weight-7;
+
+//Added for button
 $transition: (
         'fast-out-slow-in':   cubic-bezier(0.4, 0, 0.2, 1),
         'linear-out-slow-in': cubic-bezier(0, 0, 0.2, 1),
@@ -81,7 +88,7 @@ $transition: (
         'fast-in-fast-out':   cubic-bezier(0.25, 0.8, 0.25, 1),
         'swing':              cubic-bezier(0.25, 0.8, 0.5, 1)
 ) !default;
-$primary-transition: 0.3s map-get($transition, 'swing') !default;
+$primary-transition: 0.5s map-get($transition, 'swing') !default;
 $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
 /*
