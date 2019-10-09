@@ -3,10 +3,8 @@
     <g-text-field-functional clearable
                              prefix="prefix"
                              suffix="?"
-                             type="password"
+                             type="text"
                              persistent
-                             outlined
-                             shaped
                              hint="Hey I'm nonsense hint!"
                              label="Text field"
                              counter
@@ -28,10 +26,10 @@
         text1: '',
         rules: function (text) {
           return text.length < this.maxlength
-        }
+        }}
       }
     }
-  }
+
 </script>
 
 <style scoped>

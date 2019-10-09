@@ -1,14 +1,15 @@
 <template>
-  <div class="tf-wrapper" :class="tfClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
+  <div class="tf-wrapper" :class="tfWrapperClasses" :style="tfStyles" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
     <div class="tf-prepend__outer"></div>
     <fieldset>
-      <div class="tf">
+      <div  :class="tfClasses" >
         <div class="tf-prepend__inner">
           <slot></slot>
         </div>
-        <span ref="prefixRef" class="tf-affix">{{prefix}}</span>
+        <div ref="prefixRef" class="tf-prefix">{{prefix}}</div>
         <input id="input" type="text"
                class="tf-input"
+               :style="inputStyles"
                :type="type"
                :label="label"
                v-model="internalValue"
@@ -18,7 +19,7 @@
                @focus="onFocus"
                @blur="onBlur"
                @keydown="onKeyDown">
-        <label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">
+        <label for="input" class="tf-label"  :style="labelStyles">
           <slot name="label">{{label}}</slot>
         </label>
         <span class="tf-affix">{{suffix}}</span>
@@ -60,8 +61,8 @@
       clearable: Boolean,
       rules: Function,
       hint: String,
-      persistent: Boolean,
       errorMessage: String,
+      persistent: Boolean,
       counter: Boolean,
       maxlength: String,
 
@@ -106,11 +107,14 @@
         isValidInput,
         onClearIconClick,
         prependClasses,
-        tfClasses,
+        tfWrapperClasses,
         hintClasses,
         labelStyles,
         labelClasses,
+         tfClasses,
         prefixRef,
+          tfStyles,
+          inputStyles,
       } = getGInputField(props, context)
 
       // template refs
@@ -146,6 +150,8 @@
         labelStyles,
         prependClasses,
         tfClasses,
+        tfStyles,
+        tfWrapperClasses,
         hintClasses,
         internalValue,
         counterValue,
@@ -162,6 +168,7 @@
         isDirty,
         isValidInput,
         hasIcon,
+        inputStyles,
       }
     }
   }

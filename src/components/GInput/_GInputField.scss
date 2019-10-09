@@ -20,7 +20,7 @@
 .tf {
   position: relative;
   flex: 1 1 auto;
-  color: rgba(100, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.32);
   display: flex;
 }
 
@@ -43,6 +43,41 @@
   transform: scale(0);
   transition: 0.4s ease-out;
 }
+.tf__error {
+  position: relative;
+  flex: 1 1 auto;
+  color: rgba(0, 0, 0, 0.32);
+  display: flex;
+}
+
+.tf__error::before {
+  position: absolute;
+  content: '';
+  bottom: -1px;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.87);
+}
+
+.tf__error::after {
+  position: absolute;
+  content: '';
+  bottom: -1px;
+  width: 100%;
+  height: 1px;
+  background-color: #c00213;
+  transform: scale(0);
+  transition: 0.4s ease-out;
+}
+.tf:focus-within::after {
+  height: 2px;
+  transform: scale(1);
+}
+.tf__error:focus-within::after {
+  height: 2px;
+  transform: scale(1);
+}
+
 
 .tf-label {
   position: absolute;
@@ -52,12 +87,11 @@
   transform-origin: top left;
   transition: 0.4s ease-out;
   pointer-events: none;
-  color: rgba(0, 0, 0, 0.32);
 }
 
 .tf-input {
   width: 100%;
-  padding: 5px 0;
+  padding: 5px 0 0 5px;
   line-height: 24px;
   font-size: 16px;
 }
@@ -358,8 +392,9 @@ input[type=password] {
   border: transparent;
   font-family: "Muli", sans-serif;
 }
-.tf-affix{
-  line-height: 24px;
+.tf-prefix{
+  display: block;
+  padding-top: 8px;
   font-size: 16px;
-  padding: 5px 0px 0px 0px ;
+
 }

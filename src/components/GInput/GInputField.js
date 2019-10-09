@@ -3,8 +3,9 @@ import _ from "lodash";
 
 
 export default function getGInputField(props, context) {
+
   //compute class for text field
-  const tfClasses = computed(() => (props.disabled ? {'tf-wrapper-disabled' : true} : {
+  const tfWrapperClasses = computed(() => (props.disabled ? {'tf-wrapper-disabled' : true} : {
     'tf__filled' : props.filled,
     'tf__outlined': props.outlined,
     'tf__solo': props.solo,
@@ -12,6 +13,7 @@ export default function getGInputField(props, context) {
     'tf__shaped': props.shaped,
     'tf__flat': props.flat,
     'tf-wrapper-readonly': props.readOnly,
+    'tf__error': !isValidInput.value,
   }))
 
   // text field internalValue
@@ -26,15 +28,6 @@ export default function getGInputField(props, context) {
     }
   })
 
-  //watcher for validation
-  const isValidInput = ref(true);
-  watch(() => internalValue.value,
-      _.debounce(function () {
-        if (props.rules && typeof props.rules == 'function') {
-          isValidInput.value = props.rules(internalValue.value);
-        }
-      }, 300))
-
   //Activate label
   const isDirty = computed(() => internalValue.value && internalValue.value.toString().length > 0)
   const isLabelActive = computed(() => isDirty.value || isFocused.value)
@@ -44,12 +37,17 @@ export default function getGInputField(props, context) {
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
   const labelStyles = computed(() =>{
+    let style = {}
     if(isLabelActive.value){
-    return{'transform': 'translateY(-18px)  scale(0.75)'}
+      Object.assign(style,{'transform': 'translateY(-18px) translateX('+ -prefixWidth.value + 'px)  scale(0.75)'} )
   }
     if (props.prefix  ){
-      return{'left': prefixWidth.value+'px'}
+      Object.assign(style,{'left': prefixWidth.value+8 +'px'})
     }
+    if(!isValidInput.value){
+      Object.assign(style,{'color': 'red'})
+    }
+    return style
 
   })
 
@@ -72,6 +70,39 @@ export default function getGInputField(props, context) {
   const counterValue = computed(() => {
     return (internalValue.value).toString().length
   })
+
+  //Validation
+  const isValidInput = ref(true);
+
+  function validate(value){
+    const errorBucket = []
+    value = value || internalValue.value
+    for (let i = 0 ; i < props.rules.length; i++ ){
+      const rule = props.rules[i]
+      const validatedValue = typeof rule === 'function' ? rule(value) : rule
+      if( typeof validatedValue == 'string'){
+        errorBucket.push(validatedValue)
+      }
+      else if(typeof validatedValue !== 'boolean'){
+        alert('Something wrong with rules! Check it out!')
+      }
+      return errorBucket
+
+    }
+  }
+  // watch(() => validate(internalValue.value))
+  watch(() => internalValue.value,
+      _.debounce(function()  {
+    if (props.rules && typeof props.rules === 'function') {
+      isValidInput.value = props.rules(internalValue.value);
+    }
+  }, 500))
+
+  //Error state display
+  const tfStyles = computed(() => isValidInput.value ?{} : {'color': 'red'})
+  const inputStyles = computed(() => isValidInput.value ?{} : {'color': 'red'} )
+  const tfClasses = computed(() => isValidInput.value ? {'tf': true} :{'tf__error': true})
+
 
   //event handler function
   const isFocused = ref(false);
@@ -109,8 +140,11 @@ export default function getGInputField(props, context) {
 
   return {
     tfClasses,
+    tfStyles,
     hintClasses,
     labelClasses,
+    tfWrapperClasses,
+    inputStyles,
     labelStyles,
     prefixRef,
     prependClasses,
