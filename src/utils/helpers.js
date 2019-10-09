@@ -36,28 +36,21 @@ export function convertToUnit(str, unit = 'px') {
   }
 }
 
-export function convertToGradient(degVal = '45deg, ', colorArr) {
-  if (degVal == null || degVal === '') {
+export function convertToGradient(angle = '45deg', colorArr) {
+  if (angle == null || angle === '') {
     return undefined;
-  } else if (isNaN(+degVal)) {
-    degVal = !degVal.includes('deg') ? String(degVal) + 'deg' : String(degVal);
+  } else if (isNaN(+angle)) {
+    angle = !angle.includes('deg') ? `${String(angle)}deg` : String(angle);
   } else {
-    degVal = !degVal.includes('deg') ? `${Number(degVal)}deg` : `${Number(degVal)}`;
+    angle = !angle.includes('deg') ? `${Number(angle)}deg` : `${Number(angle)}`;
   }
 
-  console.log(degVal);
-
-  let gradientString = '';
-  colorArr.length > 0 && colorArr.forEach(function (value, idx) {
-    if (idx == 0) {
-      gradientString = `linear-gradient(` + degVal + ',' + value + ',';
-    } else if (idx == colorArr.length - 1) {
-      gradientString = gradientString + value + ')';
-    } else {
-      gradientString = gradientString + value + ',';
+  return colorArr.length > 0 && colorArr.reduce((acc, curVal, idx, arr) => {
+    if (idx === arr.length - 1) {
+      curVal = `${curVal})`;
     }
-  });
-  return gradientString;
+    return `${acc}` + `, ${curVal}`;
+  }, `linear-gradient(${angle}`);
 }
 
 let passiveSupported = false;
