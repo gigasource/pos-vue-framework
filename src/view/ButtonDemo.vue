@@ -37,7 +37,7 @@
 
 		<p>ROUNDED BUTTON</p>
 		<div class="wrapper">
-			<g-btn rounded gradient="yellow, green, blue" gradient-deg="10">GRADIENT BUTTON</g-btn>
+			<g-btn rounded gradient="yellow, green, blue" gradient-angle="120">GRADIENT BUTTON</g-btn>
 			<g-btn rounded gradient="#aa00ff, #00bcd4, #ff4452" text-color="white">GRADIENT BUTTON</g-btn>
 			<g-btn rounded gradient="gradient-45deg-red-pink" color="white">FIXED BUTTON</g-btn>
 			<g-btn rounded tile depressed color="blue" x-large>XLARGE BUTTON</g-btn>

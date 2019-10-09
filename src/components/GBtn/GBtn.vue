@@ -29,7 +29,7 @@
       //style
       ...{
         elevation: { type: [String, Number], default: 4 },
-        gradientDeg: { type: String, default: '45deg' },
+        gradientAngle: { type: String, default: '45deg' },
         absolute: Boolean,
         fixed: Boolean,
         top: Boolean,
@@ -144,7 +144,7 @@
 
         // Params: linear-gradient(45deg, yellow, green)
         if (props.gradient && !props.gradient.toString().includes('-')) {
-          _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientDeg);
+          _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
         }
 
         return _styles;
