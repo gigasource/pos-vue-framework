@@ -5,7 +5,7 @@
 				 v-if="renderContent"
 				 :class="wrapperClasses"
 				 :style="wrapperStyles"
-				 :tabindex="tabIndex"
+				 :tabindex="wrapperTabIndex"
 				 @keydown="onKeydown">
 			<div ref="content"
 					 class="dialog-content"
@@ -172,7 +172,7 @@
 			}
 
 			// Set the wrapper div tabindex to 0 when active, to make wrapper div focusable
-			const tabIndex = computed(() => isActive.value ? 0 : undefined);
+			const wrapperTabIndex = computed(() => isActive.value ? 0 : undefined);
 
 			// Change active state when press ESC
 			function onKeydown(e) {
@@ -193,7 +193,7 @@
 				wrapperClasses,
 				wrapperStyles,
 				clickOutsideDirective,
-				tabIndex,
+        wrapperTabIndex,
 				onKeydown
 			}
 		}
