@@ -1,7 +1,7 @@
 <template>
 	<div class="g-checkbox-wrapper">
-		<div class="g-checkbox" :class="checkboxClass" :style="checkboxStyle">
-			<input type="checkbox" ref="input" :checked="isActive.value" @click="activate">
+		<div class="g-checkbox" :class="checkboxClass" :style="checkboxStyle" @click="activate">
+			<input type="checkbox" ref="input" :checked="isActive.value">
 			<span class="g-checkbox-checkmark"></span>
 			<div class="g-checkbox-hover"></div>
 			<slot name="label">

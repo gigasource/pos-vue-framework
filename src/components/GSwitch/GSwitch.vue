@@ -1,8 +1,8 @@
 <template>
-	<div class="g-switch-wrapper">
+	<div class="g-switch-wrapper" @click.prevent="activate">
 		<label class="g-switch-container">
 			<input type="checkbox">
-			<span class="g-switch" :class="classes" :style="styles" @click="activate">
+			<span class="g-switch" :class="classes" :style="styles">
 				<span class="g-switch-track"></span>
 				<span class="g-switch-thumb"></span>
 			</span>

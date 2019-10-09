@@ -1,7 +1,7 @@
 <template>
 	<div class="g-radio-wrapper">
-		<div class="g-radio" :class="classes" :style="styles">
-			<input type="radio" ref="radio" :name="name" @click="activate">
+		<div class="g-radio" :class="classes" :style="styles"  @click="activate">
+			<input type="radio" ref="radio" :name="name">
 			<span class="g-radio-checkmark"></span>
 			<div class="g-radio-hover"></div>
 			<slot name="label">
