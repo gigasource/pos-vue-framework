@@ -157,7 +157,7 @@
 			const tabIndex = computed(() => isActive.value ? 0 : undefined);
 
 			function onKeydown(e) {
-				if (e.keyCode === 27) {
+				if (e.key === 'Escape') {
           isActive.value = !isActive.value;
 				}
         context.emit('keydown', e);
