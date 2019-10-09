@@ -17,7 +17,7 @@ export const keyCodes = Object.freeze({
   pagedown: 34,
 });
 
-export function addOnceEventListener (el, eventName, cb, options){
+export function addOnceEventListener(el, eventName, cb, options) {
   const once = (event) => {
     cb(event);
     el.removeEventListener(eventName, once, options);
@@ -26,14 +26,31 @@ export function addOnceEventListener (el, eventName, cb, options){
   el.addEventListener(eventName, once, options);
 }
 
-export function convertToUnit (str, unit = 'px') {
-  if (str == null || str === '') {
+export function convertToUnit(str, unit = 'px') {
+  if (!str) {
     return undefined
   } else if (isNaN(+str)) {
     return String(str)
   } else {
     return `${Number(str)}${unit}`
   }
+}
+
+export function convertToGradient(colorArr, angle = '45deg') {
+  if (!colorArr) {
+    return
+  }
+
+  if (!!Number(+angle)) {
+    angle = !angle.includes('deg') ? `${Number(angle)}deg` : `${Number(angle)}`;
+  }
+
+  return colorArr.length > 0 && colorArr.reduce((acc, curVal, index, arr) => {
+    if (index === arr.length - 1) {
+      curVal = `${curVal})`;
+    }
+    return `${acc}, ${curVal}`;
+  }, `linear-gradient(${angle}`);
 }
 
 let passiveSupported = false;
@@ -43,11 +60,13 @@ try {
       get: () => {
         passiveSupported = true
       },
-    })
+    });
 
     window.addEventListener('testListener', testListenerOpts, testListenerOpts)
     window.removeEventListener('testListener', testListenerOpts, testListenerOpts)
   }
-} catch (e) { console.warn(e) }
+} catch (e) {
+  console.warn(e)
+}
 
 export { passiveSupported }
