@@ -124,7 +124,7 @@
       let styles = computed(() => {
         let _styles = {
           ...props.textColor && { color: props.textColor.replace('-', '') },
-          ...props.backgroundColor && { backgroundColor: props.color.replace('-', '') },
+          ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
           ...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
           ...props.outlined && { color: `${props.color}`, border: `thin solid currentColor`, backgroundColor: 'transparent' },
           ...props.width && { width: convertToUnit(props.width) },
