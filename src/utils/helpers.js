@@ -39,7 +39,9 @@ export function convertToUnit(str, unit = 'px') {
 export function convertToGradient(colorArr, angle = '45deg') {
   if (!colorArr) {
     return
-  } else if (!!Number(+angle)) {
+  }
+
+  if (!!Number(+angle)) {
     angle = !angle.includes('deg') ? `${Number(angle)}deg` : `${Number(angle)}`;
   }
 
