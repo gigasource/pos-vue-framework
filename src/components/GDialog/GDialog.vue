@@ -1,11 +1,26 @@
 <template>
 	<div ref="el" class="dialog">
-		<div ref="wrapper" class="dialog-wrapper" v-if="lazyRender" :class="wrapperClasses" :style="wrapperStyles" :tabindex="tabIndex">
-			<div class="dialog-content" :class="contentClasses" :style="contentStyles" ref="content" v-click-outside:[directiveArgs]="directiveValue">
+		<div ref="wrapper"
+				 class="dialog-wrapper"
+				 v-if="renderContent"
+				 :class="wrapperClasses"
+				 :style="wrapperStyles"
+				 :tabindex="tabIndex">
+			<div ref="content"
+					 class="dialog-content"
+					 :class="contentClasses"
+					 :style="contentStyles"
+					 v-click-outside:[directiveArgs]="directiveValue">
 				<slot></slot>
 			</div>
 		</div>
-		<g-overlay ref="overlay" v-if="renderOverlay" v-model="isActive" :z-index="overlayZIndex" :color="overlayColor" :opacity="overlayOpacity"></g-overlay>
+		<g-overlay ref="overlay"
+							 v-if="renderOverlay"
+							 v-model="isActive"
+							 :z-index="overlayZIndex"
+							 :color="overlayColor"
+							 :opacity="overlayOpacity">
+		</g-overlay>
 		<div ref="activator">
 			<slot name="activator" :toggleDialog="toggleDialog"></slot>
 		</div>
@@ -63,15 +78,15 @@
       const { getMaxZIndex } = stackable(props, context);
 
       // Stacking
-      const zIndex = computed(() => {
+      const wrapperZIndex = computed(() => {
         return !isActive.value ? 6 : getMaxZIndex(context.refs.wrapper) + 2
 			});
-      const overlayZIndex = computed(() => zIndex.value - 1);
+      const overlayZIndex = computed(() => wrapperZIndex.value - 1);
 
 
       // Show/hide overlay
 			// TODO: convert to overlayable mixin
-			const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen && lazyRender.value);
+			const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen && renderContent.value);
 
 
 
@@ -80,7 +95,7 @@
       const isBooted = reactive({
         value: false
       });
-      const lazyRender = computed(() => isBooted.value || !props.lazy);
+      const renderContent = computed(() => isBooted.value || !props.lazy);
 
       function initComponent() {
         context.refs.wrapper.addEventListener('keydown', onKeydown);
@@ -130,7 +145,7 @@
 			}));
 
       const wrapperStyles = computed(() => ({
-				zIndex: zIndex.value
+				zIndex: wrapperZIndex.value
 			}));
 
 
@@ -175,7 +190,7 @@
         directiveValue,
 				directiveArgs,
 				tabIndex,
-				lazyRender
+				renderContent
 			}
 		}
   }
