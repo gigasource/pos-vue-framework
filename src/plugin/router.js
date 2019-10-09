@@ -24,11 +24,11 @@ const routes = [
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
   { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
   { path: '/card-demo', name: 'Card demo', component: CardDemo},
-  { path: '/selection-control', name: 'SelectIon Control', component: SelectIonControl}
+  { path: '/selection-control', name: 'SelectIon Control', component: SelectIonControl},
   { path: '/card', name: 'Card', component: CardDemo},
   { path: '/button', name: 'Button', component: ButtonDemo},
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
-  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo}
+  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
 ];
 
 const router = new VueRouter({
