@@ -1,5 +1,12 @@
-@import "";
-.g-chip:not(.g-chip__outlined) {
+@import "./variables";
+//.g-chip:not(.g-chip__outlined) {
+//  color: ;
+//  border-color: ;
+//  background: ;
+//}
+
+
+.g-chip {
   color: rgba(map-get($shades, 'black'), 0.87);
   border-color: rgba(map-get($shades, 'black'), 0.12);
   background: #e0e0e0;
@@ -18,6 +25,7 @@
   transition-timing-function: $chip-transition-fn;
   vertical-align: middle;
   white-space: nowrap;
+  font-weight: 400;
 
 
   // Important is needed to account for new avatar structure
@@ -32,8 +40,13 @@
     font-size: $chip-icon-size;
   }
 
+  //Avatar, icons
   .g-avatar,
   .g-icon {
+    font-size: $chip-close-size;
+    //max-height: $chip-close-size;
+    //max-width: $chip-close-size;
+    user-select: none;
 
     &__left {
       margin-left: $chip-icon-margin-before;
@@ -44,18 +57,6 @@
       margin-left: $chip-icon-margin-after;
       margin-right: $chip-icon-margin-before;
     }
-
-  +rtl() {
-    &--left {
-      margin-left: $chip-icon-margin-after;
-      margin-right: $chip-icon-margin-before;
-    }
-
-    &--right {
-      margin-left: $chip-icon-margin-before;
-      margin-right: $chip-icon-margin-after;
-    }
-  }
   }
 
   .g-chip-content {
@@ -66,7 +67,7 @@
   }
 
   // Elements
-  .g-chip__close.g-icon {
+  &.g-chip__close .g-icon {
     font-size: $chip-close-size;
     max-height: $chip-close-size;
     max-width: $chip-close-size;
@@ -75,11 +76,6 @@
     &.g-icon__right {
       margin-right: $chip-icon-right-margin-after;
     }
-
-  + rtl() {
-    margin-left: $chip-icon-right-margin-after;
-    margin-right: $chip-icon-right-margin-before;
-  }
 
     &:hover,
     &:focus,
@@ -107,8 +103,12 @@
     opacity: 0.08;
   }
 
-  .g-icon {
+  &.g-icon {
     color: inherit;
+    font-size: $chip-close-size;
+    max-height: $chip-close-size;
+    max-width: $chip-close-size;
+    user-select: none;
 
     // Needs increased specificity
     &.g-chip.g-chip {
@@ -137,7 +137,7 @@
 
 .g-chip__link {
   &::before {
-    transition: opacity $primary-transition;
+    //transition: opacity $primary-transition;
   }
 
   &:focus::before {
@@ -145,6 +145,8 @@
   }
 }
 
+
+//Clickable
 .g-chip__clickable {
   cursor: pointer;
 
@@ -153,19 +155,68 @@
   }
 }
 
-
+//Disabled
 .g-chip__disabled {
   opacity: .4;
   pointer-events: none;
   user-select: none;
 }
 
+//Label
+.g-chip__label {
+  border-radius: $chip-label-border-radius !important;
+}
+
+.g-chip__pill {
+  .g-chip__filter {
+    margin-right: $chip-pill-filter-margin;
+  }
+
+  .g-avatar {
+    height: $chip-pill-avatar-size !important;
+    width: $chip-pill-avatar-size !important;
+  }
+
+  .g-avatar {
+    &__left {
+      margin-left: $chip-pill-avatar-margin-before;
+    }
+  }
+
+  &__right {
+    margin-right: $chip-pill-avatar-margin-before;
+  }
+}
+
+//Filter
+.g-chip__filter {
+  // TODO: Figure out why the absence
+  // of this breaks the transition
+  //max-width: 24px;
+
+  // Increase specificity to
+  // overwrite theme style
+  & .g-icon {
+    font-size: $chip-close-size;
+    max-height: $chip-close-size;
+    max-width: $chip-close-size;
+    user-select: none;
+    color: inherit;
+  }
+
+  &.expand-x-transition-leave-active,
+  &.expand-x-transition-enter {
+    margin: 0
+  }
+}
+
 .g-chip {
   @each $name, $size in $icon-sizes {
-    &.v-size__#{$name} {
+    &.g-size__#{$name} {
       border-radius: #{map-get($size, 'height') / 2}px;
       font-size: #{map-get($size, 'font-size')}px;
       height: #{map-get($size, 'height')}px;
     }
+
   }
 }
