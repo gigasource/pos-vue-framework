@@ -12,7 +12,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vue/babel-preset-jsx": "^1.1.0",
     "@vue/composition-api": "0.3.2",
     "core-js": "2.6.9",
     "lodash": "4.17.15",
@@ -24,6 +23,8 @@
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
+    "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
+    "@vue/babel-preset-jsx": "github:anhoev/babel-preset-jsx",
     "@vue/cli-plugin-babel": "3.11.0",
     "@vue/test-utils": "^1.0.0-beta.29",
     "autoprefixer": "^9.6.2",

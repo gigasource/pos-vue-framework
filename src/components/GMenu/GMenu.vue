@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { computed, onMounted, reactive, ref, watch } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
@@ -113,7 +113,9 @@
       }
 
       onMounted(() => {
-        if (props.lazy) return
+        if (props.lazy) {
+          return
+        }
         initContent();
       });
 
@@ -131,7 +133,9 @@
       })
 
       const calculatedMinWidth = computed(() => {
-        if (props.minWidth) return convertToUnit(props.minWidth) || '0'
+        if (props.minWidth) {
+          return convertToUnit(props.minWidth) || '0'
+        }
 
         const minWidth = Math.min(dimensions.content.width, state.pageWidth);
         const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
@@ -158,14 +162,90 @@
           })
         }
         const activator = event.target || event.currentTarget;
-        if (!activator) return
+        if (!activator) {
+          return
+        }
 
         isActive.value = !isActive.value;
         updateDimensions();
       }
 
-      const genDirectives = () => {
-        //callback to close menu when clicked outside
+      /*      const genDirectives = () => {
+							//callback to close menu when clicked outside
+							const closeConditional = (e) => {
+								const target = e.target;
+								return isActive.value && context.refs.content && !context.refs.content.contains(target)
+							}
+							const clickOutsideDirective = {
+								name: 'click-outside',
+								value: () => {
+									isActive.value = false
+								},
+								arg: {
+									closeConditional: closeConditional,
+									include: () => [context.refs.el]
+								},
+							}
+							//equates to v-show="value" in template
+							const vShowDirective = {
+								name: 'show',
+								value: props.value
+							}
+
+							const directives = [vShowDirective]
+							if (!props.openOnHover && props.closeOnClick) {
+								directives.push(clickOutsideDirective)
+							}
+							return directives;
+						}
+
+						const genContent = () => {
+							const defaultSlotContent = context.slots.default && context.slots.default() || 'fallback text';
+							const options = {
+								style: contentStyles.value,
+								staticClass: 'menu-content',
+								ref: 'content',
+								directives: genDirectives(),
+								on: {}
+							}
+							if (props.openOnHover && !props.disabled) {
+								options.on.mouseenter = mouseEnterHandler
+								options.on.mouseleave = mouseLeaveHandler
+							}
+							return h('div',
+								options,
+								[defaultSlotContent]
+							)
+						}
+
+						const genActivator = () => {
+							return h('div',
+								{ ref: 'activator' },
+								context.slots.activator({
+									toggleContent
+								}))
+						}*/
+
+      const mouseEnterHandler = (event) => {
+        runDelay('open', () => {
+          if (state.hasJustFocused || isActive.value) {
+            return
+          }
+          toggleContent(event);
+          state.hasJustFocused = true;
+        })
+      }
+      const mouseLeaveHandler = (event) => {
+        runDelay('close', () => {
+          if (context.refs.content && context.refs.content.contains(event.relatedTarget)) {
+            return
+          }
+          isActive.value = false
+          state.hasJustFocused = false
+        })
+      }
+
+      return () => {
         const closeConditional = (e) => {
           const target = e.target;
           return isActive.value && context.refs.content && !context.refs.content.contains(target)
@@ -180,78 +260,19 @@
             include: () => [context.refs.el]
           },
         }
-        //equates to v-show="value" in template
-        const vShowDirective = {
-          name: 'show',
-          value: props.value
-        }
 
-        const directives = [vShowDirective]
-        if (!props.openOnHover && props.closeOnClick) directives.push(clickOutsideDirective)
-        return directives;
-      }
-
-      const genContent = () => {
-        const defaultSlotContent = context.slots.default && context.slots.default() || 'fallback text';
-        const options = {
-          style: contentStyles.value,
-          staticClass: 'menu-content',
-          ref: 'content',
-          directives: genDirectives(),
-          on: {}
-        }
-        if (props.openOnHover && !props.disabled) {
-          options.on.mouseenter = mouseEnterHandler
-          options.on.mouseleave = mouseLeaveHandler
-        }
-        return h('div',
-          options,
-          [defaultSlotContent]
-        )
-      }
-
-      const genActivator = () => {
-        return h('div',
-          { ref: 'activator' },
-          context.slots.activator({
-            toggleContent
-          }))
-      }
-
-      const mouseEnterHandler = (event) => {
-        runDelay('open', () => {
-          if (state.hasJustFocused || isActive.value) return
-          toggleContent(event);
-          state.hasJustFocused = true;
-        })
-      }
-      const mouseLeaveHandler = (event) => {
-        runDelay('close', () => {
-          if (context.refs.content && context.refs.content.contains(event.relatedTarget)) return
-          isActive.value = false
-          state.hasJustFocused = false
-        })
-      }
-
-      return () => {
-        const options = {
-          staticClass: 'menu',
-          ref: 'el',
-          on: {}
-        }
-        if (props.openOnHover && !props.disabled) {
-          options.on.mouseenter = mouseEnterHandler
-          options.on.mouseleave = mouseLeaveHandler
-        }
-
-        const children = state.isFirstRender && props.lazy
-          ? () => ([genActivator()])
-          : () => ([genActivator(), genContent()])
-
-        return h(
-          'div',
-          options,
-          children()
+        return (
+          <div vOn:mouseenter={mouseEnterHandler} vOn:mouseleave={mouseLeaveHandler}
+               ref="el" class="menu">
+            <div>{context.slots.activator({ toggleContent })}</div>
+            <div style={contentStyles.value}
+                 class="menu-content"
+                 ref="content"
+                 vShow={props.value}
+                 {...{ clickOutsideDirective }}>
+              {context.slots.default()}
+            </div>
+          </div>
         )
       }
     }
