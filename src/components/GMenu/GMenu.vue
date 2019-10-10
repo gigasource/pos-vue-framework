@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { computed, onMounted, reactive, ref } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
@@ -170,42 +170,39 @@
         updateDimensions();
       }
 
-      const mouseEnterHandler = (event) => {
-        runDelay('open', () => {
-          if (state.hasJustFocused || isActive.value) {
-            return
+      let on = {
+        ...(props.openOnHover && !props.disabled) && {
+          mouseenter(event) {
+            runDelay('open', () => {
+              if (state.hasJustFocused || isActive.value) {
+                return
+              }
+              toggleContent(event);
+              state.hasJustFocused = true;
+            })
+          },
+          mouseleave(event) {
+            runDelay('close', () => {
+              if (context.refs.content && context.refs.content.contains(event.relatedTarget)) {
+                return
+              }
+              isActive.value = false
+              state.hasJustFocused = false
+            })
           }
-          toggleContent(event);
-          state.hasJustFocused = true;
-        })
-      }
-      const mouseLeaveHandler = (event) => {
-        runDelay('close', () => {
-          if (context.refs.content && context.refs.content.contains(event.relatedTarget)) {
-            return
-          }
-          isActive.value = false
-          state.hasJustFocused = false
-        })
+        }
       }
 
-      let on = {}
-      if (props.openOnHover && !props.disabled) {
-        on.mouseenter = mouseEnterHandler
-        on.mouseleave = mouseLeaveHandler
-      }
-
-      const closeConditional = (e) => {
-        const target = e.target;
-        return isActive.value && context.refs.content && !context.refs.content.contains(target)
-      }
       const clickOutsideDirective = {
         name: 'click-outside',
         value: () => {
           isActive.value = false
         },
         arg: {
-          closeConditional: closeConditional,
+          closeConditional: (e) => {
+            const target = e.target;
+            return isActive.value && context.refs.content && !context.refs.content.contains(target)
+          },
           include: () => [context.refs.el]
         },
       }
