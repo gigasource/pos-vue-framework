@@ -1,6 +1,6 @@
 <template>
 	<g-layout class="align-items-center justify-center">
-		<g-menu v-model="showMenu2" open-delay="500" close-delay="500">
+		<g-menu v-model="showMenu2" open-on-hover open-delay="500" close-delay="500">
 			<template v-slot:activator="{toggleContent}">
 				<g-button @click="toggleContent" width="100px" height="50px">Activator</g-button>
 			</template>
