@@ -1,0 +1,65 @@
+// @import '../../styles/styles.sass'
+
+//+theme(g-date-picker-header) using ($material) {
+//  .g-date-picker-header__value:not(.g-date-picker-header__value--disabled) {
+//    button:not(:hover):not(:focus) {
+//      color: map-deep-get($material, 'text', 'primary')
+//    }
+//  }
+//
+//  .v-date-picker-header__value--disabled {
+//    button {
+//      color: map-deep-get($material, 'text', 'disabled')
+//    }
+//  }
+//}
+
+@import "var";
+
+.g-date-picker-header {
+  padding: 4px 16px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  position: relative ;
+
+  .g-btn {
+    margin: 0;
+    z-index: auto;
+  }
+
+  .g-icon {
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+.g-date-picker-header__value {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  div {
+    transition: $primary-transition;
+    width: 100%;
+  }
+
+  button {
+    cursor: pointer;
+    font-weight: bold;
+    outline: none;
+    padding: 0.5rem;
+    transition: $primary-transition;
+    background-color: transparent;
+    border-style: none;
+    color: inherit;
+  }
+}
+
+.g-date-picker-header--disabled {
+  pointer-events: none;
+}
+
+
+

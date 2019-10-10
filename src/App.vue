@@ -13,7 +13,7 @@
 			<router-link to="/overlay-demo">Overlay</router-link>
       <router-link to="/tool-tip-demo">Tooltip demo</router-link>
 			<router-link to="/button">Button</router-link>
-      <router-link to="/date-picker">DatePicker</router-link>
+      <router-link to="/date-picker-demo">DatePicker</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

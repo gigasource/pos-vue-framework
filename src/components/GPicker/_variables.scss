@@ -1,0 +1,14 @@
+$picker-border-radius: $border-radius-root !default;
+$picker-title-padding: 16px !default;
+$picker-inactive-btn-opacity: .6 !default;
+$picker-active-btn-opacity: 1 !default;
+$picker-landscape-title-width: 170px !default;
+$transition: (
+    'fast-out-slow-in': cubic-bezier(0.4, 0, 0.2, 1),
+    'linear-out-slow-in': cubic-bezier(0, 0, 0.2, 1),
+    'fast-out-linear-in': cubic-bezier(0.4, 0, 1, 1),
+    'ease-in-out': cubic-bezier(0.4, 0, 0.6, 1),
+    'fast-in-fast-out': cubic-bezier(0.25, 0.8, 0.25, 1),
+    'swing': cubic-bezier(0.25, 0.8, 0.5, 1)
+) !default;
+$primary-transition: 0.3s map-get($transition, 'swing') !default;

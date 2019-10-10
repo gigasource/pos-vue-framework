@@ -1,0 +1,118 @@
+//@import '../../styles/styles.sass'
+//+theme(g-date-picker-table) using ($material)
+//  th,
+//  .g-date-picker-table--date__week
+//    color: map-deep-get($material, 'text', 'disabled')
+
+@import 'var';
+
+.g-date-picker-table {
+  position: relative;
+  padding: 0 12px;
+  height: 242px;
+
+  table {
+    transition: $primary-transition;
+    top: 0;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  td, th {
+    text-align: center;
+    position: relative;
+  }
+
+  th {
+    font-size: 12px;
+  }
+
+  button {
+    background-color: transparent;
+    border-style: none;
+    color: inherit;
+    box-shadow: none;
+  }
+
+  &--date .g-btn {
+    height: 32px;
+    width: 32px;
+  }
+
+  .g-btn {
+    z-index: auto;
+    margin: 0;
+    font-size: 12px;
+    background-color: transparent;
+    border-style: none;
+    color: inherit;
+
+    &.g-btn--active {
+      color: map-get($shades, 'white');
+      background-color: #005caf !important;
+      border-color: #005caf !important;
+    }
+
+    &--rounded {
+      border-radius: 28px;
+    }
+  }
+}
+
+.g-date-picker-table--month {
+  td {
+    width: 33.333333%;
+    height: 56px;
+    vertical-align: middle;
+    text-align: center;
+
+    .g-btn {
+      margin: 0 auto;
+      max-width: 160px;
+      min-width: 40px;
+      width: 100%;
+    }
+  }
+}
+
+.g-date-picker-table--date {
+  th {
+    padding: 8px 0;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.38);
+  }
+
+  td {
+    width: 45px;
+  }
+}
+
+.g-date-picker-table__events {
+  height: 8px;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  white-space: pre;
+  width: 100%;
+
+
+  > div {
+    border-radius: 50%;
+    display: inline-block;
+    height: 8px;
+    margin: 0 1px;
+    width: 8px;
+  }
+}
+
+.g-date-picker-table--date .g-date-picker-table__events {
+  bottom: 6px;
+}
+
+.g-date-picker-table--month .g-date-picker-table__events {
+  bottom: 8px;
+}
+
+.g-date-picker-table--disabled {
+  pointer-events: none;
+}

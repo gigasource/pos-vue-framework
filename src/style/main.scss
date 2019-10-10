@@ -21,4 +21,10 @@
 @import "../components/GOverlay/_GOverlay";
 @import "../components/GToolTip/_GToolTip";
 @import "../components/GBtn/GBtn";
-@import "../components/GDatePicker/_GDatePicker";
+@import "../components/GPicker/_GPicker";
+@import "../components/GDatePicker/styles/GDatePicker";
+@import "../components/GDatePicker/styles/GDatePickerHeader";
+@import "../components/GDatePicker/styles/GDatePickerTable";
+@import "../components/GDatePicker/styles/GDatePickerTitle";
+@import "../components/GDatePicker/styles/GDatePickerYears";
+

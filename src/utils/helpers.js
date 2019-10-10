@@ -55,3 +55,7 @@ export { passiveSupported }
 export function createRange (length) {
   return Array.from({ length }, (v, k) => k)
 }
+
+export function kebabCase (str) {
+  return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+}
