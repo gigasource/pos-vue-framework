@@ -49,12 +49,14 @@
 
     &.g-btn--active {
       color: map-get($shades, 'white');
-      background-color: #005caf !important;
-      border-color: #005caf !important;
     }
 
     &--rounded {
       border-radius: 28px;
+    }
+
+    &--outlined {
+      border: thin solid currentColor;
     }
   }
 }

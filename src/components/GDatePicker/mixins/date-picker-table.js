@@ -54,7 +54,7 @@ export default (props, context) => {
     const isSelected = value === props.value || (Array.isArray(props.value) && props.value.indexOf(value) !== -1)
     const isCurrent = value === props.current
     const setColor = isSelected ? setBackgroundColor : setTextColor
-    const color = (isSelected || isCurrent) && (props.color || 'accent')
+    const color = (isSelected || isCurrent) && (props.color || '')
 
     return h('button', setColor(color, {
       staticClass: 'g-btn',

@@ -62,7 +62,7 @@
         }, [
           h('div', {
             domProps: { innerHTML: props.date || '&nbsp;' },
-            key: props.value,
+            // key: props.value,
           }),
         ])
       }

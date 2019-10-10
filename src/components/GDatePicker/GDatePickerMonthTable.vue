@@ -28,6 +28,7 @@
         required: true,
       },
       value: [String, Array],
+      color: [String],
       // GDatePickerMonthTable's props
     },
     setup(props, context) {

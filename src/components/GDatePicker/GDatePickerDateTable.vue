@@ -30,6 +30,9 @@
       },
       value: [String, Array],
 
+      // Colorable
+      color: [String],
+
       // GDatePickerDateTable
       firstDayOfWeek: {
         type: [String, Number],

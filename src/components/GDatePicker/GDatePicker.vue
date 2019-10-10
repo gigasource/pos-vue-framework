@@ -10,6 +10,7 @@
   import _isDateAllowed from './util/isDateAllowed'
   import Picker from '../../mixins/picker'
   import { daysInMonth } from './util/daysInMonth';
+  import GPicker from '../GPicker/GPicker';
 
   // Adds leading zero to month/day if necessary, returns 'YYYY' if type = 'year',
   // 'YYYY-MM' if 'month' and 'YYYY-MM-DD' if 'date'
@@ -20,6 +21,7 @@
 
   export default {
     name: 'GDatePicker',
+    components: { GDatePickerTitle, GPicker },
     props: {
       allowedDates: null,
       // Function formatting the day in date picker table
@@ -54,16 +56,11 @@
         default: '$prev',
       },
       range: Boolean,
-      reactive: Boolean,
       readonly: Boolean,
       scrollable: Boolean,
       showCurrent: {
         type: [Boolean, String],
         default: true,
-      },
-      selectedItemsText: {
-        type: String,
-        default: '$vuetify.datePicker.itemsSelected',
       },
       showWeek: Boolean,
       // Function formatting currently selected date in the picker title
@@ -79,7 +76,7 @@
       yearFormat: Function,
       yearIcon: String,
 
-      // picker
+      // picker mixins
       fullWidth: Boolean,
       headerColor: String,
       landscape: Boolean,
@@ -88,8 +85,12 @@
         type: [Number, String],
         default: 290,
       },
+
       // colorable
-      color: String,
+      color: {
+        type: String,
+        default: '#1867c0'
+      }
     },
     setup(props, context) {
       // mixins
@@ -101,7 +102,7 @@
       let tableDateValue = (() => {
         if (props.pickerDate)
           return props.pickerDate
-        const date = (props.multiple || props.range ? (props.value)[(props.value).length - 1] : props.value) || `${now.getFullYear()}-${now.getMonth() + 1}`
+        const date = (props.multiple || props.range ? props.value[props.value.length - 1] : props.value) || `${now.getFullYear()}-${now.getMonth() + 1}`
         return sanitizeDateString(date, props.type === 'date' ? 'month' : 'year')
       })();
 
@@ -117,83 +118,60 @@
       })
 
       // computed
-      const isMultiple = computed(() => {
-        return props.multiple || props.range
-      })
-
-      const lastValue = computed(() => {
-        return isMultiple.value ? (props.value)[(props.value).length - 1] : (props.value)
-      })
-
+      const isMultiple = computed(() => props.multiple || props.range)
+      const lastValue = computed(() => isMultiple.value ? (props.value)[(props.value).length - 1] : (props.value))
       const selectedMonths = computed(() => {
         if (!props.value || !props.value.length || props.type === 'month') {
           return props.value
-        } else if (props.multiple) {
+        } else if (isMultiple.value) {
           return (props.value).map(val => val.substr(0, 7))
         } else {
           return (props.value).substr(0, 7)
         }
       })
-
       const current = computed(() => {
         if (props.showCurrent === true) {
           return sanitizeDateString(`${state.now.getFullYear()}-${state.now.getMonth() + 1}-${state.now.getDate()}`, props.type)
         }
         return props.showCurrent || null
       })
-
       const inputDate = computed(() => {
         return props.type === 'date'
             ? `${state.inputYear}-${pad(state.inputMonth + 1)}-${pad(state.inputDay)}`
             : `${state.inputYear}-${pad(state.inputMonth + 1)}`
       })
-
-      const tableMonth = computed(() => {
-        return Number((props.pickerDate || state.tableDate).split('-')[1]) - 1
-      })
-
-      const tableYear = computed(() => {
-        return Number((props.pickerDate || state.tableDate).split('-')[0])
-      })
-
-      const minMonth = computed(() => {
-        return props.min ? sanitizeDateString(props.min, 'month') : null
-      })
-
-      const maxMonth = computed(() => {
-        return props.max ? sanitizeDateString(props.max, 'month') : null
-      })
-
-      const minYear = computed(() => {
-        return props.min ? sanitizeDateString(props.min, 'year') : null
-      })
-
-      const maxYear = computed(() => {
-        return props.max ? sanitizeDateString(props.max, 'year') : null
-      })
-
+      const tableMonth = computed(() => Number((props.pickerDate || state.tableDate).split('-')[1]) - 1)
+      const tableYear = computed(() => Number((props.pickerDate || state.tableDate).split('-')[0]))
+      const minMonth = computed(() => props.min ? sanitizeDateString(props.min, 'month') : null)
+      const maxMonth = computed(() => props.max ? sanitizeDateString(props.max, 'month') : null)
+      const minYear = computed(() => props.min ? sanitizeDateString(props.min, 'year') : null)
+      const maxYear = computed(() => props.max ? sanitizeDateString(props.max, 'year') : null)
       const formatters = computed(() => {
         return {
           year: props.yearFormat || createNativeLocaleFormatter(undefined /*TODO: this.currentLocale*/, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
-          titleDate: props.titleDateFormat || (props.multiple ? defaultTitleMultipleDateFormatter.value : defaultTitleDateFormatter.value),
+          titleDate: props.titleDateFormat || (isMultiple.value ? defaultTitleMultipleDateFormatter.value : defaultTitleDateFormatter.value),
         }
       })
-
       const defaultTitleMultipleDateFormatter = computed(() => {
         return dates => {
-          if (!dates.length) {
-            return '-'
+          if (isMultiple.value) {
+            if (Array.isArray(dates)) {
+              if (props.multiple)
+                return dates.length + ' selected'
+              else
+                return generateRange().length + ' selected'
+            } else {
+              return '1 selected'
+            }
+          } else {
+            if (Array.isArray(dates)) {
+              return defaultTitleDateFormatter.value(dates[0])
+            } else {
+              return defaultTitleDateFormatter.value(dates)
+            }
           }
-
-          if (dates.length === 1) {
-            return defaultTitleDateFormatter.value(dates[0])
-          }
-
-          // multiple select
-          return dates.length + ' selected'
         }
       })
-
       const defaultTitleDateFormatter = computed(() => {
         const titleFormats = {
           year: { year: 'numeric', timeZone: 'UTC' },
@@ -217,9 +195,8 @@
       watch(() => state.tableDate, (val, prev) => {
         // Make a ISO 8601 strings from val and prev for comparision, otherwise it will incorrectly
         // compare for example '2000-9' and '2000-10'
-        prev = prev || '1970-01' // work-around
         const sanitizeType = props.type === 'month' ? 'year' : 'month'
-        state.isReversing = sanitizeDateString(val, sanitizeType) < sanitizeDateString(prev, sanitizeType)
+        state.isReversing = sanitizeDateString(val, sanitizeType) < sanitizeDateString(prev || new Date().toISOString(), sanitizeType)
         context.emit('update:picker-date', val)
       })
 
@@ -236,9 +213,9 @@
       watch(() => props.value, (newValue, oldValue) => {
         checkMultipleProp()
         setInputDate()
-        if (!props.multiple && props.value && !props.pickerDate) {
+        if (!isMultiple.value && props.value && !props.pickerDate) {
           state.tableDate = sanitizeDateString(inputDate.value, props.type === 'month' ? 'year' : 'month')
-        } else if (props.multiple && (props.value).length && !(oldValue).length && !props.pickerDate) {
+        } else if (isMultiple.value && (props.value).length && !(oldValue || []).length && !props.pickerDate) {
           state.tableDate = sanitizeDateString(inputDate.value, props.type === 'month' ? 'year' : 'month')
         }
       })
@@ -247,21 +224,20 @@
         state.activePicker = type.toUpperCase()
 
         if (props.value && props.value.length) {
-          const output = (props.multiple ? (props.value) : [props.value])
+          const output = (isMultiple.value ? (props.value) : [props.value])
           .map((val) => sanitizeDateString(val, type))
           .filter(isDateAllowed)
-          context.emit('input', props.multiple ? output : output[0])
+          context.emit('input', isMultiple.value ? output : output[0])
         }
       })
 
       //// LIFECYCLE HOOKS
-      // created(() => {
+      // created
       checkMultipleProp()
       if (props.pickerDate !== state.tableDate) {
         context.emit('update:picker-date', state.tableDate)
       }
       setInputDate()
-      // })
 
       //// Methods
       function emitInput (newInput) {
@@ -271,27 +247,19 @@
               : context.emit('input', [...props.value, newInput])
           return
         }
-
         let output = [];
-
         if (props.multiple) {
           if (typeof props.value === 'string') {
             output = [props.value]
           } else {
             output = props.value
           }
-
           let newInputIndex = output.indexOf(newInput)
-
           if (newInputIndex === -1) {
             output.push(newInput)
           } else {
             output.splice(newInputIndex, 1)
           }
-
-          // (props.value).indexOf(newInput) === -1
-          //     ? (props.value).concat([newInput])
-          //     : (props.value).filter(x => x !== newInput)
         } else {
           output = newInput
         }
@@ -303,9 +271,9 @@
       function checkMultipleProp () {
         if (props.value == null) return
         const valueType = props.value.constructor.name
-        const expected = props.multiple ? 'Array' : 'String'
+        const expected = isMultiple.value ? 'Array' : 'String'
         if (valueType !== expected) {
-          console.warn(`Value must be ${props.multiple ? 'an' : 'a'} ${expected}, got ${valueType}`)
+          console.warn(`Value must be ${isMultiple.value ? 'an' : 'a'} ${expected}, got ${valueType}`)
         }
       }
 
@@ -321,7 +289,7 @@
           state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`
         }
         state.activePicker = 'MONTH'
-        if (false /*TODO:this.reactive*/ && !props.readonly && !props.multiple && isDateAllowed(inputDate.value)) {
+        if (false /*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
           context.emit('input', inputDate.value)
         }
       }
@@ -336,7 +304,7 @@
 
           state.tableDate = value
           state.activePicker = 'DATE'
-          if (false/*TODO:this.reactive*/ && !props.readonly && !props.multiple && isDateAllowed(inputDate.value)) {
+          if (false/*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
             context.emit('input', inputDate.value)
           }
         } else {
@@ -360,7 +328,7 @@
             selectingYear: state.activePicker === 'YEAR',
             year: formatters.value.year(props.value ? `${state.inputYear}` : state.tableDate),
             yearIcon: props.yearIcon,
-            value: props.multiple ? (props.value)[0] : props.value,
+            value: isMultiple.value ? (props.value)[0] : props.value,
           },
           slot: 'title',
             on: {
@@ -392,7 +360,7 @@
         })
       }
 
-      function genDateTable () {
+      function generateRange() {
         let proxyValue = props.value
 
         if (props.range && props.value && props.value.length === 2) {
@@ -405,19 +373,22 @@
           }
         }
 
+        return proxyValue
+      }
+
+      function genDateTable () {
+        let proxyValue = generateRange()
+
         return h(GDatePickerDateTable, {
           props: {
             allowedDates: props.allowedDates,
             color: props.color,
             current: current.value,
-            // TODO dark: this.dark,
             disabled: props.disabled,
             events: props.events,
             eventColor: props.eventColor,
             firstDayOfWeek: props.firstDayOfWeek,
             format: props.dayFormat,
-            // light: this.light,
-            // locale: this.locale,
             min: props.min,
             max: props.max,
             readonly: props.readonly,
@@ -442,13 +413,10 @@
             allowedDates: props.type === 'month' ? props.allowedDates : null,
             color: props.color,
             current: current.value ? sanitizeDateString(current.value, 'month') : null,
-            // TODO: dark: props.dark,
             disabled: props.disabled,
             events: props.type === 'month' ? props.events : null,
             eventColor: props.type === 'month' ? props.eventColor : null,
             format: props.monthFormat,
-            // TODO: light: props.light,
-            // TODO: locale: props.locale,
             min: minMonth.value,
             max: maxMonth.value,
             readonly: props.readonly && props.type === 'month',

@@ -1,26 +1,32 @@
 @import './_variables.scss';
 
-// Theme
-//+ theme ( g-picker__title ) using ($material) {
-//  background: map-deep-get($material, 'picker', 'title')
-//}
-//
-//+ theme(g-picker__body) using($material) {
-//  background: map-deep-get($material, 'picker', 'body')
-//}
-
 .g-picker {
   border-radius: $picker-border-radius;
   contain: layout style;
-  display: inline-flex;
-  flex-direction: column;
   vertical-align: top;
   position: relative;
+  background-color: #FFFFFF;
+  max-width: 100%;
+  min-width: 15%;
+  outline: none;
+  text-decoration: none;
+  transition-property: box-shaow, opacity;
+  overflow-wrap: break-word;
+  white-space: normal;
+  margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+  width: fit-content;
+  height: fit-content;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  -webkit-transition: -webkit-box-shadow 0.25s;
+  -moz-transition: box-shadow 0.25s;
+  -o-transition: box-shadow 0.25s;
+  transition: -webkit-box-shadow 0.25s;
+  transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.g-picker--full-width {
-  display: flex;
-}
 
 .g-picker__title {
   color: map-get($shades, 'white');

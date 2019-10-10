@@ -66,7 +66,7 @@
 
       function genActions () {
         return h('div', {
-          staticClass: 'g-picker__actions g-card__actions',
+          staticClass: 'g-picker__actions',
           class: {
             'g-picker__actions--no-title': props.noTitle,
           },
@@ -75,7 +75,7 @@
 
       return () => {
         return h('div', {
-          staticClass: 'g-picker g-card',
+          staticClass: 'g-picker',
           class: {
             'g-picker--landscape': props.landscape,
             'g-picker--full-width': props.fullWidth,
