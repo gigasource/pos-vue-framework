@@ -13,7 +13,7 @@ export default function getGInputField(props, context) {
     'tf__shaped': props.shaped,
     'tf__flat': props.flat,
     'tf-wrapper-readonly': props.readOnly,
-    'tf__error': !isValidInput.value,
+    'tf-wrapper__error': !isValidInput.value,
   }))
 
   // text field internalValue
@@ -33,17 +33,21 @@ export default function getGInputField(props, context) {
   const isLabelActive = computed(() => isDirty.value || isFocused.value)
   const labelClasses = computed(() => isLabelActive.value ? {'tf-label__active': true}:{})
 
-  //Label positioning
+  //Label positioning according to prefix, prepend
   const prefixRef = ref(null)
+  const prependRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
+  const prependWidth = computed(() => prependRef.value ? prependRef.value.offsetWidth : 0)
   const labelStyles = computed(() =>{
     let style = {}
     if(isLabelActive.value){
-      Object.assign(style,{'transform': 'translateY(-18px) translateX('+ -prefixWidth.value + 'px)  scale(0.75)'} )
+      Object.assign(style,{'transform': 'translateY(-18px) translateX('+ -(prefixWidth.value+prependWidth.value) + 'px)  scale(0.75)'} )
   }
-    if (props.prefix  ){
-      Object.assign(style,{'left': prefixWidth.value+8 +'px'})
+    //Has prefix or prepend
+    if (props.prefix || prependRef.value ){
+      Object.assign(style,{'left': prefixWidth.value+prependWidth.value+8 +'px'})
     }
+    //Error occur
     if(!isValidInput.value){
       Object.assign(style,{'color': 'red'})
     }
@@ -51,7 +55,7 @@ export default function getGInputField(props, context) {
 
   })
 
-  //Label with Icon
+  //Label with Icon (indent label)
   const hasIcon = computed(() => props.prependIcon )
   const prependClasses = computed(() => hasIcon.value
       ?{
@@ -99,14 +103,13 @@ export default function getGInputField(props, context) {
   }, 500))
 
   //Error state display
-  const tfStyles = computed(() => isValidInput.value ?{} : {'color': 'red'})
+    //change input color
   const inputStyles = computed(() => isValidInput.value ?{} : {'color': 'red'} )
-  const tfClasses = computed(() => isValidInput.value ? {'tf': true} :{'tf__error': true})
-
+    //change input border color
+  const tfClasses = computed(() => isValidInput.value ? {} :{'tf__error': true})
 
   //event handler function
   const isFocused = ref(false);
-
   function onClick(event) {
     if (props.disabled) return;
     if (!isFocused.value) context.refs.input.focus();
@@ -140,13 +143,13 @@ export default function getGInputField(props, context) {
 
   return {
     tfClasses,
-    tfStyles,
     hintClasses,
     labelClasses,
     tfWrapperClasses,
     inputStyles,
     labelStyles,
     prefixRef,
+    prependRef,
     prependClasses,
     internalValue,
     counterValue,

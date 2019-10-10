@@ -1,10 +1,13 @@
 <template>
-  <div class="tf-wrapper" :class="tfWrapperClasses" :style="tfStyles" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-    <div class="tf-prepend__outer"></div>
+  <div class="tf-wrapper" :class="tfWrapperClasses"  @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
+    <div class="tf-prepend__outer">
+      <slot name="prepend-outer"></slot>
+    </div>
     <fieldset>
-      <div  :class="tfClasses" >
-        <div class="tf-prepend__inner">
-          <slot></slot>
+      <legend></legend>
+      <div  class='tf' :class="tfClasses" >
+        <div class="tf-prepend__inner" ref="prependRef">
+          <slot name="prepend-inner"></slot>
         </div>
         <div ref="prefixRef" class="tf-prefix">{{prefix}}</div>
         <input id="input" type="text"
@@ -22,18 +25,18 @@
         <label for="input" class="tf-label"  :style="labelStyles">
           <slot name="label">{{label}}</slot>
         </label>
-        <span class="tf-affix">{{suffix}}</span>
-        <div class="tf-append__inner">
-          <slot></slot>
+        <div class="tf-affix">{{suffix}}</div>
+        <div class="tf-append__inner" @click="onClearIconClick">
+          <slot name="append-inner"></slot>
         </div>
       </div>
     </fieldset>
     <div class="tf-append__outer" @click="onClearIconClick">
-      <slot></slot>
+      <slot name="append-outer"></slot>
       <img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg">
     </div>
     <div class="tf-error" v-if="!isValidInput">{{errorMessage}}</div>
-    <div class="tf-hint" v-else-if="!solo" :class="hintClasses">{{hint}}</div>
+    <div class="tf-hint" v-else :class="hintClasses">{{hint}}</div>
     <div v-show="counter" class="tf-counter">{{counterValue}} / {{maxlength}}</div>
   </div>
 </template>
@@ -49,6 +52,7 @@
     props: {
       ...{
         label: String,
+        placeholder: String,
         disabled: Boolean,
         readOnly: Boolean,
         appendIcon: String,
@@ -56,8 +60,8 @@
         prefix: String,
         suffix: String,
       },
+      //rules and validate
       required: Boolean,
-      placeholder: String,
       clearable: Boolean,
       rules: Function,
       hint: String,
@@ -94,8 +98,7 @@
     },
     setup(props, context) {
       const {listeners} = getGInput(props, context)
-      const {
-        counterValue,
+      const {counterValue,
         isDirty,
         isLabelActive,
         isFocused,
@@ -111,10 +114,10 @@
         hintClasses,
         labelStyles,
         labelClasses,
-         tfClasses,
+        tfClasses,
         prefixRef,
-          tfStyles,
-          inputStyles,
+        prependRef,
+        inputStyles,
       } = getGInputField(props, context)
 
       // template refs
@@ -146,11 +149,11 @@
 
       return {
         prefixRef,
+        prependRef,
         labelClasses,
         labelStyles,
         prependClasses,
         tfClasses,
-        tfStyles,
         tfWrapperClasses,
         hintClasses,
         internalValue,
@@ -160,11 +163,11 @@
         onChange,
         onFocus,
         onBlur,
-        isFocused,
         onKeyDown,
         onMouseUp,
         onMouseDown,
         onClearIconClick,
+        isFocused,
         isDirty,
         isValidInput,
         hasIcon,
