@@ -3,7 +3,7 @@
 		<div class="wrapper">
 			<p>Different sizes / default chips</p>
 			<hr/>
-			<g-chip x-small draggable close active filter>X Small</g-chip>
+			<g-chip x-small draggable close filter>X Small</g-chip>
 			<g-chip small draggable filter filter-icon="check_circle">Small</g-chip>
 			<g-chip draggable filter filter-icon="check_circle">Default</g-chip>
 			<g-chip large draggable close filter filter-icon="check_circle">Large</g-chip>
@@ -21,7 +21,7 @@
 		<div class="wrapper">
 			<p>Label chips: Border radius of g-cards</p>
 			<hr/>
-			<g-chip x-small label close active ripple color="light-blue">Label</g-chip>
+			<g-chip x-small label close ripple color="light-blue">Label</g-chip>
 			<g-chip small label close ripple>Label</g-chip>
 			<g-chip label close ripple>Label</g-chip>
 			<g-chip large label close ripple>Label</g-chip>
@@ -32,11 +32,11 @@
 		<div class="wrapper">
 			<p>Outlined chips:Border is outlined</p>
 			<hr/>
-			<g-chip x-small outlined label close active color="green">Outlined</g-chip>
-			<g-chip small outlined label close>Outlined</g-chip>
-			<g-chip label outlined close>Outlined</g-chip>
-			<g-chip large outlined label close>Outlined</g-chip>
-			<g-chip x-large outlined label close>Outlined</g-chip>
+			<g-chip x-small outlined label close color="green" filter>Outlined</g-chip>
+			<g-chip small outlined label close color="red" filter>Outlined</g-chip>
+			<g-chip label outlined close color="maroon" filter>Outlined</g-chip>
+			<g-chip large outlined label close color="brown" filter>Outlined</g-chip>
+			<g-chip x-large outlined label close color="blue" filter>Outlined</g-chip>
 		</div>
 
 		<div class="wrapper">
@@ -58,15 +58,21 @@
 			<!--				Close-->
 			<!--			</g-chip>-->
 			<g-chip>
-				<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
 				Avatar
 			</g-chip>
-			<g-chip large ripple>
-				<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+			<g-chip large ripple filter>
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
 				Avatar
 			</g-chip>
-			<g-chip x-large ripple>
-				<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+			<g-chip x-large ripple filter>
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
 				Avatar
 			</g-chip>
 		</div>
@@ -74,19 +80,56 @@
 			<p>Pill</p>
 			<hr/>
 			<g-chip pill>
-				<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
 				Pill
 			</g-chip>
 			<g-chip pill>
-				<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
 				Pill
 			</g-chip>
 			<g-chip large pill>
-				<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
 				Pill
 			</g-chip>
 			<g-chip x-large ripple pill>
-				<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
+				Pill
+			</g-chip>
+		</div>
+
+		<div class="wrapper">
+			<p>Pill</p>
+			<hr/>
+			<g-chip pill filter>
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
+				Pill
+			</g-chip>
+			<g-chip pill filter>
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
+				Pill
+			</g-chip>
+			<g-chip large pill filter>
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
+				Pill
+			</g-chip>
+			<g-chip x-large ripple pill filter>
+				<template v-slot:prependItem>
+					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
+				</template>
 				Pill
 			</g-chip>
 		</div>
@@ -95,9 +138,9 @@
 			<p>Icons</p>
 			<hr/>
 			<g-chip>
-				<span class="g-icon g-icon__left">
+				<template v-slot:prependItem>
 					<i class="material-icons g-icon">account_circle</i>
-				</span>
+				</template>
 				Ranee
 			</g-chip>
 			<g-chip>
@@ -113,15 +156,15 @@
 				</span>
 			</g-chip>
 			<g-chip>
-				<span class="g-icon g-icon__left">
-				<i class="material-icons g-icon">check_circle</i>
-				</span>
+				<template v-slot:prependItem>
+					<i class="material-icons g-icon">check_circle</i>
+				</template>
 				Confirmed
 			</g-chip>
 			<g-chip close close-icon="delete">
-				<span class="g-icon g-icon__left">
+				<template v-slot:prependItem>
 					<i class="material-icons g-icon">check_circle</i>
-				</span>
+				</template>
 				Confirmed
 			</g-chip>
 		</div>

@@ -1,10 +1,4 @@
 @import "./variables";
-//.g-chip:not(.g-chip__outlined) {
-//  color: ;
-//  border-color: ;
-//  background: ;
-//}
-
 
 .g-chip {
   color: rgba(map-get($shades, 'black'), 0.87);
@@ -27,12 +21,35 @@
   white-space: nowrap;
   font-weight: 400;
 
-
-  // Important is needed to account for new avatar structure
   .g-avatar {
     height: $chip-avatar-size !important;
     min-width: $chip-avatar-size !important;
     width: $chip-avatar-size !important;
+    position: relative;
+
+    .g-icon {
+      z-index: 5;
+      margin-left: 2px;
+      margin-top: 3px;
+    }
+
+    .g-overlay {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -4px;
+      right: 0;
+      transition: .3s ease;
+      background-color: rgba(0, 0, 0, 0.4);
+
+      .g-icon {
+        color: #ffffff;
+      }
+    }
   }
 
   //TODO: Icon not yet defined
@@ -44,19 +61,18 @@
   .g-avatar,
   .g-icon {
     font-size: $chip-close-size;
-    //max-height: $chip-close-size;
-    //max-width: $chip-close-size;
     user-select: none;
 
     &__left {
       margin-left: $chip-icon-margin-before;
-      margin-right: $chip-icon-margin-after;
+      margin-right: 3px;
     }
 
     &__right {
       margin-left: $chip-icon-margin-after;
       margin-right: $chip-icon-margin-before;
     }
+
   }
 
   .g-chip-content {
@@ -75,6 +91,10 @@
 
     &.g-icon__right {
       margin-right: $chip-icon-right-margin-after;
+    }
+
+    &.g-icon__left {
+      margin-right: $chip-icon-right-margin-before;
     }
 
     &:hover,
@@ -145,7 +165,6 @@
   }
 }
 
-
 //Clickable
 .g-chip__clickable {
   cursor: pointer;
@@ -167,6 +186,7 @@
   border-radius: $chip-label-border-radius !important;
 }
 
+//Pill
 .g-chip__pill {
   .g-chip__filter {
     margin-right: $chip-pill-filter-margin;
@@ -179,23 +199,41 @@
 
   .g-avatar {
     &__left {
+      position: relative;
       margin-left: $chip-pill-avatar-margin-before;
     }
+
+    .g-overlay {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      top: 0px;
+      bottom: 0;
+      left: -6px;
+      right: 0;
+      transition: .3s ease;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .g-icon {
+      z-index: 5;
+      margin-left: 7px;
+      margin-top: 7px;
+    }
+
   }
 
-  &__right {
-    margin-right: $chip-pill-avatar-margin-before;
-  }
+  //&__right {
+  //  margin-right: $chip-pill-avatar-margin-before;
+  //}
+
+
 }
 
 //Filter
 .g-chip__filter {
-  // TODO: Figure out why the absence
-  // of this breaks the transition
-  //max-width: 24px;
-
-  // Increase specificity to
-  // overwrite theme style
   & .g-icon {
     font-size: $chip-close-size;
     max-height: $chip-close-size;
@@ -217,6 +255,5 @@
       font-size: #{map-get($size, 'font-size')}px;
       height: #{map-get($size, 'height')}px;
     }
-
   }
 }

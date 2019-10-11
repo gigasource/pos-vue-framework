@@ -1,10 +1,19 @@
 <template>
 	<div :class="classes" :style="styles" :draggable="attrs.draggable" @click="onClick">
-		<span class="g-icon g-icon__left">
-			<slot name="prependItem">
-				<i class="material-icons g-icon"  v-if="filter && stateData.isActive">{{filterIcon}}</i>
-			</slot>
+		<span class="g-icon g-icon__left" v-if="renderState == 3">
+			<i class="material-icons g-icon" v-if="filter === true && stateData.isActive">{{filterIcon}}</i>
 		</span>
+
+		<div class="g-avatar g-avatar__left" v-if="renderState == 1">
+			<slot name="prependItem"></slot>
+			<div class="g-overlay" v-if="filter && stateData.isActive">
+				<i class="material-icons g-icon">{{filterIcon}}</i>
+			</div>
+		</div>
+
+		<div class="g-avatar g-avatar__left" v-if="renderState == 2">
+			<slot name="prependItem"></slot>
+		</div>
 
 		<slot></slot>
 
@@ -53,8 +62,28 @@
       xLarge: Boolean //done
     },
     setup(props, context) {
+      //Prepend Icon Rendering States
+      const RENDER_FILTER_ONLY = 1;
+      const RENDER_AVATAR_ONLY = 2;
+      const RENDER_AVATAR_FILTER = 3;
+
       let stateData = reactive({
         isActive: false
+      });
+
+      let prependSlot = () => {
+        return !!context.slots.prependItem;
+      };
+
+      let renderState = computed(() => {
+        console.log(prependSlot());
+        if (prependSlot() === true && props.filter === true) {
+          return RENDER_FILTER_ONLY;
+        } else if (prependSlot() === true && props.filter === false) {
+          return RENDER_AVATAR_ONLY;
+        } else if (prependSlot() === false && props.filter === true) {
+          return RENDER_AVATAR_FILTER;
+        }
       });
 
       let toggle = () => (stateData.isActive = !stateData.isActive);
@@ -120,8 +149,8 @@
           ...colorOutput.value.style,
           ...props.textColor && { color: props.textColor.replace('-', '') },
           ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
-          //...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
-          //...props.outlined && { color: `${props.color}`, border: `thin solid currentColor`, backgroundColor: 'transparent' },
+          ...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
+          ...props.outlined && { color: `${props.color}`, border: `thin solid currentColor`, backgroundColor: 'transparent' },
         };
 
         // Params: linear-gradient(45deg, yellow, green)
@@ -154,6 +183,7 @@
         styles,
         attrs,
         stateData,
+        renderState,
         onClick,
         onClose
       }

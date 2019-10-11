@@ -28,7 +28,7 @@ const routes = [
   { path: '/button', name: 'Button', component: ButtonDemo},
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
-  { path: '/chip', name: 'Chip', component: ChipDemo}
+  { path: '/chip', name: 'Chip', component: ChipDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
 ];
 
