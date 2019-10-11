@@ -17,6 +17,10 @@
 
   export default {
     name: 'GRadio',
+		model: {
+      props: 'inputValue',
+			event: 'change'
+		},
     props: {
       label: String,
       color: String,
@@ -24,7 +28,7 @@
       readonly: Boolean,
 			//native value
       value: null,
-			//input value for standing alone
+			//input value for not in group
       inputValue: null
     },
     setup(props, context) {
@@ -54,11 +58,15 @@
         set: (val) => {
           if (val === true) {//checked
             if (multiple) {
-              if (!model.value.some(v => v === props.value)) {//doean't exist in list
-                context.parent.$emit('input', [...model.value, props.value]);
+              if (!model.value.some(v => v === props.value)) {//doesn't exist in list
+                context.parent.$emit('change', [...model.value, props.value]);
               }
             } else {
-              context.parent.$emit('input', props.value);
+              if(model.value === props.inputValue) {//if the radio not in group
+                context.emit('change', props.value);
+							} else {
+                context.parent.$emit('change', props.value);
+              }
             }
           }
         }

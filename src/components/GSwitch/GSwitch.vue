@@ -20,7 +20,8 @@
   export default {
     name: 'GSwitch',
     model: {
-      prop: 'inputValue'
+      prop: 'inputValue',
+			event: 'change'
     },
     props: {
       label: String,
@@ -88,12 +89,12 @@
           } else if (!isActive.value && index > -1) {//off & found
             arrValue.splice(index, 1);
           }
-          context.emit('input', arrValue);
+          context.emit('change', arrValue);
         } else {
           if (isActive.value) {//on
-            context.emit('input', value.value);
+            context.emit('change', value.value);
           } else {//off
-            context.emit('input', null);
+            context.emit('change', null);
           }
         }
       }

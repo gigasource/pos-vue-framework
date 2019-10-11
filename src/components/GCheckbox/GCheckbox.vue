@@ -19,7 +19,8 @@
   export default {
     name: 'GCheckbox',
     model: {
-      prop: 'inputValue'
+      prop: 'inputValue',
+			event: 'change'
     },
     props: {
       label: String,
@@ -111,15 +112,15 @@
           } else if (!isActive.value && index > -1) { //not checked & found in array
             arrValue.splice(index, 1);
           }
-          context.emit('input', arrValue);
+          context.emit('change', arrValue);
         } else {
           if (isActive.value) { //checked
-            context.emit('input', value);
+            context.emit('change', value);
           } else {
             if (Array.isArray(value)) {
-              context.emit('input', []);
+              context.emit('change', []);
             } else {
-              context.emit('input', null);
+              context.emit('change', null);
             }
           }
         }

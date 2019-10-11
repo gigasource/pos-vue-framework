@@ -14,6 +14,9 @@
 
   export default {
     name: 'GRadioGroup',
+		model: {
+      event: 'change'
+		},
     props: {
       label: String,
       name: String,
@@ -33,7 +36,7 @@
 			));
       //change value to array if multiple
 			if(props.multiple)
-      	context.emit('input', model.value);
+      	context.emit('change', model.value);
       provide('model', model);
 
       const classes = computed(() => ({
