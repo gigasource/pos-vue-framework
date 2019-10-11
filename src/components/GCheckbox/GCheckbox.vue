@@ -28,38 +28,42 @@
       disabled: Boolean,
       readonly: Boolean,
       indeterminate: Boolean,
+      //custom v-model
       inputValue: null,
+      //native value
       value: null
     },
     setup(props, context) {
-      //internal value for v-model
-      const internalValue = computed(() => props.inputValue);
-      const isSelectedArray = Array.isArray(internalValue.value);
+      const isSelectedArray = Array.isArray(props.inputValue);
       //value return when checkbox checked
       const trueValue = props.value
-													? cloneDeep(props.value)
-													: (internalValue.value && !isSelectedArray ? internalValue.value : true);
-			//active (checked) state
+        ? cloneDeep(props.value)
+        : (props.inputValue && !isSelectedArray ? props.inputValue : true);
       let isActive = ref(false);
-      if (internalValue.value && isSelectedArray) {
-        isActive.value = internalValue.value.some(v => v === trueValue)
-      } else if (internalValue.value === true
-									|| internalValue.value === 'true'
-									|| (internalValue.value === trueValue)) {
+      //set active state if inputvalue is an array
+      if (props.inputValue && isSelectedArray) {
+        isActive.value = props.inputValue.some(v => v === trueValue);
+      }
+      //checked if inputvalue correct
+      if (props.inputValue === true
+        || props.inputValue === 'true'
+        || (props.inputValue === trueValue)) {
         isActive.value = true;
       }
-			//determinate state
+      //determinate state
       let isDeterminate = ref(true);
-      if(props.indeterminate) {
+      if (props.indeterminate) {
         isDeterminate.value = false;
-			}
-			//change determine & active state when internal value change
-      watch(internalValue, (newVal) => {
-        if(isSelectedArray && Array.isArray(props.value)) {
-          if(isEqual(sortBy(newVal), sortBy(props.value))) {
+      }
+      //change determine & active state when internal value change
+      watch(() => props.inputValue, (newVal) => {
+        //inputValue & value is both array
+        if (isSelectedArray && Array.isArray(props.value)) {
+          //compare 2 array (equal, inputValue is new array, other)
+          if (isEqual(sortBy(newVal), sortBy(props.value))) {
             isDeterminate.value = true;
             isActive.value = true;
-          } else if (isSelectedArray && newVal.length === 0){
+          } else if (isSelectedArray && newVal.length === 0) {
             isDeterminate.value = true;
             isActive.value = false;
           } else {
@@ -72,14 +76,14 @@
           isActive.value = true;
         }
       });
-			//define props color is a class or a css style
-      const {getColorType, convertColorClass} = colorHandler(props.color);
+      //define props color is a class or a css style
+      const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass();
 
       const checkboxClass = computed(() => ({
         'g-checkbox__readonly': props.readonly,
-      	'g-checkbox__disabled': props.disabled,
+        'g-checkbox__disabled': props.disabled,
         'g-checkbox__required': !isActive.value && props.required,
         'g-checkbox__indeterminate': !isDeterminate.value,
         [colorClass]: !!type && type === 'class',
@@ -98,23 +102,23 @@
         isActive.value = !isActive.value;
         isDeterminate.value = true;
         const value = cloneDeep(trueValue);
-        //check if the checkbox is in multiple input or not
+        //if the checkbox is not checkbox for all & in an multiple input
         if (isSelectedArray && !Array.isArray(value)) {
-          const arrValue = internalValue.value;
+          const arrValue = props.inputValue;
           const index = arrValue.findIndex(v => v === value);
-          if (isActive.value && index === -1) {
+          if (isActive.value && index === -1) { //checked & not found in array
             arrValue.push(value);
-          } else if (!isActive.value && index > -1) {
+          } else if (!isActive.value && index > -1) { //not checked & found in array
             arrValue.splice(index, 1);
           }
           context.emit('input', arrValue);
         } else {
-          if (isActive.value) {
+          if (isActive.value) { //checked
             context.emit('input', value);
           } else {
-            if(Array.isArray(value)) {
+            if (Array.isArray(value)) {
               context.emit('input', []);
-						} else {
+            } else {
               context.emit('input', null);
             }
           }
@@ -126,7 +130,7 @@
         checkboxStyle,
         isActive,
         activate,
-				trueValue
+        trueValue
       }
     },
   }

@@ -22,7 +22,9 @@
       color: String,
       disabled: Boolean,
       readonly: Boolean,
+			//native value
       value: null,
+			//input value for standing alone
       inputValue: null
     },
     setup(props, context) {
@@ -50,9 +52,9 @@
           }
         },
         set: (val) => {
-          if (val === true) {
+          if (val === true) {//checked
             if (multiple) {
-              if (!model.value.some(v => v === props.value)) {
+              if (!model.value.some(v => v === props.value)) {//doean't exist in list
                 context.parent.$emit('input', [...model.value, props.value]);
               }
             } else {

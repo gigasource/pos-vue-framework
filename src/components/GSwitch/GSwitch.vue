@@ -30,26 +30,26 @@
       readonly: Boolean,
       inset: Boolean,
       flat: Boolean,
+			//custom v-model
       inputValue: null,
+			//native value
       value: null
     },
     setup(props, context) {
-      //internal value for v-model
-      const internalValue = computed(() => props.inputValue);
-      const isSelectedArray = Array.isArray(internalValue.value);
+      const isSelectedArray = Array.isArray(props.inputValue);
       //value return when switch active
       const value = computed(() => (
         props.value
 					? props.value
-					: (internalValue.value && !isSelectedArray ? internalValue.value : true)
+					: (props.inputValue && !isSelectedArray ? props.inputValue : true)
 				));
-			//active state
       let isActive = ref(false);
-      if (internalValue.value && isSelectedArray) {
-        isActive.value = internalValue.value.some(v => v === value.value)
-      } else if (internalValue.value === true
-									|| internalValue.value === 'true'
-									|| (internalValue.value === value.value)) {
+      //set active state if inputValue is an array
+      if (props.inputValue && isSelectedArray) {
+        isActive.value = props.inputValue.some(v => v === value.value)
+      } else if (props.inputValue === true
+									|| props.inputValue === 'true'
+									|| (props.inputValue === value.value)) { //switch on if inputValue correct
         isActive.value = true;
       }
 			//define props color
@@ -81,18 +81,18 @@
         isActive.value = !isActive.value;
         //check whether the switch is in multiple input or not
         if (isSelectedArray) {
-          const arrValue = internalValue.value;
+          const arrValue = props.inputValue;
           const index = arrValue.findIndex(v => v === value.value);
-          if (isActive.value && index === -1) {
+          if (isActive.value && index === -1) {//on && not found
             arrValue.push(value.value);
-          } else if (!isActive.value && index > -1) {
+          } else if (!isActive.value && index > -1) {//off & found
             arrValue.splice(index, 1);
           }
           context.emit('input', arrValue);
         } else {
-          if (isActive.value) {
+          if (isActive.value) {//on
             context.emit('input', value.value);
-          } else {
+          } else {//off
             context.emit('input', null);
           }
         }
