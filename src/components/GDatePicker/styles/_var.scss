@@ -7,7 +7,6 @@ $transition: (
     'swing': cubic-bezier(0.25, 0.8, 0.5, 1)
 ) !default;
 $primary-transition: 0.3s map-get($transition, 'swing') !default;
-
 $shades: (
     'black': #000000,
     'white': #FFFFFF,

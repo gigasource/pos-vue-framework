@@ -82,6 +82,9 @@
       },
       value: [String, Array],
 
+      // GDatePicker
+      range: [Boolean],
+
       // Colorable
       color: [String],
 
@@ -214,6 +217,16 @@
           dayData.eventHandlers = genButtonEvents(date, dayData.isAllowed, 'date')
           dayData.content = formatter.value(date)
           dayData.events = genEvents(date)
+
+          // range
+          if (Array.isArray(props.value) && props.value.length > 1 && dayData.isSelected && props.range) {
+            if (props.value[0] === date)
+              dayData.class['g-btn--start-range'] = true
+            else if (props.value[props.value.length-1] === date)
+              dayData.class['g-btn--end-range'] = true
+            else
+              dayData.class['g-btn--in-range'] = true
+          }
 
           // set color
           let setColor = dayData.isSelected ? setBackgroundColor : setTextColor

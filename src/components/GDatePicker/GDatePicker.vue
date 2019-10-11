@@ -63,6 +63,7 @@
             :tableDate="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
             :value="generateRange()"
             :weekdayFormat="weekdayFormat"
+            :range="range"
             ref="table"
             v-on="dateTableEventHandlers"
         />
@@ -410,7 +411,6 @@
 
       function generateRange() {
         let proxyValue = props.value
-
         if (props.range && props.value && props.value.length === 2) {
           proxyValue = []
           const [rangeFrom, rangeTo] = [props.value[0], props.value[1]].map(x => new Date(`${x}T00:00:00+00:00`)).sort((a, b) => a > b ? 1 : -1)
@@ -420,7 +420,6 @@
             proxyValue.push(current.toISOString().substring(0, 10))
           }
         }
-
         return proxyValue
       }
 

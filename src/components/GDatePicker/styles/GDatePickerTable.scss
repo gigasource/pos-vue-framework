@@ -6,6 +6,8 @@
 
 @import 'var';
 
+$highlightedItem: rgb(231, 215, 253);
+
 .g-date-picker-table {
   position: relative;
   padding: 0 12px;
@@ -44,8 +46,8 @@
   }
 
   .g-btn {
-    z-index: auto;
     margin: 0;
+    z-index: auto;
     font-size: 12px;
     background-color: transparent;
     border-style: none;
@@ -62,6 +64,41 @@
     &--outlined {
       border: thin solid currentColor;
     }
+
+    &--start-range {
+      position: relative;
+
+      &::after {
+        position: absolute;
+        content: '';
+        width: 50%;
+        height: 100%;
+        right: -3px;
+        background-color: $highlightedItem;
+        z-index: -1;
+      }
+    }
+
+    &--end-range {
+      position: relative;
+
+      &::after {
+        position: absolute;
+        content: '';
+        width: 50%;
+        height: 100%;
+        left: -3px;
+        background-color: $highlightedItem;
+        z-index: -1;
+      }
+    }
+
+    &--in-range {
+      color: black !important;
+      background-color: $highlightedItem !important;
+      border-radius: 0 !important;
+      width: auto;
+    }
   }
 }
 
@@ -75,7 +112,7 @@
   td {
     width: 32px;
     height: 32px;
-    padding: 2px;
+    padding: 2px 0;
   }
 }
 

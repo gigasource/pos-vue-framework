@@ -1,6 +1,5 @@
 <template>
   <div :class="datePickerHeaderClasses">
-    <g-button :disabled="prevBtnDisabled" icon v-on:click.native.stop="prevClick">&lt;</g-button>
     <div :class="datePickerHeaderValueClasses">
       <transition :name="headerTransitionName">
         <div :key="value" :class="headerData.class" :style="headerData.style">
@@ -15,7 +14,8 @@
         </div>
       </transition>
     </div>
-    <g-button :disabled="nextBtnDisabled" icon v-on:click.native.stop="nextClick">&gt;</g-button>
+    <button :disabled="prevBtnDisabled" class="g-date-picker-header__prev-button" v-on:click="prevClick">&lt;</button>
+    <button :disabled="nextBtnDisabled" class="g-date-picker-header__next-button" v-on:click="nextClick">&gt;</button>
   </div>
 </template>
 

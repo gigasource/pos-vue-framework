@@ -17,7 +17,7 @@
 @import "var";
 
 .g-date-picker-header {
-  padding: 4px 16px;
+  padding: 4px 8px;
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -32,34 +32,49 @@
     cursor: pointer;
     user-select: none;
   }
-}
 
-.g-date-picker-header__value {
-  flex: 1;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-
-  div {
-    transition: $primary-transition;
-    width: 100%;
+  &--disabled {
+    pointer-events: none;
   }
 
-  button {
-    cursor: pointer;
-    font-weight: bold;
-    outline: none;
-    padding: 0.5rem;
-    transition: $primary-transition;
+  &__value {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+
+    div {
+      transition: $primary-transition;
+      width: 100%;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      outline: none;
+      padding: 0.5rem;
+      transition: $primary-transition;
+      background-color: transparent;
+      border-style: none;
+      color: inherit;
+    }
+  }
+
+  %nav_button {
+    height: 24px;
+    width: 24px;
+    border: none;
     background-color: transparent;
-    border-style: none;
-    color: inherit;
+  }
+
+  &__prev-button {
+    @extend %nav_button;
+    margin-right: 24px;
+  }
+
+  &__next-button {
+    @extend %nav_button;
+
   }
 }
-
-.g-date-picker-header--disabled {
-  pointer-events: none;
-}
-
 
 
