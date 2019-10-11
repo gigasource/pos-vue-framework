@@ -18,6 +18,10 @@
     width: 100%;
   }
 
+  tr {
+    height: 32px;
+  }
+
   td, th {
     text-align: center;
     position: relative;
@@ -61,6 +65,20 @@
   }
 }
 
+.g-date-picker-table--date {
+  th {
+    padding: 8px 0;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.38);
+  }
+
+  td {
+    width: 32px;
+    height: 32px;
+    padding: 2px;
+  }
+}
+
 .g-date-picker-table--month {
   td {
     width: 33.333333%;
@@ -77,17 +95,7 @@
   }
 }
 
-.g-date-picker-table--date {
-  th {
-    padding: 8px 0;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.38);
-  }
 
-  td {
-    width: 45px;
-  }
-}
 
 .g-date-picker-table__events {
   height: 8px;

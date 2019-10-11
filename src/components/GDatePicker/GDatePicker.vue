@@ -1,3 +1,4 @@
+<!--suppress JSUnresolvedFunction -->
 <template>
   <g-picker class="g-picker--date"
             :color="headerColor || color"
@@ -18,8 +19,7 @@
           :yearIcon="yearIcon"
           :value="isMultiple ? value[0] : value"
           v-on="titleEventHandler"
-      >
-      </g-date-picker-title>
+      />
     </template>
 
     <div :key="state.activePicker">
@@ -31,8 +31,7 @@
           :max="max"
           :value="tableYear"
           v-on="{ input: yearClick }"
-      >
-      </g-date-picker-years>
+      />
       <template v-else>
         <g-date-picker-header
             :next-icon="nextIcon"
@@ -45,7 +44,7 @@
             :readonly="readonly"
             :value="state.activePicker === 'DATE' ? `${pad(tableYear, 4)}-${pad(tableMonth + 1)}` : `${pad(tableYear, 4)}`"
             v-on="tableHeaderEventHandler"
-        ></g-date-picker-header>
+        />
         <g-date-picker-date-table
             v-if="state.activePicker === 'DATE'"
             :allowed-dates="allowedDates"
@@ -66,7 +65,7 @@
             :weekdayFormat="weekdayFormat"
             ref="table"
             v-on="dateTableEventHandlers"
-        ></g-date-picker-date-table>
+        />
         <g-date-picker-month-table
             v-else
             :allowedDates="type === 'month' ? allowedDates : null"
@@ -84,7 +83,7 @@
             :tableDate="`${pad(tableYear, 4)}`"
             ref="table"
             v-on="onMonthTableEventHandler"
-        ></g-date-picker-month-table>
+        />
       </template>
     </div>
 
@@ -163,7 +162,7 @@
       type: {
         type: String,
         default: 'date',
-        validator: (type/*: any*/) => ['date', 'month'].includes(type), // TODO: year
+        validator: (type) => ['date', 'month'].includes(type),
       },
       value: [Array, String],
       weekdayFormat: Function,
@@ -184,7 +183,7 @@
       // colorable
       color: {
         type: String,
-        default: '#1867c0'
+        default: 'rgb(77, 0, 234)'
       }
     },
     setup(props, context) {
