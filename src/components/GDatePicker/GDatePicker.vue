@@ -26,16 +26,14 @@
       />
       <template v-else>
         <g-date-picker-header
-            :next-icon="nextIcon"
-            :color="color"
-            :disabled="disabled"
-            :format="headerDateFormat"
-            :min="state.activePicker === 'DATE' ? minMonth : minYear"
-            :max="state.activePicker === 'DATE' ? maxMonth : maxYear"
-            :prev-icon="prevIcon"
-            :readonly="readonly"
-            :value="state.activePicker === 'DATE' ? `${pad(tableYear, 4)}-${pad(tableMonth + 1)}` : `${pad(tableYear, 4)}`"
-            v-on="tableHeaderEventHandler"
+            :disabled="headerModel.disabled"
+            :readonly="headerModel.readonly"
+            :color="headerModel.color"
+            :format="headerModel.headerDateFormat"
+            :min="headerModel.min"
+            :max="headerModel.max"
+            :value="headerModel.value"
+            v-on="headerModel.eventHandlers"
         />
         <g-date-picker-date-table
             v-if="state.activePicker === 'DATE'"
@@ -430,11 +428,6 @@
         }
       }
 
-      const tableHeaderEventHandler = {
-        toggle: () => state.activePicker = (state.activePicker === 'DATE' ? 'MONTH' : 'YEAR'),
-        input: (value) => state.tableDate = value,
-      }
-
       const dateTableEventHandlers = {
         input: dateClick,
         'update:table-date': (value) => state.tableDate = value,
@@ -475,11 +468,28 @@
         }
       })
 
+      const headerModel = computed(() => {
+        return {
+          color: props.color,
+          disabled: props.disabled,
+          readonly: props.readonly,
+          format: props.headerDateFormat,
+          min: state.activePicker === 'DATE' ? props.minMonth : props.minYear,
+          max: state.activePicker === 'DATE' ? props.maxMonth : props.maxYear,
+          value: state.activePicker === 'DATE' ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`,
+          eventHandlers: {
+            toggle: () => state.activePicker = (state.activePicker === 'DATE' ? 'MONTH' : 'YEAR'),
+            input: (value) => state.tableDate = value,
+          }
+        }
+      })
+
       return {
         titleModel,
         yearModel,
+        headerModel,
 
-        tableHeaderEventHandler,
+
         dateTableEventHandlers,
 
         // year picker
