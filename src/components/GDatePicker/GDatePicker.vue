@@ -7,23 +7,22 @@
             :no-title="noTitle">
     <template #title>
       <g-date-picker-title
-          :date="value ? formatters.titleDate(value) : ''"
-          :disabled="disabled"
-          :readonly="readonly"
-          :selectingYear="state.activePicker === 'YEAR'"
-          :year="formatters.year(value ? `${state.inputYear}` : state.tableDate)"
-          v-on="titleEventHandler"
+          :date="titleModel.date"
+          :disabled="titleModel.disabled"
+          :readonly="titleModel.readonly"
+          :selectingYear="titleModel.selectedMonths"
+          :year="titleModel.year"
+          v-on="titleModel.eventHandlers"
       />
     </template>
 
     <div :key="state.activePicker">
-      <g-date-picker-years v-if="state.activePicker === 'YEAR'"
+      <g-date-picker-years v-if="showYearPicker"
           :color="color"
-          :format="yearFormat"
           :min="min"
           :max="max"
           :value="tableYear"
-          v-on="{ input: yearClick }"
+          v-on="yearPickerEventHandler"
       />
       <template v-else>
         <g-date-picker-header
@@ -96,7 +95,8 @@
   import GPicker from '../GPicker/GPicker'
 
   // customs event name
-  import { EVENT_NAMES as TITLE_EVENT_NAMES } from './GDatePickerTitle';
+  import { EVENT_NAMES as TITLE_EVENT_NAMES } from './GDatePickerTitle'
+  import { EVENT_NAMES as YEAR_PICKER_EVENTS } from './GDatePickerYears'
 
   import { computed, reactive, watch } from '@vue/composition-api'
   import { pad, createNativeLocaleFormatter, isDateAllowed as _isDateAllowed, daysInMonth } from './utils'
@@ -162,8 +162,6 @@
       },
       value: [Array, String],
       weekdayFormat: Function,
-      // Function formatting the year in table header and pickup title
-      yearFormat: Function,
 
       // picker mixins
       fullWidth: Boolean,
@@ -436,9 +434,6 @@
         toggle: () => state.activePicker = (state.activePicker === 'DATE' ? 'MONTH' : 'YEAR'),
         input: (value) => state.tableDate = value,
       }
-      const titleEventHandler = {
-        [TITLE_EVENT_NAMES.UPDATE_SELECTING_YEAR] : (value) => state.activePicker = value ? 'YEAR' : props.type.toUpperCase(),
-      }
 
       const dateTableEventHandlers = {
         input: dateClick,
@@ -453,13 +448,40 @@
         'dblclick:month': (value) => context.emit('dblclick:month', value),
       }
 
+
+      const titleModel = computed(() => {
+        return {
+          date: props.value ? formatters.value.titleDate(props.value) : '',
+          disabled: props.disabled,
+          readonly: props.readonly,
+          selectingYear: state.activePicker === 'YEAR',
+          year: formatters.value.year(props.value ? `${state.inputYear}` : state.tableDate),
+          eventHandlers: {
+            [TITLE_EVENT_NAMES.UPDATE_SELECTING_YEAR] : (value) => state.activePicker = value ? 'YEAR' : props.type.toUpperCase(),
+          }
+        }
+      })
+
+      const showYearPicker = computed(() => state.activePicker === 'YEAR')
+      const yearPickerEventHandler = computed(() => {
+        return {
+          [YEAR_PICKER_EVENTS.INPUT]: yearClick
+        }
+      })
+
       return {
+        titleModel,
+
         tableHeaderEventHandler,
-        titleEventHandler,
         dateTableEventHandlers,
+
+        // year picker
+        showYearPicker,
         onMonthTableEventHandler,
+
+        //
         generateRange,
-        yearClick,
+        yearPickerEventHandler,
         tableYear,
         minMonth,
         maxMonth,

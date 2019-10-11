@@ -2,81 +2,68 @@
   <ul class="g-date-picker-years" ref="years">
     <li v-for="year in yearsData"
         :key="year"
-        :class="{ active: parseInt(value, 10) === year }"
-        @click="onClick(year)">
+        :class="{ active: parseInt(value) === year }"
+        @click="onYearClicked(year)">
       {{ year }}
     </li>
   </ul>
 </template>
 
 <script>
-  import { createNativeLocaleFormatter } from './utils';
   import { computed, onMounted } from '@vue/composition-api';
+
+  const ACTIVE_YEAR_CLASS_NAME = 'active'
+
+  export const EVENT_NAMES = { INPUT: 'input' }
+
+  /**
+   * generate year data from
+   * @param value
+   * @param min
+   * @param max
+   * @returns {Array}
+   */
+  export function generateYearData(value, min, max) {
+    const YEAR_OFFSET = 100
+    const maxYear = max ? parseInt(max) : (value + YEAR_OFFSET)
+    const minYear = Math.min(maxYear, min ? parseInt(min) : (value - YEAR_OFFSET))
+
+    const years = []
+    for (let year = maxYear; year >= minYear; year--) {
+      years.push(year)
+    }
+    return years
+  }
 
   export default {
     name: 'GDatePickerYears',
     props: {
-      format: null,
-      min: [Number, String],
-      max: [Number, String],
-      readonly: Boolean,
-      value: [Number, String],
+      min: [Number, String],    // lowest year
+      max: [Number, String],    // biggest year
+      value: [Number, String],  // selected year
+      readonly: Boolean,        // boolean value indicate whether the components is readonly or not
     },
     setup(props, context) {
-      const formatter = computed(() => {
-        if (context.refs.years) props.format || createNativeLocaleFormatter(undefined/*this.currentLocale*/, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
-      })
-
       onMounted(() => {
-        context.root.$nextTick(() => {
-          const activeItem = context.refs.years.getElementsByClassName('active')[0]
-          if (activeItem) {
-            context.refs.years.scrollTop = activeItem.offsetTop - context.refs.years.offsetHeight / 2 + activeItem.offsetHeight / 2
-          } else if (props.min && !props.max) {
-            context.refs.years.scrollTop = context.refs.years.scrollHeight
-          } else if (!props.min && props.max) {
-            context.refs.years.scrollTop = 0
-          } else {
-            context.refs.years.scrollTop = context.refs.years.scrollHeight / 2 - context.refs.years.offsetHeight / 2
-          }
-        })
-      })
-
-      let yearsData = computed(() => {
-        const data = []
-        const selectedYear = props.value ? parseInt(props.value, 10) : new Date().getFullYear()
-        const maxYear = props.max ? parseInt(props.max, 10) : (selectedYear + 100)
-        const minYear = Math.min(maxYear, props.min ? parseInt(props.min, 10) : (selectedYear - 100))
-
-        for (let year = maxYear; year >= minYear; year--) {
-          data.push(year)
+        // show active item in the middle (vertical)
+        const activeItem = context.refs.years.getElementsByClassName(ACTIVE_YEAR_CLASS_NAME)[0]
+        if (activeItem) {
+          context.refs.years.scrollTop = activeItem.offsetTop - context.refs.years.offsetHeight / 2 + activeItem.offsetHeight / 2
+        } else if (props.min && !props.max) {
+          context.refs.years.scrollTop = context.refs.years.scrollHeight
+        } else if (!props.min && props.max) {
+          context.refs.years.scrollTop = 0
+        } else {
+          context.refs.years.scrollTop = context.refs.years.scrollHeight / 2 - context.refs.years.offsetHeight / 2
         }
-        return data
       })
 
-      // methods
-      // function genYearItem(year/*: number*/) {
-      //   const formatted = formatter.value(`${year}`)
-      //   const active = parseInt(props.value, 10) === year
-      //   const color = active && (props.color || 'primary')
-      //
-      //   return h('li', setTextColor(color, {
-      //     key: year,
-      //     class: { active },
-      //     on: {
-      //       click: () => context.emit('input', year),
-      //     },
-      //   }), formatted)
-      // }
-
-      function onClick(year) {
-        context.emit('input', year)
-      }
+      const yearsData = computed(() => generateYearData(props.value ? parseInt(props.value) : new Date().getFullYear(), props.min, props.max))
+      const onYearClicked = (year) => context.emit(EVENT_NAMES.INPUT, year)
 
       return {
         yearsData,
-        formatter,
-        onClick
+        onYearClicked
       }
     }
   }
