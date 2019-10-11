@@ -1,6 +1,6 @@
 <template>
   <div class="tf-wrapper" :class="tfWrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-    <div class="tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
+    <div class="tf-prepend__outer" @click="onClickPrependOuter">
       <slot name="prepend-outer"></slot>
     </div>
     <fieldset>
@@ -27,7 +27,7 @@
             <slot name="label">{{label}}</slot>
           </label>
         </div>
-
+        <div class="tf-affix">{{suffix}}</div>
         <div class="tf-append__inner" @click="onClickAppendInner">
           <slot name="append-inner"></slot>
         </div>
@@ -53,12 +53,9 @@
   export default {
     name: "GTextFieldFunctional",
     props: {
-      ...{
+      ...{//display props
         label: String,
         placeholder: String,
-        clearable: Boolean,
-        disabled: Boolean,
-        readOnly: Boolean,
         appendIcon: String,
         prependIcon: String,
         prefix: {
@@ -69,16 +66,14 @@
           type: String,
           default: ''
         },
+        //input states
+        clearable: Boolean,
+        disabled: Boolean,
+        readOnly: Boolean,
       },
-      //rules and validate
-
+      //rules and validation props
       rules: Array,
       hint: String,
-
-      messages: {
-        type: [String, Array],
-        default: () => [],
-      },
       errorCount: {
         type: Number,
         default: 1
@@ -87,16 +82,6 @@
       counter: [Number, Boolean, String],
       validateOnBlur: Boolean,
       error: Boolean,
-
-      // display
-      large: Boolean,
-      textColor: {
-        type: String,
-        default: '#00acc1'
-      },
-      bordered: Boolean,
-      centered: Boolean,
-      active: Boolean,
 
       //styles
       filled: Boolean,
@@ -117,26 +102,32 @@
     setup(props, context) {
       const {listeners} = getGInput(props, context)
       const {
-        counterValue,
-        isDirty,
-        isLabelActive,
-        isFocused,
-        onClick,
-        onFocus,
-        onBlur,
-        slotEventListener,
-        internalValue,
-        isValidInput,
-        onClearIconClick,
+        //calculated styles
         tfWrapperClasses,
         hintClasses,
         labelStyles,
         labelClasses,
         tfClasses,
         inputStyles,
+        //value
+        internalValue,
+        //character counter
+        counterValue,
+        //calculated states
+        isValidInput,
+        isDirty,
+        isLabelActive,
+        isFocused,
+        //calculated error
         errorMessages,
-          prependRef,
-          prefixRef,
+        //event listeners
+        onClick,
+        onFocus,
+        onBlur,
+        slotEventListener,
+        onClearIconClick,
+        //ref
+        prefixRef,
       } = getGInputField(props, context)
 
       // template refs
@@ -168,14 +159,25 @@
       }
 
       return {
+        //calculated styles and classes
         labelClasses,
         labelStyles,
         tfClasses,
         tfWrapperClasses,
+        inputStyles,
         hintClasses,
+        //value
         internalValue,
+        //character counter
         counterValue,
+        //calculated state
         isLabelActive,
+        isFocused,
+        isDirty,
+        isValidInput,
+        //calculated error
+        errorMessages,
+        //event listeners
         onClick,
         onChange,
         onFocus,
@@ -188,12 +190,7 @@
         onClickAppendOuter,
         onClickAppendInner,
         onClearIconClick,
-        isFocused,
-        isDirty,
-        isValidInput,
-        inputStyles,
-        errorMessages,
-        prependRef,
+        //ref
         prefixRef,
       }
     }

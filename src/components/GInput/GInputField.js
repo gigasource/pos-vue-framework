@@ -1,6 +1,4 @@
 import {computed, ref, watch} from "@vue/composition-api";
-import _ from "lodash";
-
 
 export default function getGInputField(props, context) {
 
@@ -18,8 +16,6 @@ export default function getGInputField(props, context) {
 
   // text field internalValue
   const lazyValue = ref('');
-
-
   const internalValue = computed({
     get: () => {
       return lazyValue.value
@@ -37,13 +33,12 @@ export default function getGInputField(props, context) {
 
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
-  const prependRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
-  const prependWidth = computed(() => prependRef.value ? prependRef.value.offsetWidth : 0)
   const labelStyles = computed(() =>{
     let style = {}
     if(isLabelActive.value){
-      Object.assign(style,{'transform': `translateY(-18px) translateX(${-prefixWidth.value - prependWidth.value}px)  scale(0.75)`} )
+      console.log(`prefixWidth: ${prefixWidth.value}`)
+      Object.assign(style,{'transform': `translateY(-18px) translateX(${-prefixWidth.value+4}px)  scale(0.75)`} )
     }
     //Error occur
     if(!isValidInput.value){
@@ -65,7 +60,6 @@ export default function getGInputField(props, context) {
 
   //Validation
   const isValidInput = ref(true)
-  const hasInput = ref(false)
   function validate(value){
     const errorBucket = []
     if (props.rules && isFocused.value) {
@@ -156,6 +150,7 @@ export default function getGInputField(props, context) {
 
 
   return {
+    //calculated styles
     tfClasses,
     hintClasses,
     labelClasses,
@@ -164,18 +159,21 @@ export default function getGInputField(props, context) {
     labelStyles,
     internalValue,
     counterValue,
-    onClearIconClick,
+    //calculated state
     isDirty,
     isLabelActive,
     isValidInput,
     isFocused,
+    // calculated error message
+    errorMessages,
+    //event listener
     onClick,
     onFocus,
     onBlur,
+    onClearIconClick,
     slotEventListener,
-    // calculated error message
-    errorMessages,
-    prependRef,
+
+    //ref
     prefixRef,
   }
 
