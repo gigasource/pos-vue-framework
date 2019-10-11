@@ -31,3 +31,15 @@ animation: 2 types defined class
     Eg: <transition name="bounceIn"></transition>
   
   This file provide @keyframe animation for other custom purpose
+
+To use animation component: wrap the animation component outside 
+  Eg: <g-bounce-up-animation>
+        <g-button></g-button>
+      </g-bounce-up-animation>
+  
+  The component define 5 props to modify: 
+    - group: define <transition-group> tag
+    - hideOnLeave: hide the transition on leave (default false)
+    - leaveAbsolute: absolute positioning on leave stage (default false)
+    - mode: mode of transition (in-out/out-in)
+    - origin: transition origin
