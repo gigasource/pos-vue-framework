@@ -13,6 +13,7 @@ import OverlayDemo from "../view/OverlayDemo";
 import SelectIonControl from '../view/SelectIonControl';
 import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
+import TransitionDemo from '../view/TransitionDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -23,11 +24,12 @@ const routes = [
   { path: '/slider', name: 'Slider', component: SliderDemo},
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
   { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
-  { path: '/card-demo', name: 'Card demo', component: CardDemo},
   { path: '/selection-control', name: 'SelectIon Control', component: SelectIonControl},
   { path: '/card', name: 'Card', component: CardDemo},
   { path: '/button', name: 'Button', component: ButtonDemo},
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
+  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
+  { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
 ];
 
