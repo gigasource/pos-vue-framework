@@ -1,7 +1,7 @@
 <template>
 	<div class="outerdiv">
 		<g-dialog v-model="dialog" width="500px">
-			<template v-slot:activator="{ toggleDialog , destroy }">
+			<template v-slot:activator="{ toggleDialog }">
 				<g-button width="100px" height="50px" @click="toggleDialog">Dialog</g-button>
 			</template>
 			<g-card flat elevation="16">
