@@ -1,9 +1,7 @@
 @import "./variables";
 
 .g-chip {
-  color: rgba(map-get($shades, 'black'), 0.87);
   border-color: rgba(map-get($shades, 'black'), 0.12);
-  background: #e0e0e0;
   align-items: center;
   cursor: default;
   display: inline-flex;

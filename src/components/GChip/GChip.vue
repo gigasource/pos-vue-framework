@@ -28,16 +28,16 @@
 <script>
   import { computed, reactive } from '@vue/composition-api';
   import { convertToGradient } from '../../utils/helpers';
-  import { setBackgroundColor } from '../../mixins/colorable';
+  import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import GExpansionPanel from '../GExpansionPanel/GExpansionPanel';
 
   export default {
     name: 'GChip',
     props: {
-      active: { type: Boolean, default: true },
+      active: Boolean,
       append: Boolean,
       close: Boolean,
-      closeIcon: { type: String, default: `remove_circle` },
+      closeIcon: { type: String, default: `close` },
       color: String,
       disabled: Boolean,
       filter: Boolean,
@@ -52,7 +52,7 @@
       ripple: Boolean,
       target: String,
       textColor: String,
-      backgroundColor: String,
+      backgroundColor: { type: String, default: '#e0e0e0' },
       gradient: String,
       value: null,
       //style
@@ -90,8 +90,12 @@
 
       let toggle = () => (stateData.isActive = !stateData.isActive);
 
-      let colorOutput = computed(() => {
-        return setBackgroundColor(props.color, {})
+      let backgroundColorOutput = computed(() => {
+        return props.color ? setBackgroundColor(props.color, {}) : setBackgroundColor('#e0e0e0', {});
+      });
+
+      let textColorOutput = computed(() => {
+        return setTextColor(props.textColor, {})
       });
 
       let classes = computed(() => {
@@ -107,7 +111,8 @@
           'g-chip__pill': props.pill,
           'g-chip__label': props.label,
           'g-chip__active': props.active,
-					...colorOutput && colorOutput.value && colorOutput.value.class
+          ...backgroundColorOutput && backgroundColorOutput.value && backgroundColorOutput.value.class,
+          ...textColorOutput && textColorOutput.value && textColorOutput.value.class
         };
 
         let size = '';
@@ -132,10 +137,9 @@
 
       let styles = computed(() => {
         let _styles = {
-          ...colorOutput && colorOutput.value && colorOutput.value.style,
+          ...backgroundColorOutput && backgroundColorOutput.value && backgroundColorOutput.value.style,
+          ...textColorOutput && textColorOutput.value && textColorOutput.value.style,
           ...props.textColor && { color: props.textColor.replace('-', '') },
-          ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
-          ...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
           ...props.outlined && { color: `${props.color}`, border: `thin solid currentColor`, backgroundColor: 'transparent' },
         };
 
