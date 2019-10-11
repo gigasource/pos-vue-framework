@@ -1,5 +1,6 @@
 @import "variables";
 @import "global";
+@import "typography";
 @import "colors";
 @import "atomic-utilities";
 @import "grid";
@@ -21,10 +22,10 @@
 @import "../components/GOverlay/_GOverlay";
 @import "../components/GToolTip/_GToolTip";
 @import "../components/GBtn/GBtn";
+@import "../components/transition/_animation";
 @import "../components/GPicker/_GPicker";
 @import "../components/GDatePicker/styles/GDatePicker";
 @import "../components/GDatePicker/styles/GDatePickerHeader";
 @import "../components/GDatePicker/styles/GDatePickerTable";
 @import "../components/GDatePicker/styles/GDatePickerTitle";
 @import "../components/GDatePicker/styles/GDatePickerYears";
-

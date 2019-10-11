@@ -88,6 +88,8 @@ $transition: (
         'fast-in-fast-out':   cubic-bezier(0.25, 0.8, 0.25, 1),
         'swing':              cubic-bezier(0.25, 0.8, 0.5, 1)
 ) !default;
+$primary-transition: 0.5s map-get($transition, 'swing') !default;
+$secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
 /*
 * Button variables

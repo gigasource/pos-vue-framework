@@ -14,8 +14,12 @@
         </div>
       </transition>
     </div>
-    <button :disabled="prevBtnDisabled" class="g-date-picker-header__prev-button" v-on:click="prevClick">&lt;</button>
-    <button :disabled="nextBtnDisabled" class="g-date-picker-header__next-button" v-on:click="nextClick">&gt;</button>
+    <button :disabled="prevBtnDisabled" class="g-date-picker-header__prev-button" v-on:click="prevClick">
+<!--      <i class="material-icons">mdi-chevron-left</i>-->
+    </button>
+    <button :disabled="nextBtnDisabled" class="g-date-picker-header__next-button" v-on:click="nextClick">
+<!--      <i class="material-icons">mdi-chevron-right</i>-->
+    </button>
   </div>
 </template>
 

@@ -69,11 +69,18 @@
   &__prev-button {
     @extend %nav_button;
     margin-right: 24px;
+
+    &::before {
+      content: '\F141';
+    }
   }
 
   &__next-button {
     @extend %nav_button;
 
+    &::after {
+      content: '\F142'
+    }
   }
 }
 
