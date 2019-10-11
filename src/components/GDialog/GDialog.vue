@@ -6,7 +6,7 @@
 				 :class="wrapperClasses"
 				 :style="wrapperStyles"
 				 :tabindex="wrapperTabIndex"
-				 @keydown="onKeydown">
+				 @keydown.esc="onKeydown">
 			<div ref="content"
 					 class="dialog-content"
 					 :class="contentClasses"
@@ -33,7 +33,7 @@
   import { getZIndex } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import stackable from '../../mixins/stackable';
-  import { computed, onMounted, reactive, watch } from '@vue/composition-api';
+  import { computed, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import GOverlay from '../GOverlay/GOverlay';
 
@@ -75,7 +75,7 @@
 		},
 		setup (props, context) {
       const { model: isActive } = getVModel(props, context);
-      const { attachToRoot, attachToParent } = detachable(props, context);
+      const { attachToRoot, attachToParent, detach } = detachable(props, context);
       const { getMaxZIndex } = stackable(props, context);
 
       // Stacking
@@ -109,7 +109,7 @@
         initComponent();
 			});
 
-			watch(isActive, newVal => {
+			const unwatch = watch(isActive, newVal => {
 			  if (newVal) {
           if (props.lazy) {
             isBooted.value = true;
@@ -117,9 +117,7 @@
               initComponent();
             })
           }
-          context.root.$nextTick(() => {
-            context.refs.wrapper.focus();
-          });
+					context.refs.wrapper.focus();
 				}
 			})
 
@@ -176,11 +174,18 @@
 
 			// Change active state when press ESC
 			function onKeydown(e) {
-				if (e.key === 'Escape') {
-          isActive.value = !isActive.value;
-				}
+				isActive.value = !isActive.value;
         context.emit('keydown', e);
 			}
+
+
+			// Clean-up when destroy
+			onBeforeUnmount(() => {
+			  unwatch();
+			  detach(context.refs.wrapper);
+			  detach(context.refs.overlay.$el);
+			  //detach();
+			});
 
       return {
         isActive,

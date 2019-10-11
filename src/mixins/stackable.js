@@ -5,8 +5,6 @@ export default function stackable(props, context) {
   const stackMinZIndex = ref(200);
 
   function getMaxZIndex(exclude) {
-
-
     //const base = context.refs.el;
 
     const zis = [stackMinZIndex.value];

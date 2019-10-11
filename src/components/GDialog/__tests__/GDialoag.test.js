@@ -189,6 +189,28 @@ describe('Dialog', () => {
         })
       })
     })
+
+    it('Should remove all when destroy', () => {
+      const template = `
+        <div data-app>
+          <g-dialog v-model="dialog">
+            <template v-slot:activator="{ toggleDialog }">
+              <button @click="toggleDialog">Dialog</button>
+            </template>
+            <div>content</div>
+          </g-dialog>
+        </div>`
+
+      const vm = build(template);
+
+      const button = vm.$el.querySelector('button');
+      button.click();
+      expect(vm.dialog).toBe(true);
+      vm.$nextTick(() => {
+        vm.$destroy()
+        expect(vm.$el.outerHTML).toMatchSnapshot();
+      })
+    })
   })
   describe('Nested Dialog', () => {
     it('Nested dialog should have higher zIndex than outer dialog', () => {
