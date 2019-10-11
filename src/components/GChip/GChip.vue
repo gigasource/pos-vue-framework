@@ -17,11 +17,10 @@
 
 		<slot></slot>
 
-		<span class="g-icon g-icon__right" @click.stop="onClose">
-			<slot name="close" v-if="close">
-				<i class="material-icons g-icon">{{closeIcon}}</i>
-			</slot>
+		<span class="g-icon g-icon__right" @click.stop="onClose" v-if="close">
+			<i class="material-icons g-icon">{{closeIcon}}</i>
 		</span>
+
 	</div>
 </template>
 

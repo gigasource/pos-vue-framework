@@ -29,7 +29,7 @@
 
     .g-icon {
       z-index: 5;
-      margin-left: 2px;
+      margin-left: 3px;
       margin-top: 3px;
     }
 
@@ -82,7 +82,7 @@
     max-width: 100%;
   }
 
-  // Elements
+  // Close
   &.g-chip__close .g-icon {
     font-size: $chip-close-size;
     max-height: $chip-close-size;
@@ -107,10 +107,12 @@
 
 }
 
+//Label
 .g-chip-label {
   border-radius: $chip-label-border-radius !important;
 }
 
+//Outlined
 .g-chip.g-chip__outlined {
   border-width: $icon-outlined-border-width;
   border-style: solid;
