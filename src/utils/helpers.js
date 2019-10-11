@@ -26,6 +26,12 @@ export function addOnceEventListener (el, eventName, cb, options){
   el.addEventListener(eventName, once, options);
 }
 
+export function getZIndex(el) {
+  const index = window.getComputedStyle(el).getPropertyValue('z-index');
+  if (!index) return getZIndex(el.parentNode);
+  return index
+}
+
 export function convertToUnit (str, unit = 'px') {
   if (str == null || str === '') {
     return undefined
@@ -34,12 +40,6 @@ export function convertToUnit (str, unit = 'px') {
   } else {
     return `${Number(str)}${unit}`
   }
-}
-
-export function getZIndex(el) {
-  const index = window.getComputedStyle(el).getPropertyValue('z-index');
-  if (!index) return getZIndex(el.parentNode);
-  return index
 }
 
 export function convertToGradient(colorArr, angle = '45deg') {
