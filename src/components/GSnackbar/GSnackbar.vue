@@ -3,7 +3,9 @@
 		<div v-if="isActive"
 				 class="g-snack"
 				 :class="snackClasses">
-			<div class="g-snack-wrapper" :class="wrapperClasses" :style="wrapperStyles">
+			<div class="g-snack-wrapper"
+					 :class="wrapperClasses"
+					 :style="wrapperStyles">
 				<div class="g-snack-content">
 					<slot></slot>
 				</div>

@@ -58,7 +58,7 @@
 			<g-btn color="black" @click="snackbarTimeout = true">
 				SNACKBAR TIMEOUT
 			</g-btn>
-			<g-snackbar v-model="snackbarTimeout" :timeout="timeout" color="rgb(235, 52, 52)">
+			<g-snackbar v-model="snackbarTimeout" :timeout="timeout" color="rgb(17, 194, 156)">
 				Hello I'm Snackbar
 				<g-btn flat color="pink" @click="snackbarTimeout = false">
 					Close
