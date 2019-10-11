@@ -17,12 +17,12 @@
     </template>
 
     <div :key="state.activePicker">
-      <g-date-picker-years v-if="showYearPicker"
-          :color="color"
-          :min="min"
-          :max="max"
-          :value="tableYear"
-          v-on="yearPickerEventHandler"
+      <g-date-picker-years v-if="yearModel.show"
+          :color="yearModel.color"
+          :min="yearModel.min"
+          :max="yearModel.max"
+          :value="yearModel.value"
+          v-on="yearModel.eventHandlers"
       />
       <template v-else>
         <g-date-picker-header
@@ -462,26 +462,31 @@
         }
       })
 
-      const showYearPicker = computed(() => state.activePicker === 'YEAR')
-      const yearPickerEventHandler = computed(() => {
+      const yearModel = computed(() => {
         return {
-          [YEAR_PICKER_EVENTS.INPUT]: yearClick
+          show: state.activePicker === 'YEAR',
+          color: props.color,
+          min: props.min,
+          max: props.max,
+          value: tableYear.value,
+          eventHandlers: {
+            [YEAR_PICKER_EVENTS.INPUT]: yearClick
+          }
         }
       })
 
       return {
         titleModel,
+        yearModel,
 
         tableHeaderEventHandler,
         dateTableEventHandlers,
 
         // year picker
-        showYearPicker,
         onMonthTableEventHandler,
 
         //
         generateRange,
-        yearPickerEventHandler,
         tableYear,
         minMonth,
         maxMonth,
