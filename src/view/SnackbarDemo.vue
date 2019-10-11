@@ -1,10 +1,15 @@
 <template>
- <g-snackbar v-model="snackbar">
-	 Hello I'm Snackbar
-   <g-btn flat color="red">
-			Close
-	 </g-btn>
- </g-snackbar>
+	<div>
+		<g-btn color="black" @click="snackbar = true">
+			OPEN SNACKBAR
+		</g-btn>
+		<g-snackbar v-model="snackbar">
+			Hello I'm Snackbar
+			<g-btn flat color="pink" @click="snackbar = false">
+				Close
+			</g-btn>
+		</g-snackbar>
+	</div>
 </template>
 
 <script>
@@ -15,7 +20,7 @@
     components: { GBtn, GSnackbar },
 		data() {
       return {
-        snackbar: true
+        snackbar: false
 			}
 		}
   }
