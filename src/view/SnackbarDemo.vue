@@ -40,27 +40,19 @@
 					Close
 				</g-btn>
 			</g-snackbar>
-
-			<g-btn color="black" @click="snackbarColor = true">
-				SNACKBAR COLOR
-			</g-btn>
-			<g-snackbar v-model="snackbarColor" timeout="2000" color="rgb(235, 52, 52)">
-				Hello I'm Snackbar
-				<g-btn flat color="pink" @click="snackbarColor = false">
-					Close
-				</g-btn>
-			</g-snackbar>
 		</div>
 		<div>
+			<label for="colorInput">Color: </label>
+			<input id="colorInput" type="text" v-model="color"/>
 			<label for="timeoutInput">Timeout: </label>
 			<input id="timeoutInput" type="text" v-model="timeout"/>
 			<br/>
-			<g-btn color="black" @click="snackbarTimeout = true">
-				SNACKBAR TIMEOUT
+			<g-btn color="black" @click="snackbarColor = true">
+				SNACKBAR
 			</g-btn>
-			<g-snackbar v-model="snackbarTimeout" :timeout="timeout" color="rgb(17, 194, 156)">
+			<g-snackbar v-model="snackbarColor" :timeout="timeout" :color="color">
 				Hello I'm Snackbar
-				<g-btn flat color="pink" @click="snackbarTimeout = false">
+				<g-btn flat color="pink" @click="snackbarColor = false">
 					Close
 				</g-btn>
 			</g-snackbar>
@@ -81,8 +73,8 @@
         snackbarLeft: false,
         snackbarRight: false,
 				snackbarColor: false,
-				snackbarTimeout: false,
-				timeout: 2000
+				color: "#0ab",
+				timeout: 2000,
 			}
 		}
   }
