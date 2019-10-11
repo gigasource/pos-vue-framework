@@ -14,7 +14,7 @@
 			<g-btn color="black" @click="snackbarTop = true">
 				SNACKBAR TOP
 			</g-btn>
-			<g-snackbar v-model="snackbarTop" timeout="2000" top>
+			<g-snackbar v-model="snackbarTop" timeout="20000" top>
 				Hello I'm Snackbar
 				<g-btn flat color="pink" @click="snackbarTop = false">
 					Close
@@ -34,7 +34,7 @@
 			<g-btn color="black" @click="snackbarRight = true">
 				SNACKBAR RIGHT
 			</g-btn>
-			<g-snackbar v-model="snackbarRight" timeout="2000" top right>
+			<g-snackbar v-model="snackbarRight" timeout="20000" top right>
 				Hello I'm Snackbar
 				<g-btn flat color="pink" @click="snackbarRight = false">
 					Close
@@ -50,7 +50,7 @@
 			<g-btn color="black" @click="snackbarColor = true">
 				SNACKBAR
 			</g-btn>
-			<g-snackbar v-model="snackbarColor" :timeout="timeout" :color="color">
+			<g-snackbar v-model="snackbarColor" :timeout="timeout" :color="color" absolute position-top="100px" position-bottom="auto" position-right="0">
 				Hello I'm Snackbar
 				<g-btn flat color="pink" @click="snackbarColor = false">
 					Close

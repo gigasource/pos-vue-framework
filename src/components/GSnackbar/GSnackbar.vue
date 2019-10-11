@@ -2,7 +2,7 @@
 	<transition name="g-snack-transition">
 		<div v-if="isActive"
 				 class="g-snack"
-				 :class="snackClasses">
+				 :class="snackClasses" :style="snackStyles">
 			<div class="g-snack-wrapper"
 					 :class="wrapperClasses"
 					 :style="wrapperStyles">
@@ -31,6 +31,10 @@
 			// Positioning
 			...{
         absolute: Boolean,
+				positionTop: [Number, String],
+        positionLeft: [Number, String],
+        positionBottom: [Number, String],
+        positionRight: [Number, String],
         top: Boolean,
         bottom: Boolean,
         left: Boolean,
@@ -66,19 +70,29 @@
         'g-snack__top': props.top,
 			}));
 
+			const snackStyles = computed(() => ({
+				top: props.positionTop,
+        bottom: props.positionBottom,
+			}))
+
 			// Styling
 			const colorOutput = computed(() => {
         return setBackgroundColor(props.color, {})
       })
 
 			const wrapperClasses = computed(() => colorOutput.value.class);
-			const wrapperStyles = computed(() => colorOutput.value.style);
+			const wrapperStyles = computed(() => ({
+				...colorOutput.value.style,
+        marginLeft: props.positionLeft,
+        marginRight: props.positionRight,
+			}));
 
       return {
         isActive,
 				snackClasses,
 				wrapperClasses,
 				wrapperStyles,
+				snackStyles,
       }
 		}
   }
