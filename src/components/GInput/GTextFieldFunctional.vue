@@ -105,7 +105,7 @@
       flat: Boolean,
 
       // basic props
-      value: [String, Number],
+      value: { type: [String, Number] , default: null},
       type: {
         type: String,
         default: 'text',
@@ -115,7 +115,7 @@
     setup(props, context) {
       const tfWrapperClasses = getTfWrapperClasses(props);
 
-      const internalValue = getInternalValue(context);
+      const internalValue = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
 

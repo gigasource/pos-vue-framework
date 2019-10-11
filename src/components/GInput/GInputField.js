@@ -18,14 +18,14 @@ export function getLabel(internalValue, isValidInput, isFocused,
     ...!isValidInput.value && inValidStyle
   }))
 
-  return { labelClasses, labelStyles ,isDirty, isLabelActive, prefixRef}
+  return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef }
 }
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
   function validate(value) {
     const errorBucket = []
-    if (props.rules && isFocused.value) {
+    if (props.rules) {
       for (let i = 0; i < props.rules.length; i++) {
         const rule = props.rules[i]
         const validatedValue = typeof rule === 'function' ? rule(value) : rule
@@ -35,13 +35,18 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
           (customAlert || alert)('Something wrong with rules! Check it out!')
         }
       }
+
       errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
       errorBucket.length ? isValidInput.value = false : isValidInput.value = true
     }
   }
 
   const errorMessages = ref('')
-  watch(internalValue, () => !props.validateOnBlur && validate(internalValue.value), { lazy: true })
+  watch(internalValue, () => {
+    if (!props.validateOnBlur) {
+      validate(internalValue.value)
+    }
+  }, !props.value ? { lazy: true } : null)
 
   return { errorMessages };
 }
@@ -121,12 +126,12 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     }
   }
 
-  return { onClick, onFocus, onBlur, onClearIconClick , onMouseDown, onMouseUp, onChange, onKeyDown}
+  return { onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown }
 }
 
-export function getInternalValue(context) {
+export function getInternalValue(props, context) {
   // text field internalValue
-  const lazyValue = ref('');
+  const lazyValue = ref(props.value || '');
   const internalValue = computed({
     get: () => {
       return lazyValue.value
