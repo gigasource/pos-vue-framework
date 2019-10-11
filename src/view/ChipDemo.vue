@@ -144,31 +144,31 @@
 		<div class="wrapper">
 			<p>Icons</p>
 			<hr/>
-			<g-chip>
+			<g-chip color="blue">
 				<template v-slot:prependItem>
 					<i class="material-icons g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
-			<g-chip>
+			<g-chip color="green">
 				Premium
 				<span class="g-icon g-icon__right">
 					<i class="material-icons g-icon">star</i>
 				</span>
 			</g-chip>
-			<g-chip>
+			<g-chip color="brown">
 				1 Year
 				<span class="g-icon g-icon__right">
 					<i class="material-icons g-icon">cake</i>
 				</span>
 			</g-chip>
-			<g-chip>
+			<g-chip color="maroon">
 				<template v-slot:prependItem>
 					<i class="material-icons g-icon">check_circle</i>
 				</template>
 				Confirmed
 			</g-chip>
-			<g-chip close close-icon="delete">
+			<g-chip close close-icon="delete" color="red">
 				<template v-slot:prependItem>
 					<i class="material-icons g-icon">check_circle</i>
 				</template>
