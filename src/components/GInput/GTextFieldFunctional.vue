@@ -27,7 +27,7 @@
 						<slot name="label">{{label}}</slot>
 					</label>
 				</div>
-
+				<div class="tf-affix">{{suffix}}</div>
 				<div class="tf-append__inner" @click="onClickAppendInner">
 					<slot name="append-inner"></slot>
 				</div>
@@ -50,68 +50,53 @@
 
   export default {
     name: 'GTextFieldFunctional',
-    props: {
-      ...{
-        label: String,
-        placeholder: String,
-        clearable: Boolean,
-        disabled: Boolean,
-        readOnly: Boolean,
-        appendIcon: String,
-        prependIcon: String,
-        prefix: {
-          type: String,
-          default: ''
-        },
-        suffix: {
-          type: String,
-          default: ''
-        },
-      },
-      //rules and validate
+		props: {
+			...{//display props
+				label: String,
+				placeholder: String,
+				appendIcon: String,
+				prependIcon: String,
+				prefix: {
+					type: String,
+					default: ''
+				},
+				suffix: {
+					type: String,
+					default: ''
+				},
+				//input states
+				clearable: Boolean,
+				disabled: Boolean,
+				readOnly: Boolean,
+			},
+			//rules and validation props
+			rules: Array,
+			hint: String,
+			errorCount: {
+				type: Number,
+				default: 1
+			},
+			persistent: Boolean,
+			counter: [Number, Boolean, String],
+			validateOnBlur: Boolean,
+			error: Boolean,
 
-      rules: Array,
-      hint: String,
+			//styles
+			filled: Boolean,
+			outlined: Boolean,
+			solo: Boolean,
+			shaped: Boolean,
+			rounded: Boolean,
+			flat: Boolean,
 
-      messages: {
-        type: [String, Array],
-        default: () => [],
-      },
-      errorCount: {
-        type: Number,
-        default: 1
-      },
-      persistent: Boolean,
-      counter: [Number, Boolean, String],
-      validateOnBlur: Boolean,
-      error: Boolean,
+			// basic props
+			value: [String, Number],
+			type: {
+				type: String,
+				default: 'text',
+			},
 
-      // display
-      large: Boolean,
-      textColor: {
-        type: String,
-        default: '#00acc1'
-      },
-      bordered: Boolean,
-      centered: Boolean,
-      active: Boolean,
-
-      //styles
-      filled: Boolean,
-      outlined: Boolean,
-      solo: Boolean,
-      shaped: Boolean,
-      rounded: Boolean,
-      flat: Boolean,
-
-      // basic props
-      value: { type: [String, Number] , default: null},
-      type: {
-        type: String,
-        default: 'text',
-      },
-
-    },
+		},
     setup(props, context) {
       const tfWrapperClasses = getTfWrapperClasses(props);
 
@@ -138,31 +123,38 @@
       const { onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput);
 
       return {
-        labelClasses,
-        labelStyles,
-        tfErrClasses,
-        tfWrapperClasses,
-        hintClasses,
-        internalValue,
-        isLabelActive,
-        onClick,
-        onChange,
-        onFocus,
-        onBlur,
-        onKeyDown,
-        onMouseUp,
-        onMouseDown,
-        onClickPrependOuter,
-        onClickPrependInner,
-        onClickAppendOuter,
-        onClickAppendInner,
-        onClearIconClick,
-        isFocused,
-        isDirty,
-        isValidInput,
-        inputErrStyles,
-        errorMessages,
-        prefixRef,
+				//calculated styles and classes
+				labelClasses,
+				labelStyles,
+				tfErrClasses,
+				tfWrapperClasses,
+				inputStyles,
+				hintClasses,
+				inputErrStyles
+				//value
+				internalValue,
+				//calculated state
+				isLabelActive,
+				isFocused,
+				isDirty,
+				isValidInput,
+				//calculated error
+				errorMessages,
+				//event listeners
+				onClick,
+				onChange,
+				onFocus,
+				onBlur,
+				onKeyDown,
+				onMouseUp,
+				onMouseDown,
+				onClickPrependOuter,
+				onClickPrependInner,
+				onClickAppendOuter,
+				onClickAppendInner,
+				onClearIconClick,
+				//ref
+				prefixRef,
         tfErrWrapperClass
       }
     }
