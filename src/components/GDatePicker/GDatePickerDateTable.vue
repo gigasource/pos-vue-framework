@@ -50,11 +50,10 @@
 
 <script>
   import { createRange } from '../../utils/helpers';
-  import isDateAllowed from './util/isDateAllowed'
-  import { pad, createNativeLocaleFormatter, monthChange } from './util'
+  import { pad, createNativeLocaleFormatter, monthChange, isDateAllowed } from './utils'
   import { computed, reactive, watch } from '@vue/composition-api';
-  import GDatePickerTable from './mixins/date-picker-table'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
+  import GDatePickerTable from './date-picker-table'
 
   export default {
     name: 'GDatePickerDateTable',

@@ -1,78 +1,90 @@
 <template>
-  <div class="g-date-picker-title"
-    :class="{ 'g-date-picker-title--disabled': disabled }">
-    <div class="g-picker__title__btn g-date-picker-title__year"
-         :class="{ 'g-picker__title__btn--readonly': readonly, 'g-picker__title__btn--active': selectingYear === value }"
-         v-on:click.stop="onYearButtonClicked">
-        {{ year }} &nbsp;
-      <span class="g-date-picker-title__year__icon"></span>
+  <div :class="titleClasses">
+    <div :class="titleYearClasses" v-on:click.stop="onYearButtonClicked">
+      {{ year }}
     </div>
-    <div class="g-picker__title__btn g-date-picker-title__date"
-         :class="{ 'g-picker__title__btn--readonly': readonly, 'g-picker__title__btn--active': selectingYear === value }"
-         v-on:click.stop="onTitleButtonClicked">
-      <transition :name="computedTransition">
-        <div :key="value" v-html="date">
-        </div>
+    <div :class="titleDateClasses">
+      <transition :name="transitionName">
+        <div :key="date" v-html="date"></div>
       </transition>
     </div>
   </div>
 </template>
 
 <script>
-  import { computed, createElement as h, reactive, watch } from '@vue/composition-api';
-  import { kebabCase } from '../../utils/helpers';
+  import { computed } from '@vue/composition-api'
+
+  // class
+  const PICKER_TITLE = 'g-date-picker-title'
+  const PICKER_TITLE_DISABLED = 'g-date-picker-title--disabled'
+  const PICKER_TITLE_BTN = 'g-picker__title__btn'
+  const PICKER_TITLE_BTN_READONLY = 'g-picker__title__btn--readonly'
+  const PICKER_TITLE_BTN_ACTIVE = 'g-picker__title__btn--active'
+  const PICKER_TITLE_YEAR = 'g-date-picker-title__year'
+  const PICKER_TITLE_DATE = 'g-date-picker-title__date'
+  const PICKER_TRANSITION = 'picker-transition'
+
+  // exposed events
+  export const EVENT_NAMES = {
+    UPDATE_SELECTING_YEAR: 'update:selecting-year'
+  }
 
   export default {
     name: 'GDatePickerTitle',
     props: {
-      date: {
-        type: String,
-        default: '',
-      },
-      disabled: Boolean,
-      readonly: Boolean,
-      selectingYear: Boolean,
-      value: {
-        type: String
-      },
       year: {
         type: [Number, String],
-        default: '',
-      },
-      yearIcon: {
+        default: ''
+      }, // 1st line -> year
+      date: {
         type: String,
-      },
+        default: ''
+      },// 2nd line, maybe contain html code -> render as raw html
+      disabled: Boolean,      // Boolean value indicate that this component is disabled or not
+      readonly: Boolean,      // Boolean value indicate that this component is readonly or not
+      selectingYear: Boolean, // Boolean value indicate that whether Years is showing or not
     },
     setup(props, context) {
+      let titleClasses = computed((() => {
+        return {
+          [PICKER_TITLE]: true,
+          [PICKER_TITLE_DISABLED]: props.disabled
+        }
+      }))
 
-      // data
-      const state = reactive({isReversing: false})
-      // computed
-      let computedTransition = computed(() => {
-        return state.isReversing ? 'picker-reverse-transition' : 'picker-transition'
+      // Year info
+      let titleYearClasses = computed((() => {
+        return {
+          [PICKER_TITLE_BTN]: true,
+          [PICKER_TITLE_BTN_READONLY]: props.readonly,
+          [PICKER_TITLE_BTN_ACTIVE]: true,
+          [PICKER_TITLE_YEAR]: true
+        }
+      }))
+      function onYearButtonClicked() {
+        if (props.selectingYear || props.readonly)
+          return
+        context.emit(EVENT_NAMES.UPDATE_SELECTING_YEAR, true)
+      }
+
+      // Date/selected items state
+      let titleDateClasses = computed(() => {
+        return {
+          [PICKER_TITLE_BTN]: true,
+          [PICKER_TITLE_BTN_READONLY]: props.readonly,
+          [PICKER_TITLE_DATE]: true
+        }
       })
 
-      // watch
-      watch(() => props.value, (val, prev) => {
-        state.isReversing = val < prev
-      }, { lazy: true })
-
-      function onYearButtonClicked(e) {
-        if (props.selectingYear === props.value || props.readonly)
-          return
-        context.emit(`update:${kebabCase('selectingYear')}`, true)
-      }
-
-      function onTitleButtonClicked(e) {
-        if (props.selectingYear === props.value || props.readonly)
-          return
-        context.emit(`update:${kebabCase('selectingYear')}`, false)
-      }
-
       return {
+        titleClasses: titleClasses,
+        //
+        titleYearClasses: titleYearClasses,
         onYearButtonClicked,
-        onTitleButtonClicked,
-        computedTransition
+        //
+        titleDateClasses: titleDateClasses,
+        //
+        transitionName: PICKER_TRANSITION
       }
     }
   }

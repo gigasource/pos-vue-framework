@@ -7,15 +7,11 @@
             :no-title="noTitle">
     <template #title>
       <g-date-picker-title
-          #title
-          v-show="!noTitle"
           :date="value ? formatters.titleDate(value) : ''"
           :disabled="disabled"
           :readonly="readonly"
           :selectingYear="state.activePicker === 'YEAR'"
           :year="formatters.year(value ? `${state.inputYear}` : state.tableDate)"
-          :yearIcon="yearIcon"
-          :value="isMultiple ? value[0] : value"
           v-on="titleEventHandler"
       />
     </template>
@@ -97,12 +93,14 @@
   import GDatePickerDateTable from './GDatePickerDateTable'
   import GDatePickerMonthTable from './GDatePickerMonthTable'
   import GDatePickerYears from './GDatePickerYears'
+  import GPicker from '../GPicker/GPicker'
 
-  import { computed, reactive, watch } from '@vue/composition-api';
-  import { pad, createNativeLocaleFormatter } from './util'
-  import _isDateAllowed from './util/isDateAllowed'
-  import { daysInMonth } from './util/daysInMonth';
-  import GPicker from '../GPicker/GPicker';
+  // customs event name
+  import { EVENT_NAMES as TITLE_EVENT_NAMES } from './GDatePickerTitle';
+
+  import { computed, reactive, watch } from '@vue/composition-api'
+  import { pad, createNativeLocaleFormatter, isDateAllowed as _isDateAllowed, daysInMonth } from './utils'
+
 
   // Adds leading zero to month/day if necessary, returns 'YYYY' if type = 'year',
   // 'YYYY-MM' if 'month' and 'YYYY-MM-DD' if 'date'
@@ -166,7 +164,6 @@
       weekdayFormat: Function,
       // Function formatting the year in table header and pickup title
       yearFormat: Function,
-      yearIcon: String,
 
       // picker mixins
       fullWidth: Boolean,
@@ -440,7 +437,7 @@
         input: (value) => state.tableDate = value,
       }
       const titleEventHandler = {
-        'update:selecting-year': (value) => state.activePicker = value ? 'YEAR' : props.type.toUpperCase(),
+        [TITLE_EVENT_NAMES.UPDATE_SELECTING_YEAR] : (value) => state.activePicker = value ? 'YEAR' : props.type.toUpperCase(),
       }
 
       const dateTableEventHandlers = {

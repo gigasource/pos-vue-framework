@@ -50,7 +50,6 @@
           <label for="Color">Color</label>
           <input style="border: 1px solid black" type="text" id="Color" v-model="color" class="ma-4"/>
         </span>
-
         <span>
           <label for="HeaderColor">Header Color</label>
           <input style="border: 1px solid black" type="text" id="HeaderColor" v-model="headerColor" class="ma-4"/>
@@ -74,6 +73,10 @@
             <g-btn @click="log('OK Clicked')">OK</g-btn>
           </div>
         </g-date-picker>
+      </div>
+      <div>
+        <h4>No Title</h4>
+        <g-date-picker no-title v-model="anotherOptionsModel"></g-date-picker>
       </div>
     </div>
 
@@ -124,7 +127,8 @@
         enableEvents: false,
         range: true,
         color: '#66BB6A',
-        headerColor: '#1867c0'
+        headerColor: '#1867c0',
+        noTitle: false
       }
     },
     computed: {

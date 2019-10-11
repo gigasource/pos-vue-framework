@@ -1,4 +1,4 @@
-import monthChange from '../monthChange'
+import { monthChange } from '../utils'
 
 describe('VDatePicker/util/monthChange.ts', () => {
   it('should change month', () => {

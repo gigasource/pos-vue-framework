@@ -53,8 +53,7 @@
       })
 
       const shouldGenTitleSlot = computed(() => {
-        let result = context.slots.title !== undefined
-        return !!context.slots.title
+        return context.slots.title != undefined && !props.noTitle
       })
       const shouldGenActionsSlot = computed(() => context.slots.actions !== undefined)
 

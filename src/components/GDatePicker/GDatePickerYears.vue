@@ -10,9 +10,8 @@
 </template>
 
 <script>
-  import { createNativeLocaleFormatter } from './util';
+  import { createNativeLocaleFormatter } from './utils';
   import { computed, onMounted } from '@vue/composition-api';
-  import { setTextColor } from '../../mixins/colorable';
 
   export default {
     name: 'GDatePickerYears',

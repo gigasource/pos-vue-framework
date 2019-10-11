@@ -1,4 +1,4 @@
-import pad from '../pad'
+import { pad } from '../utils'
 
 describe('GDatePicker/util/pad', () => {
   it('should pad 1-digit numbers', () => {

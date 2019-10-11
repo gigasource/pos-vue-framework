@@ -1,5 +1,4 @@
-import { computed, createElement as h } from '@vue/composition-api';
-import { setBackgroundColor } from '../../../mixins/colorable'
+import { computed } from '@vue/composition-api';
 
 export default (props, context) => {
   const displayedMonth = computed(() => {
@@ -9,7 +8,6 @@ export default (props, context) => {
     return Number(props.tableDate.split('-')[0])
   })
 
-  // methods
   function genButtonClasses(isAllowed, isFloating, isSelected, isCurrent) {
     return {
       'g-size--default': !isFloating,
@@ -22,8 +20,10 @@ export default (props, context) => {
     }
   }
 
-  function genButtonEvents (value, isAllowed, mouseEventType) {
-    if (props.disabled) return undefined
+  function genButtonEvents(value, isAllowed, mouseEventType) {
+    if (props.disabled)
+      return undefined
+
     return {
       click: () => {
         isAllowed && !props.readonly && context.emit('input', value)

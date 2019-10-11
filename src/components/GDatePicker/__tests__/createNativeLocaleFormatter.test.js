@@ -1,4 +1,4 @@
-import createNativeLocaleFormatter from '../createNativeLocaleFormatter'
+import { createNativeLocaleFormatter } from '../utils'
 
 describe('GDatePicker/util/createNativeLocaleFormatter', () => {
   it('should format dates', () => {

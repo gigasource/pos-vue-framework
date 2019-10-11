@@ -1,4 +1,4 @@
-import isDateAllowed from '../isDateAllowed'
+import { isDateAllowed } from '../utils'
 
 describe('GDatePicker/util/isDateAllowed', () => {
   it('Should allowed date', () => {

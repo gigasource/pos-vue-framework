@@ -26,11 +26,10 @@
 </template>
 
 <script>
-  import { pad, createNativeLocaleFormatter } from './util'
+  import { pad, createNativeLocaleFormatter, isDateAllowed } from './utils'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
   import { computed, reactive, watch } from '@vue/composition-api'
-  import isDateAllowed from './util/isDateAllowed'
-  import GDatePickerTable from './mixins/date-picker-table'
+  import GDatePickerTable from './date-picker-table'
 
   export default {
     name: 'GDatePickerMonthTable',

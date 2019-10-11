@@ -24,8 +24,8 @@
 </template>
 
 <script>
-  import { computed, createElement as h, reactive, watch } from '@vue/composition-api';
-  import { monthChange, createNativeLocaleFormatter } from './util';
+  import { computed, reactive, watch } from '@vue/composition-api';
+  import { monthChange, createNativeLocaleFormatter } from './utils';
   import { setTextColor } from '../../mixins/colorable';
   import GButton from '../GButton/GButton';
 

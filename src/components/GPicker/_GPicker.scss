@@ -25,56 +25,55 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
 
+  &__title {
+    color: map-get($shades, 'white');
+    border-top-left-radius: $picker-border-radius;
+    border-top-right-radius: $picker-border-radius;
+    padding: $picker-title-padding;
 
-.g-picker__title {
-  color: map-get($shades, 'white');
-  border-top-left-radius: $picker-border-radius;
-  border-top-right-radius: $picker-border-radius;
-  padding: $picker-title-padding;
-}
+    &__btn {
+      transition: $primary-transition;
 
-.g-picker__title__btn {
-  transition: $primary-transition;
+      &--readonly {
+        pointer-events: none;
+      }
 
-  &:not(.g-picker__title__btn--active) {
-    opacity: $picker-inactive-btn-opacity;
-    cursor: pointer;
+      &--active {
+        opacity: $picker-active-btn-opacity;
+        cursor: pointer;
+      }
 
-    &:hover:not(:focus) {
-      opacity: 1
+      $currentSelector: &;
+      &:not(#{$currentSelector}--active) {
+        opacity: $picker-inactive-btn-opacity;
+
+        &:hover:not(:focus) {
+          opacity: 1
+        }
+      }
     }
   }
-}
 
 
-.g-picker__title__btn--readonly {
-  pointer-events: none;
-}
+  &__body {
+    height: auto;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
 
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
 
-.g-picker__title__btn--active {
-  opacity: $picker-active-btn-opacity
-}
+    > div {
+      width: 100%;
 
-.g-picker__body {
-  height: auto;
-  overflow: hidden;
-  position: relative;
-  z-index: 0;
-
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-
-  > div {
-    width: 100%;
-
-    &.fade-transition-leave-active {
-      position: absolute;
+      &.fade-transition-leave-active {
+        position: absolute;
+      }
     }
   }
 }
