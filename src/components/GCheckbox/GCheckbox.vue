@@ -32,12 +32,14 @@
       value: null
     },
     setup(props, context) {
+      //internal value for v-model
       const internalValue = computed(() => props.inputValue);
       const isSelectedArray = Array.isArray(internalValue.value);
+      //value return when checkbox checked
       const trueValue = props.value
 													? cloneDeep(props.value)
 													: (internalValue.value && !isSelectedArray ? internalValue.value : true);
-
+			//active (checked) state
       let isActive = ref(false);
       if (internalValue.value && isSelectedArray) {
         isActive.value = internalValue.value.some(v => v === trueValue)
@@ -46,12 +48,12 @@
 									|| (internalValue.value === trueValue)) {
         isActive.value = true;
       }
-
+			//determinate state
       let isDeterminate = ref(true);
       if(props.indeterminate) {
         isDeterminate.value = false;
 			}
-
+			//change determine & active state when internal value change
       watch(internalValue, (newVal) => {
         if(isSelectedArray && Array.isArray(props.value)) {
           if(isEqual(sortBy(newVal), sortBy(props.value))) {
@@ -70,7 +72,7 @@
           isActive.value = true;
         }
       });
-
+			//define props color is a class or a css style
       const {getColorType, convertColorClass} = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass();
@@ -96,6 +98,7 @@
         isActive.value = !isActive.value;
         isDeterminate.value = true;
         const value = cloneDeep(trueValue);
+        //check if the checkbox is in multiple input or not
         if (isSelectedArray && !Array.isArray(value)) {
           const arrValue = internalValue.value;
           const index = arrValue.findIndex(v => v === value);

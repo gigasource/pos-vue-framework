@@ -38,9 +38,9 @@
         //default for undefined name
         name = defaultName;
       }
-
+			//multiple options
       const multiple = inject('multiple', false);
-
+			//active state
       const isActive = computed({
         get: () => {
           if (multiple) {
@@ -61,7 +61,7 @@
           }
         }
       });
-
+			//define props color
       const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass();
