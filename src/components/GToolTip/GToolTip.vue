@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import { computed, onMounted, reactive } from '@vue/composition-api'
+  import { computed, onMounted, reactive, onBeforeUnmount } from '@vue/composition-api'
   import { setBackgroundColor } from '../../mixins/colorable';
   import { calcTop, calcLeft } from './TopLeftCalculate';
   import { convertToUnit } from '../../utils/helpers';
@@ -184,6 +184,10 @@
             state.isActive = !state.isActive
           }
         }
+
+        //behaviour like click-outside
+        listeners.blur = () => runDelay('close')
+
         return listeners
       })
 
@@ -205,6 +209,9 @@
           updateDimensions()
         })
       })
+
+      //remove tooltip when unmount
+      onBeforeUnmount(() => context.root.$el.removeChild(context.refs.content))
 
       // template data
       return {
