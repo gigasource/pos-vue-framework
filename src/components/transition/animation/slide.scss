@@ -1,0 +1,35 @@
+.slide-x-transition {
+  @include transition-default();
+
+  &-enter, &-leave-to {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+}
+
+.slide-x-reverse-transition {
+  @include transition-default();
+
+  &-enter, &-leave-to {
+    opacity: 0;
+    transform: translateX(15px);
+  }
+}
+
+.slide-y-transition {
+  @include transition-default();
+
+  &-enter, &-leave-to {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+
+.slide-y-reverse-transition {
+  @include transition-default();
+
+  &-enter, &-leave-to {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+}
