@@ -25,6 +25,17 @@
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 8px;
+
+    &__icon {
+      width: 8px;
+      height: 8px;
+      align-self: start;
+
+      &::before {
+        content: '\F0ED';
+        font-family: "Material Design Icons";
+      }
+    }
   }
 
   &__date {

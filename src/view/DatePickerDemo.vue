@@ -69,8 +69,10 @@
             :color="color"
             :header-color="headerColor"
         >
-          <button color="primary" @click="log('Cancel clicked')">Cancel</button>
-          <button color="primary" @click="log('OK Clicked')">OK</button>
+          <div style="height: 40px; flex-direction: row-reverse; display: flex; margin-bottom: 10px; margin-right: 10px;">
+            <g-btn @click="log('Cancel clicked')">Cancel</g-btn>&nbsp;
+            <g-btn @click="log('OK Clicked')">OK</g-btn>
+          </div>
         </g-date-picker>
       </div>
     </div>
@@ -103,9 +105,9 @@
       return {
         // dates
         singleSelect: new Date().toISOString().substr(0, 10),
-        multipleSelect: [new Date().toISOString().substr(0, 10), new Date().toISOString().substr(0, 10)],
+        multipleSelect: [new Date().toISOString().substr(0, 10)],
         rangeSelect: [new Date().toISOString().substr(0, 10), new Date().toISOString().substr(0, 10)],
-        anotherOptionsModel: new Date().toISOString().substr(0, 10),
+        anotherOptionsModel: new Date(2020, 4, 6).toISOString().substr(0, 10),
         // months
         monthSelect: new Date().toISOString().substr(0, 10),
         monthMultipleSelect: [new Date().toISOString().substr(0, 10), new Date().toISOString().substr(0, 10)],

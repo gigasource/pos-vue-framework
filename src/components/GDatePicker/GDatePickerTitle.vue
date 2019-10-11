@@ -1,6 +1,26 @@
+<template>
+  <div class="g-date-picker-title"
+    :class="{ 'g-date-picker-title--disabled': disabled }">
+    <div class="g-picker__title__btn g-date-picker-title__year"
+         :class="{ 'g-picker__title__btn--readonly': readonly, 'g-picker__title__btn--active': selectingYear === value }"
+         v-on:click.stop="onYearButtonClicked">
+        {{ year }} &nbsp;
+      <span class="g-date-picker-title__year__icon"></span>
+    </div>
+    <div class="g-picker__title__btn g-date-picker-title__date"
+         :class="{ 'g-picker__title__btn--readonly': readonly, 'g-picker__title__btn--active': selectingYear === value }"
+         v-on:click.stop="onTitleButtonClicked">
+      <transition :name="computedTransition">
+        <div :key="value" v-html="date">
+        </div>
+      </transition>
+    </div>
+  </div>
+</template>
+
 <script>
-  import PickerButton from '../../mixins/picker-button';
   import { computed, createElement as h, reactive, watch } from '@vue/composition-api';
+  import { kebabCase } from '../../utils/helpers';
 
   export default {
     name: 'GDatePickerTitle',
@@ -24,8 +44,6 @@
       },
     },
     setup(props, context) {
-      // mixins
-      const { genPickerButton } = PickerButton(props, context)
 
       // data
       const state = reactive({isReversing: false})
@@ -39,49 +57,23 @@
         state.isReversing = val < prev
       }, { lazy: true })
 
-      // methods
-      function genYearIcon ()/*: VNode */{
-        return h('div' /*TODO: VIcon*/, {
-          props: {
-            // dark: true,
-          },
-        }, props.yearIcon)
-      }
-      function getYearBtn ()/*: VNode*/ {
-        return genPickerButton('selectingYear', true, [
-          String(props.year),
-          props.yearIcon ? genYearIcon() : null,
-        ], false, 'g-date-picker-title__year')
-      }
-      function genTitleText ()/*: VNode */{
-        return h('transition', {
-          props: {
-            name: computedTransition.value,
-          },
-        }, [
-          h('div', {
-            domProps: { innerHTML: props.date || '&nbsp;' },
-            // key: props.value,
-          }),
-        ])
-      }
-      function genTitleDate ()/*: VNode*/ {
-        return genPickerButton('selectingYear', false, [genTitleText()], false, 'g-date-picker-title__date')
+      function onYearButtonClicked(e) {
+        if (props.selectingYear === props.value || props.readonly)
+          return
+        context.emit(`update:${kebabCase('selectingYear')}`, true)
       }
 
-      return () => {
-        return h('div', {
-          staticClass: 'g-date-picker-title',
-          class: {
-            'g-date-picker-title--disabled': props.disabled,
-          },
-        }, [
-          getYearBtn(),
-          genTitleDate(),
-        ])
+      function onTitleButtonClicked(e) {
+        if (props.selectingYear === props.value || props.readonly)
+          return
+        context.emit(`update:${kebabCase('selectingYear')}`, false)
+      }
+
+      return {
+        onYearButtonClicked,
+        onTitleButtonClicked,
+        computedTransition
       }
     }
   }
 </script>
-<style scoped>
-</style>

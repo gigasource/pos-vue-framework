@@ -33,8 +33,6 @@ export default (props, context) => {
     }
   }
 
-
-
   return {
     genButtonClasses,
     genButtonEvents,

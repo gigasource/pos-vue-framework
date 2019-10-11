@@ -1,12 +1,10 @@
 <!--suppress JSUnresolvedFunction -->
 <template>
-  <g-picker class="g-picker--date"
-            :color="headerColor || color"
+  <g-picker :color="headerColor || color"
             :full-width="fullWidth"
             :landscape="landscape"
             :width="width"
-            :no-title="noTitle"
-  >
+            :no-title="noTitle">
     <template #title>
       <g-date-picker-title
           #title
@@ -23,8 +21,7 @@
     </template>
 
     <div :key="state.activePicker">
-      <g-date-picker-years
-          v-if="state.activePicker === 'YEAR'"
+      <g-date-picker-years v-if="state.activePicker === 'YEAR'"
           :color="color"
           :format="yearFormat"
           :min="min"

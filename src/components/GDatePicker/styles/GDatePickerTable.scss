@@ -1,9 +1,3 @@
-//@import '../../styles/styles.sass'
-//+theme(g-date-picker-table) using ($material)
-//  th,
-//  .g-date-picker-table--date__week
-//    color: map-deep-get($material, 'text', 'disabled')
-
 @import 'var';
 
 $highlightedItem: rgb(231, 215, 253);
@@ -11,7 +5,7 @@ $highlightedItem: rgb(231, 215, 253);
 .g-date-picker-table {
   position: relative;
   padding: 0 12px;
-  height: 242px;
+  height: 254px;
 
   table {
     transition: $primary-transition;
@@ -100,9 +94,18 @@ $highlightedItem: rgb(231, 215, 253);
       width: auto;
     }
   }
+
+  &--disabled {
+    pointer-events: none;
+  }
 }
 
 .g-date-picker-table--date {
+
+  table {
+    padding-bottom: 8px;
+  }
+
   th {
     padding: 8px 0;
     font-weight: 600;
@@ -113,6 +116,10 @@ $highlightedItem: rgb(231, 215, 253);
     width: 32px;
     height: 32px;
     padding: 2px 0;
+  }
+
+  & .g-date-picker-table__events {
+    bottom: 6px;
   }
 }
 
@@ -132,8 +139,6 @@ $highlightedItem: rgb(231, 215, 253);
   }
 }
 
-
-
 .g-date-picker-table__events {
   height: 8px;
   left: 0;
@@ -150,16 +155,4 @@ $highlightedItem: rgb(231, 215, 253);
     margin: 0 1px;
     width: 8px;
   }
-}
-
-.g-date-picker-table--date .g-date-picker-table__events {
-  bottom: 6px;
-}
-
-.g-date-picker-table--month .g-date-picker-table__events {
-  bottom: 8px;
-}
-
-.g-date-picker-table--disabled {
-  pointer-events: none;
 }
