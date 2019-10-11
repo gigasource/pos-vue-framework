@@ -1,0 +1,15 @@
+.roll {
+  @include transition-default();
+
+  &-enter, &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter {
+    transform: translateX(-100%) rotateZ(-135deg);
+  }
+
+  &-leave-to {
+    transform: translateX(100%) rotateZ(135deg);
+  }
+}
