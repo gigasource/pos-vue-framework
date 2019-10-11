@@ -37,11 +37,10 @@
       // watch
       watch(() => props.value, (val, prev) => {
         state.isReversing = val < prev
-      })
+      }, { lazy: true })
 
       // methods
       function genYearIcon ()/*: VNode */{
-
         return h('div' /*TODO: VIcon*/, {
           props: {
             // dark: true,

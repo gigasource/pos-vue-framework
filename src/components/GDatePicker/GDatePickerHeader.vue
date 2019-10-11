@@ -1,3 +1,24 @@
+<template>
+  <div :class="datePickerHeaderClasses">
+    <g-button :disabled="prevBtnDisabled" icon v-on:click.native.stop="prevClick">&lt;</g-button>
+    <div :class="datePickerHeaderValueClasses">
+      <transition :name="headerTransitionName">
+        <div :key="value" :class="headerData.class" :style="headerData.style">
+          <button type="button" v-on:click="onHeaderClicked">
+            <template v-if="defaultSlotIsAvailable">
+              <slot></slot>
+            </template>
+            <template v-else>
+              {{ formatter(value) }}
+            </template>
+          </button>
+        </div>
+      </transition>
+    </div>
+    <g-button :disabled="nextBtnDisabled" icon v-on:click.native.stop="nextClick">&gt;</g-button>
+  </div>
+</template>
+
 <script>
   import { computed, createElement as h, reactive, watch } from '@vue/composition-api';
   import { monthChange, createNativeLocaleFormatter } from './util';
@@ -6,6 +27,7 @@
 
   export default {
     name: 'GDatePickerHeader',
+    components: { GButton },
     props: {
       disabled: Boolean,
       format: Function,
@@ -43,32 +65,8 @@
       // watch
       watch(() => props.value, (newVal, oldVal) => {
         state.isReversing = newVal < oldVal
-      })
+      }, { lazy: true })
 
-      // methods
-      function genBtn (change/*: number*/) {
-        const disabled = props.disabled ||
-            (change < 0 && props.min && calculateChange(change) < props.min) ||
-            (change > 0 && props.max && calculateChange(change) > props.max)
-
-        return h(GButton, {
-          props: {
-            // dark: this.dark,
-            // light: this.light,
-            disabled,
-            icon: true,
-          },
-          nativeOn: {
-            click: (e/*: Event*/) => {
-              e.stopPropagation()
-              context.emit('input', calculateChange(change))
-            },
-          },
-        }, [
-            change < 0 ? '<' : '>'
-          // h(VIcon, ((change < 0) === true /*!this.$vuetify.rtl*/) ? props.prevIcon : props.nextIcon),
-        ])
-      }
 
       function calculateChange(sign/*: number*/) {
         const [year, month] = String(props.value).split('-').map(Number)
@@ -79,46 +77,47 @@
         }
       }
 
-      function genHeader () {
-        const color = !props.disabled && (props.color || 'accent')
-        const header = h('div', setTextColor(color, {
-          key: String(props.value),
-        }), [h('button', {
-          attrs: {
-            type: 'button',
-          },
-          on: {
-            click: () => context.emit('toggle'),
-          },
-        }, [(context.slots.default && context.slots.default()) || formatter.value(String(props.value))])])
+      // Prev button
+      const prevBtnDisabled = computed(() => props.disabled || (props.min && calculateChange(-1) < props.min))
+      const prevClick = () => context.emit('input', calculateChange(-1))
 
-        const transition = h('transition', {
-          props: {
-            name: (state.isReversing === true /*!this.$vuetify.rtl*/) ? 'tab-reverse-transition' : 'tab-transition', // Currently doesn't support rtl
-          },
-        }, [header])
+      // Header value
+      const datePickerHeaderClasses = computed(() => {
+        return {
+          'g-date-picker-header': true,
+          'g-date-picker-header--disabled': props.disabled
+        }
+      })
+      const datePickerHeaderValueClasses = computed(() => {
+        return {
+          'g-date-picker-header__value': true,
+          'g-date-picker-header__value--disabled': props.disabled
+        }
+      })
+      const headerData = computed(() => setTextColor(props.color, {}))
+      const defaultSlotIsAvailable = context.slots.default !== undefined
+      const headerTransitionName = computed(() => (state.isReversing === true /*!this.$vuetify.rtl*/) ? 'tab-reverse-transition' : 'tab-transition')
+      const onHeaderClicked = () => context.emit('toggle')
 
-        return h('div', {
-          staticClass: 'g-date-picker-header__value',
-          class: {
-            'g-date-picker-header__value--disabled': props.disabled,
-          },
-        }, [transition])
-      }
+      // Next button
+      const nextBtnDisabled = computed(() => props.disabled || (props.max && calculateChange(1) < props.max))
+      const nextClick = () => context.emit('input', calculateChange(1))
 
-      // render
-      return () => {
-        return h('div', {
-          staticClass: 'g-date-picker-header',
-          class: {
-            'g-date-picker-header--disabled': props.disabled,
-            // ...this.themeClasses,
-          },
-        }, [
-          genBtn(-1),
-          genHeader(),
-          genBtn(+1),
-        ])
+      return {
+        prevBtnDisabled,
+        prevClick,
+
+        datePickerHeaderClasses,
+        datePickerHeaderValueClasses,
+        headerData,
+        headerTransitionName,
+        defaultSlotIsAvailable: defaultSlotIsAvailable,
+        onHeaderClicked,
+
+        nextBtnDisabled,
+        nextClick,
+
+        formatter
       }
     }
   }

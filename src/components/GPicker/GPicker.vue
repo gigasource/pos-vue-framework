@@ -1,6 +1,20 @@
+<template>
+  <div class="g-picker" :class="gPickerClasses">
+    <div class="g-picker__title" v-if="shouldGenTitleSlot" :class="titleData.class" :style="titleData.style">
+      <slot name="title"></slot>
+    </div>
+    <div class="g-picker__body" :class="bodyClass" :style="bodyStyle">
+      <slot></slot>
+    </div>
+    <div v-if="shouldGenActionsSlot" class="g-picker__actions" :class="actionClass">
+      <slot name="actions"></slot>
+    </div>
+  </div>
+</template>
+
 <script>
   import { setBackgroundColor } from '../../mixins/colorable'
-  import { computed, createElement as h } from '@vue/composition-api';
+  import { computed, reactive } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers'
 
   export default {
@@ -23,69 +37,50 @@
       },
     },
     setup(props, context) {
-      // mixins
-      // data
-      // computed
-      const computedTitleColor = computed(()/*: string | false*/ => {
-        const defaultTitleColor =  (props.color || 'primary') /*TODO: Themeable - this.isDark ? false : (props.color || 'primary') */
+      const computedTitleColor = computed(() => {
+        const defaultTitleColor = (props.color || 'primary')
         return props.color || defaultTitleColor
       })
 
-      // methods
-      function genTitle () {
-        return h('div', setBackgroundColor(computedTitleColor.value, {
+      const titleData = computed(() => {
+        let data = setBackgroundColor(computedTitleColor.value, {
           staticClass: 'g-picker__title',
           class: {
             'g-picker__title--landscape': props.landscape,
           },
-        }), context.slots.title())
-      }
+        });
+        return data
+      })
 
-      function genBodyTransition () {
-        return h('transition', {
-          props: {
-            name: props.transition,
-          },
-        }, context.slots.default())
-      }
+      const shouldGenTitleSlot = computed(() => {
+        let result = context.slots.title !== undefined
+        return !!context.slots.title
+      })
+      const shouldGenActionsSlot = computed(() => context.slots.actions !== undefined)
 
-      function genBody () {
-        return h('div', {
-          staticClass: 'g-picker__body',
-          class: {
-            'g-picker__body--no-title': props.noTitle,
-            // ...this.themeClasses, // TODO: Themeable
-          },
-          style: props.fullWidth ? undefined : {
-            width: convertToUnit(props.width),
-          },
-        }, [
-          genBodyTransition(),
-        ])
-      }
+      const bodyClass = reactive({
+        'g-picker__body--no-title': props.noTitle
+      })
+      const bodyStyle = computed(() => {
+        return props.fullWidth ? undefined : { width: convertToUnit(props.width) }
+      })
+      const actionClass = reactive({
+        'g-picker__actions--no-title': props.noTitle,
+      })
 
-      function genActions () {
-        return h('div', {
-          staticClass: 'g-picker__actions',
-          class: {
-            'g-picker__actions--no-title': props.noTitle,
-          },
-        }, context.slots.actions())
-      }
-
-      return () => {
-        return h('div', {
-          staticClass: 'g-picker',
-          class: {
+      return {
+        gPickerClasses: computed(() => {
+          return {
             'g-picker--landscape': props.landscape,
             'g-picker--full-width': props.fullWidth,
-            // ...this.themeClasses,
-          },
-        }, [
-          context.slots.title ? genTitle() : null,
-          genBody(),
-          context.slots.actions ? genActions() : null,
-        ])
+          }
+        }),
+        shouldGenTitleSlot,
+        titleData,
+        bodyClass,
+        bodyStyle,
+        shouldGenActionsSlot,
+        actionClass
       }
     }
   }

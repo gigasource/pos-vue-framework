@@ -2,14 +2,12 @@ import isDateAllowed from '../util/isDateAllowed'
 import { computed, createElement as h, reactive, watch } from '@vue/composition-api';
 import { setBackgroundColor, setTextColor } from '../../../mixins/colorable'
 
-// TODO: Themeable mixins
-
 export default (props, context) => {
   const state = reactive({ isReversing: false })
 
   // computed
   const computedTransition = computed(()=>{
-    return (state.isReversing ===  true /*!this.$vuetify.rtl*/) ? 'tab-reverse-transition' : 'tab-transition' // TODO: $vuetify??
+    return state.isReversing ? 'tab-reverse-transition' : 'tab-transition'
   })
 
   const displayedMonth = computed(() => {
@@ -34,7 +32,6 @@ export default (props, context) => {
       'g-btn--rounded': isFloating,
       'g-btn--disabled': !isAllowed || props.disabled,
       'g-btn--outlined': isCurrent && !isSelected,
-      //...props.themeClasses,
     }
   }
 
@@ -113,38 +110,28 @@ export default (props, context) => {
     }, eventColors.map(color => h('div', setBackgroundColor(color, {})))) : null
   }
 
-  function wheel(e /*: WheelEvent8*/, calculateTableDate /*: (v: number) => string*/) {
+  function wheel(e, calculateTableDate) {
     e.preventDefault()
     context.emit('update:table-date', calculateTableDate(e.deltaY))
   }
 
-  function touch(value /*: number*/, calculateTableDate /*: (v: number) => string*/) {
+  function touch(value, calculateTableDate) {
     context.emit('update:table-date', calculateTableDate(value))
   }
 
-  function genTable (staticClass /*: string*/, children/*: VNodeChildren*/, calculateTableDate/*: (v: number) => string*/) {
+  function genTable (staticClass, children, calculateTableDate) {
     const transition = h('transition', {
       props: { name: computedTransition.value },
     }, [h('table', { key: props.tableDate }, children)])
-
-    const touchDirective = {
-      name: 'touch',
-      value: {
-        left: (e/*: TouchWrapper*/) => (e.offsetX < -15) && touch(1, calculateTableDate),
-        right: (e/*: TouchWrapper*/) => (e.offsetX > 15) && touch(-1, calculateTableDate),
-      },
-    }
 
     return h('div', {
       staticClass,
       class: {
         'v-date-picker-table--disabled': props.disabled,
-        // ...this.themeClasses,
       },
       on: (!props.disabled && props.scrollable) ? {
-        wheel: (e /*: WheelEvent*/) => wheel(e, calculateTableDate),
+        wheel: e => wheel(e, calculateTableDate),
       } : undefined,
-      // TODO: directives: [touchDirective],
     }, [transition])
   }
 
