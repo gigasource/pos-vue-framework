@@ -1,15 +1,26 @@
 <template>
-	<div class="a">
-		<div class="b">
-			<select v-model="name" style="border: 1px solid black">
-				<option disabled value="">Select an animation</option>
-				<option v-for="(item, i) in list" :key="i" :value="item">{{item}}</option>
-			</select>
-			<button @click="show = !show">Toggle</button>
+	<div>
+		<div class="a">
+			<div class="b">
+				<select v-model="name" style="border: 1px solid black">
+					<option disabled value="">Select an animation</option>
+					<option v-for="(item, i) in list" :key="i" :value="item">{{item}}</option>
+				</select>
+				<button @click="show = !show">Toggle</button>
+			</div>
+			<transition :name="name">
+				<p v-if="show">Transition</p>
+			</transition>
 		</div>
-		<transition :name="name">
-			<p v-if="show">Hihihehe</p>
-		</transition>
+		<div class="a">
+			<div class="b">
+				<select v-model="classes" style="border: 1px solid black">
+					<option disabled value="">Select an animation</option>
+					<option v-for="(item, i) in list2" :key="i" :value="item">{{item}}</option>
+				</select>
+			</div>
+			<p class="animated" :class="classes">Attention Seekers</p>
+		</div>
 	</div>
 </template>
 
@@ -21,6 +32,8 @@
         name,
         list: ['bounceDown', 'bounceUp', 'bounceRight', 'bounceLeft', 'fadeDown', 'fadeUp', 'fadeRight', 'fadeLeft', 'flipX', 'flipY', 'lightSpeedRight', 'lightSpeedLeft', 'rotate', 'rotateDownLeft', 'rotateDownRight', 'rotateUpLeft', 'rotateUpRight', 'roll', 'zoom', 'zoomUp', 'zoomDown', 'zoomLeft', 'zoomRight'],
         show: false,
+				list2: ['bounce', 'flash', 'flip', 'heartBeat', 'jello', 'rubberBand', 'shake', 'swing', 'tada', 'wobble'],
+				classes: null,
       }
     }
   }

@@ -1,8 +1,8 @@
 animation: 2 types defined class
 1: attention seekers:
-    - bounce (normal)
+    - bounce
     - flash
-    - flip (normal)
+    - flip
     - heartBeat
     - jello
     - pulse
