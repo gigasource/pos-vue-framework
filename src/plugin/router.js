@@ -12,6 +12,7 @@ import ButtonDemo from '../view/ButtonDemo';
 import OverlayDemo from "../view/OverlayDemo";
 import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
+import TransitionDemo from '../view/TransitionDemo';
 import ChipDemo from '../view/ChipDemo';
 
 const routes = [
@@ -28,6 +29,7 @@ const routes = [
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/chip', name: 'Chip', component: ChipDemo}
+  { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
 ];
 
 const router = new VueRouter({
