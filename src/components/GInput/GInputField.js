@@ -5,8 +5,8 @@ import _ from "lodash";
 export default function getGInputField(props, context) {
 
   //compute class for text field
-  const tfWrapperClasses = computed(() => (props.disabled ? {'tf-wrapper-disabled' : true} : {
-    'tf__filled' : props.filled,
+  const tfWrapperClasses = computed(() => (props.disabled ? {'tf-wrapper-disabled': true} : {
+    'tf__filled': props.filled,
     'tf__outlined': props.outlined,
     'tf__solo': props.solo,
     'tf__rounded': props.rounded,
@@ -18,6 +18,8 @@ export default function getGInputField(props, context) {
 
   // text field internalValue
   const lazyValue = ref('');
+
+
   const internalValue = computed({
     get: () => {
       return lazyValue.value
@@ -31,44 +33,14 @@ export default function getGInputField(props, context) {
   //Activate label
   const isDirty = computed(() => internalValue.value && internalValue.value.toString().length > 0)
   const isLabelActive = computed(() => isDirty.value || isFocused.value)
-  const labelClasses = computed(() => isLabelActive.value ? {'tf-label__active': true}:{})
+  const labelClasses = computed(() => isLabelActive.value ? {'tf-label__active': true} : {})
 
   //Label positioning according to prefix, prepend
-  const prefixRef = ref(null)
-  const prependRef = ref(null)
-  const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
-  const prependWidth = computed(() => prependRef.value ? prependRef.value.offsetWidth : 0)
-  const labelStyles = computed(() =>{
-    let style = {}
-    if(isLabelActive.value){
-      Object.assign(style,{'transform': 'translateY(-18px) translateX('+ -(prefixWidth.value+prependWidth.value) + 'px)  scale(0.75)'} )
-  }
-    //Has prefix or prepend
-    if (props.prefix || prependRef.value ){
-      Object.assign(style,{'left': prefixWidth.value+prependWidth.value+8 +'px'})
-    }
-    //Error occur
-    if(!isValidInput.value){
-      Object.assign(style,{'color': 'red'})
-    }
-    return style
-
-  })
-
-  //Label with Icon (indent label)
-  const hasIcon = computed(() => props.prependIcon )
-  const prependClasses = computed(() => hasIcon.value
-      ?{
-    "tf-prepend__inner": true,
-    'tf-icon__active': true,
-      }
-      :{'tf-prepend__inner': true}
-
-  )
+  const labelStyles = computed(() => !isValidInput.value ? {'color': 'red'}: {})
 
 
   //Activate non persistent hint
-  const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'tf-hint__active' : true} : {})
+  const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'tf-hint__active': true} : {})
 
   //Value counter
   const counterValue = computed(() => {
@@ -78,38 +50,37 @@ export default function getGInputField(props, context) {
   //Validation
   const isValidInput = ref(true);
 
-  function validate(value){
-    const errorBucket = []
-    value = value || internalValue.value
-    for (let i = 0 ; i < props.rules.length; i++ ){
-      const rule = props.rules[i]
-      const validatedValue = typeof rule === 'function' ? rule(value) : rule
-      if( typeof validatedValue == 'string'){
-        errorBucket.push(validatedValue)
-      }
-      else if(typeof validatedValue !== 'boolean'){
-        alert('Something wrong with rules! Check it out!')
-      }
-      return errorBucket
-
-    }
-  }
-  // watch(() => validate(internalValue.value))
-  watch(() => internalValue.value,
-      _.debounce(function()  {
-    if (props.rules && typeof props.rules === 'function') {
-      isValidInput.value = props.rules(internalValue.value);
-    }
-  }, 500))
+  const errorMessages = ref('')
+  watch(internalValue,
+      _.debounce(function () {
+        const errorBucket = []
+        if (props.rules) {
+          for (let i = 0; i < props.rules.length; i++) {
+            console.log('validating')
+            const rule = props.rules[i]
+            const validatedValue = typeof rule === 'function' ? rule(internalValue.value) : rule
+            if (typeof validatedValue == 'string') {
+              errorBucket.push(validatedValue)
+            } else if (typeof validatedValue !== 'boolean') {
+              alert('Something wrong with rules! Check it out!')
+            }
+          }
+          // props.errorMessage = errorBucket
+          errorMessages.value = errorBucket && `${errorBucket.join('. ')}.`
+          errorBucket.length ? isValidInput.value = false : isValidInput.value = true
+        }
+      }, 300)
+  )
 
   //Error state display
-    //change input color
-  const inputStyles = computed(() => isValidInput.value ?{} : {'color': 'red'} )
-    //change input border color
-  const tfClasses = computed(() => isValidInput.value ? {} :{'tf__error': true})
+  //change input color
+  const inputStyles = computed(() => isValidInput.value ? {} : {'color': 'red'})
+  //change input border color
+  const tfClasses = computed(() => isValidInput.value ? {} : {'tf__error': true})
 
   //event handler function
   const isFocused = ref(false);
+
   function onClick(event) {
     if (props.disabled) return;
     if (!isFocused.value) context.refs.input.focus();
@@ -141,6 +112,27 @@ export default function getGInputField(props, context) {
     context.emit('clear', event)
   }
 
+  //slot events
+  function onClickPrependOuter(event){
+    context.emit('click :prepend-outer')
+  }
+  function onClickPrependInner(event){
+    context.emit('click :prepend-inner')
+  }
+  function onClickAppendOuter(event){
+    context.emit('click :append-outer')
+  }
+  function onClickAppendInner(event){
+    context.emit('click :append-inner')
+  }
+  const slotEventListener ={
+    onClickPrependOuter,
+    onClickPrependInner,
+    onClickAppendOuter,
+    onClickAppendInner,
+  }
+
+
   return {
     tfClasses,
     hintClasses,
@@ -148,9 +140,6 @@ export default function getGInputField(props, context) {
     tfWrapperClasses,
     inputStyles,
     labelStyles,
-    prefixRef,
-    prependRef,
-    prependClasses,
     internalValue,
     counterValue,
     onClearIconClick,
@@ -158,10 +147,12 @@ export default function getGInputField(props, context) {
     isLabelActive,
     isValidInput,
     isFocused,
-    hasIcon,
     onClick,
     onFocus,
-    onBlur
+    onBlur,
+    slotEventListener,
+    // calculated error message
+    errorMessages,
   }
 
 
