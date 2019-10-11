@@ -1,6 +1,6 @@
 <template>
 	<div class="g-switch-wrapper">
-		<label class="g-switch-container" @click.prevent="activate">
+		<label class="g-switch-container" :class="containerClasses" @click.prevent="activate">
 			<input type="checkbox">
 			<span class="g-switch" :class="classes" :style="styles">
 				<span class="g-switch-track"></span>
@@ -58,8 +58,6 @@
       const colorClass = convertColorClass('background');
 
       const classes = computed(() => ({
-        readonly: props.readonly,
-        disabled: props.disabled,
         [colorClass]: !!type && type === 'class',
         'g-switch__active': isActive.value,
         'g-switch__flat': props.flat,
@@ -73,6 +71,11 @@
         }
         return styles;
       });
+
+      const containerClasses = computed(() => ({
+        readonly: props.readonly,
+				disabled: props.disabled,
+			}));
 
       function activate() {
         isActive.value = !isActive.value;
@@ -98,6 +101,7 @@
       return {
         classes,
         styles,
+        containerClasses,
         isActive,
         activate
       }

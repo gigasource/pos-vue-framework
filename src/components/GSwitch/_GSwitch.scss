@@ -86,7 +86,7 @@
   }
 
   &__inset {
-    & .g-switch-track {
+    .g-switch-track {
       top: -4px;
       left: -4px;
       height: 28px;
@@ -94,11 +94,11 @@
       opacity: 0.2;
     }
 
-    & .g-switch-thumb {
+    .g-switch-thumb {
       top: 0;
     }
 
-    & .g-switch-thumb:before {
+    .g-switch-thumb:before {
       display: none;
     }
 
