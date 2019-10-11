@@ -5,7 +5,6 @@
 @import "atomic-utilities";
 @import "grid";
 @import 'waves';
-@import 'pulse';
 @import "elevation";
 @import "../components/GButton/_GButton";
 @import "../components/GExpansionPanel/_GExpressionPanel";
@@ -24,3 +23,4 @@
 @import "../components/GToolTip/_GToolTip";
 @import "../components/GBtn/GBtn";
 @import "../components/GSnackbar/_GSnackbar";
+@import "../components/transition/_animation";
