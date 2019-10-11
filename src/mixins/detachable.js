@@ -1,4 +1,4 @@
-import { onMounted } from '@vue/composition-api';
+// requires template refs: activator, content, el
 
 export default function detachable(props, context) {
   let activatorChildNodes;
