@@ -3,7 +3,7 @@
 		<g-btn color="black" @click="snackbar = true">
 			OPEN SNACKBAR
 		</g-btn>
-		<g-snackbar v-model="snackbar">
+		<g-snackbar v-model="snackbar" timeout="200000" color="bg-red">
 			Hello I'm Snackbar
 			<g-btn flat color="pink" @click="snackbar = false">
 				Close

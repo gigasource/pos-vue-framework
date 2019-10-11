@@ -29,7 +29,6 @@ const routes = [
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
-  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/card-demo', name: 'Card demo', component: CardDemo},
   { path: '/snackbar-demo', name: 'Snackbar demo', component: SnackbarDemo}
 ];

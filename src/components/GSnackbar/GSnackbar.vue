@@ -3,7 +3,7 @@
 		<div v-if="isActive"
 				 class="g-snack"
 				 :class="snackClasses">
-			<div class="g-snack-wrapper">
+			<div class="g-snack-wrapper" :class="wrapperClasses" :style="wrapperStyles">
 				<div class="g-snack-content">
 					<slot></slot>
 				</div>
@@ -14,30 +14,47 @@
 
 <script>
   import getVModel from '../../mixins/getVModel';
-	import colorable from '../../mixins/colorable';
-  import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { setBackgroundColor } from '../../mixins/colorable';
+  import { computed, watch } from '@vue/composition-api';
 
   export default {
     name: 'GSnackbar',
 		props: {
       value: Boolean,
-
       timeout: {
-        type: Number,
+        type: [Number, String],
         default: 6000,
       },
 
-			absolute: Boolean,
-			top: Boolean,
-			bottom: Boolean,
-			left: Boolean,
-			right: Boolean,
+			// Positioning
+			...{
+        absolute: Boolean,
+        top: Boolean,
+        bottom: Boolean,
+        left: Boolean,
+        right: Boolean,
+      },
 
+			// Styling
 			color: String,
 		},
 		setup(props, context) {
       const { model: isActive } = getVModel(props, context);
+      let activeTimeout;
 
+			// Set close timeout
+			watch(isActive, newVal => {
+			  if (newVal) {
+          clearTimeout(activeTimeout)
+          if (props.timeout) {
+            activeTimeout = setTimeout(() => {
+              isActive.value = false
+            }, props.timeout)
+          }
+				}
+			});
+
+			// Dynamic classes
 			const snackClasses = computed(() => ({
         'g-snack__active': isActive.value,
 				'g-snack__absolute': props.absolute,
@@ -47,9 +64,19 @@
         'g-snack__top': props.top,
 			}));
 
+			// Styling
+			const colorOutput = computed(() => {
+        return setBackgroundColor(props.color, {})
+      })
+
+			const wrapperClasses = computed(() => colorOutput.value.class);
+			const wrapperStyles = computed(() => colorOutput.value.style);
+
       return {
         isActive,
-				snackClasses
+				snackClasses,
+				wrapperClasses,
+				wrapperStyles,
       }
 		}
   }
