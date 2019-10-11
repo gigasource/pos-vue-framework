@@ -14,6 +14,7 @@ import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import SnackbarDemo from '../view/SnackbarDemo';
 import TransitionDemo from '../view/TransitionDemo';
+import NotificationDemo from '../view/NotificationDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -30,7 +31,8 @@ const routes = [
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   { path: '/card-demo', name: 'Card demo', component: CardDemo},
-  { path: '/snackbar-demo', name: 'Snackbar demo', component: SnackbarDemo}
+  { path: '/snackbar-demo', name: 'Snackbar demo', component: SnackbarDemo},
+  { path: '/notification-demo', name: 'Notification demo', component: NotificationDemo}
 ];
 
 const router = new VueRouter({

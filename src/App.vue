@@ -15,6 +15,7 @@
 			<router-link to="/button">Button</router-link>
 			<router-link to="/snackbar-demo">Snackbar</router-link>
 			<router-link to="/transition-demo">Transition</router-link>
+			<router-link to="/notification-demo">Notification</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
