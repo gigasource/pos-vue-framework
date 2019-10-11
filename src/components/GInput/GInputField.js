@@ -35,8 +35,24 @@ export default function getGInputField(props, context) {
   const isLabelActive = computed(() => isDirty.value || isFocused.value)
   const labelClasses = computed(() => isLabelActive.value ? {'tf-label__active': true} : {})
 
-  //Label positioning according to prefix, prepend
-  const labelStyles = computed(() => !isValidInput.value ? {'color': 'red'}: {})
+  //Label transform when textfield has prefix, prepend
+  const prefixRef = ref(null)
+  const prependRef = ref(null)
+  const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
+  const prependWidth = computed(() => prependRef.value ? prependRef.value.offsetWidth : 0)
+  const labelStyles = computed(() =>{
+    let style = {}
+    if(isLabelActive.value){
+      Object.assign(style,{'transform': `translateY(-18px) translateX(${-prefixWidth.value - prependWidth.value}px)  scale(0.75)`} )
+    }
+    //Error occur
+    if(!isValidInput.value){
+      Object.assign(style,{'color': 'red'})
+    }
+
+    return style
+
+  })
 
 
   //Activate non persistent hint
@@ -48,29 +64,34 @@ export default function getGInputField(props, context) {
   })
 
   //Validation
-  const isValidInput = ref(true);
+  const isValidInput = ref(true)
+  const hasInput = ref(false)
+  function validate(value){
+    const errorBucket = []
+    if (props.rules && isFocused.value) {
+      for (let i = 0; i < props.rules.length; i++) {
+        const rule = props.rules[i]
+        const validatedValue = typeof rule === 'function' ? rule(value) : rule
+        if (typeof validatedValue == 'string') {
+          errorBucket.push(validatedValue)
+        } else if (typeof validatedValue !== 'boolean') {
+          alert('Something wrong with rules! Check it out!')
+        }
+      }
+      errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
+      errorBucket.length ? isValidInput.value = false : isValidInput.value = true
+    }
+  }
+  function reset() {
+    isValidInput.value = true
+  }
 
   const errorMessages = ref('')
-  watch(internalValue,
-      _.debounce(function () {
-        const errorBucket = []
-        if (props.rules) {
-          for (let i = 0; i < props.rules.length; i++) {
-            console.log('validating')
-            const rule = props.rules[i]
-            const validatedValue = typeof rule === 'function' ? rule(internalValue.value) : rule
-            if (typeof validatedValue == 'string') {
-              errorBucket.push(validatedValue)
-            } else if (typeof validatedValue !== 'boolean') {
-              alert('Something wrong with rules! Check it out!')
-            }
-          }
-          // props.errorMessage = errorBucket
-          errorMessages.value = errorBucket && `${errorBucket.join('. ')}.`
-          errorBucket.length ? isValidInput.value = false : isValidInput.value = true
-        }
-      }, 300)
-  )
+  watch(internalValue,() =>{
+    !props.validateOnBlur ?
+    validate(internalValue.value) :{}
+
+  }, {lazy : true})
 
   //Error state display
   //change input color
@@ -103,13 +124,14 @@ export default function getGInputField(props, context) {
 
   function onBlur(event) {
     context.emit('blur', event);
+    props.validateOnBlur ? validate(internalValue.value) : {}
     isFocused.value = false;
   }
 
   function onClearIconClick(event) {
-    lazyValue.value = ''
-    context.root.$forceUpdate()
+    internalValue.value = ''
     context.emit('clear', event)
+    reset()
   }
 
   //slot events
@@ -153,6 +175,8 @@ export default function getGInputField(props, context) {
     slotEventListener,
     // calculated error message
     errorMessages,
+    prependRef,
+    prefixRef,
   }
 
 

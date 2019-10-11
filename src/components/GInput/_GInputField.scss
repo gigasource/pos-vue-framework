@@ -92,21 +92,28 @@
 
 .tf-label {
   position: absolute;
-  display: block;
   top: 8px;
   left: 0;
   transform-origin: top left;
   transition: 0.4s ease-out;
   pointer-events: none;
+  color: #3f51b5;
 }
-
+.inputGroup{
+  position: relative;
+  width: 100%;
+}
 .tf-input {
   width: 100%;
-  padding: 5px 0 0 5px;
+  padding: 5px 0;
   line-height: 24px;
   font-size: 16px;
 }
-
+.tf-affix{
+  padding: 12px 0 0 8px;
+  line-height: 24px;
+  font-size: 16px;
+}
 .tf:focus-within::after {
   height: 2px;
   transform: scale(1);
@@ -115,9 +122,8 @@
 
 
 .tf-label__active {
-  background-color: white;
   transform: translateY(-18px) scale(0.75);
-  color: #1867c0;
+  background-color: white;
 }
 
 .tf-icon__active {
@@ -210,7 +216,7 @@
   border-top-right-radius: 4px;
 }
 
-.tf__filled .tf-input {
+.tf__filled .tf-input{
   background-color: transparent;
   border: inherit;
   padding: 12px 8px 4px;
@@ -229,14 +235,17 @@
 
 .tf__filled .tf-input:focus + .tf-label,
 .tf__filled .tf-input:placeholder-shown + .tf-label {
-  transform: translateY(-12px) scale(0.75);
+  transform: translateY(-16px) scale(0.75);
   color: #1867c0;
 }
 
 .tf__filled .tf-label__active {
-  transform: translateY(-12px) scale(0.75);
+  transform: translateY(-16px) scale(0.75);
+  background-color: transparent;
 }
-
+.tf__filled .tf-affix{
+  line-height: 32px;
+}
 .tf-wrapper.tf__outlined fieldset {
   display: flex;
   flex: 1 1 auto;
@@ -318,7 +327,7 @@
   left: 8px;
 }
 .tf__outlined.tf__rounded:focus-within .tf-label {
-  left: 0;
+  left: 8px;
 }
 .tf__filled.tf__rounded .tf-input {
   padding-left: 16px;
@@ -361,7 +370,7 @@
   left: 8px;
 }
 .tf__outlined.tf__shaped:focus-within .tf-label {
-  left: 0;
+  left: 8px;
 }
 .tf__filled.tf__shaped .tf-input {
   padding-left: 16px;
@@ -403,9 +412,4 @@ input[type=password] {
   border: transparent;
   font-family: "Muli", sans-serif;
 }
-.tf-prefix{
-  display: block;
-  padding-top: 8px;
-  font-size: 16px;
 
-}

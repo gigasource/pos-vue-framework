@@ -1,48 +1,51 @@
 <template>
-  <div class="tf-wrapper" :class="tfWrapperClasses"  @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-    <div class="tf-prepend__outer">
+  <div class="tf-wrapper" :class="tfWrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
+    <div class="tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
       <slot name="prepend-outer"></slot>
     </div>
     <fieldset>
       <legend></legend>
-      <div  class='tf' :class="tfClasses" >
-        <div class="tf-prepend__inner" ref="prependRef">
+      <div class='tf' :class="tfClasses">
+        <div class="tf-prepend__inner" @click="onClickPrependInner">
           <slot name="prepend-inner"></slot>
         </div>
-        <div ref="prefixRef" class="tf-prefix">{{prefix}}</div>
-        <input id="input" type="text"
-               class="tf-input"
-               :style="inputStyles"
-               :type="type"
-               :label="label"
-               v-model="internalValue"
-               :placeholder="placeholder"
-               ref="input"
-               @change="onChange"
-               @focus="onFocus"
-               @blur="onBlur"
-               @keydown="onKeyDown">
-        <label for="input" class="tf-label"  :style="labelStyles">
-          <slot name="label">{{label}}</slot>
-        </label>
-        <div class="tf-affix">{{suffix}}</div>
-        <div class="tf-append__inner" @click="onClearIconClick">
+        <div class="tf-affix" ref="prefixRef">{{prefix}}</div>
+        <div class="inputGroup">
+          <input id="input" type="text"
+                 class="tf-input"
+                 :style="inputStyles"
+                 :type="type"
+                 :label="label"
+                 v-model="internalValue"
+                 :placeholder="placeholder"
+                 ref="input"
+                 @change="onChange"
+                 @focus="onFocus"
+                 @blur="onBlur"
+                 @keydown="onKeyDown">
+          <label for="input" class="tf-label" :style="labelStyles" >
+            <slot name="label">{{label}}</slot>
+          </label>
+        </div>
+
+        <div class="tf-append__inner" @click="onClickAppendInner">
           <slot name="append-inner"></slot>
         </div>
       </div>
     </fieldset>
-    <div class="tf-append__outer" @click="onClearIconClick">
+    <div class="tf-append__outer" @click="onClickAppendOuter">
+      <img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick">
       <slot name="append-outer"></slot>
-      <img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg">
+
     </div>
-    <div class="tf-error" v-if="!isValidInput">{{errorMessage}}</div>
+    <div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
     <div class="tf-hint" v-else :class="hintClasses">{{hint}}</div>
-    <div v-show="counter" class="tf-counter">{{counterValue}} / {{maxlength}}</div>
+    <div v-show="counter" class="tf-counter">{{counterValue}} / {{counter}}</div>
   </div>
 </template>
 
 <script>
-  import {computed, ref, onMounted} from '@vue/composition-api';
+  import { ref } from '@vue/composition-api';
   import getGInput from "./GInput";
   import getGInputField from "./GInputField";
   import {keyCodes} from '../../utils/helpers';
@@ -53,22 +56,37 @@
       ...{
         label: String,
         placeholder: String,
+        clearable: Boolean,
         disabled: Boolean,
         readOnly: Boolean,
         appendIcon: String,
         prependIcon: String,
-        prefix: String,
-        suffix: String,
+        prefix: {
+          type: String,
+          default: ''
+        },
+        suffix: {
+          type: String,
+          default: ''
+        },
       },
       //rules and validate
-      required: Boolean,
-      clearable: Boolean,
-      rules: Function,
+
+      rules: Array,
       hint: String,
-      errorMessage: String,
+
+      messages: {
+        type: [String, Array],
+        default: () => [],
+      },
+      errorCount: {
+        type: Number,
+        default: 1
+      },
       persistent: Boolean,
-      counter: Boolean,
-      maxlength: String,
+      counter: [Number, Boolean, String],
+      validateOnBlur: Boolean,
+      error: Boolean,
 
       // display
       large: Boolean,
@@ -98,26 +116,27 @@
     },
     setup(props, context) {
       const {listeners} = getGInput(props, context)
-      const {counterValue,
+      const {
+        counterValue,
         isDirty,
         isLabelActive,
         isFocused,
-        hasIcon,
         onClick,
         onFocus,
         onBlur,
+        slotEventListener,
         internalValue,
         isValidInput,
         onClearIconClick,
-        prependClasses,
         tfWrapperClasses,
         hintClasses,
         labelStyles,
         labelClasses,
         tfClasses,
-        prefixRef,
-        prependRef,
         inputStyles,
+        errorMessages,
+          prependRef,
+          prefixRef,
       } = getGInputField(props, context)
 
       // template refs
@@ -126,6 +145,7 @@
 
       // event listeners
       const {onChange} = listeners
+      const {onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner,} = slotEventListener
 
       function onKeyDown(event) {
         if (event.keyCode === keyCodes.enter && props.isDirty()) {
@@ -148,11 +168,8 @@
       }
 
       return {
-        prefixRef,
-        prependRef,
         labelClasses,
         labelStyles,
-        prependClasses,
         tfClasses,
         tfWrapperClasses,
         hintClasses,
@@ -166,12 +183,18 @@
         onKeyDown,
         onMouseUp,
         onMouseDown,
+        onClickPrependOuter,
+        onClickPrependInner,
+        onClickAppendOuter,
+        onClickAppendInner,
         onClearIconClick,
         isFocused,
         isDirty,
         isValidInput,
-        hasIcon,
         inputStyles,
+        errorMessages,
+        prependRef,
+        prefixRef,
       }
     }
   }
