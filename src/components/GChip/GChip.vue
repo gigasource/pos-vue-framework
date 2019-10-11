@@ -1,17 +1,17 @@
 <template>
 	<div :class="classes" :style="styles" :draggable="attrs.draggable" @click="onClick">
-		<span class="g-icon g-icon__left" v-if="renderState == 3">
+		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY'">
 			<i class="material-icons g-icon" v-if="filter === true && stateData.isActive">{{filterIcon}}</i>
 		</span>
 
-		<div class="g-avatar g-avatar__left" v-if="renderState == 1">
+		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_FILTER'">
 			<slot name="prependItem"></slot>
 			<div class="g-overlay" v-if="filter && stateData.isActive">
 				<i class="material-icons g-icon">{{filterIcon}}</i>
 			</div>
 		</div>
 
-		<div class="g-avatar g-avatar__left" v-if="renderState == 2">
+		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_ONLY'">
 			<slot name="prependItem"></slot>
 		</div>
 
@@ -22,12 +22,14 @@
 		</span>
 
 	</div>
+
 </template>
 
 <script>
   import { computed, reactive } from '@vue/composition-api';
   import { convertToGradient } from '../../utils/helpers';
   import { setBackgroundColor } from '../../mixins/colorable';
+  import GExpansionPanel from '../GExpansionPanel/GExpansionPanel';
 
   export default {
     name: 'GChip',
@@ -36,52 +38,53 @@
       append: Boolean,
       close: Boolean,
       closeIcon: { type: String, default: `remove_circle` },
-      color: String,				//done
-      disabled: Boolean,   //done
-      filter: Boolean,		//done
-      filterIcon: { type: String, default: `done` },	//done //icons import?
+      color: String,
+      disabled: Boolean,
+      filter: Boolean,
+      filterIcon: { type: String, default: `done` },
       href: [String, Object],
       inputValue: null,
       label: Boolean,
       link: Boolean,
-      outlined: Boolean,  //re-style border color
+      outlined: Boolean,
       pill: Boolean,
       replace: Boolean,
-      ripple: Boolean,					//done
+      ripple: Boolean,
       target: String,
-      textColor: String,				//done
-      backgroundColor: String,	//done
-      gradient: String,			//done
+      textColor: String,
+      backgroundColor: String,
+      gradient: String,
       value: null,
       //style
-      draggable: Boolean, //done
-      small: Boolean, //done
-      large: Boolean, //done
-      xSmall: Boolean, //done
-      xLarge: Boolean //done
+      draggable: Boolean,
+      small: Boolean,
+      large: Boolean,
+      xSmall: Boolean,
+      xLarge: Boolean
     },
     setup(props, context) {
       //Prepend Icon Rendering States
-      const RENDER_FILTER_ONLY = 1;
-      const RENDER_AVATAR_ONLY = 2;
-      const RENDER_AVATAR_FILTER = 3;
+      const RENDER_FILTER_ONLY = 'RENDER_FILTER_ONLY';
+      const RENDER_AVATAR_ONLY = 'RENDER_AVATAR_ONLY';
+      const RENDER_AVATAR_FILTER = 'RENDER_AVATAR_FILTER';
 
       let stateData = reactive({
         isActive: false
       });
 
+      //Check prepend slot available
       let prependSlot = () => {
         return !!context.slots.prependItem;
       };
 
+      //Rendering state of prependItem
       let renderState = computed(() => {
-        console.log(prependSlot());
         if (prependSlot() === true && props.filter === true) {
-          return RENDER_FILTER_ONLY;
+          return RENDER_AVATAR_FILTER;
         } else if (prependSlot() === true && props.filter === false) {
           return RENDER_AVATAR_ONLY;
         } else if (prependSlot() === false && props.filter === true) {
-          return RENDER_AVATAR_FILTER;
+          return RENDER_FILTER_ONLY;
         }
       });
 
@@ -90,12 +93,6 @@
       let colorOutput = computed(() => {
         return setBackgroundColor(props.color, {})
       });
-
-      const chipClasses = computed(() => {
-        return colorOutput.value.class
-      });
-
-      console.log(chipClasses)
 
       let classes = computed(() => {
 
@@ -110,42 +107,32 @@
           'g-chip__pill': props.pill,
           'g-chip__label': props.label,
           'g-chip__active': props.active,
+					...colorOutput && colorOutput.value && colorOutput.value.class
         };
 
         let size = '';
-        //let iconSize = '';
 
         if (props.large) {
           size = 'g-size__large';
-          // iconSize = props.fab ? 'g-icon-size__large' : null;
         } else if (props.small) {
           size = 'g-size__small';
-          // iconSize = props.fab ? 'g-icon-size__small' : null;
         } else if (props.xSmall) {
           size = 'g-size__x-small';
-          // iconSize = props.fab ? 'g-icon-size__x-small' : null;
         } else if (props.xLarge) {
           size = 'g-size__x-large';
-          // iconSize = props.fab ? 'g-icon-size__x-large' : null;
         } else {
           size = 'g-size__default';
-          // iconSize = props.fab ? 'g-icon-size__default' : null;
         }
         if (size) {
           _classes[size] = true;
         }
-
-        // if (iconSize) {
-        //   _classes[iconSize] = true;
-        // }
-
 
         return _classes;
       });
 
       let styles = computed(() => {
         let _styles = {
-          ...colorOutput.value.style,
+          ...colorOutput && colorOutput.value && colorOutput.value.style,
           ...props.textColor && { color: props.textColor.replace('-', '') },
           ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
           ...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
@@ -161,10 +148,9 @@
       });
 
       let attrs = computed(() => {
-        let _attrs = {
+        return {
           ...props.draggable && { draggable: props.draggable }
         };
-        return _attrs;
       });
 
       let onClick = (event) => {

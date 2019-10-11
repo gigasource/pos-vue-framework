@@ -29,7 +29,7 @@
 
     .g-icon {
       z-index: 5;
-      margin-left: 3px;
+      margin-left: -1px;
       margin-top: 3px;
     }
 
@@ -48,6 +48,8 @@
 
       .g-icon {
         color: #ffffff;
+        margin-left: 3px;
+        margin-top: 3px;
       }
     }
   }
@@ -218,13 +220,15 @@
       right: 0;
       transition: .3s ease;
       background-color: rgba(0, 0, 0, 0.4);
+
+      .g-icon {
+        z-index: 5;
+        margin-left: 7px;
+        margin-top: 7px;
+      }
+
     }
 
-    .g-icon {
-      z-index: 5;
-      margin-left: 7px;
-      margin-top: 7px;
-    }
 
   }
 

@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="wrapper">
-			<p>Different sizes / default chips</p>
+			<p>Different sizes / draggable default chips</p>
 			<hr/>
 			<g-chip x-small draggable close filter>X Small</g-chip>
 			<g-chip small draggable filter filter-icon="check_circle">Small</g-chip>
@@ -73,26 +73,18 @@
 			<g-chip large outlined label close color="brown" filter>Outlined</g-chip>
 			<g-chip x-large outlined label close color="blue" filter>Outlined</g-chip>
 		</div>
+		<div class="wrapper">
+			<g-chip x-small outlined close color="green" filter>Outlined</g-chip>
+			<g-chip small outlined close color="red" filter>Outlined</g-chip>
+			<g-chip outlined close color="maroon" filter>Outlined</g-chip>
+			<g-chip large outlined close color="brown" filter>Outlined</g-chip>
+			<g-chip x-large outlined close color="blue" filter>Outlined</g-chip>
+		</div>
 
 		<div class="wrapper">
 			<p>Avatar & Icons</p>
 			<hr/>
-			<!--			<g-chip>-->
-			<!--				<template v-slot:default>-->
-			<!--					<g-menu v-model="showMenu2" lazy open-on-hover open-delay="500" close-delay="500">-->
-			<!--						<template v-slot:activator="{toggleContent}">-->
-			<!--							<g-btn @click="toggleContent">Activator</g-btn>-->
-			<!--						</template>-->
-			<!--						<g-list>-->
-			<!--							<g-list-item> v-for="i in 5" :key="i">-->
-			<!--								<g-btn> {{i}}</g-btn>-->
-			<!--							</g-list-item>-->
-			<!--						</g-list>-->
-			<!--					</g-menu>-->
-			<!--				</template>-->
-			<!--				Close-->
-			<!--			</g-chip>-->
-			<g-chip>
+			<g-chip filter>
 				<template v-slot:prependItem>
 					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
 				</template>
@@ -144,31 +136,31 @@
 		<div class="wrapper">
 			<p>Icons</p>
 			<hr/>
-			<g-chip color="blue">
+			<g-chip color="blue" filter>
 				<template v-slot:prependItem>
 					<i class="material-icons g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
-			<g-chip color="green">
+			<g-chip color="green" filter>
 				Premium
 				<span class="g-icon g-icon__right">
 					<i class="material-icons g-icon">star</i>
 				</span>
 			</g-chip>
-			<g-chip color="brown">
+			<g-chip color="brown" filter>
 				1 Year
 				<span class="g-icon g-icon__right">
 					<i class="material-icons g-icon">cake</i>
 				</span>
 			</g-chip>
-			<g-chip color="maroon">
+			<g-chip color="maroon" filter>
 				<template v-slot:prependItem>
 					<i class="material-icons g-icon">check_circle</i>
 				</template>
 				Confirmed
 			</g-chip>
-			<g-chip close close-icon="delete" color="red">
+			<g-chip close close-icon="delete" color="red" filter>
 				<template v-slot:prependItem>
 					<i class="material-icons g-icon">check_circle</i>
 				</template>
