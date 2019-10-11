@@ -209,6 +209,9 @@ describe('Dialog', () => {
       vm.$nextTick(() => {
         vm.$destroy()
         expect(vm.$el.outerHTML).toMatchSnapshot();
+        expect(vm.$el.querySelector('.dialog-wrapper')).toBe(null);
+        expect(vm.$el.querySelector('.overlay')).toBe(null);
+        expect(vm.$el.querySelector('button')).toBe(null);
       })
     })
   })

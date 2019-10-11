@@ -184,7 +184,7 @@
 			  unwatch();
 			  detach(context.refs.wrapper);
 			  detach(context.refs.overlay.$el);
-			  //detach();
+			  detach();
 			});
 
       return {

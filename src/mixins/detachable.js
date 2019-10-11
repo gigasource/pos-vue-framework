@@ -1,7 +1,7 @@
 import { onMounted } from '@vue/composition-api';
 
 export default function detachable(props, context) {
-  // const activatorChildNodes = [...context.refs.activator.childNodes];
+  let activatorChildNodes;
 
   function attachToRoot(node) {
     if (!node) {
@@ -17,10 +17,11 @@ export default function detachable(props, context) {
   }
 
   function attachToParent(node) {
+    activatorChildNodes = [...context.refs.activator.childNodes]
     let attachNodes = [];
 
     if(!node) {
-      attachNodes = [...context.refs.activator.childNodes];
+      attachNodes = activatorChildNodes;
 
       // If element contain activator, remove the activator div
       if(context.refs.activator.parentNode === context.refs.el) context.refs.el.removeChild(context.refs.activator);
@@ -42,8 +43,12 @@ export default function detachable(props, context) {
       node.parentNode.removeChild(node);
     } else {
       context.refs.content.parentNode.removeChild(context.refs.content);
-      for (let node of activatorChildNodes)
-        node.parentNode.removeChild(node);
+      if (activatorChildNodes) {
+        for (let node of activatorChildNodes)
+          node.parentNode.removeChild(node);
+      } else {
+        context.refs.activator.parentNode.removeChild(context.refs.activator);
+      }
     }
   }
 
