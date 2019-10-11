@@ -36,6 +36,23 @@ export function convertToUnit (str, unit = 'px') {
   }
 }
 
+export function convertToGradient(colorArr, angle = '45deg') {
+  if (!colorArr) {
+    return
+  }
+
+  if (!!Number(+angle)) {
+    angle = !angle.includes('deg') ? `${Number(angle)}deg` : `${Number(angle)}`;
+  }
+
+  return colorArr.length > 0 && colorArr.reduce((acc, curVal, index, arr) => {
+    if (index === arr.length - 1) {
+      curVal = `${curVal})`;
+    }
+    return `${acc}, ${curVal}`;
+  }, `linear-gradient(${angle}`);
+}
+
 let passiveSupported = false;
 try {
   if (typeof window !== 'undefined') {
@@ -43,11 +60,17 @@ try {
       get: () => {
         passiveSupported = true
       },
-    })
+    });
 
     window.addEventListener('testListener', testListenerOpts, testListenerOpts)
     window.removeEventListener('testListener', testListenerOpts, testListenerOpts)
   }
-} catch (e) { console.warn(e) }
+} catch (e) {
+  console.warn(e)
+}
 
 export { passiveSupported }
+
+export function upperFirst (str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
