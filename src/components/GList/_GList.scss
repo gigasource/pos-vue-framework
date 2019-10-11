@@ -1,37 +1,26 @@
-.list {
+.g-list {
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
-
-  &-header {
-    flex: 0 0 10%;
-
-    &__extended {
-      flex-shrink: 0;
-      flex-basis: 12.6667%;
-      font-weight: $font-weight-7;
-    }
-  }
-
-  &-content {
-    flex-grow: 1;
-    overflow-y: auto;
-  }
-
-  &-footer {
-    flex: 0 0 8.3333%;
-
-    &__extended {
-      flex-shrink: 0;
-      flex-basis: 12.6667%;
-      font-weight: $font-weight-7;
-    }
-  }
+  padding-top: 8px;
 
   &-item {
-    flex-shrink: 0;
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    &__one-line {
+      padding: 0px;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        margin: 16px;
+      }
+
+      .text {
+
+      }
+    }
   }
 }
