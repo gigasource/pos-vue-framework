@@ -10,12 +10,11 @@
           :date="titleModel.date"
           :disabled="titleModel.disabled"
           :readonly="titleModel.readonly"
-          :selectingYear="titleModel.selectedMonths"
+          :selectingYear="titleModel.selectingYear"
           :year="titleModel.year"
           v-on="titleModel.eventHandlers"
       />
     </template>
-
     <div :key="state.activePicker">
       <g-date-picker-years v-if="yearModel.show"
           :color="yearModel.color"
@@ -36,44 +35,42 @@
             v-on="headerModel.eventHandlers"
         />
         <g-date-picker-date-table
-            v-if="state.activePicker === 'DATE'"
-            :allowed-dates="allowedDates"
-            :color="color"
-            :current="current"
-            :disabled="disabled"
-            :events="events"
-            :eventColor="eventColor"
-            :firstDayOfWeek="firstDayOfWeek"
-            :format="dayFormat"
-            :min="min"
-            :max="max"
-            :readonly="readonly"
-            :scrollable="scrollable"
-            :showWeek="showWeek"
-            :tableDate="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
-            :value="generateRange()"
-            :weekdayFormat="weekdayFormat"
-            :range="range"
+            v-if="dateTableModel.show"
+            :allowed-dates="dateTableModel.allowedDates"
+            :color="dateTableModel.color"
+            :current="dateTableModel.current"
+            :disabled="dateTableModel.disabled"
+            :events="dateTableModel.events"
+            :eventColor="dateTableModel.eventColor"
+            :firstDayOfWeek="dateTableModel.firstDayOfWeek"
+            :format="dateTableModel.dayFormat"
+            :min="dateTableModel.min"
+            :max="dateTableModel.max"
+            :readonly="dateTableModel.readonly"
+            :scrollable="dateTableModel.scrollable"
+            :showWeek="dateTableModel.showWeek"
+            :tableDate="dateTableModel.tableDate"
+            :value="dateTableModel.value"
+            :weekdayFormat="dateTableModel.weekdayFormat"
+            :range="dateTableModel.range"
+            v-on="dateTableModel.eventHandlers"
             ref="table"
-            v-on="dateTableEventHandlers"
         />
         <g-date-picker-month-table
             v-else
-            :allowedDates="type === 'month' ? allowedDates : null"
-            :color="color"
-            :current="current ? sanitizeDateString(current, 'month') : null"
-            :disabled="disabled"
-            :events="type === 'month' ? events : null"
-            :eventColor="type === 'month' ? eventColor : null"
-            :format="monthFormat"
-            :min="minMonth"
-            :max="maxMonth"
-            :readonly="readonly && type === 'month'"
-            :scrollable="scrollable"
-            :value="selectedMonths"
-            :tableDate="`${pad(tableYear, 4)}`"
+            :allowedDates="monthTableModel.allowedDates"
+            :color="monthTableModel.color"
+            :current="monthTableModel.current"
+            :disabled="monthTableModel.disabled"
+            :format="monthTableModel.format"
+            :min="monthTableModel.min"
+            :max="monthTableModel.max"
+            :readonly="monthTableModel.readonly"
+            :scrollable="monthTableModel.scrollable"
+            :value="monthTableModel.value"
+            :tableDate="monthTableModel.tableDate"
+            v-on="monthTableModel.eventHandlers"
             ref="table"
-            v-on="onMonthTableEventHandler"
         />
       </template>
     </div>
@@ -228,7 +225,7 @@
       const maxYear = computed(() => props.max ? sanitizeDateString(props.max, 'year') : null)
       const formatters = computed(() => {
         return {
-          year: props.yearFormat || createNativeLocaleFormatter(undefined /*TODO: this.currentLocale*/, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
+          year: props.yearFormat || createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
           titleDate: props.titleDateFormat || (isMultiple.value ? defaultTitleMultipleDateFormatter.value : defaultTitleDateFormatter.value),
         }
       })
@@ -260,7 +257,7 @@
           date: { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' },
         }
 
-        const titleDateFormatter = createNativeLocaleFormatter(undefined /*TODO: this.currentLocale*/, titleFormats[props.type], {
+        const titleDateFormatter = createNativeLocaleFormatter(undefined, titleFormats[props.type], {
           start: 0,
           length: { date: 10, month: 7, year: 4 }[props.type],
         })
@@ -428,19 +425,6 @@
         }
       }
 
-      const dateTableEventHandlers = {
-        input: dateClick,
-        'update:table-date': (value) => state.tableDate = value,
-        'click:date': (value) => context.emit('click:date', value),
-        'dblclick:date': (value) => context.emit('dblclick:date', value),
-      }
-      const onMonthTableEventHandler = {
-        input: monthClick,
-        'update:table-date': (value) => state.tableDate = value,
-        'click:month': (value) => context.emit('click:month', value),
-        'dblclick:month': (value) => context.emit('dblclick:month', value),
-      }
-
 
       const titleModel = computed(() => {
         return {
@@ -474,8 +458,8 @@
           disabled: props.disabled,
           readonly: props.readonly,
           format: props.headerDateFormat,
-          min: state.activePicker === 'DATE' ? props.minMonth : props.minYear,
-          max: state.activePicker === 'DATE' ? props.maxMonth : props.maxYear,
+          min: state.activePicker === 'DATE' ? minMonth.value : minYear.value,
+          max: state.activePicker === 'DATE' ? maxMonth.value : maxYear.value,
           value: state.activePicker === 'DATE' ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`,
           eventHandlers: {
             toggle: () => state.activePicker = (state.activePicker === 'DATE' ? 'MONTH' : 'YEAR'),
@@ -484,32 +468,64 @@
         }
       })
 
+      const dateTableModel = computed(() => {
+        return {
+          show: state.activePicker === 'DATE',
+          allowedDates: props.allowedDates,
+          color: props.color,
+          current: current.value,
+          disabled: props.disabled,
+          events: props.events,
+          eventColor: props.eventColor,
+          firstDayOfWeek: props.firstDayOfWeek,
+          format: props.format,
+          min: props.min,
+          max: props.max,
+          readonly: props.readonly,
+          scrollable: props.scrollable,
+          showWeek: props.showWeek,
+          tableDate: `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}`,
+          value: generateRange(),
+          weekdayFormat: props.weekdayFormat,
+          range: props.range,
+          eventHandlers: {
+            input: dateClick,
+            'update:table-date': (value) => state.tableDate = value,
+            'click:date': (value) => context.emit('click:date', value),
+            'dblclick:date': (value) => context.emit('dblclick:date', value),
+          }
+        }
+      })
+
+      const monthTableModel = computed(() => {
+        return {
+          allowedDates: props.type === 'month' ? props.allowedDates : null,
+          color: props.color,
+          current: current.value ? sanitizeDateString(current.value, 'month') : null,
+          disabled: props.disabled,
+          format: props.monthFormat,
+          min: minMonth.value,
+          max: maxMonth.value,
+          readonly: props.readonly && props.type === 'month',
+          scrollable: props.scrollable,
+          value: selectedMonths.value,
+          tableDate: pad(tableYear.value, 4),
+          eventHandlers: {
+            input: monthClick,
+            'update:table-date': (value) => state.tableDate = value,
+            'click:month': (value) => context.emit('click:month', value),
+            'dblclick:month': (value) => context.emit('dblclick:month', value),
+          }
+        }
+      })
+
       return {
         titleModel,
         yearModel,
         headerModel,
-
-
-        dateTableEventHandlers,
-
-        // year picker
-        onMonthTableEventHandler,
-
-        //
-        generateRange,
-        tableYear,
-        minMonth,
-        maxMonth,
-        minYear,
-        maxYear,
-        formatters,
-        current,
-        selectedMonths,
-        isMultiple,
-        tableMonth,
+        dateTableModel,
+        monthTableModel,
         state,
-        pad,
-        sanitizeDateString
       }
     }
   }
