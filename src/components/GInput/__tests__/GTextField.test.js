@@ -16,7 +16,7 @@ describe('GTextField', function () {
     document.body.innerHTML = ''
   })
 
-  it('should render test', async function (done) {
+  it('validate test', async function (done) {
     let vm = new Vue({
       template: `<g-text-field-functional label="Has prefix"
                                filled
