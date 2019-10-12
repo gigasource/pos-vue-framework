@@ -1,20 +1,21 @@
 import { computed, ref, watch } from '@vue/composition-api';
-import _ from 'lodash';
 import { keyCodes } from '../../utils/helpers';
 
 export function getLabel(internalValue, isValidInput, isFocused,
                          labelActiveClass = 'tf-label__active',
                          inValidStyle = { 'color': 'red' }) {
   //Activate label
-  const isDirty = computed(() => internalValue.value && internalValue.value.toString().length > 0)
-  const isLabelActive = computed(() => isDirty.value || isFocused.value)
+  const isDirty = computed(() => !!internalValue.value)
+  const isLabelActive = computed(() => {
+    return isDirty.value || isFocused.value;
+  })
   const labelClasses = computed(() => isLabelActive.value ? { labelActiveClass: true } : {})
 
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
   const labelStyles = computed(() => ({
-    ...isLabelActive && { 'transform': `translateY(-18px) translateX(${-prefixWidth.value}px)  scale(0.75)` },
+    ...isLabelActive.value && { 'transform': `translateY(-18px) translateX(${-prefixWidth.value}px)  scale(0.75)` },
     ...!isValidInput.value && inValidStyle
   }))
 
@@ -49,7 +50,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
     }
   }, !props.value ? { lazy: true } : null)
 
-  return { errorMessages };
+  return { errorMessages, validate };
 }
 
 export function getSlotEventListeners(context) {
@@ -62,7 +63,7 @@ export function getSlotEventListeners(context) {
   }
 }
 
-export function getEvents(props, context, internalValue, isFocused, isValidInput) {
+export function getEvents(props, context, internalValue, isFocused, isValidInput, validate) {
   function onClick(event) {
     if (props.disabled) return;
     if (!isFocused.value) context.refs.input.focus();
@@ -132,18 +133,17 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const lazyValue = ref(props.value || '');
-  watch(() => props.value, () => {
-    lazyValue.value = props.value
-  }, { lazy: true });
+  const rawInternalValue = ref(props.value || '');
+
+  watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
+
   const internalValue = computed({
-    get: () => {
-      return lazyValue.value
-    },
+    get: () => rawInternalValue.value,
     set: (value) => {
-      lazyValue.value = value;
-      context.emit('input', lazyValue.value)
+      rawInternalValue.value = value;
+      context.emit('input', rawInternalValue.value)
     }
-  })
+  });
+
   return internalValue;
 }

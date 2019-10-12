@@ -50,53 +50,53 @@
 
   export default {
     name: 'GTextFieldFunctional',
-		props: {
-			...{//display props
-				label: String,
-				placeholder: String,
-				appendIcon: String,
-				prependIcon: String,
-				prefix: {
-					type: String,
-					default: ''
-				},
-				suffix: {
-					type: String,
-					default: ''
-				},
-				//input states
-				clearable: Boolean,
-				disabled: Boolean,
-				readOnly: Boolean,
-			},
-			//rules and validation props
-			rules: Array,
-			hint: String,
-			errorCount: {
-				type: Number,
-				default: 1
-			},
-			persistent: Boolean,
-			counter: [Number, Boolean, String],
-			validateOnBlur: Boolean,
-			error: Boolean,
+    props: {
+      ...{//display props
+        label: String,
+        placeholder: String,
+        appendIcon: String,
+        prependIcon: String,
+        prefix: {
+          type: String,
+          default: ''
+        },
+        suffix: {
+          type: String,
+          default: ''
+        },
+        //input states
+        clearable: Boolean,
+        disabled: Boolean,
+        readOnly: Boolean,
+      },
+      //rules and validation props
+      rules: Array,
+      hint: String,
+      errorCount: {
+        type: Number,
+        default: 1
+      },
+      persistent: Boolean,
+      counter: [Number, Boolean, String],
+      validateOnBlur: Boolean,
+      error: Boolean,
 
-			//styles
-			filled: Boolean,
-			outlined: Boolean,
-			solo: Boolean,
-			shaped: Boolean,
-			rounded: Boolean,
-			flat: Boolean,
+      //styles
+      filled: Boolean,
+      outlined: Boolean,
+      solo: Boolean,
+      shaped: Boolean,
+      rounded: Boolean,
+      flat: Boolean,
 
-			// basic props
-			value: [String, Number],
-			type: {
-				type: String,
-				default: 'text',
-			},
+      // basic props
+      value: [String, Number],
+      type: {
+        type: String,
+        default: 'text',
+      },
 
-		},
+    },
     setup(props, context) {
       const tfWrapperClasses = getTfWrapperClasses(props);
 
@@ -110,7 +110,7 @@
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'tf-hint__active': true } : {})
 
       //event handler function
-      const { errorMessages } = getValidate(props, isFocused, internalValue, isValidInput);
+      const { errorMessages, validate } = getValidate(props, isFocused, internalValue, isValidInput);
 
       const inputErrStyles = computed(() => isValidInput.value ? {} : { 'color': 'red' })
       //change input border color
@@ -120,7 +120,8 @@
 
       const { onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner, } = getSlotEventListeners(context);
 
-      const { onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput);
+      const { onClick, onFocus, onBlur, onClearIconClick,
+				onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
 
       return {
 				//calculated styles and classes
