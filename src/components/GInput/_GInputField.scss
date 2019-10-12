@@ -99,6 +99,10 @@
   pointer-events: none;
   color: #3f51b5;
 }
+.tf-label tf-label__disabled {
+  @extend .tf-label;
+  color: rgba(255, 255, 255, 0);
+}
 .inputGroup{
   position: relative;
   width: 100%;
@@ -109,6 +113,7 @@
   line-height: 24px;
   font-size: 16px;
 }
+
 .tf-affix{
   padding: 12px 0 0 8px;
   line-height: 24px;
@@ -402,7 +407,7 @@
   box-shadow: none;
 }
 .tf-wrapper-disabled {
-  opacity: 0.2;
+  opacity: 0.85;
   pointer-events: none;
 }
 .tf-wrapper-readonly {

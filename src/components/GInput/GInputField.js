@@ -1,6 +1,8 @@
 import { computed, ref, watch } from '@vue/composition-api';
 import { keyCodes } from '../../utils/helpers';
 
+
+
 export function getLabel(internalValue, isValidInput, isFocused,
                          labelActiveClass = 'tf-label__active',
                          inValidStyle = { 'color': 'red' }) {
@@ -60,6 +62,14 @@ export function getSlotEventListeners(context) {
     onClickPrependInner: () => context.emit('click :prepend-inner'),
     onClickAppendOuter: () => context.emit('click :append-outer'),
     onClickAppendInner: () => context.emit('click :append-inner'),
+  }
+}
+
+export function getSlotBsEventListeners(context) {
+  //slot events
+  return {
+    onClickPrepend: () => context.emit('click :prepend-outer'),
+    onClickAppend: () => context.emit('click :append-outer'),
   }
 }
 

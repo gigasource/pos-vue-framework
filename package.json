@@ -34,13 +34,14 @@
     "babel-preset-vca-jsx": "^0.3.2",
     "babel-preset-vue": "^2.0.2",
     "jest": "^24.9.0",
+    "jest-serializer-html": "^7.0.0",
     "jsdom": "^15.1.1",
     "jsdom-global": "^3.0.2",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2",
+    "sass-loader": "^8.0.0",
     "vue-jest": "^3.0.5",
-    "vue-template-compiler": "^2.6.10",
-    "jest-serializer-html": "^7.0.0"
+    "vue-template-compiler": "^2.6.10"
   },
   "postcss": {
     "plugins": {
