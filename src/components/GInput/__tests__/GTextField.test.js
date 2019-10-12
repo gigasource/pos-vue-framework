@@ -1,4 +1,4 @@
-import { createElement } from '../../../tests/setup'
+import { createElement, setInputValue } from '../../../tests/setup'
 
 const Vue = require('vue/dist/vue.common.js')
 import plugin from '@vue/composition-api'
@@ -58,9 +58,11 @@ describe('GTextField', function () {
       }
     }).$mount();
 
-    vm.testValue = 'test';
-    await vm.$nextTick();
-    await vm.$nextTick();
+    //vm.testValue = 'test';
+
+    setInputValue(vm.$el.querySelector('input'), 'test');
+    await vm.$nextTick() && await vm.$nextTick();
+
     expect(vm.$el.outerHTML).toMatchSnapshot();
     done();
   });
