@@ -26,11 +26,7 @@ export function createNativeLocaleFormatter (locale, options, substrOptions = { 
   }
 }
 
-export const isDateAllowed = (date, min, max, allowedFn) => {
-  return (!allowedFn || allowedFn(date)) &&
-      (!min || date >= min) &&
-      (!max || date <= max)
-}
+
 
 /**
  * @param {String} value YYYY-MM format

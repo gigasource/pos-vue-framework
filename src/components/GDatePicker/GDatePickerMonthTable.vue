@@ -26,7 +26,8 @@
 </template>
 
 <script>
-  import { pad, createNativeLocaleFormatter, isDateAllowed, TRANSITION_NAMES } from './utils'
+  import { pad, createNativeLocaleFormatter, TRANSITION_NAMES } from './utils'
+  import { dateFilter } from './dateFilter'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
   import { computed, reactive, watch } from '@vue/composition-api'
   import GDatePickerTable from './date-picker-table'
@@ -69,9 +70,7 @@
     setup(props, context) {
       // mixins
       const { displayedYear, genButtonClasses } = GDatePickerTable(props, context)
-
-      // data
-      const state = reactive({ isReversing: false })
+      const isDateAvailable = dateFilter(props)
 
       // computed
       const monthFormatter = computed(() => {
@@ -94,7 +93,7 @@
 
             const monthData = {
               key: month,
-              isAllowed: isDateAllowed(date, props.min, props.max, props.allowedDates),
+              isAllowed: isDateAvailable(date),
               isSelected: date === props.value || (Array.isArray(props.value) && props.value.indexOf(date) !== -1),
               isCurrent: date === props.current,
             }
@@ -123,9 +122,7 @@
         return monthData
       })
 
-      // transition
-      watch(() => props.tableDate, (newVal, oldVal) => state.isReversing = newVal < oldVal)
-      const transitionName = computed(() => state.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
+      const transitionName = computed(() => props.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
 
       const onWheel = (e) => {
         if (!props.disabled && props.scrollable) {

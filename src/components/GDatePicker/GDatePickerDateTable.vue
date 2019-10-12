@@ -50,7 +50,8 @@
 
 <script>
   import { createRange } from '../../utils/helpers';
-  import { pad, createNativeLocaleFormatter, monthChange, isDateAllowed, TRANSITION_NAMES } from './utils'
+  import { pad, createNativeLocaleFormatter, monthChange, TRANSITION_NAMES } from './utils'
+  import { dateFilter } from './dateFilter'
   import { computed, reactive, watch } from '@vue/composition-api';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
   import GDatePickerTable from './date-picker-table'
@@ -114,8 +115,7 @@
         displayedYear,
       } = GDatePickerTable(props, context)
 
-      // state
-      const state = reactive({ isReversing: false })
+      const isDateAvailable = dateFilter(props)
 
       // computed
       const formatter = computed(() => {
@@ -217,7 +217,7 @@
           // build day data
           let dayData = {
             isWeek: false,
-            isAllowed: isDateAllowed(date, props.min, props.max, props.allowedDates),
+            isAllowed: isDateAvailable(date),
             isFloating: true,
             isSelected: date === props.value || (Array.isArray(props.value) && props.value.indexOf(date) !== -1),
             isCurrent: date === props.current
@@ -275,9 +275,9 @@
       }
 
       // transition effect
-      const transitionName = computed(() => state.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
-      watch(() => props.tableDate, (oldVal, newVal) => {
-        state.isReversing = newVal < oldVal
+      const transitionName = computed(() => {
+        console.log('date-table-transition-name recomputed')
+        return props.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB
       })
 
       // days name in week: Sunday, Monday, etc

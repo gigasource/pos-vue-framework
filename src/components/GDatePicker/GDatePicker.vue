@@ -52,6 +52,7 @@
             :value="dateTableModel.value"
             :weekdayFormat="dateTableModel.weekdayFormat"
             :range="dateTableModel.range"
+            :isReversing="dateTableModel.isReversing"
             v-on="dateTableModel.eventHandlers"
             ref="table"
         />
@@ -68,6 +69,7 @@
             :scrollable="monthTableModel.scrollable"
             :value="monthTableModel.value"
             :tableDate="monthTableModel.tableDate"
+            :isReversing="monthTableModel.isReversing"
             v-on="monthTableModel.eventHandlers"
             ref="table"
         />
@@ -83,7 +85,8 @@
 <script>
   //
   import { computed, reactive, watch } from '@vue/composition-api'
-  import { pad, createNativeLocaleFormatter, isDateAllowed as _isDateAllowed, daysInMonth, sanitizeDateString, SANITY_TYPE } from './utils'
+  import { pad, createNativeLocaleFormatter, daysInMonth, sanitizeDateString, SANITY_TYPE } from './utils'
+  import { dateFilter } from './dateFilter'
 
   //
   import GDatePickerTitle from './GDatePickerTitle'
@@ -183,6 +186,9 @@
       }
     },
     setup(props, context) {
+      // mixins
+      const isDateAvailable = dateFilter(props)
+
       // data
       const now = new Date()
       const state = reactive({
@@ -310,7 +316,7 @@
         if (props.value && props.value.length) {
           const output = (isMultiple.value ? (props.value) : [props.value])
           .map((val) => sanitizeDateString(val, type))
-          .filter(isDateAllowed)
+          .filter(isDateAvailable)
           context.emit(EVENT_NAMES.INPUT, isMultiple.value ? output : output[0])
         }
       }, { lazy: true })
@@ -352,9 +358,6 @@
         if (valueType !== expected) {
           console.warn(`Value must be ${isMultiple.value ? 'an' : 'a'} ${expected}, got ${valueType}`)
         }
-      }
-      function isDateAllowed(value) {
-        return _isDateAllowed(value, props.min, props.max, props.allowedDates)
       }
       function generateRange() {
         let proxyValue = props.value
@@ -413,7 +416,7 @@
                 state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`
               }
               state.activePicker = ACTIVE_PICKER_TYPE.MONTH
-              if (false /*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
+              if (false /*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAvailable(inputDate.value)) {
                 context.emit(EVENT_NAMES.INPUT, inputDate.value)
               }
             }
@@ -444,6 +447,7 @@
           events: props.events,
           eventColor: props.eventColor,
           firstDayOfWeek: props.firstDayOfWeek,
+          isReversing: state.isReversing,
           format: props.format,
           min: props.min,
           max: props.max,
@@ -477,6 +481,7 @@
           min: minMonth.value,
           max: maxMonth.value,
           readonly: props.readonly && props.type === DATE_PICKER_TYPE.MONTH,
+          isReversing: state.isReversing,
           scrollable: props.scrollable,
           value: selectedMonths.value,
           tableDate: pad(tableYear.value, 4),
@@ -490,7 +495,7 @@
                 }
                 state.tableDate = value
                 state.activePicker = ACTIVE_PICKER_TYPE.DATE
-                if (false/*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
+                if (false/*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAvailable(inputDate.value)) {
                   context.emit(EVENT_NAMES.INPUT, inputDate.value)
                 }
               } else {
