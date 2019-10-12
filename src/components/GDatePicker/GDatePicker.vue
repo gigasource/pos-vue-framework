@@ -27,7 +27,6 @@
         <g-date-picker-header
             :disabled="headerModel.disabled"
             :readonly="headerModel.readonly"
-            :color="headerModel.color"
             :format="headerModel.headerDateFormat"
             :min="headerModel.min"
             :max="headerModel.max"
@@ -82,6 +81,11 @@
 </template>
 
 <script>
+  //
+  import { computed, reactive, watch } from '@vue/composition-api'
+  import { pad, createNativeLocaleFormatter, isDateAllowed as _isDateAllowed, daysInMonth, sanitizeDateString, SANITY_TYPE } from './utils'
+
+  //
   import GDatePickerTitle from './GDatePickerTitle'
   import GDatePickerHeader from './GDatePickerHeader'
   import GDatePickerDateTable from './GDatePickerDateTable'
@@ -92,16 +96,28 @@
   // customs event name
   import { EVENT_NAMES as TITLE_EVENT_NAMES } from './GDatePickerTitle'
   import { EVENT_NAMES as YEAR_PICKER_EVENTS } from './GDatePickerYears'
+  import { EVENT_NAMES as MONTH_TABLE_EVENTS } from './GDatePickerMonthTable'
+  import { EVENT_NAMES as DATE_TABLE_EVENTS } from './GDatePickerDateTable'
 
-  import { computed, reactive, watch } from '@vue/composition-api'
-  import { pad, createNativeLocaleFormatter, isDateAllowed as _isDateAllowed, daysInMonth } from './utils'
+  const DATE_PICKER_TYPE = {
+    DATE: 'date',
+    MONTH: 'month',
+  }
 
+  const ACTIVE_PICKER_TYPE = {
+    DATE: 'DATE',
+    MONTH: 'MONTH',
+    YEAR: 'YEAR'
+  }
 
-  // Adds leading zero to month/day if necessary, returns 'YYYY' if type = 'year',
-  // 'YYYY-MM' if 'month' and 'YYYY-MM-DD' if 'date'
-  function sanitizeDateString(dateString/*: string*/, type/*: 'date' | 'month' | 'year'*/)/*: string*/ {
-    const [year, month = 1, date = 1] = dateString.split('-')
-    return `${year}-${pad(month)}-${pad(date)}`.substr(0, { date: 10, month: 7, year: 4 }[type])
+  export const EVENT_NAMES = {
+    INPUT: 'input',
+    CHANGE: 'change',
+    UPDATE_PICKER_DATE: 'update:picker-date',
+    CLICK_DATE: 'click:date',
+    DB_CLICK_DATE: 'dblclick:date',
+    CLICK_MONTH: 'click:month',
+    DB_CLICK_MONTH: 'dblclick:month'
   }
 
   export default {
@@ -131,15 +147,7 @@
       // Function formatting month in the months table
       monthFormat: Function,
       multiple: Boolean,
-      nextIcon: {
-        type: String,
-        default: '$next',
-      },
       pickerDate: String,
-      prevIcon: {
-        type: String,
-        default: '$prev',
-      },
       range: Boolean,
       readonly: Boolean,
       scrollable: Boolean,
@@ -190,7 +198,7 @@
             return props.pickerDate
           }
           const date = (props.multiple || props.range ? props.value[props.value.length - 1] : props.value) || `${now.getFullYear()}-${now.getMonth() + 1}`
-          return sanitizeDateString(date, props.type === 'date' ? 'month' : 'year')
+          return sanitizeDateString(date, props.type === DATE_PICKER_TYPE.DATE ? SANITY_TYPE.MONTH : SANITY_TYPE.YEAR)
         })()
       })
 
@@ -198,7 +206,7 @@
       const isMultiple = computed(() => props.multiple || props.range)
       const lastValue = computed(() => isMultiple.value ? (props.value)[(props.value).length - 1] : (props.value))
       const selectedMonths = computed(() => {
-        if (!props.value || !props.value.length || props.type === 'month') {
+        if (!props.value || !props.value.length || props.type === DATE_PICKER_TYPE.MONTH) {
           return props.value
         } else if (isMultiple.value) {
           return (props.value).map(val => val.substr(0, 7))
@@ -213,16 +221,16 @@
         return props.showCurrent || null
       })
       const inputDate = computed(() => {
-        return props.type === 'date'
+        return props.type === DATE_PICKER_TYPE.DATE
             ? `${state.inputYear}-${pad(state.inputMonth + 1)}-${pad(state.inputDay)}`
             : `${state.inputYear}-${pad(state.inputMonth + 1)}`
       })
       const tableMonth = computed(() => Number((props.pickerDate || state.tableDate).split('-')[1]) - 1)
       const tableYear = computed(() => Number((props.pickerDate || state.tableDate).split('-')[0]))
-      const minMonth = computed(() => props.min ? sanitizeDateString(props.min, 'month') : null)
-      const maxMonth = computed(() => props.max ? sanitizeDateString(props.max, 'month') : null)
-      const minYear = computed(() => props.min ? sanitizeDateString(props.min, 'year') : null)
-      const maxYear = computed(() => props.max ? sanitizeDateString(props.max, 'year') : null)
+      const minMonth = computed(() => props.min ? sanitizeDateString(props.min, SANITY_TYPE.MONTH) : null)
+      const maxMonth = computed(() => props.max ? sanitizeDateString(props.max, SANITY_TYPE.MONTH) : null)
+      const minYear = computed(() => props.min ? sanitizeDateString(props.min, SANITY_TYPE.YEAR) : null)
+      const maxYear = computed(() => props.max ? sanitizeDateString(props.max, SANITY_TYPE.YEAR) : null)
       const formatters = computed(() => {
         return {
           year: props.yearFormat || createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
@@ -273,26 +281,27 @@
       watch(() => state.tableDate, (val, prev) => {
         // Make a ISO 8601 strings from val and prev for comparision, otherwise it will incorrectly
         // compare for example '2000-9' and '2000-10'
-        const sanitizeType = props.type === 'month' ? 'year' : 'month'
+        const sanitizeType = props.type === DATE_PICKER_TYPE.MONTH ? SANITY_TYPE.YEAR : SANITY_TYPE.MONTH
         state.isReversing = sanitizeDateString(val, sanitizeType) < sanitizeDateString(prev, sanitizeType)
-        context.emit('update:picker-date', val)
+        context.emit(EVENT_NAMES.UPDATE_PICKER_DATE, val)
       }, { lazy: true })
+
       watch(() => props.pickerDate, (val) => {
         if (val) {
           state.tableDate = val
-        } else if (lastValue.value && props.type === 'date') {
-          state.tableDate = sanitizeDateString(lastValue.value, 'month')
-        } else if (lastValue.value && props.type === 'month') {
-          state.tableDate = sanitizeDateString(lastValue.value, 'year')
+        } else if (lastValue.value && props.type === DATE_PICKER_TYPE.DATE) {
+          state.tableDate = sanitizeDateString(lastValue.value, SANITY_TYPE.MONTH)
+        } else if (lastValue.value && props.type === DATE_PICKER_TYPE.MONTH) {
+          state.tableDate = sanitizeDateString(lastValue.value, SANITY_TYPE.YEAR)
         }
       }, { lazy: true })
       watch(() => props.value, (newValue, oldValue) => {
         checkMultipleProp()
         setInputDate()
         if (!isMultiple.value && props.value && !props.pickerDate) {
-          state.tableDate = sanitizeDateString(inputDate.value, props.type === 'month' ? 'year' : 'month')
+          state.tableDate = sanitizeDateString(inputDate.value, props.type === DATE_PICKER_TYPE.MONTH ? SANITY_TYPE.YEAR : SANITY_TYPE.MONTH)
         } else if (isMultiple.value && (props.value).length && !oldValue.length && !props.pickerDate) {
-          state.tableDate = sanitizeDateString(inputDate.value, props.type === 'month' ? 'year' : 'month')
+          state.tableDate = sanitizeDateString(inputDate.value, props.type === DATE_PICKER_TYPE.MONTH ? SANITY_TYPE.YEAR : SANITY_TYPE.MONTH)
         }
       }, { lazy: true })
       watch(() => props.type, (type) => {
@@ -302,24 +311,16 @@
           const output = (isMultiple.value ? (props.value) : [props.value])
           .map((val) => sanitizeDateString(val, type))
           .filter(isDateAllowed)
-          context.emit('input', isMultiple.value ? output : output[0])
+          context.emit(EVENT_NAMES.INPUT, isMultiple.value ? output : output[0])
         }
       }, { lazy: true })
 
-      //// LIFECYCLE HOOKS
-      // created
-      checkMultipleProp()
-      if (props.pickerDate !== state.tableDate) {
-        context.emit('update:picker-date', state.tableDate)
-      }
-      setInputDate()
-
-      //// Methods
+      // Methods
       function emitInput(newInput) {
         if (props.range && props.value) {
           props.value.length === 2
-              ? context.emit('input', [newInput])
-              : context.emit('input', [...props.value, newInput])
+              ? context.emit(EVENT_NAMES.INPUT, [newInput])
+              : context.emit(EVENT_NAMES.INPUT, [...props.value, newInput])
           return
         }
         let output = [];
@@ -339,10 +340,9 @@
           output = newInput
         }
 
-        context.emit('input', output)
-        props.multiple || context.emit('change', newInput)
+        context.emit(EVENT_NAMES.INPUT, output)
+        props.multiple || context.emit(EVENT_NAMES.CHANGE, newInput)
       }
-
       function checkMultipleProp() {
         if (props.value == null) {
           return
@@ -353,49 +353,9 @@
           console.warn(`Value must be ${isMultiple.value ? 'an' : 'a'} ${expected}, got ${valueType}`)
         }
       }
-
       function isDateAllowed(value) {
         return _isDateAllowed(value, props.min, props.max, props.allowedDates)
       }
-
-      function yearClick(value) {
-        state.inputYear = value
-        if (props.type === 'month') {
-          state.tableDate = `${value}`
-        } else {
-          state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`
-        }
-        state.activePicker = 'MONTH'
-        if (false /*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
-          context.emit('input', inputDate.value)
-        }
-      }
-
-      function monthClick(value) {
-        state.inputYear = parseInt(value.split('-')[0], 10)
-        state.inputMonth = parseInt(value.split('-')[1], 10) - 1
-        if (props.type === 'date') {
-          if (state.inputDay) {
-            state.inputDay = Math.min(state.inputDay, daysInMonth(state.inputYear, state.inputMonth + 1))
-          }
-
-          state.tableDate = value
-          state.activePicker = 'DATE'
-          if (false/*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
-            context.emit('input', inputDate.value)
-          }
-        } else {
-          emitInput(inputDate.value)
-        }
-      }
-
-      function dateClick(value) {
-        state.inputYear = parseInt(value.split('-')[0], 10)
-        state.inputMonth = parseInt(value.split('-')[1], 10) - 1
-        state.inputDay = parseInt(value.split('-')[2], 10)
-        emitInput(inputDate.value)
-      }
-
       function generateRange() {
         let proxyValue = props.value
         if (props.range && props.value && props.value.length === 2) {
@@ -409,13 +369,12 @@
         }
         return proxyValue
       }
-
       function setInputDate() {
         if (lastValue.value) {
           const array = lastValue.value.split('-')
           state.inputYear = parseInt(array[0], 10)
           state.inputMonth = parseInt(array[1], 10) - 1
-          if (props.type === 'date') {
+          if (props.type === DATE_PICKER_TYPE.DATE) {
             state.inputDay = parseInt(array[2], 10)
           }
         } else {
@@ -425,52 +384,59 @@
         }
       }
 
-
+      // Models
       const titleModel = computed(() => {
         return {
           date: props.value ? formatters.value.titleDate(props.value) : '',
           disabled: props.disabled,
           readonly: props.readonly,
-          selectingYear: state.activePicker === 'YEAR',
+          selectingYear: state.activePicker === ACTIVE_PICKER_TYPE.YEAR,
           year: formatters.value.year(props.value ? `${state.inputYear}` : state.tableDate),
           eventHandlers: {
-            [TITLE_EVENT_NAMES.UPDATE_SELECTING_YEAR] : (value) => state.activePicker = value ? 'YEAR' : props.type.toUpperCase(),
+            [TITLE_EVENT_NAMES.UPDATE_SELECTING_YEAR] : (value) => state.activePicker = value ? ACTIVE_PICKER_TYPE.YEAR : props.type.toUpperCase(),
           }
         }
       })
-
       const yearModel = computed(() => {
         return {
-          show: state.activePicker === 'YEAR',
+          show: state.activePicker === ACTIVE_PICKER_TYPE.YEAR,
           color: props.color,
           min: props.min,
           max: props.max,
           value: tableYear.value,
           eventHandlers: {
-            [YEAR_PICKER_EVENTS.INPUT]: yearClick
+            [YEAR_PICKER_EVENTS.INPUT]: (value) => {
+              state.inputYear = value
+              if (props.type === DATE_PICKER_TYPE.MONTH) {
+                state.tableDate = `${value}`
+              } else {
+                state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`
+              }
+              state.activePicker = ACTIVE_PICKER_TYPE.MONTH
+              if (false /*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
+                context.emit(EVENT_NAMES.INPUT, inputDate.value)
+              }
+            }
           }
         }
       })
-
       const headerModel = computed(() => {
         return {
-          color: props.color,
           disabled: props.disabled,
           readonly: props.readonly,
           format: props.headerDateFormat,
-          min: state.activePicker === 'DATE' ? minMonth.value : minYear.value,
-          max: state.activePicker === 'DATE' ? maxMonth.value : maxYear.value,
-          value: state.activePicker === 'DATE' ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`,
+          min: state.activePicker === ACTIVE_PICKER_TYPE.DATE ? minMonth.value : minYear.value,
+          max: state.activePicker === ACTIVE_PICKER_TYPE.DATE ? maxMonth.value : maxYear.value,
+          value: state.activePicker === ACTIVE_PICKER_TYPE.DATE ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`,
           eventHandlers: {
-            toggle: () => state.activePicker = (state.activePicker === 'DATE' ? 'MONTH' : 'YEAR'),
+            toggle: () => state.activePicker = (state.activePicker === ACTIVE_PICKER_TYPE.DATE ? ACTIVE_PICKER_TYPE.MONTH : ACTIVE_PICKER_TYPE.YEAR),
             input: (value) => state.tableDate = value,
           }
         }
       })
-
       const dateTableModel = computed(() => {
         return {
-          show: state.activePicker === 'DATE',
+          show: state.activePicker === ACTIVE_PICKER_TYPE.DATE,
           allowedDates: props.allowedDates,
           color: props.color,
           current: current.value,
@@ -489,36 +455,63 @@
           weekdayFormat: props.weekdayFormat,
           range: props.range,
           eventHandlers: {
-            input: dateClick,
-            'update:table-date': (value) => state.tableDate = value,
-            'click:date': (value) => context.emit('click:date', value),
-            'dblclick:date': (value) => context.emit('dblclick:date', value),
+            input: (value) => {
+              state.inputYear = parseInt(value.split('-')[0], 10)
+              state.inputMonth = parseInt(value.split('-')[1], 10) - 1
+              state.inputDay = parseInt(value.split('-')[2], 10)
+              emitInput(inputDate.value)
+            },
+            [DATE_TABLE_EVENTS.UPDATE_TABLE_DATE]: (value) => state.tableDate = value,
+            [DATE_TABLE_EVENTS.DATE_CLICKED]: (value) => context.emit(EVENT_NAMES.CLICK_DATE, value),
+            [DATE_TABLE_EVENTS.DATE_DB_CLICKED]: (value) => context.emit(EVENT_NAMES.DB_CLICK_DATE, value),
           }
         }
       })
-
       const monthTableModel = computed(() => {
         return {
-          allowedDates: props.type === 'month' ? props.allowedDates : null,
+          allowedDates: props.type === DATE_PICKER_TYPE.MONTH ? props.allowedDates : null,
           color: props.color,
-          current: current.value ? sanitizeDateString(current.value, 'month') : null,
+          current: current.value ? sanitizeDateString(current.value, SANITY_TYPE.MONTH) : null,
           disabled: props.disabled,
           format: props.monthFormat,
           min: minMonth.value,
           max: maxMonth.value,
-          readonly: props.readonly && props.type === 'month',
+          readonly: props.readonly && props.type === DATE_PICKER_TYPE.MONTH,
           scrollable: props.scrollable,
           value: selectedMonths.value,
           tableDate: pad(tableYear.value, 4),
           eventHandlers: {
-            input: monthClick,
-            'update:table-date': (value) => state.tableDate = value,
-            'click:month': (value) => context.emit('click:month', value),
-            'dblclick:month': (value) => context.emit('dblclick:month', value),
+            input: (value) => {
+              state.inputYear = parseInt(value.split('-')[0], 10)
+              state.inputMonth = parseInt(value.split('-')[1], 10) - 1
+              if (props.type === DATE_PICKER_TYPE.DATE) {
+                if (state.inputDay) {
+                  state.inputDay = Math.min(state.inputDay, daysInMonth(state.inputYear, state.inputMonth + 1))
+                }
+                state.tableDate = value
+                state.activePicker = ACTIVE_PICKER_TYPE.DATE
+                if (false/*TODO:this.reactive*/ && !props.readonly && !isMultiple.value && isDateAllowed(inputDate.value)) {
+                  context.emit(EVENT_NAMES.INPUT, inputDate.value)
+                }
+              } else {
+                emitInput(inputDate.value)
+              }
+            },
+            [MONTH_TABLE_EVENTS.UPDATE_TABLE_DATE]: (value) => state.tableDate = value,
+            [MONTH_TABLE_EVENTS.MONTH_CLICKED]: (value) => context.emit(EVENT_NAMES.CLICK_MONTH, value),
+            [MONTH_TABLE_EVENTS.MONTH_DB_CLICKED]: (value) => context.emit(EVENT_NAMES.DB_CLICK_MONTH, value),
           }
         }
       })
 
+      // LIFECYCLE HOOKS // created
+      checkMultipleProp()
+      if (props.pickerDate !== state.tableDate) {
+        context.emit(EVENT_NAMES.UPDATE_PICKER_DATE, state.tableDate)
+      }
+      setInputDate()
+
+      //
       return {
         titleModel,
         yearModel,

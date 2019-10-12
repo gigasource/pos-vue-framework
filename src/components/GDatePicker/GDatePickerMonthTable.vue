@@ -5,14 +5,14 @@
     <transition :name="transitionName">
       <table :key="tableDate">
         <tbody>
-          <tr v-for="(row, rowIndex) in monthData" :key="rowIndex">
+          <tr v-for="(row, rowIndex) in monthDatas" :key="rowIndex">
             <td v-for="month in row" :key="month.month">
               <button class="g-btn"
                       type="button"
                       :class="month.class"
                       :style="month.style"
                       :disabled="disabled || !month.isAllowed"
-                      v-on="month.events">
+                      v-on="month.eventHandlers">
                 <div class="g-btn__content">
                   {{ month.content }}
                 </div>
@@ -26,10 +26,17 @@
 </template>
 
 <script>
-  import { pad, createNativeLocaleFormatter, isDateAllowed } from './utils'
+  import { pad, createNativeLocaleFormatter, isDateAllowed, TRANSITION_NAMES } from './utils'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
   import { computed, reactive, watch } from '@vue/composition-api'
   import GDatePickerTable from './date-picker-table'
+
+  export const EVENT_NAMES = {
+    INPUT: 'input',
+    UPDATE_TABLE_DATE: 'update:table-date',
+    MONTH_CLICKED: 'click:month',
+    MONTH_DB_CLICKED: 'dblclick:month'
+  }
 
   export default {
     name: 'GDatePickerMonthTable',
@@ -61,13 +68,13 @@
     },
     setup(props, context) {
       // mixins
-      const { displayedYear, genButtonClasses, genButtonEvents } = GDatePickerTable(props, context)
+      const { displayedYear, genButtonClasses } = GDatePickerTable(props, context)
 
       // data
       const state = reactive({ isReversing: false })
 
       // computed
-      const formatter = computed(() => {
+      const monthFormatter = computed(() => {
         return props.format || createNativeLocaleFormatter(undefined, { month: 'short', timeZone: 'UTC' }, { start: 5, length: 2 })
       })
 
@@ -76,14 +83,14 @@
         return `${parseInt(props.tableDate, 10) + Math.sign(delta || 1)}`
       }
 
-      function getMonths() {
+      const monthDatas = computed(() => {
         const monthData = []
         const colNumbers = Array(3).fill(null)
         const rowNumbers = 12 / colNumbers.length
         for (let rowIndex = 0; rowIndex < rowNumbers; rowIndex++) {
           const row = colNumbers.map((_, col) => {
-            const month = rowIndex * colNumbers.length + col
-            const date = `${displayedYear.value}-${pad(month + 1)}`
+            const month = rowIndex * colNumbers.length + col + 1
+            const date = `${displayedYear.value}-${pad(month)}`
 
             const monthData = {
               key: month,
@@ -92,8 +99,16 @@
               isCurrent: date === props.current,
             }
             monthData.class = genButtonClasses(monthData.isAllowed, false, monthData.isSelected, monthData.isCurrent)
-            monthData.events = genButtonEvents(date, monthData.isAllowed, 'month')
-            monthData.content = formatter.value(date)
+            monthData.content = monthFormatter.value(date)
+            monthData.eventHandlers = props.disabled ? undefined : {
+              click: () => {
+                if (monthData.isAllowed && !props.readonly)
+                  context.emit(EVENT_NAMES.INPUT, date)
+
+                context.emit(EVENT_NAMES.MONTH_CLICKED, date)
+              },
+              dblclick: () => context.emit(EVENT_NAMES.MONTH_DB_CLICKED, date),
+            }
 
             let setColor = monthData.isSelected ? setBackgroundColor : setTextColor
             let color = (monthData.isSelected || monthData.isCurrent) && (props.color || '')
@@ -106,26 +121,23 @@
         }
 
         return monthData
-      }
-
-      const monthData = computed(() => getMonths())
-
-      const transitionName = computed(() => state.isReversing ? 'tab-reverse-transition' : 'tab-transition')
-      watch(() => props.tableDate, (oldVal, newVal) => {
-        state.isReversing = newVal < oldVal
       })
+
+      // transition
+      watch(() => props.tableDate, (newVal, oldVal) => state.isReversing = newVal < oldVal)
+      const transitionName = computed(() => state.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
 
       const onWheel = (e) => {
         if (!props.disabled && props.scrollable) {
           e.preventDefault()
-          context.emit('update:table-date', calculateTableDate(e.deltaY))
+          context.emit(EVENT_NAMES.UPDATE_TABLE_DATE, calculateTableDate(e.deltaY))
         }
       }
 
       return {
         onWheel,
         transitionName,
-        monthData,
+        monthDatas,
       }
     }
   }

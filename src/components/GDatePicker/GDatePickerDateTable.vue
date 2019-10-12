@@ -10,7 +10,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in monthData">
+          <tr v-for="row in dateData">
             <td v-for="day in row">
               <template v-if="day.isWeek">
                 <small class="g-date-picker-table--date__week'">
@@ -50,10 +50,21 @@
 
 <script>
   import { createRange } from '../../utils/helpers';
-  import { pad, createNativeLocaleFormatter, monthChange, isDateAllowed } from './utils'
+  import { pad, createNativeLocaleFormatter, monthChange, isDateAllowed, TRANSITION_NAMES } from './utils'
   import { computed, reactive, watch } from '@vue/composition-api';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
   import GDatePickerTable from './date-picker-table'
+
+  const CLS_BTN_START_RANGE = 'g-btn--start-range'
+  const CLS_BTN_END_RANGE = 'g-btn--end-range'
+  const CLS_BTN_IN_RANGE = 'g-btn--in-range'
+
+  export const EVENT_NAMES = {
+    INPUT: 'input',
+    UPDATE_TABLE_DATE: 'update:table-date',
+    DATE_CLICKED: 'click:date',
+    DATE_DB_CLICKED: 'dblclick:date'
+  }
 
   export default {
     name: 'GDatePickerDateTable',
@@ -99,7 +110,6 @@
       // mixins
       const {
         genButtonClasses,
-        genButtonEvents,
         displayedMonth,
         displayedYear,
       } = GDatePickerTable(props, context)
@@ -109,10 +119,10 @@
 
       // computed
       const formatter = computed(() => {
-        return props.format || createNativeLocaleFormatter(undefined/*TODO: this.currentLocale*/, { day: 'numeric', timeZone: 'UTC' }, { start: 8, length: 2 })
+        return props.format || createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' }, { start: 8, length: 2 })
       })
       const weekdayFormatter = computed(() => {
-        return props.weekdayFormat || createNativeLocaleFormatter(undefined/*TODO: this.currentLocale*/, { weekday: 'narrow', timeZone: 'UTC' })
+        return props.weekdayFormat || createNativeLocaleFormatter(undefined, { weekday: 'narrow', timeZone: 'UTC' })
       })
       const weekDays = computed(() => {
         const first = parseInt(props.firstDayOfWeek, 10)
@@ -192,7 +202,7 @@
       }
 
       function rowsData() {
-        const monthData = []
+        const dateData = []
         const daysInMonth = new Date(displayedYear.value, displayedMonth.value + 1, 0).getDate()
         let row = []
         let day = weekDaysBeforeFirstDayOfTheMonth()
@@ -213,18 +223,25 @@
             isCurrent: date === props.current
           }
           dayData.class = genButtonClasses(dayData.isAllowed, dayData.isFloating, dayData.isSelected, dayData.isCurrent)
-          dayData.eventHandlers = genButtonEvents(date, dayData.isAllowed, 'date')
+          dayData.eventHandlers = props.disabled ? undefined : {
+            click: () => {
+              if (dayData.isAllowed && !props.readonly)
+                context.emit(EVENT_NAMES.INPUT, date)
+              context.emit(EVENT_NAMES.DATE_CLICKED, date)
+            },
+            dblclick: () => context.emit(EVENT_NAMES.DATE_DB_CLICKED, date),
+          }
           dayData.content = formatter.value(date)
           dayData.events = genEvents(date)
 
           // range
           if (Array.isArray(props.value) && props.value.length > 1 && dayData.isSelected && props.range) {
             if (props.value[0] === date)
-              dayData.class['g-btn--start-range'] = true
+              dayData.class[CLS_BTN_START_RANGE] = true
             else if (props.value[props.value.length-1] === date)
-              dayData.class['g-btn--end-range'] = true
+              dayData.class[CLS_BTN_END_RANGE] = true
             else
-              dayData.class['g-btn--in-range'] = true
+              dayData.class[CLS_BTN_IN_RANGE] = true
           }
 
           // set color
@@ -235,30 +252,30 @@
           row.push(dayData)
 
           if (row.length % (props.showWeek ? 8 : 7) === 0) {
-            monthData.push(row)
+            dateData.push(row)
             row = []
             day < daysInMonth && props.showWeek && row.push({ isWeek: true, value: weekNumber++ })
           }
         }
         if (row.length) {
-          monthData.push(row)
+          dateData.push(row)
         }
-        return monthData
+        return dateData
       }
 
       // date table. A two-dimensions array corresponding to date in month
-      const monthData = computed(() => rowsData())
+      const dateData = computed(() => rowsData())
 
       // event handler on wheel
       const onWheel = (e) => {
         if (!props.disabled && props.scrollable) {
           e.preventDefault()
-          context.emit('update:table-date', calculateTableDate(e.deltaY))
+          context.emit(EVENT_NAMES.UPDATE_TABLE_DATE, calculateTableDate(e.deltaY))
         }
       }
 
       // transition effect
-      const transitionName = computed(() => state.isReversing ? 'tab-reverse-transition' : 'tab-transition')
+      const transitionName = computed(() => state.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
       watch(() => props.tableDate, (oldVal, newVal) => {
         state.isReversing = newVal < oldVal
       })
@@ -274,7 +291,7 @@
         onWheel,
         transitionName,
         days,
-        monthData
+        dateData
       }
     }
   }

@@ -13,6 +13,7 @@
 
 <script>
   import { computed } from '@vue/composition-api'
+  import { TRANSITION_NAMES } from './utils';
 
   // class
   const PICKER_TITLE = 'g-date-picker-title'
@@ -22,7 +23,7 @@
   const PICKER_TITLE_BTN_ACTIVE = 'g-picker__title__btn--active'
   const PICKER_TITLE_YEAR = 'g-date-picker-title__year'
   const PICKER_TITLE_DATE = 'g-date-picker-title__date'
-  const PICKER_TRANSITION = 'picker-transition'
+
 
   // exposed events
   export const EVENT_NAMES = {
@@ -84,7 +85,7 @@
         //
         titleDateClasses: titleDateClasses,
         //
-        transitionName: PICKER_TRANSITION
+        transitionName: TRANSITION_NAMES.PICKER
       }
     }
   }

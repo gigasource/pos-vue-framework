@@ -8,7 +8,7 @@
               <slot></slot>
             </template>
             <template v-else>
-              {{ formatter(value) }}
+              {{ headerFormatter(value) }}
             </template>
           </button>
         </div>
@@ -24,45 +24,55 @@
 </template>
 
 <script>
-  import { computed, reactive, watch } from '@vue/composition-api';
-  import { monthChange, createNativeLocaleFormatter } from './utils';
-  import { setTextColor } from '../../mixins/colorable';
-  import GButton from '../GButton/GButton';
+  import { computed, reactive, watch } from '@vue/composition-api'
+  import { monthChange, createNativeLocaleFormatter, TRANSITION_NAMES } from './utils'
+  import { setTextColor } from '../../mixins/colorable'
+  import GButton from '../GButton/GButton'
+
+  // clss
+  const DATE_PICKER_HEADER_CLS = {
+    HEADER: 'g-date-picker-header',
+    HEADER_DISABLED: 'g-date-picker-header--disabled',
+    HEADER_VALUE: 'g-date-picker-header__value',
+    HEADER_VALUE_DISABLED: 'g-date-picker-header__value--disabled'
+  }
+
+  const NAV = {
+    PREV: -1,
+    NEXT: 1
+  }
+
+  export const EVENT_NAMES = {
+    TOGGLE: 'toggle',
+    INPUT: 'input'
+  }
 
   export default {
     name: 'GDatePickerHeader',
     components: { GButton },
     props: {
       disabled: Boolean,
-      format: Function,
+      readonly: Boolean,
       min: String,
       max: String,
-      nextIcon: {
-        type: String,
-        default: '$next',
-      },
-      prevIcon: {
-        type: String,
-        default: '$prev',
-      },
-      readonly: Boolean,
       value: {
         type: [Number, String],
         required: true,
       },
+      format: Function,
     },
     setup(props, context) {
       // data
       const state = reactive({ isReversing: false })
 
       // computed
-      const formatter = computed(() => {
+      const headerFormatter = computed(() => {
         if (props.format) {
           return props.format
         } else if (String(props.value).split('-')[1]) {
-          return createNativeLocaleFormatter(undefined/*this.currentLocale*/, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
+          return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
         } else {
-          return createNativeLocaleFormatter(undefined/*this.currentLocale*/, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
+          return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
         }
       })
 
@@ -82,46 +92,45 @@
       }
 
       // Prev button
-      const prevBtnDisabled = computed(() => props.disabled || (props.min && calculateChange(-1) < props.min))
-      const prevClick = () => context.emit('input', calculateChange(-1))
+      const prevBtnDisabled = computed(() => props.disabled || (props.min && calculateChange(NAV.PREV) < props.min))
+      const prevClick = () => context.emit(EVENT_NAMES.INPUT, calculateChange(NAV.PREV))
 
       // Header value
       const datePickerHeaderClasses = computed(() => {
         return {
-          'g-date-picker-header': true,
-          'g-date-picker-header--disabled': props.disabled
+          [DATE_PICKER_HEADER_CLS.HEADER]: true,
+          [DATE_PICKER_HEADER_CLS.HEADER_DISABLED]: props.disabled
         }
       })
       const datePickerHeaderValueClasses = computed(() => {
         return {
-          'g-date-picker-header__value': true,
-          'g-date-picker-header__value--disabled': props.disabled
+          [DATE_PICKER_HEADER_CLS.HEADER_VALUE]: true,
+          [DATE_PICKER_HEADER_CLS.HEADER_VALUE_DISABLED]: props.disabled
         }
       })
       const headerData = computed(() => setTextColor(props.color, {}))
       const defaultSlotIsAvailable = context.slots.default !== undefined
-      const headerTransitionName = computed(() => (state.isReversing === true /*!this.$vuetify.rtl*/) ? 'tab-reverse-transition' : 'tab-transition')
-      const onHeaderClicked = () => context.emit('toggle')
+      const headerTransitionName = computed(() => (state.isReversing) ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
+      const onHeaderClicked = () => context.emit(EVENT_NAMES.TOGGLE)
 
       // Next button
-      const nextBtnDisabled = computed(() => props.disabled || (props.max && calculateChange(1) < props.max))
-      const nextClick = () => context.emit('input', calculateChange(1))
+      const nextBtnDisabled = computed(() => props.disabled || (props.max && calculateChange(NAV.NEXT) < props.max))
+      const nextClick = () => context.emit(EVENT_NAMES.INPUT, calculateChange(NAV.NEXT))
 
       return {
-        prevBtnDisabled,
-        prevClick,
-
         datePickerHeaderClasses,
         datePickerHeaderValueClasses,
         headerData,
         headerTransitionName,
         defaultSlotIsAvailable: defaultSlotIsAvailable,
         onHeaderClicked,
-
+        headerFormatter,
+        //
+        prevBtnDisabled,
+        prevClick,
+        //
         nextBtnDisabled,
         nextClick,
-
-        formatter
       }
     }
   }
