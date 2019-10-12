@@ -4,12 +4,12 @@
 			<slot name="prepend-outer"></slot>
 		</div>
 		<fieldset>
-			<legend></legend>
+			<legend :style="legendStyles">{{label}}</legend>
 			<div class='tf' :class="tfErrClasses">
 				<div class="tf-prepend__inner" @click="onClickPrependInner">
 					<slot name="prepend-inner"></slot>
 				</div>
-				<div class="tf-affix" ref="prefixRef">{{prefix}}</div>
+				<div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
 					<input id="input" type="text"
 								 class="tf-input"
@@ -27,26 +27,27 @@
 						<slot name="label">{{label}}</slot>
 					</label>
 				</div>
-				<div class="tf-affix">{{suffix}}</div>
+				<div v-if="suffix" class="tf-affix">{{suffix}}</div>
 				<div class="tf-append__inner" @click="onClickAppendInner">
 					<slot name="append-inner"></slot>
 				</div>
+				<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
+				<div class="tf-hint" v-else :class="hintClasses" >{{hint}}</div>
+				<div v-show="counter" class="tf-counter">{{internalValue.length}} / {{counter}}</div>
 			</div>
 		</fieldset>
-		<div class="tf-append__outer" @click="onClickAppendOuter">
+		<div class="tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
 			<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick">
 			<slot name="append-outer"></slot>
-
 		</div>
-		<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
-		<div class="tf-hint" v-else :class="hintClasses">{{hint}}</div>
-		<div v-show="counter" class="tf-counter">{{internalValue.length}} / {{counter}}</div>
+
 	</div>
 </template>
 
 <script>
   import { ref, computed } from '@vue/composition-api';
   import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputField';
+  import { convertToUnit } from '../../utils/helpers';
 
   export default {
     name: 'GTextFieldFunctional',
@@ -122,6 +123,17 @@
 
       const { onClick, onFocus, onBlur, onClearIconClick,
 				onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+			//set legend width for label in outlined textfield
+			const legendStyles = computed(() => {
+			  if(isFocused.value || internalValue.value) {
+			    return {
+			      'width': 'auto',
+						'padding': '1px',
+					}
+				} else
+				  return {}
+			});
+
 
       return {
 				//calculated styles and classes
@@ -155,7 +167,8 @@
 				onClearIconClick,
 				//ref
 				prefixRef,
-        tfErrWrapperClass
+        tfErrWrapperClass,
+        legendStyles,
       }
     }
   }
@@ -174,6 +187,6 @@
 
 </script>
 
-<style scoped>
+<style lang="scss">
 	@import "_GInputField.scss";
 </style>
