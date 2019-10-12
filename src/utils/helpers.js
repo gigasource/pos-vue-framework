@@ -17,7 +17,7 @@ export const keyCodes = Object.freeze({
   pagedown: 34,
 });
 
-export function addOnceEventListener (el, eventName, cb, options){
+export function addOnceEventListener(el, eventName, cb, options) {
   const once = (event) => {
     cb(event);
     el.removeEventListener(eventName, once, options);
@@ -28,11 +28,13 @@ export function addOnceEventListener (el, eventName, cb, options){
 
 export function getZIndex(el) {
   const index = window.getComputedStyle(el).getPropertyValue('z-index');
-  if (!index) return getZIndex(el.parentNode);
+  if (!index) {
+    return getZIndex(el.parentNode);
+  }
   return index
 }
 
-export function convertToUnit (str, unit = 'px') {
+export function convertToUnit(str, unit = 'px') {
   if (str == null || str === '') {
     return undefined
   } else if (isNaN(+str)) {
@@ -77,6 +79,6 @@ try {
 
 export { passiveSupported }
 
-export function upperFirst (str) {
+export function upperFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }

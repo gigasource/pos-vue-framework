@@ -20,18 +20,22 @@ export default function detachable(props, context) {
     activatorChildNodes = [...context.refs.activator.childNodes]
     let attachNodes = [];
 
-    if(!node) {
+    if (!node) {
       attachNodes = activatorChildNodes;
 
       // If element contain activator, remove the activator div
-      if(context.refs.activator.parentNode === context.refs.el) context.refs.el.removeChild(context.refs.activator);
+      if (context.refs.activator.parentNode === context.refs.el) {
+        context.refs.el.removeChild(context.refs.activator);
+      }
     } else {
       attachNodes = [node];
     }
 
     // Attach nodes to element's parent
     for (let node of attachNodes) {
-      if (!context.refs.el.parentNode) return;
+      if (!context.refs.el.parentNode) {
+        return;
+      }
 
       const target = context.refs.el === context.refs.el.parentNode.firstChild ? context.refs.el : context.refs.el.nextSibling;
       context.refs.el.parentNode.insertBefore(node, target);

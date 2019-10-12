@@ -6,7 +6,6 @@ export default function stackable(props, context) {
 
   function getMaxZIndex(exclude) {
     //const base = context.refs.el;
-
     const activeElementsZIndexes = [stackMinZIndex.value];
 
     const activeElements = [
@@ -22,9 +21,7 @@ export default function stackable(props, context) {
     return Math.max(...activeElementsZIndexes);
   }
 
-
   return {
     getMaxZIndex,
-
   }
 }

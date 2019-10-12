@@ -43,13 +43,13 @@
     directives: {
       ClickOutside
     },
-		props: {
-			value: {
-			  type: Boolean,
-				default: false
-			},
+    props: {
+      value: {
+        type: Boolean,
+        default: false
+      },
 
-			// Dialog Sizing
+      // Dialog Sizing
       maxWidth: {
         type: [String, Number],
         default: 'none',
@@ -60,20 +60,20 @@
         default: 'auto',
       },
 
-			// Dialog functionality
-			persistent: Boolean,
+      // Dialog functionality
+      persistent: Boolean,
       hideOverlay: Boolean,
       scrollable: Boolean,
-			fullscreen: Boolean,
+      fullscreen: Boolean,
 
-			// Lazy/Eager
-			lazy: Boolean,
+      // Lazy/Eager
+      lazy: Boolean,
 
-			// Overlay styling
-			overlayColor: String,
-			overlayOpacity: [Number, String]
-		},
-		setup (props, context) {
+      // Overlay styling
+      overlayColor: String,
+      overlayOpacity: [Number, String]
+    },
+    setup(props, context) {
       const { model: isActive } = getVModel(props, context);
       const { attachToRoot, attachToParent, detach } = detachable(props, context);
       const { getMaxZIndex } = stackable(props, context);
@@ -81,15 +81,12 @@
       // Stacking
       const wrapperZIndex = computed(() => {
         return !isActive.value ? 6 : getMaxZIndex(context.refs.wrapper) + 2
-			});
+      });
       const overlayZIndex = computed(() => wrapperZIndex.value - 1);
 
-
       // Show/hide overlay
-			// TODO: convert to overlayable mixin
-			const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen && renderContent.value);
-
-
+      // TODO: convert to overlayable mixin
+      const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen && renderContent.value);
 
       // Lazy/Eager
       // TODO: convert to bootable mixin
@@ -99,109 +96,118 @@
       const renderContent = computed(() => isBooted.value || !props.lazy);
 
       function initComponent() {
-        if (renderOverlay.value) attachToRoot(context.refs.overlay.$el);
+        if (renderOverlay.value) {
+          attachToRoot(context.refs.overlay.$el);
+        }
         attachToRoot(context.refs.wrapper);
         attachToParent();
-			}
+      }
 
       onMounted(() => {
-        if (props.lazy) return;
+        if (props.lazy) {
+          return;
+        }
         initComponent();
-			});
+      });
 
-			const unwatch = watch(isActive, newVal => {
-			  if (newVal) {
+      const unwatch = watch(isActive, newVal => {
+        if (newVal) {
           if (props.lazy) {
             isBooted.value = true;
             context.root.$nextTick(() => {
               initComponent();
             })
           }
-					context.refs.wrapper.focus();
-				}
-			})
+          context.refs.wrapper.focus();
+        }
+      })
 
       function toggleDialog() {
         isActive.value = !isActive.value;
-			}
+      }
 
-
-			// Dynamic Classes and Styles
-			const contentClasses = computed(() => ({
-				'dialog-content__active': isActive.value,
-				'dialog-content__scrollable': props.scrollable,
-				'dialog-content__fullscreen': props.fullscreen
-			}));
+      // Dynamic Classes and Styles
+      const contentClasses = computed(() => ({
+        'dialog-content__active': isActive.value,
+        'dialog-content__scrollable': props.scrollable,
+        'dialog-content__fullscreen': props.fullscreen
+      }));
 
       const contentStyles = computed(() => ({
         maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : props.maxWidth,
         width: props.width === 'auto' || props.fullscreen ? undefined : props.width,
-			}));
+      }));
 
       const wrapperClasses = computed(() => ({
-				'dialog-wrapper__active': isActive.value
-			}));
+        'dialog-wrapper__active': isActive.value
+      }));
 
       const wrapperStyles = computed(() => ({
-				zIndex: wrapperZIndex.value
-			}));
-
+        zIndex: wrapperZIndex.value
+      }));
 
       // Close conditional for click outside directive
       const closeConditional = (e) => {
-        if (!isActive.value) return false;
+        if (!isActive.value) {
+          return false;
+        }
         const clickedInsideContent = context.refs.content.contains(e.target);
-				if (clickedInsideContent) return false;
-				if (props.persistent) return false;
+        if (clickedInsideContent) {
+          return false;
+        }
+        if (props.persistent) {
+          return false;
+        }
 
-				// If z-index of current element is lower than the current active z-index then do not close when click outside
+        // If z-index of current element is lower than the current active z-index then do not close when click outside
         return getZIndex(context.refs.wrapper) >= getMaxZIndex(context.refs.wrapper);
       };
 
       const clickOutsideDirective = {
-				value: () => {
-					isActive.value = false
-				},
-				arg: {
-					closeConditional,
-					include: () => []
-				}
-			}
+        value: () => {
+          isActive.value = false
+        },
+        arg: {
+          closeConditional,
+          include: () => []
+        }
+      }
 
-			// Set the wrapper div tabindex to 0 when active, to make wrapper div focusable
-			const wrapperTabIndex = computed(() => isActive.value ? 0 : undefined);
+      // Set the wrapper div tabindex to 0 when active, to make wrapper div focusable
+      const wrapperTabIndex = computed(() => isActive.value ? 0 : undefined);
 
-			// Change active state when press ESC
-			function onKeydown(e) {
-			  if (props.persistent) return;
-				isActive.value = !isActive.value;
+      // Change active state when press ESC
+      function onKeydown(e) {
+        if (props.persistent) {
+          return;
+        }
+        isActive.value = !isActive.value;
         context.emit('keydown', e);
-			}
+      }
 
-
-			// Clean-up when destroy
-			onBeforeUnmount(() => {
-			  unwatch();
-			  detach(context.refs.wrapper);
-			  detach(context.refs.overlay.$el);
-			  detach();
-			});
+      // Clean-up when destroy
+      onBeforeUnmount(() => {
+        unwatch();
+        detach(context.refs.wrapper);
+        detach(context.refs.overlay.$el);
+        detach();
+      });
 
       return {
         isActive,
-				renderOverlay,
-				overlayZIndex,
-				renderContent,
-				toggleDialog,
-				contentClasses,
-				contentStyles,
-				wrapperClasses,
-				wrapperStyles,
-				clickOutsideDirective,
+        renderOverlay,
+        overlayZIndex,
+        renderContent,
+        toggleDialog,
+        contentClasses,
+        contentStyles,
+        wrapperClasses,
+        wrapperStyles,
+        clickOutsideDirective,
         wrapperTabIndex,
-				onKeydown
-			}
-		}
+        onKeydown
+      }
+    }
   }
 </script>
 
