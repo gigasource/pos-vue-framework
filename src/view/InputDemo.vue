@@ -141,13 +141,14 @@
 <!--        </template>-->
 <!--      </g-text-field-functional>-->
       <g-text-field-functional label="Has prefix"
-                             filled
+                               filled
                                clearable
                                counter="25"
                                prefix="prefix"
-                               persistent
+                               suffix="@gmail.com"
                                hint="This is persistent hint"
                                :rules="[rules.required, rules.counter]"
+                               validate-on-blur
       >
         <template v-slot:prepend-inner >
           <img src="../assets/delivery/avatar.svg" alt="avatar">
@@ -208,11 +209,11 @@
       return {
         text1: '',
         rules: {
-          required: value => !!value || 'Required.',
+          required: value => !!value || 'Required',
           counter: value => value.length > 4 || 'Min 5 characters',
           email: value => {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            return pattern.test(value) || 'Invalid e-mail.'
+            return pattern.test(value) || 'Invalid e-mail'
           }
         }
       }
