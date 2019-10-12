@@ -42,6 +42,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
   }
 
   const errorMessages = ref('')
+
   watch(internalValue, () => {
     if (!props.validateOnBlur) {
       validate(internalValue.value)
@@ -132,6 +133,9 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 export function getInternalValue(props, context) {
   // text field internalValue
   const lazyValue = ref(props.value || '');
+  watch(() => props.value, () => {
+    lazyValue.value = props.value
+  }, { lazy: true });
   const internalValue = computed({
     get: () => {
       return lazyValue.value

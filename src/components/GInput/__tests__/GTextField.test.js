@@ -1,13 +1,23 @@
-import plugin from '@vue/composition-api';
+import { createElement } from '../../../tests/setup'
+
+const Vue = require('vue/dist/vue.common.js')
+import plugin from '@vue/composition-api'
+
+Vue.use(plugin)
+
+// Import your components after all of above import
 import GTextFieldFunctional from '../GTextFieldFunctional';
-import { createLocalVue, mount } from '@vue/test-utils';
+
 
 describe('GTextField', function () {
-  const localVue = createLocalVue()
-  localVue.use(plugin)
+  afterEach(() => {
+    // clear document body after each test to prevent content slots from
+    // mounting on the first div with [data-app] attr
+    document.body.innerHTML = ''
+  })
 
-  it('should render test', function (done) {
-    let wrapper = mount({
+  it('should render test', async function (done) {
+    let vm = new Vue({
       template: `<g-text-field-functional label="Has prefix"
                                filled
                                clearable
@@ -46,12 +56,12 @@ describe('GTextField', function () {
           }
         }
       }
-    }, { localVue });
+    }).$mount();
 
-    wrapper.vm.testValue = 'test'
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.html()).toMatchSnapshot();
-      done();
-    })
+    vm.testValue = 'test';
+    await vm.$nextTick();
+    await vm.$nextTick();
+    expect(vm.$el.outerHTML).toMatchSnapshot();
+    done();
   });
 });
