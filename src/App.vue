@@ -5,13 +5,15 @@
 			<router-link to="/order-default">OrderDefault</router-link>
 			<router-link to="/groupable">Groupable</router-link>
 			<router-link to="/payment">Payment</router-link>
-			<router-link to="/dialog">Dialog demo</router-link>
 			<router-link to="/slider">Slider demo</router-link>
 			<router-link to="/menu-demo">Menu</router-link>
+			<router-link to="/pulse-demo">Pulse</router-link>
 			<router-link to="/card">Card</router-link>
 			<router-link to="/overlay-demo">Overlay</router-link>
+			<router-link to="/dialog-demo">Dialog Demo</router-link>
       <router-link to="/tool-tip-demo">Tooltip demo</router-link>
 			<router-link to="/button">Button</router-link>
+			<router-link to="/transition-demo">Transition</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

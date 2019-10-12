@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Muli:200,400,700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
+//Typography
 //Font
 $font-family-montserrat: 'Montserrat', sans-serif;
 $font-family-muli:       'Muli', sans-serif;
@@ -18,6 +19,13 @@ $font-weight-6:          600;
 $font-weight-7:          700;
 $font-weight-8:          800;
 $font-weight-9:          900;
+
+$h1-fontsize:             4.20rem !default;
+$h2-fontsize:             3.56rem !default;
+$h3-fontsize:             2.92rem !default;
+$h4-fontsize:             2.28rem !default;
+$h5-fontsize:             1.64rem !default;
+$h6-fontsize:             1.15rem !default;
 
 //Spacing
 $spacer:      1rem !default;
@@ -80,6 +88,8 @@ $transition: (
         'fast-in-fast-out':   cubic-bezier(0.25, 0.8, 0.25, 1),
         'swing':              cubic-bezier(0.25, 0.8, 0.5, 1)
 ) !default;
+$primary-transition: 0.5s map-get($transition, 'swing') !default;
+$secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
 /*
 * Button variables

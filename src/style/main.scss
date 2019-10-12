@@ -1,5 +1,6 @@
 @import "variables";
 @import "global";
+@import "typography";
 @import "colors";
 @import "atomic-utilities";
 @import "grid";
@@ -21,3 +22,6 @@
 @import "../components/GOverlay/_GOverlay";
 @import "../components/GToolTip/_GToolTip";
 @import "../components/GBtn/GBtn";
+@import "../components/transition/_animation";
+@import "../components/GDialog/_GDialog";
+
