@@ -58,7 +58,7 @@ export const pad = (value, targetLength = 2) => value.toString().padStart(target
 export const DAYS_IN_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 export const DAYS_IN_MONTH_LEAP = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-function isLeapYear (year) {
+export function isLeapYear (year) {
   return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)
 }
 
