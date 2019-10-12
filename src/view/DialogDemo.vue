@@ -1,6 +1,6 @@
 <template>
 	<div class="outerdiv">
-		<g-dialog v-model="dialog" width="500px">
+		<g-dialog v-model="dialog" width="500px" >
 			<template v-slot:activator="{ toggleDialog }">
 				<g-button width="100px" height="50px" @click="toggleDialog">Dialog</g-button>
 			</template>
@@ -16,6 +16,26 @@
 				</div>
 				<g-card-actions>
 					<g-button @click="dialog = false">I accept</g-button>
+				</g-card-actions>
+			</g-card>
+		</g-dialog>
+
+		<g-dialog v-model="dialogPersistent" width="500px" persistent>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Persistent</g-button>
+			</template>
+			<g-card flat elevation="16">
+				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
+					Privacy Policy
+				</g-card-title>
+				<g-card-text>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</g-card-text>
+				<div>
+					<hr/>
+				</div>
+				<g-card-actions>
+					<g-button @click="dialogPersistent = false">I accept</g-button>
 				</g-card-actions>
 			</g-card>
 		</g-dialog>
@@ -128,6 +148,7 @@
 		data() {
       return {
         dialog: false,
+				dialogPersistent: false,
 				dialogHideOverlay: false,
 				dialogOverflow: false,
 				dialogScrollable: false,

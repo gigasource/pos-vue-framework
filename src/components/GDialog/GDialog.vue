@@ -152,6 +152,7 @@
         if (!isActive.value) return false;
         const clickedInsideContent = context.refs.content.contains(e.target);
 				if (clickedInsideContent) return false;
+				if (props.persistent) return false;
 
 				// If z-index of current element is lower than the current active z-index then do not close when click outside
         return getZIndex(context.refs.wrapper) >= getMaxZIndex(context.refs.wrapper);
@@ -159,9 +160,7 @@
 
       const clickOutsideDirective = {
 				value: () => {
-					if (!props.persistent) {
-						isActive.value = false
-					}
+					isActive.value = false
 				},
 				arg: {
 					closeConditional,
@@ -174,6 +173,7 @@
 
 			// Change active state when press ESC
 			function onKeydown(e) {
+			  if (props.persistent) return;
 				isActive.value = !isActive.value;
         context.emit('keydown', e);
 			}
