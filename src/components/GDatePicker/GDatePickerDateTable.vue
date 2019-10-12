@@ -105,19 +105,19 @@
         default: 0,
       },
       showWeek: Boolean,
-      weekdayFormat: Function
+      weekdayFormat: Function,
     },
     setup(props, context) {
       // mixins
-      const {
-        genButtonClasses,
-        displayedMonth,
-        displayedYear,
-      } = GDatePickerTable(props, context)
-
+      const { genButtonClasses, displayedMonth, displayedYear } = GDatePickerTable(props, context)
       const isDateAvailable = dateFilter(props)
 
-      // computed
+      const state = reactive({ isReversing: false })
+      watch(() => props.tableDate, (newVal, oldVal) => {
+        state.isReversing = newVal < oldVal
+      }, { lazy: true, flush: 'pre' })
+      const transitionName = computed(() => state.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
+
       const formatter = computed(() => {
         return props.format || createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' }, { start: 8, length: 2 })
       })
@@ -274,11 +274,7 @@
         }
       }
 
-      // transition effect
-      const transitionName = computed(() => {
-        console.log('date-table-transition-name recomputed')
-        return props.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB
-      })
+
 
       // days name in week: Sunday, Monday, etc
       const days = computed(() => {

@@ -72,16 +72,19 @@
       const { displayedYear, genButtonClasses } = GDatePickerTable(props, context)
       const isDateAvailable = dateFilter(props)
 
-      // computed
+      // header
+      const state = reactive({ isReversing: false })
+      const transitionName = computed(() => state.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
+      watch(() => props.tableDate, (newVal, oldVal) => state.isReversing = newVal < oldVal, { lazy: true, flush: 'pre' })
+
+
+      // month
       const monthFormatter = computed(() => {
         return props.format || createNativeLocaleFormatter(undefined, { month: 'short', timeZone: 'UTC' }, { start: 5, length: 2 })
       })
-
-      // methods
       function calculateTableDate(delta) {
         return `${parseInt(props.tableDate, 10) + Math.sign(delta || 1)}`
       }
-
       const monthDatas = computed(() => {
         const monthData = []
         const colNumbers = Array(3).fill(null)
@@ -121,9 +124,6 @@
 
         return monthData
       })
-
-      const transitionName = computed(() => props.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
-
       const onWheel = (e) => {
         if (!props.disabled && props.scrollable) {
           e.preventDefault()

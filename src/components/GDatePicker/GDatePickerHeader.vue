@@ -62,10 +62,11 @@
       format: Function,
     },
     setup(props, context) {
-      // data
+      // header transition
       const state = reactive({ isReversing: false })
-
-      // computed
+      const headerTransitionName = computed(() => (state.isReversing) ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
+      watch(() => props.value, (newVal, oldVal) => state.isReversing = newVal < oldVal, { lazy: true, flush: 'pre' })
+      // header value
       const headerFormatter = computed(() => {
         if (props.format) {
           return props.format
@@ -75,27 +76,6 @@
           return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
         }
       })
-
-      // watch
-      watch(() => props.value, (newVal, oldVal) => {
-        state.isReversing = newVal < oldVal
-      }, { lazy: true })
-
-
-      function calculateChange(sign/*: number*/) {
-        const [year, month] = String(props.value).split('-').map(Number)
-        if (month == null) {
-          return `${year + sign}`
-        } else {
-          return monthChange(props.value, sign)
-        }
-      }
-
-      // Prev button
-      const prevBtnDisabled = computed(() => props.disabled || (props.min && calculateChange(NAV.PREV) < props.min))
-      const prevClick = () => context.emit(EVENT_NAMES.INPUT, calculateChange(NAV.PREV))
-
-      // Header value
       const datePickerHeaderClasses = computed(() => {
         return {
           [DATE_PICKER_HEADER_CLS.HEADER]: true,
@@ -110,19 +90,35 @@
       })
       const headerData = computed(() => setTextColor(props.color, {}))
       const defaultSlotIsAvailable = context.slots.default !== undefined
-      const headerTransitionName = computed(() => (state.isReversing) ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
+      // header event handler
       const onHeaderClicked = () => context.emit(EVENT_NAMES.TOGGLE)
+
+
+      // Prev button
+      const prevBtnDisabled = computed(() => props.disabled || (props.min && calculateChange(NAV.PREV) < props.min))
+      const prevClick = () => context.emit(EVENT_NAMES.INPUT, calculateChange(NAV.PREV))
 
       // Next button
       const nextBtnDisabled = computed(() => props.disabled || (props.max && calculateChange(NAV.NEXT) < props.max))
       const nextClick = () => context.emit(EVENT_NAMES.INPUT, calculateChange(NAV.NEXT))
+
+      //
+      function calculateChange(sign/*: number*/) {
+        const [year, month] = String(props.value).split('-').map(Number)
+        if (month == null) {
+          return `${year + sign}`
+        } else {
+          return monthChange(props.value, sign)
+        }
+      }
+
 
       return {
         datePickerHeaderClasses,
         datePickerHeaderValueClasses,
         headerData,
         headerTransitionName,
-        defaultSlotIsAvailable: defaultSlotIsAvailable,
+        defaultSlotIsAvailable,
         onHeaderClicked,
         headerFormatter,
         //
@@ -131,6 +127,7 @@
         //
         nextBtnDisabled,
         nextClick,
+
       }
     }
   }

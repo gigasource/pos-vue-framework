@@ -88,10 +88,13 @@ $highlightedItem: rgb(231, 215, 253);
     }
 
     &--in-range {
-      color: rgb(83, 83, 83) !important;
       background-color: $highlightedItem !important;
       border-radius: 0 !important;
       width: auto;
+
+      >.g-btn__content {
+        color: #535353;
+      }
     }
   }
 

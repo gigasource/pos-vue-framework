@@ -52,7 +52,6 @@
             :value="dateTableModel.value"
             :weekdayFormat="dateTableModel.weekdayFormat"
             :range="dateTableModel.range"
-            :isReversing="dateTableModel.isReversing"
             v-on="dateTableModel.eventHandlers"
             ref="table"
         />
@@ -69,7 +68,6 @@
             :scrollable="monthTableModel.scrollable"
             :value="monthTableModel.value"
             :tableDate="monthTableModel.tableDate"
-            :isReversing="monthTableModel.isReversing"
             v-on="monthTableModel.eventHandlers"
             ref="table"
         />
@@ -428,6 +426,7 @@
           disabled: props.disabled,
           readonly: props.readonly,
           format: props.headerDateFormat,
+          isReversing: state.isReversing,
           min: state.activePicker === ACTIVE_PICKER_TYPE.DATE ? minMonth.value : minYear.value,
           max: state.activePicker === ACTIVE_PICKER_TYPE.DATE ? maxMonth.value : maxYear.value,
           value: state.activePicker === ACTIVE_PICKER_TYPE.DATE ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`,
@@ -447,7 +446,6 @@
           events: props.events,
           eventColor: props.eventColor,
           firstDayOfWeek: props.firstDayOfWeek,
-          isReversing: state.isReversing,
           format: props.format,
           min: props.min,
           max: props.max,

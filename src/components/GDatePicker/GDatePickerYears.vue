@@ -16,25 +16,6 @@
 
   export const EVENT_NAMES = { INPUT: 'input' }
 
-  /**
-   * generate year data from
-   * @param value
-   * @param min
-   * @param max
-   * @returns {Array}
-   */
-  export function generateYearData(value, min, max) {
-    const YEAR_OFFSET = 100
-    const maxYear = max ? parseInt(max) : (value + YEAR_OFFSET)
-    const minYear = Math.min(maxYear, min ? parseInt(min) : (value - YEAR_OFFSET))
-
-    const years = []
-    for (let year = maxYear; year >= minYear; year--) {
-      years.push(year)
-    }
-    return years
-  }
-
   export default {
     name: 'GDatePickerYears',
     props: {
@@ -58,7 +39,21 @@
         }
       })
 
-      const yearsData = computed(() => generateYearData(props.value ? parseInt(props.value) : new Date().getFullYear(), props.min, props.max))
+      const yearsData = computed(() => {
+        const value = props.value ? parseInt(props.value) : new Date().getFullYear()
+        const min = props.min
+        const max = props.max
+        const YEAR_OFFSET = 100
+        const maxYear = max ? parseInt(max) : (value + YEAR_OFFSET)
+        const minYear = Math.min(maxYear, min ? parseInt(min) : (value - YEAR_OFFSET))
+
+        const years = []
+        for (let year = maxYear; year >= minYear; year--) {
+          years.push(year)
+        }
+        return years
+      })
+
       const onYearClicked = (year) => context.emit(EVENT_NAMES.INPUT, year)
 
       return {
