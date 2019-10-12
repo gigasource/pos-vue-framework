@@ -5,11 +5,11 @@ import OrderDefault from '@/view/OrderDefault';
 import Groupable from '@/view/Groupable';
 import Payment from '@/view/Payment';
 import MenuDemo from '@/view/MenuDemo';
-import Dialog from '@/view/DialogDemo';
 import SliderDemo from '../view/SliderDemo';
 import CardDemo from '../view/CardDemo';
 import ButtonDemo from '../view/ButtonDemo';
 import OverlayDemo from "../view/OverlayDemo";
+import DialogDemo from '../view/DialogDemo';
 import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import TransitionDemo from '../view/TransitionDemo';
@@ -19,10 +19,11 @@ const routes = [
   { path: '/order-default', name: 'OrderDefault', component: OrderDefault},
   { path: '/groupable', name: 'Groupable', component: Groupable},
   { path: '/payment', name: 'Payment', component: Payment},
-  { path: '/dialog', name: 'Dialog', component: Dialog},
   { path: '/slider', name: 'Slider', component: SliderDemo},
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
   { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
+  { path: '/dialog-demo', name: 'Dialog Demo', component: DialogDemo},
+  { path: '/card-demo', name: 'Card demo', component: CardDemo},
   { path: '/card', name: 'Card', component: CardDemo},
   { path: '/button', name: 'Button', component: ButtonDemo},
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
