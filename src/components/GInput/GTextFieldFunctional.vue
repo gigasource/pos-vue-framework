@@ -128,9 +128,8 @@
 				labelStyles,
 				tfErrClasses,
 				tfWrapperClasses,
-				inputStyles,
 				hintClasses,
-				inputErrStyles
+				inputErrStyles,
 				//value
 				internalValue,
 				//calculated state
