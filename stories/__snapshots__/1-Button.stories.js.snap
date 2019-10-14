@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots Button Test 1 1`] = `
+<button
+  class="g-btn waves-effect g-btn__raised g-btn__outlined g-size__x-large g-btn__elevation-0"
+  style="border: thin solid currentcolor; background-color: transparent;"
+>
+  XLARGE BUTTON 
+</button>
+`;

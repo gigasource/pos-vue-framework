@@ -3,7 +3,7 @@ import { themes } from '@storybook/theming';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueCompositionAPI from '@vue/composition-api';
-import 'github-markdown-css';
+//import 'github-markdown-css';
 import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
 //import './style.css';
