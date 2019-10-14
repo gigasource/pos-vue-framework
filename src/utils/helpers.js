@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export const keyCodes = Object.freeze({
   enter: 13,
   tab: 9,
@@ -73,4 +75,15 @@ export { passiveSupported }
 
 export function upperFirst (str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function createSimpleFunctional (c, el = 'div', name) {
+  return Vue.extend({
+    name: name || c.replace(/__/g, '-'),
+    functional: true,
+    render (h, { data, children }) {
+      data.staticClass = (`${c} ${data.staticClass || ''}`).trim();
+      return h(el, data, children);
+    },
+  })
 }
