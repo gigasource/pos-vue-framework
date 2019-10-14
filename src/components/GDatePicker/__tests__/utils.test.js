@@ -1,6 +1,5 @@
 import { createNativeLocaleFormatter, monthChange, pad, sanitizeDateString } from '../utils'
 
-
 describe('GDatePicker/util/pad', () => {
   it('should pad 1-digit numbers', () => {
     expect(pad(0)).toBe('00')
@@ -18,8 +17,7 @@ describe('GDatePicker/util/pad', () => {
   })
 })
 
-
-describe('VDatePicker/util/monthChange.ts', () => {
+describe('GDatePicker/util/monthChange.ts', () => {
   it('should change month', () => {
     expect(monthChange('2000-01', -1)).toBe('1999-12')
     expect(monthChange('2000-01', +1)).toBe('2000-02')
@@ -54,7 +52,7 @@ describe('GDatePicker/util/createNativeLocaleFormatter', () => {
   })
 })
 
-describe('SanitizeDateString', () => {
+describe('GDatePicker/util/sanitizeDateString', () => {
   it('Should return correct year', () => {
     expect(sanitizeDateString('2010-10-01', 'year')).toEqual('2010')
     expect(sanitizeDateString('2013-1qwebacweq132', 'year')).toEqual('2013')
@@ -70,8 +68,10 @@ describe('SanitizeDateString', () => {
 
   it('Should return correct date format', () => {
     expect(sanitizeDateString('2010-05-10', 'date')).toEqual('2010-05-10')
-    expect(sanitizeDateString('2010xxx-05-10', 'month')).not.toEqual('2010-05-10')
-    expect(sanitizeDateString('2010-05xxx-10', 'month')).not.toEqual('2010-05-10')
-    expect(sanitizeDateString('2010-05-10xxx', 'month')).toEqual('2010-05-10')
+    expect(sanitizeDateString('2010xxx-05-10', 'date')).not.toEqual('2010-05-10')
+    expect(sanitizeDateString('2010-05xxx-10', 'date')).not.toEqual('2010-05-10')
+    expect(sanitizeDateString('2010-05-10xxx', 'date')).toEqual('2010-05-10')
   })
 })
+
+

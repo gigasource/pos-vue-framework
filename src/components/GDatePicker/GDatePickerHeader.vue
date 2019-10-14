@@ -111,8 +111,7 @@
           return monthChange(props.value, sign)
         }
       }
-
-
+      
       return {
         datePickerHeaderClasses,
         datePickerHeaderValueClasses,
@@ -127,7 +126,6 @@
         //
         nextBtnDisabled,
         nextClick,
-
       }
     }
   }

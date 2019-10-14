@@ -125,76 +125,115 @@
     name: 'GDatePicker',
     components: { GDatePickerMonthTable, GDatePickerDateTable, GDatePickerHeader, GDatePickerYears, GDatePickerTitle, GPicker },
     props: {
-      allowedDates: null,
-      // Function formatting the day in date picker table
-      dayFormat: Function,
-      disabled: Boolean,
+      //// Group: Values
+      // A predicate function which validate date value and return true if input date is valid, otherwise false
+      allowedDates: [Function, null],
+      // Date value in ISO format 'YYYY-MM-dd' indicate the maximum selectable date boundary
+      max: String,
+      // Date value in ISO format 'YYYY-MM-dd' indicate the minimum selectable date boundary
+      min: String,
+      // events in calendar
       events: {
         type: [Array, Function, Object],
         default: () => null,
       },
+      // Default value of date-picker
+      value: [Array, String],
+
+
+      //// Groups: Color
+      // Color for picker-header and selected date
+      // if both color and headerColor present, headerColor will be used for header
+      color: {
+        type: String,
+        default: 'rgb(77, 0, 234)'
+      },
+      // color of events
       eventColor: {
         type: [Array, Function, Object, String],
         default: () => 'warning',
       },
-      firstDayOfWeek: {
-        type: [String, Number],
-        default: 0,
-      },
-      // Function formatting the tableDate in the day/month table header
-      headerDateFormat: Function,
-      max: String,
-      min: String,
-      // Function formatting month in the months table
-      monthFormat: Function,
-      multiple: Boolean,
-      pickerDate: String,
-      range: Boolean,
-      readonly: Boolean,
-      scrollable: Boolean,
-      showCurrent: {
-        type: [Boolean, String],
-        default: true,
-      },
-      showWeek: Boolean,
-      // Function formatting currently selected date in the picker title
-      titleDateFormat: Function,
-      type: {
-        type: String,
-        default: 'date',
-        validator: (type) => ['date', 'month'].includes(type),
-      },
-      value: [Array, String],
-      weekdayFormat: Function,
-
-      // picker mixins
-      fullWidth: Boolean,
+      // Color for picker-header
       headerColor: String,
-      landscape: Boolean,
-      noTitle: Boolean,
+
+      //// Groups: Size
+      // indicate whether picker will be shown in fullWidth
+      // if both fullWidth and width value is present, width will be ignored
+      fullWidth: Boolean,
+      // Predefined width for date picker
       width: {
         type: [Number, String],
         default: 290,
       },
 
-      // colorable
-      color: {
+
+      //// Groups: Format functions for customize date picker content
+      // Function formatting the day in date picker table
+      dayFormat: [Function, null],
+      // Function formatting month in the months table
+      monthFormat: Function,
+      // Function formatting week day
+      weekdayFormat: Function,
+      // Function formatting the tableDate in the day/month table header
+      headerDateFormat: Function,
+      // Function formatting currently selected date in the picker title
+      titleDateFormat: Function,
+
+
+      //// Groups: Visibility
+      // Boolean value indicate that whether picker's title will be shown or not
+      noTitle: Boolean,
+      // Boolean value indicate that whether picker will be shown in landscape or portrait mode
+      landscape: Boolean,
+      // Represent the first day of week will be shown in calendar
+      // 0 mean Sunday, 1 mean Monday, 2 mean Tuesday, etc
+      // Default is Sunday
+      firstDayOfWeek: {
+        type: [String, Number],
+        default: 0,
+      },
+      // A boolean value indicate that whether picker should show week or not
+      // Week value will be added at the first column of calendar table
+      showWeek: Boolean,
+      // A boolean value indicate that whether picker is enable to show current date/month or not
+      showCurrent: [Boolean, String],
+      // Date picker type
+      type: {
         type: String,
-        default: 'rgb(77, 0, 234)'
-      }
+        default: 'date',
+        validator: (type) => ['date', 'month'].includes(type),
+      },
+      // Default picker date
+      // If the value is set, when user select year picker, picker year, month values will be focused
+      pickerDate: String,
+
+
+      //// Groups: Behavior
+      // A boolean value indicate that whether date picker is enable for interact
+      disabled: Boolean,
+      // A boolean value indicate that whether picker is enable for change or not
+      readonly: Boolean,
+      // A boolean value indicate that whether picker is enable for scroll or not
+      scrollable: Boolean,
+      // A boolean value indicate that whether picker allow range select or not
+      range: Boolean,
+      // Boolean value indicate that whether picker allow multiple select or not
+      multiple: Boolean,
     },
     setup(props, context) {
-      // mixins
       const isDateAvailable = dateFilter(props)
 
-      // data
       const now = new Date()
       const state = reactive({
+        // 'YEAR', 'MONTH', 'DATE' - year, month, date picker will be shown depend on this value
         activePicker: props.type.toUpperCase(),
+        // hold the value of input date infor
         inputDay: 0,
         inputMonth: 0,
         inputYear: 0,
+        // boolean value which will be used to generate transition name
         isReversing: false,
+        // current day
         now,
         // tableDate is a string in 'YYYY' / 'YYYY-M' format (leading zero for month is not required)
         tableDate: (() => {
@@ -206,9 +245,14 @@
         })()
       })
 
-      // computed
+      // boolean value indicate that whether user can select multiple day in date picker
+      // its value is true when multiple or range option are provided
       const isMultiple = computed(() => props.multiple || props.range)
-      const lastValue = computed(() => isMultiple.value ? (props.value)[(props.value).length - 1] : (props.value))
+      // return:
+      //  if single date selection: value
+      //  if multiple date selection: last date in value array
+      const lastValue = computed(() => isMultiple.value ? props.value[props.value.length - 1] : props.value)
+      // return selected month(s)
       const selectedMonths = computed(() => {
         if (!props.value || !props.value.length || props.type === DATE_PICKER_TYPE.MONTH) {
           return props.value
@@ -218,23 +262,35 @@
           return (props.value).substr(0, 7)
         }
       })
+      // currentDay or currentMonth, or currentYear
       const current = computed(() => {
         if (props.showCurrent === true) {
           return sanitizeDateString(`${state.now.getFullYear()}-${state.now.getMonth() + 1}-${state.now.getDate()}`, props.type)
         }
         return props.showCurrent || null
       })
+
       const inputDate = computed(() => {
         return props.type === DATE_PICKER_TYPE.DATE
             ? `${state.inputYear}-${pad(state.inputMonth + 1)}-${pad(state.inputDay)}`
             : `${state.inputYear}-${pad(state.inputMonth + 1)}`
       })
+
       const tableMonth = computed(() => Number((props.pickerDate || state.tableDate).split('-')[1]) - 1)
+
       const tableYear = computed(() => Number((props.pickerDate || state.tableDate).split('-')[0]))
+      // return 'YYYY-MM' from props.min if props.min provided
       const minMonth = computed(() => props.min ? sanitizeDateString(props.min, SANITY_TYPE.MONTH) : null)
+      // return 'YYYY-MM' from props.max if props.max provided
       const maxMonth = computed(() => props.max ? sanitizeDateString(props.max, SANITY_TYPE.MONTH) : null)
+      // return 'YYYY' from props.min if props.min provided
       const minYear = computed(() => props.min ? sanitizeDateString(props.min, SANITY_TYPE.YEAR) : null)
+      // return 'YYYY' from props.max if props.max provided
       const maxYear = computed(() => props.max ? sanitizeDateString(props.max, SANITY_TYPE.YEAR) : null)
+
+      // title format
+      //  - multiple selection: `{n} selected`
+      //  - single selection:
       const formatters = computed(() => {
         return {
           year: props.yearFormat || createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
@@ -248,7 +304,7 @@
               if (props.multiple) {
                 return dates.length + ' selected'
               } else {
-                return generateRange().length + ' selected'
+                return generateDateRange().length + ' selected'
               }
             } else {
               return '1 selected'
@@ -289,7 +345,6 @@
         state.isReversing = sanitizeDateString(val, sanitizeType) < sanitizeDateString(prev, sanitizeType)
         context.emit(EVENT_NAMES.UPDATE_PICKER_DATE, val)
       }, { lazy: true })
-
       watch(() => props.pickerDate, (val) => {
         if (val) {
           state.tableDate = val
@@ -300,7 +355,7 @@
         }
       }, { lazy: true })
       watch(() => props.value, (newValue, oldValue) => {
-        checkMultipleProp()
+        validateValue()
         setInputDate()
         if (!isMultiple.value && props.value && !props.pickerDate) {
           state.tableDate = sanitizeDateString(inputDate.value, props.type === DATE_PICKER_TYPE.MONTH ? SANITY_TYPE.YEAR : SANITY_TYPE.MONTH)
@@ -310,16 +365,33 @@
       }, { lazy: true })
       watch(() => props.type, (type) => {
         state.activePicker = type.toUpperCase()
-
+        // if value is string or array
         if (props.value && props.value.length) {
-          const output = (isMultiple.value ? (props.value) : [props.value])
+          const output = (isMultiple.value ? props.value : [props.value])
           .map((val) => sanitizeDateString(val, type))
           .filter(isDateAvailable)
           context.emit(EVENT_NAMES.INPUT, isMultiple.value ? output : output[0])
         }
       }, { lazy: true })
 
-      // Methods
+      // generate date array from input date
+      // if selection method is multiple or single, return input value
+      // otherwise, generate date range, boundary included
+      function generateDateRange() {
+        const TICKS_PER_DAY = 864e5
+        let dates = props.value
+        if (props.range && props.value && props.value.length === 2) {
+          dates = []
+          const [rangeFrom, rangeTo] = [props.value[0], props.value[1]].map(x => new Date(`${x}T00:00:00+00:00`)).sort((a, b) => a > b ? 1 : -1)
+          const diffDays = Math.ceil((rangeTo.getTime() - rangeFrom.getTime()) / (1000 * 60 * 60 * 24))
+          for (let day = 0; day <= diffDays; day++) {
+            dates.push(new Date(rangeFrom.getTime() + day * TICKS_PER_DAY).toISOString().substring(0, 10))
+          }
+        }
+        return dates
+      }
+
+      //
       function emitInput(newInput) {
         if (props.range && props.value) {
           props.value.length === 2
@@ -347,7 +419,11 @@
         context.emit(EVENT_NAMES.INPUT, output)
         props.multiple || context.emit(EVENT_NAMES.CHANGE, newInput)
       }
-      function checkMultipleProp() {
+
+      // validate whether value is valid or not
+      // in case multiple selection, value should be a date array
+      // otherwise, a date string
+      function validateValue() {
         if (props.value == null) {
           return
         }
@@ -357,19 +433,7 @@
           console.warn(`Value must be ${isMultiple.value ? 'an' : 'a'} ${expected}, got ${valueType}`)
         }
       }
-      function generateRange() {
-        let proxyValue = props.value
-        if (props.range && props.value && props.value.length === 2) {
-          proxyValue = []
-          const [rangeFrom, rangeTo] = [props.value[0], props.value[1]].map(x => new Date(`${x}T00:00:00+00:00`)).sort((a, b) => a > b ? 1 : -1)
-          const diffDays = Math.ceil((rangeTo.getTime() - rangeFrom.getTime()) / (1000 * 60 * 60 * 24))
-          for (let i = 0; i <= diffDays; i++) {
-            const current = new Date(+rangeFrom + i * 864e5)
-            proxyValue.push(current.toISOString().substring(0, 10))
-          }
-        }
-        return proxyValue
-      }
+
       function setInputDate() {
         if (lastValue.value) {
           const array = lastValue.value.split('-')
@@ -453,7 +517,7 @@
           scrollable: props.scrollable,
           showWeek: props.showWeek,
           tableDate: `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}`,
-          value: generateRange(),
+          value: generateDateRange(),
           weekdayFormat: props.weekdayFormat,
           range: props.range,
           eventHandlers: {
@@ -507,8 +571,8 @@
         }
       })
 
-      // LIFECYCLE HOOKS // created
-      checkMultipleProp()
+      // LIFECYCLE HOOKS
+      validateValue()
       if (props.pickerDate !== state.tableDate) {
         context.emit(EVENT_NAMES.UPDATE_PICKER_DATE, state.tableDate)
       }

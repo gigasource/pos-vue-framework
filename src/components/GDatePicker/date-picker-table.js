@@ -20,23 +20,8 @@ export default (props, context) => {
     }
   }
 
-  function genButtonEvents(value, isAllowed, mouseEventType) {
-    if (props.disabled)
-      return undefined
-
-    return {
-      click: () => {
-        isAllowed && !props.readonly && context.emit('input', value)
-        context.emit(`click:${mouseEventType}`, value)
-      },
-      dblclick: () => context.emit(`dblclick:${mouseEventType}`, value),
-    }
-  }
-
   return {
     genButtonClasses,
-    genButtonEvents,
-
     displayedMonth,
     displayedYear,
   }

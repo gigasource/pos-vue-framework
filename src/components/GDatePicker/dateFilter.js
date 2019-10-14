@@ -10,13 +10,15 @@ export const isValueInRange = (value, min, max) => {
   return (!min || value >= min) && (!max || value <= max)
 }
 
+export function isDateAllowed(value, filterFn) {
+  if (typeof filterFn !== 'function')
+    return true
+
+  return filterFn(value)
+}
+
 export function dateFilter(props) {
   return function isDateAvailable(value) {
-    // date rejected by date filter function
-    if ((typeof props.allowedDates === 'function') && !props.allowedDates(value))
-      return false
-
-    // date rejected or not depend on selected range
-    return isValueInRange(value, props.min, props.max)
+    return isDateAllowed(value, props.allowedDates) && isValueInRange(value, props.min, props.max)
   }
 }

@@ -79,7 +79,6 @@
         <g-date-picker no-title v-model="anotherOptionsModel"></g-date-picker>
       </div>
     </div>
-
     <div  style="padding: 30px">
       <h2>Month picker</h2>
       <div style="display: flex">
@@ -99,10 +98,13 @@
 <script>
   import GDatePicker from '../components/GDatePicker/GDatePicker';
   import GBtn from '../components/GBtn/GBtn';
+  import GDatePickerYears from '../components/GDatePicker/GDatePickerYears';
+  import GDatePickerTitle from '../components/GDatePicker/GDatePickerTitle';
+  import GDatePickerMonthTable from '../components/GDatePicker/GDatePickerMonthTable';
 
   export default {
     name: 'DatePickerDemo',
-    components: { GBtn, GDatePicker },
+    components: { GDatePickerMonthTable, GDatePickerTitle, GDatePickerYears, GBtn, GDatePicker },
     props: {},
     data: function () {
       return {
