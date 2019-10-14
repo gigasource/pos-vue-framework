@@ -1,12 +1,12 @@
 <template>
-	<div :class="classes" :style="styles" :draggable="attrs.draggable" @click="onClick">
+	<div :class="classes" :style="styles" :draggable="draggable" @click="onClick">
 		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY'">
-			<i class="material-icons g-icon" v-if="filter === true && stateData.isActive">{{filterIcon}}</i>
+			<i class="material-icons g-icon" v-if="filter === true && isActive">{{filterIcon}}</i>
 		</span>
 
 		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_FILTER'">
 			<slot name="prependItem"></slot>
-			<div class="g-overlay" v-if="filter && stateData.isActive">
+			<div class="g-overlay" v-if="filter && isActive">
 				<i class="material-icons g-icon">{{filterIcon}}</i>
 			</div>
 		</div>
@@ -26,41 +26,43 @@
 </template>
 
 <script>
-  import { computed, reactive } from '@vue/composition-api';
+  import { computed, reactive, ref } from '@vue/composition-api';
   import { convertToGradient } from '../../utils/helpers';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
-  import GExpansionPanel from '../GExpansionPanel/GExpansionPanel';
 
   export default {
     name: 'GChip',
     props: {
+      //classes
       active: Boolean,
       append: Boolean,
       close: Boolean,
       closeIcon: { type: String, default: `close` },
-      color: String,
       disabled: Boolean,
       filter: Boolean,
       filterIcon: { type: String, default: `done` },
       href: [String, Object],
-      inputValue: null,
-      label: Boolean,
-      link: Boolean,
+      inputValue: null,    //Not used yet
+      link: Boolean,      //Not used yet
       outlined: Boolean,
       pill: Boolean,
-      replace: Boolean,
-      ripple: Boolean,
-      target: String,
-      textColor: String,
-      backgroundColor: { type: String, default: '#e0e0e0' },
-      gradient: String,
-      value: null,
-      //style
-      draggable: Boolean,
+      replace: Boolean,    //Not used yet
+      target: String,  //Not used yet
+      value: null,  //Not used yet
+      label: Boolean,
       small: Boolean,
       large: Boolean,
       xSmall: Boolean,
-      xLarge: Boolean
+      xLarge: Boolean,
+      draggable: Boolean,
+      //style
+      color: String,
+      ripple: Boolean,
+      textColor: String,
+      backgroundColor: { type: String, default: '#e0e0e0' },
+      gradient: String,
+
+
     },
     setup(props, context) {
       //Prepend Icon Rendering States
@@ -68,9 +70,7 @@
       const RENDER_AVATAR_ONLY = 'RENDER_AVATAR_ONLY';
       const RENDER_AVATAR_FILTER = 'RENDER_AVATAR_FILTER';
 
-      let stateData = reactive({
-        isActive: false
-      });
+      let isActive = ref(false);
 
       //Check prepend slot available
       let prependSlot = () => {
@@ -88,7 +88,7 @@
         }
       });
 
-      let toggle = () => (stateData.isActive = !stateData.isActive);
+      let toggle = () => (isActive.value = !isActive.value);
 
       let backgroundColorOutput = computed(() => {
         return props.color ? setBackgroundColor(props.color, {}) : setBackgroundColor('#e0e0e0', {});
@@ -99,7 +99,6 @@
       });
 
       let classes = computed(() => {
-
         let _classes = {
           'g-chip': true,
           'waves-effect': props.ripple,
@@ -116,21 +115,28 @@
         };
 
         let size = '';
+        let avatarSize = '';
 
         if (props.large) {
           size = 'g-size__large';
+          avatarSize = 'g-avatar-size__large';
         } else if (props.small) {
           size = 'g-size__small';
+          avatarSize = 'g-avatar-size__small';
         } else if (props.xSmall) {
           size = 'g-size__x-small';
+          avatarSize = 'g-avatar-size__x-small';
         } else if (props.xLarge) {
           size = 'g-size__x-large';
+          avatarSize = 'g-avatar-size__x-large';
         } else {
           size = 'g-size__default';
+          avatarSize = 'g-avatar-size__default';
         }
-        if (size) {
-          _classes[size] = true;
-        }
+
+        _classes[size] = true;
+        _classes[avatarSize] = true;
+
 
         return _classes;
       });
@@ -151,12 +157,6 @@
         return _styles;
       });
 
-      let attrs = computed(() => {
-        return {
-          ...props.draggable && { draggable: props.draggable }
-        };
-      });
-
       let onClick = (event) => {
         context.emit('click', event);
         toggle();
@@ -170,8 +170,7 @@
       return {
         classes,
         styles,
-        attrs,
-        stateData,
+        isActive,
         renderState,
         onClick,
         onClose
