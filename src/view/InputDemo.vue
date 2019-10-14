@@ -140,6 +140,7 @@
 			<!--          <img src="../assets/delivery/avatar.svg" alt="avatar">-->
 			<!--        </template>-->
 			<!--      </g-text-field-functional>-->
+			<g-text-field-functional label="Mask" v-model="text2" v-mask="mask" ></g-text-field-functional>
 			<g-text-field-functional label="Has prefix"
 															 filled
 															 clearable
@@ -149,7 +150,7 @@
 															 hint="This is persistent hint"
 															 v-model="text1"
 															 :rules="[rules.required, rules.counter]"
-															 validate-on-blur
+
 			>
 				<template v-slot:prepend-inner>
 					<img src="../assets/delivery/avatar.svg" alt="avatar">
@@ -203,7 +204,7 @@
 					readOnly
 					hint="test hint"
 					:rules="[rules.required, rules.counter]"
-					validate-on-blur>
+					>
 				<template #prependContent>
 					Prepend
 				</template>
@@ -234,13 +235,15 @@
 <script>
   import GTextFieldFunctional from '../components/GInput/GTextFieldFunctional';
   import GTextFieldBs from '../components/GInput/GTextFieldBs';
-
+	import {mask} from 'vue-the-mask'
   export default {
     name: 'InputDemo',
     components: { GTextFieldBs, GTextFieldFunctional },
+		directives: {mask},
     data() {
       return {
-        text1: '',
+        text1: 'dfgdfsgds',
+				text2:'asbchdjk',
         rules: {
           required: value => !!value || 'Required',
           counter: value => value.length > 4 || 'Min 5 characters',
@@ -248,7 +251,8 @@
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             return pattern.test(value) || 'Invalid e-mail'
           }
-        }
+        },
+				mask: 'XXXX-XXXX',
       }
     }
   }

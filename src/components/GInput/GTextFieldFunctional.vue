@@ -33,7 +33,7 @@
 				</div>
 				<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
 				<div class="tf-hint" v-else :class="hintClasses" >{{hint}}</div>
-				<div v-show="counter" class="tf-counter">{{internalValue.length}} / {{counter}}</div>
+				<div v-show="counter" :class="{'tf-counter': true, 'tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
 			</div>
 		</fieldset>
 		<div class="tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
@@ -46,8 +46,7 @@
 
 <script>
   import { ref, computed } from '@vue/composition-api';
-  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputField';
-  import { convertToUnit } from '../../utils/helpers';
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputField';import VueTheMask from 'vue-the-mask'
 
   export default {
     name: 'GTextFieldFunctional',

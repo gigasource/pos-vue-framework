@@ -149,10 +149,15 @@ input[type=text] {
 
   &-error {
     left: 0;
+    color: red;
   }
 
   &-counter {
     right: 0;
+
+    &__error {
+      color: red;
+    }
   }
 }
 

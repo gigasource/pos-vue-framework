@@ -40,16 +40,23 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
       }
 
       errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
-      errorBucket.length ? isValidInput.value = false : isValidInput.value = true
+      errorBucket.length ? isValid.value = false : isValid.value = true
+      return isValid
     }
+    else { isValid.value = true}
   }
 
   const errorMessages = ref('')
-
+  const isValid = ref(false)
   watch(internalValue, () => {
+    validate(internalValue.value)
     if (!props.validateOnBlur) {
-      validate(internalValue.value)
+      isValidInput.value = isValid.value
     }
+    else if (isValid.value){
+      isValidInput.value = true
+    }
+
   }, !props.value ? { lazy: true } : null)
 
   return { errorMessages, validate };
@@ -96,8 +103,10 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
   function onBlur(event) {
     context.emit('blur', event);
-    props.validateOnBlur ? validate(internalValue.value) : {}
-    isFocused.value = false;
+    if(props.validateOnBlur)
+    {
+      isValidInput.value = validate(internalValue.value).value
+    }
   }
 
   function onClearIconClick(event) {
