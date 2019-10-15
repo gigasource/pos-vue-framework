@@ -1,5 +1,5 @@
-import { withKnobs, text, boolean } from '@storybook/addon-knobs';
-
+import { text, withKnobs } from '@storybook/addon-knobs';
+import { action, withActions } from '@storybook/addon-actions';
 import GBtn from '../src/components/GBtn/GBtn';
 
 export default {
@@ -16,3 +16,24 @@ export const test1 = () => ({
   },
   template: `<g-btn outlined raised elevation='0' x-large>{{text}}</g-btn>`,
 })
+
+export const test2 = () => ({
+  components: { GBtn },
+  setup() {
+    return () =>
+      <g-btn outlined raised elevation='0' x-large vOn:click={action('test')}>
+        {text('Button Text', 'XLARGE BUTTON')}
+      </g-btn>
+  },
+})
+
+import Vue from 'vue/dist/vue.common.js'
+
+describe('test', function () {
+  it('should test1', function () {
+    const vm = new Vue(test1()).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+})
+
+

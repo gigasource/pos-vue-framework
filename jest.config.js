@@ -21,11 +21,14 @@ module.exports = {
     '^@/(.*)$': "<rootDir>/src/$1"
   },
   setupFiles: [
-    '<rootDir>/src/tests/setup.js'
+    '<rootDir>/src/tests/setup.js',
+    //'<rootDir>/.storybook/jest-setup.js'
   ],
+  //automock: false,
   testMatch: [
     '**/__tests__/*.test.js',
-    '**/vueshots.test.js'
+    '**/vueshots.test.js',
+    '**/*.stories.js'
   ],
   transform: {
     '^.*\\.vue$': "vue-jest",
