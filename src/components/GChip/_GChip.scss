@@ -64,16 +64,17 @@
     user-select: none;
 
     &__left {
+      position: relative;
       margin-left: $chip-icon-margin-before;
       margin-right: 3px;
     }
 
     &__right {
+      position: relative;
       margin-left: $chip-icon-margin-after;
       margin-right: $chip-icon-margin-before;
       height: $chip-close-size;
     }
-
   }
 
   .g-chip-content {
@@ -227,32 +228,15 @@
     color: inherit;
   }
 
-  //
-  //.g-size__small {
-  //}
-  //
-  //& .g-size__x-small {
-  //}
-  //
-  //& .g-size__large {
-  //}
-  //
-  //  .g-avatar-size__large {
-  //    .g-icon {
-  //      font-size: 30px !important;
-  //    }
-  //}
-  //
-  //
-  //.g-size__default {
-  //  .g-icon {
-  //    font-size: 18px;
-  //  }
-  //}
-
   &.expand-x-transition-leave-active,
   &.expand-x-transition-enter {
     margin: 0
+  }
+}
+
+.g-avatar-size__large {
+  .g-icon {
+    font-size: 35px;
   }
 }
 
@@ -274,6 +258,13 @@
 
     & .g-avatar {
       margin: 2px 8px 5px 0;
+
+      & .g-icon {
+        font-size: 30px;
+        width: 30px;
+        height: 30px;
+        margin: 4px 0 0 2px;
+      }
     }
 
     & .g-overlay {
@@ -296,6 +287,13 @@
 
     & .g-avatar {
       margin: 1.5px 2px 5px -4px;
+
+      & .g-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin: 2px 0 0 -4px;
+      }
     }
 
     & .g-overlay {
@@ -339,6 +337,14 @@
 
     & .g-avatar {
       margin: 2px 8px 5px 1px;
+
+      & .g-icon {
+        font-size: 37px;
+        width: 40px;
+        height: 40px;
+        margin: 4px 0 0 2px;
+        top: -1px;
+      }
     }
 
     & .g-overlay {
@@ -361,6 +367,14 @@
 
     & .g-avatar {
       margin: 0 2px 5px -4px;
+
+      & .g-icon {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+        margin: 0 0 0 -3px;
+        top: -3px;
+      }
     }
 
     & .g-overlay {

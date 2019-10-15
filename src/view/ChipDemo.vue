@@ -156,64 +156,64 @@
 			<hr/>
 			<g-chip color="bg-blue" text-color="white" filter>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">account_circle</i>
+					<i class="material-icons g-icon__left g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
 			<g-chip color="bg-green" text-color="white" filter>
 				Premium
 				<span class="g-icon g-icon__right">
-					<i class="material-icons g-icon">star</i>
+					<i class="material-icons g-icon__left g-icon">star</i>
 				</span>
 			</g-chip>
 			<g-chip color="bg-brown" text-color="white" filter>
 				1 Year
 				<span class="g-icon g-icon__right">
-					<i class="material-icons g-icon">cake</i>
+					<i class="material-icons g-icon__left g-icon">cake</i>
 				</span>
 			</g-chip>
 			<g-chip color="bg-light-blue" text-color="white" filter>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">check_circle</i>
+					<i class="material-icons g-icon__left g-icon">check_circle</i>
 				</template>
 				Confirmed
 			</g-chip>
 			<g-chip close close-icon="delete" text-color="white" color="bg-red" filter>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">check_circle</i>
+					<i class="material-icons g-icon__left g-icon">check_circle</i>
 				</template>
 				Confirmed
 			</g-chip>
 		</div>
 
 		<div class="wrapper">
-			<g-chip color="bg-blue" text-color="white" filter x-small>
+			<g-chip color="bg-blue" text-color="white" filter x-small close>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">account_circle</i>
+					<i class="material-icons g-icon__left g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
-			<g-chip color="bg-blue" text-color="white" filter small>
+			<g-chip color="bg-blue" text-color="white" filter small close>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">account_circle</i>
+					<i class="material-icons g-icon__left g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
-			<g-chip color="bg-blue" text-color="white" filter>
+			<g-chip color="bg-blue" text-color="white" filter close>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">account_circle</i>
+					<i class="material-icons g-icon__left g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
-			<g-chip color="bg-blue" text-color="white" filter large>
+			<g-chip color="bg-blue" text-color="white" filter large close>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">account_circle</i>
+					<i class="material-icons g-icon__left g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
-			<g-chip color="bg-blue" text-color="white" filter x-large>
+			<g-chip color="bg-blue" text-color="white" filter x-large close>
 				<template v-slot:prependItem>
-					<i class="material-icons g-icon">account_circle</i>
+					<i class="material-icons g-icon__left g-icon">account_circle</i>
 				</template>
 				Ranee
 			</g-chip>
