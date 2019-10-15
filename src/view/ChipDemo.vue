@@ -6,8 +6,8 @@
 			<g-chip x-small draggable filter>X Small</g-chip>
 			<g-chip small draggable filter filter-icon="check_circle">Small</g-chip>
 			<g-chip draggable filter filter-icon="check_circle">Default</g-chip>
-			<g-chip large draggable close filter filter-icon="check_circle">Large</g-chip>
-			<g-chip x-large draggable close filter filter-icon="check_circle">X Large</g-chip>
+			<g-chip large draggable close filter filter-icon="check_circle" close-icon="remove_circle">Large</g-chip>
+			<g-chip x-large draggable close filter filter-icon="check_circle" close-icon="delete">X Large</g-chip>
 		</div>
 		<div class="wrapper">
 			<p>Different sizes label/colors chips</p>
@@ -36,7 +36,7 @@
 				</template>
 				Large
 			</g-chip>
-			<g-chip x-large draggable close label filter color="bg-brown" text-color="white">
+			<g-chip x-large draggable close label filter color="bg-brown" text-color="white" close-icon="delete">
 				<template v-slot:prependItem>
 					<img class="g-avatar g-avatar__left avatar-image" src="https://loremflickr.com/320/240" alt="Avatar">
 				</template>
