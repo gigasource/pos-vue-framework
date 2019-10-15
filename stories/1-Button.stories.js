@@ -1,5 +1,5 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
-import { action, withActions } from '@storybook/addon-actions';
+import { action } from '@storybook/addon-actions';
 import GBtn from '../src/components/GBtn/GBtn';
 
 export default {

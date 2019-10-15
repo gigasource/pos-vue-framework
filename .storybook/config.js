@@ -35,6 +35,7 @@ global.beforeEach = beforeEach;
 global.afterEach = afterEach;
 global.expect = expect;
 
+//for jest
 import VueTest from 'vue/dist/vue.common.js'
 import VueCompositionApi from '@vue/composition-api'
 // init plugin first
