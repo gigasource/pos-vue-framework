@@ -83,7 +83,7 @@ export const getPrevBtnDisabledState = (props) => computed(() => props.disabled 
  * @param props
  * @returns {Ref<any>}
  */
-export const getNextBtnDisabledState = (props) => computed(() => props.disabled || (props.max && calculateChange(props, NAV.NEXT) < props.max))
+export const getNextBtnDisabledState = (props) => computed(() => props.disabled || (props.max && calculateChange(props, NAV.NEXT) > props.max))
 
 /**
  *
