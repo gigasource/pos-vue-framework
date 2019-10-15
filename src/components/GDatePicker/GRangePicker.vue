@@ -5,20 +5,27 @@
         :selecting-year="true"
     />
     <div style="display: flex">
-      <g-date-picker
-          no-title
-          range
-          :value="state.range"
-          :type="'date'"
-          :max="state.range[1]"
-          v-on="startRangeEventHandler"/>
-      <g-date-picker
-          no-title
-          range
-          :value="state.range"
-          :min="state.range[0]"
-          :type="'date'"
-          v-on="endRangeEventHandler"/>
+      <div style="display: flex; flex-direction: column;">
+        <span style="padding: 5px">From:</span>
+        <g-date-picker
+            no-title
+            range
+            :value="state.range"
+            :type="'date'"
+            :max="state.range[1]"
+            v-on="startRangeEventHandler"/>
+      </div>
+
+      <div style="display: flex; flex-direction: column;">
+        <span style="padding: 5px">To:</span>
+        <g-date-picker
+            no-title
+            range
+            :value="state.range"
+            :min="state.range[0]"
+            :type="'date'"
+            v-on="endRangeEventHandler"/>
+      </div>
     </div>
   </div>
 </template>
