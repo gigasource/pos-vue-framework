@@ -41,5 +41,5 @@ import VueCompositionApi from '@vue/composition-api'
 // init plugin first
 VueTest.use(VueCompositionApi)
 
-configure(require.context('../stories', true, /\.stories\.js$/), module);
+configure(require.context('../src', true, /\.stories\.js$/), module);
 

@@ -1,6 +1,6 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import GBtn from '../src/components/GBtn/GBtn';
+import GBtn from '../GBtn';
 
 export default {
   title: 'Button',
