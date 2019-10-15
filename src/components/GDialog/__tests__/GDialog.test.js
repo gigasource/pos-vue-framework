@@ -126,6 +126,7 @@ describe('Dialog', () => {
 
       const button = vm.$el.querySelector('button');
       const overlay = vm.$el.querySelector('.overlay');
+      console.log(overlay)
       button.click();
       expect(vm.dialog).toBe(true);
       vm.$nextTick(() => {

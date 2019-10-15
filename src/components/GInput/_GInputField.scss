@@ -15,6 +15,7 @@ input[type=text] {
 .inputGroup {
   position: relative;
   width: 100%;
+  left: 5px;
 }
 
 .tf-wrapper {
@@ -95,7 +96,7 @@ input[type=text] {
 
   &-input {
     width: 100%;
-    padding: 5px 0;
+    padding: 12px 0;
     line-height: 24px;
     font-size: 16px;
     outline: none;
@@ -109,7 +110,7 @@ input[type=text] {
 
   &-label {
     position: absolute;
-    top: 8px;
+    top: 12px;
     left: 0;
     transform-origin: top left;
     transition: 0.4s ease-out;
@@ -125,7 +126,7 @@ input[type=text] {
 
   &-hint {
     position: absolute;
-    bottom: -18px;
+    bottom: -22px;
     opacity: 0;
     left: 0;
     font-size: 12px;
@@ -225,7 +226,7 @@ input[type=text] {
   }
 
   .tf-label {
-    left: 12px;
+    left: 7px;
     top: 16px;
   }
 

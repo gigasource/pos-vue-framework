@@ -140,6 +140,7 @@
 			<!--          <img src="../assets/delivery/avatar.svg" alt="avatar">-->
 			<!--        </template>-->
 			<!--      </g-text-field-functional>-->
+			<g-text-field-functional prefix="Prefix" label="label"></g-text-field-functional>
 			<g-text-field-functional label="Mask" v-model="text2" v-mask="mask" ></g-text-field-functional>
 			<g-text-field-functional label="Has prefix"
 															 filled

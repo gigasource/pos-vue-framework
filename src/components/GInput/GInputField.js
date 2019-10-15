@@ -3,7 +3,7 @@ import { keyCodes } from '../../utils/helpers';
 
 
 
-export function getLabel(internalValue, isValidInput, isFocused,
+export function getLabel(props, internalValue, isValidInput, isFocused,
                          labelActiveClass = 'tf-label__active',
                          inValidStyle = { 'color': 'red' }) {
   //Activate label
@@ -12,14 +12,29 @@ export function getLabel(internalValue, isValidInput, isFocused,
     return isDirty.value || isFocused.value;
   })
   const labelClasses = computed(() => isLabelActive.value ? { labelActiveClass: true } : {})
-
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
-  const labelStyles = computed(() => ({
-    ...isLabelActive.value && { 'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)` },
-    ...!isValidInput.value && inValidStyle
-  }))
+  const labelStyles = computed(() =>
+  // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
+  // ...!isValidInput.value && inValidStyle}))
+  {
+
+    if(isLabelActive.value){
+      if(props.outlined){
+        if(props.filled){
+          return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }
+        }
+        else{
+          return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` }
+        }
+      }
+      else{
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +5}px)  scale(0.75)` }
+      }
+    }
+    !isValidInput.value && inValidStyle
+  })
 
   return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef }
 }
@@ -107,6 +122,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     {
       isValidInput.value = validate(internalValue.value).value
     }
+    isFocused.value = false
   }
 
   function onClearIconClick(event) {

@@ -65,5 +65,67 @@ describe('GTextField', function () {
 
     expect(vm.$el.outerHTML).toMatchSnapshot();
     done();
+  })
+  it('should render wrapper', function () {
+    let vm = new Vue({
+      template:`<g-text-field-functional filled></g-text-field-functional>`,
+      components:{ GTextFieldFunctional}
+    }).$mount() ;
+    expect(vm.$el.getElementsByClassName('tf__filled')).toBeTruthy()
+  })
+  it('should render hint, activate, deactivate hint', function () {
+    let vm = new Vue({
+      template:`<g-text-field-functional hint="Test hint"></g-text-field-functional>`,
+      components:{ GTextFieldFunctional}
+    }).$mount() ;
+    const input = vm.$el.querySelector('input');
+    expect(vm.$el.querySelector('.tf-hint')).toBeTruthy()
+    input.click();
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.tf-hint__active')).toBeTruthy();
+      input.blur();
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.tf-hint__active')).toBeFalsy()
+      })
+    });
+
+
+
   });
+  ;
+  it('should render label, transform label when input focused', function () {
+    let vm = new Vue({
+      template:`<g-text-field-functional label="Test label"></g-text-field-functional>`,
+      components:{ GTextFieldFunctional}
+    }).$mount() ;
+    const input = vm.$el.querySelector('input');
+    expect(input.getAttribute('label')).toBe('Test label');
+    const label = vm.$el.querySelector('.tf-label');
+    expect(label).toBeTruthy();
+    input.click();
+    vm.$nextTick(() => {
+      expect(label.style).toContain('transform');
+      input.blur();
+      vm.$nextTick(() =>{
+        expect(label.style).not.toContain('transform');
+      })
+    })
+  });
+  it('should render prefix, transform label align to prefix', function () {
+    let vm = new Vue({
+      template:`<g-text-field-functional label="Test label" prefix="Prefix"></g-text-field-functional>`,
+      components:{ GTextFieldFunctional}
+    }).$mount();
+    const prefix = vm.$el.querySelector('.tf-affix');
+    expect(prefix).toBeTruthy();
+    expect(prefix.innerHTML).toBe('Prefix');
+    expect(vm.$el.outerHTML).toMatchSnapshot();
+    const label = vm.$el.querySelector('label');
+    label.click();
+    vm.$nextTick(() =>{
+      expect(vm.$el.querySelector('.tf-hint__active')).toBeTruthy()
+    })
+
+  });
+  ;
 });

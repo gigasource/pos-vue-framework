@@ -1,115 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GTextField should render test 1`] = `
-<div class="tf-wrapper tf__filled tf-wrapper__error">
+exports[`GTextField should render prefix, transform label align to prefix 1`] = `
+<div class="tf-wrapper">
   <div class="tf-prepend__outer">
-    <img src="../../../assets/delivery/avatar.svg"
-         alt="avatar"
-    >
   </div>
   <fieldset>
     <legend>
+      Test label
     </legend>
-    <div class="tf tf__error">
+    <div class="tf">
       <div class="tf-prepend__inner">
-        <img src="../../../assets/delivery/avatar.svg"
-             alt="avatar"
-        >
       </div>
       <div class="tf-affix">
-        prefix
+        Prefix
       </div>
       <div class="inputGroup">
         <input id="input"
                type="text"
-               label="Has prefix"
+               label="Test label"
                class="tf-input"
-               style="color: red;"
         >
         <label for="input"
                class="tf-label"
-               style="transform: translateY(-18px) translateX(0px)  scale(0.75); color: red;"
         >
-          Has prefix
+          Test label
         </label>
       </div>
-      <div class="tf-affix">
-      </div>
       <div class="tf-append__inner">
-        <img src="../../../assets/delivery/avatar.svg"
-             alt="avatar"
-        >
+      </div>
+      <div class="tf-hint">
+      </div>
+      <div class="tf-counter"
+           style="display: none;"
+      >
+        0 / false
       </div>
     </div>
   </fieldset>
   <div class="tf-append__outer">
-    <img src="../../assets/delivery/cancel.svg">
-    <img src="../../../assets/delivery/avatar.svg"
-         alt="avatar"
-    >
-  </div>
-  <div class="tf-error">
-    Min 5 characters.
-  </div>
-  <div class="tf-counter">
-    4 / 25
-  </div>
-</div>
-`;
-
-exports[`GTextField validate test 1`] = `
-<div class="tf-wrapper tf__filled tf-wrapper__error">
-  <div class="tf-prepend__outer">
-    <img src="../../../assets/delivery/avatar.svg"
-         alt="avatar"
-    >
-  </div>
-  <fieldset>
-    <legend>
-    </legend>
-    <div class="tf tf__error">
-      <div class="tf-prepend__inner">
-        <img src="../../../assets/delivery/avatar.svg"
-             alt="avatar"
-        >
-      </div>
-      <div class="tf-affix">
-        prefix
-      </div>
-      <div class="inputGroup">
-        <input id="input"
-               type="text"
-               label="Has prefix"
-               class="tf-input"
-               style="color: red;"
-        >
-        <label for="input"
-               class="tf-label"
-               style="transform: translateY(-18px) translateX(0px)  scale(0.75); color: red;"
-        >
-          Has prefix
-        </label>
-      </div>
-      <div class="tf-affix">
-      </div>
-      <div class="tf-append__inner">
-        <img src="../../../assets/delivery/avatar.svg"
-             alt="avatar"
-        >
-      </div>
-    </div>
-  </fieldset>
-  <div class="tf-append__outer">
-    <img src="../../assets/delivery/cancel.svg">
-    <img src="../../../assets/delivery/avatar.svg"
-         alt="avatar"
-    >
-  </div>
-  <div class="tf-error">
-    Min 5 characters.
-  </div>
-  <div class="tf-counter">
-    4 / 25
   </div>
 </div>
 `;
