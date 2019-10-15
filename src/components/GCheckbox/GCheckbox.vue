@@ -20,7 +20,7 @@
     name: 'GCheckbox',
     model: {
       prop: 'inputValue',
-			event: 'change'
+      event: 'change'
     },
     props: {
       label: String,
@@ -56,25 +56,26 @@
       if (props.indeterminate) {
         isDeterminate.value = false;
       }
-      //change determine & active state when internal value change
+      //change determinate & active state when value changes
       watch(() => props.inputValue, (newVal) => {
         //inputValue & value is both array
         if (isSelectedArray && Array.isArray(props.value)) {
-          //compare 2 array (equal, inputValue is new array, other)
           if (isEqual(sortBy(newVal), sortBy(props.value))) {
+            // equal arrays (all selected)
             isDeterminate.value = true;
             isActive.value = true;
-          } else if (isSelectedArray && newVal.length === 0) {
+          } else if (newVal.length === 0) {
+            // none selected
             isDeterminate.value = true;
             isActive.value = false;
           } else {
+            // partially selected
             isDeterminate.value = false;
             isActive.value = false;
           }
-        } else if (newVal && isSelectedArray) {
-          isActive.value = newVal.some(v => v === trueValue)
-        } else if (newVal === true || newVal === 'true' || (newVal === trueValue)) {
-          isActive.value = true;
+        } else {
+          if (newVal && isSelectedArray) isActive.value = newVal.some(v => v === trueValue);
+          if (newVal === true || newVal === 'true' || (newVal === trueValue)) isActive.value = true;
         }
       });
       //define props color is a class or a css style

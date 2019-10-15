@@ -30,7 +30,6 @@ const routes = [
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
-  { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
 ];
 
 const router = new VueRouter({
