@@ -14,6 +14,7 @@ import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import InputDemo from "../view/InputDemo";
 import TransitionDemo from '../view/TransitionDemo';
+import ListDemo from '../view/ListDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -31,6 +32,7 @@ const routes = [
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
+  { path: '/list-demo', name: 'List', component: ListDemo},
 ];
 
 const router = new VueRouter({

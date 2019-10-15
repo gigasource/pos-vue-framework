@@ -1,5 +1,5 @@
 <template>
-	<div :class="classes" :style="[itemHeightStyle]">
+	<div :class="classes" :style="styles">
 		<slot></slot>
 	</div>
 </template>
@@ -11,26 +11,35 @@
     name: 'GListItem',
     props: {
 			height: String,
+			disabled: Boolean,
+			selectable: Boolean,
+      twoLine: Boolean,
+      threeLine: Boolean,
 		},
-		setup({ height }) {
+		setup(props) {
       const classes = computed(() => {
         const defaultClasses = {
-          'list-item': true,
+          'g-list-item': true,
+					'waves-effect': true
 				};
         return {
-          ...defaultClasses
+          ...defaultClasses,
+					'g-list-item__disabled': props.disabled,
+					'g-list-item__selectable': props.selectable,
+          'g-list-item__two-line': props.twoLine,
+          'g-list-item__three-line': props.threeLine,
 				}
 			});
-      const itemHeightStyle = computed(() => {
-        if(height) {
+      const styles = computed(() => {
+        if(props.height) {
           return {
-            height
+            'height': props.height
 					}
 				}
 			});
       return {
         classes,
-				itemHeightStyle
+				styles
 			}
 		}
   }
