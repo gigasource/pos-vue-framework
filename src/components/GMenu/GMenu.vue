@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed, onMounted, reactive, ref } from '@vue/composition-api';
+  import { computed, onBeforeUnmount, onMounted, reactive, ref } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
@@ -59,7 +59,8 @@
         closeOnClick: {
           type: Boolean,
           default: true
-        }
+        },
+        closeOnContentClick: Boolean
       },
       // sizing
       ...{
@@ -89,10 +90,9 @@
     setup(props, context) {
       const { model: isActive } = getVModel(props, context);
       const {
-        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
-        menuableState
+        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState
       } = menuable(props, context);
-      const { attachToRoot } = detachable(props, context);
+      const { attachToRoot, detach } = detachable(props, context);
       const { runDelay } = delayable(props)
 
       //template refs
@@ -118,6 +118,11 @@
         }
         initContent();
       });
+
+      onBeforeUnmount(() => {
+        if (content.value) detach(content.value)
+        if (el.value) detach(el.value)
+      })
 
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
@@ -170,7 +175,7 @@
         updateDimensions();
       }
 
-      let on = {
+      const elListeners = {
         ...(props.openOnHover && !props.disabled) && {
           mouseenter(event) {
             runDelay('open', () => {
@@ -193,28 +198,49 @@
         }
       }
 
-      const clickOutsideDirective = {
-        name: 'click-outside',
-        value: () => {
-          isActive.value = false
-        },
-        arg: {
-          closeConditional: (e) => {
-            const target = e.target;
-            return isActive.value && context.refs.content && !context.refs.content.contains(target)
+      const contentListeners = {
+        ...(props.closeOnContentClick) && {
+          click(event) {
+            if (isActive.value) isActive.value = false
+            state.hasJustFocused = false
+          }
+        }
+      }
+
+      const genDirectives = () => {
+        //callback to close menu when clicked outside
+        const closeConditional = (e) => {
+          const target = e.target;
+          return isActive.value && context.refs.content && !context.refs.content.contains(target)
+        }
+        const clickOutsideDirective = {
+          name: 'click-outside',
+          value: () => {
+            isActive.value = false
           },
-          include: () => [context.refs.el]
-        },
+          arg: {
+            closeConditional: closeConditional,
+            include: () => [context.refs.el]
+          },
+        }
+        //equates to v-show="value" in template
+        const vShowDirective = {
+          name: 'show',
+          value: props.value
+        }
+
+        const directives = [vShowDirective]
+        if (!props.openOnHover && props.closeOnClick) directives.push(clickOutsideDirective)
+        return directives;
       }
 
       return () =>
-        <div {...{ on }} ref="el" class="menu">
+        <div {...{ on: elListeners }} ref="el" class="menu">
           <div ref="activator">{context.slots.activator({ toggleContent })}</div>
           <div style={contentStyles.value}
                class="menu-content"
                ref="content"
-               vShow={props.value}
-               {...{ clickOutsideDirective }}>
+               {...{ directives: genDirectives(), on: contentListeners }}>
             {context.slots.default()}
           </div>
         </div>
