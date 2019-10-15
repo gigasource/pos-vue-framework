@@ -8,10 +8,11 @@ module.exports = {
   //   '!**/node_modules/**'
   // ],
   roots: [
-    '<rootDir>/src'
+    '<rootDir>/src',
+    '<rootDir>/',
   ],
   moduleFileExtensions: [
-    'js', 'vue'
+    'js', 'vue', 'json'
   ],
   moduleDirectories: [
     'node_modules'
@@ -23,11 +24,16 @@ module.exports = {
     '<rootDir>/src/tests/setup.js'
   ],
   testMatch: [
-    '**/__tests__/*.test.js'
+    '**/__tests__/*.test.js',
+    '**/vueshots.test.js'
   ],
   transform: {
     '^.*\\.vue$': "vue-jest",
-    '^.+\\.js$': "<rootDir>/node_modules/babel-jest"
+    '^.+\\.stories\\.jsx?$': '<rootDir>/.storybook/injectFileName.js',
+    '^.+\\.js$': "<rootDir>/node_modules/babel-jest",
+    '.*\\.(vue)$': '<rootDir>/node_modules/jest-vue-preprocessor',
+    '.+\\.(css|styl|less|sass|scss)$': 'jest-transform-css',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules']
+  transformIgnorePatterns: ['<rootDir>/node_modules'],
+  snapshotSerializers: ["jest-serializer-html"]
 }
