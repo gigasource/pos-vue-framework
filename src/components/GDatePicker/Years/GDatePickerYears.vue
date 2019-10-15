@@ -3,26 +3,27 @@
     <li v-for="year in yearsData"
         :key="year"
         :class="{ active: parseInt(value) === year }"
-        @click="onYearClicked(year)">
+        @click="yearClicked(year)">
       {{ year }}
     </li>
   </ul>
 </template>
 
 <script>
-  import { computed, onMounted } from '@vue/composition-api';
-
+  import { onMounted } from '@vue/composition-api';
+  import { getYearOnClickEventHandler, getYearRange } from './GDatePickerYearsUtil';
   const ACTIVE_YEAR_CLASS_NAME = 'active'
-
-  export const EVENT_NAMES = { INPUT: 'input' }
-
   export default {
     name: 'GDatePickerYears',
     props: {
-      min: [Number, String],    // lowest year
-      max: [Number, String],    // biggest year
-      value: [Number, String],  // selected year
-      readonly: Boolean,        // boolean value indicate whether the components is readonly or not
+      // lowest year
+      min: [Number, String],
+      // biggest year
+      max: [Number, String],
+      // selected year
+      value: [Number, String],
+      // boolean value indicate whether the components is readonly or not
+      readonly: Boolean
     },
     setup(props, context) {
       onMounted(() => {
@@ -39,27 +40,15 @@
         }
       })
 
-      const yearsData = computed(() => {
-        const value = props.value ? parseInt(props.value) : new Date().getFullYear()
-        const min = props.min
-        const max = props.max
-        const YEAR_OFFSET = 100
-        const maxYear = max ? parseInt(max) : (value + YEAR_OFFSET)
-        const minYear = Math.min(maxYear, min ? parseInt(min) : (value - YEAR_OFFSET))
-
-        const years = []
-        for (let year = maxYear; year >= minYear; year--) {
-          years.push(year)
-        }
-        return years
-      })
-
-      const onYearClicked = (year) => context.emit(EVENT_NAMES.INPUT, year)
+      const yearsData = getYearRange(props)
+      const yearClicked = getYearOnClickEventHandler(context)
 
       return {
         yearsData,
-        onYearClicked
+        yearClicked
       }
     }
   }
 </script>
+<style scoped>
+</style>

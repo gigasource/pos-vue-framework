@@ -1,6 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
-import GDatePickerMonthTable from '../GDatePickerMonthTable';
+import GDatePickerMonthTable from '../Table/MonthTable/GDatePickerMonthTable';
 
 describe('GDatePickerTitle.js', () => {
   let mountFunction

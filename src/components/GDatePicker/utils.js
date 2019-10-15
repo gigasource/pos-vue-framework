@@ -1,3 +1,5 @@
+
+
 /**
  * Make ISO string
  * @param dateString
@@ -18,7 +20,9 @@ const makeIsoString = (dateString) => {
 export function createNativeLocaleFormatter (locale, options, substrOptions = { start: 0, length: 0 }) {
   try {
     const intlFormatter = new Intl.DateTimeFormat(locale || undefined, options)
-    return (dateString) => intlFormatter.format(new Date(`${makeIsoString(dateString)}T00:00:00+00:00`))
+    return (dateString) => {
+      return intlFormatter.format(new Date(`${makeIsoString(dateString)}T00:00:00+00:00`))
+    }
   } catch (e) {
     return (substrOptions.start || substrOptions.length)
         ? (dateString) => makeIsoString(dateString).substr(substrOptions.start || 0, substrOptions.length)
@@ -72,14 +76,9 @@ export const TRANSITION_NAMES = {
   PICKER: 'picker-transition'
 }
 
-export const SANITY_TYPE = {
-  DATE: 'date',
-  MONTH: 'month',
-  YEAR: 'year'
-}
 // Adds leading zero to month/day if necessary, returns 'YYYY' if type = 'year',
 // 'YYYY-MM' if 'month' and 'YYYY-MM-DD' if 'date'
-export function sanitizeDateString(dateString/*: string*/, type/*: SANITY_TYPE*/)/*: string*/ {
+export function sanitizeDateString(dateString/*: string*/, type/*: DATE_PICKER_TYPE*/)/*: string*/ {
   const [year, month = 1, date = 1] = dateString.split('-')
   return `${year}-${pad(month)}-${pad(date)}`.substr(0, { date: 10, month: 7, year: 4 }[type])
 }

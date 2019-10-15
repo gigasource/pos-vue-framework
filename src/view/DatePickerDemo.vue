@@ -7,13 +7,10 @@
           <h4>Single select</h4>
           <g-date-picker v-model="singleSelect"></g-date-picker>
         </div>
-
         <div>
           <h4>Multiple select</h4>
           <g-date-picker multiple v-model="multipleSelect"></g-date-picker>
         </div>
-
-
         <div>
           <h4>Range select</h4>
           <g-date-picker range v-model="rangeSelect"></g-date-picker>
@@ -31,7 +28,7 @@
           <input type="checkbox" id="Fullwidth" v-model="fullWidth" class="ma-4"/>
         </span>
         <span>
-          <label for="ShowCurrentDate">Show current date</label>
+          <label for="ShowCurrentDate">Show _currentDateMonth date</label>
           <input type="checkbox" id="ShowCurrentDate" v-model="showCurrent" class="ma-4"/>
         </span>
         <span>
@@ -84,7 +81,7 @@
       <div style="display: flex">
         <div>
           <h4>Single select</h4>
-          <g-date-picker type="month" v-model="monthSelect"></g-date-picker>
+          <g-date-picker type="month" v-model="monthSelect" scrollable></g-date-picker>
         </div>
 
         <div>
@@ -98,9 +95,9 @@
 <script>
   import GDatePicker from '../components/GDatePicker/GDatePicker';
   import GBtn from '../components/GBtn/GBtn';
-  import GDatePickerYears from '../components/GDatePicker/GDatePickerYears';
-  import GDatePickerTitle from '../components/GDatePicker/GDatePickerTitle';
-  import GDatePickerMonthTable from '../components/GDatePicker/GDatePickerMonthTable';
+  import GDatePickerYears from '../components/GDatePicker/Years/GDatePickerYears';
+  import GDatePickerTitle from '../components/GDatePicker/Title/GDatePickerTitle';
+  import GDatePickerMonthTable from '../components/GDatePicker/Table/MonthTable/GDatePickerMonthTable';
 
   export default {
     name: 'DatePickerDemo',

@@ -1,27 +1,27 @@
-import { dateFilter, isDateAllowed, isValueInRange } from '../dateFilter';
+import { dateFilter, _isDateAllowed, _isValueInRange } from '../dateFilter';
 
 describe('GDatePicker/dateFilter', () => {
   describe('IsDateAllowed', () => {
     it('Output result will be true if filter function is missing', () => {
-      expect(isDateAllowed("abc")).toBe(true)
+      expect(_isDateAllowed("abc")).toBe(true)
     })
 
     it('Output value should depend on filter function', () => {
-      expect(isDateAllowed("abc", (v)=> true)).toBe(true)
-      expect(isDateAllowed("abc", (v)=> false)).toBe(false)
+      expect(_isDateAllowed("abc", (v)=> true)).toBe(true)
+      expect(_isDateAllowed("abc", (v)=> false)).toBe(false)
     })
   })
 
   describe('IsValueInRange', () => {
     it("Should return true if value in range", () => {
-      expect(isValueInRange("2010-01-01", "2010-01-01")).toBe(true)
-      expect(isValueInRange("2010-01-30", "2010-01-01", "2010-02-01")).toBe(true)
-      expect(isValueInRange("2010-02-01", "2010-01-01", "2010-02-01")).toBe(true)
+      expect(_isValueInRange("2010-01-01", "2010-01-01")).toBe(true)
+      expect(_isValueInRange("2010-01-30", "2010-01-01", "2010-02-01")).toBe(true)
+      expect(_isValueInRange("2010-02-01", "2010-01-01", "2010-02-01")).toBe(true)
     })
 
     it('Should return false if value is not in range', () => {
-      expect(isValueInRange("2010-01-01", "2010-01-02")).toBe(false)
-      expect(isValueInRange("2010-02-01", "2010-01-01", "2010-01-31")).toBe(false)
+      expect(_isValueInRange("2010-01-01", "2010-01-02")).toBe(false)
+      expect(_isValueInRange("2010-02-01", "2010-01-01", "2010-01-31")).toBe(false)
     })
   })
 

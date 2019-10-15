@@ -1,6 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
-import GDatePickerHeader from '../GDatePickerHeader';
+import GDatePickerHeader from '../Header/GDatePickerHeader';
 
 describe('GDatePickerTitle.js', () => {
   let mountFunction

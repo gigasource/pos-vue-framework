@@ -1,6 +1,6 @@
 import { createLocalVue, mount, MountOptions, Wrapper } from '@vue/test-utils'
 import plugin from '@vue/composition-api';
-import GDatePickerYears from '../GDatePickerYears'
+import GDatePickerYears from '../Years/GDatePickerYears'
 
 describe('GDatePickerYears.js', () => {
   let mountFunction

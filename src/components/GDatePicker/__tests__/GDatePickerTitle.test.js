@@ -1,7 +1,7 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
 
-import GDatePickerTitle from '../GDatePickerTitle'
+import GDatePickerTitle from '../Title/GDatePickerTitle'
 import {TRANSITION_NAMES} from '../utils'
 
 describe('GDatePickerTitle.js', () => {

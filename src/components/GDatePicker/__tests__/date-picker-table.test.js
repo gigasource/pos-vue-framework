@@ -1,4 +1,4 @@
-import dpt from '../date-picker-table'
+import dpt from '../Table/date-picker-table'
 
 describe('GDatePicker/date-picker-table', () => {
   describe('displayedMonths', () => {

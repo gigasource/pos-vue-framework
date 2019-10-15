@@ -24,8 +24,8 @@
 @import "../components/GBtn/GBtn";
 @import "../components/transition/_animation";
 @import "../components/GPicker/_GPicker";
-@import "../components/GDatePicker/styles/GDatePicker";
-@import "../components/GDatePicker/styles/GDatePickerHeader";
-@import "../components/GDatePicker/styles/GDatePickerTable";
-@import "../components/GDatePicker/styles/GDatePickerTitle";
-@import "../components/GDatePicker/styles/GDatePickerYears";
+@import "../components/GDatePicker/GDatePicker";
+@import "../components/GDatePicker/Header/GDatePickerHeader";
+@import "../components/GDatePicker/Table/GDatePickerTable";
+@import "../components/GDatePicker/Title/GDatePickerTitle";
+@import "../components/GDatePicker/Years/GDatePickerYears";
