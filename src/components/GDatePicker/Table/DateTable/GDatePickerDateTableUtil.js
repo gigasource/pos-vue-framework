@@ -160,7 +160,6 @@ export const getDates = (props, context) => {
       dayData.eventHandlers = props.disabled ? undefined : {
         click: () => {
           if (dayData.isAllowed && !props.readonly) {
-            console.log('emit input', date)
             context.emit(EVENT_NAMES.INPUT, date)
           }
           context.emit(EVENT_NAMES.DATE_CLICKED, date)
