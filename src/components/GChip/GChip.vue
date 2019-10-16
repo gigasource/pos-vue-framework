@@ -79,11 +79,11 @@
 
       //Rendering state of prependItem
       let renderState = computed(() => {
-        if (prependSlot() === true && props.filter === true) {
+        if (prependSlot() && props.filter) {
           return RENDER_AVATAR_FILTER;
-        } else if (prependSlot() === true && props.filter === false) {
+        } else if (prependSlot() && !props.filter) {
           return RENDER_AVATAR_ONLY;
-        } else if (prependSlot() === false && props.filter === true) {
+        } else if (!prependSlot() && props.filter) {
           return RENDER_FILTER_ONLY;
         }
       });
@@ -110,8 +110,8 @@
           'g-chip__pill': !!props.pill,
           'g-chip__label': !!props.label,
           'g-chip__active': !!props.active,
-          ...backgroundColorOutput && backgroundColorOutput.value && backgroundColorOutput.value.class,
-          ...textColorOutput && textColorOutput.value && textColorOutput.value.class
+          ...backgroundColorOutput.value && backgroundColorOutput.value.class,
+          ...textColorOutput.value && textColorOutput.value.class
         };
 
         let size = '';
@@ -137,19 +137,19 @@
         _classes[size] = true;
         _classes[avatarSize] = true;
 
-
         return _classes;
       });
 
       let styles = computed(() => {
         let _styles = {
-          ...backgroundColorOutput && backgroundColorOutput.value && backgroundColorOutput.value.style,
-          ...textColorOutput && textColorOutput.value && textColorOutput.value.style,
+          ...backgroundColorOutput.value && backgroundColorOutput.value.style,
+          ...textColorOutput.value && textColorOutput.value.style,
           ...props.textColor && { color: props.textColor.replace('-', '') },
           ...props.outlined && { color: `${props.color}`, border: `thin solid currentColor`, backgroundColor: 'transparent' },
         };
 
         // Params: linear-gradient(45deg, yellow, green)
+				//includes('-'): check if grandient is gradient-45deg-yellow-green or array of colors
         if (props.gradient && !props.gradient.toString().includes('-')) {
           _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
         }
