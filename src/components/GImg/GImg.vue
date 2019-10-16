@@ -1,9 +1,11 @@
 <template>
-    <div>
-        <div :class="classObj" :style="[sizeStyle,styleObj]"></div>
-        <div :class="classObjPlaceholder" :style="sizeStyle">
-
-        </div>
+    <div class="g-container" :style="styleSize">
+        <div v-show="loaded.value" :class="classImage" :style="styleImage"></div>
+        <slot v-if="!loaded.value">
+            <div :class="classPlaceholder" :style="stylePlaceholder">
+                <h3>Loading...</h3>
+            </div>
+        </slot>
     </div>
 </template>
 
@@ -11,23 +13,21 @@
   import {convertToUnit} from '../../utils/helpers';
   import {computed, createElement as h, onMounted, reactive, ref, watch} from '@vue/composition-api';
 
-  const getSize = (props, context) => {
+  const getSize = (props, img) => {
     return computed(() => {
-      let contain = props.contain ? 'contain' : 'cover'
-      let img = new Image()
-      img.src = props.src
-      let imgSize = {
-        height: img.height,
-        width: img.width
-      }
+      // let imgSize = {
+      //   width : props.width || (props.height * props.aspectRatio) || img.width,
+      //   height: props.height || (props.width/props.aspectRatio) || img.height
+      // }
       return {
-        backgroundSize: contain,
-        width: convertToUnit(props.width || imgSize.width),
-        maxWidth: convertToUnit(props.maxwidth),
+        width: convertToUnit(props.width || (props.height * props.aspectRatio) || img.width),
+        maxWidth: convertToUnit(props.maxWidth),
         minWidth: convertToUnit(props.minWidth),
-        height: convertToUnit(props.height || imgSize.height),
+        height: convertToUnit(props.height || (props.width / props.aspectRatio) || ((img.width / props.aspectRatio)) || img.height),
         maxHeight: convertToUnit(props.maxHeight),
-        minHeight: convertToUnit(props.minHeight)
+        minHeight: convertToUnit(props.minHeight),
+        aspectRatio: props.aspectRatio,
+        //paddingBottom: (props.width && props.height) ? null : `${1 / props.aspectRatio * 100}%`
       }
     })
   }
@@ -43,38 +43,61 @@
       maxHeight: [Number, String],
       minHeight: [Number, String],
       contain: Boolean,
-      aspectRatio: [Number, String]
+      aspectRatio: [Number, String],
+      gradient: String
     },
-    setup(props, context) {
-      const sizeStyle = getSize(props, context)
 
-      const styleObj = computed(() => {
+    setup(props, context) {
+      let loaded = reactive({value: false})
+      let img = new Image()
+      img.onload = () => {
+        loaded.value = true
+      }
+      img.src = props.src
+
+
+      const styleSize = getSize(props, img)
+      //   size.paddingBottom = `${1 / props.aspectRatio * 100}%`
+
+
+      const styleImage = computed(() => {
+        let contain = props.contain ? 'contain' : 'cover'
         return {
-          backgroundImage: 'url(' + props.src + ')'
+          backgroundImage: `linear-gradient(${props.gradient}),url(${props.src})`,
+          backgroundSize: contain,
         }
       })
 
-      // watch(props.minHeight, (newVal, oldValue) => {
-      //
-      // }, { lazy: true, flush: "pre"})
-
-      const classObj = computed(() => {
+      const classImage = computed(() => {
         return {
           'g-image': true,
         }
       })
 
-      const classObjPlaceholder = computed(() => {
+      const stylePlaceholder = computed(() => {
         return {
-          'g-placeholder': true,
+          width: '100%',
+          height: '100%',
+          backgroundImage: 'url(https://picsum.photos/id/11/100/60)',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center center'
+        }
+      })
+
+      const classPlaceholder = computed(() => {
+        return {
+          'g-placeholder': true
         }
       })
 
       return {
-        sizeStyle,
-        styleObj,
-        classObj,
-        classObjPlaceholder
+        styleSize,
+        styleImage,
+        classImage,
+        stylePlaceholder,
+        classPlaceholder,
+        loaded
       }
     }
   }

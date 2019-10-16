@@ -1,12 +1,19 @@
+.g-container {
+  position: relative;
+}
+
+.g-padding {
+}
+
 .g-image {
-  z-index: 1;
-  position: absolute;
+  width: 100%;
+  height: 100%;
   background-repeat: no-repeat;
   background-position: center center;
   background-color: #cccccc;
+  position: absolute;
 }
 
 .g-placeholder {
-  z-index: 0;
   position: absolute;
 }
