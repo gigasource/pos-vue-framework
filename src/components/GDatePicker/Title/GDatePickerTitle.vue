@@ -1,6 +1,6 @@
 <template>
   <div :class="titleClasses">
-    <div :class="titleYearClasses" v-on:click.stop="onYearButtonClicked">
+    <div :class="titleYearClasses" @click.stop="onYearButtonClicked">
       {{ year }}
     </div>
     <div :class="titleDateClasses">

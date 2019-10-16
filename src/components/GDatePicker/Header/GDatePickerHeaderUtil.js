@@ -18,15 +18,13 @@ function isMonthFormat(dateString) {
  * @returns {function(_inputDate: string): string} A function which format _inputDate string
  */
 export function getHeaderFormatter(props) {
-  return computed(() => {
-    if (props.format) {
-      return props.format
-    } else if (isMonthFormat(String(props.value))) {
-      return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
-    } else {
-      return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
-    }
-  })
+  if (props.format) {
+    return props.format
+  } else if (isMonthFormat(String(props.value))) {
+    return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
+  } else {
+    return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
+  }
 }
 
 /**
@@ -45,21 +43,12 @@ export function getHeaderFormatter(props) {
  *  sign: -1
  *  return: '2009'
  */
-const calculateChange = (props, sign) => {
+export const calculateChange = (props, sign) => {
   if (isMonthFormat(props.value)) {
     return monthChange(props.value, sign)
   } else {
     return (Number(props.value) + sign).toString()
   }
-}
-
-/**
- * Navigation
- * @type {{PREV: number, NEXT: number}}
- */
-const NAV = {
-  PREV: -1,
-  NEXT: 1
 }
 
 /**
@@ -72,18 +61,25 @@ export const EVENT_NAMES = {
 }
 
 /**
- *
- * @param props
- * @returns {Ref<any>}
+ * Navigation
+ * @type {{PREV: number, NEXT: number}}
  */
-export const getPrevBtnDisabledState = (props) => computed(() => props.disabled || (props.min && calculateChange(props, NAV.PREV) < props.min))
+const NAV = {
+  PREV: -1,
+  NEXT: 1
+}
 
 /**
- *
+ * Get navigation state depend on min, max date values and disabled flag
  * @param props
- * @returns {Ref<any>}
+ * @returns {{canGoNext: Ref<any>, canGoPrev: Ref<any>}}
  */
-export const getNextBtnDisabledState = (props) => computed(() => props.disabled || (props.max && calculateChange(props, NAV.NEXT) > props.max))
+export const getNavigationState = (props) => {
+  return {
+    canGoPrev: computed(() => !(props.disabled || (props.min && calculateChange(props, NAV.PREV) < props.min))),
+    canGoNext: computed(() => !(props.disabled || (props.max && calculateChange(props, NAV.NEXT) > props.max)))
+  }
+}
 
 /**
  *

@@ -10,7 +10,7 @@
                       :class="month.class"
                       :style="month.style"
                       :disabled="disabled || !month.isAllowed"
-                      v-on="month.eventHandlers">
+                      @click="month.eventHandlers.click">
                 <div class="g-btn__content">
                   {{ month.content }}
                 </div>

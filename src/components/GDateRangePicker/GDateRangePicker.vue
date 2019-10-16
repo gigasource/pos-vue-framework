@@ -31,10 +31,10 @@
 </template>
 
 <script>
-  import GDatePicker from './GDatePicker'
-  import { EVENT_NAMES } from './GDatePickerUtil';
+  import GDatePicker from '../GDatePicker/GDatePicker'
+  import { EVENT_NAMES } from '../GDatePicker/GDatePickerUtil';
   import { reactive, computed } from '@vue/composition-api';
-  import GDatePickerTitle from './Title/GDatePickerTitle';
+  import GDatePickerTitle from '../GDatePicker/Title/GDatePickerTitle';
 
 
   export default {

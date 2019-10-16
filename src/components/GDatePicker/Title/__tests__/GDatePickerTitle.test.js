@@ -1,8 +1,9 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
 
-import GDatePickerTitle from '../Title/GDatePickerTitle'
-import {TRANSITION_NAMES} from '../utils'
+import GDatePickerTitle from '../GDatePickerTitle'
+import {EVENT_NAMES} from '../GDatePickerTitleUtil'
+import {TRANSITION_NAMES} from '../../utils'
 
 describe('GDatePickerTitle.js', () => {
   let mountFunction
@@ -66,27 +67,22 @@ describe('GDatePickerTitle.js', () => {
     expect(wrapper.html()).toMatchSnapshot()
   })
 
-  it('should emit input event on year click', () => {
+  it('should emit input event on year click', (done) => {
     const wrapper = mountFunction({
       propsData: {
         year: '1234',
-        yearIcon: 'year',
         date: '2005-11-01',
       },
     })
 
     const input = jest.fn(value => wrapper.setProps({ selectingYear: value }))
-    wrapper.vm.$on('update:selecting-year', input)
-
-    wrapper.findAll('.g-date-picker-title__date').at(0).trigger('click')
-    expect(input).not.toHaveBeenCalled()
+    wrapper.vm.$on(EVENT_NAMES.UPDATE_SELECTING_YEAR, input)
     wrapper.findAll('.g-date-picker-title__year').at(0).trigger('click')
     expect(input).toHaveBeenCalledWith(true)
-    wrapper.findAll('.g-date-picker-title__date').at(0).trigger('click')
-    expect(input).toHaveBeenCalledWith(false)
-    wrapper.findAll('.g-date-picker-title__year').at(0).trigger('click')
-    wrapper.findAll('.g-date-picker-title__year').at(0).trigger('click')
-    expect(input).toHaveBeenCalledWith(false)
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.selectingYear).toBe(true)
+      done()
+    })
   })
 
   it('should have the correct transition', () => {

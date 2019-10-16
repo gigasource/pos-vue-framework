@@ -1,8 +1,14 @@
 import { computed } from '@vue/composition-api'
-import { createNativeLocaleFormatter, monthChange, pad } from '../../utils';
+import { createNativeLocaleFormatter, daysInMonth, isLeapYear, monthChange, pad } from '../../utils';
 import { createRange } from '../../../../utils/helpers';
 import { setBackgroundColor, setTextColor } from '../../../../mixins/colorable'
-import GDatePickerTable from '../date-picker-table'
+import {
+  getDisplayed,
+  getBtnActiveClass,
+  getBtnDisabledClass,
+  getBtnOutlinedClass,
+  getBtnRoundedClass, isSelected, isCurrent
+} from '../date-picker-table'
 import dateFilter from '../../dateFilter'
 
 export const EVENT_NAMES = {
@@ -46,8 +52,12 @@ export const getDayNameInWeek = (props) => {
   })
 }
 
-
-//
+/**
+ *
+ * @param props
+ * @param context
+ * @returns {{onWheel: onWheel}}
+ */
 export const getDateTableEvents = (props, context) => {
   return {
     onWheel: (e) => {
@@ -58,145 +68,218 @@ export const getDateTableEvents = (props, context) => {
     }
   }
 }
-const calculateTableDate = (props, delta) => monthChange(props.tableDate, Math.sign(delta || 1))
 
-// date table. A two-dimensions array corresponding to date in month
+/**
+ *
+ * @param props
+ * @param delta
+ * @returns {string}
+ */
+export const calculateTableDate = (props, delta) => monthChange(props.tableDate, Math.sign(delta || 1))
+
+/**
+ *
+ * @param props
+ * @returns {Ref<any>}
+ * @private
+ */
+export const _getDateFormatter = (props) => computed(() => {
+  return props.format || createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' }, { start: 8, length: 2 })
+})
+
+/**
+ * Returns number of the days from the firstDayOfWeek to the first day of the _currentDateMonth month
+ * @param props
+ * @param displayedYear
+ * @param displayedMonth
+ * @returns {number}
+ * @private
+ */
+function _weekDaysBeforeFirstDayOfTheMonth(props, displayedYear, displayedMonth) {
+  const firstDayOfTheMonth = new Date(`${displayedYear.value}-${pad(displayedMonth.value + 1)}-01T00:00:00+00:00`)
+  const weekDay = firstDayOfTheMonth.getUTCDay()
+  return (weekDay - parseInt(props.firstDayOfWeek) + 7) % 7
+}
+
+/**
+ * Return a week number of the week in year
+ * @returns {number}
+ * @private
+ */
+export function _getWeekNumber(props, displayedYear, displayedMonth) {
+  let dayOfYear = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334][displayedMonth.value]
+  if (displayedMonth.value > 1 && isLeapYear(displayedYear.value))
+    dayOfYear++
+  const offset = (
+      displayedYear.value +
+      ((displayedYear.value - 1) >> 2) -
+      Math.floor((displayedYear.value - 1) / 100) +
+      Math.floor((displayedYear.value - 1) / 400) -
+      Number(props.firstDayOfWeek)
+  ) % 7 // https://en.wikipedia.org/wiki/Zeller%27s_congruence
+  return Math.floor((dayOfYear + offset) / 7) + 1
+}
+
+/**
+ * Get event colors
+ * @param date
+ * @param props
+ * @returns {Array|*}
+ * @private
+ */
+export function _getEventColors (date, props) {
+  const arrayize = (v) => Array.isArray(v) ? v : [v]
+  let eventData
+  let eventColors = []
+
+  if (Array.isArray(props.events)) {
+    eventData = props.events.includes(date)
+  } else if (props.events instanceof Function) {
+    eventData = props.events(date) || false
+  } else if (props.events) {
+    eventData = props.events[date] || false
+  } else {
+    eventData = false
+  }
+
+  if (!eventData) {
+    return []
+  } else if (eventData !== true) {
+    eventColors = arrayize(eventData)
+  } else if (typeof props.eventColor === 'string') {
+    eventColors = [props.eventColor]
+  } else if (typeof props.eventColor === 'function') {
+    eventColors = arrayize(props.eventColor(date))
+  } else if (Array.isArray(props.eventColor)) {
+    eventColors = props.eventColor
+  } else {
+    eventColors = arrayize(props.eventColor[date])
+  }
+
+  return eventColors.filter(v => v)
+}
+
+/**
+ * Get events
+ * @param date
+ * @returns {null|(*|{})[]}
+ * @private
+ */
+export function _genEvents(date, props) {
+  const eventColors = _getEventColors(date, props)
+  if (eventColors.length) {
+    return eventColors.map(color => setBackgroundColor(color, {}))
+  }
+  return null
+}
+
+/**
+ *
+ * @param dateItem
+ * @param props
+ * @param context
+ * @param date
+ * @private
+ */
+export function _addEventHandler(dateItem, props, context, date) {
+  dateItem.eventHandlers = props.disabled ? undefined : {
+    click: () => {
+      if (dateItem.isAllowed && !props.readonly) {
+        context.emit(EVENT_NAMES.INPUT, date)
+      }
+      context.emit(EVENT_NAMES.DATE_CLICKED, date)
+    },
+    dblclick: () => context.emit(EVENT_NAMES.DATE_DB_CLICKED, date),
+  }
+}
+
+/**
+ *
+ * @param dateItem
+ * @param props
+ * @param date
+ * @private
+ */
+export function _addRangeInformation(dateItem, props, date) {
+  if (Array.isArray(props.value) && props.value.length > 1 && dateItem.isSelected) {
+    if (props.value[0] === date) {
+      dateItem.isRangeStart = true
+    } else if (props.value[props.value.length - 1] === date) {
+      dateItem.isRangeEnd = true
+    } else {
+      dateItem.isInRange = true
+    }
+  }
+}
+
+/**
+ * Return a date table - a two dimensions array with each row is a week
+ * @param props
+ * @param context
+ * @returns {Ref<any>}
+ */
 export const getDates = (props, context) => {
-  const { genButtonClasses, displayedMonth, displayedYear } = GDatePickerTable(props, context)
+  const { displayedMonth, displayedYear } = getDisplayed(props)
   const isDateAvailable = dateFilter(props)
-
-  // formatter
-  const formatter = computed(() => {
-    return props.format || createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' }, { start: 8, length: 2 })
-  })
-
-  // Returns number of the days from the firstDayOfWeek to the first day of the _currentDateMonth month
-  function weekDaysBeforeFirstDayOfTheMonth() {
-    const firstDayOfTheMonth = new Date(`${displayedYear.value}-${pad(displayedMonth.value + 1)}-01T00:00:00+00:00`)
-    const weekDay = firstDayOfTheMonth.getUTCDay()
-    return (weekDay - parseInt(props.firstDayOfWeek) + 7) % 7
-  }
-
-  function getWeekNumber() {
-    let dayOfYear = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334][displayedMonth.value]
-    if (displayedMonth.value > 1 &&
-        (((displayedYear.value % 4 === 0) && (displayedYear.value % 100 !== 0)) || (displayedYear.value % 400 === 0))
-    ) {
-      dayOfYear++
-    }
-    const offset = (
-        displayedYear.value +
-        ((displayedYear.value - 1) >> 2) -
-        Math.floor((displayedYear.value - 1) / 100) +
-        Math.floor((displayedYear.value - 1) / 400) -
-        Number(props.firstDayOfWeek)
-    ) % 7 // https://en.wikipedia.org/wiki/Zeller%27s_congruence
-    return Math.floor((dayOfYear + offset) / 7) + 1
-  }
-
-  function genEvents(date) {
-    const eventColors = getEventColors(date)
-    if (eventColors.length) {
-      return eventColors.map(color => setBackgroundColor(color, {}))
-    }
-    return null
-  }
-
-  // events
-  function getEventColors (date) {
-    const arrayize = (v) => Array.isArray(v) ? v : [v]
-    let eventData
-    let eventColors = []
-
-    if (Array.isArray(props.events)) {
-      eventData = props.events.includes(date)
-    } else if (props.events instanceof Function) {
-      eventData = props.events(date) || false
-    } else if (props.events) {
-      eventData = props.events[date] || false
-    } else {
-      eventData = false
-    }
-
-    if (!eventData) {
-      return []
-    } else if (eventData !== true) {
-      eventColors = arrayize(eventData)
-    } else if (typeof props.eventColor === 'string') {
-      eventColors = [props.eventColor]
-    } else if (typeof props.eventColor === 'function') {
-      eventColors = arrayize(props.eventColor(date))
-    } else if (Array.isArray(props.eventColor)) {
-      eventColors = props.eventColor
-    } else {
-      eventColors = arrayize(props.eventColor[date])
-    }
-
-    return eventColors.filter(v => v)
-  }
+  const dateFormatter = _getDateFormatter(props)
 
   return computed(() => {
-    const dateData = []
-    const daysInMonth = new Date(displayedYear.value, displayedMonth.value + 1, 0).getDate()
-    let row = []
-    let day = weekDaysBeforeFirstDayOfTheMonth()
-    let weekNumber = getWeekNumber()
-    // add week first
-    props.showWeek && row.push({ isWeek: true, value: weekNumber++ })
-    // add blank day before the first day of the month
-    while (day--) row.push({ isWeek: false, isBlank: true })
-    // add days in month
-    for (day = 1; day <= daysInMonth; day++) {
-      const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(day)}`
-      // build day data
-      let dayData = {
-        isWeek: false,
-        isAllowed: isDateAvailable(date),
-        isFloating: true,
-        isSelected: date === props.value || (Array.isArray(props.value) && props.value.indexOf(date) !== -1),
-        isCurrent: date === props.current
-      }
-      dayData.class = genButtonClasses(dayData.isAllowed, dayData.isFloating, dayData.isSelected, dayData.isCurrent)
-      dayData.eventHandlers = props.disabled ? undefined : {
-        click: () => {
-          if (dayData.isAllowed && !props.readonly) {
-            context.emit(EVENT_NAMES.INPUT, date)
-          }
-          context.emit(EVENT_NAMES.DATE_CLICKED, date)
-        },
-        dblclick: () => context.emit(EVENT_NAMES.DATE_DB_CLICKED, date),
-      }
-      dayData.content = formatter.value(date)
-      dayData.events = genEvents(date)
+    const weeks = []
+    let week = []
 
-      // range
-      if (Array.isArray(props.value) && props.value.length > 1 && dayData.isSelected && props.range) {
-        if (props.value[0] === date) {
-          dayData.isRangeStart = true
-        } else if (props.value[props.value.length - 1] === date) {
-          dayData.isRangeEnd = true
-        } else {
-          dayData.isInRange = true
-        }
+    let weekNumber = _getWeekNumber(props, displayedYear, displayedMonth)
+    // add week first
+    props.showWeek && week.push({ isWeek: true, value: weekNumber++ })
+
+    // add blank day before the first day of the month
+    let dayBeforeFirstDayOfMonths = _weekDaysBeforeFirstDayOfTheMonth(props, displayedYear, displayedMonth)
+    while (dayBeforeFirstDayOfMonths--)
+      week.push({ isBlank: true })
+
+    // add days in month
+    const daysInMonth = daysInMonth(displayedYear.value, displayedMonth.value + 1)
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(day)}`
+
+      let dateItem = {
+        isAllowed: isDateAvailable(date),
+        isSelected: isSelected(props, date),
+        isCurrent: isCurrent(props, date)
       }
+
+      dateItem.class = {
+        ...getBtnActiveClass(dateItem.isSelected),
+        ...getBtnRoundedClass(),
+        ...getBtnDisabledClass(dateItem.isAllowed, props.disabled),
+        ...getBtnOutlinedClass(dateItem.isCurrent)
+      }
+
+      _addEventHandler(dateItem, props, context, date)
+
+      dateItem.content = dateFormatter.value(date)
+      dateItem.events = _genEvents(date, props)
+
+      if (props.range)
+        _addRangeInformation(dateItem, props, date)
 
       // set color
-      let setColor = dayData.isSelected ? setBackgroundColor : setTextColor
-      let color = (dayData.isSelected || dayData.isCurrent) && (props.color || '')
+      let setColor = dateItem.isSelected ? setBackgroundColor : setTextColor
+      let color = (dateItem.isSelected || dateItem.isCurrent) && (props.color || '')
 
-      setColor(color, dayData)
-      row.push(dayData)
+      setColor(color, dateItem)
+      week.push(dateItem)
 
-      if (row.length % (props.showWeek ? 8 : 7) === 0) {
-        dateData.push(row)
-        row = []
-        day < daysInMonth && props.showWeek && row.push({ isWeek: true, value: weekNumber++ })
+      if (week.length % (props.showWeek ? 8 : 7) === 0) {
+        weeks.push(week)
+        week = []
+        if (day < daysInMonth && props.showWeek)
+          week.push({ isWeek: true, value: weekNumber++ })
       }
     }
-    if (row.length) {
-      dateData.push(row)
+    if (week.length) {
+      weeks.push(week)
     }
-    return dateData
+    return weeks
   })
 }
 

@@ -86,22 +86,20 @@
 
         <div>
           <h4>Multiple select</h4>
-          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape></g-date-picker>
+          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape show-current></g-date-picker>
         </div>
       </div>
     </div>
 
     <div style="padding: 30px">
       <h3>Range picker</h3>
-      <g-range-picker></g-range-picker>
+      <g-date-range-picker></g-date-range-picker>
     </div>
-
-
   </div>
 </template>
 <script>
   import GDatePicker from '../components/GDatePicker/GDatePicker';
-  import GRangePicker from '../components/GDatePicker/GRangePicker';
+  import GDateRangePicker from '../components/GDateRangePicker/GDateRangePicker';
   import GBtn from '../components/GBtn/GBtn';
   import GDatePickerYears from '../components/GDatePicker/Years/GDatePickerYears';
   import GDatePickerTitle from '../components/GDatePicker/Title/GDatePickerTitle';
@@ -109,7 +107,7 @@
 
   export default {
     name: 'DatePickerDemo',
-    components: { GDatePickerMonthTable, GDatePickerTitle, GDatePickerYears, GBtn, GDatePicker, GRangePicker },
+    components: { GDatePickerMonthTable, GDatePickerTitle, GDatePickerYears, GBtn, GDatePicker, GDateRangePicker },
     props: {},
     data: function () {
       return {

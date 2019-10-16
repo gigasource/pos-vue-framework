@@ -1,12 +1,14 @@
-import { createLocalVue, mount, MountOptions, Wrapper } from '@vue/test-utils'
-import plugin from '@vue/composition-api';
-import GDatePickerYears from '../Years/GDatePickerYears'
+import { createLocalVue, mount } from '@vue/test-utils'
+import plugin from '@vue/composition-api'
+import GDatePickerYears from '../GDatePickerYears'
 
+
+// verify whether this component use its util functions
 describe('GDatePickerYears.js', () => {
-  let mountFunction
-
   const localVue = createLocalVue()
   localVue.use(plugin)
+
+  let mountFunction
 
   beforeEach(() => {
     mountFunction = (options) => {

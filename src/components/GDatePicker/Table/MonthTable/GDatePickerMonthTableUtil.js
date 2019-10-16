@@ -1,8 +1,14 @@
 import { computed } from '@vue/composition-api'
 import { setBackgroundColor, setTextColor } from '../../../../mixins/colorable'
 import { createNativeLocaleFormatter, pad } from '../../utils';
+import {
+  getDisplayed,
+  getBtnActiveClass,
+  getBtnDisabledClass,
+  getBtnOutlinedClass,
+  isSelected, isCurrent
+} from '../date-picker-table'
 import dateFilter from '../../dateFilter'
-import GDatePickerTable from '../date-picker-table'
 
 export const EVENT_NAMES = {
   INPUT: 'input',
@@ -11,65 +17,163 @@ export const EVENT_NAMES = {
   MONTH_DB_CLICKED: 'dblclick:month'
 }
 
-export const getMonthTableEvents = (props, context) => {
-  function calculateTableDate(delta) {
-    return `${parseInt(props.tableDate, 10) + Math.sign(delta || 1)}`
-  }
+/**
+ *
+ * @private
+ * @exportToTest
+ * @param props
+ * @param delta
+ * @returns {string}
+ */
+export const _calculateTableDate = (props, delta) => `${parseInt(props.tableDate || '1', 10) + Math.sign(delta || 1)}`
 
+/**
+ *
+ * @exportToTest
+ * @param props
+ * @param context
+ * @returns {{onWheel: onWheel}}
+ */
+export const getMonthTableEvents = (props, context) => {
   return {
     onWheel: (e) => {
       if (!props.disabled && props.scrollable) {
         e.preventDefault()
-        context.emit(EVENT_NAMES.UPDATE_TABLE_DATE, calculateTableDate(e.deltaY < 0 ? -1 : 1))
+        context.emit(EVENT_NAMES.UPDATE_TABLE_DATE, _calculateTableDate(props, e.deltaY))
       }
     }
   }
 }
 
-export const getMonths = (props, context) => {
-  const { displayedYear, genButtonClasses } = GDatePickerTable(props, context)
-  const isDateAvailable = dateFilter(props)
+/**
+ * Get month formatter
+ * Month formatter is a (monthValue: string|number) => string
+ * @private
+ * @exportToTest
+ * @param props
+ * @returns {Ref<any>}
+ */
+export const _getMonthFormatter = (props) => computed(() => {
+  // TODO: Consider validate props.format is (string) => string
+  // TODO: Refactor somehow to track createNativeLocaleFormatter function call
+  return props.format || createNativeLocaleFormatter(undefined, { month: 'short', timeZone: 'UTC' }, { start: 5, length: 2 })
+})
 
-  // month
-  const monthFormatter = computed(() => {
-    return props.format || createNativeLocaleFormatter(undefined, { month: 'short', timeZone: 'UTC' }, { start: 5, length: 2 })
-  })
+
+
+/**
+ * Return click event handler object
+ * @private
+ * @exportToTest
+ * @param monthDataItem
+ * @param props
+ * @param context
+ * @param month
+ * @returns {{click: click}}
+ */
+export const _getClickEventHandler = (monthDataItem, props, context, month) => {
+  return {
+    click: () => {
+      if (monthDataItem.isAllowed && !props.readonly)
+        context.emit(EVENT_NAMES.INPUT, month)
+      context.emit(EVENT_NAMES.MONTH_CLICKED, month)
+    }
+  }
+}
+
+/**
+ * Return double click event handler object
+ * @private
+ * @exportToTest
+ * @param context
+ * @param month
+ * @returns {function(): *}
+ */
+export const _getDbClickEventHandler = (context, month) => {
+  return {
+    dblclick: () => context.emit(EVENT_NAMES.MONTH_DB_CLICKED, month)
+  }
+}
+
+/**
+ * Attach eventHandlers object to monthDataItem
+ * eventHandlers object is an object which contain value pair { eventName: eventHandler }
+ *
+ * Example:
+ *  {
+ *    click: (e) => { do something },
+ *    wheel: (e) => { do something }
+ *  }
+ * @private
+ * @exportToTest
+ * @param monthDataItem
+ * @param props
+ * @param context
+ * @param date
+ */
+export const _attachMonthItemEventHandlers = (monthDataItem, props, context, date) => {
+  monthDataItem.eventHandlers = props.disabled ? undefined : {
+    ..._getClickEventHandler(monthDataItem, props, context, date),
+    ..._getDbClickEventHandler(context, date)
+  }
+}
+
+/**
+ * Return month color of specified month item
+ * @param monthDataItem
+ * @returns {string}
+ * @private
+ */
+export const _getMonthItemColor = (monthDataItem, props) => {
+  let color = ''
+  if (props.color && (monthDataItem.isSelected || monthDataItem.isCurrent))
+    color = props.color
+  return color
+}
+
+/**
+ * Get month items
+ * @param props
+ * @param context
+ * @returns {Ref<any>}
+ */
+export const getMonths = (props, context) => {
+  const { columns, rowNumbers } = {
+    columns: [null, null, null],
+    rowNumbers: 4
+  }
+  const { displayedYear } = getDisplayed(props)
+  const isDateAvailable = dateFilter(props)
+  const monthFormatter = _getMonthFormatter(props)
 
   return computed(() => {
     const monthData = []
-    const colNumbers = Array(3).fill(null)
-    const rowNumbers = 12 / colNumbers.length
     for (let rowIndex = 0; rowIndex < rowNumbers; rowIndex++) {
-      const row = colNumbers.map((_, col) => {
-        const month = rowIndex * colNumbers.length + col + 1
-        const date = `${displayedYear.value}-${pad(month)}`
-
-        const monthData = {
+      const monthRow = columns.map((_, col) => {
+        const month = rowIndex * columns.length + col
+        const monthValue = `${displayedYear.value}-${pad(month + 1)}`
+        const monthDataItem = {
           key: month,
-          isAllowed: isDateAvailable(date),
-          isSelected: date === props.value || (Array.isArray(props.value) && props.value.indexOf(date) !== -1),
-          isCurrent: date === props.current,
+          isAllowed: isDateAvailable(monthValue),
+          isSelected: isSelected(props, monthValue),
+          isCurrent: isCurrent(props, monthValue),
         }
-        monthData.class = genButtonClasses(monthData.isAllowed, false, monthData.isSelected, monthData.isCurrent)
-        monthData.content = monthFormatter.value(date)
-        monthData.eventHandlers = props.disabled ? undefined : {
-          click: () => {
-            if (monthData.isAllowed && !props.readonly)
-              context.emit(EVENT_NAMES.INPUT, date)
-
-            context.emit(EVENT_NAMES.MONTH_CLICKED, date)
-          },
-          dblclick: () => context.emit(EVENT_NAMES.MONTH_DB_CLICKED, date),
+        monthDataItem.class = {
+          ...getBtnActiveClass(monthDataItem.isSelected),
+          ...getBtnOutlinedClass(monthDataItem.isCurrent),
+          ...getBtnDisabledClass(monthDataItem.isAllowed, props.disabled)
         }
+        monthDataItem.content = monthFormatter.value(monthValue)
+        _attachMonthItemEventHandlers(monthDataItem, props, context, monthValue)
 
-        let setColor = monthData.isSelected ? setBackgroundColor : setTextColor
-        let color = (monthData.isSelected || monthData.isCurrent) && (props.color || '')
+        let setColor = monthDataItem.isSelected ? setBackgroundColor : setTextColor
+        let color = _getMonthItemColor(monthDataItem, props)
 
-        setColor(color, monthData)
-        return monthData
+        setColor(color, monthDataItem)
+        return monthDataItem
       })
 
-      monthData.push(row)
+      monthData.push(monthRow)
     }
 
     return monthData

@@ -6,70 +6,65 @@
             :no-title="noTitle">
     <template #title>
       <g-date-picker-title
-          :date="titleModel.date"
-          :disabled="titleModel.disabled"
-          :readonly="titleModel.readonly"
-          :selectingYear="titleModel.selectingYear"
-          :year="titleModel.year"
-          v-on="titleModel.eventHandlers"
-      />
+          :date="title.date"
+          :disabled="title.disabled"
+          :readonly="title.readonly"
+          :selectingYear="title.selectingYear"
+          :year="title.year"
+          v-on="title.eventHandlers"/>
     </template>
     <div :key="state.activePicker">
-      <g-date-picker-years v-if="yearModel.show"
-          :color="yearModel.color"
-          :min="yearModel.min"
-          :max="yearModel.max"
-          :value="yearModel.value"
-          v-on="yearModel.eventHandlers"
-      />
+      <g-date-picker-years v-if="year.show"
+          :color="year.color"
+          :min="year.min"
+          :max="year.max"
+          :value="year.value"
+          v-on="year.eventHandlers"/>
       <template v-else>
         <g-date-picker-header
-            :disabled="headerModel.disabled"
-            :readonly="headerModel.readonly"
-            :format="headerModel.headerDateFormat"
-            :min="headerModel.min"
-            :max="headerModel.max"
-            :value="headerModel.value"
-            v-on="headerModel.eventHandlers"
-        />
+            :disabled="header.disabled"
+            :readonly="header.readonly"
+            :format="header.headerDateFormat"
+            :min="header.min"
+            :max="header.max"
+            :value="header.value"
+            v-on="header.eventHandlers"/>
         <g-date-picker-date-table
-            v-if="dateTableModel.show"
-            :allowed-dates="dateTableModel.allowedDates"
-            :color="dateTableModel.color"
-            :current="dateTableModel.current"
-            :disabled="dateTableModel.disabled"
-            :events="dateTableModel.events"
-            :eventColor="dateTableModel.eventColor"
-            :firstDayOfWeek="dateTableModel.firstDayOfWeek"
-            :format="dateTableModel.dayFormat"
-            :min="dateTableModel.min"
-            :max="dateTableModel.max"
-            :readonly="dateTableModel.readonly"
-            :scrollable="dateTableModel.scrollable"
-            :showWeek="dateTableModel.showWeek"
-            :tableDate="dateTableModel.tableDate"
-            :value="dateTableModel.value"
-            :weekdayFormat="dateTableModel.weekdayFormat"
-            :range="dateTableModel.range"
-            v-on="dateTableModel.eventHandlers"
-            ref="table"
-        />
+            v-if="dates.show"
+            :allowed-dates="dates.allowedDates"
+            :color="dates.color"
+            :current="dates.current"
+            :disabled="dates.disabled"
+            :events="dates.events"
+            :eventColor="dates.eventColor"
+            :firstDayOfWeek="dates.firstDayOfWeek"
+            :format="dates.dayFormat"
+            :min="dates.min"
+            :max="dates.max"
+            :readonly="dates.readonly"
+            :scrollable="dates.scrollable"
+            :showWeek="dates.showWeek"
+            :tableDate="dates.tableDate"
+            :value="dates.value"
+            :weekdayFormat="dates.weekdayFormat"
+            :range="dates.range"
+            v-on="dates.eventHandlers"
+            ref="table"/>
         <g-date-picker-month-table
             v-else
-            :allowedDates="monthTableModel.allowedDates"
-            :color="monthTableModel.color"
-            :current="monthTableModel.current"
-            :disabled="monthTableModel.disabled"
-            :format="monthTableModel.format"
-            :min="monthTableModel.min"
-            :max="monthTableModel.max"
-            :readonly="monthTableModel.readonly"
-            :scrollable="monthTableModel.scrollable"
-            :value="monthTableModel.value"
-            :tableDate="monthTableModel.tableDate"
-            v-on="monthTableModel.eventHandlers"
-            ref="table"
-        />
+            :allowedDates="months.allowedDates"
+            :color="months.color"
+            :current="months.current"
+            :disabled="months.disabled"
+            :format="months.format"
+            :min="months.min"
+            :max="months.max"
+            :readonly="months.readonly"
+            :scrollable="months.scrollable"
+            :value="months.value"
+            :tableDate="months.tableDate"
+            v-on="months.eventHandlers"
+            ref="table"/>
       </template>
     </div>
 
@@ -78,6 +73,30 @@
     </template>
   </g-picker>
 </template>
+
+<!-- Short hand -->
+<!--<template>-->
+<!--  <g-picker :color="headerColor || color"-->
+<!--            :full-width="fullWidth"-->
+<!--            :landscape="landscape"-->
+<!--            :width="width"-->
+<!--            :no-title="noTitle">-->
+<!--    <template #title>-->
+<!--      <g-date-picker-title v-bind="title" v-on="title.eventHandlers"/>-->
+<!--    </template>-->
+<!--    <div :key="state.activePicker">-->
+<!--      <g-date-picker-years v-if="year.show" v-bind="year" v-on="year.eventHandlers"/>-->
+<!--      <template v-else>-->
+<!--        <g-date-picker-header v-bind="header" v-on="header.eventHandlers"/>-->
+<!--        <g-date-picker-date-table  v-if="dates.show" v-bind="dates" v-on="dates.eventHandlers" ref="table"/>-->
+<!--        <g-date-picker-month-table v-else v-bind="months" v-on="months.eventHandlers" ref="table"/>-->
+<!--      </template>-->
+<!--    </div>-->
+<!--    <template #actions>-->
+<!--      <slot></slot>-->
+<!--    </template>-->
+<!--  </g-picker>-->
+<!--</template>-->
 
 <script>
   import GDatePickerUtil from './GDatePickerUtil'
@@ -186,20 +205,20 @@
     },
     setup(props, context) {
       const {
-        titleModel,
-        yearModel,
-        headerModel,
-        dateTableModel,
-        monthTableModel,
+        title,
+        year,
+        header,
+        dates,
+        months,
         state,
       } = GDatePickerUtil(props, context)
 
       return {
-        titleModel,
-        yearModel,
-        headerModel,
-        dateTableModel,
-        monthTableModel,
+        title,
+        year,
+        header,
+        dates,
+        months,
         state,
       };
     }

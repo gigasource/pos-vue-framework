@@ -1,4 +1,4 @@
-import { dateFilter, _isDateAllowed, _isValueInRange } from '../dateFilter';
+import dateFilter, { _isDateAllowed, _isValueInRange } from '../dateFilter';
 
 describe('GDatePicker/dateFilter', () => {
   describe('IsDateAllowed', () => {

@@ -389,7 +389,6 @@ export const _getDateTableModel = ({ props, context, state, current, tableYear, 
       range: props.range,
       eventHandlers: {
         [DATE_TABLE_EVENTS.INPUT]: (value) => {
-          console.log('process input')
           state.inputYear = parseInt(value.split('-')[0], 10)
           state.inputMonth = parseInt(value.split('-')[1], 10) - 1
           state.inputDay = parseInt(value.split('-')[2], 10)
@@ -445,7 +444,7 @@ export const _getMonthTableModel = ({ props, context, state, isMultiple, current
  *
  * @param props
  * @param context
- * @returns {{headerModel: Ref<any>, yearModel: Ref<any>, monthTableModel: Ref<any>, state: UnwrapRef<{inputMonth: undefined, activePicker: *, inputYear: undefined, inputDay: undefined, tableDate}>, titleModel: Ref<any>, dateTableModel: Ref<any>}}
+ * @returns {{header: Ref<any>, year: Ref<any>, months: Ref<any>, state: UnwrapRef<{inputMonth: undefined, activePicker: *, inputYear: undefined, inputDay: undefined, tableDate}>, title: Ref<any>, dates: Ref<any>}}
  */
 export default (props, context) => {
   const state = reactive({
@@ -508,22 +507,22 @@ export default (props, context) => {
   setInputDateFn()
 
   return {
-    titleModel: _getTitleModel(props, state, formatFn),
-    yearModel: _getYearModel({
+    title: _getTitleModel(props, state, formatFn),
+    year: _getYearModel({
       props, state, tableYear, tableMonth
     }),
-    headerModel: _getHeaderModel({
+    header: _getHeaderModel({
       props, state,
       minMonth, maxMonth, minYear, maxYear,
       tableYear, tableMonth
     }),
-    dateTableModel: _getDateTableModel({
+    dates: _getDateTableModel({
       props, context, state,
       current, tableYear, tableMonth,
       inputDate,
       emitInput: emitInputFn
     }),
-    monthTableModel: _getMonthTableModel({
+    months: _getMonthTableModel({
       props, context, state,
       current, minMonth, maxMonth, selectedMonths,
       tableYear,

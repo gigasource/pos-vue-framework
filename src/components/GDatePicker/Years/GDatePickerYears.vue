@@ -10,9 +10,13 @@
 </template>
 
 <script>
-  import { onMounted } from '@vue/composition-api';
-  import { getYearOnClickEventHandler, getYearRange } from './GDatePickerYearsUtil';
-  const ACTIVE_YEAR_CLASS_NAME = 'active'
+  import { onMounted } from '@vue/composition-api'
+  import { getYearOnClickEventHandler, getYearRange } from './GDatePickerYearsUtil'
+
+  const CSS_CLASS = {
+    ACTIVE_YEAR: 'active'
+  }
+
   export default {
     name: 'GDatePickerYears',
     props: {
@@ -28,7 +32,7 @@
     setup(props, context) {
       onMounted(() => {
         // show active item in the middle (vertical)
-        const activeItem = context.refs.years.getElementsByClassName(ACTIVE_YEAR_CLASS_NAME)[0]
+        const activeItem = context.refs.years.getElementsByClassName(CSS_CLASS.ACTIVE_YEAR)[0]
         if (activeItem) {
           context.refs.years.scrollTop = activeItem.offsetTop - context.refs.years.offsetHeight / 2 + activeItem.offsetHeight / 2
         } else if (props.min && !props.max) {

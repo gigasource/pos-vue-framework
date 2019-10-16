@@ -1,5 +1,5 @@
 <template>
-  <div :class="datePickerClasses" v-on:wheel="onWheel">
+  <div :class="datePickerClasses" @wheel="onWheel">
     <transition :name="transitionName">
       <table :key="tableDate">
         <thead>
@@ -22,7 +22,7 @@
                         :class="date.class"
                         :style="date.style"
                         :disabled="disabled || !date.isAllowed"
-                        v-on="date.eventHandlers">
+                        @click="date.eventHandlers.click">
                   <div class="g-btn__content"> {{ date.content }}</div>
                   <div class="g-date-picker-table__events">
                     <div v-for="event in date.events"
