@@ -27,8 +27,8 @@
         return {
           'g-table': true,
           'g-data-table__dense': props.dense,
-          'g-data-table__fixed-height': props.height && !props.fixedHeader,
-          'g-data-table__fixed-width': props.width,
+          'g-data-table__fixed-height': !!props.height && !props.fixedHeader,
+          'g-data-table__fixed-width': !!props.width,
           'g-data-table__fixed-header': props.fixedHeader,
           'g-data-table__striped': props.striped,
           'g-data-table__text-center': props.textCenter,
