@@ -3,9 +3,9 @@
 		<fieldset>
 			<legend>Checkbox</legend>
 			Value: {{cbvalue}}
-			<g-checkbox label="checkbox 1&2" v-model="cbvalue" :value="cbvalue5"></g-checkbox>
-			<g-checkbox label="check box 1" v-model="cbvalue" value="CB1" color="#1271ff"></g-checkbox>
-			<g-checkbox label="check box 2" v-model="cbvalue" value="CB2" color="amber"></g-checkbox>
+			<g-checkbox label="checkbox 1&2" v-model="cbvalue" :value="allValue" multiple></g-checkbox>
+			<g-checkbox label="check box 1" v-model="cbvalue" :value="cb1" color="#1271ff"></g-checkbox>
+			<g-checkbox label="check box 2" v-model="cbvalue" :value="cb2" color="amber"></g-checkbox>
 			State:
 			<g-checkbox label="indeterminate" v-model="cbvalue2" color="#ff4452" indeterminate></g-checkbox>
 			<g-checkbox label="required" v-model="cbvalue3" required></g-checkbox>
@@ -59,7 +59,7 @@
     components: { GSwitch, GRadio, GRadioGroup, GCheckbox },
     data() {
       return {
-        cbvalue: ['CB1'],
+        cbvalue: [],
 				cbvalue2: null,
 				cbvalue3: null,
 				cbvalue4: 'true',
@@ -68,8 +68,14 @@
 				rvalue2: 'c',
         rvalue3: 'asdasd',
 				svalue: [],
+				cb1: {a: 'CB1'},
+        cb2: {a: 'CB2'},
+        allValue: []
       }
-    }
+    },
+		created() {
+      this.allValue = [this.cb1, this.cb2]
+		}
   }
 </script>
 

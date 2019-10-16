@@ -1,6 +1,6 @@
 <template>
 	<div class="g-checkbox-wrapper">
-		<div class="g-checkbox" :class="checkboxClass" :style="checkboxStyle" @click="activate">
+		<div class="g-checkbox" :class="checkboxClass" :style="checkboxStyle" @click="toggle">
 			<input type="checkbox" ref="input" :checked="isActive.value">
 			<span class="g-checkbox-checkmark"></span>
 			<div class="g-checkbox-hover"></div>
@@ -14,7 +14,7 @@
 <script>
   import { computed, ref, watch } from '@vue/composition-api';
   import colorHandler from '../../utils/helpers';
-  import { isEqual, sortBy, cloneDeep } from 'lodash';
+  import { isEqual, xorWith, cloneDeep } from 'lodash';
 
   export default {
     name: 'GCheckbox',
@@ -29,6 +29,8 @@
       disabled: Boolean,
       readonly: Boolean,
       indeterminate: Boolean,
+			//check box all
+      multiple: Boolean,
       //custom v-model
       inputValue: null,
       //native value
@@ -36,12 +38,14 @@
     },
     setup(props, context) {
       const internalValue = computed({
-				get: () => props.inputValue,
-				set: val => {context.emit('change', val)}
-			});
+        get: () => props.inputValue,
+        set: val => {
+          context.emit('change', val)
+        }
+      });
       const isSelectedArray = computed(() => Array.isArray(internalValue.value));
       //value return when checkbox checked
-      const trueValue = props.value ? cloneDeep(props.value) : true;
+      const trueValue = props.value ? (props.value) : true;
       let isActive = ref(false);
       //determinate state
       let isDeterminate = ref(true);
@@ -51,8 +55,8 @@
       //change determinate & active state when value changes
       watch(() => internalValue.value, (newVal) => {
         //inputValue & value is both array
-        if (isSelectedArray.value && Array.isArray(props.value)) {
-          if (isEqual(sortBy(newVal), sortBy(props.value))) {
+        if (props.multiple) {
+          if (xorWith(newVal, props.value, isEqual).length === 0) {
             // equal arrays (all selected)
             isDeterminate.value = true;
             isActive.value = true;
@@ -64,19 +68,13 @@
             // partially selected
             isDeterminate.value = false;
             isActive.value = false;
-          }
-        } else {
-          if(Array.isArray(props.value)){
-            if(props.value.some(v => v === internalValue.value)){
-              isDeterminate.value = false;
-              isActive.value = false;
-              internalValue.value = [internalValue.value];
-						}
 					}
-          if (newVal && isSelectedArray.value)
-            isActive.value = newVal.some(v => v === trueValue);
-          else
-          	isActive.value = newVal === true || newVal === 'true' || (newVal === trueValue);
+        } else {
+          if (newVal && isSelectedArray.value) {
+            isActive.value = newVal.some(v => isEqual(v, trueValue));
+          } else {
+            isActive.value = newVal === true || newVal === 'true' || isEqual(newVal, trueValue);
+          }
         }
       });
       //define props color is a class or a css style
@@ -101,26 +99,27 @@
         return style;
       });
 
-      function activate() {
+      function toggle() {
         isActive.value = !isActive.value;
         isDeterminate.value = true;
-        const value = cloneDeep(trueValue);
-        //if the checkbox is not checkbox for all & in an multiple input
-        if (isSelectedArray.value && !Array.isArray(value)) {
-          const index = internalValue.value.findIndex(v => v === value);
-          if (isActive.value && index === -1) { //checked & not found in array
-            internalValue.value.push(value);
-          } else if (!isActive.value && index > -1) { //not checked & found in array
+
+        if (isSelectedArray.value && !props.multiple) {
+          //if the checkbox is not checkbox for all & in an multiple input
+          const index = internalValue.value.findIndex(v => isEqual(v, trueValue));
+          if (isActive.value && index === -1) { //check
+            // internalValue.value.push(value);
+            internalValue.value = [...internalValue.value, trueValue]
+          } else if (!isActive.value && index > -1) { //uncheck
             internalValue.value.splice(index, 1);
           }
         } else {
           if (isActive.value) { //checked
-            internalValue.value = value;
+            internalValue.value = cloneDeep(trueValue);
           } else {
-            if (Array.isArray(value)) {
+            if (props.multiple) {
               internalValue.value = [];
             } else {
-							internalValue.value = null;
+              internalValue.value = null;
             }
           }
         }
@@ -130,7 +129,7 @@
         checkboxClass,
         checkboxStyle,
         isActive,
-        activate,
+        toggle,
         trueValue
       }
     },

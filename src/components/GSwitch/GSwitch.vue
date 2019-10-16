@@ -1,6 +1,6 @@
 <template>
 	<div class="g-switch-wrapper">
-		<label class="g-switch-container" :class="containerClasses" @click.prevent="activate">
+		<label class="g-switch-container" :class="containerClasses" @click.prevent="toggle">
 			<input type="checkbox">
 			<span class="g-switch" :class="classes" :style="styles">
 				<span class="g-switch-track"></span>
@@ -16,7 +16,7 @@
 <script>
   import { computed, ref, watch } from '@vue/composition-api';
   import colorHandler from '../../utils/helpers';
-  import { cloneDeep } from 'lodash';
+  import { isEqual } from 'lodash';
 
   export default {
     name: 'GSwitch',
@@ -83,12 +83,11 @@
         disabled: props.disabled,
       }));
 
-      function activate() {
+      function toggle() {
         isActive.value = !isActive.value;
-        //check whether the switch is in multiple input or not
-        const value = cloneDeep(trueValue);
+        //check whether the switch is in multiple input or
         if (isSelectedArray) {
-          const index = internalValue.value.findIndex(v => v === trueValue);
+          const index = internalValue.value.findIndex(v => isEqual(v,trueValue));
           if (isActive.value && index === -1) {//on && not found
             internalValue.value.push(trueValue);
           } else if (!isActive.value && index > -1) {//off & found
@@ -108,7 +107,7 @@
         styles,
         containerClasses,
         isActive,
-        activate
+        toggle
       }
     }
   }
