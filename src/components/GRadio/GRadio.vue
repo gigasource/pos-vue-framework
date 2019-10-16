@@ -1,6 +1,6 @@
 <template>
 	<div class="g-radio-wrapper">
-		<div class="g-radio" :class="classes" :style="styles"  @click="activate">
+		<div class="g-radio" :class="classes" :style="styles" @click="activate">
 			<input type="radio" ref="radio" :name="name">
 			<span class="g-radio-checkmark"></span>
 			<div class="g-radio-hover"></div>
@@ -17,24 +17,24 @@
 
   export default {
     name: 'GRadio',
-		model: {
+    model: {
       prop: 'inputValue',
-			event: 'change'
-		},
+      event: 'change'
+    },
     props: {
       label: String,
       color: String,
       disabled: Boolean,
       readonly: Boolean,
-			//native value
+      //native value
       value: null,
-			//input value for not in group
+      //input value for not in group
       inputValue: null
     },
     setup(props, context) {
       const inputValue = computed({
-				get: () => props.inputValue,
-				set: (val) => context.emit('change', val)
+        get: () => props.inputValue,
+        set: val => context.emit('change', val)
       });
       const model = inject('model', inputValue);
       const defaultName = 'radio-name';
@@ -44,20 +44,22 @@
         name = defaultName;
       }
 
-			//active state
+      const trueValue = props.value ? props.value : true;
+
+      //active state
       const isActive = computed({
-        get: () => props.value && (model.value === props.value || model.value === true || model.value === 'true'),
+        get: () => trueValue && (model.value === trueValue || model.value === true || model.value === 'true'),
         set: (val) => {
           if (val === true) {//checked
-              if(model === inputValue) {//if the radio not in group
-                inputValue.value = props.value;
-							} else {
-                context.parent.$emit('change', props.value);
-              }
+            if (model.value === inputValue.value) {//if the radio not in group
+              inputValue.value = trueValue;
+            } else {
+              context.parent.$emit('change', trueValue);
             }
           }
+        }
       });
-			//define props color
+      //define props color
       const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass();

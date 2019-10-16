@@ -16,6 +16,7 @@
 <script>
   import { computed, ref, watch } from '@vue/composition-api';
   import colorHandler from '../../utils/helpers';
+  import { cloneDeep } from 'lodash';
 
   export default {
     name: 'GSwitch',
@@ -85,6 +86,7 @@
       function activate() {
         isActive.value = !isActive.value;
         //check whether the switch is in multiple input or not
+        const value = cloneDeep(trueValue);
         if (isSelectedArray) {
           const index = internalValue.value.findIndex(v => v === trueValue);
           if (isActive.value && index === -1) {//on && not found
@@ -94,9 +96,9 @@
           }
         } else {
           if (isActive.value) {//on
-            context.emit('change', trueValue);
+            internalValue.value = trueValue;
           } else {//off
-            context.emit('change', null);
+            internalValue.value = null;
           }
         }
       }

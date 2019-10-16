@@ -115,12 +115,12 @@
           }
         } else {
           if (isActive.value) { //checked
-            context.emit('change', value);
+            internalValue.value = value;
           } else {
             if (Array.isArray(value)) {
-              context.emit('change', []);
+              internalValue.value = [];
             } else {
-              context.emit('change', null);
+							internalValue.value = null;
             }
           }
         }
