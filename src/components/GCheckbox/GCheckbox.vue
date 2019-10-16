@@ -13,7 +13,7 @@
 
 <script>
   import { computed, ref, watch } from '@vue/composition-api';
-  import colorHandler from '../../mixins/colorHandler';
+  import colorHandler from '../../utils/helpers';
   import { isEqual, sortBy, cloneDeep } from 'lodash';
 
   export default {
@@ -35,31 +35,23 @@
       value: null
     },
     setup(props, context) {
-      const isSelectedArray = Array.isArray(props.inputValue);
+      const internalValue = computed({
+				get: () => props.inputValue,
+				set: val => {context.emit('change', val)}
+			});
+      const isSelectedArray = computed(() => Array.isArray(internalValue.value));
       //value return when checkbox checked
-      const trueValue = props.value
-        ? cloneDeep(props.value)
-        : (props.inputValue && !isSelectedArray ? props.inputValue : true);
+      const trueValue = props.value ? cloneDeep(props.value) : true;
       let isActive = ref(false);
-      //set active state if inputvalue is an array
-      if (props.inputValue && isSelectedArray) {
-        isActive.value = props.inputValue.some(v => v === trueValue);
-      }
-      //checked if inputvalue correct
-      if (props.inputValue === true
-        || props.inputValue === 'true'
-        || (props.inputValue === trueValue)) {
-        isActive.value = true;
-      }
       //determinate state
       let isDeterminate = ref(true);
       if (props.indeterminate) {
         isDeterminate.value = false;
       }
       //change determinate & active state when value changes
-      watch(() => props.inputValue, (newVal) => {
+      watch(() => internalValue.value, (newVal) => {
         //inputValue & value is both array
-        if (isSelectedArray && Array.isArray(props.value)) {
+        if (isSelectedArray.value && Array.isArray(props.value)) {
           if (isEqual(sortBy(newVal), sortBy(props.value))) {
             // equal arrays (all selected)
             isDeterminate.value = true;
@@ -74,8 +66,17 @@
             isActive.value = false;
           }
         } else {
-          if (newVal && isSelectedArray) isActive.value = newVal.some(v => v === trueValue);
-          if (newVal === true || newVal === 'true' || (newVal === trueValue)) isActive.value = true;
+          if(Array.isArray(props.value)){
+            if(props.value.some(v => v === internalValue.value)){
+              isDeterminate.value = false;
+              isActive.value = false;
+              internalValue.value = [internalValue.value];
+						}
+					}
+          if (newVal && isSelectedArray.value)
+            isActive.value = newVal.some(v => v === trueValue);
+          else
+          	isActive.value = newVal === true || newVal === 'true' || (newVal === trueValue);
         }
       });
       //define props color is a class or a css style
@@ -105,15 +106,13 @@
         isDeterminate.value = true;
         const value = cloneDeep(trueValue);
         //if the checkbox is not checkbox for all & in an multiple input
-        if (isSelectedArray && !Array.isArray(value)) {
-          const arrValue = props.inputValue;
-          const index = arrValue.findIndex(v => v === value);
+        if (isSelectedArray.value && !Array.isArray(value)) {
+          const index = internalValue.value.findIndex(v => v === value);
           if (isActive.value && index === -1) { //checked & not found in array
-            arrValue.push(value);
+            internalValue.value.push(value);
           } else if (!isActive.value && index > -1) { //not checked & found in array
-            arrValue.splice(index, 1);
+            internalValue.value.splice(index, 1);
           }
-          context.emit('change', arrValue);
         } else {
           if (isActive.value) { //checked
             context.emit('change', value);
@@ -138,6 +137,6 @@
   }
 </script>
 
-<style scoped>
+<style>
 
 </style>

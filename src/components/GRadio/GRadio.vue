@@ -12,13 +12,13 @@
 </template>
 
 <script>
-  import { computed, ref, inject } from '@vue/composition-api';
-  import colorHandler from '../../mixins/colorHandler';
+  import { computed, inject } from '@vue/composition-api';
+  import colorHandler from '../../utils/helpers';
 
   export default {
     name: 'GRadio',
 		model: {
-      props: 'inputValue',
+      prop: 'inputValue',
 			event: 'change'
 		},
     props: {
@@ -32,44 +32,30 @@
       inputValue: null
     },
     setup(props, context) {
-      let inputValue = {};
-      if (props.inputValue) {
-        inputValue = props.inputValue
-      }
+      const inputValue = computed({
+				get: () => props.inputValue,
+				set: (val) => context.emit('change', val)
+      });
       const model = inject('model', inputValue);
-
       const defaultName = 'radio-name';
       let name = inject('name', defaultName);
       if (!name) {
         //default for undefined name
         name = defaultName;
       }
-			//multiple options
-      const multiple = inject('multiple', false);
+
 			//active state
       const isActive = computed({
-        get: () => {
-          if (multiple) {
-            return model.value.some(v => v === props.value);
-          } else {
-            return props.value && (model.value === props.value || model === props.value);
-          }
-        },
+        get: () => props.value && (model.value === props.value || model.value === true || model.value === 'true'),
         set: (val) => {
           if (val === true) {//checked
-            if (multiple) {
-              if (!model.value.some(v => v === props.value)) {//doesn't exist in list
-                context.parent.$emit('change', [...model.value, props.value]);
-              }
-            } else {
-              if(model.value === props.inputValue) {//if the radio not in group
-                context.emit('change', props.value);
+              if(model === inputValue) {//if the radio not in group
+                inputValue.value = props.value;
 							} else {
                 context.parent.$emit('change', props.value);
               }
             }
           }
-        }
       });
 			//define props color
       const { getColorType, convertColorClass } = colorHandler(props.color);

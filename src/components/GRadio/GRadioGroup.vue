@@ -22,21 +22,12 @@
       name: String,
       disabled: Boolean,
       readonly: Boolean,
-      multiple: Boolean,
       row: Boolean,
       value: null,
     },
-    setup(props, context) {
+    setup(props) {
       provide('name', props.name);
-      provide('multiple', props.multiple);
-      const model = computed(() => (
-        (props.multiple && !Array.isArray(props.value))
-					? (props.value ? [props.value] : [])
-					: props.value
-			));
-      //change value to array if multiple
-			if(props.multiple)
-      	context.emit('change', model.value);
+      const model = computed(() => (props.value));
       provide('model', model);
 
       const classes = computed(() => ({

@@ -15,13 +15,13 @@
 
 <script>
   import { computed, ref, watch } from '@vue/composition-api';
-  import colorHandler from '../../mixins/colorHandler';
+  import colorHandler from '../../utils/helpers';
 
   export default {
     name: 'GSwitch',
     model: {
       prop: 'inputValue',
-			event: 'change'
+      event: 'change'
     },
     props: {
       label: String,
@@ -31,29 +31,33 @@
       readonly: Boolean,
       inset: Boolean,
       flat: Boolean,
-			//custom v-model
+      //custom v-model
       inputValue: null,
-			//native value
+      //native value
       value: null
     },
     setup(props, context) {
-      const isSelectedArray = Array.isArray(props.inputValue);
+      const internalValue = computed({
+        get: () => props.inputValue,
+        set: val => {
+          context.emit('change', val)
+        }
+      });
+      const isSelectedArray = Array.isArray(internalValue.value);
       //value return when switch active
-      const value = computed(() => (
-        props.value
-					? props.value
-					: (props.inputValue && !isSelectedArray ? props.inputValue : true)
-				));
+      const trueValue = props.value ? props.value : true;
       let isActive = ref(false);
-      //set active state if inputValue is an array
-      if (props.inputValue && isSelectedArray) {
-        isActive.value = props.inputValue.some(v => v === value.value)
-      } else if (props.inputValue === true
-									|| props.inputValue === 'true'
-									|| (props.inputValue === value.value)) { //switch on if inputValue correct
-        isActive.value = true;
-      }
-			//define props color
+      watch(() => internalValue.value, (newVal) => {
+        if (newVal && isSelectedArray) {
+          isActive.value = newVal.some(v => v === trueValue);
+        } else if (newVal === true || newVal === 'true' || (newVal === trueValue)) {
+          isActive.value = true;
+        } else {
+          isActive.value = false;
+				}
+      });
+
+      //define props color
       const { getColorType, convertColorClass } = colorHandler(props.color);
       const type = getColorType();
       const colorClass = convertColorClass('background');
@@ -68,31 +72,29 @@
       const styles = computed(() => {
         const styles = {};
         if (type === 'style') {
-          Object.assign(styles, { 'color': props.color });
+          Object.assign(styles, { 'background-color': props.color });
         }
         return styles;
       });
 
       const containerClasses = computed(() => ({
         readonly: props.readonly,
-				disabled: props.disabled,
-			}));
+        disabled: props.disabled,
+      }));
 
       function activate() {
         isActive.value = !isActive.value;
         //check whether the switch is in multiple input or not
         if (isSelectedArray) {
-          const arrValue = props.inputValue;
-          const index = arrValue.findIndex(v => v === value.value);
+          const index = internalValue.value.findIndex(v => v === trueValue);
           if (isActive.value && index === -1) {//on && not found
-            arrValue.push(value.value);
+            internalValue.value.push(trueValue);
           } else if (!isActive.value && index > -1) {//off & found
-            arrValue.splice(index, 1);
+            internalValue.value.splice(index, 1);
           }
-          context.emit('change', arrValue);
         } else {
           if (isActive.value) {//on
-            context.emit('change', value.value);
+            context.emit('change', trueValue);
           } else {//off
             context.emit('change', null);
           }
