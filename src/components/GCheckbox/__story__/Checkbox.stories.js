@@ -1,6 +1,6 @@
 import { withKnobs, text, color, boolean } from '@storybook/addon-knobs';
-import GLayout from '../src/components/GLayout/GLayout';
-import GCheckbox from '../src/components/GCheckbox/GCheckbox';
+import GLayout from '../../GLayout/GLayout';
+import GCheckbox from '../GCheckbox';
 
 export default {
   title: 'Checkbox',

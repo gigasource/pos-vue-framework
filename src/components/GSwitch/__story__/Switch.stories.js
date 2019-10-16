@@ -1,7 +1,7 @@
 import { withKnobs, text, color, boolean } from '@storybook/addon-knobs';
 
-import GSwitch from '../src/components/GSwitch/GSwitch';
-import GLayout from '../src/components/GLayout/GLayout';
+import GSwitch from '../GSwitch';
+import GLayout from '../../GLayout/GLayout';
 
 export default {
   title: 'Switch',

@@ -1,6 +1,6 @@
 import { withKnobs, text, color, boolean } from '@storybook/addon-knobs';
-import GRadio from '../src/components/GRadio/GRadio';
-import GRadioGroup from '../src/components/GRadio/GRadioGroup';
+import GRadio from '../GRadio';
+import GRadioGroup from '../GRadioGroup';
 
 export default {
   title: 'Radio',
