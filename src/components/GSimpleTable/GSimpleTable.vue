@@ -1,6 +1,6 @@
 <template>
 	<div :class="tableClasses">
-		<div :class="wrapperClasses" :style="wrapperStyles">
+		<div class="g-data-table__wrapper" :style="wrapperStyles">
 			<table>
 				<slot></slot>
 			</table>
@@ -17,38 +17,33 @@
     props: {
       dense: Boolean,
       fixedHeader: Boolean,
-			striped: Boolean,
-			textCenter: Boolean,
-      height: [Number, String],
+      striped: Boolean,
+      textCenter: Boolean,
+      height: { type: [Number, String], default: '100%' },
       width: [Number, String],
     },
-    setup(props, context) {
+    setup(props) {
       let tableClasses = computed(() => {
         return {
           'g-table': true,
-          'g-data-table__dense': !!props.dense,
-          'g-data-table__fixed-height': !!props.height && !props.fixedHeader,
-          'g-data-table__fixed-width': !!props.width,
+          'g-data-table__dense': props.dense,
+          'g-data-table__fixed-height': props.height && !props.fixedHeader,
+          'g-data-table__fixed-width': props.width,
           'g-data-table__fixed-header': props.fixedHeader,
-          'g-data-table__striped': !!props.striped,
-          'g-data-table__text-center': !!props.textCenter,
+          'g-data-table__striped': props.striped,
+          'g-data-table__text-center': props.textCenter,
         }
-      });
-
-      let wrapperClasses = computed(() => {
-        return { 'g-data-table__wrapper': true }
       });
 
       let wrapperStyles = computed(() => {
         return {
-          height: props.height ? convertToUnit(props.height) : '100%',
+          height: convertToUnit(props.height),
         }
       });
 
       return {
         tableClasses,
-        wrapperClasses,
-				wrapperStyles
+        wrapperStyles
       }
     }
   }
