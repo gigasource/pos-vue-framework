@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import { computed, reactive, ref } from '@vue/composition-api';
+  import { computed, ref } from '@vue/composition-api';
   import { convertToGradient } from '../../utils/helpers';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 
@@ -101,15 +101,15 @@
       let classes = computed(() => {
         let _classes = {
           'g-chip': true,
-          'waves-effect': props.ripple,
-          'g-chip__outlined': props.outlined,
-          'g-chip__close': props.close,
-          'g-chip__disabled': props.disabled,
-          'g-chip__filter': props.filter,
-          'g-chip__draggable': props.draggable,
-          'g-chip__pill': props.pill,
-          'g-chip__label': props.label,
-          'g-chip__active': props.active,
+          'waves-effect': !!props.ripple,
+          'g-chip__outlined': !!props.outlined,
+          'g-chip__close': !!props.close,
+          'g-chip__disabled': !!props.disabled,
+          'g-chip__filter': !!props.filter,
+          'g-chip__draggable': !!props.draggable,
+          'g-chip__pill': !!props.pill,
+          'g-chip__label': !!props.label,
+          'g-chip__active': !!props.active,
           ...backgroundColorOutput && backgroundColorOutput.value && backgroundColorOutput.value.class,
           ...textColorOutput && textColorOutput.value && textColorOutput.value.class
         };
@@ -117,16 +117,16 @@
         let size = '';
         let avatarSize = '';
 
-        if (props.large) {
+        if (!!props.large) {
           size = 'g-size__large';
           avatarSize = 'g-avatar-size__large';
-        } else if (props.small) {
+        } else if (!!props.small) {
           size = 'g-size__small';
           avatarSize = 'g-avatar-size__small';
-        } else if (props.xSmall) {
+        } else if (!!props.xSmall) {
           size = 'g-size__x-small';
           avatarSize = 'g-avatar-size__x-small';
-        } else if (props.xLarge) {
+        } else if (!!props.xLarge) {
           size = 'g-size__x-large';
           avatarSize = 'g-avatar-size__x-large';
         } else {
