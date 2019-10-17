@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GList should render rounded dense 1`] = `
+<div class="g-list g-list__two-line g-list__rounded elevation-2 g-list__dense">
+  <div class="singleSectionList">
+    <div class="g-list-header">
+      subheader
+    </div>
+    <div class="item">
+      <div class="g-list-item">
+        <div class="g-list-item-icon">
+          <img alt
+               src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
+          >
+        </div>
+        <div class="g-list-item-content">
+          <div class="g-list-item-text">
+            Jason Oner
+          </div>
+          <div class="g-list-item-text__sub">
+            Jason the ant
+          </div>
+        </div>
+        <div class="g-list-item-action">
+        </div>
+      </div>
+      <div class="g-divider g-divider__inset b-solid">
+      </div>
+    </div>
+    <div class="item">
+      <div class="g-list-item">
+        <div class="g-list-item-icon">
+          <img alt
+               src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
+          >
+        </div>
+        <div class="g-list-item-content">
+          <div class="g-list-item-text">
+            Ranee Carlson
+          </div>
+          <div class="g-list-item-text__sub">
+          </div>
+        </div>
+        <div class="g-list-item-action">
+        </div>
+      </div>
+      <div class="g-divider g-divider__inset b-solid">
+      </div>
+    </div>
+    <div class="item">
+      <div class="g-list-item">
+        <div class="g-list-item-icon">
+          <img alt
+               src="https://cdn.vuetifyjs.com/images/lists/3.jpg"
+          >
+        </div>
+        <div class="g-list-item-content">
+          <div class="g-list-item-text">
+            Cindy Baker
+          </div>
+          <div class="g-list-item-text__sub">
+          </div>
+        </div>
+        <div class="g-list-item-action">
+        </div>
+      </div>
+      <div class="g-divider g-divider__inset b-solid">
+      </div>
+    </div>
+    <div class="item">
+      <div class="g-list-item">
+        <div class="g-list-item-icon">
+          <img alt
+               src="https://cdn.vuetifyjs.com/images/lists/4.jpg"
+          >
+        </div>
+        <div class="g-list-item-content">
+          <div class="g-list-item-text">
+            Ali Connors
+          </div>
+          <div class="g-list-item-text__sub">
+          </div>
+        </div>
+        <div class="g-list-item-action">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
