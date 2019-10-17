@@ -1,17 +1,89 @@
-.g-notification {
-  &-container {
-    //display: flex;
-    //position: fixed;
-    //top: 0;
-    //left: 0;
-    //width: 100%;
-    //height: 100%;
-    //align-items: center;
-    //justify-content: center;
+@import './_variables.scss';
 
-    .g-snack {
-      position: absolute;
-      bottom: auto;
+.g-notification {
+  background-color: $notification-background-color;
+  color: $notification-color;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  position: relative;
+  border-radius: 4px;
+  margin-top: 10px;
+  @include elevation(6);
+
+  &-container {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    width: 25%;
+    transition: all 0.5s;
+    z-index: 1000;
+
+    &__center {
+      left: 50%;
+      transform: translateX(-50%);
     }
+
+    &__top {
+      top: 3%;
+    }
+
+    &__bottom {
+      bottom: 3%;
+    }
+
+    &__left {
+      left: 2%;
+    }
+
+    &__right {
+      right: 2%;
+    }
+  }
+
+  &-content {
+    z-index: 1000;
+    align-items: center;
+    display: flex;
+    min-height: 40px;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 8px 16px;
+    width: 100%;
+  }
+}
+
+.g-notification-transition {
+  &-enter-active, &-leave-active {
+    transition: all 0.5s;
+  }
+
+  &-enter {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(-48px);
+  }
+
+  &-move {
+    transition: transform 0.5s;
+    //transform: translateY(-48px);
+  }
+
+  &-leave-active {
+    //transition-duration: 100s;
+    position: absolute;
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .g-notification-container {
+    max-width: none;
+    left: 2%;
+    right: 2%;
   }
 }
