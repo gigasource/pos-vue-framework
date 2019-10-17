@@ -10,3 +10,7 @@ export function createElement() {
   }
 }
 
+import Vue from 'vue/dist/vue.common.js'
+import VueCompositionApi from '@vue/composition-api'
+// init plugin first
+Vue.use(VueCompositionApi)
