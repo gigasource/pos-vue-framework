@@ -14,4 +14,5 @@ export function props(options) {
   if (options.timeout) {
     notificationProps.timeout = options.timeout
   }
+  return notificationProps
 }
