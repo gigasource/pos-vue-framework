@@ -202,10 +202,6 @@ describe('/GDatePickerMonthTableUtil', () => {
       const monthDataItem = {}
       expect(monthDataItem).not.hasOwnProperty('eventHandlers')
 
-      _attachMonthItemEventHandlers(monthDataItem, { disabled: true })
-      expect(monthDataItem).hasOwnProperty('eventHandlers')
-      expect(monthDataItem.eventHandlers).toBe(undefined)
-
       _attachMonthItemEventHandlers(monthDataItem, { disabled: false })
       expect(monthDataItem.eventHandlers).not.toBe(undefined)
 

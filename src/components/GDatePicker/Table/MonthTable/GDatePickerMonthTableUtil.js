@@ -82,6 +82,7 @@ export const _getClickEventHandler = (monthDataItem, props, context, month) => {
 }
 
 /**
+ *
  * Return double click event handler object
  * @private
  * @exportToTest
@@ -112,10 +113,13 @@ export const _getDbClickEventHandler = (context, month) => {
  * @param date
  */
 export const _attachMonthItemEventHandlers = (monthDataItem, props, context, date) => {
-  monthDataItem.eventHandlers = props.disabled ? undefined : {
-    ..._getClickEventHandler(monthDataItem, props, context, date),
-    ..._getDbClickEventHandler(context, date)
-  }
+  monthDataItem.eventHandlers = (props.disabled
+      ? { click: () => {}, dblclick: () => {} }
+      : {
+          ..._getClickEventHandler(monthDataItem, props, context, date),
+          ..._getDbClickEventHandler(context, date)
+        }
+  )
 }
 
 /**

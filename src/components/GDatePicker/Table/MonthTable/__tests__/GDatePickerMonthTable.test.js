@@ -2,7 +2,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
 import GDatePickerMonthTable from '../GDatePickerMonthTable';
 
-describe('GDatePickerTitle.js', () => {
+describe('GDatePicker/Table/GDatePickerMonthTable.js', () => {
   let mountFunction
 
   const localVue = createLocalVue()
@@ -40,44 +40,6 @@ describe('GDatePickerTitle.js', () => {
 
     expect(wrapper.html()).toMatchSnapshot()
   })
-
-  // TODO
-  // it.skip('should watch tableDate value and run transition',  (done) => {
-  //   const wrapper = mountFunction({
-  //     propsData: {
-  //       tableDate: '2005',
-  //       current: '2005-05',
-  //       value: '2005-11',
-  //     },
-  //   })
-  //
-  //   wrapper.setProps({
-  //     tableDate: '2006',
-  //   })
-  //   wrapper.vm.$nextTick(() => {
-  //     expect(wrapper.findAll('table').at(0).element.className).toBe('tab-transition-enter tab-transition-enter-active')
-  //     done()
-  //   })
-  // })
-
-  // TODO
-  // it.skip('should watch tableDate value and run reverse transition',  (done) => {
-  //   const wrapper = mountFunction({
-  //     propsData: {
-  //       tableDate: '2005',
-  //       current: '2005-05',
-  //       value: '2005-11',
-  //     },
-  //   })
-  //
-  //   wrapper.setProps({
-  //     tableDate: '2004',
-  //   })
-  //   wrapper.vm.$nextTick(() => {
-  //     expect(wrapper.findAll('table').at(0).element.className).toBe('tab-reverse-transition-enter tab-reverse-transition-enter-active')
-  //     done()
-  //   })
-  // })
 
   it('should emit event when month button is clicked', () => {
     const wrapper = mountFunction({

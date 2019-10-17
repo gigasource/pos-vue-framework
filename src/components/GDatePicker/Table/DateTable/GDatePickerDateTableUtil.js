@@ -1,5 +1,5 @@
 import { computed } from '@vue/composition-api'
-import { createNativeLocaleFormatter, daysInMonth, isLeapYear, monthChange, pad } from '../../utils';
+import { createNativeLocaleFormatter, daysInMonth as _daysInMonth, isLeapYear, monthChange, pad } from '../../utils';
 import { createRange } from '../../../../utils/helpers';
 import { setBackgroundColor, setTextColor } from '../../../../mixins/colorable'
 import {
@@ -182,15 +182,20 @@ export function _genEvents(date, props) {
  * @private
  */
 export function _addEventHandler(dateItem, props, context, date) {
-  dateItem.eventHandlers = props.disabled ? undefined : {
-    click: () => {
-      if (dateItem.isAllowed && !props.readonly) {
-        context.emit(EVENT_NAMES.INPUT, date)
+  dateItem.eventHandlers = props.disabled
+      ? {
+        click: () => {},
+        dblclick: () => {}
       }
-      context.emit(EVENT_NAMES.DATE_CLICKED, date)
-    },
-    dblclick: () => context.emit(EVENT_NAMES.DATE_DB_CLICKED, date),
-  }
+      : {
+        click: () => {
+          if (dateItem.isAllowed && !props.readonly) {
+            context.emit(EVENT_NAMES.INPUT, date)
+          }
+          context.emit(EVENT_NAMES.DATE_CLICKED, date)
+        },
+        dblclick: () => context.emit(EVENT_NAMES.DATE_DB_CLICKED, date),
+      }
 }
 
 /**
@@ -237,7 +242,7 @@ export const getDates = (props, context) => {
       week.push({ isBlank: true })
 
     // add days in month
-    const daysInMonth = daysInMonth(displayedYear.value, displayedMonth.value + 1)
+    const daysInMonth = _daysInMonth(displayedYear.value, displayedMonth.value + 1)
     for (let day = 1; day <= daysInMonth; day++) {
       const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(day)}`
 

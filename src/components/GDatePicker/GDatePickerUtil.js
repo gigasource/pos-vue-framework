@@ -8,7 +8,6 @@ import { EVENT_NAMES as DATE_TABLE_EVENTS } from './Table/DateTable/GDatePickerD
 
 export const EVENT_NAMES = {
   INPUT: 'input',
-  CHANGE: 'change',
   UPDATE_PICKER_DATE: 'update:picker-date',
   CLICK_DATE: 'click:date',
   DB_CLICK_DATE: 'dblclick:date',
@@ -224,7 +223,6 @@ export const _emitInputFn = (props, context) => {
       selectedDates.splice(newDateIndex, 1)
     }
     context.emit(EVENT_NAMES.INPUT, selectedDates)
-    context.emit(EVENT_NAMES.CHANGE, newDate)
   }
 
   /**

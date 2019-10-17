@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GDatePickerTitle.js should render component and match snapshot 1`] = `
+exports[`GDatePicker/Title/GDatePickerTitle.js should render component and match snapshot 1`] = `
 <div class="g-date-picker-title">
   <div class="g-picker__title__btn g-picker__title__btn--active g-date-picker-title__year">
     1234
@@ -13,7 +13,7 @@ exports[`GDatePickerTitle.js should render component and match snapshot 1`] = `
 </div>
 `;
 
-exports[`GDatePickerTitle.js should render component when selecting year and match snapshot 1`] = `
+exports[`GDatePicker/Title/GDatePickerTitle.js should render component when selecting year and match snapshot 1`] = `
 <div class="g-date-picker-title">
   <div class="g-picker__title__btn g-picker__title__btn--active g-date-picker-title__year">
     1234
@@ -26,7 +26,7 @@ exports[`GDatePickerTitle.js should render component when selecting year and mat
 </div>
 `;
 
-exports[`GDatePickerTitle.js should render disabled component and match snapshot 1`] = `
+exports[`GDatePicker/Title/GDatePickerTitle.js should render disabled component and match snapshot 1`] = `
 <div class="g-date-picker-title g-date-picker-title--disabled">
   <div class="g-picker__title__btn g-picker__title__btn--active g-date-picker-title__year">
     1234
@@ -39,7 +39,7 @@ exports[`GDatePickerTitle.js should render disabled component and match snapshot
 </div>
 `;
 
-exports[`GDatePickerTitle.js should render readonly component and match snapshot 1`] = `
+exports[`GDatePicker/Title/GDatePickerTitle.js should render readonly component and match snapshot 1`] = `
 <div class="g-date-picker-title">
   <div class="g-picker__title__btn g-picker__title__btn--readonly g-picker__title__btn--active g-date-picker-title__year">
     1234

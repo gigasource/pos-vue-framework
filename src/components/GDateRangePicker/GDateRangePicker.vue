@@ -58,6 +58,8 @@
         }
       }
 
+      // TODO: Remove duplicate
+      // Get range diff
       const TICKS_PER_DAY = 864e5
       const descOrder = (a, b) => a > b ? 1 : -1
 

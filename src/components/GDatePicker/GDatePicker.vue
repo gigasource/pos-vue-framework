@@ -24,7 +24,7 @@
         <g-date-picker-header
             :disabled="header.disabled"
             :readonly="header.readonly"
-            :format="header.headerDateFormat"
+            :format="header.format"
             :min="header.min"
             :max="header.max"
             :value="header.value"

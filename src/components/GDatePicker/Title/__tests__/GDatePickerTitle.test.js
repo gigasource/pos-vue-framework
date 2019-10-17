@@ -5,7 +5,7 @@ import GDatePickerTitle from '../GDatePickerTitle'
 import {EVENT_NAMES} from '../GDatePickerTitleUtil'
 import {TRANSITION_NAMES} from '../../utils'
 
-describe('GDatePickerTitle.js', () => {
+describe('GDatePicker/Title/GDatePickerTitle.js', () => {
   let mountFunction
 
   const localVue = createLocalVue()

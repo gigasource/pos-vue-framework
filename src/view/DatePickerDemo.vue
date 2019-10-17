@@ -119,7 +119,6 @@
         // months
         monthSelect: new Date().toISOString().substr(0, 10),
         monthMultipleSelect: [],
-
         //
         landscape: false,
         reactive: false,

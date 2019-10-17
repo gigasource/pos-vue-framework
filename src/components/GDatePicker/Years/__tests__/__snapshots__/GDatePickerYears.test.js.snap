@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GDatePickerYears.js should render component and match snapshot 1`] = `
+exports[`GDatePicker/Years/GDatePickerYears.js should render component and match snapshot 1`] = `
 <ul class="g-date-picker-years">
   <li class>
     2100

@@ -4,7 +4,7 @@ import GDatePickerYears from '../GDatePickerYears'
 
 
 // verify whether this component use its util functions
-describe('GDatePickerYears.js', () => {
+describe('GDatePicker/Years/GDatePickerYears.js', () => {
   const localVue = createLocalVue()
   localVue.use(plugin)
 

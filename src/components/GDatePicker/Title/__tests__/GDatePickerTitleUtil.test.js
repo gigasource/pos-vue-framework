@@ -4,7 +4,7 @@ import plugin from '@vue/composition-api'
 import { getYearButtonClickHandler, EVENT_NAMES } from '../GDatePickerTitleUtil'
 
 
-describe('GDatePicker/GDatePickerTitle/GDatePickerTitleUtil.js', ()=>{
+describe('GDatePicker/Title/GDatePickerTitleUtil.js', ()=>{
   createLocalVue().use(plugin)
   const updateSelectingYear = true
 

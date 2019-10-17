@@ -2,7 +2,7 @@ import plugin from '@vue/composition-api'
 import { EVENT_NAMES, getYearOnClickEventHandler, getYearRange } from '../GDatePickerYearsUtil';
 import { createLocalVue } from '@vue/test-utils'
 
-describe('GDatePicker/GDatePickerYear/GDatePickerYearUtil.js', () => {
+describe('GDatePicker/Years/GDatePickerYearUtil.js', () => {
   createLocalVue().use(plugin)
 
   describe('getYearRange', () => {

@@ -5,7 +5,7 @@ import { reactive } from '@vue/composition-api'
 import {getBtnOutlinedClass, getBtnDisabledClass, getBtnRoundedClass,
   getBtnActiveClass, getDisplayed, isCurrent, isSelected } from '../date-picker-table'
 
-describe('GDatePicker/date-picker-table', () => {
+describe('GDatePicker/Table/date-picker-table', () => {
   createLocalVue().use(plugin)
 
   describe('displayedMonths', () => {
