@@ -16,9 +16,11 @@
 </template>
 
 <script>
+	import * as parseNotificationOptions from './parseNotificationOptions';
 	import uuidv4 from 'uuid/v4'
 	import GBtn from '../GBtn/GBtn';
   import { reactive, computed } from '@vue/composition-api';
+  import notificationCenter from '../../plugin/notificationCenter';
 
   export default {
     name: 'GNotificationCenter',
@@ -60,18 +62,20 @@
 			}
 
 			function notify(message, options) {
+
 			  const notification = reactive({
-					message: message,
-					id: uuidv4(),
-					timeout: null,
-					styles: {
-					  backgroundColor: options.color
-					}
-				})
+          message: message,
+          id: uuidv4(),
+          timeout: null,
+          styles: options ? parseNotificationOptions.styles(options) : {}
+        })
+
         state.notificationQueue.push(notification)
+
+				const notificationProps = options ? parseNotificationOptions.props(options) : {}
 				notification.timeout = setTimeout(() => {
 					remove(notification);
-				}, options.timeout || props.timeout)
+				}, notificationProps.timeout || props.timeout)
 			}
 
 			function clear() {

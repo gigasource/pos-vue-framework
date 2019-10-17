@@ -5,7 +5,7 @@ export default {
   install(Vue, options) {
     const notificationCenter = new Vue({
       ...GNotification,
-      propsData: parseOptions(options)
+      propsData: options ? parseOptions(options) : {}
     })
     notificationCenter.$mount(document.body.appendChild(document.createElement('div')));
 
