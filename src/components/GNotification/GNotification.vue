@@ -26,6 +26,11 @@
 		props: {
       width: [Number, String],
 
+			timeout: {
+        type: [Number, String],
+				default: 6000,
+			},
+
 			top: Boolean,
 			left: Boolean,
 			right: Boolean,
@@ -66,7 +71,7 @@
         state.notificationQueue.push(notification)
 				notification.timeout = setTimeout(() => {
 					remove(notification);
-				}, options.timeout)
+				}, options.timeout || props.timeout)
 			}
 
 			function clear() {
