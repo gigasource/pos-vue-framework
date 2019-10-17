@@ -47,9 +47,9 @@
         background: #cfd8dc;
       }
 
-      &:hover:not(.g-data-table__expanded__content) {
-        background: rgba(176, 190, 197, 0.25);
-      }
+      //&:hover:not(.g-data-table__expanded__content) {
+      //  background: rgba(176, 190, 197, 0.25);
+      //}
     }
   }
 
@@ -86,13 +86,14 @@
     overflow-y: auto;
   }
 }
+
 .g-data-table__fixed-width {
   .g-data-table__wrapper {
     overflow-x: auto;
   }
 }
 
-.g-data-table__text-center *{
+.g-data-table__text-center * {
   text-align: center;
 }
 
@@ -122,6 +123,54 @@
   tr:nth-child(even) {
     background-color: #f2f2f2;
   }
+}
+
+.g-data-table__hover {
+  tbody {
+    tr {
+      &:hover:not(.g-data-table__expanded__content) {
+        background: rgba(176, 190, 197, 0.25);
+      }
+    }
+  }
+}
+
+.g-data-table__borderless {
+  .g-data-table__wrapper {
+    border: 0 !important;
+
+    th, td {
+      border: 0 !important;
+    }
+
+    thead {
+      border: 0 !important;
+
+      th, td {
+        border: 0 !important;
+      }
+    }
+  }
+
+}
+
+.g-data-table__bordered {
+  border-collapse: collapse;
+
+  .g-data-table__wrapper {
+    border: 1px solid #dee2e6;
+
+    th, td {
+      border: 1px solid #dee2e6;
+    }
+
+    thead {
+      th, td {
+        border-bottom-width: 2px;
+      }
+    }
+  }
+
 }
 
 // Modifiers

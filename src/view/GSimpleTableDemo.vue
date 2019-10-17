@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>Default table/Fixed height</p>
-		<g-simple-table height="300">
+		<g-simple-table borderless hover>
 			<template v-slot:default>
 				<thead>
 				<tr>
@@ -20,11 +20,13 @@
 
 		<p>Fixed height/Striped/Fixed header</p>
 
-		<g-simple-table height="300" striped fixed-header text-center>
+		<g-simple-table striped text-center>
 			<template v-slot:default>
 				<thead>
 				<tr>
 					<th class="text-left">Name</th>
+					<th class="text-left">Name</th>
+					<th class="text-left">Calories</th>
 					<th class="text-left">Calories</th>
 					<th class="text-left">Calories</th>
 				</tr>
@@ -32,6 +34,8 @@
 				<tbody>
 				<tr v-for="item in desserts" :key="item.name">
 					<td>{{ item.name }}</td>
+					<td>{{ item.name }}</td>
+					<td>{{ item.calories }}</td>
 					<td>{{ item.calories }}</td>
 					<td>{{ item.calories }}</td>
 				</tr>

@@ -17,10 +17,13 @@
     props: {
       dense: Boolean,
       fixedHeader: Boolean,
+			bordered: Boolean,
+      borderless: Boolean,
+			hover: Boolean,
       striped: Boolean,
       textCenter: Boolean,
       height: { type: [Number, String], default: '100%' },
-      width: [Number, String],
+      width: { type: [Number, String], default: 'auto' },
     },
     setup(props) {
       let tableClasses = computed(() => {
@@ -32,12 +35,16 @@
           'g-data-table__fixed-header': props.fixedHeader,
           'g-data-table__striped': props.striped,
           'g-data-table__text-center': props.textCenter,
+					'g-data-table__bordered': props.bordered,
+          'g-data-table__borderless': props.borderless,
+          'g-data-table__hover': props.hover
         }
       });
 
       let wrapperStyles = computed(() => {
         return {
           height: convertToUnit(props.height),
+					width: convertToUnit(props.width)
         }
       });
 
