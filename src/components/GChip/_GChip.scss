@@ -228,8 +228,8 @@
     color: inherit;
   }
 
-  &.expand-x-transition-leave-active,
-  &.expand-x-transition-enter {
+  .expand-x-transition-leave-active,
+  .expand-x-transition-enter {
     margin: 0
   }
 }
@@ -250,27 +250,28 @@
   }
 
   &.g-avatar-size__large {
-    & .g-avatar, & .g-overlay {
+    .g-avatar, .g-overlay {
       width: 33px;
       height: 33px;
       min-width: 33px;
     }
 
-    & .g-avatar {
+    .g-avatar {
       margin: 2px 8px 5px 0;
 
-      & .g-icon {
+      .g-icon {
         font-size: 30px;
         width: 30px;
         height: 30px;
         margin: 4px 0 0 2px;
+        z-index: 0;
       }
     }
 
-    & .g-overlay {
+    .g-overlay {
       margin: 2px 0 0 4px;
 
-      & .g-icon {
+      .g-icon {
         margin: 5px 0 0 5px;
         font-size: 24px;
         position: absolute;
@@ -279,27 +280,28 @@
   }
 
   &.g-avatar-size__small {
-    & .g-avatar, & .g-overlay {
+    .g-avatar, .g-overlay {
       width: 18px;
       height: 18px;
       min-width: 18px;
     }
 
-    & .g-avatar {
+    .g-avatar {
       margin: 1.5px 2px 5px -4px;
 
-      & .g-icon {
+      .g-icon {
         font-size: 18px;
         width: 18px;
         height: 18px;
         margin: 2px 0 0 -4px;
+        z-index: 0;
       }
     }
 
-    & .g-overlay {
+    .g-overlay {
       margin: 2px 0 0 0;
 
-      & .g-icon {
+      .g-icon {
         margin: 1px 0 0 1px;
         font-size: 15px;
         position: absolute;
@@ -308,20 +310,23 @@
   }
 
   &.g-avatar-size__default {
-    & .g-avatar, & .g-overlay {
+    .g-avatar, .g-overlay {
       width: 24px;
       height: 24px;
       min-width: 24px;
     }
 
-    & .g-avatar {
+    .g-avatar {
       margin: 1.5px 2px 5px -4px;
+      .g-icon {
+        z-index: 0;
+      }
     }
 
-    & .g-overlay {
+    .g-overlay {
       margin: 2px 0 0 0;
 
-      & .g-icon {
+      .g-icon {
         margin: 2px 0 0 2px;
         font-size: 20px;
         position: absolute;
@@ -330,27 +335,28 @@
   }
 
   &.g-avatar-size__x-large {
-    & .g-avatar, & .g-overlay {
+    .g-avatar, .g-overlay {
       width: 40px;
       height: 40px;
     }
 
-    & .g-avatar {
+    .g-avatar {
       margin: 2px 8px 5px 1px;
 
-      & .g-icon {
+      .g-icon {
         font-size: 37px;
         width: 40px;
         height: 40px;
         margin: 4px 0 0 2px;
         top: -1px;
+        z-index: 0;
       }
     }
 
-    & .g-overlay {
+    .g-overlay {
       margin: 2px 0 0 5px;
 
-      & .g-icon {
+      .g-icon {
         margin: 6px 0 0 6px;
         font-size: 30px;
         position: absolute;
@@ -359,28 +365,29 @@
   }
 
   &.g-avatar-size__x-small {
-    & .g-avatar, & .g-overlay {
+    .g-avatar, .g-overlay {
       width: 12px;
       height: 12px;
       min-width: 12px;
     }
 
-    & .g-avatar {
+    .g-avatar {
       margin: 0 2px 5px -4px;
 
-      & .g-icon {
+      .g-icon {
         font-size: 10px;
         width: 10px;
         height: 10px;
         margin: 0 0 0 -3px;
         top: -3px;
+        z-index: 0;
       }
     }
 
-    & .g-overlay {
+    .g-overlay {
       margin: 2px 0 0 0;
 
-      & .g-icon {
+      .g-icon {
         margin: 1px 0 0 1px;
         font-size: 10px;
         position: absolute;
