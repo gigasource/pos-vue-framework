@@ -1,7 +1,8 @@
 <template>
   <div :class="classes"
        class="g-list"
-       :style="styles">
+       :style="styles"
+       v-model="internalValue">
     <template v-if="!multiSection">
       <div class="singleSectionList">
         <slot name="subheader">
@@ -9,9 +10,9 @@
         </slot>
         <div v-for="(item, index) in renderList" :key="index" class="item">
           <slot :item="item">
-            <div v-if="item.title" class="g-list-item">
+            <!-- fixme: wave effect does not work  -->
+            <div v-if="item.title" class="g-list-item waves-effect">
               <slot name="prepend" :item="item">
-                <!--fixme: css has problem with avatar-->
                 <div :class="prependClasses">
                   <img alt="" :src="item.prepend">
                 </div>
@@ -19,13 +20,12 @@
 
               <div class="g-list-item-content">
                 <div class="g-list-item-text">{{item.title}}</div>
- <!--                fixme: two line with wrapper display differently three line-->
                 <div class="g-list-item-text__sub"
                      :class="{'...wrap': subtitleWrap}"
                      v-if="lineNumber > 1">
                   {{item.subtitle|| '&nbsp;'}}
                 </div>
-                <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2}}</div>
+                <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
               </div>
               <!--fixme: append wait for VIcon-->
               <div class="g-list-item-action">
@@ -34,7 +34,6 @@
                 </slot>
               </div>
             </div>
-
             <g-divider v-if="(divider && (index < renderList.length -1))"
                        :inset="divider === 'inset'"/>
           </slot>
@@ -43,7 +42,7 @@
     </template>
 
     <template v-else>
-      <template v-for="(item, index) in items">
+      <template v-for="(item) in items">
         <template v-if="item.type === 'subheader'">
           <slot name="subheader">
             <div class="g-list-header">{{item.subheader}}</div>
@@ -55,7 +54,6 @@
         <slot :item="item" v-else>
           <div class="g-list-item">
             <slot name="prepend" :item="item">
-              <!--fixme: css has problem with avatar-->
               <div :class="prependClasses">
                 <img alt="" :src="item.prepend">
               </div>
@@ -66,7 +64,7 @@
               <div class="g-list-item-text__sub"
                    :class="{'...wrap': subtitleWrap}"
                    v-if="lineNumber > 1">
-                {{item.subtitle || '&nbsp;'}}
+                {{item.subtitle || '&nbsp;&nbsp;'}}
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2}}</div>
             </div>
@@ -114,6 +112,7 @@
         default: 'icon',
       },
       subtitleWrap: Boolean,
+      value: [String, Object],
     },
     setup: function (props, context) {
       const lineNumber = computed(() => {
@@ -125,7 +124,7 @@
       const classes = computed(() => ({
         'g-list__disabled': props.disabled,
         'g-list__two-line': (lineNumber.value === 2 && !props.subtitleWrap),
-        'g-list__three-line': (lineNumber.value === 2 && props.subtitleWrap),
+        'g-list__three-line': (lineNumber.value === 2 && props.subtitleWrap)||lineNumber.value === 3,
         'g-list__rounded': props.rounded,
         'g-list__shaped': props.shaped,
         ['elevation-' + props.elevation]: true,

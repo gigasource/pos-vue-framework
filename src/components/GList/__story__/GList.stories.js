@@ -50,7 +50,7 @@ export const gListTwoLineWithWrapper = () => ({
     return {
       items: [
         {title: 'Jason Oner', subtitle: "Jason the ant ,ants work together to gather food and care for the young, and their behavior is surprisingly coordinated and methodical for such seemingly simple insects. ",prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Ranee Carlson',subtitle: "Ranee the cockroach", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ]
@@ -76,7 +76,7 @@ export const gListThreeLine = () => ({
   },
   template:
       `
-      <g-list :items="items" rounded dense subheader="subheader" divider='inset' subtitleWrap >
+      <g-list :items="items" rounded  subheader="subheader" divider='inset' subtitleWrap >
       </g-list>
       `,
 })
@@ -168,7 +168,24 @@ export const gListNormalPrependImg = () => ({
       </g-list>
       `,
 })
-
+export const gListNav = () => ({
+  components: {GList},
+  data() {
+    return {
+      items: [
+        {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+      ]
+    }
+  },
+  template:
+      `
+      <g-list :items="items" rounded dense nav prepend-type="icon">
+      </g-list>
+      `,
+})
 export const gListMultiSection = () => ({
   components: {GList},
   data() {
@@ -188,6 +205,25 @@ export const gListMultiSection = () => ({
   template:
       `
       <g-list :items="items" rounded dense prepend-type="avatar" multi-section>
+      </g-list>
+      `,
+})
+
+export const gListSingleSelect = () => ({
+  components: {GList},
+  data() {
+    return {
+      items: [
+        {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+      ]
+    }
+  },
+  template:
+      `
+      <g-list :items="items" dense nav prepend-type="icon" v-model:value>
       </g-list>
       `,
 })

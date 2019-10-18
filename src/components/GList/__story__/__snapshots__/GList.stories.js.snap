@@ -7,7 +7,7 @@ exports[`GList should render rounded dense 1`] = `
       subheader
     </div>
     <div class="item">
-      <div class="g-list-item">
+      <div class="g-list-item waves-effect">
         <div class="g-list-item-icon">
           <img alt
                src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
@@ -28,7 +28,7 @@ exports[`GList should render rounded dense 1`] = `
       </div>
     </div>
     <div class="item">
-      <div class="g-list-item">
+      <div class="g-list-item waves-effect">
         <div class="g-list-item-icon">
           <img alt
                src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
@@ -39,6 +39,7 @@ exports[`GList should render rounded dense 1`] = `
             Ranee Carlson
           </div>
           <div class="g-list-item-text__sub">
+            &nbsp;
           </div>
         </div>
         <div class="g-list-item-action">
@@ -48,7 +49,7 @@ exports[`GList should render rounded dense 1`] = `
       </div>
     </div>
     <div class="item">
-      <div class="g-list-item">
+      <div class="g-list-item waves-effect">
         <div class="g-list-item-icon">
           <img alt
                src="https://cdn.vuetifyjs.com/images/lists/3.jpg"
@@ -59,6 +60,7 @@ exports[`GList should render rounded dense 1`] = `
             Cindy Baker
           </div>
           <div class="g-list-item-text__sub">
+            &nbsp;
           </div>
         </div>
         <div class="g-list-item-action">
@@ -68,7 +70,7 @@ exports[`GList should render rounded dense 1`] = `
       </div>
     </div>
     <div class="item">
-      <div class="g-list-item">
+      <div class="g-list-item waves-effect">
         <div class="g-list-item-icon">
           <img alt
                src="https://cdn.vuetifyjs.com/images/lists/4.jpg"
@@ -79,6 +81,7 @@ exports[`GList should render rounded dense 1`] = `
             Ali Connors
           </div>
           <div class="g-list-item-text__sub">
+            &nbsp;
           </div>
         </div>
         <div class="g-list-item-action">
