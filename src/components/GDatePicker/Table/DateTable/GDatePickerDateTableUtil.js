@@ -247,6 +247,7 @@ export const getDates = (props, context) => {
       const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(day)}`
 
       let dateItem = {
+        value: date,
         isAllowed: isDateAvailable(date),
         isSelected: isSelected(props, date),
         isCurrent: isCurrent(props, date)

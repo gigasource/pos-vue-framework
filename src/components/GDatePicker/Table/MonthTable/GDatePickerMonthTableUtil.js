@@ -97,32 +97,6 @@ export const _getDbClickEventHandler = (context, month) => {
 }
 
 /**
- * Attach eventHandlers object to monthDataItem
- * eventHandlers object is an object which contain value pair { eventName: eventHandler }
- *
- * Example:
- *  {
- *    click: (e) => { do something },
- *    wheel: (e) => { do something }
- *  }
- * @private
- * @exportToTest
- * @param monthDataItem
- * @param props
- * @param context
- * @param date
- */
-export const _attachMonthItemEventHandlers = (monthDataItem, props, context, date) => {
-  monthDataItem.eventHandlers = (props.disabled
-      ? { click: () => {}, dblclick: () => {} }
-      : {
-          ..._getClickEventHandler(monthDataItem, props, context, date),
-          ..._getDbClickEventHandler(context, date)
-        }
-  )
-}
-
-/**
  * Return month color of specified month item
  * @param monthDataItem
  * @returns {string}
@@ -158,6 +132,7 @@ export const getMonths = (props, context) => {
         const monthValue = `${displayedYear.value}-${pad(month + 1)}`
         const monthDataItem = {
           key: month,
+          value: monthValue,
           isAllowed: isDateAvailable(monthValue),
           isSelected: isSelected(props, monthValue),
           isCurrent: isCurrent(props, monthValue),
@@ -167,8 +142,7 @@ export const getMonths = (props, context) => {
           ...getBtnOutlinedClass(monthDataItem.isCurrent),
           ...getBtnDisabledClass(monthDataItem.isAllowed, props.disabled)
         }
-        monthDataItem.content = monthFormatter.value(monthValue)
-        _attachMonthItemEventHandlers(monthDataItem, props, context, monthValue)
+        monthDataItem.formattedValue = monthFormatter.value(monthValue)
 
         let setColor = monthDataItem.isSelected ? setBackgroundColor : setTextColor
         let color = _getMonthItemColor(monthDataItem, props)

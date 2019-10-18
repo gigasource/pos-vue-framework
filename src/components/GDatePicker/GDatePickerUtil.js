@@ -1,10 +1,10 @@
 import { computed, reactive, watch } from '@vue/composition-api'
 import { createNativeLocaleFormatter, daysInMonth, pad, sanitizeDateString } from './utils';
 import dateFilter from './dateFilter'
-import { EVENT_NAMES as TITLE_EVENT_NAMES } from './Title/GDatePickerTitleUtil'
 import { EVENT_NAMES as YEAR_PICKER_EVENTS } from './Years/GDatePickerYearsUtil'
 import { EVENT_NAMES as MONTH_TABLE_EVENTS } from './Table/MonthTable/GDatePickerMonthTableUtil'
 import { EVENT_NAMES as DATE_TABLE_EVENTS } from './Table/DateTable/GDatePickerDateTableUtil'
+import { calculateChange, NAV } from './Header/GDatePickerHeaderUtil';
 
 export const EVENT_NAMES = {
   INPUT: 'input',
@@ -22,7 +22,7 @@ export const EVENT_NAMES = {
  * 'year' : allow to select year
  * @type {{DATE: string, MONTH: string, YEAR: string}}
  */
-const DATE_PICKER_TYPE = {
+export const DATE_PICKER_TYPE = {
   DATE: 'date',
   MONTH: 'month',
   YEAR: 'year'
@@ -317,8 +317,11 @@ export const _getTitleModel = (props, state, formatters) => {
       selectingYear: state.activePicker === DATE_PICKER_TYPE.YEAR,
       year: formatters.value.year(props.value ? `${state.inputYear}` : state.tableDate),
       eventHandlers: {
-        [TITLE_EVENT_NAMES.UPDATE_SELECTING_YEAR]: value /*boolean*/ => {
-          state.activePicker = (value ? DATE_PICKER_TYPE.YEAR : props.type)
+        click: (e) => {
+          e.stopPropagation()
+          if (state.activePicker === DATE_PICKER_TYPE.YEAR || props.readonly)
+            return
+          state.activePicker = DATE_PICKER_TYPE.YEAR
         }
       }
     }
@@ -333,7 +336,7 @@ export const _getYearModel = ({ props, state, tableYear, tableMonth }) => {
       max: props.max,
       value: tableYear.value,
       eventHandlers: {
-        [YEAR_PICKER_EVENTS.INPUT]: (value) => {
+        yearClicked : (value) => {
           state.inputYear = value
           if (props.type === DATE_PICKER_TYPE.MONTH) {
             state.tableDate = `${value}`
@@ -349,6 +352,7 @@ export const _getYearModel = ({ props, state, tableYear, tableMonth }) => {
   })
 }
 export const _getHeaderModel = ({ props, state, minMonth, maxMonth, minYear, maxYear, tableYear, tableMonth }) => {
+  const headerContent = computed(() => state.activePicker === DATE_PICKER_TYPE.DATE ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`)
   return computed(() => {
     return {
       disabled: props.disabled,
@@ -356,14 +360,16 @@ export const _getHeaderModel = ({ props, state, minMonth, maxMonth, minYear, max
       format: props.headerDateFormat,
       min: state.activePicker === DATE_PICKER_TYPE.DATE ? minMonth.value : minYear.value,
       max: state.activePicker === DATE_PICKER_TYPE.DATE ? maxMonth.value : maxYear.value,
-      value: state.activePicker === DATE_PICKER_TYPE.DATE ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`,
+      value: headerContent.value,
       eventHandlers: {
-        toggle: () => state.activePicker = (state.activePicker === DATE_PICKER_TYPE.DATE ? DATE_PICKER_TYPE.MONTH : DATE_PICKER_TYPE.YEAR),
-        input: (value) => state.tableDate = value,
+        onHeaderClicked: () => state.activePicker = (state.activePicker === DATE_PICKER_TYPE.DATE ? DATE_PICKER_TYPE.MONTH : DATE_PICKER_TYPE.YEAR),
+        onPrev: () => state.tableDate = calculateChange(headerContent.value, NAV.PREV),
+        onNext: () => state.tableDate = calculateChange(headerContent.value, NAV.NEXT)
       }
     }
   })
 }
+
 export const _getDateTableModel = ({ props, context, state, current, tableYear, tableMonth, emitInput, inputDate }) => {
   return computed(() => {
     return {
@@ -386,15 +392,18 @@ export const _getDateTableModel = ({ props, context, state, current, tableYear, 
       weekdayFormat: props.weekdayFormat,
       range: props.range,
       eventHandlers: {
-        [DATE_TABLE_EVENTS.INPUT]: (value) => {
-          state.inputYear = parseInt(value.split('-')[0], 10)
-          state.inputMonth = parseInt(value.split('-')[1], 10) - 1
-          state.inputDay = parseInt(value.split('-')[2], 10)
-          emitInput(inputDate.value)
+        onDateClicked: (dateItem) => {
+          if (dateItem.isAllowed && !props.readonly) {
+            state.inputYear = parseInt(dateItem.value.split('-')[0], 10)
+            state.inputMonth = parseInt(dateItem.value.split('-')[1], 10) - 1
+            state.inputDay = parseInt(dateItem.value.split('-')[2], 10)
+            emitInput(inputDate.value)
+          }
+          context.emit('click:date', dateItem.value)
         },
-        [DATE_TABLE_EVENTS.UPDATE_TABLE_DATE]: (value) => state.tableDate = value,
-        [DATE_TABLE_EVENTS.DATE_CLICKED]: (value) => context.emit(EVENT_NAMES.CLICK_DATE, value),
-        [DATE_TABLE_EVENTS.DATE_DB_CLICKED]: (value) => context.emit(EVENT_NAMES.DB_CLICK_DATE, value),
+        onDateDoubleClicked: (dateItem) => {
+          context.emit('dblclick:date', dateItem.value)
+        }
       }
     }
   })
@@ -414,7 +423,7 @@ export const _getMonthTableModel = ({ props, context, state, isMultiple, current
       value: selectedMonths.value,
       tableDate: pad(tableYear.value, 4),
       eventHandlers: {
-        input: (value) => {
+        onMonthClicked: (value) => {
           state.inputYear = parseInt(value.split('-')[0], 10)
           state.inputMonth = parseInt(value.split('-')[1], 10) - 1
           if (props.type === DATE_PICKER_TYPE.DATE) {
@@ -430,9 +439,10 @@ export const _getMonthTableModel = ({ props, context, state, isMultiple, current
             emitInput(inputDate.value)
           }
         },
-        [MONTH_TABLE_EVENTS.UPDATE_TABLE_DATE]: (value) => state.tableDate = value,
-        [MONTH_TABLE_EVENTS.MONTH_CLICKED]: (value) => context.emit(EVENT_NAMES.CLICK_MONTH, value),
-        [MONTH_TABLE_EVENTS.MONTH_DB_CLICKED]: (value) => context.emit(EVENT_NAMES.DB_CLICK_MONTH, value),
+        onMonthDoubleClicked: (value) => {
+          context.emit(EVENT_NAMES.DB_CLICK_MONTH, value)
+        },
+        [MONTH_TABLE_EVENTS.UPDATE_TABLE_DATE]: (value) => state.tableDate = value, // for wheel
       }
     }
   })
@@ -506,7 +516,7 @@ export default (props, context) => {
 
   return {
     title: _getTitleModel(props, state, formatFn),
-    year: _getYearModel({
+    yearModel: _getYearModel({
       props, state, tableYear, tableMonth
     }),
     header: _getHeaderModel({

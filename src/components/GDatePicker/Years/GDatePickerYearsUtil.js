@@ -18,7 +18,7 @@ export const EVENT_NAMES = { INPUT: 'input' }
  */
 export function getYearRange(props, currentYearOffset = 100) {
   return computed(() => {
-    const currentYear = props.value ? parseInt(props.value) : new Date().getFullYear()
+    const currentYear = new Date().getFullYear()
     const maxYear = props.max ? parseInt(props.max) : (currentYear + currentYearOffset)
     const minYear = Math.min(maxYear, props.min ? parseInt(props.min) : (currentYear - currentYearOffset))
     const years = []
@@ -27,13 +27,4 @@ export function getYearRange(props, currentYearOffset = 100) {
     }
     return years
   })
-}
-
-/**
- * Return an event handler which will be executed when user select year
- * @param context
- * @returns {function(*=): *}
- */
-export function getYearOnClickEventHandler(context) {
-  return (year) => context.emit(EVENT_NAMES.INPUT, year)
 }

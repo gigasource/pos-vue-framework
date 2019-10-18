@@ -1,9 +1,5 @@
 <template>
   <div>
-    <g-date-picker-title
-        :date="selectedRanges"
-        :selecting-year="true"
-    />
     <div style="display: flex">
       <div style="display: flex; flex-direction: column;">
         <span style="padding: 5px">From:</span>
@@ -34,12 +30,11 @@
   import GDatePicker from '../GDatePicker/GDatePicker'
   import { EVENT_NAMES } from '../GDatePicker/GDatePickerUtil';
   import { reactive, computed } from '@vue/composition-api';
-  import GDatePickerTitle from '../GDatePicker/Title/GDatePickerTitle';
 
 
   export default {
     name: 'GRangePicker',
-    components: { GDatePickerTitle, GDatePicker },
+    components: { GDatePicker },
     props: {},
     setup() {
       const state = reactive({

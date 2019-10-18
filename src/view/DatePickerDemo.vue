@@ -84,10 +84,10 @@
           <g-date-picker type="month" v-model="monthSelect" scrollable></g-date-picker>
         </div>
 
-        <div>
-          <h4>Multiple select</h4>
-          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape show-current></g-date-picker>
-        </div>
+<!--        <div>-->
+<!--          <h4>Multiple select</h4>-->
+<!--          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape show-current></g-date-picker>-->
+<!--        </div>-->
       </div>
     </div>
 
@@ -100,14 +100,10 @@
 <script>
   import GDatePicker from '../components/GDatePicker/GDatePicker';
   import GDateRangePicker from '../components/GDateRangePicker/GDateRangePicker';
-  import GBtn from '../components/GBtn/GBtn';
-  import GDatePickerYears from '../components/GDatePicker/Years/GDatePickerYears';
-  import GDatePickerTitle from '../components/GDatePicker/Title/GDatePickerTitle';
-  import GDatePickerMonthTable from '../components/GDatePicker/Table/MonthTable/GDatePickerMonthTable';
 
   export default {
     name: 'DatePickerDemo',
-    components: { GDatePickerMonthTable, GDatePickerTitle, GDatePickerYears, GBtn, GDatePicker, GDateRangePicker },
+    components: { GDatePicker, GDateRangePicker },
     props: {},
     data: function () {
       return {

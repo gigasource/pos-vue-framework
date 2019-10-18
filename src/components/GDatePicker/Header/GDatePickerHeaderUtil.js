@@ -43,28 +43,19 @@ export function getHeaderFormatter(props) {
  *  sign: -1
  *  return: '2009'
  */
-export const calculateChange = (props, sign) => {
-  if (isMonthFormat(props.value)) {
-    return monthChange(props.value, sign)
+export const calculateChange = (value, sign) => {
+  if (isMonthFormat(value)) {
+    return monthChange(value, sign)
   } else {
-    return (Number(props.value) + sign).toString()
+    return (Number(value) + sign).toString()
   }
-}
-
-/**
- * Event names
- * @type {{INPUT: string, TOGGLE: string}}
- */
-export const EVENT_NAMES = {
-  TOGGLE: 'toggle',
-  INPUT: 'input'
 }
 
 /**
  * Navigation
  * @type {{PREV: number, NEXT: number}}
  */
-const NAV = {
+export const NAV = {
   PREV: -1,
   NEXT: 1
 }
@@ -76,25 +67,7 @@ const NAV = {
  */
 export const getNavigationState = (props) => {
   return {
-    canGoPrev: computed(() => !(props.disabled || (props.min && calculateChange(props, NAV.PREV) < props.min))),
-    canGoNext: computed(() => !(props.disabled || (props.max && calculateChange(props, NAV.NEXT) > props.max)))
-  }
-}
-
-/**
- *
- * @param props
- * @param context
- * @returns {{nextClick: (function(): *), onHeaderClicked: (function(): *), prevClick: (function(): *)}}
- */
-export const getHeaderEvents = (props, context) => {
-  const onHeader = () => context.emit(EVENT_NAMES.TOGGLE)
-  const onPrev = () => context.emit(EVENT_NAMES.INPUT, calculateChange(props, NAV.PREV))
-  const onNext = () => context.emit(EVENT_NAMES.INPUT, calculateChange(props, NAV.NEXT))
-
-  return {
-    onHeader,
-    onPrev,
-    onNext
+    canGoPrev: computed(() => !(props.disabled || (props.min && calculateChange(props.value, NAV.PREV) < props.min))),
+    canGoNext: computed(() => !(props.disabled || (props.max && calculateChange(props.value, NAV.NEXT) > props.max)))
   }
 }
