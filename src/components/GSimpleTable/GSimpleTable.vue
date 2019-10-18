@@ -1,5 +1,5 @@
 <template>
-	<div :class="tableClasses">
+	<div :class="tableClasses" :style="tableStyles">
 		<div class="g-data-table__wrapper" :style="wrapperStyles">
 			<table>
 				<slot></slot>
@@ -41,6 +41,12 @@
         }
       });
 
+      let tableStyles = computed(()=> {
+        return {
+          width: convertToUnit(props.width)
+        }
+			});
+
       let wrapperStyles = computed(() => {
         return {
           height: convertToUnit(props.height),
@@ -50,6 +56,7 @@
 
       return {
         tableClasses,
+				tableStyles,
         wrapperStyles
       }
     }

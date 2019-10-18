@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>Default table/Fixed height</p>
-		<g-simple-table borderless hover>
+		<g-simple-table borderless hover width="700">
 			<template v-slot:default>
 				<thead>
 				<tr>
