@@ -18,7 +18,7 @@
       background: rgba(0, 0, 0, 0.05);
     }
     &__active{
-      background-color: red;
+      background-color: rgba(0, 0, 0, 0.05);
     }
     &-icon {
       width: 24px;
@@ -29,6 +29,7 @@
       > img {
         width: 24px;
         height: 24px;
+        border-radius: 50%;
       }
     }
 
@@ -48,6 +49,9 @@
       border-radius: 50%;
       margin: 8px 0 8px 16px;
       flex-shrink: 0;
+      >img{
+        border-radius: 50%;
+      }
 
     }
 
@@ -134,15 +138,23 @@
   }
 
   &__shaped {
-    .g-list-item:hover {
-      border-top-right-radius: 9999px;
-      border-bottom-right-radius: 9999px;
+    .g-list-item {
+      &:hover, &__active {
+        border-top-right-radius: 9999px;
+        border-bottom-right-radius: 9999px;
+      }
     }
+
+
   }
 
   &__rounded {
     .g-list-item {
       padding: 0 16px;
+      &__active{
+        border-radius: 9999px;
+        background-color: rgba(0, 0, 0, 0.05) ;
+      }
     }
 
     .g-list-item:hover {

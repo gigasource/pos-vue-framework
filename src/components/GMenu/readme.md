@@ -17,6 +17,6 @@
 - attach to DOM (query selector)
 
 ## To be considered
-- return-value (for g-select)
+- return-value (for g-onSelectIndex)
 - content focus & key event
 - absolute position (open menu at clicked location)

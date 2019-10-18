@@ -2,10 +2,10 @@
 	<div>
 		<div class="a">
 			<div class="b">
-				<select v-model="name" style="border: 1px solid black">
+				<onSelectIndex v-model="name" style="border: 1px solid black">
 					<option disabled value="">Select an animation</option>
 					<option v-for="(item, i) in list" :key="i" :value="item">{{item}}</option>
-				</select>
+				</onSelectIndex>
 				<button @click="show = !show">Toggle</button>
 			</div>
 			<transition :name="name">
@@ -14,10 +14,10 @@
 		</div>
 		<div class="a">
 			<div class="b">
-				<select v-model="classes" style="border: 1px solid black">
+				<onSelectIndex v-model="classes" style="border: 1px solid black">
 					<option disabled value="">Select an animation</option>
 					<option v-for="(item, i) in list2" :key="i" :value="item">{{item}}</option>
-				</select>
+				</onSelectIndex>
 			</div>
 			<p class="animated" :class="classes">Attention Seekers</p>
 		</div>

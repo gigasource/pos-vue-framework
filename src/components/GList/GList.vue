@@ -3,16 +3,19 @@
        class="g-list"
        :style="styles"
        @click="onClick">
+
     <template v-if="!multiSection">
       <div class="singleSectionList">
         <slot name="subheader">
           <div class="g-list-header">{{subheader}}</div>
         </slot>
-        <div v-for="(item, index) in renderList" :key="index" class="item" @click="select(index)">
-          <slot :item="item">
-            <!-- fixme: wave effect does not work  -->
-            {{selectedIndex}}
-            <div v-if="item.title" :class="{'g-list-item': true, 'g-list-item__active': selectedIndex === index}">
+        <div v-for="(item, index) in renderList" :key="index"
+             @click="onSelect(item)">
+          <slot :item="item" :isSelected="internalValue === item">
+            <!-- fixme: waves effect does not work  -->
+            <div v-if="item.title"
+                 class="g-list-item"
+                 :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}">
               <slot name="prepend" :item="item">
                 <div :class="prependClasses">
                   <img alt="" :src="item.prepend">
@@ -22,7 +25,6 @@
               <div class="g-list-item-content">
                 <div class="g-list-item-text">{{item.title}}</div>
                 <div class="g-list-item-text__sub"
-                     :class="{'...wrap': subtitleWrap}"
                      v-if="lineNumber > 1">
                   {{item.subtitle|| '&nbsp;'}}
                 </div>
@@ -53,7 +55,9 @@
         <g-divider v-else-if="item.type === 'divider'"></g-divider>
 
         <slot :item="item" v-else>
-          <div class="g-list-item">
+          <div class="g-list-item"
+               :class="{'g-list-item__active': internalValue === item}"
+               @click="onSelect(item)">
             <slot name="prepend" :item="item">
               <div :class="prependClasses">
                 <img alt="" :src="item.prepend">
@@ -63,11 +67,10 @@
             <div class="g-list-item-content">
               <div class="g-list-item-text">{{item.title}}</div>
               <div class="g-list-item-text__sub"
-                   :class="{'...wrap': subtitleWrap}"
                    v-if="lineNumber > 1">
                 {{item.subtitle || '&nbsp;&nbsp;'}}
               </div>
-              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2}}</div>
+              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
 
             <!--fixme: append wait for VIcon-->
@@ -79,11 +82,13 @@
 
       </template>
     </template>
+
+
   </div>
 </template>
 
 <script>
-  import {computed, ref, watch} from '@vue/composition-api';
+  import {computed} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
   import {getInternalValue} from '../../utils/helpers';
 
@@ -114,7 +119,8 @@
         default: 'icon',
       },
       subtitleWrap: Boolean,
-      value: [String, Object, Number]
+      value: [String, Object, Number],
+      selectable: Boolean,
     },
     setup: function (props, context) {
       //G list computed class
@@ -155,16 +161,12 @@
         context.emit('click', event)
       }
 
-      const selectedIndex = ref(props.value || -1);
+      const internalValue = getInternalValue(props, context);
 
-      function select(index) {
-        selectedIndex.value = selectedIndex.value === index ? -1 : index;
-        console.log(selectedIndex.value);
+      function onSelect(item) {
+        if (!props.selectable) return;
+        internalValue.value = internalValue.value === item ? null : item;
       }
-
-      watch(selectedIndex, () => {
-        console.log(selectedIndex.value);
-      })
 
       return {
         classes,
@@ -173,8 +175,8 @@
         renderList,
         lineNumber,
         onClick,
-        select,
-        selectedIndex,
+        onSelect,
+        internalValue,
       }
     }
   }
