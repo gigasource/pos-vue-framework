@@ -17,7 +17,9 @@
     &:hover {
       background: rgba(0, 0, 0, 0.05);
     }
-
+    &__active{
+      background-color: red;
+    }
     &-icon {
       width: 24px;
       height: 24px;

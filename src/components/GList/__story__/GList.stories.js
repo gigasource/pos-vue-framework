@@ -218,12 +218,13 @@ export const gListSingleSelect = () => ({
         {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
-      ]
+      ],
+      value:{}
     }
   },
   template:
       `
-      <g-list :items="items" dense nav prepend-type="icon" v-model:value>
+      <g-list :items="items" rounded dense subheader="subheader" divider=inset>
       </g-list>
       `,
 })

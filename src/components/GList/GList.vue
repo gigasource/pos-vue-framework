@@ -2,16 +2,17 @@
   <div :class="classes"
        class="g-list"
        :style="styles"
-       v-model="internalValue">
+       @click="onClick">
     <template v-if="!multiSection">
       <div class="singleSectionList">
         <slot name="subheader">
           <div class="g-list-header">{{subheader}}</div>
         </slot>
-        <div v-for="(item, index) in renderList" :key="index" class="item">
+        <div v-for="(item, index) in renderList" :key="index" class="item" @click="select(index)">
           <slot :item="item">
             <!-- fixme: wave effect does not work  -->
-            <div v-if="item.title" class="g-list-item waves-effect">
+            {{selectedIndex}}
+            <div v-if="item.title" :class="{'g-list-item': true, 'g-list-item__active': selectedIndex === index}">
               <slot name="prepend" :item="item">
                 <div :class="prependClasses">
                   <img alt="" :src="item.prepend">
@@ -82,9 +83,9 @@
 </template>
 
 <script>
-  import {computed} from '@vue/composition-api';
+  import {computed, ref, watch} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
-  import  getInternalValue from 'src/utils/helpers.js'
+  import {getInternalValue} from '../../utils/helpers';
 
   export default {
     name: 'GList',
@@ -113,11 +114,11 @@
         default: 'icon',
       },
       subtitleWrap: Boolean,
-      value: [String, Object],
+      value: [String, Object, Number]
     },
     setup: function (props, context) {
       //G list computed class
-        //Computed subtitle
+      //Computed subtitle
       const lineNumber = computed(() => {
         if (!props.items.find(i => i.subtitle)) return 1;
         if (props.items.find(i => i.subtitle2)) return 3;
@@ -127,7 +128,7 @@
       const classes = computed(() => ({
         'g-list__disabled': props.disabled,
         'g-list__two-line': (lineNumber.value === 2 && !props.subtitleWrap),
-        'g-list__three-line': (lineNumber.value === 2 && props.subtitleWrap)||lineNumber.value === 3,
+        'g-list__three-line': (lineNumber.value === 2 && props.subtitleWrap) || lineNumber.value === 3,
         'g-list__rounded': props.rounded,
         'g-list__shaped': props.shaped,
         ['elevation-' + props.elevation]: true,
@@ -150,15 +151,30 @@
       const renderList = computed(() => props.items.filter(item => item.title))
 
       //Select
-      const internalValue = getInternalValue(props, context)
+      function onClick(event) {
+        context.emit('click', event)
+      }
 
+      const selectedIndex = ref(props.value || -1);
+
+      function select(index) {
+        selectedIndex.value = selectedIndex.value === index ? -1 : index;
+        console.log(selectedIndex.value);
+      }
+
+      watch(selectedIndex, () => {
+        console.log(selectedIndex.value);
+      })
 
       return {
         classes,
         styles,
         prependClasses,
         renderList,
-        lineNumber
+        lineNumber,
+        onClick,
+        select,
+        selectedIndex,
       }
     }
   }
