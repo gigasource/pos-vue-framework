@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GTimePicker/Title/GTimePickerTitle Period Should not add active class to am div 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle Period Should not add active class to pm div 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn">
+      AM
+    </div>
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle Render 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle Render Should not render ampm section 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle Render Should not render ampm section if hour convention is 12h 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle Render Should not render ampm section if hour convention is 12h or undefined (default) 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle Render Should not render ampm section if hour convention is 12h or undefined (default) 2`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle Render Should not render ampm section if hour convention is not defined explicitly (default 12H) 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      --
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      --
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle SelectionTimes Should add active class to hour div 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      10
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn">
+      15
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GTimePicker/Title/GTimePickerTitle SelectionTimes Should add active class to minute div 1`] = `
+<div class="g-time-picker-title">
+  <div class="g-time-picker-title__ampm">
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      AM
+    </div>
+    <div class="g-picker__title__btn">
+      PM
+    </div>
+  </div>
+  <div class="g-time-picker-title__time">
+    <div class="g-picker__title__btn">
+      10
+    </div>
+    <span>
+      :
+    </span>
+    <div class="g-picker__title__btn g-picker__title__btn--active">
+      15
+    </div>
+  </div>
+</div>
+`;
