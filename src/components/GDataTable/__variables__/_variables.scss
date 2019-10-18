@@ -1,0 +1,82 @@
+// ==========================================================================
+// Materialize variables
+// Extended from : components/variables.scss
+// ==========================================================================
+
+// 1. Colors
+// ==========================================================================
+$primary-color: color("blue", "base");
+$primary-color-light: lighten($primary-color, 15%);
+$primary-color-dark: darken($primary-color, 15%);
+
+$secondary-color: color("orange", "accent-3");
+$success-color: color("teal", "accent-4");
+$error-color: color("red", "accent-2");
+$link-color: color("blue", "base");
+
+// 3. Buttons
+// ==========================================================================
+$button-font-size: 1rem;
+$button-padding: 0 2rem;
+$button-radius: 4px;
+
+// Large buttons
+$button-large-font-size: 1rem;
+$button-floating-large-size: 4rem;
+
+// Small buttons
+$button-small-font-size: 1rem;
+
+// 4. Cards
+// ==========================================================================
+$card-link-color: color("indigo", "darken-1");
+
+// 10. Forms
+// ==========================================================================
+
+// Text Inputs + Textarea
+$input-font-size: 1rem;
+$input-margin-bottom: 20px;
+
+// 14. Side Navigation
+// ==========================================================================
+$sidenav-width: 250px;
+
+// 18. Tables
+// ==========================================================================
+
+$table-border-color: rgba(0,0,0,.12) !default;
+$table-striped-color: rgba(242, 242, 242, 0.5) !default;
+
+// ==========================================================================
+// Materialize theme variables
+// ==========================================================================
+//
+// Table of Contents:
+//
+//  1. Colors
+//  2. Sidenav
+
+//Colors
+$white: #fff !default;
+$black: #000 !default;
+$body-bg: #f9f9f9 !default;
+$title-font-color: #333 !default;
+$body-font-color: #6B6F82 !default;
+$breadcrumbs-bg: #f3f3f3 !default;
+
+//Sidenav
+$sidenav-collapsed-width: 64px !default;
+$sidenav-dark-bg: #2c323f !default;
+$sidenav-hover-bg: rgba(0, 0, 0, 0.035) !default;
+$sidenav-open-bg: rgba(0, 0, 0, 0.035) !default;
+$sidenav-active-text-color: $title-font-color !default;
+$sidenav-active-bg: rgba(0, 0, 0, 0.04) !default;
+$sidenav-active-box-shadow: none !default;
+$right-sidenav-width: 340px !default; // Right SideNav
+
+// ==========================================================================
+// Materialize theme variables
+// ==========================================================================
+
+$breadcrumbs-bg: transparent;

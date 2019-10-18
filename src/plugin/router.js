@@ -13,6 +13,7 @@ import DialogDemo from '../view/DialogDemo';
 import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import TransitionDemo from '../view/TransitionDemo';
+import DataTableDemo from '../view/DataTableDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -29,6 +30,8 @@ const routes = [
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
+  { path: '/datatable', name: 'Data Table', component: DataTableDemo},
+
 ];
 
 const router = new VueRouter({
