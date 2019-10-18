@@ -84,6 +84,7 @@
 <script>
   import {computed} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
+  import  getInternalValue from 'src/utils/helpers.js'
 
   export default {
     name: 'GList',
@@ -115,6 +116,8 @@
       value: [String, Object],
     },
     setup: function (props, context) {
+      //G list computed class
+        //Computed subtitle
       const lineNumber = computed(() => {
         if (!props.items.find(i => i.subtitle)) return 1;
         if (props.items.find(i => i.subtitle2)) return 3;
@@ -145,6 +148,10 @@
       })
 
       const renderList = computed(() => props.items.filter(item => item.title))
+
+      //Select
+      const internalValue = getInternalValue(props, context)
+
 
       return {
         classes,
