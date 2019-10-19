@@ -46,6 +46,11 @@ button {
     will-change: box-shadow;
   }
 
+  &:active,
+  &:hover {
+    opacity: 0.82;
+  }
+
   //Generate elevation
   $elevationMin: 1;
   $elevationMax: 24;
