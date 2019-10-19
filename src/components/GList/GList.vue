@@ -7,7 +7,7 @@
     <template v-if="!multiSection">
       <div class="singleSectionList">
         <slot name="subheader">
-          <div class="g-list-header">{{subheader}}</div>
+          <div v-if="subheader" class="g-list-header">{{subheader}}</div>
         </slot>
         <div v-for="(item, index) in renderList" :key="index"
              @click="onSelect(item)">
