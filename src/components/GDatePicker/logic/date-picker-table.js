@@ -28,24 +28,24 @@ export const isCurrent = (props, value) => {
 
 export function getBtnActiveClass(isSelected){
   return {
-    'g-btn--active': isSelected
+    'g-table-item--active': isSelected
   }
 }
 
 export function getBtnRoundedClass() {
   return {
-    'g-btn--rounded': true
+    'g-table-item--rounded': true
   }
 }
 
 export function getBtnDisabledClass(isAllowed, disabled) {
   return {
-    'g-btn--disabled': !isAllowed || disabled,
+    'g-table-item--disabled': !isAllowed || disabled,
   }
 }
 
 export function getBtnOutlinedClass(isCurrent, isSelected) {
   return {
-    'g-btn--outlined': isCurrent && !isSelected
+    'g-table-item--outlined': isCurrent && !isSelected
   }
 }

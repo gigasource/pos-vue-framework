@@ -5,7 +5,7 @@
       <div style="display:flex">
         <div>
           <h4>Single select</h4>
-          <g-date-picker v-model="singleSelect" scrollable></g-date-picker>
+          <g-date-picker v-model="singleSelect" scrollable ></g-date-picker>
         </div>
         <div>
           <h4>Multiple select</h4>
@@ -13,7 +13,7 @@
         </div>
         <div>
           <h4>Range select</h4>
-          <g-date-picker range v-model="rangeSelect"></g-date-picker>
+          <g-date-picker range v-model="rangeSelect" full-width></g-date-picker>
         </div>
       </div>
 

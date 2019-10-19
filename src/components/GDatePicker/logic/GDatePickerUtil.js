@@ -5,6 +5,7 @@ import { EVENT_NAMES as YEAR_PICKER_EVENTS } from './GDatePickerYearsUtil'
 import { EVENT_NAMES as MONTH_TABLE_EVENTS } from './GDatePickerMonthTableUtil'
 import { EVENT_NAMES as DATE_TABLE_EVENTS } from './GDatePickerDateTableUtil'
 import { calculateChange, NAV } from './GDatePickerHeaderUtil';
+import * as _ from 'lodash';
 
 export const EVENT_NAMES = {
   INPUT: 'input',
@@ -373,24 +374,11 @@ export const _getHeaderModel = ({ props, state, minMonth, maxMonth, minYear, max
 export const _getDateTableModel = ({ props, context, state, current, tableYear, tableMonth, emitInput, inputDate }) => {
   return computed(() => {
     return {
+      ..._.pick(props, ['allowedDates', 'color', 'disabled', 'events', 'eventColor',
+        'firstDayOfWeek','format','min', 'max','readonly','scrollable', 'showWeek','weekdayFormat','range']),
       show: state.activePicker === DATE_PICKER_TYPE.DATE,
-      allowedDates: props.allowedDates,
-      color: props.color,
-      current: current.value,
-      disabled: props.disabled,
-      events: props.events,
-      eventColor: props.eventColor,
-      firstDayOfWeek: props.firstDayOfWeek,
-      format: props.format,
-      min: props.min,
-      max: props.max,
-      readonly: props.readonly,
-      scrollable: props.scrollable,
-      showWeek: props.showWeek,
       tableDate: `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}`,
       value: _generateDateRange(props).value,
-      weekdayFormat: props.weekdayFormat,
-      range: props.range,
       eventHandlers: {
         onDateClicked: (dateItem) => {
           if (dateItem.isAllowed && !props.readonly) {
