@@ -243,7 +243,7 @@
 		directives: {mask},
     data() {
       return {
-        text1: 'dfgdfsgds',
+        text1: '',
 				text2:'asbchdjk',
         rules: {
           required: value => !!value || 'Required',

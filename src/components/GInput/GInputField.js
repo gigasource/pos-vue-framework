@@ -29,8 +29,11 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
           return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` }
         }
       }
+      else if(props.filled){
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)` }
+      }
       else{
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +5}px)  scale(0.75)` }
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +7}px)  scale(0.75)` }
       }
     }
     !isValidInput.value && inValidStyle

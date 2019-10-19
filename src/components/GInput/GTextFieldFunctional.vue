@@ -29,6 +29,7 @@
 				</div>
 				<div v-if="suffix" class="tf-affix">{{suffix}}</div>
 				<div class="tf-append__inner" @click="onClickAppendInner">
+					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick" alt="clearIcon">
 					<slot name="append-inner"></slot>
 				</div>
 				<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
@@ -37,7 +38,7 @@
 			</div>
 		</fieldset>
 		<div class="tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
-			<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick">
+
 			<slot name="append-outer"></slot>
 		</div>
 
