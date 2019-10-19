@@ -84,10 +84,10 @@
           <g-date-picker type="month" v-model="monthSelect" scrollable></g-date-picker>
         </div>
 
-<!--        <div>-->
-<!--          <h4>Multiple select</h4>-->
-<!--          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape show-current></g-date-picker>-->
-<!--        </div>-->
+        <div>
+          <h4>Multiple select</h4>
+          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape show-current></g-date-picker>
+        </div>
       </div>
     </div>
 

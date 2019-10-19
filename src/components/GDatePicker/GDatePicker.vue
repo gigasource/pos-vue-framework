@@ -4,7 +4,7 @@
   import GPicker from '../GPicker/GPicker'
   //
   import { TRANSITION_NAMES } from './utils';
-  import { reactive, computed, watch } from '@vue/composition-api'
+  import { reactive, computed, watch, ref } from '@vue/composition-api'
   //
   import { getYearRange } from './Years/GDatePickerYearsUtil';
   import { getHeaderFormatter, getNavigationState } from './Header/GDatePickerHeaderUtil';
@@ -175,6 +175,8 @@
 
 
 
+      const transitionName = ref('')
+
 
       // GDatePicker -> Body -> Navigation render function
       const headerNavigationState = reactive({ isReversing: false })
@@ -193,16 +195,13 @@
           'g-date-picker-header__value--disabled': headerModel.value.disabled
         }
       })
-      const headerTransition = computed(() => {
-        return (headerNavigationState.isReversing) ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB
-      })
       const headerFormatter = getHeaderFormatter(headerModel.value)
       const { canGoPrev, canGoNext } = getNavigationState(headerModel.value)
       function headerRenderFn() {
         return (
             <div class={headerCssClasses.value}>
               <div class={headerContentCssClass.value}>
-                <transition name={headerTransition.value}>
+                <transition name={transitionName.value}>
                   <div key={headerModel.value.value}>
                     <button
                         type="button"
@@ -215,16 +214,20 @@
               <button
                   class="g-date-picker-header__prev-button"
                   disabled={!canGoPrev.value}
-                  v-on:click={() => headerModel.value.eventHandlers.onPrev()}></button>
+                  v-on:click={() => {
+                    transitionName.value = TRANSITION_NAMES.REVERSE_TAB;
+                    return headerModel.value.eventHandlers.onPrev()
+                  } }></button>
               <button
                   class="g-date-picker-header__next-button"
                   disabled={!canGoNext.value}
-                  v-on:click={() => headerModel.value.eventHandlers.onNext()}></button>
+                  v-on:click={() => {
+                    transitionName.value = TRANSITION_NAMES.TAB
+                    headerModel.value.eventHandlers.onNext()
+                  } }></button>
             </div>
         )
       }
-
-
 
 
       // GDatePicker -> Body -> Date Table render function
@@ -242,16 +245,6 @@
         })
         return rows
       }
-      // date transition
-      const dateTableState = reactive({ isReversing: false })
-      const transitionName = computed(() => {
-        return dateTableState.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB
-      })
-      // Transition name of date picker and month table should depend-on the same reactive object
-      // TODO: Bring to the same object
-      watch(() => datesModel.value.tableDate, (newVal, oldVal) => {
-        dateTableState.isReversing = newVal < oldVal
-      }, { lazy: true, flush: 'pre' })
       const datePickerClasses = computed(() => {
         return {
           'g-date-picker-table': true,
@@ -323,16 +316,10 @@
           'g-date-picker-table--disabled': monthsModel.value.disabled
         }
       })
-      const monthTableState = reactive({ isReversing: false })
-      const monthTransitionName = computed(() => monthTableState.isReversing ? TRANSITION_NAMES.REVERSE_TAB : TRANSITION_NAMES.TAB)
-      watch(() => monthsModel.value.tableDate, (newVal, oldVal) => monthTableState.isReversing = newVal < oldVal, { lazy: true, flush: 'pre' })
       function monthTableRenderFn() {
-        // TODO: Fix the bug
-        // getMonths in render function slow down performance
-        // But moving getMonths out of render function, it's loosing reactive state of selected months
         const monthRows = getMonths(monthsModel.value, context)
         return (<div class={monthTableClasses.value} v-on:wheel={onMonthTableWheel}>
-          <transition name={monthTransitionName.value}>
+          <transition name={transitionName.value}>
           <table key={monthsModel.value.tableDate}>
           <tbody>
           {
@@ -363,9 +350,6 @@
       </div>)
       }
 
-
-
-      //
       // date/month table render function
       function dateMonthTableRenderFn() {
         return datesModel.value.show ? dateTableRenderFn() : monthTableRenderFn()
