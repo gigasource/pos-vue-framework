@@ -119,6 +119,8 @@
       } = GDatePickerUtil(props, context)
 
 
+
+
       // Title render function
       const titleClasses = computed(() => {
         return {
@@ -157,7 +159,7 @@
       }
 
       // years list render function
-      const yearsData = getYearRange(yearModel.value)
+      const yearsData = getYearRange(yearModel)
       function yearListRenderFn() {
         const yearItems = yearsData.value.map((year) => {
           return (
@@ -171,12 +173,17 @@
         })
         return <ul class="g-date-picker-years" ref="years">{yearItems}</ul>
       }
-      const transitionName = ref('')
+
       // GDatePicker -> Body -> Navigation render function
-      const headerNavigationState = reactive({ isReversing: false })
-      watch(() => headerModel.value.value, (newVal, oldVal) => {
-        headerNavigationState.isReversing = newVal < oldVal
-      }, { lazy: true, flush: 'pre' })
+      const tableTransitionName = ref('')
+      const goPrev = () => {
+        tableTransitionName.value = TRANSITION_NAMES.REVERSE_TAB;
+        headerModel.value.eventHandlers.onPrev()
+      }
+      const goNext = () => {
+        tableTransitionName.value = TRANSITION_NAMES.TAB
+        headerModel.value.eventHandlers.onNext()
+      }
       const headerCssClasses = computed(() => {
         return {
           'g-date-picker-header': true,
@@ -189,13 +196,13 @@
           'g-date-picker-header__value--disabled': headerModel.value.disabled
         }
       })
-      const { canGoPrev, canGoNext } = getNavigationState(headerModel.value)
-      const headerFormatter = getHeaderFormatterFn(headerModel.value, state)
+      const headerFormatter = getHeaderFormatterFn(headerModel)
+      const { canGoPrev, canGoNext } = getNavigationState(headerModel)
       function headerRenderFn() {
         return (
             <div class={headerCssClasses.value}>
               <div class={headerContentCssClass.value}>
-                <transition name={transitionName.value}>
+                <transition name={tableTransitionName.value}>
                   <div key={headerModel.value.value}>
                     <button
                         type="button"
@@ -210,36 +217,23 @@
               <button
                   class="g-date-picker-header__prev-button"
                   disabled={!canGoPrev.value}
-                  v-on:click={() => {
-                    transitionName.value = TRANSITION_NAMES.REVERSE_TAB;
-                    return headerModel.value.eventHandlers.onPrev()
-                  } }></button>
+                  v-on:click={() => goPrev() }></button>
               <button
                   class="g-date-picker-header__next-button"
                   disabled={!canGoNext.value}
-                  v-on:click={() => {
-                    transitionName.value = TRANSITION_NAMES.TAB
-                    headerModel.value.eventHandlers.onNext()
-                  } }></button>
+                  v-on:click={() => goNext() }></button>
             </div>
         )
       }
 
       // wheel event for date/month table
       let throttleWheel = _.throttle((e) => {
-        if (e.deltaX < 0) {
-          transitionName.value = TRANSITION_NAMES.REVERSE_TAB;
-          headerModel.value.eventHandlers.onPrev()
-        } else {
-          transitionName.value = TRANSITION_NAMES.TAB
-          headerModel.value.eventHandlers.onNext()
-        }
+        (e.deltaX < 0 ? goPrev : goNext)()
       }, 1000, { leading: true, trailing: false })
       const onWheelHandler = (e) => {
         e.preventDefault()
         throttleWheel(e)
       }
-
 
       // GDatePicker -> Body -> Date Table render function
       function addRangeClass(rows) {
@@ -300,7 +294,7 @@
                 return
               onWheelHandler(e)
             } }>
-              <transition name={transitionName.value}>
+              <transition name={tableTransitionName.value}>
                 <table key={datesModel.value.tableDate}>
                   <thead>
                   <tr>{(dayNameInWeek.value || []).map(dayName => <th>{dayName}</th>)}</tr>
@@ -317,7 +311,6 @@
             </div>)
       }
 
-
       // Month
       const monthTableClasses = computed(() => {
         return {
@@ -333,7 +326,7 @@
             return
           onWheelHandler(e)
         } }>
-          <transition name={transitionName.value}>
+          <transition name={tableTransitionName.value}>
           <table key={monthsModel.value.tableDate}>
           <tbody>
           {

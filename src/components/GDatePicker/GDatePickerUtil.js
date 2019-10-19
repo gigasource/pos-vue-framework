@@ -1,4 +1,4 @@
-import { computed, reactive, watch } from '@vue/composition-api'
+import { computed, reactive, watch, toRefs } from '@vue/composition-api'
 import { createNativeLocaleFormatter, daysInMonth, pad, sanitizeDateString } from './utils';
 import dateFilter from './dateFilter'
 import { EVENT_NAMES as YEAR_PICKER_EVENTS } from './Years/GDatePickerYearsUtil'
@@ -514,7 +514,7 @@ export default (props, context) => {
   validateValueFn()
   setInputDateFn()
 
-  return {
+  let a =  {
     title: _getTitleModel(props, state, formatFn),
     yearModel: _getYearModel({
       props, state, tableYear, tableMonth
@@ -541,4 +541,6 @@ export default (props, context) => {
     }),
     state
   }
+
+  return a;
 }

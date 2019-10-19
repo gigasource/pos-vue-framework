@@ -80,8 +80,8 @@
       <h2>Month picker</h2>
       <div style="display: flex">
         <div>
-          <h4>Single select</h4>
-          <g-date-picker type="month" v-model="monthSelect" scrollable></g-date-picker>
+          <h4>Single select, scrollable</h4>
+          <g-date-picker type="month" v-model="monthSelect" scrollable :landscape="landscape"></g-date-picker>
         </div>
 
         <div>
