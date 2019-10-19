@@ -6,9 +6,9 @@
         <g-date-picker
             no-title
             range
-            :value="state.range"
+            :value="datePickerState.range"
             :type="'date'"
-            :max="state.range[1]"
+            :max="datePickerState.range[1]"
             v-on="startRangeEventHandler"/>
       </div>
 
@@ -17,8 +17,8 @@
         <g-date-picker
             no-title
             range
-            :value="state.range"
-            :min="state.range[0]"
+            :value="datePickerState.range"
+            :min="datePickerState.range[0]"
             :type="'date'"
             v-on="endRangeEventHandler"/>
       </div>
@@ -37,19 +37,19 @@
     components: { GDatePicker },
     props: {},
     setup() {
-      const state = reactive({
+      const datePickerState = reactive({
         range: ['2019-01-10', '2019-01-20'],
       })
 
       const startRangeEventHandler = {
         [EVENT_NAMES.INPUT]: (range) => {
-          state.range = [range[0], state.range[1]]
+          datePickerState.range = [range[0], datePickerState.range[1]]
         }
       }
 
       const endRangeEventHandler = {
         [EVENT_NAMES.INPUT]: (range) => {
-          state.range = [state.range[0], range[range.length-1]]
+          datePickerState.range = [datePickerState.range[0], range[range.length-1]]
         }
       }
 
@@ -59,12 +59,12 @@
       const descOrder = (a, b) => a > b ? 1 : -1
 
       const selectedRanges = computed(() => {
-        const [rangeFrom, rangeTo] = [state.range[0], state.range[1]].map(x => new Date(`${x}T00:00:00+00:00`)).sort(descOrder)
+        const [rangeFrom, rangeTo] = [datePickerState.range[0], datePickerState.range[1]].map(x => new Date(`${x}T00:00:00+00:00`)).sort(descOrder)
         return (Math.ceil((rangeTo.getTime() - rangeFrom.getTime()) / TICKS_PER_DAY) + 1) + ' selected'
       })
 
       return {
-        state,
+        datePickerState,
         selectedRanges,
         startRangeEventHandler,
         endRangeEventHandler

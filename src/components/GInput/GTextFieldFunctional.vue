@@ -144,7 +144,7 @@
 				inputErrStyles,
 				//value
 				internalValue,
-				//calculated state
+				//calculated datePickerState
 				isLabelActive,
 				isFocused,
 				isDirty,

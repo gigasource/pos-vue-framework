@@ -4,9 +4,9 @@
   import { TRANSITION_NAMES } from './logic/utils'
   import { getHeaderFormatterFn, getNavigationState } from './logic/GDatePickerHeaderUtil'
   import { getYearRange } from './logic/GDatePickerYearsUtil'
-  import { getDates, getDayNameInWeek } from './logic/GDatePickerDateTableUtil'
+  import { getDatesInMonth, getDayNameInWeek } from './logic/GDatePickerDateTableUtil'
   import { getMonths } from './logic/GDatePickerMonthTableUtil'
-  import GDatePickerUtil from './logic/GDatePickerUtil'
+  import GDatePickerUtil, { DATE_PICKER_TYPE } from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
 
   export default {
@@ -107,163 +107,146 @@
     },
     setup(props, context) {
       const {
-        title,
+        titleModel,
         yearModel,
-        header: headerModel,
-        dates: datesModel,
-        months: monthsModel,
-        state,
+        headerModel,
+        dateTableModel,
+        monthTableModel,
+        datePickerState,
       } = GDatePickerUtil(props, context)
 
       // Title render function
       const titleClasses = computed(() => ({
         'g-date-picker-title': true,
-        'g-date-picker-title--disabled': title.value.disabled
+        'g-date-picker-title--disabled': props.disabled
       }))
-      const yearTitleClass = computed(() => ([{
+      const titleYearContentClass = computed(() => ({
         'g-picker__title__btn': true,
-        'g-picker__title__btn--readonly': title.value.readonly,
         'g-picker__title__btn--active': true,
+        'g-picker__title__btn--readonly': props.readonly,
         'g-date-picker-title__year': true
-      }]))
-      const dateTitleClass = computed(() => ({
+      }))
+      const titleDateContentClass = computed(() => ({
         'g-picker__title__btn': true,
-        'g-picker__title__btn--readonly': title.value.readonly,
+        'g-picker__title__btn--readonly': props.readonly,
         'g-date-picker-title__date': true
       }))
-
       function datePickerTitleRenderFn() {
         return (<div class={titleClasses.value}>
-          <div class={yearTitleClass.value}
-               v-on:click={title.value.eventHandlers.click}>
-            {title.value.year}
+          <div class={titleYearContentClass.value}
+               v-on:click={ e => titleModel.value.on.yearClicked(e) }>
+            { titleModel.value.year }
           </div>
-          <div class={dateTitleClass.value}>
+          <div class={titleDateContentClass.value}>
             <transition name={TRANSITION_NAMES.PICKER}>
-              <div key={title.value.date}
-                   domPropsInnerHTML={title.value.date}/>
+              <div key={titleModel.value.date}
+                   domPropsInnerHTML={ titleModel.value.date }/>
             </transition>
           </div>
         </div>)
       }
 
-      // years list render function
-      const yearsData = getYearRange(yearModel)
-
+      // year list
       function yearListRenderFn() {
         return <ul class="g-date-picker-years" ref="years">{
-          yearsData.value.map((year) => (
+          yearModel.value.years.map(year => (
               <li
-                  key={year}
-                  class={{ active: parseInt(yearModel.value.value) === year }}
-                  v-on:click_stop={() => yearModel.value.eventHandlers.yearClicked(year)}>
-                {year}
+                  key={ year }
+                  class={{ 'active': parseInt(yearModel.value.selectedYear) === year }}
+                  v-on:click_stop={() => yearModel.value.on.yearClicked(year)}>
+                { year }
               </li>
           ))
         }</ul>
       }
 
-      // GDatePicker -> Body -> Navigation render function
-      const tableTransitionName = ref('')
+      // GDatePicker -> Body -> Header render function
+      const transition = ref('')
       const goPrev = () => {
-        tableTransitionName.value = TRANSITION_NAMES.REVERSE_TAB;
-        headerModel.value.eventHandlers.onPrev()
+        transition.value = TRANSITION_NAMES.REVERSE_TAB;
+        headerModel.value.on.prevClicked()
       }
       const goNext = () => {
-        tableTransitionName.value = TRANSITION_NAMES.TAB
-        headerModel.value.eventHandlers.onNext()
+        transition.value = TRANSITION_NAMES.TAB
+        headerModel.value.on.nextClicked()
       }
-      const headerCssClasses = computed(() => {
-        return {
-          'g-date-picker-header': true,
-          'g-date-picker-header--disabled': headerModel.value.disabled
-        }
-      })
-      const headerContentCssClass = computed(() => {
-        return {
-          'g-date-picker-header__value': true,
-          'g-date-picker-header__value--disabled': headerModel.value.disabled
-        }
-      })
-      const headerFormatter = getHeaderFormatterFn(headerModel)
-      const { canGoPrev, canGoNext } = getNavigationState(headerModel)
-
+      const headerCssClasses = computed(() => ({
+        'g-date-picker-header': true,
+        'g-date-picker-header--disabled': props.disabled
+      }))
+      const headerContentCssClass = computed(() => ({
+        'g-date-picker-header__value': true,
+        'g-date-picker-header__value--disabled': props.disabled
+      }))
       function headerRenderFn() {
         return (
             <div class={headerCssClasses.value}>
               <div class={headerContentCssClass.value}>
-                <transition name={tableTransitionName.value}>
-                  <div key={headerModel.value.value}>
+                <transition name={transition.value}>
+                  <div key={headerModel.value.content}>
                     <button
                         type="button"
-                        v-on:click={() => {
-                          headerModel.value.eventHandlers.onHeaderClicked()
+                        v-on:click_stop={() => {
+                          headerModel.value.on.headerClicked()
                         }}>
-                      {headerFormatter.value(headerModel.value.value)}
+                      { headerModel.value.content }
                     </button>
                   </div>
                 </transition>
               </div>
               <button
                   class="g-date-picker-header__prev-button"
-                  disabled={!canGoPrev.value}
-                  v-on:click={() => goPrev()}></button>
+                  disabled={!headerModel.value.canGoPrev}
+                  v-on:click_stop={() => goPrev()}></button>
               <button
                   class="g-date-picker-header__next-button"
-                  disabled={!canGoNext.value}
-                  v-on:click={() => goNext()}></button>
+                  disabled={!headerModel.value.canGoNext}
+                  v-on:click_stop={() => goNext()}></button>
             </div>
         )
       }
 
-      // wheel event for date/month table
-      let throttleWheel = _.throttle((e) => {
-        (e.deltaX < 0 ? goPrev : goNext)()
-      }, 1000, { leading: true, trailing: false })
+      // GDatePicker -> Body -> Date/Months Table
+      // 1> wheel event
+      let throttleWheel = _.throttle(e => (e.deltaX < 0 ? goPrev : goNext)(), 1000, { leading: true, trailing: false })
       const onWheelHandler = (e) => {
         e.preventDefault()
+        if (props.disabled || !props.scrollable) {
+          return
+        }
         throttleWheel(e)
       }
 
-      // GDatePicker -> Body -> Date Table render function
-      function addRangeClass(rows) {
-        _.forEach(rows, row => {
-          _.forEach(row, date => {
-            if (date.isRangeStart) {
-              date.class['g-table-item--start-range'] = true
-            } else if (date.isRangeEnd) {
-              date.class['g-table-item--end-range'] = true
-            } else if (date.isInRange) {
-              date.class['g-table-item--in-range'] = true
-            }
+      // 2> GDatePicker / Body / DateTable render function
+      const datePickerClasses = computed(() => ({
+        'g-date-picker-table': true,
+        'g-date-picker-table--date': true,
+        'g-date-picker-table--disabled': props.disabled
+      }))
+      function addRangeClass(dateRows) {
+        if (props.range) {
+          _.forEach(dateRows, dateRow => {
+            _.forEach(dateRow, date => {
+              if (date.isRangeStart) {
+                date.class['g-table-item--start-range'] = true
+              } else if (date.isRangeEnd) {
+                date.class['g-table-item--end-range'] = true
+              } else if (date.isInRange) {
+                date.class['g-table-item--in-range'] = true
+              }
+            })
           })
-        })
-        return rows
-      }
-
-      const datePickerClasses = computed(() => {
-        return {
-          'g-date-picker-table': true,
-          'g-date-picker-table--date': true,
-          'g-date-picker-table--disabled': datesModel.value.disabled
         }
-      })
-      const dayNameInWeek = getDayNameInWeek(datesModel.value)
-      const dateRows = computed(() => {
-        // add range classes to date object if props.range is provided
-        const rows = getDates(datesModel.value, context).value
-        return datesModel.value.range ? addRangeClass(rows) : rows
-      })
-
-
-      function getDateButton(date) {
+        return dateRows
+      }
+      function dateButtonRenderFn(date) {
         return (<button
             type="button"
             class={['g-table-item', date.class]}
             style={date.style}
-            disabled={datesModel.value.disabled || !date.isAllowed}
-            v-on:click={() => datesModel.value.eventHandlers.onDateClicked(date)}
-            v-on:dblclick={() => datesModel.value.eventHandlers.onDateDoubleClicked(date)}>
+            disabled={props.disabled || !date.isAllowed}
+            v-on:click_stop={() => dateTableModel.value.on.onDateClicked(date)}
+            v-on:dblclick_stop={() => dateTableModel.value.on.onDateDoubleClicked(date)}>
           <div class="g-table-item__content">{date.content}</div>
           <div class="g-date-picker-table__events">
             {
@@ -272,36 +255,26 @@
           </div>
         </button>)
       }
-
-      function rowHeaderRenderFn(week) {
+      function weekRenderFn(week) {
         return (<small class="g-date-picker-table--date__week">
           {String(week).padStart(2, '0')}
         </small>)
       }
-
-      function getDateTds(date) {
-        return <td>{date.isWeek ? rowHeaderRenderFn(date.value) : (date.isBlank ? '' : getDateButton(date))}</td>
+      function dateTableDataRenderFn(date) {
+        return <td>{date.isWeek ? weekRenderFn(date.value) : (date.isBlank ? '' : dateButtonRenderFn(date))}</td>
       }
-
-      let onWheelByDateTable = (e) => {
-        if (datesModel.value.disabled || !props.scrollable) {
-          return
-        }
-        onWheelHandler(e)
-      };
-
       function dateTableRenderFn() {
         return (
-            <div class={datePickerClasses.value} v-on:wheel={onWheelByDateTable}>
-              <transition name={tableTransitionName.value}>
-                <table key={datesModel.value.tableDate}>
+            <div class={datePickerClasses.value} v-on:wheel_stop={onWheelHandler}>
+              <transition name={transition.value}>
+                <table key={dateTableModel.value.tableDate}>
                   <thead>
-                  <tr>{(dayNameInWeek.value || []).map(dayName => <th>{dayName}</th>)}</tr>
+                  <tr>{dateTableModel.value.dayNames.map(dayName => <th>{dayName}</th>)}</tr>
                   </thead>
                   <tbody>
                   {
-                    (dateRows.value || []).map(dateRow => <tr>
-                      {dateRow.map(date => getDateTds(date))}
+                    addRangeClass(dateTableModel.value.dateRows).map(dateRow => <tr>
+                      {dateRow.map(date => dateTableDataRenderFn(date))}
                     </tr>)
                   }
                   </tbody>
@@ -310,28 +283,19 @@
             </div>)
       }
 
-      // Month
+      // 3> GDatePicker / Body / MonthTable
       const monthTableClasses = computed(() => ({
         'g-date-picker-table': true,
         'g-date-picker-table--month': true,
-        'g-date-picker-table--disabled': monthsModel.value.disabled
+        'g-date-picker-table--disabled': props.disabled
       }))
-
-      let onWheelByMonthTable = (e) => {
-        if (monthsModel.value.disabled || !props.scrollable) {
-          return
-        }
-        onWheelHandler(e)
-      };
-
       function monthTableRenderFn() {
-        const monthRows = getMonths(monthsModel.value, context)
-        return (<div class={monthTableClasses.value} v-on:wheel={onWheelByMonthTable}>
-          <transition name={tableTransitionName.value}>
-            <table key={monthsModel.value.tableDate}>
+        return (<div class={monthTableClasses.value} v-on:wheel={onWheelHandler}>
+          <transition name={transition.value}>
+            <table key={monthTableModel.value.tableDate}>
               <tbody>
               {
-                (monthRows.value || []).map((monthRow, rowIndex) => {
+                monthTableModel.value.monthRows.map((monthRow, rowIndex) => {
                   return <tr key={rowIndex}>
                     {
                       monthRow.map(monthItem =>
@@ -340,8 +304,10 @@
                                 type="button"
                                 class={['g-table-item', monthItem.class]}
                                 style={monthItem.style}
-                                disabled={monthsModel.value.disabled || !monthItem.isAllowed}
-                                v-on:click={() => monthsModel.value.eventHandlers.onMonthClicked(monthItem.value)}>
+                                disabled={props.disabled || !monthItem.isAllowed}
+                                v-on:click_stop={() => monthTableModel.value.on.monthClicked(monthItem.value)}
+                                v-on:dblclick_stop={() => monthTableModel.value.on.monthDoubleClicked(monthItem.value)}
+                            >
                               <div class="g-table-item__content">
                                 {monthItem.formattedValue}
                               </div>
@@ -360,12 +326,12 @@
 
       // date/month table render function
       function dateMonthTableRenderFn() {
-        return datesModel.value.show ? dateTableRenderFn() : monthTableRenderFn()
+        return datePickerState.activePicker === DATE_PICKER_TYPE.DATE ? dateTableRenderFn() : monthTableRenderFn()
       }
 
       // date picker body render function
       function datePickerBodyRenderFn() {
-        return yearModel.value.show ? yearListRenderFn() : [headerRenderFn(), dateMonthTableRenderFn()]
+        return datePickerState.activePicker === DATE_PICKER_TYPE.YEAR ? yearListRenderFn() : [headerRenderFn(), dateMonthTableRenderFn()]
       }
 
       // datepicker render function
@@ -380,7 +346,7 @@
               <template slot="title">
                 {datePickerTitleRenderFn()}
               </template>
-              <div key={state.activePicker}>
+              <div key={datePickerState.activePicker}>
                 {datePickerBodyRenderFn()}
               </div>
               <template slot="actions">
@@ -391,11 +357,6 @@
       }
     }
   }
-
-  // TODO
-  // 1. Daynames doesn't change when firstDayOfWeek change
-  // 2. Show current doesn't work
-  // 3.
 </script>
 <style scoped lang="scss">
   @import "../../style/variables";

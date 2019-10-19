@@ -18,11 +18,11 @@ function isMonthFormat(dateString) {
  * @param props
  * @returns {function(_inputDate: string): string} A function which format _inputDate string
  */
-export function getHeaderFormatterFn(headerModel) {
+export function getHeaderFormatterFn(props) {
   return computed(() => {
-    if (headerModel.value.format) {
-      return headerModel.value.format
-    } else if (isMonthFormat(headerModel.value.value)) {
+    if (props.format) {
+      return props.format
+    } else if (isMonthFormat(props.value)) {
       return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
     } else {
       return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
@@ -68,9 +68,9 @@ export const NAV = {
  * @param headerModel
  * @returns {{canGoNext: Ref<any>, canGoPrev: Ref<any>}}
  */
-export const getNavigationState = (headerModel) => {
+export const getNavigationState = (props) => {
   return {
-    canGoPrev: computed(() => !(headerModel.value.disabled || (headerModel.value.min && calculateChange(headerModel.value.value, NAV.PREV) < headerModel.value.min))),
-    canGoNext: computed(() => !(headerModel.value.disabled || (headerModel.value.max && calculateChange(headerModel.value.value, NAV.NEXT) > headerModel.value.max)))
+    canGoPrev: computed(() => !(props.disabled || (props.min && calculateChange(props.value, NAV.PREV) < props.min))),
+    canGoNext: computed(() => !(props.disabled || (props.max && calculateChange(props.value, NAV.NEXT) > props.max)))
   }
 }

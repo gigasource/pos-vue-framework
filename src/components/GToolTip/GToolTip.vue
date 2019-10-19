@@ -4,7 +4,7 @@
       <div class="g-tooltip__content"
            :class="tooltipContentClasses"
            :style="tooltipContentStyle"
-           v-show="state.isActive"
+           v-show="datePickerState.isActive"
            ref="content">
         <!-- showSpeechBubble, speechBubbleClass, speechBubbleStyle exposed by tooltipSpeechBubble plugin -->
         <div v-if="showSpeechBubble"
@@ -140,9 +140,9 @@
       },
     },
     setup(props, context) {
-      // tooltip state
-      const state = reactive({ isActive: false })
-      const { runDelay } = delayable(props, state)
+      // tooltip datePickerState
+      const datePickerState = reactive({ isActive: false })
+      const { runDelay } = delayable(props, datePickerState)
       const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
@@ -181,7 +181,7 @@
           // default behavior - open on click
           listeners.click = (e/*: MouseEvent*/) => {
             updateDimensions()
-            state.isActive = !state.isActive
+            datePickerState.isActive = !datePickerState.isActive
           }
         }
 
@@ -196,7 +196,7 @@
         if (props.transition) {
           return props.transition
         }
-        return state.isActive ? TRANSITION_DEFAULT_ACTIVE : TRANSITION_DEFAULT_DEACTIVE
+        return datePickerState.isActive ? TRANSITION_DEFAULT_ACTIVE : TRANSITION_DEFAULT_DEACTIVE
       })
 
       //// LIFECYCLE HOOK ////
@@ -215,7 +215,7 @@
 
       // template data
       return {
-        state,
+        datePickerState,
         tooltipContentClasses,
         tooltipContentStyle,
         transitionName,

@@ -55,31 +55,6 @@ export const getDayNameInWeek = (props) => {
 /**
  *
  * @param props
- * @param context
- * @returns {{onWheel: onWheel}}
- */
-export const getDateTableEvents = (props, context) => {
-  return {
-    onWheel: (e) => {
-      if (!props.disabled && props.scrollable) {
-        e.preventDefault()
-        context.emit(EVENT_NAMES.UPDATE_TABLE_DATE, calculateTableDate(props, e.deltaY))
-      }
-    }
-  }
-}
-
-/**
- *
- * @param props
- * @param delta
- * @returns {string}
- */
-export const calculateTableDate = (props, delta) => monthChange(props.tableDate, Math.sign(delta || 1))
-
-/**
- *
- * @param props
  * @returns {Ref<any>}
  * @private
  */
@@ -223,7 +198,7 @@ export function _addRangeInformation(dateItem, props, date) {
  * @param context
  * @returns {Ref<any>}
  */
-export const getDates = (props, context) => {
+export const getDatesInMonth = (props, context) => {
   const { displayedMonth, displayedYear } = getDisplayed(props)
   const isDateAvailable = dateFilter(props)
   const dateFormatter = _getDateFormatter(props)

@@ -16,11 +16,11 @@ export const EVENT_NAMES = { INPUT: 'input' }
  *  props = { value: 1990 } => output [1890, .., 2090]
  *  props = { value: 1990, min: 1990 } => output [1990, ..., 2090]
  */
-export function getYearRange(yearModel, currentYearOffset = 100) {
+export function getYearRange(props, currentYearOffset = 100) {
   return computed(() => {
     const currentYear = new Date().getFullYear()
-    const maxYear = yearModel.value.max ? parseInt(yearModel.value.max) : (currentYear + currentYearOffset)
-    const minYear = Math.min(maxYear, yearModel.value.min ? parseInt(yearModel.value.min) : (currentYear - currentYearOffset))
+    const maxYear = props.max ? parseInt(props.max) : (currentYear + currentYearOffset)
+    const minYear = Math.min(maxYear, props.min ? parseInt(props.min) : (currentYear - currentYearOffset))
     const years = []
     for (let year = maxYear; year >= minYear; year--) {
       years.push(year)
