@@ -1,19 +1,16 @@
-.g-container {
-  position: relative;
-}
-
-.g-padding {
-}
-
 .g-image {
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-color: #cccccc;
-  position: absolute;
-}
+  position: relative;
 
-.g-placeholder {
-  position: absolute;
+  &--content {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #cccccc;
+    position: absolute;
+  }
+
+  &--placeholder {
+    position: absolute;
+  }
 }
