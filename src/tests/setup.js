@@ -10,6 +10,11 @@ export function createElement() {
   }
 }
 
+export function setInputValue(input, value) {
+  input.value = value;
+  let event = new Event('input', { bubbles: true });
+  input.dispatchEvent(event);
+}
 import Vue from 'vue/dist/vue.common.js'
 import VueCompositionApi from '@vue/composition-api'
 // init plugin first
