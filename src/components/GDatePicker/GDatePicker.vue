@@ -1,5 +1,6 @@
 <script type="text/jsx">
 
+  import _ from 'lodash'
   import GDatePickerUtil from './GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
   //
@@ -7,7 +8,7 @@
   import { reactive, computed, watch, ref } from '@vue/composition-api'
   //
   import { getYearRange } from './Years/GDatePickerYearsUtil';
-  import { getHeaderFormatter, getNavigationState } from './Header/GDatePickerHeaderUtil';
+  import { getHeaderFormatterFn, getNavigationState, NAV } from './Header/GDatePickerHeaderUtil';
   import { getDates, getDateTableEvents, getDayNameInWeek } from './Table/DateTable/GDatePickerDateTableUtil';
   import { getMonths, getMonthTableEvents } from './Table/MonthTable/GDatePickerMonthTableUtil';
 
@@ -155,8 +156,6 @@
         </div>)
       }
 
-
-
       // years list render function
       const yearsData = getYearRange(yearModel.value)
       function yearListRenderFn() {
@@ -172,12 +171,7 @@
         })
         return <ul class="g-date-picker-years" ref="years">{yearItems}</ul>
       }
-
-
-
       const transitionName = ref('')
-
-
       // GDatePicker -> Body -> Navigation render function
       const headerNavigationState = reactive({ isReversing: false })
       watch(() => headerModel.value.value, (newVal, oldVal) => {
@@ -195,8 +189,8 @@
           'g-date-picker-header__value--disabled': headerModel.value.disabled
         }
       })
-      const headerFormatter = getHeaderFormatter(headerModel.value)
       const { canGoPrev, canGoNext } = getNavigationState(headerModel.value)
+      const headerFormatter = getHeaderFormatterFn(headerModel.value, state)
       function headerRenderFn() {
         return (
             <div class={headerCssClasses.value}>
@@ -205,8 +199,10 @@
                   <div key={headerModel.value.value}>
                     <button
                         type="button"
-                        v-on:click={() => headerModel.value.eventHandlers.onHeaderClicked()}>
-                      {headerFormatter(headerModel.value.value)}
+                        v-on:click={() => {
+                          headerModel.value.eventHandlers.onHeaderClicked()
+                        } }>
+                      {headerFormatter.value(headerModel.value.value)}
                     </button>
                   </div>
                 </transition>
@@ -227,6 +223,21 @@
                   } }></button>
             </div>
         )
+      }
+
+      // wheel event for date/month table
+      let throttleWheel = _.throttle((e) => {
+        if (e.deltaX < 0) {
+          transitionName.value = TRANSITION_NAMES.REVERSE_TAB;
+          headerModel.value.eventHandlers.onPrev()
+        } else {
+          transitionName.value = TRANSITION_NAMES.TAB
+          headerModel.value.eventHandlers.onNext()
+        }
+      }, 1000, { leading: true, trailing: false })
+      const onWheelHandler = (e) => {
+        e.preventDefault()
+        throttleWheel(e)
       }
 
 
@@ -258,8 +269,6 @@
         const rows = getDates(datesModel.value, context).value
         return datesModel.value.range ? addRangeClass(rows) : rows
       })
-      // TODO: Improve onwheel transition
-      const { onWheel: onDateTableWheel } = getDateTableEvents(datesModel.value, context)
       function rowHeaderRenderFn(week) {
         return (<small class="g-date-picker-table--date__week">
           {String(week).padStart(2, '0')}
@@ -286,7 +295,11 @@
       }
       function dateTableRenderFn() {
         return (
-            <div class={datePickerClasses.value} v-on:wheel={onDateTableWheel}>
+            <div class={datePickerClasses.value} v-on:wheel={ (e) => {
+              if (datesModel.value.disabled || !props.scrollable)
+                return
+              onWheelHandler(e)
+            } }>
               <transition name={transitionName.value}>
                 <table key={datesModel.value.tableDate}>
                   <thead>
@@ -305,10 +318,7 @@
       }
 
 
-
-      //
-      // GDatePicker -> Body -> Month Table render function
-      const { onWheel: onMonthTableWheel } = getMonthTableEvents(monthsModel.value, context)
+      // Month
       const monthTableClasses = computed(() => {
         return {
           'g-date-picker-table': true,
@@ -318,7 +328,11 @@
       })
       function monthTableRenderFn() {
         const monthRows = getMonths(monthsModel.value, context)
-        return (<div class={monthTableClasses.value} v-on:wheel={onMonthTableWheel}>
+        return (<div class={monthTableClasses.value} v-on:wheel={ (e) => {
+          if (monthsModel.value.disabled || !props.scrollable)
+            return
+          onWheelHandler(e)
+        } }>
           <transition name={transitionName.value}>
           <table key={monthsModel.value.tableDate}>
           <tbody>

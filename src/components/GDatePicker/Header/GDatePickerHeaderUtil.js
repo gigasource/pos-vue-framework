@@ -1,5 +1,6 @@
 import { computed } from '@vue/composition-api'
 import { monthChange, createNativeLocaleFormatter } from '../utils'
+import { DATE_PICKER_TYPE } from '../GDatePickerUtil';
 
 /**
  * Detect whether dateString is Month format or not
@@ -17,14 +18,16 @@ function isMonthFormat(dateString) {
  * @param props
  * @returns {function(_inputDate: string): string} A function which format _inputDate string
  */
-export function getHeaderFormatter(props) {
-  if (props.format) {
-    return props.format
-  } else if (isMonthFormat(String(props.value))) {
-    return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
-  } else {
-    return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
-  }
+export function getHeaderFormatterFn(props, state) {
+  return computed(() => {
+    if (props.format) {
+      return props.format
+    } else if (state.activePicker === DATE_PICKER_TYPE.DATE) {
+      return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
+    } else {
+      return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
+    }
+  })
 }
 
 /**
