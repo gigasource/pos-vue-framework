@@ -15,6 +15,7 @@
             <router-link to="/button">Button</router-link>
             <router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/image-demo">Image</router-link>
+            <router-link to="/icon-demo">Icon</router-link>
         </g-layout>
         <router-view></router-view>
     </div>
