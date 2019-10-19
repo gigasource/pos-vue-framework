@@ -12,7 +12,9 @@ import OverlayDemo from "../view/OverlayDemo";
 import DialogDemo from '../view/DialogDemo';
 import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
+import InputDemo from "../view/InputDemo";
 import TransitionDemo from '../view/TransitionDemo';
+import ListDemo from '../view/ListDemo';
 import ImageDemo from "../view/ImageDemo";
 
 const routes = [
@@ -29,7 +31,9 @@ const routes = [
   { path: '/button', name: 'Button', component: ButtonDemo},
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
+  { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
+  { path: '/list-demo', name: 'List', component: ListDemo},
   { path: '/image-demo', name: 'Image', component: ImageDemo}
 ];
 
