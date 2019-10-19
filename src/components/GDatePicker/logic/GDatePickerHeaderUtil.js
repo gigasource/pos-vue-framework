@@ -1,6 +1,6 @@
 import { computed } from '@vue/composition-api'
-import { monthChange, createNativeLocaleFormatter } from '../utils'
-import { DATE_PICKER_TYPE } from '../GDatePickerUtil';
+import { monthChange, createNativeLocaleFormatter } from './utils'
+import { DATE_PICKER_TYPE } from './GDatePickerUtil';
 
 /**
  * Detect whether dateString is Month format or not

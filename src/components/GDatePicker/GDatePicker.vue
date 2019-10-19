@@ -1,16 +1,13 @@
 <script type="text/jsx">
-
   import _ from 'lodash'
-  import GDatePickerUtil from './GDatePickerUtil'
+  import { computed, ref } from '@vue/composition-api'
+  import { TRANSITION_NAMES } from './logic/utils'
+  import { getHeaderFormatterFn, getNavigationState } from './logic/GDatePickerHeaderUtil'
+  import { getYearRange } from './logic/GDatePickerYearsUtil'
+  import { getDates, getDayNameInWeek } from './logic/GDatePickerDateTableUtil'
+  import { getMonths } from './logic/GDatePickerMonthTableUtil'
+  import GDatePickerUtil from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
-  //
-  import { TRANSITION_NAMES } from './utils';
-  import { reactive, computed, watch, ref } from '@vue/composition-api'
-  //
-  import { getYearRange } from './Years/GDatePickerYearsUtil';
-  import { getHeaderFormatterFn, getNavigationState, NAV } from './Header/GDatePickerHeaderUtil';
-  import { getDates, getDateTableEvents, getDayNameInWeek } from './Table/DateTable/GDatePickerDateTableUtil';
-  import { getMonths, getMonthTableEvents } from './Table/MonthTable/GDatePickerMonthTableUtil';
 
   export default {
     name: 'GDatePicker',
@@ -117,9 +114,6 @@
         months: monthsModel,
         state,
       } = GDatePickerUtil(props, context)
-
-
-
 
       // Title render function
       const titleClasses = computed(() => {
@@ -389,5 +383,273 @@
     }
   }
 </script>
-<style scoped>
+<style scoped lang="scss">
+  @import "../../style/main";
+
+  /*TITLE*/
+  .g-date-picker-title {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+
+    &__year {
+      display: inline-flex;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    &__date {
+      font-size: 28px;
+      text-align: left;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 8px;
+      margin-bottom: -8px;
+    }
+
+    &--disabled {
+      pointer-events: none;
+    }
+  }
+
+  /*YEAR PICKER*/
+  .g-date-picker-years {
+    font-size: 16px;
+    font-weight: 400;
+    height: 298px;
+    list-style-type: none;
+    overflow: auto;
+    text-align: center;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    li {
+      cursor: pointer;
+      padding: 8px 0;
+      transition: none;
+      width: 100%;
+      display: inline-block;
+
+      &.active {
+        font-size: 26px;
+        font-weight: 500;
+        padding: 10px 0;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.12);
+      }
+    }
+  }
+
+  /*HEADER*/
+  .g-date-picker-header {
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    &--disabled {
+      pointer-events: none;
+    }
+
+    &__value {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+
+      div {
+        transition: $primary-transition;
+        width: 100%;
+      }
+
+      button {
+        cursor: pointer;
+        font-weight: bold;
+        outline: none;
+        padding: 0.5rem;
+        transition: $primary-transition;
+        background-color: transparent;
+        border-style: none;
+        color: rgb(83, 83, 83);
+      }
+    }
+
+    %navigate_button {
+      height: 24px;
+      width: 24px;
+      border: none;
+      background-color: transparent;
+    }
+
+    &__prev-button {
+      @extend %navigate_button;
+      margin-right: 24px;
+
+      &::after {
+        content: '\F141';
+        font-family: "Material Design Icons";
+      }
+    }
+
+    &__next-button {
+      @extend %navigate_button;
+
+      &::after {
+        content: '\F142';
+        font-family: "Material Design Icons";
+      }
+    }
+  }
+
+
+
+  /*TABLE*/
+  $highlightedItem: rgb(231, 215, 253);
+
+  .g-date-picker-table {
+    position: relative;
+    padding: 0 12px;
+    height: 254px;
+
+    table {
+      transition: $primary-transition;
+      table-layout: fixed;
+      width: 100%;
+    }
+
+    tr {
+      height: 32px;
+    }
+
+    td, th {
+      text-align: center;
+      position: relative;
+    }
+
+    th {
+      font-size: 12px;
+    }
+
+    button {
+      background-color: transparent;
+      border-style: none;
+      color: inherit;
+      box-shadow: none;
+    }
+
+    &--date .g-btn {
+      height: 32px;
+      width: 32px;
+    }
+
+    .g-btn {
+      margin: 0;
+      z-index: auto;
+      font-size: 12px;
+      background-color: transparent;
+      border-style: none;
+      color: inherit;
+
+      &--active {
+        color: map-get($shades, 'white');
+      }
+
+      &--rounded {
+        border-radius: 28px;
+      }
+
+      &--outlined {
+        border: thin solid currentColor;
+      }
+
+      &--start-range {
+        position: relative;
+
+        &::after {
+          position: absolute;
+          content: '';
+          width: 50%;
+          height: 100%;
+          right: -3px;
+          background-color: $highlightedItem;
+          z-index: -1;
+        }
+      }
+
+      &--end-range {
+        position: relative;
+
+        &::after {
+          position: absolute;
+          content: '';
+          width: 50%;
+          height: 100%;
+          left: -3px;
+          background-color: $highlightedItem;
+          z-index: -1;
+        }
+      }
+
+      &--in-range {
+        background-color: $highlightedItem !important;
+        border-radius: 0 !important;
+        width: auto;
+
+        >.g-btn__content {
+          color: #535353;
+        }
+      }
+    }
+
+    &--disabled {
+      pointer-events: none;
+    }
+  }
+
+  .g-date-picker-table--date {
+    th {
+      padding: 8px 0;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.38);
+    }
+
+    td {
+      width: 32px;
+      padding: 2px 0;
+    }
+
+    & .g-date-picker-table__events {
+      bottom: 6px;
+      height: 8px;
+      left: 0;
+      position: absolute;
+      text-align: center;
+      white-space: pre;
+      width: 100%;
+
+      > div {
+        border-radius: 50%;
+        display: inline-block;
+        height: 8px;
+        margin: 0 1px;
+        width: 8px;
+      }
+    }
+  }
+
+  .g-date-picker-table--month {
+    td {
+      width: 33.333333%;
+      height: 56px;
+
+      .g-btn {
+        width: 100%;
+      }
+    }
+  }
 </style>

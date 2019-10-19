@@ -28,7 +28,7 @@
 
 <script>
   import GDatePicker from '../GDatePicker/GDatePicker'
-  import { EVENT_NAMES } from '../GDatePicker/GDatePickerUtil';
+  import { EVENT_NAMES } from '../GDatePicker/logic/GDatePickerUtil';
   import { reactive, computed } from '@vue/composition-api';
 
 

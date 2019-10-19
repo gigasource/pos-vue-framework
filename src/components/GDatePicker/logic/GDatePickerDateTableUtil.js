@@ -1,15 +1,15 @@
 import { computed } from '@vue/composition-api'
-import { createNativeLocaleFormatter, daysInMonth as _daysInMonth, isLeapYear, monthChange, pad } from '../../utils';
-import { createRange } from '../../../../utils/helpers';
-import { setBackgroundColor, setTextColor } from '../../../../mixins/colorable'
+import { createNativeLocaleFormatter, daysInMonth as _daysInMonth, isLeapYear, monthChange, pad } from './utils';
+import { createRange } from '../../../utils/helpers';
+import { setBackgroundColor, setTextColor } from '../../../mixins/colorable'
 import {
   getDisplayed,
   getBtnActiveClass,
   getBtnDisabledClass,
   getBtnOutlinedClass,
   getBtnRoundedClass, isSelected, isCurrent
-} from '../date-picker-table'
-import dateFilter from '../../dateFilter'
+} from './date-picker-table'
+import dateFilter from './dateFilter'
 
 export const EVENT_NAMES = {
   INPUT: 'input',

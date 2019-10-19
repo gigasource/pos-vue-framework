@@ -1,10 +1,10 @@
 import { computed, reactive, watch, toRefs } from '@vue/composition-api'
 import { createNativeLocaleFormatter, daysInMonth, pad, sanitizeDateString } from './utils';
 import dateFilter from './dateFilter'
-import { EVENT_NAMES as YEAR_PICKER_EVENTS } from './Years/GDatePickerYearsUtil'
-import { EVENT_NAMES as MONTH_TABLE_EVENTS } from './Table/MonthTable/GDatePickerMonthTableUtil'
-import { EVENT_NAMES as DATE_TABLE_EVENTS } from './Table/DateTable/GDatePickerDateTableUtil'
-import { calculateChange, NAV } from './Header/GDatePickerHeaderUtil';
+import { EVENT_NAMES as YEAR_PICKER_EVENTS } from './GDatePickerYearsUtil'
+import { EVENT_NAMES as MONTH_TABLE_EVENTS } from './GDatePickerMonthTableUtil'
+import { EVENT_NAMES as DATE_TABLE_EVENTS } from './GDatePickerDateTableUtil'
+import { calculateChange, NAV } from './GDatePickerHeaderUtil';
 
 export const EVENT_NAMES = {
   INPUT: 'input',
