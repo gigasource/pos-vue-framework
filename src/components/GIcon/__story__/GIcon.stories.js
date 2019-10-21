@@ -12,5 +12,5 @@ export const iconBasic = () => ({
   template: `<g-icon>fas fa-cat</g-icon>`,
 })
 
-import Vue from 'vue/dist/vue.common.js'
+// import Vue from 'vue/dist/vue.common.js'
 

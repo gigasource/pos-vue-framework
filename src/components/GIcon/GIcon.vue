@@ -1,10 +1,12 @@
 <template>
     <div>
-        <i v-if="_tag.i" :class="iconClass" :style="iconStyle">{{content}}</i>
-        <svg v-if="_tag.svg" :class="iconClass" :style="iconStyle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <i v-if="_tag.i" :class="iconClass" :style="iconStyle" :aria-hidden="attributes.ariaHidden" :role="attributes.role">{{content}}</i>
+        <svg v-if="_tag.svg" :class="iconClass" :style="iconStyle" :aria-hidden="attributes.ariaHidden" :role="attributes.role"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 24 24">
             <path :d="icon" :fill="props.color"></path>
         </svg>
-        <component v-if="_tag.component" :is="_component" :class="iconClass" :style="iconStyle">
+        <component v-if="_tag.component" :is="_component" :class="iconClass" :style="iconStyle" :aria-hidden="attributes.ariaHidden" :role="attributes.role">
         </component>
         <slot v-if="con"></slot>
     </div>
@@ -66,8 +68,7 @@
         iconClass[iconType] = true
         iconClass[icon] = !isMaterialIcon
         iconStyle['fontSize'] = getSize(props)
-        iconStyle['color'] = props.color     // to do: add theme
-
+        iconStyle['color'] = props.color
         //self.$slots.default[0].text = ''   // Problem!!! Must delete slot node in template or content in component
         con = false
       }
@@ -81,7 +82,6 @@
         iconStyle['fontSize'] = _fontSize
         iconStyle['width'] = _fontSize
         iconStyle['height'] = _fontSize
-        //applyColors()                      //to do: add theme
         con = false
       }
 
@@ -94,7 +94,6 @@
         let _fontSize = getSize(props)
         iconStyle['fontSize'] = _fontSize
         iconStyle['height'] = _fontSize
-        //this.applyColors(data)
 
         _component = icon.component
         // data.props = icon.props
@@ -109,21 +108,21 @@
       iconClass['g-icon--left'] = props.left
       iconClass['g-icon--right'] = props.right
       iconClass['g-icon--link'] = self.$listeners.click
-      // attrs: {
-      //   'aria-hidden': !hasClickListener,
-      //   role: hasClickListener ? 'button' : null,
-      //   ...this.attrs$,
-      // },
-
+      let attributes = {
+        ariaHidden: self.$listeners.click,
+        role: self.$listeners.click ? 'button' : null
+      }
       return {
         props,
         iconClass,
         iconStyle,
+        attributes,
         _tag,
         content,
         icon,
         con,
         _component,
+
       }
     }
   }
@@ -181,37 +180,6 @@
     return '24px'
   }
 
-  // function applyColors (data) { // Color and themes
-  //   data.class = { ...data.class, ...this.themeClasses }
-  //   this.setTextColor(this.color, data)
-  // }
-
-  // function makeWatcher (property) {
-  //   return function (this, val, oldVal) {
-  //     for (const attr in oldVal) {
-  //       if (!Object.prototype.hasOwnProperty.call(val, attr)) {
-  //         this.$delete(this.$data[property], attr)
-  //       }
-  //     }
-  //     for (const attr in val) {
-  //       this.$set(this.$data[property], attr, val[attr])
-  //     }
-  //   }
-  // }
-
-  // export default Vue.extend({
-  //   data: () => ({
-  //     attrs$: {} as Dictionary<string>,
-  //     listeners$: {} as Dictionary<Function | Function[]>,
-  //   }),
-  //
-  //   created () {
-  //     // Work around unwanted re-renders: https://github.com/vuejs/vue/issues/10115
-  //     // Make sure to use `attrs$` instead of `$attrs` (confusing right?)
-  //     this.$watch('$attrs', makeWatcher('attrs$'), { immediate: true })
-  //     this.$watch('$listeners', makeWatcher('listeners$'), { immediate: true })
-  //   },
-  // })
 </script>
 
 <style scoped>
