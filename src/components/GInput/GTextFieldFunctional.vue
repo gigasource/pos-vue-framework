@@ -18,6 +18,7 @@
 								 :label="label"
 								 v-model="internalValue"
 								 :placeholder="placeholder"
+								 :readonly="readOnly"
 								 ref="input"
 								 @change="onChange"
 								 @focus="onFocus"
@@ -181,7 +182,6 @@
       'tf__rounded': props.rounded,
       'tf__shaped': props.shaped,
       'tf__flat': props.flat,
-      'tf-wrapper-readonly': props.readOnly
     }))
   }
 
