@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import {computed, ref, watch} from "@vue/composition-api";
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -94,4 +95,20 @@ export function createSimpleFunctional (c, el = 'div', name) {
       return h(el, data, children);
     },
   })
+}
+export function getInternalValue(props, context) {
+  // text field internalValue
+  const rawInternalValue = ref(props.value || '');
+
+  watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
+
+  const internalValue = computed({
+    get: () => rawInternalValue.value,
+    set: (value) => {
+      rawInternalValue.value = value;
+      context.emit('input', rawInternalValue.value)
+    }
+  });
+
+  return internalValue;
 }

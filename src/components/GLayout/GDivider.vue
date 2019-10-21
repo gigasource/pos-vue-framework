@@ -6,7 +6,7 @@
   import { computed } from '@vue/composition-api';
 
   export default {
-    name: 'GDivider',
+     name: 'GDivider',
     props: {
       dashed: Boolean,
 			dotted: Boolean,
