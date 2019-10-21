@@ -151,11 +151,11 @@ export function _genEvents(props, date) {
  * @param date
  * @private
  */
-export function _addRangeInformation(dateItem, props, date) {
-  if (Array.isArray(props.value) && props.value.length > 1 && dateItem.isSelected) {
-    if (props.value[0] === date) {
+export function _addRangeInformation(dateItem, state, date) {
+  if (Array.isArray(state.selectedValues) && state.selectedValues.length > 1 && dateItem.isSelected) {
+    if (state.selectedValues[0] === date) {
       dateItem.isRangeStart = true
-    } else if (props.value[props.value.length - 1] === date) {
+    } else if (state.selectedValues[state.selectedValues.length - 1] === date) {
       dateItem.isRangeEnd = true
     } else {
       dateItem.isInRange = true
@@ -211,7 +211,7 @@ export const computedDatesInMonth = (props, state) =>
         }
 
         if (props.range) {
-          _addRangeInformation(dateItem, props, date)
+          _addRangeInformation(dateItem, state, date)
         }
 
         week.push(dateItem)

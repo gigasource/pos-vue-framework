@@ -11,9 +11,15 @@
           <h4>Multiple select</h4>
           <g-date-picker multiple v-model="multipleSelect" :current="current"></g-date-picker>
         </div>
+
         <div>
-          <h4>Range select</h4>
-          <g-date-picker range v-model="rangeSelect" full-width :current="current"></g-date-picker>
+          <h4>Range: width 300</h4>
+          <g-date-picker range v-model="rangeSelect" :current="current"></g-date-picker>
+        </div>
+
+        <div>
+          <h4>Range: full-width</h4>
+          <g-date-picker range v-model="rangeSelect2" full-width :current="current"></g-date-picker>
         </div>
       </div>
 
@@ -114,6 +120,7 @@
         singleSelect: new Date().toISOString().substr(0, 10),
         multipleSelect: [new Date().toISOString().substr(0, 10)],
         rangeSelect: [new Date().toISOString().substr(0, 10), new Date().toISOString().substr(0, 10)],
+        rangeSelect2: [new Date().toISOString().substr(0, 10), new Date().toISOString().substr(0, 10)],
         anotherOptionsModel: new Date(2020, 4, 6).toISOString().substr(0, 10),
         // months
         monthSelect: new Date().toISOString().substr(0, 10),

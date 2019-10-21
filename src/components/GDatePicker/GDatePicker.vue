@@ -208,16 +208,23 @@
                 'g-table-item--outlined': date.isCurrent && !date.isSelected
               }
 
-              const setColor = date.isSelected ? setBackgroundColor : setTextColor
-              const color = (date.isSelected || date.isCurrent) && (props.color || '')
-              setColor(color, date)
+              // range
+              date.backgroundClass = {
+                'g-table-item__background--start-range': date.isRangeStart,
+                'g-table-item__background--end-range': date.isRangeEnd,
+                'g-table-item__background--in-range': date.isInRange
+              }
 
-              if (date.isRangeStart) {
-                date.class['g-table-item--start-range'] = true
-              } else if (date.isRangeEnd) {
-                date.class['g-table-item--end-range'] = true
-              } else if (date.isInRange) {
-                date.class['g-table-item--in-range'] = true
+              // selected
+              const color = props.color || ''
+              if (!props.range) {
+                if (date.isSelected)
+                  setBackgroundColor(color, date)
+                else if (date.isCurrent)
+                  setTextColor(color, date)
+              } else {
+                if (date.isRangeStart || date.isRangeEnd)
+                  setBackgroundColor(color, date)
               }
             }
           })
@@ -226,7 +233,7 @@
         return dateRows
       }
       function dateButtonRenderFn(dateItem) {
-        return (<button
+        return ([<button
             type="button"
             class={['g-table-item', dateItem.class]}
             style={dateItem.style}
@@ -239,7 +246,7 @@
               (dateItem.events || []).map(event => <div class={event.class} style={event.style}></div>)
             }
           </div>
-        </button>)
+        </button>, <div class={['g-table-item__background', dateItem.backgroundClass]}></div>])
       }
       function weekRenderFn(week) {
         return (<small class="g-date-picker-table--date__week">
@@ -498,6 +505,10 @@
       font-size: 12px;
     }
 
+    td {
+      position: relative;
+    }
+
     button {
       background-color: transparent;
       border-style: none;
@@ -530,52 +541,36 @@
         border: thin solid currentColor;
       }
 
-      &--start-range {
-        position: relative;
-
-        &::after {
-          top: 0;
-          position: absolute;
-          content: '';
-          width: 50%;
-          height: 100%;
-          right: -3px;
-          background-color: $highlightedItem;
-          z-index: -1;
-        }
-      }
-
-      &--end-range {
-        position: relative;
-
-        &::after {
-          top: 0;
-          position: absolute;
-          content: '';
-          width: 50%;
-          height: 100%;
-          left: -3px;
-          background-color: $highlightedItem;
-          z-index: -1;
-        }
-      }
-
-      &--in-range {
-        background-color: $highlightedItem !important;
-        border-radius: 0 !important;
-        width: 100%;
-
-        > .g-table-item__content {
-          color: #535353;
-        }
-      }
-
       &--readonly {
         pointer-events: none;
       }
 
       &--disabled {
         color: rgba(0, 0, 0, 0.38);
+      }
+
+      &__background {
+        width: 100%;
+        top: 2px;
+        height: 32px;
+        position: absolute;
+        z-index: -1;
+
+        &--start-range {
+          background-color: $highlightedItem;
+          width: 50%;
+          right: 0;
+        }
+
+        &--end-range {
+          background-color: $highlightedItem;
+          width: 50%;
+          left: 0;
+        }
+
+        &--in-range {
+          background-color: $highlightedItem;
+        }
       }
     }
   }

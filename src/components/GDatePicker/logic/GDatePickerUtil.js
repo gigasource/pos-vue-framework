@@ -94,8 +94,10 @@ export function applyNewSelectedValue(props, state, newValue) {
     } else {
       if (state.selectedValues[0] > newValue) {
         state.selectedValues.unshift(newValue)
-      } else {
+      } else if (state.selectedValues[0] < newValue) {
         state.selectedValues.push(newValue)
+      } else { // equal, deselect
+        state.selectedValues = []
       }
     }
   } else if (props.multiple) {
