@@ -3,8 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Template</title>
-	<link rel="stylesheet" type="text/css" href="main.css">
+	<link href="https://fonts.googleapis.com/css?family=Muli:200,400,700&display=swap" rel="stylesheet">
 	<style>
+		input[type=text] {
+			outline: none;
+			border: transparent;
+			font-family: "Muli", sans-serif;
+		}
+
 		.tf-wrapper {
 			display: flex;
 			align-items: center;
@@ -59,6 +65,7 @@
 			transform-origin: top left;
 			transition: 0.4s ease-out;
 			pointer-events: none;
+			color: #3f51b5;
 		}
 
 		.tf-input {
@@ -791,11 +798,13 @@
 		<legend>Outlined</legend>
 
 		<div class="tf-wrapper tf__outlined">
-			<div class="tf-prepend__outer"></div>
+			<div class="tf-prepend__outer">
+			</div>
 			<fieldset>
 				<legend>Normal</legend>
 				<div class="tf">
-					<div class="tf-prepend__inner"></div>
+					<div class="tf-prepend__inner">
+					</div>
 					<input type="text" class="tf-input">
 					<label class="tf-label">Normal</label>
 					<div class="tf-append__inner"></div>
