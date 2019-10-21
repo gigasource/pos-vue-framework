@@ -5,11 +5,11 @@ import {
   _calculateTableDate,
   getMonthTableEvents,
   EVENT_NAMES,
-  _getMonthFormatter,
+  _computedMonthFormatFunc,
   _getClickEventHandler,
   _getDbClickEventHandler,
   _attachMonthItemEventHandlers,
-  _getMonthItemColor, getMonths,
+  _getMonthItemColor, computedMonthRows,
 } from '../GDatePickerMonthTableUtil'
 
 describe('/GDatePickerMonthTableUtil', () => {
@@ -108,19 +108,19 @@ describe('/GDatePickerMonthTableUtil', () => {
     })
   })
 
-  describe('_getMonthFormatter', () => {
+  describe('_computedMonthFormatFunc', () => {
     it('Should thrown exception if props is null or undefined', () => {
-      expect(() => _getMonthFormatter(null).value).toThrowError()
+      expect(() => _computedMonthFormatFunc(null).value).toThrowError()
     })
 
     it('Should return props.format if prop.format is provided', () => {
       let props = { format: 5 }
-      expect(_getMonthFormatter(props).value).toBe(props.format)
+      expect(_computedMonthFormatFunc(props).value).toBe(props.format)
 
       props = { format: () => {} }
-      expect(_getMonthFormatter(props).value).toBe(props.format)
+      expect(_computedMonthFormatFunc(props).value).toBe(props.format)
 
-      // TODO: See _getMonthFormatter TODO
+      // TODO: See _computedMonthFormatFunc TODO
     })
   })
 
@@ -231,13 +231,13 @@ describe('/GDatePickerMonthTableUtil', () => {
     })
   })
 
-  describe('getMonths', () => {
+  describe('computedMonthRows', () => {
     it('Should return month in a 2 dimension array [3x4]', () => {
       const year = '2010'
       const props = { tableDate: year }
       const rows = 4
       const columns = 3
-      const monthData = getMonths(props).value;
+      const monthData = computedMonthRows(props).value;
       expect(monthData.length).toBe(rows)
       for(let i=0; i<monthData.length; ++i) {
         expect(monthData[i].length).toBe(columns)

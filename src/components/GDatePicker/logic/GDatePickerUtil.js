@@ -1,11 +1,15 @@
-import { computed, reactive, watch, toRefs } from '@vue/composition-api'
-import { createNativeLocaleFormatter, daysInMonth, pad, sanitizeDateString } from './utils';
-import dateFilter from './dateFilter'
-import { EVENT_NAMES as YEAR_PICKER_EVENTS, getYearRange } from './GDatePickerYearsUtil'
-import { EVENT_NAMES as MONTH_TABLE_EVENTS, getMonths } from './GDatePickerMonthTableUtil'
-import { EVENT_NAMES as DATE_TABLE_EVENTS, getDatesInMonth, getDayNameInWeek } from './GDatePickerDateTableUtil'
-import { calculateChange, getHeaderFormatterFn, getNavigationState, NAV } from './GDatePickerHeaderUtil';
-import * as _ from 'lodash';
+import { computed, reactive } from '@vue/composition-api'
+import { createNativeLocaleFormatter, getCurrentDateISOFormat, pad, sanitizeDateString } from './utils';
+import { computedYearRange } from './YearsUtil'
+import { computedMonthRows } from './MonthTableUtil'
+import { computedDatesInMonth, computedDayNameInWeek } from './DateTableUtil'
+import {
+  calculateChange, computedContents,
+  computedFormattedContent,
+  _computedHeaderFormatFn,
+  computedNavigateStatus,
+  NAV
+} from './HeaderUtil';
 
 export const EVENT_NAMES = {
   INPUT: 'input',
@@ -17,127 +21,33 @@ export const EVENT_NAMES = {
 }
 
 /**
- * * Declare date picker type
- * 'date' : allow select year, month, date
- * 'month': allow select year, month
- * 'year' : allow to select year
- * @type {{DATE: string, MONTH: string, YEAR: string}}
- */
-export const DATE_PICKER_TYPE = {
-  DATE: 'date',
-  MONTH: 'month',
-  YEAR: 'year'
-}
-
-/**
  * boolean value indicate that whether user can select multiple day in date picker
  * its value is true when multiple or range option are provided
  * @param props
  * @returns {*}
  */
-export const _isMultiple = (props) => computed(() => props.multiple || props.range)
-/**
- * return last value of props.value if it's an array
- * otherwise, return props.value
- * @param props
- * @param isMultiple
- * @returns {*}
- */
-export const _lastValue = (props, isMultiple) => computed(() => isMultiple.value ? props.value[props.value.length - 1] : props.value)
-/**
- * Return selected months
- * @param props
- * @param isMultiple
- * @returns {Ref<any>}
- * @private
- */
-export const _selectedMonths = (props, isMultiple) => computed(() => {
-  if (!props.value || !props.value.length || props.type === DATE_PICKER_TYPE.MONTH) {
-    return props.value
-  } else if (isMultiple.value) {
-    return (props.value).map(val => val.substr(0, 7))
-  } else {
-    return (props.value).substr(0, 7)
-  }
-})
-/**
- * Return currentDay or currentMonth, or currentYear depend on picker type
- * @param props
- * @param state
- * @returns {Ref<any>}
- * @private
- */
-export const _currentDateMonth = (props) => computed(() => {
-  if (props.showCurrent) {
-    const now = new Date()
-    return sanitizeDateString(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`, props.type)
-  }
-})
-/**
- *
- * @param props
- * @param state
- * @returns {Ref<any>}
- * @private
- */
-export const _inputDate = (props, state) => computed(() => {
-  return props.type === DATE_PICKER_TYPE.DATE
-      ? `${state.inputYear}-${pad(state.inputMonth + 1)}-${pad(state.inputDay)}`
-      : `${state.inputYear}-${pad(state.inputMonth + 1)}`
-})
-/**
- *
- * @param props
- * @param state
- * @returns {{tableYear: Ref<any>, tableMonth: Ref<any>}}
- * @private
- */
-export const _getTableDateElement = (props, state) => {
-  return {
-    tableMonth: computed(() => Number((state.tableDate).split('-')[1]) - 1),
-    tableYear: computed(() => Number((state.tableDate).split('-')[0]))
-  }
-}
-/**
- * Return minimum month/year, maximum month/year if props.min or props.max exists
- *
- * @param props
- * @returns {{minYear: Ref<any>, maxYear: Ref<any>, minMonth: Ref<any>, maxMonth: Ref<any>}}
- * @private
- */
-export const _getDateBoundary = (props) => {
-  // return 'YYYY-MM' from props.min if props.min provided
-  const minMonth = computed(() => props.min ? sanitizeDateString(props.min, DATE_PICKER_TYPE.MONTH) : null)
-  // return 'YYYY-MM' from props.max if props.max provided
-  const maxMonth = computed(() => props.max ? sanitizeDateString(props.max, DATE_PICKER_TYPE.MONTH) : null)
-  // return 'YYYY' from props.min if props.min provided
-  const minYear = computed(() => props.min ? sanitizeDateString(props.min, DATE_PICKER_TYPE.YEAR) : null)
-  // return 'YYYY' from props.max if props.max provided
-  const maxYear = computed(() => props.max ? sanitizeDateString(props.max, DATE_PICKER_TYPE.YEAR) : null)
+export const _computedIsMultiple = (props) => computed(() => props.multiple || props.range)
 
-  return {
-    minMonth,
-    maxMonth,
-    minYear,
-    maxYear
-  }
-}
 /**
  * Title format
  * @param props
- * @param isMultiple
+ * @param cptIsMultiSelect
  * @param dateRanges
  * @returns {Ref<any>}
  * @private
  */
-export const _getTitleFormatterFn = (props, isMultiple, dateRanges) => {
-  const defaultTitleMultipleDateFormatter = computed(() => {
+export const _computedTitleFormatterFn = (props, cptIsMultiSelect) => computed(() => {
+  const defaultMultipleDateFormatter = computed(() => {
     return dates => {
-      if (isMultiple.value) {
+      if (cptIsMultiSelect.value) {
         if (Array.isArray(dates)) {
           if (props.multiple) {
+            // multiple selection mode
             return dates.length + ' selected'
           } else {
+            // range selection mode, try to count the number of date range
+            // TODO: We only need the number of days in range, not the date value
+            const dateRanges = _generateDateRange(props)
             return dateRanges.value.length + ' selected'
           }
         } else {
@@ -145,15 +55,14 @@ export const _getTitleFormatterFn = (props, isMultiple, dateRanges) => {
         }
       } else {
         if (Array.isArray(dates)) {
-          return defaultTitleDateFormatter.value(dates[0])
+          return defaultDateFormatter.value(dates[0])
         } else {
-          return defaultTitleDateFormatter.value(dates)
+          return defaultDateFormatter.value(dates)
         }
       }
     }
   })
-
-  const defaultTitleDateFormatter = computed(() => {
+  const defaultDateFormatter = computed(() => {
     const titleFormats = {
       year: { year: 'numeric', timeZone: 'UTC' },
       month: { month: 'long', timeZone: 'UTC' },
@@ -172,81 +81,35 @@ export const _getTitleFormatterFn = (props, isMultiple, dateRanges) => {
     return props.landscape ? landscapeFormatter : titleDateFormatter
   })
 
-  return computed(() => {
-    return {
-      year: props.yearFormat || createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
-      titleDate: props.titleDateFormat || (isMultiple.value ? defaultTitleMultipleDateFormatter.value : defaultTitleDateFormatter.value),
-    }
-  })
-}
-/**
- * Emit input event
- * @param props
- * @param context
- * @returns {Function}
- * @private
- */
-export const _emitInputFn = (props, context) => {
-  /**
-   * Emit input if datepicker in range selection mode
-   * @param props
-   * @param context
-   * @param newDate
-   * @private
-   */
-  const _emitInputRangeSelection = (newDate) => {
-    // contains 2 items (it's mean previous range)
-    // then we need to create new range
-    // => emit newInput as the first range boundary
-    // otherwise, emit newInput as the last boundary
-    const shouldCreateNewRange = (props.value.length === 2)
-    if (shouldCreateNewRange) {
-      context.emit(EVENT_NAMES.INPUT, [newDate])
+  return {
+    year: createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
+    date: props.titleDateFormat || (cptIsMultiSelect.value ? defaultMultipleDateFormatter.value : defaultDateFormatter.value),
+  }
+})
+
+export function applyNewSelectedValue(props, state, newValue) {
+  if (props.range) {
+    if (state.selectedValues.length !== 1) {
+      state.selectedValues = [newValue]
     } else {
-      context.emit(EVENT_NAMES.INPUT, [...props.value, newDate])
+      if (state.selectedValues[0] > newValue) {
+        state.selectedValues.unshift(newValue)
+      } else {
+        state.selectedValues.push(newValue)
+      }
     }
-  }
-
-  /**
-   * Emit input date for multiple selection date picker
-   * @param props
-   * @param context
-   * @param newDate
-   * @private
-   */
-  const _emitInputMultipleSelection = (newDate) => {
-    let selectedDates = Array.isArray(props.value) ? props.value : [props.value]
-    // If newDate is not exist in selectedDates, then add it to selectedDates
-    // Otherwise, remove it from selectedDates
-    let newDateIndex = selectedDates.indexOf(newDate)
-    if (newDateIndex === -1 /*newDate is not existed in selectedDate*/) {
-      selectedDates.push(newDate)
+  } else if (props.multiple) {
+    const newValueIndex = state.selectedValues.indexOf(newValue)
+    if (newValueIndex === -1) {
+      state.selectedValues.push(newValue)
     } else {
-      selectedDates.splice(newDateIndex, 1)
+      state.selectedValues.splice(newValueIndex, 1)
     }
-    context.emit(EVENT_NAMES.INPUT, selectedDates)
+  } else { // single
+    state.selectedValues = newValue
   }
-
-  /**
-   * Emit input event for single selection date picker
-   * @param props
-   * @param context
-   * @param newDate
-   * @private
-   */
-  const _emitInputSingleSelection = (newDate) => {
-    context.emit(EVENT_NAMES.INPUT, newDate)
-  }
-
-  const emitFn = computed(() => (
-      props.range
-          ? _emitInputRangeSelection
-          : props.multiple
-          ? _emitInputMultipleSelection
-          : _emitInputSingleSelection
-  ))
-  return newDate => emitFn.value(newDate)
 }
+
 /**
  * generate date array from input date
  * if selection method is multiple or single, return input value
@@ -257,7 +120,6 @@ export const _emitInputFn = (props, context) => {
 export const _generateDateRange = (props) => {
   const TICKS_PER_DAY = 864e5
   const descOrder = (a, b) => a > b ? 1 : -1
-
   return computed(() => {
     let dates = props.value
     if (props.range && props.value && props.value.length === 2) {
@@ -272,209 +134,179 @@ export const _generateDateRange = (props) => {
   })
 }
 
-// validate whether value is valid or not
-// in case multiple selection, value should be a date array
-// otherwise, a date string
-export const _validateValue = (props, isMultiple) => {
-  return () => {
-    if (props.value == null) {
-      return
-    }
-    const valueType = props.value.constructor.name
-    const expected = isMultiple.value ? 'Array' : 'String'
-    if (valueType !== expected) {
-      console.warn(`Value must be ${isMultiple.value ? 'an' : 'a'} ${expected}, got ${valueType}`)
-    }
-  }
-}
-
-/**
- * Set input date
- */
-export const _setInputDateFn = (props, state, lastValue) => {
-  return () => {
-    if (lastValue.value) {
-      const array = lastValue.value.split('-')
-      state.inputYear = parseInt(array[0], 10)
-      state.inputMonth = parseInt(array[1], 10) - 1
-      if (props.type === DATE_PICKER_TYPE.DATE) {
-        state.inputDay = parseInt(array[2], 10)
-      }
-    } else {
-      const now = new Date()
-      state.inputYear = state.inputYear || now.getFullYear()
-      state.inputMonth = state.inputMonth == null ? state.inputMonth : now.getMonth()
-      state.inputDay = state.inputDay || now.getDate()
-    }
-  }
-}
 
 // Models
-export const _getTitleModel = ({props, state, isMultiple}) => {
-  const dateRanges = _generateDateRange(props)
-  const formatters = _getTitleFormatterFn(props, isMultiple, dateRanges)
-  return computed(() => ({
-    date: props.value ? formatters.value.titleDate(props.value) : '',
-    year: formatters.value.year(props.value ? `${state.inputYear}` : state.tableDate),
+export const _getTitleModel = ({ props, state, cptIsMultiSelect }) => computed(() => {
+  const cptFormatFuncs = _computedTitleFormatterFn(props, cptIsMultiSelect)
+  return {
+    date: cptFormatFuncs.value.date(state.selectedValues),
+    year: cptFormatFuncs.value.year(state.viewportDate),
     on: {
-      yearClicked: (e) => {
-        e.stopPropagation()
-        if (state.activePicker === DATE_PICKER_TYPE.YEAR || props.readonly) {
-          return
-        }
-        state.activePicker = DATE_PICKER_TYPE.YEAR
-      }
-    }
-  }))
-}
-export const _getYearModel = ({ props, state, tableYear, tableMonth }) => {
-  const years = getYearRange(props)
-  return computed(() => ({
-    years: years.value,
-    selectedYear: tableYear.value,
-    on: {
-      yearClicked: (value) => {
-        state.inputYear = value
-        if (props.type === DATE_PICKER_TYPE.MONTH) {
-          state.tableDate = `${value}`
-        } else {
-          state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`
-        }
-        if (props.type !== DATE_PICKER_TYPE.YEAR) {
-          state.activePicker = DATE_PICKER_TYPE.MONTH
+      yearClicked: (year) => {
+        if (state.activePicker !== 'year') {
+          // show year picker, highlight the year in viewportDate
+          state.activePicker = 'year'
+          state.viewportDate = `${year}`
         }
       }
     }
-  }))
-}
-export const _getHeaderModel = ({ props, state, tableYear, tableMonth }) => {
-  const headerContent = computed(() => state.activePicker === DATE_PICKER_TYPE.DATE ? `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}` : `${pad(tableYear.value, 4)}`)
-  const headerContentFormatter = getHeaderFormatterFn(props)
-  const { canGoPrev, canGoNext } = getNavigationState(props)
-  return computed(() => ({
-    content: headerContentFormatter.value(headerContent.value),
-    canGoPrev: canGoPrev.value,
-    canGoNext: canGoNext.value,
+  }
+})
+
+export const _getYearModel = ({ props, state }) => computed(() => {
+  const cptYears = computedYearRange(props)
+  return {
+    years: cptYears.value,
+    selectedYear: state.viewportDate,
     on: {
-      headerClicked: () => state.activePicker = (state.activePicker === DATE_PICKER_TYPE.DATE ? DATE_PICKER_TYPE.MONTH : DATE_PICKER_TYPE.YEAR),
-      prevClicked: () => state.tableDate = calculateChange(headerContent.value, NAV.PREV),
-      nextClicked: () => state.tableDate = calculateChange(headerContent.value, NAV.NEXT)
+      yearClicked: (year) => {
+        // show month picker of the year is selected year
+        state.activePicker = 'month'
+        state.viewportDate = `${year}`
+      }
     }
-  }))
-}
-export const _getDateTableModel = ({ props, context, state, tableYear, tableMonth, emitInput, inputDate }) => {
-  const dayNames = getDayNameInWeek(props)
-  const dateRows = getDatesInMonth(props, context)
-  return computed(() => ({
-    dayNames: dayNames.value,
-    dateRows: dateRows.value,
-    tableDate: `${pad(tableYear.value, 4)}-${pad(tableMonth.value + 1)}`,
+  }
+})
+
+export const _getHeaderModel = ({ props, state }) => computed(() => {
+  const cptContents = computedContents(props, state)
+  const cptNavigateStatus = computedNavigateStatus(props, state)
+
+  return {
+    content: cptContents.value.formattedHeaderContent,
+    canGoPrev: cptNavigateStatus.value.canGoPrev,
+    canGoNext: cptNavigateStatus.value.canGoNext,
+    on: {
+      headerClicked: () => state.activePicker = (state.activePicker === 'date' ? 'month' : 'year'),
+      prevClicked: () => state.viewportDate = calculateChange(cptContents.value.headerContent, NAV.PREV),
+      nextClicked: () => state.viewportDate = calculateChange(cptContents.value.headerContent, NAV.NEXT)
+    }
+  }
+})
+
+export const _getDateTableModel = ({ props, context, state, cptIsMultiSelect }) => computed(() => {
+  const cptDayNames = computedDayNameInWeek(props)
+  const cptDateRows = computedDatesInMonth(props, state)
+  return {
+    dayNames: cptDayNames.value,
+    dateRows: cptDateRows.value,
     on: {
       onDateClicked: (dateItem) => {
         if (dateItem.isAllowed && !props.readonly) {
-          state.inputYear = parseInt(dateItem.value.split('-')[0], 10)
-          state.inputMonth = parseInt(dateItem.value.split('-')[1], 10) - 1
-          state.inputDay = parseInt(dateItem.value.split('-')[2], 10)
-          emitInput(inputDate.value)
+          applyNewSelectedValue(props, state, dateItem.value)
+          context.emit('input', cptIsMultiSelect.value ? state.selectedValues.map(val => val) : state.selectedValues)
+          context.emit('click:date', dateItem.value)
         }
-        context.emit('click:date', dateItem.value)
       },
       onDateDoubleClicked: (dateItem) => {
-        context.emit('dblclick:date', dateItem.value)
+        if (dateItem.isAllowed && !props.readonly) {
+          context.emit('dblclick:date', dateItem.value)
+        }
       }
     }
-  }))
-}
-export const _getMonthTableModel = ({ props, context, state, isMultiple, tableYear, inputDate, emitInputFn }) => {
-  const monthRows = getMonths(props, context)
-  const selectedMonths = _selectedMonths(props, isMultiple)
-  return computed(() => ({
-    monthRows: monthRows.value,
-    value: selectedMonths.value,
-    tableDate: pad(tableYear.value, 4),
+  }
+})
+
+export const _getMonthTableModel = ({ props, context, state, cptIsMultiSelect }) => computed(() => {
+  const cptMonthRows = computedMonthRows(props, state)
+  return {
+    monthRows: cptMonthRows.value,
     on: {
-      monthClicked: (value) => {
-        state.inputYear = parseInt(value.split('-')[0], 10)
-        state.inputMonth = parseInt(value.split('-')[1], 10) - 1
-        if (props.type === DATE_PICKER_TYPE.DATE) {
-          if (state.inputDay) {
-            state.inputDay = Math.min(state.inputDay, daysInMonth(state.inputYear, state.inputMonth + 1))
+      monthClicked: (monthItem) => {
+        if (props.type === 'date') {
+          // If this month is selectable, show datepicker with date data gathered from selected month
+          if (monthItem.isAllowed) {
+            state.activePicker = 'date'
+            state.viewportDate = monthItem.value
           }
-          state.tableDate = value
-          state.activePicker = DATE_PICKER_TYPE.DATE
-        } else {
-          emitInputFn(inputDate.value)
+        } else if (props.type === 'month') {
+          if (monthItem.isAllowed && !props.readonly) {
+            applyNewSelectedValue(props, state, monthItem.value)
+
+            // if props is month, then emit selected value
+            context.emit('input', cptIsMultiSelect.value ? state.selectedValues.map(val => val) : state.selectedValues)
+            context.emit('click:month', monthItem.value)
+          }
         }
       },
-      monthDoubleClicked: (value) => {
-        context.emit(EVENT_NAMES.DB_CLICK_MONTH, value)
+      monthDoubleClicked: (monthItem) => {
+        if (monthItem.isAllowed && !props.readonly) {
+          context.emit('dblclick:month', monthItem.value)
+        }
       }
     }
-  }))
+  }
+
+})
+
+/**
+ * Validate if input value is correct or not
+ * If user pass invalid input value, then show a warning about it
+ * @param initialValue
+ * @param cptIsMultiSelect
+ */
+function validateInitialValue(initialValue, cptIsMultiSelect) {
+  if (initialValue == null) {
+    return
+  }
+  const valueType = initialValue.constructor.name
+  const expected = cptIsMultiSelect.value ? 'Array' : 'String'
+  if (valueType !== expected) {
+    console.warn(`Value must be ${cptIsMultiSelect.value ? 'an' : 'a'} ${expected}, got ${valueType}`)
+  }
+}
+
+function getValidInitialValue(props, cptIsMultiSelect) {
+  const now = new Date()
+  const defaultValue = (props.type === 'date'
+      ? `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
+      : `${now.getFullYear()}-${now.getMonth() + 1}`)
+  return (cptIsMultiSelect.value
+      ? (props.value || []).map(value => value)
+      : (props.value || defaultValue))
 }
 
 /**
  *
  * @param props
  * @param context
- * @returns {{header: Ref<any>, year: Ref<any>, months: Ref<any>, state: UnwrapRef<{inputMonth: undefined, activePicker: *, inputYear: undefined, inputDay: undefined, tableDate}>, title: Ref<any>, dates: Ref<any>}}
+ * @returns {{header: Ref<any>, year: Ref<any>, months: Ref<any>, state: UnwrapRef<{selectedMonth: undefined, activePicker: *, selectedYear: undefined, selectedDay: undefined, tableDate}>, title: Ref<any>, dates: Ref<any>}}
  */
 export default (props, context) => {
-  const datePickerState = reactive({
-    // string value indicate what component should be shown
+  const cptIsMultiSelect = _computedIsMultiple(props)
+  validateInitialValue(props.value, cptIsMultiSelect)
+
+  const initViewportDate = getCurrentDateISOFormat().substr(0, props.type === 'date' ? 10 : 7)
+
+  const state = reactive({
+    // string value indicate what viewport should be shown
     // 'year': year picker
     // 'month': month picker
     // 'date': date picker
     activePicker: props.type,
-    // hold the value of input date
-    inputDay: undefined,
-    inputMonth: undefined,
-    inputYear: undefined,
-    // tableDate is a string in 'YYYY' / 'YYYY-M' format (leading zero for month is not required)
-    tableDate: (() => {
-      const now = new Date()
-      const date = (props.multiple || props.range ? props.value[props.value.length - 1] : props.value) || `${now.getFullYear()}-${now.getMonth() + 1}`
-      return sanitizeDateString(date, props.type === DATE_PICKER_TYPE.DATE ? DATE_PICKER_TYPE.MONTH : DATE_PICKER_TYPE.YEAR)
-    })()
+
+    // value used to activate navigation
+    // values:
+    //   YYYY: when show year picker, YYYY value will be used to highlight current year
+    //   YYYY: when show month picker, with YYYY is the year of month picker
+    //   YYYY-MM: show date picker, with YYYY-MM is the month of date picker
+    viewportDate: initViewportDate,
+
+    // store selected value(s)
+    // string if single mode is used
+    // array with multiple items if multiple mode is selected
+    // array with 1 or 2 items if range mode is selected
+    selectedValues: getValidInitialValue(props, cptIsMultiSelect),
   })
-  const isMultiple = _isMultiple(props)
-  const inputDate = _inputDate(props, datePickerState)
-  const { tableMonth, tableYear }  = _getTableDateElement(props, datePickerState)
-  const emitInputFn = _emitInputFn(props, context)
-  const isDateAvailableFn = dateFilter(props)
-  const vue2xWatchOptionsCompatible = { lazy: true, flush: 'pre' };
-  watch(() => datePickerState.tableDate, (val) => context.emit(EVENT_NAMES.UPDATE_PICKER_DATE, val), vue2xWatchOptionsCompatible )
-  watch(() => props.value, (newValue, oldValue) => {
-    validateValueFn()
-    setInputDateFn()
-    if (!isMultiple.value && props.value) {
-      datePickerState.tableDate = sanitizeDateString(inputDate.value, props.type === DATE_PICKER_TYPE.MONTH ? DATE_PICKER_TYPE.YEAR : DATE_PICKER_TYPE.MONTH)
-    } else if (isMultiple.value && (props.value).length && !oldValue.length) {
-      datePickerState.tableDate = sanitizeDateString(inputDate.value, props.type === DATE_PICKER_TYPE.MONTH ? DATE_PICKER_TYPE.YEAR : DATE_PICKER_TYPE.MONTH)
-    }
-  }, vue2xWatchOptionsCompatible)
-  watch(() => props.type, (type) => {
-    datePickerState.activePicker = type
-    if (props.value && props.value.length) {
-      const output = (isMultiple.value ? props.value : [props.value])
-      .map((val) => sanitizeDateString(val, type))
-      .filter(isDateAvailableFn)
 
-      context.emit(EVENT_NAMES.INPUT, isMultiple.value ? output : output[0])
-    }
-  }, vue2xWatchOptionsCompatible)
-
-  //
-  _validateValue(props, isMultiple)()
-  _setInputDateFn(props, datePickerState, _lastValue(props, isMultiple))()
-
-  //
+  // cause we don't support year picker atm so, context will not be used
+  // year and header doesn't depend on props.multiple or props.range so cptIsMultiSelect will not be used
   return {
-    titleModel: _getTitleModel({ props, state: datePickerState, isMultiple }),
-    yearModel: _getYearModel({ props, state: datePickerState, tableYear, tableMonth }),
-    headerModel: _getHeaderModel({ props, state: datePickerState, tableYear, tableMonth }),
-    dateTableModel: _getDateTableModel({ props, context, state: datePickerState, tableYear, tableMonth, emitInputFn, inputDate }),
-    monthTableModel: _getMonthTableModel({ props, context, state: datePickerState, isMultiple, tableYear, inputDate, emitInputFn }),
-    datePickerState
+    titleModel: _getTitleModel({ props, state, cptIsMultiSelect }),
+    yearModel: _getYearModel({ props, state }),
+    headerModel: _getHeaderModel({ props, state }),
+    dateTableModel: _getDateTableModel({ props, state, context, cptIsMultiSelect }),
+    monthTableModel: _getMonthTableModel({ props, state, context, cptIsMultiSelect }),
+    state
   }
 }

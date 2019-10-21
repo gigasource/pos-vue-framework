@@ -100,7 +100,7 @@
       const el = ref(null);
       const activator = ref(null);
 
-      const datePickerState = reactive({
+      const state = reactive({
         top: 0,
         hasJustFocused: false,
         isFirstRender: true,
@@ -142,7 +142,7 @@
           return convertToUnit(props.minWidth) || '0'
         }
 
-        const minWidth = Math.min(dimensions.content.width, datePickerState.pageWidth);
+        const minWidth = Math.min(dimensions.content.width, state.pageWidth);
         const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
         return convertToUnit(Math.min(_calculatedMaxWidth, minWidth)) || 0;
       })
@@ -161,7 +161,7 @@
 
       function toggleContent(event) {
         if (props.lazy) {
-          datePickerState.isFirstRender = false
+          state.isFirstRender = false
           context.root.$nextTick(() => {
             initContent()
           })
@@ -179,11 +179,11 @@
         ...(props.openOnHover && !props.disabled) && {
           mouseenter(event) {
             runDelay('open', () => {
-              if (datePickerState.hasJustFocused || isActive.value) {
+              if (state.hasJustFocused || isActive.value) {
                 return
               }
               toggleContent(event);
-              datePickerState.hasJustFocused = true;
+              state.hasJustFocused = true;
             })
           },
           mouseleave(event) {
@@ -192,7 +192,7 @@
                 return
               }
               isActive.value = false
-              datePickerState.hasJustFocused = false
+              state.hasJustFocused = false
             })
           }
         }
@@ -202,7 +202,7 @@
         ...(props.closeOnContentClick) && {
           click(event) {
             if (isActive.value) isActive.value = false
-            datePickerState.hasJustFocused = false
+            state.hasJustFocused = false
           }
         }
       }

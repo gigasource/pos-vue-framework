@@ -30,15 +30,12 @@ export function createNativeLocaleFormatter (locale, options, substrOptions = { 
   }
 }
 
-
-
 /**
  * @param {String} value YYYY-MM format
  * @param {Number} sign -1 or +1
  */
 export const monthChange = (value, sign) => {
   const [year, month] = value.split('-').map(Number)
-
   if (month + sign === 0) {
     return `${year - 1}-12`
   } else if (month + sign === 13) {
@@ -81,4 +78,17 @@ export const TRANSITION_NAMES = {
 export function sanitizeDateString(dateString/*: string*/, type/*: DATE_PICKER_TYPE*/)/*: string*/ {
   const [year, month = 1, date = 1] = dateString.split('-')
   return `${year}-${pad(month)}-${pad(date)}`.substr(0, { date: 10, month: 7, year: 4 }[type])
+}
+
+/**
+ * Return current date in YYYY-MM-dd format
+ * @returns {string}
+ */
+export function getCurrentDateISOFormat() {
+  const now = new Date()
+  return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
+}
+
+export function getCurrentMonthISOFormat() {
+  return getCurrentDateISOFormat().substr(0, 7)
 }

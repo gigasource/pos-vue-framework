@@ -22,4 +22,5 @@ export function _isDateAllowed(value, filterFn) {
   return filterFn(value)
 }
 
+// TODO: Move to table util
 export default (props) => (value) => _isDateAllowed(value, props.allowedDates) && _isValueInRange(value, props.min, props.max)

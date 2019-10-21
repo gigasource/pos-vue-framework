@@ -176,7 +176,7 @@
       // Set the wrapper div tabindex to 0 when active, to make wrapper div focusable
       const wrapperTabIndex = computed(() => isActive.value ? 0 : undefined);
 
-      // Change active datePickerState when press ESC
+      // Change active state when press ESC
       function onKeydown(e) {
         if (props.persistent) {
           return;

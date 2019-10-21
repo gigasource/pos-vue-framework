@@ -35,6 +35,7 @@
         type: [Number, String],
         default: 290,
       },
+      disabled: Boolean
     },
     setup(props, context) {
       const computedTitleColor = computed(() => {
@@ -72,6 +73,7 @@
           return {
             'g-picker--landscape': props.landscape,
             'g-picker--full-width': props.fullWidth,
+            'g-picker--disabled': props.disabled
           }
         }),
         shouldGenTitleSlot,
@@ -119,6 +121,10 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+
+    &--disabled {
+      pointer-events: none;
+    }
 
     &__title {
       color: #FFFFFF;

@@ -5,15 +5,15 @@
       <div style="display:flex">
         <div>
           <h4>Single select</h4>
-          <g-date-picker v-model="singleSelect" scrollable ></g-date-picker>
+          <g-date-picker value="2019-10-05" scrollable :current="current" show-current></g-date-picker>
         </div>
         <div>
           <h4>Multiple select</h4>
-          <g-date-picker multiple v-model="multipleSelect"></g-date-picker>
+          <g-date-picker multiple v-model="multipleSelect" :current="current"></g-date-picker>
         </div>
         <div>
           <h4>Range select</h4>
-          <g-date-picker range v-model="rangeSelect" full-width></g-date-picker>
+          <g-date-picker range v-model="rangeSelect" full-width :current="current"></g-date-picker>
         </div>
       </div>
 
@@ -28,7 +28,7 @@
           <input type="checkbox" id="Fullwidth" v-model="fullWidth" class="ma-4"/>
         </span>
         <span>
-          <label for="ShowCurrentDate">Show _currentDateMonth date</label>
+          <label for="ShowCurrentDate">Show current</label>
           <input type="checkbox" id="ShowCurrentDate" v-model="showCurrent" class="ma-4"/>
         </span>
         <span>
@@ -81,7 +81,7 @@
       <div style="display: flex">
         <div>
           <h4>Single select, scrollable</h4>
-          <g-date-picker type="month" v-model="monthSelect" scrollable :landscape="landscape"></g-date-picker>
+          <g-date-picker type="month" v-model="monthSelect" scrollable :landscape="landscape" :min="'2019-01-25'" :max="'2019-10-10'"></g-date-picker>
         </div>
 
         <div>
@@ -106,6 +106,9 @@
     components: { GDatePicker, GDateRangePicker },
     props: {},
     data: function () {
+      const now = new Date();
+      const current = `${now.getFullYear()}-${now.getMonth()}-${now.getDay()}`
+
       return {
         // dates
         singleSelect: new Date().toISOString().substr(0, 10),
@@ -116,9 +119,11 @@
         monthSelect: new Date().toISOString().substr(0, 10),
         monthMultipleSelect: [],
         //
+
         landscape: false,
         reactive: false,
         fullWidth: false,
+        current: current,
         showCurrent: false,
         month: false,
         multiple: false,

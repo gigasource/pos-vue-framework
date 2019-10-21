@@ -2,12 +2,9 @@
   import _ from 'lodash'
   import { computed, ref } from '@vue/composition-api'
   import { TRANSITION_NAMES } from './logic/utils'
-  import { getHeaderFormatterFn, getNavigationState } from './logic/GDatePickerHeaderUtil'
-  import { getYearRange } from './logic/GDatePickerYearsUtil'
-  import { getDatesInMonth, getDayNameInWeek } from './logic/GDatePickerDateTableUtil'
-  import { getMonths } from './logic/GDatePickerMonthTableUtil'
-  import GDatePickerUtil, { DATE_PICKER_TYPE } from './logic/GDatePickerUtil'
+  import GDatePickerUtil from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
+  import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
 
   export default {
     name: 'GDatePicker',
@@ -92,7 +89,6 @@
         validator: (type) => ['date', 'month'].includes(type),
       },
 
-
       //// Groups: Behavior
       // A boolean value indicate that whether date picker is enable for interact
       disabled: Boolean,
@@ -112,33 +108,18 @@
         headerModel,
         dateTableModel,
         monthTableModel,
-        datePickerState,
+        state,
       } = GDatePickerUtil(props, context)
 
       // Title render function
-      const titleClasses = computed(() => ({
-        'g-date-picker-title': true,
-        'g-date-picker-title--disabled': props.disabled
-      }))
-      const titleYearContentClass = computed(() => ({
-        'g-picker__title__btn': true,
-        'g-picker__title__btn--active': true,
-        'g-picker__title__btn--readonly': props.readonly,
-        'g-date-picker-title__year': true
-      }))
-      const titleDateContentClass = computed(() => ({
-        'g-picker__title__btn': true,
-        'g-picker__title__btn--readonly': props.readonly,
-        'g-date-picker-title__date': true
-      }))
       function datePickerTitleRenderFn() {
-        return (<div class={titleClasses.value}>
-          <div class={titleYearContentClass.value}
-               v-on:click={ e => titleModel.value.on.yearClicked(e) }>
+        return (<div class='g-date-picker-title'>
+          <div class='g-picker__title__btn g-date-picker-title__year'
+               v-on:click_stop={ e => titleModel.value.on.yearClicked(titleModel.value.year)}>
             { titleModel.value.year }
           </div>
-          <div class={titleDateContentClass.value}>
-            <transition name={TRANSITION_NAMES.PICKER}>
+          <div class='g-picker__title__btn g-date-picker-title__date'>
+            <transition name='picker-transition'>
               <div key={titleModel.value.date}
                    domPropsInnerHTML={ titleModel.value.date }/>
             </transition>
@@ -148,7 +129,7 @@
 
       // year list
       function yearListRenderFn() {
-        return <ul class="g-date-picker-years" ref="years">{
+        return <ul class='g-date-picker-years' ref='years'>{
           yearModel.value.years.map(year => (
               <li
                   key={ year }
@@ -161,28 +142,24 @@
       }
 
       // GDatePicker -> Body -> Header render function
-      const transition = ref('')
+      const transitionName = ref('')
       const goPrev = () => {
-        transition.value = TRANSITION_NAMES.REVERSE_TAB;
-        headerModel.value.on.prevClicked()
+        if (headerModel.value.canGoPrev) {
+          transitionName.value = TRANSITION_NAMES.REVERSE_TAB
+          headerModel.value.on.prevClicked()
+        }
       }
       const goNext = () => {
-        transition.value = TRANSITION_NAMES.TAB
-        headerModel.value.on.nextClicked()
+        if (headerModel.value.canGoNext) {
+          transitionName.value = TRANSITION_NAMES.TAB
+          headerModel.value.on.nextClicked()
+        }
       }
-      const headerCssClasses = computed(() => ({
-        'g-date-picker-header': true,
-        'g-date-picker-header--disabled': props.disabled
-      }))
-      const headerContentCssClass = computed(() => ({
-        'g-date-picker-header__value': true,
-        'g-date-picker-header__value--disabled': props.disabled
-      }))
       function headerRenderFn() {
         return (
-            <div class={headerCssClasses.value}>
-              <div class={headerContentCssClass.value}>
-                <transition name={transition.value}>
+            <div class='g-date-picker-header'>
+              <div class='g-date-picker-header__value'>
+                <transition name={transitionName.value}>
                   <div key={headerModel.value.content}>
                     <button
                         type="button"
@@ -207,26 +184,34 @@
       }
 
       // GDatePicker -> Body -> Date/Months Table
+
       // 1> wheel event
       let throttleWheel = _.throttle(e => (e.deltaX < 0 ? goPrev : goNext)(), 1000, { leading: true, trailing: false })
       const onWheelHandler = (e) => {
         e.preventDefault()
-        if (props.disabled || !props.scrollable) {
+        if (!props.scrollable) {
           return
         }
         throttleWheel(e)
       }
 
       // 2> GDatePicker / Body / DateTable render function
-      const datePickerClasses = computed(() => ({
-        'g-date-picker-table': true,
-        'g-date-picker-table--date': true,
-        'g-date-picker-table--disabled': props.disabled
-      }))
-      function addRangeClass(dateRows) {
-        if (props.range) {
-          _.forEach(dateRows, dateRow => {
-            _.forEach(dateRow, date => {
+      function addDateItemClass(dateRows) {
+        _.forEach(dateRows, dateRow => {
+          _.forEach(dateRow, date => {
+            if (!date.isWeek && !date.isBlank) {
+              date.class = {
+                'g-table-item--active': date.isSelected,
+                'g-table-item--rounded': true,
+                'g-table-item--readonly': props.readonly,
+                'g-table-item--disabled': !date.isAllowed || props.disabled,
+                'g-table-item--outlined': date.isCurrent && !date.isSelected
+              }
+
+              const setColor = date.isSelected ? setBackgroundColor : setTextColor
+              const color = (date.isSelected || date.isCurrent) && (props.color || '')
+              setColor(color, date)
+
               if (date.isRangeStart) {
                 date.class['g-table-item--start-range'] = true
               } else if (date.isRangeEnd) {
@@ -234,23 +219,24 @@
               } else if (date.isInRange) {
                 date.class['g-table-item--in-range'] = true
               }
-            })
+            }
           })
-        }
+        })
+
         return dateRows
       }
-      function dateButtonRenderFn(date) {
+      function dateButtonRenderFn(dateItem) {
         return (<button
             type="button"
-            class={['g-table-item', date.class]}
-            style={date.style}
-            disabled={props.disabled || !date.isAllowed}
-            v-on:click_stop={() => dateTableModel.value.on.onDateClicked(date)}
-            v-on:dblclick_stop={() => dateTableModel.value.on.onDateDoubleClicked(date)}>
-          <div class="g-table-item__content">{date.content}</div>
+            class={['g-table-item', dateItem.class]}
+            style={dateItem.style}
+            disabled={!dateItem.isAllowed}
+            v-on:click_stop={() => dateTableModel.value.on.onDateClicked(dateItem)}
+            v-on:dblclick_stop={() => dateTableModel.value.on.onDateDoubleClicked(dateItem)}>
+          <div class="g-table-item__content">{dateItem.formattedValue}</div>
           <div class="g-date-picker-table__events">
             {
-              (date.events || []).map(event => <div class={event.class} style={event.style}></div>)
+              (dateItem.events || []).map(event => <div class={event.class} style={event.style}></div>)
             }
           </div>
         </button>)
@@ -265,15 +251,15 @@
       }
       function dateTableRenderFn() {
         return (
-            <div class={datePickerClasses.value} v-on:wheel_stop={onWheelHandler}>
-              <transition name={transition.value}>
-                <table key={dateTableModel.value.tableDate}>
+            <div class='g-date-picker-table g-date-picker-table--date' v-on:wheel_stop={onWheelHandler}>
+              <transition name={transitionName.value}>
+                <table key={state.viewportDate}>
                   <thead>
                   <tr>{dateTableModel.value.dayNames.map(dayName => <th>{dayName}</th>)}</tr>
                   </thead>
                   <tbody>
                   {
-                    addRangeClass(dateTableModel.value.dateRows).map(dateRow => <tr>
+                    addDateItemClass(dateTableModel.value.dateRows).map(dateRow => <tr>
                       {dateRow.map(date => dateTableDataRenderFn(date))}
                     </tr>)
                   }
@@ -284,18 +270,29 @@
       }
 
       // 3> GDatePicker / Body / MonthTable
-      const monthTableClasses = computed(() => ({
-        'g-date-picker-table': true,
-        'g-date-picker-table--month': true,
-        'g-date-picker-table--disabled': props.disabled
-      }))
+      const addMonthRowsClass = (monthRows) => {
+        _.each(monthRows, monthRow => {
+          _.each(monthRow, monthItem => {
+            monthItem.class = {
+              'g-table-item--active': monthItem.isSelected,
+              'g-table-item--disabled': !monthItem.isAllowed || props.disabled,
+              'g-table-item--readonly': props.type === 'month' && props.readonly,
+              'g-table-item--outlined': monthItem.isCurrent && !monthItem.isSelected
+            }
+            const setColor = monthItem.isSelected ? setBackgroundColor : setTextColor
+            const color = (monthItem.isSelected || monthItem.isCurrent) && (props.color || '')
+            setColor(color, monthItem)
+          })
+        })
+        return monthRows
+      }
       function monthTableRenderFn() {
-        return (<div class={monthTableClasses.value} v-on:wheel={onWheelHandler}>
-          <transition name={transition.value}>
-            <table key={monthTableModel.value.tableDate}>
+        return (<div class='g-date-picker-table g-date-picker-table--month' v-on:wheel={onWheelHandler}>
+          <transition name={transitionName.value}>
+            <table key={state.viewportDate}>
               <tbody>
               {
-                monthTableModel.value.monthRows.map((monthRow, rowIndex) => {
+                addMonthRowsClass(monthTableModel.value.monthRows).map((monthRow, rowIndex) => {
                   return <tr key={rowIndex}>
                     {
                       monthRow.map(monthItem =>
@@ -304,9 +301,9 @@
                                 type="button"
                                 class={['g-table-item', monthItem.class]}
                                 style={monthItem.style}
-                                disabled={props.disabled || !monthItem.isAllowed}
-                                v-on:click_stop={() => monthTableModel.value.on.monthClicked(monthItem.value)}
-                                v-on:dblclick_stop={() => monthTableModel.value.on.monthDoubleClicked(monthItem.value)}
+                                disabled={!monthItem.isAllowed}
+                                v-on:click_stop={() => monthTableModel.value.on.monthClicked(monthItem)}
+                                v-on:dblclick_stop={() => monthTableModel.value.on.monthDoubleClicked(monthItem)}
                             >
                               <div class="g-table-item__content">
                                 {monthItem.formattedValue}
@@ -325,14 +322,8 @@
       }
 
       // date/month table render function
-      function dateMonthTableRenderFn() {
-        return datePickerState.activePicker === DATE_PICKER_TYPE.DATE ? dateTableRenderFn() : monthTableRenderFn()
-      }
-
-      // date picker body render function
-      function datePickerBodyRenderFn() {
-        return datePickerState.activePicker === DATE_PICKER_TYPE.YEAR ? yearListRenderFn() : [headerRenderFn(), dateMonthTableRenderFn()]
-      }
+      const dateMonthTableRenderFn = () => state.activePicker === 'date' ? dateTableRenderFn() : monthTableRenderFn()
+      const datePickerBodyRenderFn = () => state.activePicker === 'year' ? yearListRenderFn() : [headerRenderFn(), dateMonthTableRenderFn()]
 
       // datepicker render function
       return function datePickerRenderFn() {
@@ -342,11 +333,12 @@
                 fullWidth={props.fullWidth}
                 landscape={props.landscape}
                 width={props.width}
-                noTitle={props.noTitle}>
+                noTitle={props.noTitle}
+                disabled={props.disabled}>
               <template slot="title">
                 {datePickerTitleRenderFn()}
               </template>
-              <div key={datePickerState.activePicker}>
+              <div key={state.activePicker}>
                 {datePickerBodyRenderFn()}
               </div>
               <template slot="actions">
@@ -357,6 +349,9 @@
       }
     }
   }
+
+  // TODO: Fullwidth when provided max, min which generated years < total year can displayed in view
+  // or the year scrollbar doesn't show
 </script>
 <style scoped lang="scss">
   @import "../../style/variables";
@@ -373,6 +368,7 @@
       font-size: 14px;
       font-weight: 500;
       margin-bottom: 8px;
+      cursor: pointer;
     }
 
     &__date {
@@ -383,10 +379,6 @@
       overflow: hidden;
       padding-bottom: 8px;
       margin-bottom: -8px;
-    }
-
-    &--disabled {
-      pointer-events: none;
     }
   }
 
@@ -428,10 +420,6 @@
     align-items: center;
     justify-content: space-between;
     position: relative;
-
-    &--disabled {
-      pointer-events: none;
-    }
 
     &__value {
       flex: 1;
@@ -529,7 +517,6 @@
       background-color: transparent;
       border-style: none;
       color: inherit;
-      width: 100%;
 
       &--active {
         color: map-get($shades, 'white');
@@ -545,7 +532,6 @@
 
       &--start-range {
         position: relative;
-        width: 100%;
 
         &::after {
           top: 0;
@@ -561,7 +547,6 @@
 
       &--end-range {
         position: relative;
-        width: 100%;
 
         &::after {
           top: 0;
@@ -584,10 +569,14 @@
           color: #535353;
         }
       }
-    }
 
-    &--disabled {
-      pointer-events: none;
+      &--readonly {
+        pointer-events: none;
+      }
+
+      &--disabled {
+        color: rgba(0, 0, 0, 0.38);
+      }
     }
   }
 
