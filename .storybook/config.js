@@ -11,7 +11,7 @@ import '../src/style/main.scss'
 addParameters({
   options: {
     theme: themes.light,
-    addonPanelInRight: false,
+    panelPosition: 'bottom',
     hierarchySeparator: /\//,
     hierarchyRootSeparator: /\|/,
   },
