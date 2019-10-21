@@ -36,8 +36,8 @@ const routes = [
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   {path: '/image-demo', name: 'Image', component: ImageDemo},
-  {path: '/icon-demo', name: 'Icon', component: IconDemo}
-  { path: '/list-demo', name: 'List', component: List2Demo},
+  {path: '/icon-demo', name: 'Icon', component: IconDemo},
+  {path: '/list-demo', name: 'List', component: List2Demo},
 ];
 
 const router = new VueRouter({

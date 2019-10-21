@@ -20,19 +20,13 @@
                 <td>
                     <g-icon @click="foo" large color="red" disabled>{{svgPath}}</g-icon>
                 </td>
-                <td>
-                    <a href="#" role="button" aria-label="Delete item 1">Delete</a>
-                </td>
-<!--                <td>-->
-<!--                    <g-icon large color="lighten">$fas fa-car</g-icon>-->
-<!--                </td>-->
             </tr>
         </table>
         <g-btn class="ma-2" dark>
             <g-icon left color="yellow">fas fa-car</g-icon>Cancel
         </g-btn>
         <g-btn class="ma-2" dark>
-            Cancel<g-icon right>fas fa-cat</g-icon>
+            Cancel<g-icon right disabled>fas fa-cat</g-icon>
         </g-btn>
     </div>
 </template>
@@ -56,7 +50,6 @@
     }),
     methods:{
       foo(){}
-
     }
   }
 </script>
