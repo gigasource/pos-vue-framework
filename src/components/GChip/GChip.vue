@@ -1,7 +1,7 @@
 <template>
 	<div :class="classes" :style="styles" :draggable="draggable" @click="onClick">
-		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY'">
-			<i class="material-icons g-icon" v-if="filter === true && isActive">{{filterIcon}}</i>
+		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY' && isActive">
+			<i class="material-icons g-icon" v-if="filter && isActive">{{filterIcon}}</i>
 		</span>
 
 		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_FILTER'">
@@ -129,11 +129,11 @@
         } else if (!!props.xLarge) {
           size = 'g-size__x-large';
           avatarSize = 'g-avatar-size__x-large';
-        } else {
-          size = 'g-size__default';
-          avatarSize = 'g-avatar-size__default';
+          // } else {
+          //   size = 'g-size__default';
+          //   avatarSize = 'g-avatar-size__default';
+          // }
         }
-
         _classes[size] = true;
         _classes[avatarSize] = true;
 

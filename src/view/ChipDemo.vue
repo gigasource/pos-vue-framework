@@ -56,11 +56,11 @@
 		<div class="wrapper">
 			<p>Label chips: Border radius of g-cards</p>
 			<hr/>
-			<g-chip x-small label close ripple color="bg-light-blue" text-color="white">Label</g-chip>
-			<g-chip small label close ripple color="bg-red" text-color="white">Label</g-chip>
-			<g-chip label close ripple color="bg-light-green" text-color="white">Label</g-chip>
-			<g-chip large label close ripple color="bg-brown" text-color="white">Label</g-chip>
-			<g-chip x-large label close ripple color="bg-pink" text-color="white">Label</g-chip>
+			<g-chip x-small label close filter ripple color="bg-light-blue" text-color="white">Label</g-chip>
+			<g-chip small label close filter ripple color="bg-red" text-color="white">Label</g-chip>
+			<g-chip label close ripple filter color="bg-light-green" text-color="white">Label</g-chip>
+			<g-chip large label close filter ripple color="bg-brown" text-color="white">Label</g-chip>
+			<g-chip x-large label close filter ripple color="bg-pink" text-color="white">Label</g-chip>
 		</div>
 
 
@@ -163,13 +163,13 @@
 			<g-chip color="bg-green" text-color="white" filter>
 				Premium
 				<span class="g-icon g-icon__right">
-					<i class="material-icons g-icon__left g-icon">star</i>
+					<i class="material-icons g-icon">star</i>
 				</span>
 			</g-chip>
 			<g-chip color="bg-brown" text-color="white" filter>
 				1 Year
 				<span class="g-icon g-icon__right">
-					<i class="material-icons g-icon__left g-icon">cake</i>
+					<i class="material-icons g-icon">cake</i>
 				</span>
 			</g-chip>
 			<g-chip color="bg-light-blue" text-color="white" filter>
