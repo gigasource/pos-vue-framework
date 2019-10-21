@@ -11,7 +11,7 @@ import '../src/style/main.scss'
 addParameters({
   options: {
     theme: themes.light,
-    panelPosition: 'right',
+    panelPosition: 'bottom',
     hierarchySeparator: /\//,
     hierarchyRootSeparator: /\|/,
   },
@@ -20,14 +20,17 @@ addParameters({
 Vue.use(VueRouter);
 Vue.use(VueCompositionAPI);
 
-import {storiesOf, specs, describe, it,
-  after, before, beforeEach, afterEach} from "./facade";
+import {
+  storiesOf, specs, describe, it,
+  after, before, beforeEach, afterEach
+} from './facade';
 
-import expect from "expect";
+import expect from 'expect';
 
 global.storiesOf = storiesOf;
 global.specs = specs;
-global.describe = () => {};
+global.describe = () => {
+};
 global.it = it;
 global.after = after;
 global.before = before;

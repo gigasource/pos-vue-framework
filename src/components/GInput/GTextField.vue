@@ -5,7 +5,7 @@
 		</label>
 		<div class="r mt-1">
 			<input type="text"
-						 class="textfield br-2 bg-lgray-5 fw-700"
+						 class="tf"
 						 :class="classes"
 						 :style="styles"
 						 :value="lazyValue"
@@ -37,24 +37,28 @@
   export default {
     name: 'GTextField',
     props: {
-      label: String,
+    	...{
+				label: String,
+				disabled: Boolean,
+				readOnly: Boolean,
+				appendIcon: String,
+				prependIcon: String,
+			},
       required: Boolean,
       placeholder: String,
-      disabled: Boolean,
-      readonly: Boolean,
       clearable: Boolean,
       rules: Function,
       errorMessage: String,
-      value: [String, Number],
       large: Boolean,
-      textColor: {
+			textColor: {
         type: String,
         default: '#000000'
       },
-      bordered: Boolean,
-      centered: Boolean,
+			bordered: Boolean,
+			centered: Boolean,
 			active: Boolean,
-    },
+			value: [String, Number],
+		},
     data() {
       return {
         lazyValue: '',
@@ -165,12 +169,12 @@
       }
     },
 		watch: {
-      // validate after change
-      internalValue: _.debounce(function()  {
-          if (this.rules && typeof this.rules === 'function') {
-            this.isValidInput = this.rules(this.internalValue);
-          }
-        }, 500)
+			// validate after change
+			internalValue: _.debounce(function()  {
+				if (this.rules && typeof this.rules === 'function') {
+					this.isValidInput = this.rules(this.internalValue);
+				}
+			}, 500)
 
 		}
   }
