@@ -20,9 +20,6 @@
                 <td>
                     <g-icon @click="foo" large color="red" disabled>{{svgPath}}</g-icon>
                 </td>
-                <td>
-                    <g-icon large color="lighten">cancel</g-icon>
-                </td>
 <!--                <td>-->
 <!--                    <g-icon large color="lighten">$fas fa-car</g-icon>-->
 <!--                </td>-->

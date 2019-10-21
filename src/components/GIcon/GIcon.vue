@@ -5,7 +5,6 @@
             <path :d="icon" :fill="props.color"></path>
         </svg>
         <component v-if="_tag.component" :is="_component" :class="iconClass" :style="iconStyle">
-
         </component>
         <slot v-if="con"></slot>
     </div>
@@ -50,15 +49,6 @@
       }
       let con = true
 
-      ////alt
-      // const iconName = reactive([])
-      //
-      // onMounted(() => {
-      //   context.root.$nextTick(() => {
-      //     let defaultSlot = context.slots.default()
-      //     iconName.push(defaultSlot[0].text)
-      //   })
-      // })
       let content = ''
       if (typeof icon === 'string' && !isSvgPath(icon)) { //render Font icons: Material Icon(default), Font Awesome 5
         let materialIcon = icon
@@ -125,7 +115,6 @@
       //   ...this.attrs$,
       // },
 
-      //con = false
       return {
         props,
         iconClass,
