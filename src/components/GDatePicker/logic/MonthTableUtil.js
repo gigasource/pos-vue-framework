@@ -1,7 +1,6 @@
 import { computed } from '@vue/composition-api'
 import { createNativeLocaleFormatter, getCurrentMonthISOFormat, pad } from './utils';
-import { isSelected, isCurrent } from './TableUtil'
-import dateFilter from './dateFilter'
+import { isSelected, isAllowed } from './TableUtil'
 
 /**
  * Get month formatter
@@ -28,7 +27,6 @@ export const computedMonthRows = (props, state) => {
     rowNumbers: 4
   }
   return computed(() => {
-    const isDateAvailable = dateFilter(props)
     const displayedYear = parseInt(state.viewportDate.substr(0, 4))
     const cptMonthFormatFunc = _computedMonthFormatFunc(props)
     const monthData = []
@@ -41,7 +39,7 @@ export const computedMonthRows = (props, state) => {
           key: month,
           value: monthValue,
           formattedValue: cptMonthFormatFunc.value(monthValue),
-          isAllowed: isDateAvailable(monthValue),
+          isAllowed: isAllowed(props, monthValue),
           isSelected: isSelected(props, state, monthValue),
           isCurrent: props.showCurrent && monthValue === current,
         }

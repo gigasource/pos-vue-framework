@@ -4,13 +4,11 @@ import {
   daysInMonth as _daysInMonth,
   getCurrentDateISOFormat,
   isLeapYear,
-  monthChange,
   pad
 } from './utils';
 import { createRange } from '../../../utils/helpers';
 import { setBackgroundColor } from '../../../mixins/colorable'
-import { isSelected, isCurrent, computedDisplayMonth, computedDisplayYear } from './TableUtil'
-import dateFilter from './dateFilter'
+import { isSelected, computedDisplayMonth, computedDisplayYear, isAllowed } from './TableUtil'
 
 /**
  * Return day name in a week depend on props.firstDayOfWeek options
@@ -78,8 +76,9 @@ function _weekDaysBeforeFirstDayOfTheMonth(props, displayedYear, displayedMonth)
 export function _computedWeekNumber(props, cptYear, cptMonth) {
   return computed(() => {
     let dayOfYear = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334][cptMonth.value]
-    if (cptMonth.value > 1 && isLeapYear(cptYear.value))
+    if (cptMonth.value > 1 && isLeapYear(cptYear.value)) {
       dayOfYear++
+    }
     const offset = (
         cptYear.value +
         ((cptYear.value - 1) >> 2) -
@@ -91,6 +90,7 @@ export function _computedWeekNumber(props, cptYear, cptMonth) {
   })
 }
 
+// TODO: Bring _getEventColors to GDatePicker.vue
 /**
  * Get event colors
  * @param date
@@ -98,7 +98,7 @@ export function _computedWeekNumber(props, cptYear, cptMonth) {
  * @returns {Array|*}
  * @private
  */
-export function _getEventColors (date, props) {
+export function _getEventColors(date, props) {
   const arrayize = (v) => Array.isArray(v) ? v : [v]
   let eventData
   let eventColors = []
@@ -169,68 +169,66 @@ export function _addRangeInformation(dateItem, state, date) {
  * @param state
  * @returns {Ref<any>}
  */
-export const computedDatesInMonth = (props, state) =>
-    computed(() => {
-      const cptMonth = computedDisplayMonth(state)
-      const cptYear = computedDisplayYear(state)
-      const cptDateFormatFunc = _computedDayFormatFunc(props)
-      const isDateAvailableFn = dateFilter(props)
+export const computedDatesInMonth = (props, state) => computed(() => {
+  const cptMonth = computedDisplayMonth(state)
+  const cptYear = computedDisplayYear(state)
+  const cptDateFormatFunc = _computedDayFormatFunc(props)
 
-      // each week will be displayed in a row of Date table
-      const weeks = []
-      let week = []
+  // each week will be displayed in a row of Date table
+  const weeks = []
+  let week = []
 
-      // add week number of option showWeek is ON
-      let weekNumber = _computedWeekNumber(props, cptYear, cptMonth).value
-      props.showWeek && week.push({ isWeek: true, value: weekNumber++ })
+  // add week number of option showWeek is ON
+  let weekNumber = _computedWeekNumber(props, cptYear, cptMonth).value
+  props.showWeek && week.push({ isWeek: true, value: weekNumber++ })
 
-      // add blank day before the first day of the month
-      let dayBeforeFirstDayOfMonths = _weekDaysBeforeFirstDayOfTheMonth(props, cptYear, cptMonth)
-      while (dayBeforeFirstDayOfMonths--)
-        week.push({ isBlank: true })
+  // add blank day before the first day of the month
+  let dayBeforeFirstDayOfMonths = _weekDaysBeforeFirstDayOfTheMonth(props, cptYear, cptMonth)
+  while (dayBeforeFirstDayOfMonths--)
+    week.push({ isBlank: true })
 
-      const current = getCurrentDateISOFormat()
+  const current = getCurrentDateISOFormat()
 
-      // add days in month
-      const daysInMonth = _daysInMonth(cptYear.value, cptMonth.value + 1)
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = `${cptYear.value}-${pad(cptMonth.value + 1)}-${pad(day)}`
-        const dateItem = {
-          // raw date value which will be used to change date picker state
-          value: date,
-          // formatted date which will be shown in view
-          formattedValue: cptDateFormatFunc.value(date),
-          // boolean value indicate that whether the date can be selected
-          isAllowed: isDateAvailableFn(date),
-          // boolean value indicate that whether the date is selected or not
-          isSelected: isSelected(props, state, date),
-          // boolean value indicate whether the date is current
-          isCurrent: props.showCurrent && date === current,
-          // events of selected date
-          events: _genEvents(props, date)
-        }
+  // add days in month
+  const daysInMonth = _daysInMonth(cptYear.value, cptMonth.value + 1)
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = `${cptYear.value}-${pad(cptMonth.value + 1)}-${pad(day)}`
+    const dateItem = {
+      // raw date value which will be used to change date picker state
+      value: date,
+      // formatted date which will be shown in view
+      formattedValue: cptDateFormatFunc.value(date),
+      // boolean value indicate that whether the date can be selected
+      isAllowed: isAllowed(props, date),
+      // boolean value indicate that whether the date is selected or not
+      isSelected: isSelected(props, state, date),
+      // boolean value indicate whether the date is current
+      isCurrent: props.showCurrent && date === current,
+      // events of selected date
+      events: _genEvents(props, date)
+    }
 
-        if (props.range) {
-          _addRangeInformation(dateItem, state, date)
-        }
+    if (props.range) {
+      _addRangeInformation(dateItem, state, date)
+    }
 
-        week.push(dateItem)
+    week.push(dateItem)
 
-        // add week
-        if (week.length % (props.showWeek ? 8 : 7) === 0) {
-          weeks.push(week)
-          week = []
-          if (day < daysInMonth && props.showWeek) {
-            week.push({ isWeek: true, value: weekNumber++ })
-          }
-        }
+    // add week
+    if (week.length % (props.showWeek ? 8 : 7) === 0) {
+      weeks.push(week)
+      week = []
+      if (day < daysInMonth && props.showWeek) {
+        week.push({ isWeek: true, value: weekNumber++ })
       }
+    }
+  }
 
-      if (week.length) {
-        weeks.push(week)
-      }
+  if (week.length) {
+    weeks.push(week)
+  }
 
-      return weeks
-    })
+  return weeks
+})
 
 

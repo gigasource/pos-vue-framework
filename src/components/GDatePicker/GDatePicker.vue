@@ -1,10 +1,15 @@
 <script type="text/jsx">
   import _ from 'lodash'
-  import { computed, ref } from '@vue/composition-api'
+  import { ref } from '@vue/composition-api'
   import { TRANSITION_NAMES } from './logic/utils'
   import GDatePickerUtil from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
+
+  const MINIMUM_WIDTH = 300
+  const DEFAULT_COLOR = 'rgb(77, 0, 234)'
+  const DEFAULT_RANGE_COLOR = 'rgb(145, 107, 219)'
+
 
   export default {
     name: 'GDatePicker',
@@ -31,7 +36,12 @@
       // if both color and headerColor present, headerColor will be used for header
       color: {
         type: String,
-        default: 'rgb(77, 0, 234)'
+        default: DEFAULT_COLOR
+      },
+      // Range color define the color of range
+      rangeColor: {
+        type: String,
+        default: DEFAULT_RANGE_COLOR
       },
       // color of events
       eventColor: {
@@ -209,22 +219,31 @@
               }
 
               // range
-              date.backgroundClass = {
-                'g-table-item__background--start-range': date.isRangeStart,
-                'g-table-item__background--end-range': date.isRangeEnd,
-                'g-table-item__background--in-range': date.isInRange
+              date.background = {
+                class: {
+                  'g-table-item__background--start-range': date.isRangeStart,
+                  'g-table-item__background--end-range': date.isRangeEnd,
+                  'g-table-item__background--in-range': date.isInRange
+                },
+                style: {}
               }
 
               // selected
-              const color = props.color || ''
+              const color = props.color || DEFAULT_COLOR
               if (!props.range) {
                 if (date.isSelected)
                   setBackgroundColor(color, date)
                 else if (date.isCurrent)
                   setTextColor(color, date)
               } else {
-                if (date.isRangeStart || date.isRangeEnd)
+                // set start/end range color
+                if (date.isSelected && !date.isInRange)
                   setBackgroundColor(color, date)
+
+                // start, end, in
+                // it's similar to date.isSelected, except when selected range contain only 1 value (user just select start point)
+                if (date.isRangeStart || date.isRangeEnd || date.isInRange)
+                  setBackgroundColor(props.rangeColor || DEFAULT_RANGE_COLOR, date.background)
               }
             }
           })
@@ -246,7 +265,11 @@
               (dateItem.events || []).map(event => <div class={event.class} style={event.style}></div>)
             }
           </div>
-        </button>, <div class={['g-table-item__background', dateItem.backgroundClass]}></div>])
+        </button>,
+        <div class={['g-table-item__background', dateItem.background.class]}
+             style={dateItem.background.style}
+        >
+        </div>])
       }
       function weekRenderFn(week) {
         return (<small class="g-date-picker-table--date__week">
@@ -336,10 +359,10 @@
       return function datePickerRenderFn() {
         return (
             <g-picker
-                color={props.headerColor || props.color}
+                color={props.headerColor || props.color || DEFAULT_COLOR}
                 fullWidth={props.fullWidth}
                 landscape={props.landscape}
-                width={props.width}
+                width={props.width >= 300 ? props.width : MINIMUM_WIDTH}
                 noTitle={props.noTitle}
                 disabled={props.disabled}>
               <template slot="title">
@@ -379,7 +402,7 @@
     }
 
     &__date {
-      font-size: 28px;
+      font-size: 24px;
       text-align: left;
       font-weight: 500;
       position: relative;
@@ -477,10 +500,7 @@
     }
   }
 
-
   /*TABLE*/
-  $highlightedItem: rgb(231, 215, 253);
-
   .g-date-picker-table {
     position: relative;
     padding: 0 12px;
@@ -557,19 +577,13 @@
         z-index: -1;
 
         &--start-range {
-          background-color: $highlightedItem;
           width: 50%;
           right: 0;
         }
 
         &--end-range {
-          background-color: $highlightedItem;
           width: 50%;
           left: 0;
-        }
-
-        &--in-range {
-          background-color: $highlightedItem;
         }
       }
     }

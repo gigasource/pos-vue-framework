@@ -96,11 +96,6 @@
         </div>
       </div>
     </div>
-
-    <div style="padding: 30px">
-      <h3>Range picker</h3>
-      <g-date-range-picker></g-date-range-picker>
-    </div>
   </div>
 </template>
 <script>
@@ -119,8 +114,8 @@
         // dates
         singleSelect: new Date().toISOString().substr(0, 10),
         multipleSelect: [new Date().toISOString().substr(0, 10)],
-        rangeSelect: [new Date().toISOString().substr(0, 10), new Date().toISOString().substr(0, 10)],
-        rangeSelect2: [new Date().toISOString().substr(0, 10), new Date().toISOString().substr(0, 10)],
+        rangeSelect: [new Date().toISOString().substr(0, 10), new Date(now.getTime() + 86400000 * 2).toISOString().substr(0, 10)],
+        rangeSelect2: [new Date().toISOString().substr(0, 10), new Date(now.getTime() + 86400000 * 2).toISOString().substr(0, 10)],
         anotherOptionsModel: new Date(2020, 4, 6).toISOString().substr(0, 10),
         // months
         monthSelect: new Date().toISOString().substr(0, 10),

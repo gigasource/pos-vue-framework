@@ -6,10 +6,10 @@
         <g-date-picker
             no-title
             range
-            :value="state.range"
+            v-model="state.range"
             :type="'date'"
             :max="state.range[1]"
-            v-on="startRangeEventHandler"/>
+        />
       </div>
 
       <div style="display: flex; flex-direction: column;">
@@ -17,10 +17,9 @@
         <g-date-picker
             no-title
             range
-            :value="state.range"
+            v-model="state.range"
             :min="state.range[0]"
-            :type="'date'"
-            v-on="endRangeEventHandler"/>
+            :type="'date'"/>
       </div>
     </div>
   </div>
@@ -37,21 +36,31 @@
     components: { GDatePicker },
     props: {},
     setup() {
+      // The DatePicker has been changed so DateRangePicker doesn't work as expected
+      // TODO: Correct range picker behavior
+      const now = new Date()
+      const startRange = new Date(now.getTime() - 86400000 * 4).toISOString().substr(0, 10)
+      const endRange = new Date(now.getTime() + 86400000 * 4).toISOString().substr(0, 10)
+
       const state = reactive({
-        range: ['2019-01-10', '2019-01-20'],
+        range: [startRange, endRange],
       })
 
-      const startRangeEventHandler = {
-        [EVENT_NAMES.INPUT]: (range) => {
-          state.range = [range[0], state.range[1]]
-        }
-      }
-
-      const endRangeEventHandler = {
-        [EVENT_NAMES.INPUT]: (range) => {
-          state.range = [state.range[0], range[range.length-1]]
-        }
-      }
+      // const startRangeEventHandler = {
+      //   'input': (range) => {
+      //     console.log('start range emit', range)
+      //     state.range = [range[0], state.range[1]]
+      //     console.log(state.range)
+      //   }
+      // }
+      //
+      // const endRangeEventHandler = {
+      //   'input': (range) => {
+      //     console.log('end range emit', range)
+      //     state.range = [state.range[0], range[range.length-1]]
+      //     console.log(state.range)
+      //   }
+      // }
 
       // TODO: Remove duplicate
       // Get range diff
@@ -66,8 +75,8 @@
       return {
         state,
         selectedRanges,
-        startRangeEventHandler,
-        endRangeEventHandler
+        // startRangeEventHandler,
+        // endRangeEventHandler
       }
     }
   }

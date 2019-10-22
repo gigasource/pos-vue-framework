@@ -8,7 +8,7 @@ import { monthChange, createNativeLocaleFormatter, sanitizeDateString, pad } fro
  * @param dateString YYYY or YYYY-MM
  * @returns {boolean}
  */
-function isMonthFormat(dateString) {
+export const isMonthFormat = (dateString) => {
   return dateString.split('-').length > 1
 }
 
@@ -68,29 +68,29 @@ export const computedNavigateStatus = (props, state) => {
 export const _computedContent = (state) => computed(() => {
   // if active picker is date, then we should show month in the header
   // if active picker is month, the we should show year in the header
-  if (state.activePicker === 'date')
-    return state.viewportDate.substr(0, 7) // YYYY-MM
-  else
-    return state.viewportDate.substr(0, 4) // YYYY
+  if (state.activePicker === 'date') {
+    return state.viewportDate.substr(0, 7)
+  }// YYYY-MM
+  else {
+    return state.viewportDate.substr(0, 4)
+  } // YYYY
 })
 
-export function _computedHeaderFormatFn(props, state) {
-  return computed(() => {
-    if (props.headerDateFormat)
-      return props.headerDateFormat
-    else if (state.activePicker === 'date') {
-      return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
-    } else {
-      return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
-    }
-  })
-}
+export const _computedHeaderFormatFn = (props, state) => computed(() => {
+  if (props.headerDateFormat) {
+    return props.headerDateFormat
+  } else if (state.activePicker === 'date') {
+    return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
+  } else {
+    return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
+  }
+})
 
-export const computedContents = (props, state) => {
+export const computedContents = (props, state) => computed(() => {
   const cptHeaderContent = _computedContent(state)
   const cptHeaderContentFormatFn = _computedHeaderFormatFn(props, state)
-  return computed(() => ({
+  return {
     headerContent: cptHeaderContent.value,
     formattedHeaderContent: cptHeaderContentFormatFn.value(cptHeaderContent.value)
-  }))
-}
+  }
+})

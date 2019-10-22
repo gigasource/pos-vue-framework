@@ -16,7 +16,7 @@ export const SingleValueDatePicker = () => ({
     max: { default: text('max', '2019-10-19') },
     min: { default: text('min', '2019-10-10') },
     value: { default: text('value', '2019-10-15') },
-    color: { default: text('color', '#66BB6A') },
+    color: { default: text('color', '#1867c0') },
     headerColor: { default: text('headerColor', '#1867c0') },
     fullWidth: { default: boolean('fullWidth', false) },
     width: { default: number('width', 300) },
@@ -58,7 +58,7 @@ export const MultipleValueDatePicker = () => ({
     max: { default: text('max', '2019-10-25') },
     min: { default: text('min', '2019-10-10') },
     value: { default: array('value', ['2019-10-15', '2019-10-19']) },
-    color: { default: text('color', '#66BB6A') },
+    color: { default: text('color', '#1867c0') },
     headerColor: { default: text('headerColor', '#1867c0') },
     fullWidth: { default: boolean('fullWidth', false) },
     width: { default: number('width', 300) },
@@ -102,7 +102,8 @@ export const RangeValueDatePicker = () => ({
     max: { default: text('max', '2019-10-25') },
     min: { default: text('min', '2019-10-10') },
     value: { default: array('value', ['2019-10-15', '2019-10-19']) },
-    color: { default: text('color', '#66BB6A') },
+    color: { default: text('color', '#1867c0') },
+    rangeColor: { default: text('rangeColor', '#1867c0') },
     headerColor: { default: text('headerColor', '#1867c0') },
     fullWidth: { default: boolean('fullWidth', false) },
     width: { default: number('width', 300) },
@@ -122,6 +123,7 @@ export const RangeValueDatePicker = () => ({
             min={props.min}
             vModel={props.value}
             color={props.color}
+            range-color={props.rangeColor}
             header-color={props.headerColor}
             full-width={props.fullWidth}
             width={props.width}
@@ -143,7 +145,7 @@ export const SingleValueMonthPicker = () => ({
   components: { GDatePicker },
   props: {
     value: { default: text('value', '2019-10-15') },
-    color: { default: text('color', '#66BB6A') },
+    color: { default: text('color', '#1867c0') },
     headerColor: { default: text('headerColor', '#1867c0') },
     fullWidth: { default: boolean('fullWidth', false) },
     width: { default: number('width', 300) },
@@ -186,7 +188,7 @@ export const MultipleValueMonthPicker = () => ({
   components: { GDatePicker },
   props: {
     value: { default: array('value', ['2019-10-15', '2019-10-19']) },
-    color: { default: text('color', '#66BB6A') },
+    color: { default: text('color', '#1867c0') },
     headerColor: { default: text('headerColor', '#1867c0') },
     fullWidth: { default: boolean('fullWidth', false) },
     width: { default: number('width', 300) },

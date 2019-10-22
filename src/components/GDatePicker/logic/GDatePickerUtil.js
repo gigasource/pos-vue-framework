@@ -1,16 +1,15 @@
 import { computed, reactive } from '@vue/composition-api'
-import { createNativeLocaleFormatter, getCurrentDateISOFormat, pad, sanitizeDateString } from './utils';
+import { getCurrentDateISOFormat } from './utils';
 import { computedYearRange } from './YearsUtil'
 import { computedMonthRows } from './MonthTableUtil'
 import { computedDatesInMonth, computedDayNameInWeek } from './DateTableUtil'
-import {
-  calculateChange, computedContents,
-  computedFormattedContent,
-  _computedHeaderFormatFn,
-  computedNavigateStatus,
-  NAV
-} from './HeaderUtil';
+import { calculateChange, computedContents, computedNavigateStatus, NAV } from './HeaderUtil'
+import { _computedTitleFormatterFn } from './TitleUtil';
 
+/**
+ * Event will be exported by GDatePicker
+ * @type {{DB_CLICK_MONTH: string, INPUT: string, CLICK_DATE: string, UPDATE_PICKER_DATE: string, CLICK_MONTH: string, DB_CLICK_DATE: string}}
+ */
 export const EVENT_NAMES = {
   INPUT: 'input',
   UPDATE_PICKER_DATE: 'update:picker-date',
@@ -27,65 +26,6 @@ export const EVENT_NAMES = {
  * @returns {*}
  */
 export const _computedIsMultiple = (props) => computed(() => props.multiple || props.range)
-
-/**
- * Title format
- * @param props
- * @param cptIsMultiSelect
- * @param dateRanges
- * @returns {Ref<any>}
- * @private
- */
-export const _computedTitleFormatterFn = (props, cptIsMultiSelect) => computed(() => {
-  const defaultMultipleDateFormatter = computed(() => {
-    return dates => {
-      if (cptIsMultiSelect.value) {
-        if (Array.isArray(dates)) {
-          if (props.multiple) {
-            // multiple selection mode
-            return dates.length + ' selected'
-          } else {
-            // range selection mode, try to count the number of date range
-            // TODO: We only need the number of days in range, not the date value
-            const dateRanges = _generateDateRange(props)
-            return dateRanges.value.length + ' selected'
-          }
-        } else {
-          return '1 selected'
-        }
-      } else {
-        if (Array.isArray(dates)) {
-          return defaultDateFormatter.value(dates[0])
-        } else {
-          return defaultDateFormatter.value(dates)
-        }
-      }
-    }
-  })
-  const defaultDateFormatter = computed(() => {
-    const titleFormats = {
-      year: { year: 'numeric', timeZone: 'UTC' },
-      month: { month: 'long', timeZone: 'UTC' },
-      date: { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' },
-    }
-
-    const titleDateFormatter = createNativeLocaleFormatter(undefined, titleFormats[props.type], {
-      start: 0,
-      length: { date: 10, month: 7, year: 4 }[props.type],
-    })
-
-    const landscapeFormatter = (date) => titleDateFormatter(date)
-    .replace(/([^\d\s])([\d])/g, (match, nonDigit, digit) => `${nonDigit} ${digit}`)
-    .replace(', ', ',<br>')
-
-    return props.landscape ? landscapeFormatter : titleDateFormatter
-  })
-
-  return {
-    year: createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
-    date: props.titleDateFormat || (cptIsMultiSelect.value ? defaultMultipleDateFormatter.value : defaultDateFormatter.value),
-  }
-})
 
 export function applyNewSelectedValue(props, state, newValue) {
   if (props.range) {
@@ -136,7 +76,6 @@ export const _generateDateRange = (props) => {
   })
 }
 
-
 // Models
 export const _getTitleModel = ({ props, state, cptIsMultiSelect }) => computed(() => {
   const cptFormatFuncs = _computedTitleFormatterFn(props, cptIsMultiSelect)
@@ -159,7 +98,7 @@ export const _getYearModel = ({ props, state }) => computed(() => {
   const cptYears = computedYearRange(props)
   return {
     years: cptYears.value,
-    selectedYear: state.viewportDate,
+    selectedYear: state.viewportDate, // for highlighting
     on: {
       yearClicked: (year) => {
         // show month picker of the year is selected year
@@ -277,9 +216,6 @@ function getValidInitialValue(props, cptIsMultiSelect) {
 export default (props, context) => {
   const cptIsMultiSelect = _computedIsMultiple(props)
   validateInitialValue(props.value, cptIsMultiSelect)
-
-  const initViewportDate = getCurrentDateISOFormat().substr(0, props.type === 'date' ? 10 : 7)
-
   const state = reactive({
     // string value indicate what viewport should be shown
     // 'year': year picker
@@ -292,7 +228,7 @@ export default (props, context) => {
     //   YYYY: when show year picker, YYYY value will be used to highlight current year
     //   YYYY: when show month picker, with YYYY is the year of month picker
     //   YYYY-MM: show date picker, with YYYY-MM is the month of date picker
-    viewportDate: initViewportDate,
+    viewportDate: getCurrentDateISOFormat().substr(0, props.type === 'date' ? 10 : 7),
 
     // store selected value(s)
     // string if single mode is used

@@ -27,7 +27,7 @@ export const isSelected = (props, state, value) => {
       return state.selectedValues[0] === value
     } else if (state.selectedValues.length === 2) {
       return state.selectedValues[0] <= value && value <= state.selectedValues[1]
-    }
+    } else return false
   }
   else if (props.multiple) {
     return state.selectedValues.indexOf(value) !== -1
@@ -35,3 +35,35 @@ export const isSelected = (props, state, value) => {
     return value === state.selectedValues
   }
 }
+
+/**
+ * Check if provided value is in range
+ * @private
+ * @publicForTestOnly
+ * @param value
+ * @param min
+ * @param max
+ * @returns {boolean|*}
+ */
+export const _isValueInRange = (value, min, max) => {
+  return (!min || value >= min) && (!max || value <= max)
+}
+
+/**
+ * @private
+ * @publicForTestOnly
+ */
+export function _isDateAllowed(value, filterFn) {
+  if (typeof filterFn !== 'function')
+    return true
+
+  return filterFn(value)
+}
+
+/**
+ * Check if item is allowed to select
+ * @param props
+ * @param value
+ * @returns {boolean|*}
+ */
+export const isAllowed = (props, value) => _isDateAllowed(value, props.allowedDates) && _isValueInRange(value, props.min, props.max)
