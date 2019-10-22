@@ -3,7 +3,8 @@
 		<fieldset>
 			<legend>Checkbox</legend>
 			Value: {{cbvalue}}
-			<g-checkbox label="checkbox 1&2" v-model="cbvalue" :value="allValue" multiple></g-checkbox>
+			<input type="text" v-model="color">
+			<g-checkbox label="checkbox 1&2" v-model="cbvalue" :value="allValue" multiple :color="color"></g-checkbox>
 			<g-checkbox label="check box 1" v-model="cbvalue" :value="cb1" color="#1271ff"></g-checkbox>
 			<g-checkbox label="check box 2" v-model="cbvalue" :value="cb2" color="amber"></g-checkbox>
 			State:
@@ -70,7 +71,8 @@
 				svalue: [],
 				cb1: {a: 'CB1'},
         cb2: {a: 'CB2'},
-        allValue: []
+        allValue: [],
+				color: 'red',
       }
     },
 		created() {

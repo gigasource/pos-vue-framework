@@ -86,9 +86,9 @@ export function upperFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export default function colorHandler(color) {
+export default function colorHandler() {
 
-  function getColorType() {
+  function getColorType(color) {
     if (color && (color.indexOf('rgb') === 0 || color.indexOf('hsl') === 0 || color.indexOf('#') === 0) || color === 'transparent') {
       return 'style';
     } else if (color) {
@@ -97,7 +97,7 @@ export default function colorHandler(color) {
   }
 
 
-  function convertColorClass(option) {
+  function convertColorClass(color, option) {
     if (color) {
       if (option === 'background') {
         color = 'bg ' + color;
