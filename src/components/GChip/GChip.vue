@@ -61,7 +61,6 @@
       textColor: String,
       backgroundColor: { type: String, default: '#e0e0e0' },
       gradient: String,
-      item: null
 
     },
     setup(props, context) {
@@ -155,11 +154,11 @@
 
       const {item} = props;
       let onClick = (event) => {
-        context.emit('click', item);
+        context.emit('click', event);
       };
 
       let onClose = (event) => {
-        context.emit('click:close', item);
+        context.emit('click:close');
         context.emit('update:active', false);
       };
 
