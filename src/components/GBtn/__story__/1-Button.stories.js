@@ -1,4 +1,4 @@
-import { text, withKnobs } from '@storybook/addon-knobs';
+import { text, withKnobs, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import GBtn from '../GBtn';
 
@@ -10,11 +10,10 @@ export default {
 export const test1 = () => ({
   components: { GBtn },
   props: {
-    text: {
-      default: text('Button Text', 'XLARGE BUTTON')
-    }
+    text: { default: text('Button Text', 'XLARGE BUTTON') },
+    outlined: { default: boolean('outlined', true) }
   },
-  template: `<g-btn outlined raised elevation='0' x-large>{{text}}</g-btn>`,
+  template: `<g-btn :outlined="outlined" raised elevation='0' x-large>{{text}}</g-btn>`,
 })
 
 export const test2 = () => ({
@@ -35,5 +34,4 @@ describe('test', function () {
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
-
 
