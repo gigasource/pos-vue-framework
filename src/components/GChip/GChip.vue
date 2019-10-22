@@ -1,12 +1,12 @@
 <template>
 	<div :class="classes" :style="styles" :draggable="draggable" @click="onClick">
-		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY' && isActive">
-			<i class="material-icons g-icon" v-if="filter && isActive">{{filterIcon}}</i>
+		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY' && active">
+			<i class="material-icons g-icon" v-if="filter && active">{{filterIcon}}</i>
 		</span>
 
 		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_FILTER'">
 			<slot name="prependItem"></slot>
-			<div class="g-overlay" v-if="filter && isActive">
+			<div class="g-overlay" v-if="filter && active">
 				<i class="material-icons g-icon">{{filterIcon}}</i>
 			</div>
 		</div>
@@ -61,7 +61,7 @@
       textColor: String,
       backgroundColor: { type: String, default: '#e0e0e0' },
       gradient: String,
-
+      item: null
 
     },
     setup(props, context) {
@@ -69,8 +69,6 @@
       const RENDER_FILTER_ONLY = 'RENDER_FILTER_ONLY';
       const RENDER_AVATAR_ONLY = 'RENDER_AVATAR_ONLY';
       const RENDER_AVATAR_FILTER = 'RENDER_AVATAR_FILTER';
-
-      let isActive = ref(false);
 
       //Check prepend slot available
       let prependSlot = () => {
@@ -87,8 +85,6 @@
           return RENDER_FILTER_ONLY;
         }
       });
-
-      let toggle = () => (isActive.value = !isActive.value);
 
       let backgroundColorOutput = computed(() => {
         return props.color ? setBackgroundColor(props.color, {}) : setBackgroundColor('#e0e0e0', {});
@@ -149,7 +145,7 @@
         };
 
         // Params: linear-gradient(45deg, yellow, green)
-				//includes('-'): check if grandient is gradient-45deg-yellow-green or array of colors
+        //includes('-'): check if grandient is gradient-45deg-yellow-green or array of colors
         if (props.gradient && !props.gradient.toString().includes('-')) {
           _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
         }
@@ -157,20 +153,19 @@
         return _styles;
       });
 
+      const {item} = props;
       let onClick = (event) => {
-        context.emit('click', event);
-        toggle();
+        context.emit('click', item);
       };
 
       let onClose = (event) => {
-        context.emit('click:close');
+        context.emit('click:close', item);
         context.emit('update:active', false);
       };
 
       return {
         classes,
         styles,
-        isActive,
         renderState,
         onClick,
         onClose
