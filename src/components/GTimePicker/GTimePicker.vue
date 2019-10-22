@@ -33,8 +33,6 @@
       useSeconds: Boolean,
 
       // values
-      min: String,
-      max: String,
       value: String,
 
       // ROADMAP
@@ -67,13 +65,13 @@
         //  // @ignorable
         //  // indicate whether hour, minutes, second view will be shown
         //  // if you want to show all components (hour, minute, second), just ignore this value
-        //  selecting: 'hour' || 'minute' || 'seconds'
+        //  activePicker: 'hour' || 'minute' || 'seconds'
         //
         //  // @neededInView
         //  // boolean value indicate whether AM/PM label will be show.
         //  // This value will be computed from props.hourConvention. True if 12Hour, false if 24Hour
-        //  // This value co-existence with onAMClicked and onPMClicked event handler
-        //  showPeriod: true || false
+        //  // This value co-existence with changePeriodToAM and onPMClicked event handler
+        //  showPeriod: true || false,
         // }
         state,
         // hour models: [{ selected: Boolean, allowed: Boolean }]
@@ -82,20 +80,26 @@
         minutes,
         // second models: [{ selected: Boolean, allowed: Boolean }]
         seconds,
-        // function to change value non-click: used by scroll, touch, wheel
+        // function to change value non-click: scroll, touch, wheel
         changeHour,
         changeMinute,
         changeSecond,
+
         // function to change value by clicked
         // event handler when
-        onTitleHourSelected,
+        showHoursPicker,
+        showMinutesPicker,
+        showSecondsPicker,
 
-        onAMClicked,
-        onPMClicked,
-        onHourSelected,
-        onMinuteSelected,
-        onSecondSelected
+        //
+        showAMPicker,
+        showPMPicker
       } = GTimePickerUtil(props, context)
+
+      // temp method
+      function pad(value) {
+        return value < 10? `0${value}` : `${value}`
+      }
 
       // Title
       // const createPickerBtnData = (activeState, events, content) => {
@@ -139,22 +143,26 @@
         return (
             <div class="g-time-picker__title">
               <div
-                  class={['g-time-picker__title__time-element', {'g-time-picker__title__time-element--selected': state.hourSelected }]}
-                  vOn:click_stop={ () => onTitleHourSelected(state.hour) }
-              > { state.hour }</div>
+                  class={[
+                      'g-time-picker__title__time-element',
+                      {'g-time-picker__title__time-element--active': state.activeTimePicker.hour }
+                    ]}
+                  vOn:click_stop={showHoursPicker}>{ pad(state.selectedTime.hours) }</div>
               <span>:</span>
-              <div class="g-time-picker__title__time-element"> { state.minute }</div>
+              <div class="g-time-picker__title__time-element"
+                  vOn:click_stop={showMinutesPicker}>{ pad(state.selectedTime.minutes) }</div>
               {
                 props.useSeconds ? [
                   <span>:</span>,
-                  <div class="g-time-picker__title__time-element">{ state.second }</div>
+                  <div class="g-time-picker__title__time-element"
+                      vOn:click_stop={showSecondsPicker}>{ pad(state.selectedTime.seconds) }</div>
                 ] : undefined
               }
               {
                 state.showPeriod
                     ? <div>
-                        <div class={{'g-time-picker__title__period--active': state.AMSelected }} vOn:click_stop={ () => onAMClicked() }>AM</div>
-                        <div class={{'g-time-picker__title__period--active': state.PMSelected }} vOn:click_stop={ () => onPMClicked() }>PM</div>
+                        <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.AM }} vOn:click_stop={showAMPicker}>AM</div>
+                        <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.PM }} vOn:click_stop={showPMPicker}>PM</div>
                       </div>
                     : undefined
               }
@@ -167,8 +175,8 @@
         return (
             <div class="g-time-picker__clock">
               {(
-                  state.hourSelected
-                      ? <ul>
+                  state.activeTimePicker.hour
+                      ? <ul class="g-time-picker__clock__element">
                         {
                           hours.value.map(hour =>
                               <li className={{
@@ -176,45 +184,36 @@
                                     'g-time-picker__clock__time-element--readonly': props.readonly,
                                     'g-time-picker__clock__time-element--disabled': props.disabled || !hour.allowed
                                   }}
-                                  vOn:click_stop={() => onHourSelected(hour)}
-                              >
-                                {hour.value}
-                              </li>
+                                  vOn:click_stop={() => { hour.select(); showMinutesPicker(); } }>{ hour.value }</li>
                           )
                         }
                       </ul>
-                      : state.minuteSelected
+                      : state.activeTimePicker.minute
                       ? <ul>
-                        {
-                          minutes.value.map(minute =>
-                              <li class={{
-                                    'g-time-picker__clock__time-element--selected': minute.selected,
-                                    'g-time-picker__clock__time-element--readonly': props.readonly,
-                                    'g-time-picker__clock__time-element--disabled': props.disabled || !minute.allowed
-                                  }}
-                                  vOn:click_stop={() => onMinuteSelected(minute)}
-                              >
-                                { minute.value }
-                              </li>
-                          )
-                        }
-                      </ul>
-                      : props.useSeconds
+                          {
+                            minutes.value.map(minute =>
+                                <li class={{
+                                      'g-time-picker__clock__time-element--selected': minute.selected,
+                                      'g-time-picker__clock__time-element--readonly': props.readonly,
+                                      'g-time-picker__clock__time-element--disabled': props.disabled || !minute.allowed
+                                    }}
+                                    vOn:click_stop={() => { minute.select(); showSecondsPicker(); } }>{ minute.value }</li>
+                            )
+                          }
+                        </ul>
+                      : props.useSeconds && state.activeTimePicker.second
                           ? <ul>
-                            {
-                              seconds.map(second =>
-                                  <li class={{
-                                        'g-time-picker__clock__time-element--selected': second.selected,
-                                        'g-time-picker__clock__time-element--readonly': props.readonly,
-                                        'g-time-picker__clock__time-element--disabled': props.disabled || !second.allowed
-                                      }}
-                                      vOn:click_stop={() => onSecondSelected(second)}
-                                  >
-                                    { second.value }
-                                  </li>
-                              )
-                            }
-                          </ul> : undefined
+                              {
+                                seconds.value.map(second =>
+                                    <li class={{
+                                          'g-time-picker__clock__time-element--selected': second.selected,
+                                          'g-time-picker__clock__time-element--readonly': props.readonly,
+                                          'g-time-picker__clock__time-element--disabled': props.disabled || !second.allowed
+                                        }}
+                                        vOn:click_stop={() => second.select()}>{ second.value }</li>
+                                )
+                              }
+                            </ul> : undefined
               )}
             </div>
         )
@@ -236,11 +235,16 @@
  .g-time-picker {
    &__title {
      &__time-element {
-
+       display: inline-block;
      }
    }
 
    &__clock {
+
+     &__element {
+       list-style-type: none;
+     }
+
      &__time-element {
 
        &--disabled {

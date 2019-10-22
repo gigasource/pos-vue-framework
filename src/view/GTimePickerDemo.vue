@@ -1,29 +1,23 @@
 <template>
   <div>
-    <g-time-picker-title
-        :hour="hour"
-        :minute="minute"
+    <g-time-picker
+        :value="'15:18:30'"
         :hour-convention="convention"
-        :period="period"
-        :selecting="selecting"
-    />
+        use-seconds
+    ></g-time-picker>
   </div>
 </template>
 
 <script>
-  import { Period, HourConvention, SelectingTime } from '../components/GTimePicker/logic/GTimePickerTitleUtil';
-  import GTimePickerTitle from '../components/GTimePicker/GTimePickerTitle';
+  import { HourConvention } from '../components/GTimePicker/logic/GTimePickerUtil'
+  import GTimePicker from '../components/GTimePicker/GTimePicker'
 
   export default {
     name: 'GTimePickerDemo',
-    components: { GTimePickerTitle },
+    components: { GTimePicker },
     data () {
       return {
-        hour: 15,
-        minute: 50,
-        convention: HourConvention._12HRS,
-        period: Period.AM,
-        selecting: SelectingTime.Minute,
+        convention: HourConvention._24HRS,
       }
     }
   }
