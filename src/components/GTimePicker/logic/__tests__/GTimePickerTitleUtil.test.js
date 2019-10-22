@@ -2,7 +2,7 @@
 import { createLocalVue } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
 import {
-  _getHour, _getMinute,
+  _cptGetHour, _cptGetMinute,
   HourConvention,
   HourConventionValidator,
   Period,
@@ -49,24 +49,24 @@ describe('/GTimePickerTitleUtil', () => {
     })
   })
 
-  describe('_getHour', () => {
+  describe('_cptGetHour', () => {
     it('Should thrown exception if props is null', () => {
-      expect(() => _getHour().value).toThrowError()
+      expect(() => _cptGetHour().value).toThrowError()
     })
 
     it('Should return "--" if props.hour is null', () => {
-      expect(_getHour({}).value).toBe('--')
+      expect(_cptGetHour({}).value).toBe('--')
     })
 
     it('Should thrown if props.hour < 0', () => {
-      expect(() => _getHour({ hour: 0 }).value).not.toThrowError()
-      expect(() => _getHour({ hour: -1 }).value).toThrowError()
+      expect(() => _cptGetHour({ hour: 0 }).value).not.toThrowError()
+      expect(() => _cptGetHour({ hour: -1 }).value).toThrowError()
     })
 
     it('Should thrown exception if props.hour > 23', () => {
-      expect(() => _getHour({ hour: 23 }).value).not.toThrowError()
-      expect(() => _getHour({ hour: 23.0000000001 }).value).toThrowError()
-      expect(() => _getHour({ hour: 24 }).value).toThrowError()
+      expect(() => _cptGetHour({ hour: 23 }).value).not.toThrowError()
+      expect(() => _cptGetHour({ hour: 23.0000000001 }).value).toThrowError()
+      expect(() => _cptGetHour({ hour: 24 }).value).toThrowError()
     })
 
     it('Should pass the test with valid value', () => {
@@ -79,28 +79,28 @@ describe('/GTimePickerTitleUtil', () => {
       ]
 
       for(let i =0; i<testCases.length; ++i)
-        expect(_getHour(testCases[i].input).value).toBe(testCases[i].expect)
+        expect(_cptGetHour(testCases[i].input).value).toBe(testCases[i].expect)
     })
   })
 
-  describe('_getMinute', () => {
+  describe('_cptGetMinute', () => {
     it('Should thrown if props is null', () => {
-      expect(() => _getMinute().value).toThrowError()
+      expect(() => _cptGetMinute().value).toThrowError()
     })
 
     it('Should return "--" if props.minute is null', () => {
-      expect(_getMinute({}).value).toBe('--')
+      expect(_cptGetMinute({}).value).toBe('--')
     })
 
     it('Should thrown if props.minute < 0', () => {
-      expect(() => _getMinute({ minute: 0 }).value).not.toThrowError()
-      expect(() => _getMinute({ minute: -1 }).value).toThrowError()
+      expect(() => _cptGetMinute({ minute: 0 }).value).not.toThrowError()
+      expect(() => _cptGetMinute({ minute: -1 }).value).toThrowError()
     })
 
     it('Should thrown if props.minute > 59', () => {
-      expect(() => _getMinute({minute: 59}).value).not.toThrowError()
-      expect(() => _getMinute({minute: 59.0000001}).value).toThrowError()
-      expect(() => _getMinute({minute: 60}).value).toThrowError()
+      expect(() => _cptGetMinute({minute: 59}).value).not.toThrowError()
+      expect(() => _cptGetMinute({minute: 59.0000001}).value).toThrowError()
+      expect(() => _cptGetMinute({minute: 60}).value).toThrowError()
     })
 
     it('Should pass the test with valid value', () => {
@@ -110,7 +110,7 @@ describe('/GTimePickerTitleUtil', () => {
       ]
 
       for(let i=0; i<testCases.length; ++i)
-        expect(_getMinute(testCases[i].input).value).toBe(testCases[i].expect)
+        expect(_cptGetMinute(testCases[i].input).value).toBe(testCases[i].expect)
     })
   })
 })

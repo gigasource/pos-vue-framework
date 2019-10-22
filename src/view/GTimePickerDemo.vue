@@ -11,8 +11,8 @@
 </template>
 
 <script>
-  import { Period, HourConvention, SelectingTime } from '../components/GTimePicker/Title/GTimePickerTitleUtil';
-  import GTimePickerTitle from '../components/GTimePicker/Title/GTimePickerTitle';
+  import { Period, HourConvention, SelectingTime } from '../components/GTimePicker/logic/GTimePickerTitleUtil';
+  import GTimePickerTitle from '../components/GTimePicker/GTimePickerTitle';
 
   export default {
     name: 'GTimePickerDemo',

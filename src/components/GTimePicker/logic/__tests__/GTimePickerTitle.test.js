@@ -1,7 +1,7 @@
 // Created at 2019-10-17 18:05 by Thinh Vu
 import { createLocalVue, mount } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
-import GTimePickerTitle from '../GTimePickerTitle'
+import GTimePickerTitle from '../../GTimePickerTitle'
 import { HourConvention, Period, SelectingTime } from '../GTimePickerTitleUtil';
 
 describe('GTimePicker/Title/GTimePickerTitle', () => {
