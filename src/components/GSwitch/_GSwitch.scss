@@ -1,0 +1,111 @@
+.g-switch {
+  background-color: #1271ff;
+  
+  &-wrapper {
+    margin: 12px 4px;
+  }
+
+  &-container {
+    position: relative;
+    padding-left: 32px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: "Muli", sans-serif;
+    font-weight: 400;
+    background-clip: content-box;
+    font-size: 16px;
+  }
+
+  &-container input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+
+  &-track {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    width: 36px;
+    height: 14px;
+    background-color: #878787;
+    border-radius: 9999px;
+    opacity: 0.4;
+  }
+
+  &-thumb {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    transition: 0.5s;
+  }
+
+  &-thumb:before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: -1;
+  }
+
+  &__active &-thumb{
+    transform: translateX(80%);
+  }
+
+  &__active &-track,
+  &__active &-thumb {
+    background-color: inherit;
+  }
+
+  &:hover > &-thumb:before {
+    opacity: 0.2;
+    background-color: #878787;
+  }
+
+  &.g-switch__active:hover > &-thumb:before {
+    opacity: 0.2;
+    background-color: inherit;
+  }
+
+  &-label {
+    margin-left: 4px;
+  }
+
+  &__flat &-thumb:before {
+    display: none !important;
+  }
+
+  &__inset {
+    .g-switch-track {
+      top: -4px;
+      left: -4px;
+      height: 28px;
+      width: 44px;
+      opacity: 0.2;
+    }
+
+    .g-switch-thumb {
+      top: 0;
+    }
+
+    .g-switch-thumb:before {
+      display: none;
+    }
+
+    ~ .g-switch-label {
+      padding-top: 2px;
+    }
+  }
+}
+

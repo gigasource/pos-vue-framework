@@ -23,7 +23,7 @@ export const gListInset = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" dense subheader="subheader" divider='inset'  >
       </g-list>
       `,
@@ -41,7 +41,7 @@ export const gListShapedInset = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" shaped dense subheader="subheader" divider='inset' >
       </g-list>
       `,
@@ -59,7 +59,7 @@ export const gListNav = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items"  dense nav prepend-type="icon">
       </g-list>
       `,
@@ -78,7 +78,7 @@ export const gListTwoLine = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded dense subheader="subheader" divider='inset' >
       </g-list>
       `,
@@ -96,7 +96,7 @@ export const gListTwoLineWithWrapper = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded dense subheader="subheader" divider='inset' subtitleWrap >
       </g-list>
       `,
@@ -114,7 +114,7 @@ export const gListThreeLine = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded  subheader="subheader" divider='inset' subtitleWrap >
       </g-list>
       `,
@@ -132,7 +132,7 @@ export const gListPrependWithSlot = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded dense subheader="subheader" divider='inset' >
         <template v-slot:prepend="{item}">
           <img :src="item.prepend" alt="">
@@ -159,7 +159,7 @@ export const gListNormalPrependAvatar = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded dense prepend-type="avatar">
       </g-list>
       `,
@@ -183,7 +183,7 @@ export const gListNormalPrependIcon = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded dense prepend-type="icon">
       </g-list>
       `,
@@ -202,7 +202,7 @@ export const gListNormalPrependImg = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded dense prepend-type="image">
       </g-list>
       `,
@@ -225,7 +225,7 @@ export const gListMultiSection = () => ({
     }
   },
   template:
-      `
+    `
       <g-list :items="items" rounded dense prepend-type="avatar" multi-section>
       </g-list>
       `,
@@ -245,7 +245,7 @@ export const gListSingleSectionSelect = () => ({
     }
   },
   template:
-      `
+    `
       <div>
         selectedItem: {{testValue}}
         <g-list v-model="testValue" :items="items" rounded dense subheader="subheader" divider=inset selectable>
@@ -272,7 +272,7 @@ export const gListMultiSectionSelect = () => ({
 
   },
   template:
-      `
+    `
       <div>
         selectedItemIndex: {{testValue}}
         <g-list v-model="testValue" :items="items" rounded dense subheader="subheader" divider=inset selectable multi-section>
@@ -290,19 +290,25 @@ export const gListItemSlotRenderArray = () => ({
         {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
+      testValue: 1
     }
   },
   template:
-      `
-      <g-list :items="items" selectable>
-        <template v-slot:default="{item, isSelected}">
-          <g-list-item :isSelected="isSelected">
-            <g-list-item-content>
-                <g-list-item-text >{{item.title}}</g-list-item-text>
-            </g-list-item-content>
-          </g-list-item>
-        </template>
-      </g-list>
+    `
+      <div>
+      selectedItem: {{testValue}}
+      <g-list :items="items" selectable v-model="testValue">
+            
+              <template v-slot:default="{item, isSelected}">
+                <g-list-item :isSelected="isSelected">
+                  <g-list-item-content>
+                      <g-list-item-text >{{item.title}}</g-list-item-text>
+                  </g-list-item-content>
+                </g-list-item>
+              </template>
+            </g-list>
+      </div>
+      
 `,
 })
 
