@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import { computed, reactive } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
   import { isCssColor } from '../../mixins/colorable';
   import { linearGradient } from '../../utils/colors';
@@ -79,11 +79,11 @@
         return contentHeight.value + (props.extended ? parseInt(props.extensionHeight) : 0);
       });
 
-      const contentStyles = reactive({
+      const contentStyles = computed({
         'height': convertToUnit(contentHeight.value)
       });
 
-      const totalHeightStyles = reactive({
+      const totalHeightStyles = computed({
         'height': convertToUnit(totalHeight.value)
       });
 
