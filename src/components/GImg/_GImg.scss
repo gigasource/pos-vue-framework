@@ -12,6 +12,18 @@
     background-color: #cccccc;
   }
 
+//@media only screen and (max-width: 800px) {
+//  &-content {
+//    position: absolute;
+//    z-index: -1;
+//    width: 50%;
+//    height: 50%;
+//    background-repeat: no-repeat;
+//    background-position: center center;
+//    background-color: #cccccc;
+//  }
+//}
+
   &-placeholder {
     position: absolute;
     z-index: -1;

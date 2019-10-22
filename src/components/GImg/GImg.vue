@@ -1,8 +1,8 @@
 <template>
     <div v-intersect:[intersectOptions].once="init" class="g-image" :style="containerStyles">
-        <div class="g-image--content" :style="imageStyles"></div>
+        <div class="g-image-content" :style="imageStyles"></div>
         <slot></slot>
-        <slot v-if="!loaded" name="placeholder" class="g-image--placeholder"></slot>
+        <slot v-if="!loaded" name="placeholder" class="g-image-placeholder"></slot>
     </div>
 </template>
 
@@ -20,6 +20,7 @@
 
     props: {
       src: [String, Object],
+      srcset: [String],
       lazySrc: [String],
       width: [Number, String],
       maxWidth: [Number, String],
@@ -35,7 +36,7 @@
         default: () => ({
           root: undefined,
           rootMargin: undefined,
-          threshold: 0.8,
+          threshold: 0,
         }),
       },
     },
@@ -97,6 +98,7 @@
       }
 
       const _image = new Image()
+
       function loadImage() {
         //load image here
 
@@ -121,6 +123,8 @@
         props.sizes && (_image.sizes = props.sizes)
         normalizedSrc.value.srcset && (_image.srcset = normalizedSrc.value.srcset)
         props.aspectRatio || pollForSize(_image)
+        console.log(normalizedSrc.value.srcset)
+        console.log(_image)
       }
 
       function onLoad() {
@@ -156,11 +160,26 @@
         poll()
       }
 
+      function calculateWidth(props, state) {
+        if (props.width) return convertToUnit(props.width)
+        if (!!props.height && props.aspectRatio) return convertToUnit(props.height * props.aspectRatio)
+        if (state.naturalWidth) return convertToUnit(state.naturalWidth)
+        if (state.image) return convertToUnit(state.img.width)
+      }
+
+      function calculateHeight(props, state) {
+        if (props.height) return convertToUnit(props.height)
+        if (!!props.width && props.aspectRatio) return convertToUnit(props.width / props.aspectRatio)
+        if (!!props.aspectRatio) return convertToUnit(state.naturalWidth / props.aspectRatio)
+        if (state.naturalHeight) return convertToUnit(state.naturalHeight)
+        if (state.image) return convertToUnit(state.image.height)
+      }
+
       const containerStyles = computed(() => ({
-        width: convertToUnit((!!props.width && props.width) || (props.height*props.aspectRatio) || state.naturalWidth || (!!state.image && state.image.width)),
+        width: calculateWidth(props, state),
         maxWidth: !!props.maxWidth && convertToUnit(props.maxWidth),
         minWidth: !!props.maxWidth && convertToUnit(props.minWidth),
-        height: convertToUnit((!!props.height && props.height) || (props.width/props.aspectRatio) || (!!props.aspectRatio && state.naturalWidth/props.aspectRatio) || state.naturalHeight || (!!state.image && state.image.height)),
+        height: calculateHeight(props, state),
         maxHeight: !!props.maxHeight && convertToUnit(props.maxHeight),
         minHeight: !!props.minHeight && convertToUnit(props.minHeight),
         aspectRatio: props.aspectRatio,

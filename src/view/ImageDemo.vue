@@ -2,9 +2,10 @@
     <div>
         <g-btn @click="changeSrc">Change src</g-btn>
         <g-img :src="src"
-               lazy-src="https://picsum.photos/id/11/10/6"
                gradient="to top right, rgba(100,115,201,.33), rgba(255,32,72,.7)"
-               height="400" aspect-ratio="1" contain></g-img>
+               height="500px" width="500px"
+               srcset="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg 1000w,https://picsum.photos/id/11/10/6 500w"
+               contain></g-img>
         <div style="height: 3000px; width: 400px">
         </div>
         <g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"

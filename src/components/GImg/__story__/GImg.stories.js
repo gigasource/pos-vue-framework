@@ -80,6 +80,14 @@ export const lazyLoading = () => ({
              </div>`,
 })
 
+export const srcset = () => ({
+  components: {GImg},
+  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"
+                    srtset="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg 1000w,
+                            https://picsum.photos/id/11/10/6 600w"
+                    height="500px" width="500px"></g-img>`
+})
+
 // import Vue from 'vue/dist/vue.common.js'
 // import {value} from "@vue/composition-api/dist/functions/state";
 //
