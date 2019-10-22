@@ -15,10 +15,14 @@
     flex-shrink: 0;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.05);
+      background-color: lightgrey;
+    }
+    &:focus{
+      background-color: lightgrey;
+      outline: none;
     }
     &__active{
-      background-color: rgba(0, 0, 0, 0.05);
+      background-color: lightgrey;
     }
     &-icon {
       width: 24px;

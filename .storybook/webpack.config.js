@@ -23,7 +23,7 @@ module.exports = async ({ config, mode }) => {
   });
 
   // remove svg from existing rule
-  config.module.rules = config.module.rules.map(rule => {
+  /*config.module.rules = config.module.rules.map(rule => {
     if (
       String(rule.test) === String(/\.(svg|ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani)(\?.*)?$/)
     ) {
@@ -41,7 +41,7 @@ module.exports = async ({ config, mode }) => {
     test: /\.svg$/,
     use: ['@svgr/webpack', 'url-loader'],
     include: path.resolve(__dirname, '../'),
-  })
+  })*/
 
   config.module.rules.push({
     test: /\.md$/,

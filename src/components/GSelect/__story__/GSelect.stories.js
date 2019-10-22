@@ -64,7 +64,7 @@ export const GSelectPrependItem = () => ({
  
    </g-select></div>`
 })
-export const GSelectSelectionSlot = () => ({
+export const GSelectMultiple = () => ({
   components: {GSelect},
   data() {
     return{
@@ -74,16 +74,15 @@ export const GSelectSelectionSlot = () => ({
         {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: []
     }
   },
   template: `
-   <g-select :items="items" item-text="title" item-value="title" label="Display list" return-object v-model="selected">
-   <template v-slot:selection>
-    <div style="font-size: 30px">Prepend Item</div>
-   </template>
- 
-   </g-select>`
+   <div data-app>
+      <g-select :items="items" item-text="title" item-value="title" label="Display list" 
+                multiple allow-duplicates chip return-object v-model="selected">
+      </g-select>
+    </div>`
 })
 
 export const test2 = () => ({

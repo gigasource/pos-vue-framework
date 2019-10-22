@@ -2,20 +2,23 @@
   <div :class="classes"
        class="g-list"
        :style="styles"
-       @click="onClick">
+       @click="onClick"
+  >
 
     <template v-if="!multiSection">
-      <div class="singleSectionList">
         <slot name="subheader">
           <div v-if="subheader" class="g-list-header">{{subheader}}</div>
         </slot>
         <div v-for="(item, index) in renderList" :key="index"
-             @click="onSelect(item)">
-          <slot :item="item" :isSelected="internalValue === item">
+             @click="onSelect(item)"
+        >
+          <slot :item="item" :isSelected="isActiveItem(item)">
             <!-- fixme: waves effect does not work  -->
+<!--            todo: add key move event-->
             <div v-if="item.title"
                  class="g-list-item"
-                 :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}">
+                 :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
+                 >
               <slot name="prepend" :item="item">
                 <div :class="prependClasses">
                   <img alt="" :src="item.prepend">
@@ -41,7 +44,6 @@
                        :inset="divider === 'inset'"/>
           </slot>
         </div>
-      </div>
     </template>
 
     <template v-else>
@@ -56,7 +58,7 @@
 
         <slot :item="item" v-else>
           <div class="g-list-item"
-               :class="{'g-list-item__active': internalValue === item}"
+               :class="{'g-list-item__active': isActiveItem(item)}"
                @click="onSelect(item)">
             <slot name="prepend" :item="item">
               <div :class="prependClasses">
@@ -91,6 +93,7 @@
   import {computed} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
   import {getInternalValue} from '../../utils/helpers';
+  import {makeSelectable} from "../../mixins/groupable";
 
   export default {
     name: 'GList',
@@ -119,8 +122,10 @@
         default: 'icon',
       },
       subtitleWrap: Boolean,
-      value: [String, Object, Number],
+      value: [String, Object, Number, Array],
       selectable: Boolean,
+      multiple: Boolean,
+      mandatory: Boolean,
     },
     setup: function (props, context) {
       //G list computed class
@@ -161,14 +166,12 @@
         context.emit('click', event)
       }
 
-      const internalValue = getInternalValue(props, context);
-
+      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
         if (!props.selectable) return;
-        internalValue.value = internalValue.value === item ? null : item;
-        context.emit('click:item', item)
+        toggleItem(item)
+        context.emit('click:item')
       }
-
       return {
         classes,
         styles,
@@ -178,6 +181,7 @@
         onClick,
         onSelect,
         internalValue,
+        isActiveItem,
       }
     }
   }
