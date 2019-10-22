@@ -1,5 +1,5 @@
 <template>
-	<g-list width="360px" height="600px">
+	<list width="360px" height="600px">
 		<g-list-header>DEMO</g-list-header>
 		<g-list-item>
 			<g-list-item-content>
@@ -27,7 +27,7 @@
 		<g-divider inset></g-divider>
 		<g-list-item>
 			<g-list-item-avatar>
-				<img alt="" src="../assets/order/avatar.svg">
+				<img alt="" src="https://cdn.vuetifyjs.com/images/cards/house.jpg">
 			</g-list-item-avatar>
 			<g-list-item-content>
 				<g-list-item-text>Single line text</g-list-item-text>
@@ -179,23 +179,23 @@
 			</g-list-item-action>
 		</g-list-item>
 		<g-divider inset></g-divider>
-	</g-list>
+	</list>
 </template>
 
 <script>
-  import GList from '../components/GList/GList';
   import GListItem from '../components/GList/GListItem';
   import GDivider from '../components/GLayout/GDivider';
   import { GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader} from '../components/GList/GListFunctionalComponent'
+	import List from "../components/GList/List";
 
   export default {
     name: 'ListDemo',
-    components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader }
+    components: {List, GDivider, GListItem, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader }
   }
 </script>
 
 <style scoped>
-	.g-list {
+	.list {
 		background: #fff;
 		margin-left: calc(50% - 180px);
 		margin-top: 10px;

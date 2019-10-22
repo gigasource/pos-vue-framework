@@ -5,7 +5,8 @@
 </template>
 
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed, ref } from '@vue/composition-api';
+	import {getInternalValue} from "../../utils/helpers";
 
   export default {
     name: 'GListItem',
@@ -15,8 +16,9 @@
 			selectable: Boolean,
       twoLine: Boolean,
       threeLine: Boolean,
+			isSelected: Boolean,
 		},
-		setup(props) {
+		setup(props, context) {
       const classes = computed(() => {
         const defaultClasses = {
           'g-list-item': true,
@@ -28,6 +30,7 @@
 					'g-list-item__selectable': props.selectable,
           'g-list-item__two-line': props.twoLine,
           'g-list-item__three-line': props.threeLine,
+					'g-list-item__active': props.isSelected,
 				}
 			});
       const styles = computed(() => {
@@ -37,9 +40,10 @@
 					}
 				}
 			});
+
       return {
         classes,
-				styles
+				styles,
 			}
 		}
   }
