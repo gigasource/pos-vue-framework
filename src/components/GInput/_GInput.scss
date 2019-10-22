@@ -1,10 +1,8 @@
-//Text field
-input[type=text] {
+input[type=password] {
   outline: none;
   border: transparent;
   font-family: "Muli", sans-serif;
 }
-
 textarea {
   outline: none;
   border: transparent;
@@ -19,7 +17,7 @@ textarea {
   width: 100%;
 
   &::placeholder {
-    color: #1d1d26;
+    color: #641d26;
     font-size: 0.75rem;
     font-weight: 400;
     font-style: italic;

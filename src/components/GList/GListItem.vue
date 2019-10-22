@@ -1,36 +1,49 @@
 <template>
-	<div :class="classes" :style="[itemHeightStyle]">
+	<div :class="classes" :style="styles">
 		<slot></slot>
 	</div>
 </template>
 
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed, ref } from '@vue/composition-api';
+	import {getInternalValue} from "../../utils/helpers";
 
   export default {
     name: 'GListItem',
     props: {
 			height: String,
+			disabled: Boolean,
+			selectable: Boolean,
+      twoLine: Boolean,
+      threeLine: Boolean,
+			isSelected: Boolean,
 		},
-		setup({ height }) {
+		setup(props, context) {
       const classes = computed(() => {
         const defaultClasses = {
-          'list-item': true,
+          'g-list-item': true,
+					'waves-effect': true
 				};
         return {
-          ...defaultClasses
+          ...defaultClasses,
+					'g-list-item__disabled': props.disabled,
+					'g-list-item__selectable': props.selectable,
+          'g-list-item__two-line': props.twoLine,
+          'g-list-item__three-line': props.threeLine,
+					'g-list-item__active': props.isSelected,
 				}
 			});
-      const itemHeightStyle = computed(() => {
-        if(height) {
+      const styles = computed(() => {
+        if(props.height) {
           return {
-            height
+            'height': props.height
 					}
 				}
 			});
+
       return {
         classes,
-				itemHeightStyle
+				styles,
 			}
 		}
   }

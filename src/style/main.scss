@@ -1,6 +1,5 @@
 @import "variables";
 @import "global";
-@import "typography";
 @import "colors";
 @import "atomic-utilities";
 @import "grid";
@@ -8,7 +7,6 @@
 @import "elevation";
 @import "../components/GButton/_GButton";
 @import "../components/GExpansionPanel/_GExpressionPanel";
-@import "../components/GInput/_GInput";
 @import "../components/GItemGroup/_GItemGroup";
 @import "../components/GKeyboard/_GKeyboard";
 @import "../components/GLayout/_GLayout";
@@ -20,6 +18,9 @@
 @import "../components/GMenu/_GMenu";
 @import "../components/GCard/_GCard";
 @import "../components/GOverlay/_GOverlay";
+@import "../components/GCheckbox/_GCheckbox";
+@import "../components/GRadio/_GRadio";
+@import "../components/GSwitch/_GSwitch";
 @import "../components/GToolTip/_GToolTip";
 @import "../components/GBtn/_GBtn";
 @import "../components/GChip/_GChip";

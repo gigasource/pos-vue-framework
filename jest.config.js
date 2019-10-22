@@ -25,7 +25,8 @@ module.exports = {
   ],
   testMatch: [
     '**/__tests__/*.test.js',
-    '**/vueshots.test.js'
+    '**/vueshots.test.js',
+    '**/*.stories.js'
   ],
   transform: {
     '^.*\\.vue$': "vue-jest",

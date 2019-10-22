@@ -1,0 +1,100 @@
+.g-radio-group {
+  &__horizontal {
+    & > * {
+      display: inline-block;
+    }
+
+    & .g-radio-wrapper {
+      margin: 8px 12px 8px 4px;
+    }
+  }
+
+  &-label {
+    margin: 4px;
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+
+.g-radio {
+  position: relative;
+  padding-left: 24px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: "Muli", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+
+  &-wrapper {
+    margin: 8px 4px;
+  }
+
+  & input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    left: 0;
+    z-index: 2;
+  }
+
+  & &-checkmark {
+    color: inherit;
+  }
+
+  &-label {
+    color: #1d1d26;
+    margin-left: 4px;
+    cursor: pointer;
+  }
+
+  & &-checkmark:before {
+    position: absolute;
+    content: "\F43D";
+    top: 0;
+    left: 0;
+    font-size: 20px;
+    font-family: "Material Design Icons";
+    color: #717171;
+  }
+
+  &.g-radio__active &-checkmark:before {
+    content: "\F43E";
+    color: inherit;
+  }
+
+  &-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &-hover:before {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    content: "\F12F";
+    font-size: 36px;
+    font-family: "Material Design Icons";
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.2;
+    transform: scale(0);
+  }
+
+  & input:hover ~ &-hover:before {
+    transform: scale(1.2);
+  }
+
+  &__disabled {
+    pointer-events: none;
+
+    & > .g-radio-checkmark {
+      opacity: 0.42;
+    }
+  }
+
+  &__readonly {
+    pointer-events: none;
+  }
+}
