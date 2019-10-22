@@ -59,12 +59,12 @@
       });
 
       //define props color
-      const { getColorType, convertColorClass } = colorHandler(props.color);
-      const type = getColorType();
-      const colorClass = convertColorClass('background');
+      const { getColorType, convertColorClass } = colorHandler();
+      const type = computed(() => getColorType(props.color));
+      const colorClass = computed(() => convertColorClass(props.color, 'background'));
 
       const classes = computed(() => ({
-        [colorClass]: !!type && type === 'class',
+        [colorClass.value]: !!type.value && type.value === 'class',
         'g-switch__active': isActive.value,
         'g-switch__flat': props.flat,
         'g-switch__inset': props.inset
@@ -72,7 +72,7 @@
 
       const styles = computed(() => {
         const styles = {};
-        if (type === 'style') {
+        if (type.value === 'style') {
           Object.assign(styles, { 'background-color': props.color });
         }
         return styles;

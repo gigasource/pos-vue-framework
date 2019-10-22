@@ -78,22 +78,22 @@
         }
       });
       //define props color is a class or a css style
-      const { getColorType, convertColorClass } = colorHandler(props.color);
-      const type = getColorType();
-      const colorClass = convertColorClass();
+      const { getColorType, convertColorClass } = colorHandler();
+      const type = computed(() => getColorType(props.color));
+      const colorClass = computed(() => convertColorClass(props.color));
 
       const checkboxClass = computed(() => ({
         'g-checkbox__readonly': props.readonly,
         'g-checkbox__disabled': props.disabled,
         'g-checkbox__required': !isActive.value && props.required,
         'g-checkbox__indeterminate': !isDeterminate.value,
-        [colorClass]: !!type && type === 'class',
+        [colorClass.value]: !!type.value && type.value === 'class',
         'g-checkbox__active': isActive.value,
       }));
 
       const checkboxStyle = computed(() => {
         const style = {};
-        if (type === 'style') {
+        if (type.value === 'style') {
           Object.assign(style, { 'color': props.color });
         }
         return style;

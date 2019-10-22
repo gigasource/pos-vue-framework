@@ -61,20 +61,20 @@
         }
       });
       //define props color
-      const { getColorType, convertColorClass } = colorHandler(props.color);
-      const type = getColorType();
-      const colorClass = convertColorClass();
+      const { getColorType, convertColorClass } = colorHandler();
+      const type = computed(() => getColorType(props.color));
+      const colorClass = computed(() => convertColorClass(props.color));
 
       const classes = computed(() => ({
         'g-radio__readonly': props.readonly,
         'g-radio__disabled': props.disabled,
-        [colorClass]: !!type && type === 'class',
+        [colorClass.value]: !!type.value && type.value === 'class',
         'g-radio__active': isActive.value,
       }));
 
       const styles = computed(() => {
         const styles = {};
-        if (type === 'style') {
+        if (type.value === 'style') {
           Object.assign(styles, { 'color': props.color });
         }
         return styles;
