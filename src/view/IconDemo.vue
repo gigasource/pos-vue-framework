@@ -2,34 +2,68 @@
     <div>
         <table>
             <tr>
+                <td>font-awesome icon</td>
                 <td>
-                    <g-icon color="red" xLarge>fas fa-cat</g-icon>
-                </td>
-                <td>
+                    <g-icon color="red">fas fa-cat</g-icon>
+                    <g-icon color="blue" medium>fas fa-cat</g-icon>
                     <g-icon color="yellow" large>fas fa-car</g-icon>
+                    <g-icon color="green" x-large>fas fa-car</g-icon>
                 </td>
+            </tr>
+            <tr>
+                <td>mdi icon</td>
                 <td>
+                    <g-icon color="red" >home</g-icon>
                     <g-icon color="blue" medium>home</g-icon>
+                    <g-icon color="yellow" large>mdi-domain</g-icon>
+                    <g-icon color="green" x-large>mdi-domain</g-icon>
                 </td>
+            </tr>
+            <tr>
+                <td>svg path</td>
                 <td>
-                    <g-icon color="green" dense>mdi-domain</g-icon>
+                    <g-icon @click="foo" color="red">{{svgPath}}</g-icon>
+                    <g-icon @click="foo" medium color="blue" disabled>{{svgPath}}</g-icon>
+                    <g-icon @click="foo" large color="yellow">{{svgPath}}</g-icon>
+                    <g-icon @click="foo" x-large color="green" disabled>{{svgPath}}</g-icon>
                 </td>
+            </tr>
+            <tr>
+                <td>user defined</td>
                 <td>
-                    <g-icon @click="foo" large color="red">{{svgPath}}</g-icon>
+                    <g-icon color="red" disabled>{{svgPath2}}</g-icon>
+                    <g-icon @click="foo" medium>{{svgPath2}}</g-icon>
+                    <g-icon @click="foo" large>{{svgPath2}}</g-icon>
+                    <g-icon @click="foo" x-large>{{svgPath2}}</g-icon>
                 </td>
-                <!--                <td>-->
-                <!--                    <g-icon @click="foo" large color="red" disabled>{{svgPath2}}</g-icon>-->
-                <!--                </td>-->
+            </tr>
+            <tr>
+                <td>button</td>
+                <td>
+                    <g-btn class="ma-2" dark>
+                        <g-icon left color="brown">fas fa-car</g-icon>
+                        Cancel
+                    </g-btn>
+                    <g-btn class="ma-2" dark>
+                        Cancel
+                        <g-icon right color="orange" disabled>fas fa-cat</g-icon>
+                    </g-btn>
+                </td>
+            </tr>
+            <tr>
+                <td>button</td>
+                <td>
+                    <g-btn class="ma-2" dark>
+                        <g-icon right color="brown">fas fa-car</g-icon>
+                        Cancel
+                    </g-btn>
+                    <g-btn class="ma-2" dark>
+                        Cancel
+                        <g-icon left color="orange" disabled>fas fa-cat</g-icon>
+                    </g-btn>
+                </td>
             </tr>
         </table>
-                <g-btn class="ma-2" dark>
-                    <g-icon left color="brown">fas fa-car</g-icon>
-                    Cancel
-                </g-btn>
-                <g-btn class="ma-2" dark>
-                    Cancel
-                    <g-icon right color="orange" disabled>fas fa-cat</g-icon>
-                </g-btn>
     </div>
 </template>
 
@@ -37,18 +71,14 @@
   import GIcon from "../components/GIcon/GIcon";
   import {mdiAccount} from '@mdi/js';
   import GBtn from "../components/GBtn/GBtn";
+  import avatar from "../assets/home/avatar.svg"
 
   export default {
     name: "IconDemo",
     components: {GBtn, GIcon},
-    // props: {
-    //   icon: {
-    //     type: String,
-    //     default: '$cancel'
-    //   }
-    // },
     data: () => ({
       svgPath: mdiAccount,
+      svgPath2: avatar
     }),
     methods: {
       foo() {

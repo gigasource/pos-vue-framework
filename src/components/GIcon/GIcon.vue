@@ -10,6 +10,7 @@
              viewBox="0 0 24 24">
             <path :d="icon"></path>
         </svg>
+        <img v-if="_tag.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle">
         <slot v-if="_tag.slot"></slot>
     </span>
 </template>
@@ -47,6 +48,7 @@
       let _tag = {
         i: true,
         svg: false,
+        img: false,
         slot: true
       }
       let content = ''
@@ -58,7 +60,7 @@
           style: {}
         }
 
-        if (!isSvgPath(icon)) { //render Font icons: Material Icon(default), Font Awesome 5
+        if (!isSvgPath(icon) && !isCustomSvgIcon(icon)) { //render Font icons: Material Icon(default), Font Awesome 5
           let materialIcon = icon
           let iconType = 'material-icons'
           const delimiterIndex = icon.indexOf('-')
@@ -86,11 +88,18 @@
           data.style['height'] = getSize(props)
         }
 
+        if (isCustomSvgIcon(icon)) {
+          _tag.img = true
+          _tag.i = false
+          data.style['fontSize'] = getSize(props) * 2
+          data.style['width'] = getSize(props) * 2
+          data.style['height'] = getSize(props) * 2
+        }
+
         _tag.slot = false
 
         return data
       }
-
 
       let color = setBackgroundColor(props.color, {})
       let data = iconTemplate()
@@ -145,6 +154,10 @@
     return (/^[mzlhvcsqta]\s*[-+.0-9][^mlhvzcsqta]+/i.test(icon) && /[\dz]$/i.test(icon) && icon.length > 4)
   }
 
+  function isCustomSvgIcon(icon) {
+    return icon.slice(-3) === 'svg'
+  }
+
   function getSize(props) {
     if (props.xSmall) return '12px'
     if (props.small) return '16px'
@@ -155,3 +168,11 @@
     return '24px'
   }
 </script>
+<style>
+    td {
+        padding: 20px;
+    }
+    tr {
+        padding: 20px;
+    }
+</style>
