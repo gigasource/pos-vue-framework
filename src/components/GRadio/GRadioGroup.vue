@@ -10,13 +10,13 @@
 </template>
 
 <script>
-  import { computed, ref, provide } from '@vue/composition-api';
+  import { computed, provide } from '@vue/composition-api';
 
   export default {
     name: 'GRadioGroup',
-		model: {
+    model: {
       event: 'change'
-		},
+    },
     props: {
       label: String,
       name: String,
@@ -25,9 +25,12 @@
       row: Boolean,
       value: null,
     },
-    setup(props) {
+    setup(props, context) {
       provide('name', props.name);
-      const model = computed(() => (props.value));
+      const model = computed({
+        get: () => (props.value),
+        set: (val) => context.emit('change', val)
+      });
       provide('model', model);
 
       const classes = computed(() => ({

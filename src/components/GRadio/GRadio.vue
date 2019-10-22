@@ -54,7 +54,8 @@
             if (model.value === inputValue.value) {//if the radio not in group
               inputValue.value = trueValue;
             } else {
-              context.parent.$emit('change', trueValue);
+              // context.parent.$emit('change', trueValue);
+							model.value = trueValue;
             }
           }
         }
