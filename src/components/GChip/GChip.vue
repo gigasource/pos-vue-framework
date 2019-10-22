@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import { computed, ref } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
   import { convertToGradient } from '../../utils/helpers';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 
@@ -41,14 +41,14 @@
       disabled: Boolean,
       filter: Boolean,
       filterIcon: { type: String, default: `done` },
-      href: [String, Object],
-      inputValue: null,    //Not used yet
-      link: Boolean,      //Not used yet
+      //href: [String, Object],
+      //inputValue: null,    //Not used yet
+      //link: Boolean,      //Not used yet
       outlined: Boolean,
       pill: Boolean,
-      replace: Boolean,    //Not used yet
-      target: String,  //Not used yet
-      value: null,  //Not used yet
+      //replace: Boolean,    //Not used yet
+      //target: String,  //Not used yet
+      //value: null,  //Not used yet
       label: Boolean,
       small: Boolean,
       large: Boolean,
@@ -70,17 +70,17 @@
       const RENDER_AVATAR_FILTER = 'RENDER_AVATAR_FILTER';
 
       //Check prepend slot available
-      let prependSlot = () => {
+      let prependSlotExists = () => {
         return !!context.slots.prependItem;
       };
 
       //Rendering state of prependItem
       let renderState = computed(() => {
-        if (prependSlot() && props.filter) {
+        if (prependSlotExists() && props.filter) {
           return RENDER_AVATAR_FILTER;
-        } else if (prependSlot() && !props.filter) {
+        } else if (prependSlotExists() && !props.filter) {
           return RENDER_AVATAR_ONLY;
-        } else if (!prependSlot() && props.filter) {
+        } else if (!prependSlotExists() && props.filter) {
           return RENDER_FILTER_ONLY;
         }
       });
@@ -96,15 +96,15 @@
       let classes = computed(() => {
         let _classes = {
           'g-chip': true,
-          'waves-effect': !!props.ripple,
-          'g-chip__outlined': !!props.outlined,
-          'g-chip__close': !!props.close,
-          'g-chip__disabled': !!props.disabled,
-          'g-chip__filter': !!props.filter,
-          'g-chip__draggable': !!props.draggable,
-          'g-chip__pill': !!props.pill,
-          'g-chip__label': !!props.label,
-          'g-chip__active': !!props.active,
+          'waves-effect': props.ripple,
+          'g-chip__outlined': props.outlined,
+          'g-chip__close': props.close,
+          'g-chip__disabled': props.disabled,
+          'g-chip__filter': props.filter,
+          'g-chip__draggable': props.draggable,
+          'g-chip__pill': props.pill,
+          'g-chip__label': props.label,
+          'g-chip__active': props.active,
           ...backgroundColorOutput.value && backgroundColorOutput.value.class,
           ...textColorOutput.value && textColorOutput.value.class
         };
@@ -112,22 +112,18 @@
         let size = '';
         let avatarSize = '';
 
-        if (!!props.large) {
+        if (props.large) {
           size = 'g-size__large';
           avatarSize = 'g-avatar-size__large';
-        } else if (!!props.small) {
+        } else if (props.small) {
           size = 'g-size__small';
           avatarSize = 'g-avatar-size__small';
-        } else if (!!props.xSmall) {
+        } else if (props.xSmall) {
           size = 'g-size__x-small';
           avatarSize = 'g-avatar-size__x-small';
-        } else if (!!props.xLarge) {
+        } else if (props.xLarge) {
           size = 'g-size__x-large';
           avatarSize = 'g-avatar-size__x-large';
-          // } else {
-          //   size = 'g-size__default';
-          //   avatarSize = 'g-avatar-size__default';
-          // }
         }
         _classes[size] = true;
         _classes[avatarSize] = true;
@@ -152,12 +148,11 @@
         return _styles;
       });
 
-      const {item} = props;
       let onClick = (event) => {
         context.emit('click', event);
       };
 
-      let onClose = (event) => {
+      let onClose = () => {
         context.emit('click:close');
         context.emit('update:active', false);
       };
