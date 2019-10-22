@@ -1,11 +1,10 @@
 import { computed } from '@vue/composition-api'
-import { createNativeLocaleFormatter, getCurrentDateISOFormat, pad, sanitizeDateString } from './utils';
+import { createNativeLocaleFormatter } from './utils';
 
 /**
  * Title format
  * @param props
  * @param cptIsMultiSelect
- * @param dateRanges
  * @returns {Ref<any>}
  * @private
  */
