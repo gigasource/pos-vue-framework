@@ -14,6 +14,7 @@ import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import TransitionDemo from '../view/TransitionDemo';
 import ChipDemo from '../view/ChipDemo';
+import GChipGroupDemo from '../view/GChipGroupDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -31,6 +32,8 @@ const routes = [
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/chip', name: 'Chip', component: ChipDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
+  { path: '/chip-group', name: 'Chip Group', component: GChipGroupDemo},
+
 ];
 
 const router = new VueRouter({

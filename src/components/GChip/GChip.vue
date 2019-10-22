@@ -61,7 +61,7 @@
       textColor: String,
       backgroundColor: { type: String, default: '#e0e0e0' },
       gradient: String,
-
+			item: null
     },
     setup(props, context) {
       //Prepend Icon Rendering States
@@ -124,10 +124,6 @@
         } else if (!!props.xLarge) {
           size = 'g-size__x-large';
           avatarSize = 'g-avatar-size__x-large';
-          // } else {
-          //   size = 'g-size__default';
-          //   avatarSize = 'g-avatar-size__default';
-          // }
         }
         _classes[size] = true;
         _classes[avatarSize] = true;
@@ -152,14 +148,14 @@
         return _styles;
       });
 
-      const {item} = props;
-      let onClick = (event) => {
-        context.emit('click', event);
+      const { item } = props;
+      let onClick = () => {
+        context.emit('click', item);
       };
 
-      let onClose = (event) => {
+      let onClose = () => {
         context.emit('click:close');
-        context.emit('update:active', false);
+        context.emit('update:active', item);
       };
 
       return {
