@@ -1,6 +1,7 @@
 import _ from 'lodash'
+import {computed, ref, watch} from "@vue/composition-api";
 
-function groupable({ mandatory, multiple }, vModel) {
+function groupable({mandatory, multiple}, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   const toggleItem = (item) => {
@@ -42,6 +43,40 @@ function groupable({ mandatory, multiple }, vModel) {
     toggleItem,
     isActiveItem
   }
+}
+
+export function makeSelectable(props, context) {
+  let rawInternalValue;
+  if (props.multiple && props.value && !Array.isArray(props.value)) {
+    rawInternalValue = ref([props.value]);
+  } else if (props.multiple) {
+    rawInternalValue = ref(props.value || []);
+  } else {
+    //todo: use reactive
+    rawInternalValue = ref(props.value);
+  }
+
+  watch(() => props.value, () => {
+    if (props.multiple && props.value && !Array.isArray(props.value)) {
+      rawInternalValue.value = [props.value];
+    } else {
+      rawInternalValue.value = props.value;
+    }
+  }, {lazy: true});
+
+  const internalValue = computed({
+    get: () => {
+      return rawInternalValue.value;
+    },
+    set: (value) => {
+      rawInternalValue.value = value;
+      context.emit('input', rawInternalValue.value)
+    }
+  });
+
+  const {toggleItem, isActiveItem} = groupable(props, internalValue);
+
+  return {toggleItem, isActiveItem, internalValue};
 }
 
 export default groupable
