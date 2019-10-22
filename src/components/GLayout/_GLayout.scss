@@ -29,16 +29,16 @@
   padding: 0.5rem;
 }
 
-.divider {
+.g-divider {
   border-width: 0.5px;
-}
 
-.divider__inset {
-  width: calc(100% - 16px);
-  margin: 0 0.5rem;
-}
+  &__inset {
+    width: calc(100% - 16px);
+    margin: 0 0.5rem;
+  }
 
-.divider__inset-vertical {
-  height: calc(100% - 16px);
-  margin: 0.5rem 0;
+  &__inset-vertical {
+    height: calc(100% - 16px);
+    margin: 0.5rem 0;
+  }
 }
