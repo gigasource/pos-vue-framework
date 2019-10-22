@@ -1,0 +1,20 @@
+.g-dnddialog2 {
+  position: fixed;
+  display: block;
+  flex-direction: column;
+  width: 300px;
+  height: 300px;
+  border: 1px solid grey;
+  resize: both;
+  @include elevation(6);
+
+  &-header {
+    background-color: #a1a1a1;
+    height: 10%;
+    border-bottom: 1px solid grey;
+  }
+
+  &-content {
+
+  }
+}

@@ -16,6 +16,7 @@ import InputDemo from "../view/InputDemo";
 import TransitionDemo from '../view/TransitionDemo';
 import ListDemo from '../view/ListDemo';
 import List2Demo from "../view/List2Demo";
+import DndDialogDemo from '../view/DndDialogDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -34,6 +35,7 @@ const routes = [
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
+  { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
 ];
 
 const router = new VueRouter({

@@ -112,3 +112,23 @@ export function getInternalValue(props, context) {
 
   return internalValue;
 }
+
+export function getElementPosition(el) {
+  const rect = el.getBoundingClientRect(),
+    offsetX = window.scrollX || document.documentElement.scrollLeft,
+    offsetY = window.scrollY || document.documentElement.scrollTop;
+  return {
+    left: rect.left + offsetX,
+    top: rect.top + offsetY,
+    right: rect.right + offsetX,
+    bottom: rect.bottom + offsetY
+  }
+}
+
+export function getElementDimension(el) {
+  const rect = el.getBoundingClientRect()
+  return {
+    width: rect.width,
+    height: rect.height
+  }
+}

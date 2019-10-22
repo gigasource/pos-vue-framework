@@ -16,6 +16,7 @@
 			<router-link to="/input">Input</router-link>
 			<router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/list-demo">List</router-link>
+			<router-link to="/dnd-dialog-demo">Dnd Dialog Demo</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
