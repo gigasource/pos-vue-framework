@@ -17,18 +17,19 @@
 			<router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/list-demo">List</router-link>
 			<router-link to="/image-demo">Image</router-link>
-		</g-layout>
-		<router-view></router-view>
-	</div>
+        </g-layout>
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
 
   import GLayout from '@/components/GLayout/GLayout';
   import GContainer from '@/components/GLayout/GContainer';
+
   export default {
     name: 'app',
-    components: { GContainer, GLayout },
+    components: {GContainer, GLayout},
   }
 </script>
 
