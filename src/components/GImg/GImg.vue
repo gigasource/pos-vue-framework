@@ -52,18 +52,6 @@
         calculatedAspectRatio: 0,
       })
 
-      const backgroundImage = computed(() => {
-        if (!(normalizedSrc.value.src || normalizedSrc.value.lazySrc)) return []
-
-        const backgroundImages = []
-        const src = !loaded.value ? normalizedSrc.value.lazySrc : state.currentSrc
-
-        if (props.gradient) backgroundImages.push(`linear-gradient(${props.gradient})`)
-        if (src) backgroundImages.push(`url("${src}")`)
-
-        return backgroundImages.join(', ')
-      })
-
       const normalizedSrc = computed(() => {
         return typeof props.src === 'string'
             ? {
@@ -79,7 +67,7 @@
             }
       })
 
-      watch(() => props.src, (newVal) => {
+      watch(() => props.src, () => {
         // init again if src changes
         if (loaded.value) init(undefined, undefined, true)
         else loadImage()
@@ -97,11 +85,8 @@
         if (normalizedSrc.value.src) loadImage()
       }
 
-      const _image = new Image()
-
       function loadImage() {
-        //load image here
-
+        const _image = new Image()
         state.image = _image
 
         _image.onload = () => {
@@ -116,7 +101,6 @@
             onLoad()
           }
         }
-        // _image.onerror = onError
 
         // bind src to image
         normalizedSrc.value.src && (_image.src = normalizedSrc.value.src)
@@ -125,19 +109,13 @@
         props.aspectRatio || pollForSize(_image)
         console.log(normalizedSrc.value.srcset)
         console.log(_image)
+        getSrc()
       }
 
       function onLoad() {
         getSrc()
         loaded.value = true
         context.emit('load', props.src)
-      }
-
-      function onError() {
-        //fires error on Image() constructor
-        console.error(`Image load failed\n\n` +
-            `src: ${normalizedSrc.src}`)
-        context.emit('error', props.src)
       }
 
       function getSrc() {
@@ -162,17 +140,15 @@
 
       function calculateWidth(props, state) {
         if (props.width) return convertToUnit(props.width)
-        if (!!props.height && props.aspectRatio) return convertToUnit(props.height * props.aspectRatio)
+        if (props.height && props.aspectRatio) return convertToUnit(props.height * props.aspectRatio)
         if (state.naturalWidth) return convertToUnit(state.naturalWidth)
-        if (state.image) return convertToUnit(state.img.width)
       }
 
       function calculateHeight(props, state) {
         if (props.height) return convertToUnit(props.height)
-        if (!!props.width && props.aspectRatio) return convertToUnit(props.width / props.aspectRatio)
-        if (!!props.aspectRatio) return convertToUnit(state.naturalWidth / props.aspectRatio)
+        if (props.width && props.aspectRatio) return convertToUnit(props.width / props.aspectRatio)
+        if (props.aspectRatio) return convertToUnit(state.naturalWidth / props.aspectRatio)
         if (state.naturalHeight) return convertToUnit(state.naturalHeight)
-        if (state.image) return convertToUnit(state.image.height)
       }
 
       const containerStyles = computed(() => ({
@@ -185,12 +161,22 @@
         aspectRatio: props.aspectRatio,
       }))
 
-      const imageStyles = computed(() => {
-        let contain = props.contain ? 'contain' : 'cover'
+      const backgroundImage = computed(() => {
+        if (!(normalizedSrc.value.src || normalizedSrc.value.lazySrc)) return []
 
+        const backgroundImages = []
+        const src = !loaded.value ? normalizedSrc.value.lazySrc : state.currentSrc
+
+        if (props.gradient) backgroundImages.push(`linear-gradient(${props.gradient})`)
+        if (src) backgroundImages.push(`url("${src}")`)
+
+        return backgroundImages.join(', ')
+      })
+
+      const imageStyles = computed(() => {
         return {
           backgroundImage: backgroundImage.value,
-          backgroundSize: contain,
+          backgroundSize: props.contain ? 'contain' : 'cover',
         }
       })
 
