@@ -6,6 +6,7 @@
   border: 0px solid rgba(0,0,0,.08);
   z-index: 10000;
   transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-property: transform, opacity;
 
   @include elevation(12);
 

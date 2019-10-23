@@ -98,8 +98,8 @@
 			})
 
 			onMounted(() => {
-				dialogDimension.width = minDialogDimension.width;
-				dialogDimension.height = minDialogDimension.height;
+				dialogDimension.width = props.width ? +props.width : minDialogDimension.width;
+				dialogDimension.height = props.height ? +props.height :minDialogDimension.height;
 				dialogPosition.top = (window.innerHeight - dialogDimension.height) / 2;
 				dialogPosition.left = (window.innerWidth - dialogDimension.width) / 2;
 				//attachToRoot(context.refs.dialog);

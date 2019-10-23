@@ -3,9 +3,9 @@
 
 <!-- </g-dnd-dialog>-->
 	<div>
-		<g-btn width="100" height="50" @click="dnddialog = true">Open Dialog</g-btn>
+		<g-btn color="red" width="100" height="50" @click="dnddialog = true">Open Dialog</g-btn>
 
-		<g-dnd-dialog3 v-model="dnddialog">
+		<g-dnd-dialog3 v-model="dnddialog" width="300" height="250">
 			<template v-slot:title>
 				Dialog header
 			</template>
