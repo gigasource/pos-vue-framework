@@ -18,6 +18,7 @@ import TransitionDemo from '../view/TransitionDemo';
 import ChipDemo from '../view/ChipDemo';
 import ListDemo from '../view/ListDemo';
 import List2Demo from "../view/List2Demo";
+import GChipGroupDemo from '../view/GChipGroupDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -36,6 +37,7 @@ const routes = [
   { path: '/chip', name: 'Chip', component: ChipDemo},
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
+  { path: '/chip-group', name: 'Chip Group', component: GChipGroupDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
 ];
 

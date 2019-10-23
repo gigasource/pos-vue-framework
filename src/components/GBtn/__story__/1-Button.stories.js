@@ -20,9 +20,9 @@ export const test2 = () => ({
   components: { GBtn },
   setup() {
     return () =>
-      <g-btn outlined raised elevation='0' x-large vOn:click={action('test')}>
+      `<g-btn outlined raised elevation='0' x-large vOn:click={action('test')}>
         {text('Button Text', 'XLARGE BUTTON')}
-      </g-btn>
+      </g-btn>`
   },
 })
 

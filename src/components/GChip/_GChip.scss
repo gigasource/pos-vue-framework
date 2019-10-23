@@ -7,6 +7,7 @@
   display: inline-flex;
   line-height: 20px;
   max-width: 100%;
+  min-width: fit-content;
   outline: none;
   overflow: hidden;
   padding: 0 12px;
@@ -252,6 +253,10 @@
   }
 }
 
+.g-chip__active {
+  opacity: 0.82;
+}
+
 .g-chip {
   @each $name, $size in $icon-sizes {
     &.g-size__#{$name} {
@@ -329,31 +334,6 @@
       }
     }
   }
-
-  //&.g-avatar-size__default {
-  //  .g-avatar, .g-overlay {
-  //    width: 24px;
-  //    height: 24px;
-  //    min-width: 24px;
-  //  }
-  //
-  //  .g-avatar {
-  //    margin: 1.5px 2px 5px -4px;
-  //    .g-icon {
-  //      z-index: 0;
-  //    }
-  //  }
-  //
-  //  .g-overlay {
-  //    margin: 2px 0 0 0;
-  //
-  //    .g-icon {
-  //      margin: 2px 0 0 2px;
-  //      font-size: 20px;
-  //      position: absolute;
-  //    }
-  //  }
-  //}
 
   &.g-avatar-size__x-large {
     .g-avatar, .g-overlay {

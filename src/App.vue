@@ -18,6 +18,8 @@
 			<router-link to="/chip">Chip</router-link>
 			<router-link to="/list-demo">List</router-link>
 			<router-link to="/selection-control">SelectIonControl</router-link>
+			<router-link to="/chip-group">Chip Group</router-link>
+
 		</g-layout>
 		<router-view></router-view>
 	</div>

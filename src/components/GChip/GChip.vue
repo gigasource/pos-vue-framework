@@ -1,12 +1,12 @@
 <template>
 	<div :class="classes" :style="styles" :draggable="draggable" @click="onClick">
-		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY' && active">
-			<i class="material-icons g-icon" v-if="filter && active">{{filterIcon}}</i>
+		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY'">
+			<i class="material-icons g-icon" v-if="filter">{{filterIcon}}</i>
 		</span>
 
 		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_FILTER'">
 			<slot name="prependItem"></slot>
-			<div class="g-overlay" v-if="filter && active">
+			<div class="g-overlay" v-if="filter">
 				<i class="material-icons g-icon">{{filterIcon}}</i>
 			</div>
 		</div>
@@ -48,7 +48,7 @@
       pill: Boolean,
       //replace: Boolean,    //Not used yet
       //target: String,  //Not used yet
-      //value: null,  //Not used yet
+      value: null,
       label: Boolean,
       small: Boolean,
       large: Boolean,
@@ -61,7 +61,6 @@
       textColor: String,
       backgroundColor: { type: String, default: '#e0e0e0' },
       gradient: String,
-
     },
     setup(props, context) {
       //Prepend Icon Rendering States
@@ -148,13 +147,14 @@
         return _styles;
       });
 
-      let onClick = (event) => {
-        context.emit('click', event);
+      const { value } = props;
+      let onClick = () => {
+        context.emit('click', value);
       };
 
       let onClose = () => {
-        context.emit('click:close');
-        context.emit('update:active', false);
+        context.emit('click:close', value);
+        context.emit('update:active');
       };
 
       return {
