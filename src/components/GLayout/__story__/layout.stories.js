@@ -160,7 +160,7 @@ export const row = () => ({
   </g-container>`
 });
 
-export const childLayout = () => ({
+export const layoutInside = () => ({
   components: { GLayout, GContainer },
   props: {
     align1: {
