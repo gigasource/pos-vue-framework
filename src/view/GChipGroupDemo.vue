@@ -1,22 +1,17 @@
 <template>
 	<div>
-		<g-card width="1000px">
-			<g-card-text>
-				<p>Single select chip group</p>
-				<g-chip-group :items="items" v-model="activeItem" column @click:close="removeItem">
-					<template v-slot:item="{item, click, active, close}">{{item.text}}</template>
-				</g-chip-group>
-			</g-card-text>
-		</g-card>
+<div>
+	<p>Single select chip group</p>
+	<g-chip-group :items="items" v-model="activeItem" column @click:close="removeItem">
+		<template v-slot:item="{value, click, active, close}">{{value.text}}</template>
+	</g-chip-group>
+</div>
 
-		<g-card width="1000px">
-			<g-card-text>
-				<p>Multiple select chip group</p>
-				<g-chip-group :items="items2" v-model="activeItems" multiple>
-					<template v-slot:item="{item, click, active, close}">{{item.text}}</template>
-				</g-chip-group>
-			</g-card-text>
-		</g-card>
+		<p>Multiple select chip group</p>
+		<g-chip-group :items="items2" v-model="activeItems" multiple max-selection="3">
+			<template v-slot:item="{value, click, active, close}">{{value.text}}</template>
+		</g-chip-group>
+
 	</div>
 
 </template>
@@ -26,6 +21,7 @@
   import GChip from '../components/GChip/GChip';
   import GCard from '../components/GCard/GCard';
   import GCardText from '../components/GCard/GCardText';
+  import _ from 'lodash'
 
   export default {
     name: 'GChipGroupDemo',
@@ -62,10 +58,7 @@
     },
     methods: {
       removeItem(item) {
-        console.log(item);
-        this.items = this.items.filter((i) => {
-          return i.text !== item.text;
-        });
+        console.log(item.id);
       }
     }
   }

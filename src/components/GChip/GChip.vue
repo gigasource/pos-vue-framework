@@ -48,7 +48,7 @@
       pill: Boolean,
       replace: Boolean,    //Not used yet
       target: String,  //Not used yet
-      value: null,  //Not used yet
+      value: null,
       label: Boolean,
       small: Boolean,
       large: Boolean,
@@ -61,7 +61,6 @@
       textColor: String,
       backgroundColor: { type: String, default: '#e0e0e0' },
       gradient: String,
-			item: null
     },
     setup(props, context) {
       //Prepend Icon Rendering States
@@ -148,14 +147,14 @@
         return _styles;
       });
 
-      const { item } = props;
+      const { value } = props;
       let onClick = () => {
-        context.emit('click', item);
+        context.emit('click', value);
       };
 
       let onClose = () => {
-        context.emit('click:close');
-        context.emit('update:active', item);
+        context.emit('click:close', value);
+        context.emit('update:active');
       };
 
       return {

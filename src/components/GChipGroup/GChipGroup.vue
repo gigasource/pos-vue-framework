@@ -1,16 +1,15 @@
 <template>
 	<div :class="classes">
-		<g-layout>
-			<template v-for="(item, index) in items" class="g-chip-group__content">
-				<g-chip :item="item" :key="index" :active="isActiveItem(item)" @click="toggleItem" :close="item.close"
+		<div class="g-chip-group__content">
+			<template v-for="(item, index) in items">
+				<g-chip :value="item" :key="index" :active="isActiveItem(item)" @click="toggleItem" :close="item.close"
 								@click:close="toggleClose" :disabled="item.disabled" :filter="item.filter" :color="item.color" :text-color="item.textColor">
-					<!--					<slot name="item" :item="item" :index="index" :click="toggleItem" :active="isActiveItem(item)" :close="item.close" :click:close="toggleClose" :disabled="item.disabled">-->
-					<!--						{{item.text}}-->
-					<!--					</slot>-->
-					{{item.text}}
+					<slot name="item" :value="item" :index="index" :click="toggleItem" :active="isActiveItem(item)" :close="item.close" :click:close="toggleClose" :disabled="item.disabled">
+						{{value.text}}
+					</slot>
 				</g-chip>
 			</template>
-		</g-layout>
+		</div>
 	</div>
 </template>
 
@@ -28,6 +27,7 @@
       column: Boolean,
       mandatory: Boolean,
       multiple: Boolean,
+      maxSelection: [Number, String],
       value: null,
       items: Array
     },
@@ -36,7 +36,7 @@
       const classes = computed(() => {
         return {
           'g-chip-group': true,
-          'g-chip__column': props.column
+          'g-chip-group__column': props.column
         }
       });
 
@@ -63,8 +63,8 @@
       });
 
       const { toggleItem, isActiveItem } = groupable(props, model);
-      const toggleClose = (item) => {
-        context.emit('click:close', item);
+      const toggleClose = (value) => {
+        context.emit('click:close', value);
       };
       return {
         toggleItem,
