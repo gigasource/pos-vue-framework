@@ -1,22 +1,27 @@
 <template>
-	<div class="g-dnddialog3" :style="dialogStyles" ref="dialog">
-		<div class="g-dnddialog3-header" ref="header">
-			<span class="g-dnddialog3-title" ref="title">
-				<slot name="title"></slot>
-			</span>
-			<div class="g-dnddialog3-action" ref="action">
-				<g-btn small flat width="30" height="30" min-width="30" color="orange"><i class="material-icons">minimize</i></g-btn>
-				<g-btn small flat width="30" height="30" min-width="30" color="green"><i class="material-icons">crop_din</i></g-btn>
-				<g-btn small flat width="30" height="30" min-width="30" color="red"><i class="material-icons">close</i></g-btn>
+	<transition name="dialog-transition">
+		<div v-if="isActive" class="g-dnddialog3" :class="dialogClasses" :style="dialogStyles" ref="dialog" @mousedown="dragStart">
+			<div class="g-dnddialog3-header" ref="header">
+				<span class="g-dnddialog3-title" ref="title">
+					<slot name="title"></slot>
+				</span>
+				<div class="g-dnddialog3-action" ref="action">
+					<g-btn v-if="!(isMinimize || isMaximize)" small flat width="30" height="30" min-width="30" color="orange">
+						<i class="material-icons" @click="toggleMinimize">minimize</i></g-btn>
+					<g-btn small flat width="30" height="30" min-width="30" color="green"><i class="material-icons" @click="toggleMaximize">crop_din</i></g-btn>
+					<g-btn small flat width="30" height="30" min-width="30" color="red"><i class="material-icons" @click="toggleDialog">close</i></g-btn>
+				</div>
+			</div>
+			<div v-show="!isMinimize" class="g-dnddialog3-content" ref="content">
+				<slot></slot>
 			</div>
 		</div>
-		<div class="g-dnddialog3-content" ref="content">
-			<slot></slot>
-		</div>
-	</div>
+	</transition>
 </template>
 <script>
 	import { getElementPosition, getElementDimension } from '../../utils/helpers';
+	import detachable from '../../mixins/detachable';
+	import getVModel from '../../mixins/getVModel';
   import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn';
 
@@ -24,6 +29,7 @@
     name: 'GDndDialog3',
     components: { GBtn },
     props: {
+      value: Boolean,
 			minWidth: {
 			  type: [Number, String],
 				default: 200
@@ -31,14 +37,20 @@
       minHeight: {
         type: [Number, String],
         default: 100
-      }
+      },
+			width: [Number, String],
+			height: [Number, String]
 		},
 		setup (props, context) {
+      const { model: isActive } = getVModel(props, context)
+      const { attachToRoot, detach } = detachable(props, context);
+      const isMinimize = ref(false)
+			const isMaximize = ref(false)
       const isDrag = ref(false)
       const isResize = ref(false)
 			const resizeMode = ref('')
 			const cursor = ref('')
-			const resizeRegionSize = 5;
+			const resizeRegionSize = 8;
 
       const dialogPosition = reactive({
         top: 0,
@@ -56,11 +68,6 @@
 				width: props.minWidth,
 				height: props.minHeight,
 			})
-
-      const pageDimension = reactive({
-        width: 0,
-        height: 0
-      })
 
 			const dialogStartPosition = reactive({
 				top: 0,
@@ -82,48 +89,55 @@
         dialogPosition.right = dialogPosition.left + dialogDimension.width;
 			}, { deep: true })
 
-			onMounted(() => {
-			  const initPosition = getElementPosition(context.refs.dialog);
-			  const initDimension = getElementDimension(context.refs.dialog);
-			  dialogPosition.top = initPosition.top;
-			  dialogPosition.left = initPosition.left;
-			  dialogDimension.width = initDimension.width;
-			  dialogDimension.height = initDimension.height;
-        context.refs.dialog.addEventListener('mousedown', dragStart);
-        context.refs.dialog.addEventListener('mousedown', resizeStart);
+			watch(isActive, (newVal) => {
+			  if (newVal) {
+			    context.root.$nextTick(() => {
+            attachToRoot(context.refs.dialog);
+					})
+				}
 			})
 
+			onMounted(() => {
+				dialogDimension.width = minDialogDimension.width;
+				dialogDimension.height = minDialogDimension.height;
+				dialogPosition.top = (window.innerHeight - dialogDimension.height) / 2;
+				dialogPosition.left = (window.innerWidth - dialogDimension.width) / 2;
+				//attachToRoot(context.refs.dialog);
+			})
+
+			const dialogClasses = computed(() => ({
+				'g-dnddialog3__minimize': isMinimize.value,
+				'g-dnddialog3__maximize': isMaximize.value
+			}))
+
       const dialogStyles = computed(() => ({
-        top: dialogPosition.top + 'px',
-        left: dialogPosition.left + 'px',
-        width: dialogDimension.width + 'px',
-        height: dialogDimension.height + 'px',
-        minWidth: minDialogDimension.width + 'px',
-        minHeight: minDialogDimension.height + 'px',
+        top: isMaximize.value ? undefined : dialogPosition.top + 'px',
+        left: isMaximize.value ? undefined : dialogPosition.left + 'px',
+        width: isMaximize.value ? undefined : dialogDimension.width + 'px',
+        height: isMinimize.value || isMaximize.value ? undefined : dialogDimension.height + 'px',
+        minWidth: isMaximize.value ? undefined : minDialogDimension.width + 'px',
+        minHeight: isMinimize.value || isMaximize.value ? undefined : minDialogDimension.height + 'px',
         cursor: cursor.value
       }))
+
+      function toggleDialog() {
+        isActive.value = !isActive.value;
+      }
+
+      function toggleMinimize() {
+        isMinimize.value = true;
+			}
+
+			function toggleMaximize() {
+        if (isMinimize.value) isMinimize.value = false
+				else {
+				  isMaximize.value = !isMaximize.value
+				}
+			}
 
 			function dragStart(e) {
         e.preventDefault();
         const target = e.target;
-
-        if (!(target === context.refs.dialog || target === context.refs.header)) return;
-
-				pageDimension.width = Math.max(
-          document.documentElement["clientWidth"],
-          document.body["scrollWidth"],
-          document.documentElement["scrollWidth"],
-          document.body["offsetWidth"],
-          document.documentElement["offsetWidth"]
-        );
-
-				pageDimension.height = Math.max(
-          document.documentElement["clientHeight"],
-          document.body["scrollHeight"],
-          document.documentElement["scrollHeight"],
-          document.body["offsetHeight"],
-          document.documentElement["offsetHeight"]
-        );
 
 				dialogStartPosition.top = dialogPosition.top;
         dialogStartPosition.left = dialogPosition.left;
@@ -137,9 +151,7 @@
 			}
 
 			function drag(e) {
-        e.preventDefault()
-        const target = e.target;
-        if (!(target === context.refs.dialog || target === context.refs.header) && !isDrag.value) return;
+        //e.preventDefault()
 
 				if (isDrag.value) {
 				  const newTop = dialogStartPosition.top - mouseStartPosition.pageY + e.pageY;
@@ -218,9 +230,8 @@
       }
 
 			function resize(e) {
-        e.preventDefault()
-				const target = e.target;
-        if(isDrag.value) return;
+        //e.preventDefault()
+        if(isDrag.value || isMinimize.value) return;
 
         if (isResize.value) {
 					const resizeDirections = resizeMode.value.split('');
@@ -230,13 +241,13 @@
 				} else {
           let tempResizeMode = '';
 
-          if (e.pageY >= dialogPosition.top && e.pageY < dialogPosition.top + resizeRegionSize)
+          if (e.pageY >= dialogPosition.top - resizeRegionSize && e.pageY <= dialogPosition.top + resizeRegionSize)
 						tempResizeMode = 'n';
-					else if (e.pageY > dialogPosition.bottom - resizeRegionSize && e.pageY <= dialogPosition.bottom)
+					else if (e.pageY >= dialogPosition.bottom - resizeRegionSize && e.pageY <= dialogPosition.bottom + resizeRegionSize)
 						tempResizeMode ='s';
-					if (e.pageX >= dialogPosition.left && e.pageX < dialogPosition.left + resizeRegionSize)
+					if (e.pageX >= dialogPosition.left - resizeRegionSize && e.pageX <= dialogPosition.left + resizeRegionSize)
 						tempResizeMode += 'w';
-					else if (e.pageX > dialogPosition.right - resizeRegionSize && e.pageX <= dialogPosition.right)
+					else if (e.pageX >= dialogPosition.right - resizeRegionSize && e.pageX <= dialogPosition.right + resizeRegionSize)
 						tempResizeMode += 'e';
 
 					resizeMode.value = tempResizeMode;
@@ -245,21 +256,26 @@
 						case 'n':
 						case 's':
 						  cursor.value = 'ns-resize';
+						  document.body.style.cursor = 'ns-resize';
 						  break;
 						case 'e':
 						case 'w':
 						  cursor.value = 'ew-resize';
+              document.body.style.cursor = 'ew-resize';
 						  break;
 						case 'ne':
 						case 'sw':
 						  cursor.value = 'nesw-resize';
+              document.body.style.cursor = 'nesw-resize';
 							break;
 						case 'nw':
 						case 'se':
 						  cursor.value = 'nwse-resize';
+              document.body.style.cursor = 'nwse-resize';
 						  break;
 						default:
 						  cursor.value = '';
+              document.body.style.cursor = '';
 						  break;
           }
 				}
@@ -275,18 +291,35 @@
 				}
 			}
 
+      document.addEventListener('mousedown', resizeStart);
 			document.addEventListener('mousemove', drag);
       document.addEventListener('mousemove', resize);
       document.addEventListener('mouseup', dragEnd);
       document.addEventListener('mouseup', resizeEnd);
 
+      onBeforeUnmount(() => {
+        document.removeEventListener('mousedown', resizeStart);
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mousemove', resize);
+        document.removeEventListener('mouseup', dragEnd);
+        document.removeEventListener('mouseup', resizeEnd);
+			})
+
 			return {
+        isActive,
+				toggleDialog,
+				isMinimize,
+				toggleMinimize,
+				isMaximize,
+				toggleMaximize,
         dialogPosition,
 				dialogDimension,
         isDrag,
+				dialogClasses,
         dialogStyles,
-        dragStart,
-				resizeStart
+				resizeMode,
+				isResize,
+				dragStart
 			}
 		}
   }
