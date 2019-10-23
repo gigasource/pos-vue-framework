@@ -10,7 +10,13 @@ export default {
 
 export const iconBasic = () => ({
   components: {GIcon},
-  template: `<g-icon>fas fa-cat</g-icon>`,
+  props: {
+    icon: {default: text('icon', 'fas fa-cat')},
+    color: {default: text('color', 'null')},
+    xLarge: {default: boolean('size', false)},
+    disabled: {default: boolean('disabled', false)},
+  },
+  template: `<g-icon :color="color" :xLarge="xLarge" :disabled="disabled">{{icon}}</g-icon>`,
 })
 
 export const iconTypeSizeAndColor = () => ({
@@ -28,24 +34,21 @@ export const iconTypeSizeAndColor = () => ({
 </div>`,
 })
 
-export const icon = () => ({
-  components: {GIcon,GBtn},
+export const iconInButton = () => ({
+  components: {GIcon, GBtn},
   method: {
     foo() {
       //do nothing
     }
   },
   props: {
+    color: {default: text('color', 'brown')},
     dense: {default: boolean('dense', false)},
     disabled: {default: boolean('disabled', false)},
-    left: {default: boolean('left', false)},
+    left: {default: boolean('left', true)},
     right: {default: boolean('right', false)}
   },
-  template: `<div><g-icon @click="foo" dense disabled color="pink">fas fa-cat</g-icon>
-                   <div><g-btn>Cancel<g-icon right color="brown">fas fa-car</g-icon></g-btn></div></div><script>
-
- }
-</script>`,
+  template: `<div><g-btn>Buy this <b>{{color}}</b>   car    <g-icon :right="right" :left="!left" :color="color" :dense="dense" :disabled="disabled">fas fa-car</g-icon></g-btn></div>`,
 })
 
 

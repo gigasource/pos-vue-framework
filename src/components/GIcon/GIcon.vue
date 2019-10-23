@@ -1,22 +1,24 @@
 <template>
     <span>
-        <i v-if="_tag.i" :class="iconClass" :style="iconStyle"
+        <i v-if="_tagCondition.i" :class="iconClass" :style="iconStyle"
            :aria-hidden="attributes.ariaHidden"
-           :role="attributes.role">{{content}}</i>
-        <svg v-if="_tag.svg" :class="iconClass" :style="iconStyle"
+           :role="attributes.role">{{materialIcon}}</i>
+        <svg v-if="_tagCondition.svg" :class="iconClass" :style="iconStyle"
              :aria-hidden="attributes.ariaHidden"
              :role="attributes.role"
              xmlns="http://www.w3.org/2000/svg"
              viewBox="0 0 24 24">
             <path :d="icon"></path>
         </svg>
-        <img v-if="_tag.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle">
-        <slot v-if="_tag.slot"></slot>
+        <img v-if="_tagCondition.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle"/>
+        <span v-show="_tagCondition.slot">
+            <slot></slot>
+        </span>
     </span>
 </template>
 
 <script>
-  import {computed} from '@vue/composition-api';
+  import {computed, ref, onMounted, onUpdated} from '@vue/composition-api';
   import {convertToUnit} from '../../utils/helpers';
   import {setBackgroundColor} from "../../mixins/colorable";
 
@@ -24,6 +26,7 @@
     name: "GIcon",
 
     props: {
+      value: String,
       dense: Boolean,
       disabled: Boolean,
       left: Boolean,
@@ -43,44 +46,58 @@
     },
 
     setup(props, context) {
-      let self = context.parent.$children[context.parent.$children.length - 1]
-      let icon = self.$slots.default[0].text
-      let _tag = {
-        i: true,
-        svg: false,
-        img: false,
-        slot: true
-      }
-      let content = ''
 
+      const icon = ref('')
+
+      function getIcon() {
+        icon.value = context.slots.default()[0].text
+      }
+
+      onMounted(() => {
+        console.log('mounted')
+        getIcon()
+        //iconTemplate()
+      })
+
+      onUpdated(() => {
+        console.log('updating')
+        getIcon()
+        //iconTemplate()
+      })
 
       function iconTemplate() {
         let data = {
+          tagCondition: {
+            i: true,
+            svg: false,
+            img: false,
+            slot: true
+          },
           class: {},
-          style: {}
+          style: {},
+          materialIcon: ''
         }
 
-        if (!isSvgPath(icon) && !isCustomSvgIcon(icon)) { //render Font icons: Material Icon(default), Font Awesome 5
-          let materialIcon = icon
+        if (!isSvgPath(icon.value) && !isCustomSvgIcon(icon.value)) { //render Font icons: Material Icon(default), Font Awesome 5
           let iconType = 'material-icons'
-          const delimiterIndex = icon.indexOf('-')
+          const delimiterIndex = icon.value.indexOf('-')
           const isMaterialIcon = delimiterIndex <= -1
 
           if (isMaterialIcon) {
-            content = materialIcon
+            data.materialIcon = icon.value
           } else {
-            iconType = icon.slice(0, delimiterIndex)
+            iconType = icon.value.slice(0, delimiterIndex)
             if (isFontAwesome5(iconType)) iconType = ''
           }
 
           data.class[iconType] = true
-          data.class[icon] = !isMaterialIcon
+          data.class[icon.value] = !isMaterialIcon
           data.style['fontSize'] = getSize(props)
         }
 
-        if (isSvgPath(icon)) {
-          _tag.svg = true
-          _tag.i = false
+        if (isSvgPath(icon.value)) {
+          data.tagCondition.svg = true
+          data.tagCondition.i = false
 
           data.class['g-icon__svg'] = true
           data.style['fontSize'] = getSize(props)
@@ -88,50 +105,61 @@
           data.style['height'] = getSize(props)
         }
 
-        if (isCustomSvgIcon(icon)) {
-          _tag.img = true
-          _tag.i = false
+        if (isCustomSvgIcon(icon.value)) {
+          data.tagCondition.img = true
+          data.tagCondition.i = false
           data.style['fontSize'] = getSize(props) * 2
           data.style['width'] = getSize(props) * 2
           data.style['height'] = getSize(props) * 2
         }
 
-        _tag.slot = false
+        data.tagCondition.slot = false
 
         return data
       }
 
-      let color = setBackgroundColor(props.color, {})
-      let data = iconTemplate()
-      let classObj = data.class
-      let styleObj = data.style
+      let data = computed(() => {
+        return iconTemplate()
+      })
+
+      let materialIcon = computed(() => {
+        return data.value.materialIcon
+      })
+
+      let _tagCondition = computed(() => {
+        return {
+          ...data.value.tagCondition
+        }
+      })
+
+      let color = computed(() => {
+        return setBackgroundColor(props.color, {})
+      })
 
       let iconClass = computed(() => {
         return {
-          ...classObj,
-          ...color.class,
+          ...data.value.class,
+          ...color.value.class,
           'g-icon': true,
           'g-icon__dense': props.dense,
           'g-icon__disabled': props.disabled,
           'g-icon__left': props.left,
           'g-icon__right': props.right,
-          'g-icon__link': !!self.$listeners.click
+          'g-icon__link': !!context.listeners.click
         }
       })
-
 
       let iconStyle = computed(() => {
         return {
-          ...styleObj,
-          ...color.style
+          ...data.value.style,
+          ...color.value.style
         }
       })
 
-
       let attributes = computed(() => {
         return {
-          ariaHidden: !!self.$listeners.click,
-          role: self.$listeners.click ? 'button' : null
+          ariaHidden: !!context.listeners.click,
+          role: context.listeners.click ? 'button' : null
         }
       })
 
@@ -139,9 +167,9 @@
         iconClass,
         iconStyle,
         attributes,
-        _tag,
-        content,
+        _tagCondition,
         icon,
+        materialIcon,
       }
     }
   }
@@ -168,11 +196,3 @@
     return '24px'
   }
 </script>
-<style>
-    td {
-        padding: 20px;
-    }
-    tr {
-        padding: 20px;
-    }
-</style>
