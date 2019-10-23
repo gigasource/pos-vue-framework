@@ -5,7 +5,7 @@
 				<g-chip :value="item" :key="index" :active="isActiveItem(item)" @click="toggleItem" :close="item.close"
 								@click:close="toggleClose" :disabled="item.disabled" :filter="item.filter" :color="item.color" :text-color="item.textColor">
 					<slot name="item" :value="item" :index="index" :click="toggleItem" :active="isActiveItem(item)" :close="item.close" :click:close="toggleClose" :disabled="item.disabled">
-						{{value.text}}
+						{{item.text}}
 					</slot>
 				</g-chip>
 			</template>

@@ -4,21 +4,20 @@
 .g-chip-group {
   .g-chip {
     margin: $chip-group-margin;
+  }
 
-    .g-chip__active {
-      color: inherit;
+  .g-chip__active {
+    color: inherit;
 
-      //&.g-chip--no-color {
-      //  &:after {
-      //    opacity: .22
-      //  }
-      //
-      //  &:focus:after {
-      //    opacity: .32
-      //  }
-      //}
-    }
-
+    //&.g-chip--no-color {
+    //  &:after {
+    //    opacity: .22
+    //  }
+    //
+    //  &:focus:after {
+    //    opacity: .32
+    //  }
+    //}
   }
 }
 
