@@ -54,15 +54,11 @@
       }
 
       onMounted(() => {
-        console.log('mounted')
         getIcon()
-        //iconTemplate()
       })
 
       onUpdated(() => {
-        console.log('updating')
         getIcon()
-        //iconTemplate()
       })
 
       function iconTemplate() {
@@ -133,7 +129,7 @@
       })
 
       let color = computed(() => {
-        return setBackgroundColor(props.color, {})
+        return setBackgroundColor(props.color, {}) //to do: change to set text color
       })
 
       let iconClass = computed(() => {
