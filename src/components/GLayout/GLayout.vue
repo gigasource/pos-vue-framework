@@ -22,6 +22,7 @@
 			alignSelf: String,
 			wrap: Boolean,
 			reverse: Boolean,
+			noGutters: Boolean,
 		},
 		setup(props) {
       const classes = computed(() => ({
@@ -30,6 +31,7 @@
 				'g-layout__horizontal': props.horizontal,
 				['col-' + props.col]: props.col,
 				['row-' + props.row]: props.row,
+				'no-gutters': props.noGutters,
 			}));
 
       const styles = computed(() => ({

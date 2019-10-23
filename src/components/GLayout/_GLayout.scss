@@ -15,9 +15,10 @@
 
   .g-layout {
     padding: 12px;
+    margin: 0;
   }
 
-  &.no-gutter {
+  &.no-gutters {
     margin: 0;
 
     .g-layout {
@@ -33,7 +34,6 @@
 
 .g-container {
   width: 100%;
-  height: 100%;
   margin: 0 auto;
   padding: 12px;
 
