@@ -7,6 +7,16 @@ import { computed, reactive } from '@vue/composition-api'
 export const HourConvention = { _12HRS: '12', _24HRS: '24' }
 export const HourConventionValidator = (convention) => Object.values(HourConvention).indexOf(convention) >= 0
 
+// convert 0 to 12 in 12 hour convention
+export const getFormattedHours = (hours, props) => {
+  if (props.hourConvention === HourConvention._24HRS)
+    return hours
+  else if (hours === 0)
+    return 12
+  else
+    return hours
+}
+
 export default function(props, context) {
   // pre-defined active time picker
   const ActiveTimePicker = {
@@ -31,12 +41,13 @@ export default function(props, context) {
   const MIN_SECONDS = 0
   const MAX_SECONDS = 60
 
+
   //
   const initialTime = (() => {
     let timeParts
     if (typeof props.value === 'string' && (timeParts = props.value.split(':')).length >= 3)
       return {
-        hours: parseInt(timeParts[0]),
+        hours: parseInt(timeParts[0]) % 12,
         minutes: parseInt(timeParts[1]),
         seconds: parseInt(timeParts[2])
       }
@@ -74,7 +85,7 @@ export default function(props, context) {
   })
   const hours = computed(() => {
     return [...Array(cptMaxHour.value).keys()].map(hour => ({
-      value: hour,
+      value: getFormattedHours(hour, props),
       selected: hour === state.selectedTime.hours,
       allowed: isHourAllowedFn.value(hour),
       select: () => selectHours(hour)
@@ -109,7 +120,7 @@ export default function(props, context) {
   const seconds = computed(() => {
     return [...Array(MAX_SECONDS).keys()].map(second => ({
       value: second,
-      selected: second === state.selectedTime.minutes,
+      selected: second === state.selectedTime.seconds,
       allowed: isSecondAllowedFn.value(second),
       select: () => selectSeconds(second)
     }))

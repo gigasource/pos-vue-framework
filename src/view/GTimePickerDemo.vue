@@ -17,7 +17,7 @@
     components: { GTimePicker },
     data () {
       return {
-        convention: HourConvention._24HRS,
+        convention: HourConvention._12HRS,
       }
     }
   }
