@@ -5,26 +5,26 @@
   .g-chip {
     margin: $chip-group-margin;
 
-    .g-chip--active {
+    .g-chip__active {
       color: inherit;
 
-      &.g-chip--no-color {
-        &:after {
-          opacity: .22
-        }
-
-        &:focus:after {
-          opacity: .32
-        }
-      }
+      //&.g-chip--no-color {
+      //  &:after {
+      //    opacity: .22
+      //  }
+      //
+      //  &:focus:after {
+      //    opacity: .32
+      //  }
+      //}
     }
 
   }
 }
 
 // Element
-.g-chip-group .g-chip-group__content{
-  width: 25%;
+.g-chip-group .g-chip-group__content {
+  width: 33.3%;
   padding: $chip-group-content-padding;
   display: flex;
   flex: 1 0 auto;

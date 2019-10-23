@@ -1,13 +1,13 @@
 <template>
 	<div>
 <div>
-	<p>Single select chip group</p>
+	<p>Single select chip group/ display column</p>
 	<g-chip-group :items="items" v-model="activeItem" column @click:close="removeItem">
 		<template v-slot:item="{value, click, active, close}">{{value.text}}</template>
 	</g-chip-group>
 </div>
 
-		<p>Multiple select chip group</p>
+		<p>Multiple select chip group/ Max choice 3</p>
 		<g-chip-group :items="items2" v-model="activeItems" multiple max-selection="3">
 			<template v-slot:item="{value, click, active, close}">{{value.text}}</template>
 		</g-chip-group>
