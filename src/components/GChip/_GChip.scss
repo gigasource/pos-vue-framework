@@ -253,6 +253,10 @@
   }
 }
 
+.g-chip__active {
+  opacity: 0.82;
+}
+
 .g-chip {
   @each $name, $size in $icon-sizes {
     &.g-size__#{$name} {

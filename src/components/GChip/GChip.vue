@@ -1,12 +1,12 @@
 <template>
 	<div :class="classes" :style="styles" :draggable="draggable" @click="onClick">
-		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY' && active">
-			<i class="material-icons g-icon" v-if="filter && active">{{filterIcon}}</i>
+		<span class="g-icon g-icon__left" v-if="renderState === 'RENDER_FILTER_ONLY'">
+			<i class="material-icons g-icon" v-if="filter">{{filterIcon}}</i>
 		</span>
 
 		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_FILTER'">
 			<slot name="prependItem"></slot>
-			<div class="g-overlay" v-if="filter && active">
+			<div class="g-overlay" v-if="filter">
 				<i class="material-icons g-icon">{{filterIcon}}</i>
 			</div>
 		</div>
