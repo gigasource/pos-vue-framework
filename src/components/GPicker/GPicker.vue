@@ -58,9 +58,9 @@
       })
       const shouldGenActionsSlot = computed(() => context.slots.actions !== undefined)
 
-      const bodyClass = reactive({
+      const bodyClass = computed(() => ({
         'g-picker__body--no-title': props.noTitle
-      })
+      }))
       const bodyStyle = computed(() => {
         return props.fullWidth ? undefined : { width: convertToUnit(props.width) }
       })
