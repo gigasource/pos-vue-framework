@@ -1,4 +1,4 @@
-import { text, withKnobs, boolean, select } from '@storybook/addon-knobs';
+import {withKnobs, boolean, select, number } from '@storybook/addon-knobs';
 import GLayout from '../GLayout';
 import GContainer from '../GContainer';
 import GSpacer from '../GSpacer';
@@ -46,11 +46,11 @@ export const alignment = () => ({
   props: {
     align: {
       type: String,
-      default: select('Align Items', {center: 'center', start: 'flex-start', end: 'flex-end', baseline: 'baseline', stretch: 'stretch'}, 'center')
+      default: select('Align Items', { center: 'center', start: 'flex-start', end: 'flex-end', baseline: 'baseline', stretch: 'stretch' }, 'center')
     },
     justify: {
       type: String,
-      default: select('Justify Content', {center: 'center', start: 'flex-start', end: 'flex-end', 'space-around': 'space-around', 'space-between': 'space-between'} ,'center')
+      default: select('Justify Content', { center: 'center', start: 'flex-start', end: 'flex-end', 'space-around': 'space-around', 'space-between': 'space-between' }, 'center')
     },
   },
   template: `<g-container>
@@ -87,6 +87,74 @@ export const flow = () => ({
         <div style="border: 1px solid black; padding: 8px;">Column</div>
         <div style="border: 1px solid black; padding: 8px;">Column</div>
         <div style="border: 1px solid black; padding: 8px;">Column</div>
+      </g-layout>
+    </g-layout>
+  </g-container>`
+});
+
+export const col = () => ({
+  components: { GLayout, GContainer },
+  props: {
+    col: {
+      type: Number,
+      default: select('Col', {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, '11': 11, '12': 12}, 3)
+    },
+    noGutters: {
+      type: Boolean,
+      default: boolean('No gutters', false)
+    },
+    wrap: {
+      type: Boolean,
+      default: boolean('Wrap', true)
+    }
+  },
+  template: `<g-container>
+    <g-layout :wrap="wrap" :no-gutters="noGutters">
+      <g-layout :col="col">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Col-{{col}}</div>
+      </g-layout>
+      <g-layout :col="col">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Col-{{col}}</div>
+      </g-layout>
+      <g-layout :col="col">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Col-{{col}}</div>
+      </g-layout>
+      <g-layout :col="col">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Col-{{col}}</div>
+      </g-layout>
+    </g-layout>
+  </g-container>`
+});
+
+export const row = () => ({
+  components: { GLayout, GContainer },
+  props: {
+    row: {
+      type: Number,
+      default: select('Col', {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, '11': 11, '12': 12}, 3)
+    },
+    noGutters: {
+      type: Boolean,
+      default: boolean('No gutters', false)
+    },
+    wrap: {
+      type: Boolean,
+      default: boolean('Wrap', true)
+    }
+  },
+  template: `<g-container>
+    <g-layout horizontal :wrap="wrap" :no-gutters="noGutters" style="height: 300px; background-color: #eeeeee">
+      <g-layout :row="row">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Row-{{row}}</div>
+      </g-layout>
+      <g-layout :row="row">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Row-{{row}}</div>
+      </g-layout>
+      <g-layout :row="row">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Row-{{row}}</div>
+      </g-layout>
+      <g-layout :row="row">
+        <div style="border: 1px solid black; padding: 8px; width: 100%">Row-{{row}}</div>
       </g-layout>
     </g-layout>
   </g-container>`
