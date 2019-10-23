@@ -79,13 +79,13 @@
         return contentHeight.value + (props.extended ? parseInt(props.extensionHeight) : 0);
       });
 
-      const contentStyles = computed({
+      const contentStyles = computed(() => ({
         'height': convertToUnit(contentHeight.value)
-      });
+      }));
 
-      const totalHeightStyles = computed({
+      const totalHeightStyles = computed(() => ({
         'height': convertToUnit(totalHeight.value)
-      });
+      }));
 
       const extensionStyles = computed(() => ({
         'height': convertToUnit(props.extensionHeight)

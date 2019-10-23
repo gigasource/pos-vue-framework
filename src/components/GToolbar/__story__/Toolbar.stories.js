@@ -10,58 +10,44 @@ export default {
 
 export const basic = () => ({
   components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar>
+  props: {
+    bottom: {
+      type: Boolean,
+      default: boolean('Bottom', false)
+    },
+    dense: {
+      type: Boolean,
+      default: boolean('Dense', false)
+    },
+    short: {
+      type: Boolean,
+      default: boolean('Short', false)
+    },
+    prominent: {
+      type: Boolean,
+      default: boolean('Prominent', false)
+    },
+    flat: {
+      type: Boolean,
+      default: boolean('Flat', false)
+    },
+    collapse: {
+      type: Boolean,
+      default: boolean('Collapse', false)
+    },
+    rounded: {
+      type: Boolean,
+      default: boolean('Rounded border', false)
+    },
+    elevation: {
+      type: Number,
+      default: number('Elevation', 4)
+    }
+  },
+  template: `<g-toolbar :bottom="bottom" :dense="dense" :short="short" :prominent="prominent" :flat="flat" :collapse="collapse" :tile="!rounded" :elevation="elevation">
     <g-btn icon flat><i class="material-icons">menu</i></g-btn>
     <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const bottom = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar bottom>
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const dense = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar dense>
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const short = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar short>
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const prominent = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar prominent>
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
+    <g-spacer/>
     <g-btn icon flat><i class="material-icons">search</i></g-btn>
     <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
     <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
@@ -70,34 +56,38 @@ export const prominent = () => ({
 
 export const customHeight = () => ({
   components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar height="100">
+  props: {
+    height: {
+      type: Number,
+      default: number('Custom height', 64)
+    }
+  },
+  template: `<g-toolbar :height="height">
     <g-btn icon flat><i class="material-icons">menu</i></g-btn>
     <span>Title</span>
-    <g-spacer></g-spacer>
+    <g-spacer/>
     <g-btn icon flat><i class="material-icons">search</i></g-btn>
     <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
     <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
    </g-toolbar>`
 });
 
-export const flat = () => ({
+export const extension = () => ({
   components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar flat>
+  props: {
+    extended: {
+      type: Boolean,
+      default: boolean('Extended', true)
+    },
+    height: {
+      type: Number,
+      default: number('Extension height', 64)
+    }
+  },
+  template: `<g-toolbar :extended="extended" :height="height">
     <g-btn icon flat><i class="material-icons">menu</i></g-btn>
     <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const extended = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar extended>
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
+    <g-spacer/>
     <g-btn icon flat><i class="material-icons">search</i></g-btn>
     <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
     <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
@@ -107,24 +97,15 @@ export const extended = () => ({
    </g-toolbar>`
 });
 
-export const extendedWithHeight = () => ({
+export const image = () => ({
   components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar extended extensionHeight="100">
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-    <template v-slot:extension>
-      <span>Extension</span>    
-    </template>
-   </g-toolbar>`
-});
-
-export const background = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"> 
+  props: {
+    src: {
+      type: String,
+      default: text('src', 'https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg')
+    }
+  },
+  template: `<g-toolbar :src="src"> 
     <g-btn icon flat><i class="material-icons">menu</i></g-btn>
     <span>Title</span>
     <g-spacer></g-spacer>
@@ -134,76 +115,38 @@ export const background = () => ({
    </g-toolbar>`
 });
 
-export const colorCss = () => ({
+export const color = () => ({
   components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar color="#ff4452"> 
+  props: {
+    color: {
+      type: String,
+      default: text("Color", '#ff4452')
+    }
+  },
+  template: `<g-toolbar :color="color"> 
     <g-btn icon flat><i class="material-icons">menu</i></g-btn>
     <span>Title</span>
-    <g-spacer></g-spacer>
+    <g-spacer/>
     <g-btn icon flat><i class="material-icons">search</i></g-btn>
     <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
     <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
    </g-toolbar>`
 });
-
-export const colorClass = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar color="red accent 2"> 
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
 
 export const gradient = () => ({
   components: {GToolbar, GBtn, GSpacer},
-  data () {
-    return {
-      grad: text('Gradient', 'indigo, purple darken 2'),
-    }
+  props: {
+    grad: {
+      type: String,
+      default: text('Gradient', 'indigo, purple darken 2')
+    },
   },
   template: `<g-toolbar :gradient="grad"> 
     <g-btn icon flat><i class="material-icons">menu</i></g-btn>
     <span>Title</span>
-    <g-spacer></g-spacer>
+    <g-spacer/>
     <g-btn icon flat><i class="material-icons">search</i></g-btn>
     <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const elevation = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar elevation="10"> 
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const roundBorder = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar :tile="false"> 
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn icon flat><i class="material-icons">search</i></g-btn>
-    <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const collapse = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  template: `<g-toolbar collapse> 
-    <g-btn icon flat><i class="material-icons">menu</i></g-btn>
     <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
    </g-toolbar>`
 });
