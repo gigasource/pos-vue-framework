@@ -13,8 +13,11 @@
 			<router-link to="/dialog-demo">Dialog Demo</router-link>
       <router-link to="/tool-tip-demo">Tooltip demo</router-link>
 			<router-link to="/button">Button</router-link>
+			<router-link to="/input">Input</router-link>
 			<router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/chip">Chip</router-link>
+			<router-link to="/list-demo">List</router-link>
+			<router-link to="/selection-control">SelectIonControl</router-link>
 			<router-link to="/chip-group">Chip Group</router-link>
 
 		</g-layout>
