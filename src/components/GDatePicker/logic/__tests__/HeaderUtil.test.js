@@ -2,15 +2,13 @@
 import { createLocalVue } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
 import {
-  _computedContent,
+  _computedHeaderContent,
   _computedHeaderFormatFn,
-  calculateChange,
-  computedContents,
+  _calculateChange,
   isMonthFormat
 } from '../HeaderUtil';
-import { _computedDayFormatFunc } from '../DateTableUtil';
 
-describe('/HeaderUtil', () => {
+describe('GDatePicker/logic/HeaderUtil', () => {
   createLocalVue().use(plugin)
 
   describe('isMonthFormat', () => {
@@ -23,30 +21,30 @@ describe('/HeaderUtil', () => {
     })
   })
 
-  describe('calculateChange', () => {
+  describe('_calculateChange', () => {
     it('Should change the month if its month format', () => {
-      expect(calculateChange('2019-01', -1)).toEqual('2018-12')
-      expect(calculateChange('2019-01', +1)).toEqual('2019-02')
+      expect(_calculateChange('2019-01', -1)).toEqual('2018-12')
+      expect(_calculateChange('2019-01', +1)).toEqual('2019-02')
     })
 
     it('Should change the year if it\'s not month format', () => {
-      expect(calculateChange('2019', -1)).toEqual('2018')
-      expect(calculateChange('2019', +1)).toEqual('2020')
+      expect(_calculateChange('2019', -1)).toEqual('2018')
+      expect(_calculateChange('2019', +1)).toEqual('2020')
     })
   })
 
-  describe('_computedContent', () => {
+  describe('_computedHeaderContent', () => {
     it('Should return month format if activePicker is "date"', () => {
-      expect(_computedContent({ activePicker: 'date', viewportDate: '2019-01-01' }).value).toBe('2019-01')
-      expect(_computedContent({ activePicker: 'month', viewportDate: '2019-01-01' }).value).not.toBe('2019-01')
-      expect(_computedContent({ activePicker: 'year', viewportDate: '2019-01-01' }).value).not.toBe('2019-01')
+      expect(_computedHeaderContent({ activePicker: 'date', viewportDate: '2019-01-01' }).value).toBe('2019-01')
+      expect(_computedHeaderContent({ activePicker: 'month', viewportDate: '2019-01-01' }).value).not.toBe('2019-01')
+      expect(_computedHeaderContent({ activePicker: 'year', viewportDate: '2019-01-01' }).value).not.toBe('2019-01')
     })
 
     it('Should return year format if active picker is not "date"', () => {
-      expect(_computedContent({ activePicker: 'date', viewportDate: '2019-01-01' }).value).not.toBe('2019')
-      expect(_computedContent({ activePicker: 'month', viewportDate: '2019-01-01' }).value).toBe('2019')
-      expect(_computedContent({ activePicker: 'year', viewportDate: '2019-01-01' }).value).toBe('2019')
-      expect(_computedContent({ activePicker: 'blabla', viewportDate: '2019-01-01' }).value).toBe('2019')
+      expect(_computedHeaderContent({ activePicker: 'date', viewportDate: '2019-01-01' }).value).not.toBe('2019')
+      expect(_computedHeaderContent({ activePicker: 'month', viewportDate: '2019-01-01' }).value).toBe('2019')
+      expect(_computedHeaderContent({ activePicker: 'year', viewportDate: '2019-01-01' }).value).toBe('2019')
+      expect(_computedHeaderContent({ activePicker: 'blabla', viewportDate: '2019-01-01' }).value).toBe('2019')
     })
   })
 
@@ -70,22 +68,4 @@ describe('/HeaderUtil', () => {
       expect(_computedHeaderFormatFn({ }, { activePicker: 'bla bla' }).value('2019-01-01')).toBe("2019")
     })
   })
-
-  describe('computedContents', () => {
-    it('Should pass the test case', () => {
-      const props = {}
-
-      const dateState =  {activePicker: 'date', viewportDate: '2019-01-01'}
-      const expectedDate = { headerContent: '2019-01', formattedHeaderContent: 'January 2019' }
-      expect(computedContents(props, dateState).value).toEqual(expectedDate)
-
-
-      const monthState = {activePicker: 'month', viewportDate: '2019-01-01'}
-      const expectedMonth = { headerContent: '2019', formattedHeaderContent: '2019' }
-
-      expect(computedContents(props, monthState).value).toEqual(expectedMonth)
-    })
-  })
-
-  // TODO: NavigateStatus
 })

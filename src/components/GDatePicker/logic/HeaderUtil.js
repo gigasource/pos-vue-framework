@@ -1,5 +1,15 @@
 import { computed } from '@vue/composition-api'
-import { monthChange, createNativeLocaleFormatter, sanitizeDateString, pad } from './utils'
+import { sanitizeDateString, pad } from './utils'
+import dayjs from 'dayjs';
+
+/**
+ * Navigation
+ * @type {{PREV: number, NEXT: number}}
+ */
+export const NAV = {
+  PREV: -1,
+  NEXT: 1
+}
 
 /**
  * Detect whether dateString is Month format or not
@@ -10,6 +20,21 @@ import { monthChange, createNativeLocaleFormatter, sanitizeDateString, pad } fro
  */
 export const isMonthFormat = (dateString) => {
   return dateString.split('-').length > 1
+}
+
+/**
+ * @param {String} value YYYY-MM format
+ * @param {Number} sign -1 or +1
+ */
+export const _monthChange = (value, sign) => {
+  const [year, month] = value.split('-').map(Number)
+  if (month + sign === 0) {
+    return `${year - 1}-12`
+  } else if (month + sign === 13) {
+    return `${year + 1}-01`
+  } else {
+    return `${year}-${pad(month + sign)}`
+  }
 }
 
 /**
@@ -28,24 +53,23 @@ export const isMonthFormat = (dateString) => {
  *  sign: -1
  *  return: '2009'
  */
-export const calculateChange = (value, sign) => {
+export const _calculateChange = (value, sign) => {
   if (isMonthFormat(value)) {
-    return monthChange(value, sign)
+    return _monthChange(value, sign)
   } else {
     return (Number(value) + sign).toString()
   }
 }
 
 /**
- * Navigation
- * @type {{PREV: number, NEXT: number}}
+ * Get navigation state
+ * @export4test
+ * @param props
+ * @param state
+ * @returns {Ref<any>}
+ * @private
  */
-export const NAV = {
-  PREV: -1,
-  NEXT: 1
-}
-
-export const computedNavigateStatus = (props, state) => {
+export const _computedNavigateStatus = (props, state) => {
   // return 'YYYY-MM' from props.min if props.min provided
   const minMonth = computed(() => props.min ? sanitizeDateString(props.min, 'month') : null)
   // return 'YYYY-MM' from props.max if props.max provided
@@ -57,40 +81,79 @@ export const computedNavigateStatus = (props, state) => {
   //
   const min = computed(() => state.activePicker === 'date' ? minMonth.value : minYear.value)
   const max = computed(() => state.activePicker === 'date' ? maxMonth.value : maxYear.value)
+
   // get YYYY or YYYY-MM depend on active picker
   const cptViewportValue = computed(() => state.activePicker === 'date' ? state.viewportDate.substr(0, 7) : state.viewportDate.substr(0, 4))
+
   return computed(() => ({
-    canGoPrev: !(min.value && calculateChange(cptViewportValue.value, NAV.PREV) < min.value),
-    canGoNext: !(max.value && calculateChange(cptViewportValue.value, NAV.NEXT) > max.value)
+    canGoPrev: !(min.value && _calculateChange(cptViewportValue.value, NAV.PREV) < min.value),
+    canGoNext: !(max.value && _calculateChange(cptViewportValue.value, NAV.NEXT) > max.value)
   }))
 }
 
-export const _computedContent = (state) => computed(() => {
-  // if active picker is date, then we should show month in the header
-  // if active picker is month, the we should show year in the header
-  if (state.activePicker === 'date') {
-    return state.viewportDate.substr(0, 7)
-  }// YYYY-MM
-  else {
-    return state.viewportDate.substr(0, 4)
-  } // YYYY
-})
+/**
+ * Get computed header content
+ * @export4test
+ * @param state
+ * @returns {Ref<any>}
+ * @private
+ */
+export const _computedHeaderContent = state => {
+  return computed(() => dayjs(state.viewportDate).format(state.activePicker === 'date' ? 'YYYY-MM' : 'YYYY'));
+}
 
-export const _computedHeaderFormatFn = (props, state) => computed(() => {
-  if (props.headerDateFormat) {
-    return props.headerDateFormat
-  } else if (state.activePicker === 'date') {
-    return createNativeLocaleFormatter(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }, { length: 7 })
-  } else {
-    return createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 })
-  }
-})
+/**
+ * get header format function
+ * @export4test
+ * @param props
+ * @param state
+ * @returns {Ref<any>}
+ * @private
+ */
+export const _computedHeaderFormatFn = (props, state) => {
+  const formatFn = (date => dayjs(date).format(state.activePicker === 'date' ? 'MMMM YYYY' : 'YYYY'))
+  return computed(() => props.headerDateFormat || formatFn)
+}
 
-export const computedContents = (props, state) => computed(() => {
-  const cptHeaderContent = _computedContent(state)
+/**
+ * @export4test
+ * @private
+ * @param props
+ * @param state
+ * @returns {Ref<any>}
+ * @private
+ */
+export const _computedContents = (props, state) => {
   const cptHeaderContentFormatFn = _computedHeaderFormatFn(props, state)
-  return {
+  const cptHeaderContent = _computedHeaderContent(state)
+
+  return computed(() => ({
     headerContent: cptHeaderContent.value,
     formattedHeaderContent: cptHeaderContentFormatFn.value(cptHeaderContent.value)
-  }
-})
+  }))
+}
+
+/**
+ *
+ * @param props
+ * @param state
+ * @returns {Ref<any>}
+ * @private
+ */
+export const computedHeaderModel = ({ props, state }) => {
+  const cptContents = _computedContents(props, state)
+  const cptNavigateStatus = _computedNavigateStatus(props, state)
+  const cptChangePrev = computed(() => _calculateChange(cptContents.value.headerContent, NAV.PREV))
+  const cptChangeNext = computed(() => _calculateChange(cptContents.value.headerContent, NAV.NEXT))
+
+  return computed(() => ({
+    content: cptContents.value.formattedHeaderContent,
+    canGoPrev: cptNavigateStatus.value.canGoPrev,
+    canGoNext: cptNavigateStatus.value.canGoNext,
+    on: {
+      headerClicked: () => state.activePicker = (state.activePicker === 'date' ? 'month' : 'year'),
+      prevClicked: () => state.viewportDate = cptChangePrev.value,
+      nextClicked: () => state.viewportDate = cptChangeNext.value
+    }
+  }))
+}

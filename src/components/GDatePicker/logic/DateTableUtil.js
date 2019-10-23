@@ -1,14 +1,33 @@
 import { computed } from '@vue/composition-api'
-import {
-  createNativeLocaleFormatter,
-  daysInMonth as _daysInMonth,
-  getCurrentDateISOFormat,
-  isLeapYear,
-  pad
-} from './utils';
+import { pad } from './utils';
 import { createRange } from '../../../utils/helpers';
 import { setBackgroundColor } from '../../../mixins/colorable'
-import { isSelected, computedDisplayMonth, computedDisplayYear, isAllowed } from './TableUtil'
+import { isSelected, computedDisplayMonth, computedDisplayYear, isAllowed, applyNewSelectedValue } from './TableUtil'
+import dayjs from 'dayjs';
+
+export const DAYS_IN_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+export const DAYS_IN_MONTH_LEAP = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+/**
+ * Return true if year is leapYear, otherwise false
+ * @param year
+ * @returns {boolean}
+ * @private
+ */
+export function _isLeapYear (year) {
+  return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)
+}
+
+/**
+ * Return number of day in a month
+ * @param year
+ * @param month
+ * @returns {number}
+ * @private
+ */
+export const _computedDaysInMonth = (cptYear, cptMonth) => computed(() => {
+  return _isLeapYear(cptYear.value) ? DAYS_IN_MONTH_LEAP[cptMonth.value + 1] : DAYS_IN_MONTH[cptMonth.value + 1]
+})
 
 /**
  * Return day name in a week depend on props.firstDayOfWeek options
@@ -25,10 +44,9 @@ import { isSelected, computedDisplayMonth, computedDisplayYear, isAllowed } from
  * @param props
  * @returns {Ref<any>}
  */
-export const computedDayNameInWeek = (props) => {
-  const weekdayFormatter = computed(() => {
-    return props.weekdayFormat || createNativeLocaleFormatter(undefined, { weekday: 'narrow', timeZone: 'UTC' })
-  })
+export const _computedDayNameInWeek = (props) => {
+  const narrowWeekDayFn = (date => dayjs(date).format('dd').substr(0, 1))
+  const weekdayFormatter = computed(() => props.weekdayFormat || narrowWeekDayFn)
 
   const weekDays = computed(() => {
     const first = parseInt(props.firstDayOfWeek, 10)
@@ -45,16 +63,6 @@ export const computedDayNameInWeek = (props) => {
 }
 
 /**
- *
- * @param props
- * @returns {Ref<any>}
- * @private
- */
-export const _computedDayFormatFunc = (props) => computed(() => {
-  return props.dayFormat || createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' }, { start: 8, length: 2 })
-})
-
-/**
  * Returns number of the days from the firstDayOfWeek to the first day of the _currentDateMonth month
  * @param props
  * @param displayedYear
@@ -62,11 +70,11 @@ export const _computedDayFormatFunc = (props) => computed(() => {
  * @returns {number}
  * @private
  */
-function _weekDaysBeforeFirstDayOfTheMonth(props, displayedYear, displayedMonth) {
+const _computedDaysBeforeFirstDayOfTheMonth = (props, displayedYear, displayedMonth) => computed(() => {
   const firstDayOfTheMonth = new Date(`${displayedYear.value}-${pad(displayedMonth.value + 1)}-01T00:00:00+00:00`)
   const weekDay = firstDayOfTheMonth.getUTCDay()
   return (weekDay - parseInt(props.firstDayOfWeek) + 7) % 7
-}
+})
 
 /**
  * Return a week number of the week in year
@@ -74,9 +82,11 @@ function _weekDaysBeforeFirstDayOfTheMonth(props, displayedYear, displayedMonth)
  * @private
  */
 export function _computedWeekNumber(props, cptYear, cptMonth) {
+  // https://en.wikipedia.org/wiki/Zeller%27s_congruence
+  const dayOfYearArr = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
   return computed(() => {
-    let dayOfYear = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334][cptMonth.value]
-    if (cptMonth.value > 1 && isLeapYear(cptYear.value)) {
+    let dayOfYear = dayOfYearArr[cptMonth.value]
+    if (cptMonth.value > 1 && _isLeapYear(cptYear.value)) {
       dayOfYear++
     }
     const offset = (
@@ -85,19 +95,12 @@ export function _computedWeekNumber(props, cptYear, cptMonth) {
         Math.floor((cptYear.value - 1) / 100) +
         Math.floor((cptYear.value - 1) / 400) -
         Number(props.firstDayOfWeek)
-    ) % 7 // https://en.wikipedia.org/wiki/Zeller%27s_congruence
+    ) % 7
     return Math.floor((dayOfYear + offset) / 7) + 1
   })
 }
 
 // TODO: Bring _getEventColors to GDatePicker.vue
-/**
- * Get event colors
- * @param date
- * @param props
- * @returns {Array|*}
- * @private
- */
 export function _getEventColors(date, props) {
   const arrayize = (v) => Array.isArray(v) ? v : [v]
   let eventData
@@ -129,13 +132,6 @@ export function _getEventColors(date, props) {
 
   return eventColors.filter(v => v)
 }
-
-/**
- * Get events
- * @param date
- * @returns {null|(*|{})[]}
- * @private
- */
 export function _genEvents(props, date) {
   const eventColors = _getEventColors(date, props)
   if (eventColors.length) {
@@ -144,13 +140,6 @@ export function _genEvents(props, date) {
   return null
 }
 
-/**
- *
- * @param dateItem
- * @param props
- * @param date
- * @private
- */
 export function _addRangeInformation(dateItem, state, date) {
   if (Array.isArray(state.selectedValues) && state.selectedValues.length > 1 && dateItem.isSelected) {
     if (state.selectedValues[0] === date) {
@@ -163,72 +152,95 @@ export function _addRangeInformation(dateItem, state, date) {
   }
 }
 
-/**
- *
- * @param props
- * @param state
- * @returns {Ref<any>}
- */
-export const computedDatesInMonth = (props, state) => computed(() => {
+export const _computedDatesInMonth = (props, state) => {
   const cptMonth = computedDisplayMonth(state)
   const cptYear = computedDisplayYear(state)
-  const cptDateFormatFunc = _computedDayFormatFunc(props)
+
+  const defaultDayFormatFn = (day => dayjs(day).format('DD'))
+  const cptDateFormatFunc = computed(() => props.dayFormat || defaultDayFormatFn)
+  const cptDaysInMonth = _computedDaysInMonth(cptYear, cptMonth)
+  const cptWeekNumber = _computedWeekNumber(props, cptYear, cptMonth)
+  const cptDaysBeforeFirstDayOfMonth = _computedDaysBeforeFirstDayOfTheMonth(props, cptYear, cptMonth)
 
   // each week will be displayed in a row of Date table
-  const weeks = []
-  let week = []
+  return computed(() => {
+    const weeks = []
+    let week = []
 
-  // add week number of option showWeek is ON
-  let weekNumber = _computedWeekNumber(props, cptYear, cptMonth).value
-  props.showWeek && week.push({ isWeek: true, value: weekNumber++ })
+    // add week number of option showWeek is ON
+    let weekNumber = cptWeekNumber.value
+    props.showWeek && week.push({ isWeek: true, value: weekNumber++ })
 
-  // add blank day before the first day of the month
-  let dayBeforeFirstDayOfMonths = _weekDaysBeforeFirstDayOfTheMonth(props, cptYear, cptMonth)
-  while (dayBeforeFirstDayOfMonths--)
-    week.push({ isBlank: true })
+    // add blank day before the first day of the month
+    let dayBeforeFirstDayOfMonths = cptDaysBeforeFirstDayOfMonth.value
+    while (dayBeforeFirstDayOfMonths--)
+      week.push({ isBlank: true })
 
-  const current = getCurrentDateISOFormat()
+    const currentDate =  dayjs().format('YYYY-MM-DD')
 
-  // add days in month
-  const daysInMonth = _daysInMonth(cptYear.value, cptMonth.value + 1)
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = `${cptYear.value}-${pad(cptMonth.value + 1)}-${pad(day)}`
-    const dateItem = {
-      // raw date value which will be used to change date picker state
-      value: date,
-      // formatted date which will be shown in view
-      formattedValue: cptDateFormatFunc.value(date),
-      // boolean value indicate that whether the date can be selected
-      isAllowed: isAllowed(props, date),
-      // boolean value indicate that whether the date is selected or not
-      isSelected: isSelected(props, state, date),
-      // boolean value indicate whether the date is current
-      isCurrent: props.showCurrent && date === current,
-      // events of selected date
-      events: _genEvents(props, date)
-    }
+    // add days in month
+    const daysInMonth = cptDaysInMonth.value
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = `${cptYear.value}-${pad(cptMonth.value + 1)}-${pad(day)}`
+      const dateItem = {
+        // raw date value which will be used to change date picker state
+        value: date,
+        // formatted date which will be shown in view
+        formattedValue: cptDateFormatFunc.value(date),
+        // boolean value indicate that whether the date can be selected
+        isAllowed: isAllowed(props, date),
+        // boolean value indicate that whether the date is selected or not
+        isSelected: isSelected(props, state, date),
+        // boolean value indicate whether the date is current
+        isCurrent: props.showCurrent && date === currentDate,
+        // events of selected date
+        events: _genEvents(props, date)
+      }
 
-    if (props.range) {
-      _addRangeInformation(dateItem, state, date)
-    }
+      if (props.range) {
+        _addRangeInformation(dateItem, state, date)
+      }
 
-    week.push(dateItem)
+      week.push(dateItem)
 
-    // add week
-    if (week.length % (props.showWeek ? 8 : 7) === 0) {
-      weeks.push(week)
-      week = []
-      if (day < daysInMonth && props.showWeek) {
-        week.push({ isWeek: true, value: weekNumber++ })
+      // add week
+      if (week.length % (props.showWeek ? 8 : 7) === 0) {
+        weeks.push(week)
+        week = []
+        if (day < daysInMonth && props.showWeek) {
+          week.push({ isWeek: true, value: weekNumber++ })
+        }
       }
     }
-  }
 
-  if (week.length) {
-    weeks.push(week)
-  }
+    if (week.length) {
+      weeks.push(week)
+    }
 
-  return weeks
-})
+    return weeks
+  })
+}
 
+export const computedDateTableModel = ({ props, context, state, cptIsMultiSelect }) => {
+  const cptDayNames = _computedDayNameInWeek(props)
+  const cptDateRows = _computedDatesInMonth(props, state)
 
+  return computed(() => ({
+    dayNames: cptDayNames.value,
+    dateRows: cptDateRows.value,
+    on: {
+      onDateClicked: (dateItem) => {
+        if (dateItem.isAllowed && !props.readonly) {
+          applyNewSelectedValue(props, state, dateItem.value)
+          context.emit('input', cptIsMultiSelect.value ? state.selectedValues.map(val => val) : state.selectedValues)
+          context.emit('click:date', dateItem.value)
+        }
+      },
+      onDateDoubleClicked: (dateItem) => {
+        if (dateItem.isAllowed && !props.readonly) {
+          context.emit('dblclick:date', dateItem.value)
+        }
+      }
+    }
+  }))
+}

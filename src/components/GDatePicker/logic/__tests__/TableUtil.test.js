@@ -10,7 +10,7 @@ import {
 } from '../TableUtil';
 
 
-describe('GDatePicker/Table/date-picker-table', () => {
+describe('GDatePicker/logic/TableUtil.js', () => {
   createLocalVue().use(plugin)
 
   describe('isSelected', () => {

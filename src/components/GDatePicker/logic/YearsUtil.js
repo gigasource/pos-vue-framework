@@ -10,7 +10,7 @@ import { computed } from '@vue/composition-api'
  * props.value and currentYearOffset (default 20):
  *   => [ props.value - currentYearOffset, ... , props.value + currentYearOffset]
  */
-export function computedYearRange(props, currentYearOffset = 50) {
+export function _computedYearRange(props, currentYearOffset = 50) {
   return computed(() => {
     const cptMinYear = computed(() => props.min ? parseInt(props.min.substr(0, 4)) : null)
     const cptMaxYear = computed(() => props.max ? parseInt(props.max.substr(0, 4)) : null)
@@ -23,4 +23,25 @@ export function computedYearRange(props, currentYearOffset = 50) {
     }
     return years
   })
+}
+
+/**
+ * Return year models
+ * @param props
+ * @param state
+ * @returns {Ref<any>}
+ */
+export const computedYearModel = ({ props, state }) => {
+  const cptYears = _computedYearRange(props)
+  return computed(() => ({
+    years: cptYears.value,
+    selectedYear: state.viewportDate, // for highlighting
+    on: {
+      yearClicked: (year) => {
+        // show month picker of the year is selected year
+        state.activePicker = 'month'
+        state.viewportDate = `${year}`
+      }
+    }
+  }))
 }

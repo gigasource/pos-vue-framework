@@ -1,4 +1,4 @@
-import { createNativeLocaleFormatter, monthChange, pad, sanitizeDateString } from '../utils'
+import { pad, sanitizeDateString } from '../utils'
 
 describe('GDatePicker/util/pad', () => {
   it('should pad 1-digit numbers', () => {
@@ -14,41 +14,6 @@ describe('GDatePicker/util/pad', () => {
   it('should not pad 3-digit numbers', () => {
     expect(pad(400)).toBe('400')
     expect(pad('998')).toBe('998')
-  })
-})
-
-describe('GDatePicker/util/monthChange.ts', () => {
-  it('should change month', () => {
-    expect(monthChange('2000-01', -1)).toBe('1999-12')
-    expect(monthChange('2000-01', +1)).toBe('2000-02')
-    expect(monthChange('2000-12', -1)).toBe('2000-11')
-    expect(monthChange('2000-12', +1)).toBe('2001-01')
-  })
-})
-
-describe('GDatePicker/util/createNativeLocaleFormatter', () => {
-  it('should format dates', () => {
-    const formatter = createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' })
-    expect(formatter('2013-2-07')).toBe('7')
-  })
-
-  it('should format date with year < 1000', () => {
-    const formatter = createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' })
-    expect(formatter('13-2-07')).toBe('13')
-  })
-
-  it('should format dates if Intl is not defined', () => {
-    const oldIntl = global.Intl
-
-    global.Intl = null
-    const formatter = createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' }, { start: 0, length: 10 })
-    expect(formatter('2013-2-7')).toBe('2013-02-07')
-    expect(formatter('2013-2')).toBe('2013-02-01')
-    expect(formatter('2013')).toBe('2013-01-01')
-
-    const nullFormatter = createNativeLocaleFormatter(undefined, { day: 'numeric', timeZone: 'UTC' })
-    expect(nullFormatter).toBeUndefined()
-    global.Intl = oldIntl
   })
 })
 

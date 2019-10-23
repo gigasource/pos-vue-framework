@@ -1,7 +1,6 @@
 <script type="text/jsx">
   import _ from 'lodash'
   import { ref } from '@vue/composition-api'
-  import { TRANSITION_NAMES } from './logic/utils'
   import GDatePickerUtil from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
@@ -155,13 +154,13 @@
       const transitionName = ref('')
       const goPrev = () => {
         if (headerModel.value.canGoPrev) {
-          transitionName.value = TRANSITION_NAMES.REVERSE_TAB
+          transitionName.value = 'tab-reverse-transition'
           headerModel.value.on.prevClicked()
         }
       }
       const goNext = () => {
         if (headerModel.value.canGoNext) {
-          transitionName.value = TRANSITION_NAMES.TAB
+          transitionName.value = 'tab-transition'
           headerModel.value.on.nextClicked()
         }
       }

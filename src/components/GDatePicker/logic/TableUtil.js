@@ -67,3 +67,34 @@ export function _isDateAllowed(value, filterFn) {
  * @returns {boolean|*}
  */
 export const isAllowed = (props, value) => _isDateAllowed(value, props.allowedDates) && _isValueInRange(value, props.min, props.max)
+
+/**
+ *
+ * @param props
+ * @param state
+ * @param newValue
+ */
+export function applyNewSelectedValue(props, state, newValue) {
+  if (props.range) {
+    if (state.selectedValues.length !== 1) {
+      state.selectedValues = [newValue]
+    } else {
+      if (state.selectedValues[0] > newValue) {
+        state.selectedValues.unshift(newValue)
+      } else if (state.selectedValues[0] < newValue) {
+        state.selectedValues.push(newValue)
+      } else { // equal, deselect
+        state.selectedValues = []
+      }
+    }
+  } else if (props.multiple) {
+    const newValueIndex = state.selectedValues.indexOf(newValue)
+    if (newValueIndex === -1) {
+      state.selectedValues.push(newValue)
+    } else {
+      state.selectedValues.splice(newValueIndex, 1)
+    }
+  } else { // single
+    state.selectedValues = newValue
+  }
+}

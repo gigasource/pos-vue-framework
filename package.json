@@ -17,6 +17,7 @@
     "@vue/composition-api": "0.3.2",
     "compile-sass": "^1.0.1",
     "core-js": "2.6.9",
+    "dayjs": "^1.8.16",
     "lodash": "4.17.15",
     "material-design-icons": "^3.0.1",
     "sass": "^1.22.12",

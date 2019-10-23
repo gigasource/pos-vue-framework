@@ -1,63 +1,71 @@
 import { computed } from '@vue/composition-api'
-import { createNativeLocaleFormatter } from './utils';
+import dayjs from 'dayjs';
 
-/**
- * Title format
- * @param props
- * @param cptIsMultiSelect
- * @returns {Ref<any>}
- * @private
- */
-export const _computedTitleFormatterFn = (props, cptIsMultiSelect) => computed(() => {
+const _computedMultipleDateFormatFn = (props, cptIsMultiSelect, cptSingleDateFormatFn) => {
   const INVALID_SELECTION = '--'
-  const defaultMultipleDateFormatter = computed(() => {
-    return dates => {
-      if (cptIsMultiSelect.value) {
-        if (Array.isArray(dates)) {
-          if (props.multiple) {
-            return dates.length + ' selected'
-          } else { // props.range
-            let start = 'Start'
-            let end = 'End'
-            if (dates.length >= 1) start = defaultDateRangeFormatter.value(dates[0])
-            if (dates.length >= 2) end = defaultDateRangeFormatter.value(dates[1])
-            return props.landscape ? `${start} -<br/>${end}` : `${start} - ${end}`
-          }
-        } else {
-          return INVALID_SELECTION
+
+  // multiple
+  const multipleDateFormatFn = dates => Array.isArray(dates) ? dates.length + ' selected' : INVALID_SELECTION
+
+  // range
+  const formatFn = (date) => dayjs(date).format('MMM')
+  const dateRangeFormatFn = (dates) => {
+    if (Array.isArray(dates)) {
+      let start = 'Start'
+      let end = 'End'
+      if (dates.length >= 1) start = formatFn(dates[0])
+      if (dates.length >= 2) end = formatFn(dates[1])
+      return props.landscape ? `${start} -<br/>${end}` : `${start} - ${end}`
+    } else {
+      return INVALID_SELECTION
+    }
+  }
+
+  // single
+  const singleFormatFn = dates => Array.isArray(dates) ? INVALID_SELECTION : cptSingleDateFormatFn.value(dates)
+
+  return computed(() => {
+    if (cptIsMultiSelect.value)
+      return props.multiple ? multipleDateFormatFn : dateRangeFormatFn
+    else
+      return singleFormatFn
+  })
+}
+
+const _computedSingleDateFormatFn = (props) => {
+  const titleFormatFn = (date) => {
+    let format = 'YYYY'
+    if (props.type === 'date') format = 'ddd, MMM DD'
+    else if (props.type === 'month') format = 'MMMM'
+    return dayjs(date).format(format)
+  }
+  const landscapeFormatFn = date => titleFormatFn(date).replace(',', ',<br/>')
+
+  return computed(() => props.landscape ? landscapeFormatFn : titleFormatFn)
+}
+
+export const _computedDateFormatterFn = (props, cptIsMultiSelect) => {
+  const cptSingleDateFormatFn = _computedSingleDateFormatFn(props)
+  const cptMultipleDateFormatFn = _computedMultipleDateFormatFn(props, cptIsMultiSelect, cptSingleDateFormatFn)
+
+  return computed(() => props.titleDateFormat || cptIsMultiSelect.value ? cptMultipleDateFormatFn.value : cptSingleDateFormatFn.value)
+}
+
+export const computedTitleModel = ({ props, state, cptIsMultiSelect }) => {
+  const cptDateFormatFn = _computedDateFormatterFn(props, cptIsMultiSelect)
+  const yearFormatFn = (date) => dayjs(date).format('YYYY')
+
+  return computed(() => ({
+    date: cptDateFormatFn.value(state.selectedValues),
+    year: yearFormatFn(state.viewportDate),
+    on: {
+      yearClicked: (year) => {
+        if (state.activePicker !== 'year') {
+          // show year picker, highlight the year in viewportDate
+          state.activePicker = 'year'
+          state.viewportDate = `${year}`
         }
-      } else {
-        return Array.isArray(dates) ? INVALID_SELECTION : defaultDateFormatter.value(dates)
       }
     }
-  })
-
-  const defaultDateRangeFormatter = computed(() => {
-    // TODO: lanscape
-    return createNativeLocaleFormatter(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' })
-  })
-
-  const defaultDateFormatter = computed(() => {
-    const titleFormats = {
-      year: { year: 'numeric', timeZone: 'UTC' },
-      month: { month: 'long', timeZone: 'UTC' },
-      date: { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' },
-    }
-
-    const titleDateFormatter = createNativeLocaleFormatter(undefined, titleFormats[props.type], {
-      start: 0,
-      length: { date: 10, month: 7, year: 4 }[props.type],
-    })
-
-    const landscapeFormatter = (date) => titleDateFormatter(date)
-    .replace(/([^\d\s])([\d])/g, (match, nonDigit, digit) => `${nonDigit} ${digit}`)
-    .replace(', ', ',<br>')
-
-    return props.landscape ? landscapeFormatter : titleDateFormatter
-  })
-
-  return {
-    year: createNativeLocaleFormatter(undefined, { year: 'numeric', timeZone: 'UTC' }, { length: 4 }),
-    date: props.titleDateFormat || (cptIsMultiSelect.value ? defaultMultipleDateFormatter.value : defaultDateFormatter.value),
-  }
-})
+  }))
+}
