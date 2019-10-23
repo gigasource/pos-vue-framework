@@ -1,6 +1,5 @@
 .g-layout {
   display: flex;
-  flex: 1;
   flex-wrap: nowrap;
 
   &__vertical {
@@ -24,6 +23,10 @@
     .g-layout {
       padding: 0;
     }
+  }
+
+  &:not([class*=col-]):not([class*=row-]) {
+    flex: 1;
   }
 }
 

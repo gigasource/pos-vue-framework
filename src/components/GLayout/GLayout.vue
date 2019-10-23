@@ -23,6 +23,7 @@
 			wrap: Boolean,
 			reverse: Boolean,
 			noGutters: Boolean,
+			order: Number,
 		},
 		setup(props) {
       const classes = computed(() => ({
@@ -42,6 +43,7 @@
 				... props.wrap && props.reverse && {'flex-wrap': 'wrap-reverse'},
 				... props.reverse && !props.horizontal && {'flex-direction': 'row-reverse'},
 				... props.reverse && props.horizontal && {'flex-direction': 'column-reverse'},
+				... props.order && {'order': props.order}
 			}));
 
       return {
