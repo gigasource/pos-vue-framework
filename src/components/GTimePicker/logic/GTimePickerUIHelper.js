@@ -1,8 +1,9 @@
+import _ from 'lodash'
 import { computed } from '@vue/composition-api'
-import { HourConvention } from './GTimePickerUtil';
+import { HourConvention } from './GTimePickerUtil'
+import { range0_11, range12_23, range0_59 } from './GTimePickerUtil';
 
 // ---- Clicked target
-//
 /**
  * The angle will be started from 0y in clockwise
  * +-----------------+
@@ -28,6 +29,10 @@ function computeRadians(clockContainer, targetPos) {
   if (targetDistance > width / 2)
     return false
 
+  // if user click to the Origin, ignore
+  if (targetDistance === 0)
+    return false
+
   let radians
   if (targetPos.x >= Ox) {
     if (targetPos.y < Oy) {
@@ -49,7 +54,6 @@ function computeRadians(clockContainer, targetPos) {
 
   return radians
 }
-
 /**
  * Convert radians to angle
  * @param radian
@@ -58,18 +62,19 @@ function computeRadians(clockContainer, targetPos) {
 function radiansToAngle(radian) {
   return radian * 180 / Math.PI
 }
-
 /**
  * get angle of target pos
  * @param clockContainer
  * @param targetPos
  * @returns {number}
  */
-export function computeAngle(clockContainer, targetPos) {
-  const angle = radiansToAngle(computeRadians(clockContainer, targetPos))
-  return angle
+function computeAngle(clockContainer, targetPos) {
+  const radians = computeRadians(clockContainer, targetPos)
+  if (radians === false)
+    return false
+  else
+    return radiansToAngle(radians)
 }
-
 /**
  * Get item's index at the position an user clicked
  * @param clockContainer the clock size
@@ -84,7 +89,7 @@ export function getSelectedIndex(clockContainer, targetPos, itemsLength = 60) {
   const anglePerUnit = 360 / itemsLength
   const angle = computeAngle(clockContainer, targetPos)
   if (angle !== false) {
-    let selectedItemIndex = Math.round(angle / anglePerUnit)
+    let selectedItemIndex = Math.floor(angle / anglePerUnit)
     // reset if selected index reach the boundary
     if (selectedItemIndex >= itemsLength)
       selectedItemIndex = 0
@@ -93,21 +98,61 @@ export function getSelectedIndex(clockContainer, targetPos, itemsLength = 60) {
 }
 
 
-// ---- Hand
-//
-export function repositionFaceNumber(numbers, ratio = 1) {
-  let anglePerStep = 2 * Math.PI / numbers.length
+// Clock's number
+export function calcFaceNumberPosition(numbersModel, ratio = 1) {
+  let anglePerStep = 2 * Math.PI / numbersModel.length
   let angle = Math.PI / 2
-  _.each(numbers, (el, index) => {
+  _.each(numbersModel, (el, index) => {
     el.style = {
       ...el.style,
       top: `${50 * (1 - ratio * Math.sin(angle + index * anglePerStep))}%`,
       left: `${50 * (1 - ratio * Math.cos(angle + index * anglePerStep))}%`
     }
   })
-  return numbers
+  return numbersModel
 }
 
+// ---- Clock's hand
+const _computedHandHeightAndTop = (props, state) => {
+  return computed(() => {
+    if (   state.activeTimePicker.hour
+        && props.hourConvention === HourConvention._24HRS
+        && state.selectedTime.hours >= 12)
+    {
+      // get short hand
+      return {
+        top: '20%',
+        height: '30%'
+      }
+    } else {
+      // get long hand
+      return {
+        top: '2%',
+        height: '48%'
+      }
+    }
+  })
+}
+const _computedHandTransform = (state) => {
+  return computed(() => {
+    let degree = 0
+    if (state.activeTimePicker.hour) {
+      // 12 hours
+      // 30 = 360 / 12
+      degree = range0_11.indexOf(state.selectedTime.hours) * 30
+      if (degree < 0)
+        degree = range12_23.indexOf(state.selectedTime.hours) * 30
+    }
+    else if (state.activeTimePicker.minute) {
+      degree = range0_59.indexOf(state.selectedTime.minutes) * 6
+    }// 360 / 60
+    else if (state.activeTimePicker.second) {
+      degree = range0_59.indexOf(state.selectedTime.seconds) * 6
+    }
+
+    return { 'transform': `rotate(${degree}deg)` }
+  })
+}
 export const computedHandStyle = (props, state) => {
   const cptHandHeightAndTop = _computedHandHeightAndTop(props, state);
   const cptHandTransform = _computedHandTransform(state)
@@ -116,51 +161,5 @@ export const computedHandStyle = (props, state) => {
       ...cptHandHeightAndTop.value,
       ...cptHandTransform.value
     }
-  })
-}
-
-const _computedHandHeightAndTop = (props, state) => {
-  return computed(() => {
-    if (   state.activeTimePicker.hour
-        && props.hourConvention === HourConvention._24HRS
-        && state.selectedTime.hours >= 12) {
-        return {
-          top: '20%',
-          height: '30%'
-        }
-    } else {
-      return {
-        top: '0%',
-        height: '50%'
-      }
-    }
-  })
-}
-
-const _computedHandTransform = (state) => {
-  // [0, 11]
-  const range12 = [...Array(12).keys()]
-  // [12, 23]
-  const range12_24 = [...Array(24).keys()].splice(12, 12)
-  // [0, 59]
-  const range60 = [...Array(60).keys()]
-
-  return computed(() => {
-    let degree = 0
-    if (state.activeTimePicker.hour) {
-      // 12 hours
-      // 30 = 360 / 12
-      degree = range12.indexOf(state.selectedTime.hours) * 30
-      if (degree < 0)
-        degree = range12_24.indexOf(state.selectedTime.hours) * 30
-    }
-    else if (state.activeTimePicker.minute) {
-      degree = range60.indexOf(state.selectedTime.minutes) * 6
-    }// 360 / 60
-    else if (state.activeTimePicker.second) {
-      degree = range60.indexOf(state.selectedTime.seconds) * 6
-    }
-
-    return { 'transform': `rotate(${degree}deg)` }
   })
 }

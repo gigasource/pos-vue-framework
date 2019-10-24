@@ -7,185 +7,183 @@ import { computed, reactive } from '@vue/composition-api'
 export const HourConvention = { _12HRS: '12', _24HRS: '24' }
 export const HourConventionValidator = (convention) => Object.values(HourConvention).indexOf(convention) >= 0
 
-// convert 0 to 12 in 12 hour convention
-export const getFormattedHours = (hours, props) => {
-  if (props.hourConvention === HourConvention._24HRS)
-    return hours
-  else if (hours === 0)
-    return 12
-  else
-    return hours
+// pre-defined active time picker
+const ActiveTimePicker = {
+  hour: { hour: true, minute: false, second: false },
+  minute: { hour: false, minute: true, second: false },
+  second: { hour: false, minute: false, second: true }
 }
 
-export default function(props, context) {
-  // pre-defined active time picker
-  const ActiveTimePicker = {
-    hour: { hour: true, minute: false, second: false },
-    minute: { hour: false, minute: true, second: false },
-    second: { hour: false, minute: false, second: true }
+// pre-defined active period picker
+const ActivePeriodPicker = {
+  AM: { AM: true, PM: false },
+  PM: { AM: false, PM: true }
+}
+
+export const range0_11 = [...Array(12).keys()]
+export const range0_23 = [...Array(24).keys()]
+export const range12_23 = [...Array(24).keys()].splice(12, 12)
+export const range0_59 = [...Array(60).keys()]
+
+// convert 0 to 12 in 12 hour convention
+export const getFormattedHours = (hours, props) => {
+  if (props.hourConvention === HourConvention._24HRS) {
+    return hours
+  } else if (hours === 0) {
+    return 12
+  } else {
+    return hours
+  }
+}
+
+
+/**
+ * Return function help switch timer picker
+ * @param state
+ * @returns {{showMinutesPicker: (function(): (ActiveTimePicker.minute|{hour, minute, second})), showSecondsPicker: (function(): (ActiveTimePicker.second|{hour, minute, second})), showHoursPicker: (function(): (ActiveTimePicker.hour|{hour, minute, second}))}}
+ */
+function getShowTimePickerMethods(state) {
+  return {
+    showHoursPicker: () => state.activeTimePicker = ActiveTimePicker.hour,
+    showMinutesPicker: () => state.activeTimePicker = ActiveTimePicker.minute,
+    showSecondsPicker: () => state.activeTimePicker = ActiveTimePicker.second,
+  }
+}
+
+/**
+ * Return functions which help switch AM/PM
+ * @param state
+ * @returns {{showAMPicker: (function(): (ActivePeriodPicker.AM|{AM, PM})), showPMPicker: (function(): (ActivePeriodPicker.PM|{AM, PM}))}}
+ */
+function getShowPeriodPickerMethods(state) {
+  return {
+    showAMPicker: () => state.activePeriodPicker = ActivePeriodPicker.AM,
+    showPMPicker: () => state.activePeriodPicker = ActivePeriodPicker.PM
+  }
+}
+
+/**
+ * Return functions which change time picker value
+ * @param state
+ * @param context
+ */
+function getSetTimeMethods(state, context) {
+  function emitInput() {
+    context.emit('input', `${state.selectedTime.hours}:${state.selectedTime.minutes}:${state.selectedTime.seconds}`)
   }
 
-  // pre-defined active period picker
-  const ActivePeriodPicker = {
-    AM: { AM: true, PM: false  },
-    PM: { AM: false, PM: true }
+  // events
+  function setHours(hours) {
+    state.selectedTime.hours = hours
+    context.emit('update:hours', hours)
+    emitInput()
   }
 
-  const cptIs12HoursConvention = computed(() => props.hourConvention === HourConvention._12HRS)
-  const MIN_HOUR = 0
+  function setMinutes(minutes) {
+    state.selectedTime.minutes = minutes
+    context.emit('update:minutes', minutes)
+    emitInput()
+  }
+
+  function setSeconds(seconds) {
+    state.selectedTime.seconds = seconds
+    context.emit('update:seconds', seconds)
+    emitInput()
+  }
+
+  return { setHours, setMinutes, setSeconds }
+}
+
+// adjust current time
+export function getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, cptIs12HoursConvention}) {
   const cptMaxHour = computed(() => cptIs12HoursConvention.value ? 12 : 24)
 
-  const MIN_MINUTES = 0
-  const MAX_MINUTES = 60
+  function adjustHours(offset) {
+    let newHours = state.selectedTime.hours + offset
+    while (newHours < 0) newHours += cptMaxHour.value
+    while (newHours >= cptMaxHour.value) newHours -= cptMaxHour.value
+    setHours(newHours)
+  }
 
-  const MIN_SECONDS = 0
-  const MAX_SECONDS = 60
+  function adjustMinutes(minuteOffset) {
+    let newMinutes = state.selectedTime.minutes + minuteOffset
+    while (newMinutes < 0) newMinutes += 60
+    while (newMinutes >= 60) newMinutes -= 60
+    setMinutes(newMinutes)
+  }
 
+  function adjustSeconds(secondOffset) {
+    let newSeconds = state.selectedTime.seconds + secondOffset
+    while (newSeconds < 0) newSeconds += 60
+    while (newSeconds >= 60) newSeconds -= 60
+    setSeconds(newSeconds)
+  }
 
-  //
-  const initialTime = (() => {
-    let timeParts
-    if (typeof props.value === 'string' && (timeParts = props.value.split(':')).length >= 3)
-      return {
-        hours: parseInt(timeParts[0]) % 12,
-        minutes: parseInt(timeParts[1]),
-        seconds: parseInt(timeParts[2])
-      }
-    else
-      return {
-        hours: 0,
-        minutes: 0,
-        seconds: 0
-      }
-  })()
+  return { adjustHours, adjustMinutes, adjustSeconds }
+}
+
+export default function (props, context) {
+  const cptIs12HoursConvention = computed(() => props.hourConvention === HourConvention._12HRS)
+
+  // try to parsing initial time
+  let initialTime = { hours: 0, minutes: 0, seconds: 0 }
+  let timeParts = props.value.split(':')
+  if (timeParts.length >= 1) initialTime.hours = parseInt(timeParts[0]) % 12
+  if (timeParts.length >= 2) initialTime.minutes = parseInt(timeParts[1])
+  if (timeParts.length >= 3) initialTime.seconds = parseInt(timeParts[2])
 
   const state = reactive({
     // indicate whether hour, minutes, second view will be shown
     // if you want to show all components (hour, minute, second), just ignore this value
     activeTimePicker: ActiveTimePicker.hour,
-    // indicate whether period (AM/PM) should be show
-    showPeriod: cptIs12HoursConvention.value,
     // indicate whether AM or PM is active
     activePeriodPicker: ActivePeriodPicker.AM,
     // storing selected time elements
     selectedTime: initialTime,
+    // indicate whether period (AM/PM) should be show
+    showPeriod: cptIs12HoursConvention.value,
   })
 
-  function emitInput(){
-      context.emit('input', `${state.selectedTime.hours}:${state.selectedTime.minutes}:${state.selectedTime.seconds}`)
-  }
+  const { showHoursPicker, showMinutesPicker, showSecondsPicker } = getShowTimePickerMethods(state)
+  const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state)
+  const { setHours, setMinutes, setSeconds } = getSetTimeMethods(state, context)
+  const { adjustHours, adjustMinutes, adjustSeconds } = getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, cptIs12HoursConvention})
 
-  // hours model
-  const isHourAllowedFn = computed(() => {
-    if (typeof props.allowedHours === 'function')
-      return hour => props.allowedHours(hour)
-    else if (Array.isArray(props.allowedHours))
-      return hour => props.allowedHours.indexOf(hour) >= 0
-    else return () => true
-  })
-  const hours = computed(() => {
-    return [...Array(cptMaxHour.value).keys()].map(hour => ({
-      value: getFormattedHours(hour, props),
-      selected: hour === state.selectedTime.hours,
-      allowed: isHourAllowedFn.value(hour),
-      select: () => selectHours(hour)
+  const hoursModel = computed(() => {
+    return (cptIs12HoursConvention.value ? range0_11 : range0_23).map(hours => ({
+      value: getFormattedHours(hours, props),
+      selected: hours === state.selectedTime.hours,
+      select: () => setHours(hours)
     }))
   })
 
-  // minute models
-  const isMinuteAllowedFn = computed(() => {
-    if (typeof props.allowedMinutes === 'function')
-      return hour => props.allowedMinutes(hour)
-    else if (Array.isArray(props.allowedMinutes))
-      return hour => props.allowedMinutes.indexOf(hour) >= 0
-    else return () => true
-  })
-  const minutes = computed(() => {
-    return [...Array(MAX_MINUTES).keys()].map(minute => ({
-      value: minute,
-      selected: minute === state.selectedTime.minutes,
-      allowed: isMinuteAllowedFn.value(minute),
-      select: () => selectMinutes(minute)
+  const minutesModel = computed(() => {
+    return range0_59.map(minutes => ({
+      value: minutes,
+      selected: minutes === state.selectedTime.minutes,
+      select: () => setMinutes(minutes)
     }))
   })
 
   // seconds model
-  const isSecondAllowedFn = computed(() => {
-    if (typeof props.allowedSeconds === 'function')
-      return hour => props.allowedSeconds(hour)
-    else if (Array.isArray(props.allowedSeconds))
-      return hour => props.allowedSeconds.indexOf(hour) >= 0
-    else return () => true
-  })
-  const seconds = computed(() => {
-    return [...Array(MAX_SECONDS).keys()].map(second => ({
-      value: second,
-      selected: second === state.selectedTime.seconds,
-      allowed: isSecondAllowedFn.value(second),
-      select: () => selectSeconds(second)
+  const secondsModel = computed(() => {
+    return range0_59.map(seconds => ({
+      value: seconds,
+      selected: seconds === state.selectedTime.seconds,
+      select: () => setSeconds(seconds)
     }))
   })
-
-
-  // function to change value non-click: scroll, touch, wheel
-  // TODO: Support allowed function
-  const changeHour = (offset) => {
-    let newHours = state.selectedTime.hours + offset
-    while (newHours < MIN_HOUR) newHours += cptMaxHour.value
-    while(newHours >= cptMaxHour.value) newHours -= cptMaxHour.value
-    selectHours(newHours)
-  }
-  const changeMinute = (minuteOffset) => {
-    let newMinutes = state.selectedTime.minutes + minuteOffset
-    while(newMinutes < MIN_MINUTES) newMinutes += MAX_MINUTES
-    while(newMinutes >= MAX_MINUTES) newMinutes -= MAX_MINUTES
-    selectMinutes(newMinutes)
-  }
-  const changeSecond = (secondOffset) => {
-    let newSeconds = state.selectedTime.seconds + secondOffset
-    while(newSeconds < MIN_SECONDS) newSeconds += MAX_SECONDS
-    while(newSeconds >= MAX_SECONDS) newSeconds -= MAX_SECONDS
-    selectSeconds(newSeconds)
-  }
-
-  // switch time picker
-  const showHoursPicker = () => state.activeTimePicker = ActiveTimePicker.hour
-  const showMinutesPicker = () => state.activeTimePicker = ActiveTimePicker.minute
-  const showSecondsPicker = () => state.activeTimePicker = ActiveTimePicker.second
-
-  // switch period picker
-  const showAMPicker = () => state.activePeriodPicker = ActivePeriodPicker.AM
-  const showPMPicker = () => state.activePeriodPicker = ActivePeriodPicker.PM
-
-  // events
-  const selectHours = (hours) => {
-    state.selectedTime.hours = hours
-    context.emit('update:hour', hours)
-    emitInput()
-  }
-
-  const selectMinutes = (minutes) => {
-    state.selectedTime.minutes = minutes
-    context.emit('update:minute', minutes)
-    emitInput()
-  }
-
-  const selectSeconds = (seconds) => {
-    state.selectedTime.seconds = seconds
-    context.emit('update:second', seconds)
-    emitInput()
-  }
 
   return {
     state,
     //
-    hours,
-    minutes,
-    seconds,
+    hoursModel,
+    minutesModel,
+    secondsModel,
     //
-    changeHour,
-    changeMinute,
-    changeSecond,
+    adjustHours,
+    adjustMinutes,
+    adjustSeconds,
     //
     showHoursPicker,
     showMinutesPicker,

@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil'
-  import { computedHandStyle, getSelectedIndex, repositionFaceNumber } from './logic/GTimePickerUIHelper';
+  import { computedHandStyle, getSelectedIndex, calcFaceNumberPosition } from './logic/GTimePickerUIHelper';
 
   export default {
     name: 'GTimePicker',
@@ -22,152 +22,150 @@
         validator: HourConventionValidator
       },
 
-      allowedHours: [Function, Array],
-      allowedMinutes: [Function, Array],
-      allowedSeconds: [Function, Array],
-
       // ROADMAP
       // events: [Function, Array], // (() => [] || []) of { hour: Number, minute: Number, second: Number, eventName: String, eventContent: String] }
+      // allowedHours: [Function, Array],
+      // allowedMinutes: [Function, Array],
+      // allowedSeconds: [Function, Array],
     },
     setup(props, context) {
       const {
-        // {
-        //  // @ignorable
-        //  // indicate whether hour, minutes, second view will be shown
-        //  // if you want to show all components (hour, minute, second), just ignore this value
-        //  activePicker: 'hour' || 'minute' || 'seconds'
-        //
-        //  // @neededInView
-        //  // boolean value indicate whether AM/PM label will be show.
-        //  // This value will be computed from props.hourConvention. True if 12Hour, false if 24Hour
-        //  // This value co-existence with changePeriodToAM and onPMClicked event handler
-        //  showPeriod: true || false,
-        // }
         state,
-        // hour models: [{ selected: Boolean, allowed: Boolean }]
-        hours,
-        // minute models: [{ selected: Boolean, allowed: Boolean }]
-        minutes,
-        // second models: [{ selected: Boolean, allowed: Boolean }]
-        seconds,
-        // function to change value non-click: scroll, touch, wheel
-        changeHour,
-        changeMinute,
-        changeSecond,
-
-        // function to change value by clicked
-        // event handler when
+        //
+        hoursModel,
+        minutesModel,
+        secondsModel,
+        //
+        adjustHours,
+        adjustMinutes,
+        adjustSeconds,
+        //
         showHoursPicker,
         showMinutesPicker,
         showSecondsPicker,
-
         //
         showAMPicker,
-        showPMPicker
+        showPMPicker,
       } = GTimePickerUtil(props, context)
 
-      // temp method
-      function pad(value) {
-        return value < 10 ? `0${value}` : `${value}`
-      }
+      const cptHandStyle = computedHandStyle(props, state)
 
-      // title
-      function titleRenderFn() {
-        return (
+      // Title
+      const titleRenderFn = (function () {
+        function pad(value) {
+          return value < 10 ? `0${value}` : `${value}`
+        }
+
+        const getNumberClass = function(active) {
+          return {
+            'g-time-picker__title__number': true,
+            'g-time-picker__title__number--active': active
+          }
+        }
+
+        function renderSecond() {
+          return props.useSeconds ? [
+            <span>:</span>,
+            <div class={getNumberClass(state.activeTimePicker.second)} vOn:click_stop={showSecondsPicker}>
+              {pad(state.selectedTime.seconds)}
+            </div>
+          ] : undefined
+        }
+
+        function renderPeriod() {
+          return state.showPeriod
+              ? <div>
+                <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.AM }} vOn:click_stop={showAMPicker}>AM</div>
+                <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.PM }} vOn:click_stop={showPMPicker}>PM</div>
+              </div>
+              : undefined
+        }
+
+        return () => (
             <div class="g-time-picker__title">
-              <div
-                  class={[
-                    'g-time-picker__title__time-element',
-                    { 'g-time-picker__title__time-element--active': state.activeTimePicker.hour }
-                  ]}
-                  vOn:click_stop={showHoursPicker}>{pad(getFormattedHours(state.selectedTime.hours, props))}</div>
+              <div class={getNumberClass(state.activeTimePicker.hour)} vOn:click_stop={showHoursPicker}>
+                {pad(getFormattedHours(state.selectedTime.hours, props))}
+              </div>
               <span>:</span>
-              <div class="g-time-picker__title__time-element"
-                   vOn:click_stop={showMinutesPicker}>{pad(state.selectedTime.minutes)}</div>
-              {
-                props.useSeconds ? [
-                  <span>:</span>,
-                  <div class="g-time-picker__title__time-element"
-                       vOn:click_stop={showSecondsPicker}>{pad(state.selectedTime.seconds)}</div>
-                ] : undefined
-              }
-              {
-                state.showPeriod
-                    ? <div>
-                      <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.AM }} vOn:click_stop={showAMPicker}>AM</div>
-                      <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.PM }} vOn:click_stop={showPMPicker}>PM</div>
-                    </div>
-                    : undefined
-              }
+              <div class={getNumberClass(state.activeTimePicker.minute)} vOn:click_stop={showMinutesPicker}>
+                {pad(state.selectedTime.minutes)}
+              </div>
+              {renderSecond()}
+              {renderPeriod()}
             </div>
         )
-      }
+
+      })()
 
       // Clock
       function wheelHandle(e) {
         e.preventDefault()
         e.stopPropagation()
 
-        if (props.disabled || props.readonly || !props.scrollable)
+        if (props.disabled || props.readonly || !props.scrollable) {
           return
+        }
 
         let changeValue = e.deltaY
-        if (changeValue > 0)  changeValue = 1
-        else if (changeValue < 0) changeValue = -1
+        if (changeValue > 0) {
+          changeValue = 1
+        } else if (changeValue < 0) {
+          changeValue = -1
+        }
 
         let changeFn = (state.activeTimePicker.hour
-            ? changeHour
+            ? adjustHours
             : state.activeTimePicker.minute
-                ? changeMinute
-                : changeSecond)
+                ? adjustMinutes
+                : adjustSeconds)
 
         changeFn(changeValue)
-      }
-      const cptHandStyle = computedHandStyle(props, state)
-      function addClass(timeElements) {
-        _.each(timeElements, (el) => {
-          el.class = {
-            ...el.class,
-            'g-time-picker__clock__inner__item': true,
-            'g-time-picker__clock__inner__item--selected': el.selected,
-            'g-time-picker__clock__inner__item--readonly': props.readonly,
-            'g-time-picker__clock__inner__item--disabled': props.disabled || !el.allowed
-          }
-        })
-        return timeElements
       }
       function onClockClicked(e) {
         const selectedIndex = getSelectedIndex(e.target.getBoundingClientRect(), { x: e.offsetX, y: e.offsetY })
         if (selectedIndex !== -1) {
           if (state.activeTimePicker.minute) {
-            minutes.value[selectedIndex].select()
-            if (props.useSeconds)
+            minutesModel.value[selectedIndex].select()
+            if (props.useSeconds) {
               showSecondsPicker()
+            }
           } else if (state.activeTimePicker.second) {
-            seconds.value[selectedIndex].select()
+            secondsModel.value[selectedIndex].select()
           }
         }
+      }
+      function addNumberClass(numbers) {
+        _.each(numbers, (el) => {
+          el.class = {
+            ...el.class,
+            'g-time-picker__clock__inner__number': true,
+            'g-time-picker__clock__inner__number--selected': el.selected,
+            'g-time-picker__clock__inner__number--readonly': props.readonly,
+            'g-time-picker__clock__inner__number--disabled': props.disabled
+          }
+        })
+        return numbers
       }
       function hourRenderFn() {
         if (state.activeTimePicker.hour) {
           let hourElements = []
           // 0 -> 11
-          hourElements.push(repositionFaceNumber(addClass(hours.value.filter((_, index) => index < 12)), 1).map(hour =>
-              <span
-                  class={[hour.class, 'g-time-picker__clock__inner__item--selectable']}
-                  style={hour.style}
-                  vOn:click_stop={() => {
-                    hour.select()
-                    showMinutesPicker()
-                  }}>
-                <span>{hour.value}</span>
-              </span>
+          hourElements.push(calcFaceNumberPosition(addNumberClass(hoursModel.value.filter((_, index) => index < 12)), 1).map(hour =>
+                  <span
+                      class={[hour.class, 'g-time-picker__clock__inner__number--selectable']}
+                      style={hour.style}
+                      vOn:click_stop={() => {
+                        hour.select()
+                        showMinutesPicker()
+                      }}>
+                    <span>{hour.value}</span>
+                  </span>
               )
           )
           // 12 -> 23
-          hourElements.push(repositionFaceNumber(addClass(hours.value.filter((_, index) => index >= 12)), 0.6).map(hour =>
+          hourElements.push(calcFaceNumberPosition(addNumberClass(hoursModel.value.filter((_, index) => index >= 12)), 0.6).map(hour =>
                   <span
-                      class={[hour.class, 'g-time-picker__clock__inner__item--selectable']}
+                      class={[hour.class, 'g-time-picker__clock__inner__number--selectable']}
                       style={hour.style}
                       vOn:click_stop={() => {
                         hour.select()
@@ -185,19 +183,19 @@
       }
       function minuteRenderFn() {
         if (state.activeTimePicker.minute) {
-          return repositionFaceNumber(addClass(minutes.value)).map((minute, index) =>
-                index % 5 === 0
-                    ? <span class={minute.class} style={minute.style}>
-                        <span>{minute.value}</span>
-                      </span>
-                    : undefined)
+          return calcFaceNumberPosition(addNumberClass(minutesModel.value)).map((minute, index) =>
+              index % 5 === 0
+                  ? <span class={minute.class} style={minute.style}>
+                    <span>{minute.value}</span>
+                  </span>
+                  : undefined)
         }
 
         return undefined
       }
       function secondRenderFn() {
         if (props.useSeconds && state.activeTimePicker.second) {
-          return repositionFaceNumber(addClass(seconds.value)).map((second, index) =>
+          return calcFaceNumberPosition(addNumberClass(secondsModel.value)).map((second, index) =>
               index % 5 === 0
                   ? <span class={second.class}
                           style={second.style}>
@@ -212,16 +210,17 @@
       function clockRenderFn() {
         return (
             <div class="g-time-picker__clock" vOn:click_stop={onClockClicked} vOn:wheel={wheelHandle}>
-              <div class="g-time-picker__clock__inner" >
+              <div class="g-time-picker__clock__inner">
                 <div class="g-time-picker__clock__inner__hand" style={cptHandStyle.value}></div>
-                { hourRenderFn() }
-                { minuteRenderFn() }
-                { secondRenderFn() }
+                {hourRenderFn()}
+                {minuteRenderFn()}
+                {secondRenderFn()}
               </div>
             </div>
         )
       }
 
+      //
       return function GTimePickerRenderFn() {
         return (
             <div class={{ 'g-time-picker--disabled': props.disabled }}>
@@ -244,7 +243,7 @@
     &__title {
       height: 70px;
 
-      &__time-element {
+      &__number {
         display: inline-block;
       }
     }
@@ -270,7 +269,6 @@
         &__hand {
           position: absolute;
           left: calc(50% - 1px);
-          height: calc(50% - 4px);
           width: 2px;
           border: 1px solid #000;
           -webkit-transform-origin: center bottom;
@@ -308,7 +306,7 @@
 
         $itemSize: 40px;
 
-        &__item {
+        &__number {
           position: absolute;
           /*border: 1px solid red;*/
           border-radius: 50%;
