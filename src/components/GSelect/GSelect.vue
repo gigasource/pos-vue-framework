@@ -9,7 +9,7 @@
     <template v-slot:activator="{toggleContent}">
       <slot name="textfieldValue">
         <!--          fixme: text field slot to customise text field display : slot prepend-->
-        <g-text-field :label="label"
+        <g-text-field-functional :label="label"
                                  read-only
                                  clearable
                                  :filled="filled"
@@ -22,17 +22,17 @@
           <template v-slot:append-inner>
             <!--          fixme: Wait Icon for arrow dropdown-->
           </template>
-        </g-text-field>
+        </g-text-field-functional>
       </slot>
     </template>
     <template v-slot:default="{toggleContent}">
       <slot name="prependItems">
       </slot>
-      <g-text-field v-if="searchable"
+      <g-text-field-functional v-if="searchable"
                                placeholder="Search"
                                v-model="searchText"
                                clearable
-      ></g-text-field>
+      ></g-text-field-functional>
       <g-list v-if="searchable" :items="options" selectable :mandatory="mandatory" v-model="selectedItem"
               @click:item="showOptions = false">
         <template v-slot:listItem="{item, isSelected}">
@@ -74,6 +74,7 @@
   import groupable, {makeSelectable} from "../../mixins/groupable";
   import GCheckbox from "../GCheckbox/GCheckbox";
   import GTextField from "../GInput/GTextField01";
+  import GTextFieldFunctional from "../GInput/GTextFieldFunctional";
 
   export default {
     name: "GSelect",
