@@ -17,6 +17,8 @@
 			<router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/list-demo">List</router-link>
 			<router-link to="/selection-control">SelectIonControl</router-link>
+			<router-link to="/slide-group">Slide Group</router-link>
+
 		</g-layout>
 		<router-view></router-view>
 	</div>
