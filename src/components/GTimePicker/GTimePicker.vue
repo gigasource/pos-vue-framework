@@ -346,7 +346,7 @@
 
       &__period {
         font-size: 16px;
-        padding: 10px 5px;
+        padding: 8px 5px;
 
         &__value {
           opacity: $inactiveOpacity;
