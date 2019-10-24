@@ -354,7 +354,6 @@ $colors: (
         "shades": $shades
 ) !default;
 
-
 // usage: color("name_of_color", "type_of_color")
 // to avoid to repeating map-get($colors, ...)
 
@@ -384,6 +383,9 @@ $colors: (
       .b-#{$color_name} {
         border-color: $color_value;
       }
+      :export {
+        #{$color_name}: $color_value;
+      }
     } @else if $color_name != "shades" {
       //background
       .bg-#{$color_name}-#{$color_type} {
@@ -397,7 +399,11 @@ $colors: (
       .b-#{$color_name}-#{$color_type} {
         border-color: $color_value  !important;
       }
+      :export {
+        #{$color_name}-#{$color_type}: $color_value;
+      }
     }
+
   }
 }
 
@@ -411,6 +417,9 @@ $colors: (
   }
   .b-#{$color} {
     border-color: $color_value !important;
+  }
+  :export {
+    #{$color}: $color_value;
   }
 }
 
