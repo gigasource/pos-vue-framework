@@ -1,30 +1,11 @@
 <script>
   import _ from 'lodash'
-  import { computed } from '@vue/composition-api'
   import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil'
-
-
-  const defaulColor = {
-    title: {
-      background: '',
-      activeElement: '',
-      inActiveElement: '',
-    },
-    clock: {
-      background: '',
-      activeElement: '',
-      inActiveElement: '',
-    }
-  }
+  import { computedHandStyle, getSelectedIndex, repositionFaceNumber } from './logic/GTimePickerUIHelper';
 
   export default {
     name: 'GTimePicker',
     props: {
-      // filter functions
-      allowedHours: [Function, Array],
-      allowedMinutes: [Function, Array],
-      allowedSeconds: [Function, Array],
-
       // state
       disabled: Boolean,
       readonly: Boolean,
@@ -34,9 +15,6 @@
       // values
       value: String,
 
-      // ROADMAP
-      // events: [Function, Array], // (() => [] || []) of { hour: Number, minute: Number, second: Number, eventName: String, eventContent: String] }
-
       // convention
       hourConvention: {
         type: String,
@@ -44,19 +22,12 @@
         validator: HourConventionValidator
       },
 
-      // customization
-      // define title background color
-      titleBackgroundColor: String,
-      // define color of selected element (hour, minute, second, am, pm) in title
-      titleColorActiveElement: String,
-      // define color of inactive element
-      titleColorInActiveElement: String,
-      // define clock background color
-      clockBackgroundColor: String,
-      // define active element color
-      clockColorActiveElement: String,
-      // define inactive element color
-      clockColorInActiveElement: String
+      allowedHours: [Function, Array],
+      allowedMinutes: [Function, Array],
+      allowedSeconds: [Function, Array],
+
+      // ROADMAP
+      // events: [Function, Array], // (() => [] || []) of { hour: Number, minute: Number, second: Number, eventName: String, eventContent: String] }
     },
     setup(props, context) {
       const {
@@ -100,6 +71,7 @@
         return value < 10 ? `0${value}` : `${value}`
       }
 
+      // title
       function titleRenderFn() {
         return (
             <div class="g-time-picker__title">
@@ -131,8 +103,29 @@
         )
       }
 
+      // Clock
+      function wheelHandle(e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        if (props.disabled || props.readonly || !props.scrollable)
+          return
+
+        let changeValue = e.deltaY
+        if (changeValue > 0)  changeValue = 1
+        else if (changeValue < 0) changeValue = -1
+
+        let changeFn = (state.activeTimePicker.hour
+            ? changeHour
+            : state.activeTimePicker.minute
+                ? changeMinute
+                : changeSecond)
+
+        changeFn(changeValue)
+      }
+      const cptHandStyle = computedHandStyle(props, state)
       function addClass(timeElements) {
-        _.each(timeElements, (el, index) => {
+        _.each(timeElements, (el) => {
           el.class = {
             ...el.class,
             'g-time-picker__clock__inner__item': true,
@@ -143,95 +136,23 @@
         })
         return timeElements
       }
-
-      function calculatePosition(timeElements) {
-        let anglePerStep = 2 * Math.PI / timeElements.length
-        let angle = Math.PI / 2
-
-        // TODO: 24 Hours, bring 12 -> 23 hours to inner circle
-        _.each(timeElements, (el, index) => {
-          el.style = {
-            ...el.style,
-            top: `${50 * (1 - Math.sin(angle + index * anglePerStep))}%`, // sin
-            left: `${50 * (1 - Math.cos(angle + index * anglePerStep))}%` // cos
-          }
-        })
-        return timeElements
-      }
-
-      // Clock
       function onClockClicked(e) {
-        // clock width, height
-        const { width, height } = e.target.getBoundingClientRect()
-        // center clock point
-        const center = { x: width /2, y: height/ 2 }
-        // position mouse down
-        const clickedPos = { x: e.offsetX, y: e.offsetY }
-
-        // ignore if user click outside clock
-        const distance = Math.sqrt(Math.pow( clickedPos.x - center.x, 2 ) + Math.pow(clickedPos.y - center.y, 2))
-        if (distance > width / 2)
-          return
-
-        // TODO: verify
-        let radians
-        // Part I
-        if (clickedPos.x > center.x && clickedPos.y < center.y) {
-          radians = Math.asin((clickedPos.x - center.x) / distance)
-        } else if (clickedPos.x >= center.x && clickedPos.y >= center.y) {
-          // Part II
-          radians = 0.5 * Math.PI + Math.asin((clickedPos.y - center.y)/distance)
-        } else if (clickedPos.x < center.x && clickedPos.y > center.y) {
-          // Part III
-          radians = Math.PI + Math.asin((center.x - clickedPos.x) / distance)
-        } else {
-          // Part IV
-          radians = 1.5 * Math.PI + Math.asin((center.y - clickedPos.y)/distance)
-        }
-
-        const alpha = radians * 180 / Math.PI
-        const tickValue = Math.round(alpha / 6)
-
-        if (state.activeTimePicker.minute) {
-          minutes.value[tickValue].select()
-          if (props.useSeconds)
-            showSecondsPicker()
-        } else if (state.activeTimePicker.second) {
-          seconds.value[tickValue].select()
+        const selectedIndex = getSelectedIndex(e.target.getBoundingClientRect(), { x: e.offsetX, y: e.offsetY })
+        if (selectedIndex !== -1) {
+          if (state.activeTimePicker.minute) {
+            minutes.value[selectedIndex].select()
+            if (props.useSeconds)
+              showSecondsPicker()
+          } else if (state.activeTimePicker.second) {
+            seconds.value[selectedIndex].select()
+          }
         }
       }
-
-      // [0, 11]
-      const range12 = [...Array(12).keys()]
-      // [12, 23]
-      const range24 = [...Array(24).keys()].splice(12, 12)
-      // [0, 59]
-      const range60 = [...Array(60).keys()]
-
-      //
-      const cptTickStyle = computed(() => {
-        let degree = 0
-        if (state.activeTimePicker.hour) {
-          // 12 hours
-          // 30 = 360 / 12
-          degree = range12.indexOf(state.selectedTime.hours) * 30
-          if (degree < 0)
-            degree = range24.indexOf(state.selectedTime.hours) * 30
-        }
-        else if (state.activeTimePicker.minute) {
-          degree = range60.indexOf(state.selectedTime.minutes) * 6
-        }// 360 / 60
-        else if (state.activeTimePicker.second) {
-          degree = range60.indexOf(state.selectedTime.seconds) * 6
-        }
-
-        return { 'transform': `rotate(${degree}deg)` }
-      })
-
-
       function hourRenderFn() {
         if (state.activeTimePicker.hour) {
-          return calculatePosition(addClass(hours.value)).map(hour =>
+          let hourElements = []
+          // 0 -> 11
+          hourElements.push(repositionFaceNumber(addClass(hours.value.filter((_, index) => index < 12)), 1).map(hour =>
               <span
                   class={[hour.class, 'g-time-picker__clock__inner__item--selectable']}
                   style={hour.style}
@@ -241,15 +162,30 @@
                   }}>
                 <span>{hour.value}</span>
               </span>
+              )
           )
+          // 12 -> 23
+          hourElements.push(repositionFaceNumber(addClass(hours.value.filter((_, index) => index >= 12)), 0.6).map(hour =>
+                  <span
+                      class={[hour.class, 'g-time-picker__clock__inner__item--selectable']}
+                      style={hour.style}
+                      vOn:click_stop={() => {
+                        hour.select()
+                        showMinutesPicker()
+                      }}>
+                    <span>{hour.value}</span>
+                  </span>
+              )
+          )
+
+          return hourElements
         }
 
         return undefined
       }
-
       function minuteRenderFn() {
         if (state.activeTimePicker.minute) {
-          return calculatePosition(addClass(minutes.value)).map((minute, index) =>
+          return repositionFaceNumber(addClass(minutes.value)).map((minute, index) =>
                 index % 5 === 0
                     ? <span class={minute.class} style={minute.style}>
                         <span>{minute.value}</span>
@@ -259,10 +195,9 @@
 
         return undefined
       }
-
       function secondRenderFn() {
         if (props.useSeconds && state.activeTimePicker.second) {
-          return calculatePosition(addClass(seconds.value)).map((second, index) =>
+          return repositionFaceNumber(addClass(seconds.value)).map((second, index) =>
               index % 5 === 0
                   ? <span class={second.class}
                           style={second.style}>
@@ -274,12 +209,11 @@
 
         return undefined
       }
-
       function clockRenderFn() {
         return (
-            <div class="g-time-picker__clock" vOn:click_stop={onClockClicked}>
-              <div class="g-time-picker__clock__inner">
-                <div class="g-time-picker__clock__inner__tick" style={cptTickStyle.value}></div>
+            <div class="g-time-picker__clock" vOn:click_stop={onClockClicked} vOn:wheel={wheelHandle}>
+              <div class="g-time-picker__clock__inner" >
+                <div class="g-time-picker__clock__inner__hand" style={cptHandStyle.value}></div>
                 { hourRenderFn() }
                 { minuteRenderFn() }
                 { secondRenderFn() }
@@ -301,58 +235,73 @@
   }
 </script>
 <style scoped lang="scss">
+  $clockBgColor: #ddd;
+  $clockSize: 270px;
+  $clockPadding: 25px;
+  $handColor: #000;
+
   .g-time-picker {
     &__title {
+      height: 70px;
+
       &__time-element {
         display: inline-block;
       }
     }
 
-    $clockSize: 270px;
-    $clockPadding: 25px;
-
     &__clock {
       width: $clockSize;
       height: $clockSize;
-      padding: $clockPadding;
       border-radius: 100%;
-      background-color: #ddd;
+      background-color: $clockBgColor;
 
       $clockInnerSize: $clockSize - 2 * $clockPadding;
+      $handStartSize: 10px;
+      $handEndSize: 8px;
 
       &__inner {
         width: $clockInnerSize;
         height: $clockInnerSize;
+        top: $clockPadding;
+        left: $clockPadding;
         position: relative;
         pointer-events: none;
 
-        &__tick {
+        &__hand {
           position: absolute;
-          left: 50%;
-          height: 50%;
+          left: calc(50% - 1px);
+          height: calc(50% - 4px);
           width: 2px;
-          border: 1px solid #00acc1;
+          border: 1px solid #000;
+          -webkit-transform-origin: center bottom;
           transform-origin: center bottom;
 
           &::before {
             position: absolute;
             border-radius: 100%;
+            border-width: 2px;
+            border-style: solid;
+            border-color: inherit;
             content: '';
-            top: 100%;
-            width: 16px;
-            height: 16px;
-            background-color: #00acc1;
+            top: -4px;
+            left: 50%;
+            width: $handStartSize;
+            height: $handStartSize;
+            background: transparent;
             transform: translate(-50%, -50%);
           }
 
           &::after {
+            content: "";
             position: absolute;
-            border-radius: 100%;
-            content: '';
-            top: 0%;
-            width: 8px;
             height: 8px;
-            background-color: #00acc1;
+            width: 8px;
+            top: 100%;
+            left: 50%;
+            border-radius: 100%;
+            border-style: solid;
+            border-color: inherit;
+            background-color: inherit;
             transform: translate(-50%, -50%);
           }
         }
@@ -362,7 +311,7 @@
         &__item {
           position: absolute;
           /*border: 1px solid red;*/
-          border-radius: 100%;
+          border-radius: 50%;
           transform: translate(-50%, -50%);
           width: $itemSize;
           height: $itemSize;
@@ -372,15 +321,17 @@
           pointer-events: none;
 
           &--disabled {
-
+            pointer-events: none;
+            color: #888;
           }
 
           &--readonly {
-
+            pointer-events: none;
           }
 
           &--selected {
-            background-color: #00acc1;
+            background-color: $handColor;
+            color: #fff;
           }
 
           &--selectable {

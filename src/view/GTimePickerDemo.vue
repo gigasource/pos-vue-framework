@@ -1,10 +1,23 @@
 <template>
-  <div>
-    <g-time-picker
-        :value="'15:18:30'"
-        :hour-convention="convention"
-        use-seconds
-    ></g-time-picker>
+  <div style="display: flex">
+<!--    <div class="clock_Container">-->
+<!--      <g-time-picker-->
+<!--          :value="'15:18:30'"-->
+<!--          :hour-convention="convention"-->
+<!--          use-seconds-->
+
+<!--      ></g-time-picker>-->
+<!--    </div>-->
+
+    <div class="clock_Container">
+      <g-time-picker
+          :value="'15:18:30'"
+          :hour-convention="'24'"
+          use-seconds
+          scrollable
+      ></g-time-picker>
+    </div>
+
   </div>
 </template>
 
@@ -23,4 +36,8 @@
   }
 </script>
 <style scoped>
+  .clock_Container {
+    padding: 20px;
+    border: 1px solid black;
+  }
 </style>

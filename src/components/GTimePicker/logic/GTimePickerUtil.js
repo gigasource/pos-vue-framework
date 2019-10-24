@@ -72,7 +72,7 @@ export default function(props, context) {
   })
 
   function emitInput(){
-      context.emit(`${state.selectedTime.hours}:${state.selectedTime.minutes}:${state.selectedTime.seconds}`)
+      context.emit('input', `${state.selectedTime.hours}:${state.selectedTime.minutes}:${state.selectedTime.seconds}`)
   }
 
   // hours model
@@ -128,25 +128,23 @@ export default function(props, context) {
 
 
   // function to change value non-click: scroll, touch, wheel
-  const changeHour = (hourOffset) => {
-    let newHours = state.selectedTime.hours + hourOffset
-    // TODO: Change algorithm to increase performance
-    while (newHours < MIN_HOUR)
-      newHours += cptMaxHour
+  // TODO: Support allowed function
+  const changeHour = (offset) => {
+    let newHours = state.selectedTime.hours + offset
+    while (newHours < MIN_HOUR) newHours += cptMaxHour.value
+    while(newHours >= cptMaxHour.value) newHours -= cptMaxHour.value
     selectHours(newHours)
   }
   const changeMinute = (minuteOffset) => {
     let newMinutes = state.selectedTime.minutes + minuteOffset
-    // TODO: Change algorithm to increase performance
-    while(newMinutes < MIN_MINUTES)
-      newMinutes += MAX_MINUTES
+    while(newMinutes < MIN_MINUTES) newMinutes += MAX_MINUTES
+    while(newMinutes >= MAX_MINUTES) newMinutes -= MAX_MINUTES
     selectMinutes(newMinutes)
   }
   const changeSecond = (secondOffset) => {
     let newSeconds = state.selectedTime.seconds + secondOffset
-    // TODO: Change algorithm to increase performance
-    while(newSeconds < MIN_SECONDS)
-      newSeconds += MAX_SECONDS
+    while(newSeconds < MIN_SECONDS) newSeconds += MAX_SECONDS
+    while(newSeconds >= MAX_SECONDS) newSeconds -= MAX_SECONDS
     selectSeconds(newSeconds)
   }
 
