@@ -22,8 +22,6 @@
 </template>
 
 <script>
-  import GDndDialog from '../components/GDndDialog/GDndDialog';
-  import GDndDialog2 from '../components/GDndDialog/GDndDialog2';
   import GDndDialog3 from '../components/GDndDialog/GDndDialog3';
   import GBtn from '../components/GBtn/GBtn';
   export default {
