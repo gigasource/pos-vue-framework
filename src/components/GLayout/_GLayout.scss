@@ -3,12 +3,12 @@
   flex-wrap: nowrap;
 
   &__vertical {
-    flex-direction: row;
+    flex-direction: column;
     margin: 0 -12px;
   }
 
   &__horizontal {
-    flex-direction: column;
+    flex-direction: row;
     margin: -12px 0;
   }
 
