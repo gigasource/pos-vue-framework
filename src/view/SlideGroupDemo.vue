@@ -9,7 +9,8 @@
 				:center-active="centerActive">
 
 			<template v-slot:content="{toggle, active}">
-				<g-btn v-for="item in items"
+				<g-btn v-for="(item, index) in items"
+							 :key="index"
 							 @click="toggle(item)"
 							 :active="active(item)">
 					{{item.text}}
@@ -33,12 +34,12 @@
     data: () => {
       return {
         model: null,
-        multiple: true,
+        multiple: false,
         mandatory: false,
         showArrows: true,
         prevIcon: false,
         nextIcon: false,
-        centerActive: false,
+        centerActive: true,
         activeItem: null,
         activeClass: {
           'button-active': true

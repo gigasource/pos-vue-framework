@@ -74,6 +74,7 @@
         content: 0,
         wrapper: 0
       });
+      let internalValue = reactive({});
 
       //Styles & classes computed
 
@@ -102,6 +103,7 @@
       let styles = computed(() => {
 
       });
+
       //Update & beforeUpdate
       onBeforeUpdate(() => {
         internalItemsLength.value = (context.refs.content.children || []).length
@@ -111,6 +113,7 @@
         if (internalItemsLength.value === (context.refs.content.children || []).length) {
           return
         }
+
         setWidths();
       });
 
@@ -138,7 +141,12 @@
       });
 
       watch(isOverflowing, () => {
+        setWidths()
+      });
 
+
+      watch(() => props.value, () => {
+        setWidths();
       });
 
       // When overflow changes, the arrows alter
@@ -149,7 +157,7 @@
       }, { lazy: true });
 
 
-      let scrollTo = (location) => {
+      function scrollTo(location) {
         scrollOffset.value = calculateNewOffset(location, {
           // Force reflow
           content: context.refs.content ? context.refs.content.clientWidth : 0,
@@ -157,19 +165,19 @@
         }, scrollOffset.value);
       };
 
-      let calculateNewOffset = (direction, widths, currentScrollOffset) => {
+      function calculateNewOffset(direction, widths, currentScrollOffset) {
         const newAbsoluteOffset = currentScrollOffset + (direction === 'prev' ? -1 : 1) * widths.wrapper;
 
         return Math.max(Math.min(newAbsoluteOffset, widths.content - widths.wrapper), 0);
       };
 
       //onClick 'prev/next'
-      let onAffixClick = (location) => {
+      function onAffixClick(location) {
         context.emit(`click:${location}`);
         scrollTo(location);
       };
 
-      let calculateUpdatedOffset = (selectedElement, widths, currentScrollOffset) => {
+      function calculateUpdatedOffset(selectedElement, widths, currentScrollOffset) {
         const clientWidth = selectedElement.clientWidth;
         let offsetLeft = selectedElement.offsetLeft;
 
@@ -187,20 +195,24 @@
         return currentScrollOffset
       };
 
-      let calculateCenteredOffset = (selectedElement, widths) => {
+      function calculateCenteredOffset(selectedElement, widths) {
         const { offsetLeft, clientWidth } = selectedElement;
         const offsetCentered = offsetLeft + clientWidth / 2 - widths.wrapper / 2;
         return Math.min(widths.content - widths.wrapper, Math.max(0, offsetCentered));
       };
 
-      let scrollIntoView = () => {
+      function scrollIntoView() {
+        console.log('scroll into view initial');
         if (!data.selectedItem) {
           return
         }
 
+        console.log('scroll into view');
+
         if (selectedIndex.value === 0 || (!props.centerActive && !isOverflowing.value)) {
           scrollOffset.value = 0;
         } else if (props.centerActive) {
+          console.log('center active');
           scrollOffset.value = calculateCenteredOffset(
             data.selectedItem.$el,
             data.widths,
@@ -214,7 +226,7 @@
         }
       };
 
-      let setWidths = () => {
+      function setWidths() {
         window.requestAnimationFrame(() => {
           const { content, wrapper } = context.refs;
 
