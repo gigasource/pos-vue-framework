@@ -8,7 +8,7 @@
 
 		<div ref="wrapper" class="g-slide-group__wrapper">
 			<div ref="content" class="g-slide-group__content">
-				<slot></slot>
+				<slot name="content" :toggle="toggleItem" :active="isActiveItem"></slot>
 			</div>
 
 		</div>
@@ -21,16 +21,17 @@
 </template>
 
 <script>
-  import GBtn from '../GBtn/GBtn';
-  import { computed, ref, watch, reactive, onUpdated, onBeforeUpdate } from '@vue/composition-api';
+  import { computed, watch, ref, reactive, onBeforeUpdate, onUpdated } from '@vue/composition-api';
+  import groupable from '../../mixins/groupable';
   import Resize from '../../directives/resize/resize';
 
   export default {
     name: 'GSlideGroup',
-    components: { GBtn },
+    components: {},
     props: {
       mandatory: Boolean,
       max: Boolean,
+      value: null,
       multiple: Boolean,
       activeClass: String,
       centerActive: false,
@@ -54,18 +55,27 @@
     }
     ,
     setup(props, context) {
+      //State date
       let data = reactive({
-        selectedIndex: -1,
         selectedItem: null,
-        isOverflowing: false,
-        internalItemsLength: 0,
         items: [],
-        scrollOffset: 0,
         widths: {
           content: 0,
           wrapper: 0
         }
       });
+
+      let selectedIndex = ref(-1);
+      let selectedItem = reactive({});
+      let isOverflowing = ref(false);
+      let internalItemsLength = ref(0);
+      let scrollOffset = ref(0);
+      let widths = reactive({
+        content: 0,
+        wrapper: 0
+      });
+
+      //Styles & classes computed
 
       let slideGroupNextClasses = computed(() => {
         return {
@@ -85,19 +95,30 @@
         return {
           'g-slide-group': true,
           'g-slide-group__has-affixes': hasAffixes.value,
-          'g-slide-group__is-overflowing': data.isOverflowing,
+          'g-slide-group__is-overflowing': isOverflowing.value,
         }
       });
 
       let styles = computed(() => {
 
       });
+      //Update & beforeUpdate
+      onBeforeUpdate(() => {
+        internalItemsLength.value = (context.refs.content.children || []).length
+      });
 
+      onUpdated(() => {
+        if (internalItemsLength.value === (context.refs.content.children || []).length) {
+          return
+        }
+        setWidths();
+      });
+
+
+      //Has affixes when overflowing
       let hasAffixes = computed(() => {
         return (
-          //check: is Mobile
-          // (props.showArrows || !isMobile) && data.isOverflowing
-          props.showArrows && data.isOverflowing
+          props.showArrows && isOverflowing.value
         )
       });
 
@@ -108,37 +129,32 @@
 
         const { content, wrapper } = data.widths;
         // Check one scroll ahead to know the width of right-most item
-        return content > Math.abs(data.scrollOffset) + wrapper;
+        return content > Math.abs(scrollOffset.value) + wrapper;
       });
 
 
       let hasPrev = computed(() => {
-        return hasAffixes && data.scrollOffset !== 0
+        return hasAffixes && scrollOffset.value !== 0
       });
 
-      //TODO: break point of app
-      // let isMobile = () => {
-      //   return context.$vuetify.breakpoint.width < props.mobileBreakPoint;
-      // };
-
-      watch(() => data.isOverflowing, () => {
+      watch(isOverflowing, () => {
 
       });
 
-      watch(() => data.scrollOffset, (val) => {
-        // When overflow changes, the arrows alter
-        // the widths of the content and wrapper
-        // and need to be recalculated
+      // When overflow changes, the arrows alter
+      // the widths of the content and wrapper
+      // and need to be recalculated
+      watch(scrollOffset, (val) => {
         context.refs.content.style.transform = `translateX(${-val}px)`
       }, { lazy: true });
 
 
       let scrollTo = (location) => {
-        data.scrollOffset = calculateNewOffset(location, {
+        scrollOffset.value = calculateNewOffset(location, {
           // Force reflow
           content: context.refs.content ? context.refs.content.clientWidth : 0,
           wrapper: context.refs.wrapper ? context.refs.wrapper.clientWidth : 0,
-        }, data.scrollOffset);
+        }, scrollOffset.value);
       };
 
       let calculateNewOffset = (direction, widths, currentScrollOffset) => {
@@ -171,9 +187,6 @@
         return currentScrollOffset
       };
 
-      //
-      //selectedElement:
-      //widths:
       let calculateCenteredOffset = (selectedElement, widths) => {
         const { offsetLeft, clientWidth } = selectedElement;
         const offsetCentered = offsetLeft + clientWidth / 2 - widths.wrapper / 2;
@@ -185,21 +198,18 @@
           return
         }
 
-        if (
-          data.selectedIndex === 0 ||
-          (!props.centerActive && !data.isOverflowing)
-        ) {
-          data.scrollOffset = 0
+        if (selectedIndex.value === 0 || (!props.centerActive && !isOverflowing.value)) {
+          scrollOffset.value = 0;
         } else if (props.centerActive) {
-          data.scrollOffset = calculateCenteredOffset(
+          scrollOffset.value = calculateCenteredOffset(
             data.selectedItem.$el,
             data.widths,
           )
-        } else if (data.isOverflowing) {
-          data.scrollOffset = calculateUpdatedOffset(
+        } else if (isOverflowing.value) {
+          scrollOffset.value = calculateUpdatedOffset(
             data.selectedItem.$el,
             data.widths,
-            data.scrollOffset
+            scrollOffset.value
           )
         }
       };
@@ -213,18 +223,43 @@
             wrapper: wrapper ? wrapper.clientWidth : 0,
           };
 
-          data.isOverflowing = data.widths.wrapper < data.widths.content;
+          isOverflowing.value = data.widths.wrapper < data.widths.content;
           scrollIntoView();
         });
       };
+
+      //Model
+      let model = computed({
+        get: () => {
+          if (props.value) {
+            if (props.multiple && !Array.isArray(props.value)) {
+              props.value = [props.value];
+            }
+            return props.value;
+          }
+          return props.multiple ? [] : null;
+        },
+        set: (value) => {
+          context.emit('input', value);
+        }
+      });
+
+      const { toggleItem, isActiveItem } = groupable(props, model);
 
       return {
         classes,
         styles,
         slideGroupNextClasses,
         slideGroupPrevClasses,
+        internalItemsLength,
+        selectedItem,
+        isOverflowing,
+        scrollOffset,
+        widths,
         setWidths,
-        onAffixClick
+        onAffixClick,
+        toggleItem,
+        isActiveItem,
       }
     }
   }

@@ -24,7 +24,8 @@
         tile: Boolean,
         icon: Boolean,
         outlined: Boolean,
-        dashed: Boolean
+        dashed: Boolean,
+				active: Boolean
       },
       //style
       ...{
@@ -59,6 +60,7 @@
           'g-btn': true,
           'waves-effect': true,
           'g-btn__raised': props.raised,
+          'g-btn__active': props.active,
           'g-btn__flat': props.flat,
           'g-btn__tile': props.tile,
           'g-btn-fab': props.fab,

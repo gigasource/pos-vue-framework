@@ -36,7 +36,7 @@ const routes = [
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
-  { path: '/slide-group', name: 'List', component: SlideGroupDemo},
+  { path: '/slide-group', name: 'SlideGroup', component: SlideGroupDemo},
 
 ];
 

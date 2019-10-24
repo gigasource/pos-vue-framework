@@ -1,31 +1,21 @@
 <template>
 	<div style="margin-left: auto; margin-right: auto; max-width: 900px; width: 100%; padding: 12px;" class="demo-wrapper">
 		<g-slide-group
-				v-model="model"
+				:items="items"
+				v-model="activeItem"
 				:multiple="multiple"
 				:mandatory="mandatory"
 				:show-arrows="showArrows"
 				:center-active="centerActive">
-<!--			<g-btn v-for="n in 35"-->
-			<!--						 :key="n">-->
 
-			<!--				{{`BUTTON ${n}`}}-->
-			<!--			</g-btn>-->
-						<g-card v-for="n in 15"
-										:key="n"
-										height="200"
-										width="100">
-							<g-card-title>
-								<p>GCard Outlined/Hover</p>
-							</g-card-title>
-							<g-card-text>
-								<p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
-									making
-									you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got
-									to
-									find a way to escape.</p>
-							</g-card-text>
-						</g-card>
+			<template v-slot:content="{toggle, active}">
+				<g-btn v-for="item in items"
+							 @click="toggle(item)"
+							 :active="active(item)">
+					{{item.text}}
+				</g-btn>
+			</template>
+
 		</g-slide-group>
 	</div>
 </template>
@@ -43,19 +33,35 @@
     data: () => {
       return {
         model: null,
-        multiple: false,
+        multiple: true,
         mandatory: false,
         showArrows: true,
         prevIcon: false,
         nextIcon: false,
         centerActive: false,
+        activeItem: null,
+        activeClass: {
+          'button-active': true
+        },
+        items: [
+          { id: 1, text: 'BUTTON 1' },
+          { id: 2, text: 'BUTTON 2' },
+          { id: 3, text: 'BUTTON 3' },
+          { id: 4, text: 'BUTTON 4' },
+          { id: 5, text: 'BUTTON 5' },
+          { id: 6, text: 'BUTTON 6' },
+          { id: 7, text: 'BUTTON 7' },
+          { id: 8, text: 'BUTTON 8' },
+          { id: 9, text: 'BUTTON 9' },
+          { id: 10, text: 'BUTTON 10' },
+        ]
       }
     }
   }
 </script>
 
 <style scoped>
-.demo-wrapper *{
-	margin: 16px;
-}
+	.demo-wrapper * {
+		margin: 16px;
+	}
 </style>
