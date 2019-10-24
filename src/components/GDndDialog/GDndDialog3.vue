@@ -1,15 +1,20 @@
 <template>
 	<transition name="dialog-transition">
-		<div v-if="isActive" class="g-dnddialog3" :class="dialogClasses" :style="dialogStyles" ref="dialog" @mousedown="dragStart">
+		<div v-if="isRender" v-show="isActive" class="g-dnddialog3" :class="dialogClasses" :style="dialogStyles" ref="dialog" @mousedown="dragStart">
 			<div class="g-dnddialog3-header" ref="header">
 				<span class="g-dnddialog3-title" ref="title">
 					<slot name="title"></slot>
 				</span>
 				<div class="g-dnddialog3-action" ref="action">
-					<g-btn v-if="!(isMinimize || isMaximize)" small flat width="30" height="30" min-width="30" color="orange">
-						<i class="material-icons" @click="toggleMinimize">minimize</i></g-btn>
-					<g-btn small flat width="30" height="30" min-width="30" color="green"><i class="material-icons" @click="toggleMaximize">crop_din</i></g-btn>
-					<g-btn small flat width="30" height="30" min-width="30" color="red"><i class="material-icons" @click="toggleDialog">close</i></g-btn>
+					<g-btn v-if="!(isMinimize || isMaximize)" small flat width="30" height="30" min-width="30" color="orange" @click="toggleMinimize">
+						<i class="material-icons">minimize</i>
+					</g-btn>
+					<g-btn small flat width="30" height="30" min-width="30" color="green" @click="toggleMaximize">
+						<i class="material-icons">crop_din</i>
+					</g-btn>
+					<g-btn small flat width="30" height="30" min-width="30" color="red" @click="toggleDialog">
+						<i class="material-icons">close</i>
+					</g-btn>
 				</div>
 			</div>
 			<div v-show="!isMinimize" class="g-dnddialog3-content" ref="content">
@@ -30,6 +35,9 @@
     components: { GBtn },
     props: {
       value: Boolean,
+			lazy: Boolean,
+			destroyOnClose: Boolean,
+
 			minWidth: {
 			  type: [Number, String],
 				default: 200
@@ -64,45 +72,65 @@
         height: 0
       })
 
-			const minDialogDimension = reactive({
-				width: props.minWidth,
-				height: props.minHeight,
-			})
+			const minDialogDimension = {
+				width: +props.minWidth,
+				height: +props.minHeight,
+			}
 
-			const dialogStartPosition = reactive({
+			const dialogStartPosition = {
 				top: 0,
 				left: 0,
-			})
+			}
 
-			const dialogStartDimension = reactive({
+			const dialogStartDimension = {
         width: 0,
         height: 0
-			})
+			}
 
-			const mouseStartPosition = reactive({
+			const mouseStartPosition = {
 				pageX: 0,
 				pageY: 0
-			})
+			}
 
 			watch([() => dialogPosition, () => dialogDimension], () => {
 			  dialogPosition.bottom = dialogPosition.top + dialogDimension.height;
         dialogPosition.right = dialogPosition.left + dialogDimension.width;
 			}, { deep: true })
 
+
+			const isRender = ref(false)
+
 			watch(isActive, (newVal) => {
+			  if (props.destroyOnClose) {
+			    if (newVal) {
+            isRender.value = isActive.value;
+					} else {
+            setTimeout(() => {
+              isRender.value = isActive.value;
+            }, 300)
+          }
+				}
+
 			  if (newVal) {
-			    context.root.$nextTick(() => {
-            attachToRoot(context.refs.dialog);
-					})
+          if (props.lazy || props.destroyOnClose) {
+            isRender.value = true;
+            context.root.$nextTick(() => {
+              attachToRoot(context.refs.dialog);
+            })
+          }
 				}
 			})
 
+
 			onMounted(() => {
-				dialogDimension.width = props.width ? +props.width : minDialogDimension.width;
-				dialogDimension.height = props.height ? +props.height :minDialogDimension.height;
+				dialogDimension.width = props.width ? Math.max(+props.width, minDialogDimension.width) : minDialogDimension.width;
+				dialogDimension.height = props.height ? Math.max(+props.height, minDialogDimension.height) :minDialogDimension.height;
 				dialogPosition.top = (window.innerHeight - dialogDimension.height) / 2;
 				dialogPosition.left = (window.innerWidth - dialogDimension.width) / 2;
-				//attachToRoot(context.refs.dialog);
+        if (props.lazy) {
+          return;
+        }
+				attachToRoot(context.refs.dialog);
 			})
 
 			const dialogClasses = computed(() => ({
@@ -137,21 +165,21 @@
 
 			function dragStart(e) {
         e.preventDefault();
+        if (isMaximize.value) return;
+
         const target = e.target;
-
-				dialogStartPosition.top = dialogPosition.top;
-        dialogStartPosition.left = dialogPosition.left;
-				mouseStartPosition.pageX = e.pageX;
-        mouseStartPosition.pageY = e.pageY;
-
         if ((target === context.refs.header || target === context.refs.title) && resizeMode.value === '') {
+          dialogStartPosition.top = dialogPosition.top;
+          dialogStartPosition.left = dialogPosition.left;
+          mouseStartPosition.pageX = e.pageX;
+          mouseStartPosition.pageY = e.pageY;
           isDrag.value = true;
           cursor.value = 'move';
 				}
 			}
 
 			function drag(e) {
-        //e.preventDefault()
+        e.preventDefault()
 
 				if (isDrag.value) {
 				  const newTop = dialogStartPosition.top - mouseStartPosition.pageY + e.pageY;
@@ -182,15 +210,13 @@
 
 			function resizeStart(e) {
         e.preventDefault()
-
-        mouseStartPosition.pageX = e.pageX;
-        mouseStartPosition.pageY = e.pageY;
-        dialogStartPosition.top = dialogPosition.top;
-        dialogStartPosition.left = dialogPosition.left;
-        dialogStartDimension.width = dialogDimension.width;
-        dialogStartDimension.height = dialogDimension.height;
-
 				if (resizeMode.value !== '') {
+          dialogStartPosition.top = dialogPosition.top;
+          dialogStartPosition.left = dialogPosition.left;
+          dialogStartDimension.width = dialogDimension.width;
+          dialogStartDimension.height = dialogDimension.height;
+          mouseStartPosition.pageX = e.pageX;
+          mouseStartPosition.pageY = e.pageY;
 				  isResize.value = true;
 				}
 			}
@@ -230,8 +256,8 @@
       }
 
 			function resize(e) {
-        //e.preventDefault()
-        if(isDrag.value || isMinimize.value) return;
+        e.preventDefault()
+        if(isDrag.value || isMinimize.value || isMaximize.value) return;
 
         if (isResize.value) {
 					const resizeDirections = resizeMode.value.split('');
@@ -303,6 +329,7 @@
         document.removeEventListener('mousemove', resize);
         document.removeEventListener('mouseup', dragEnd);
         document.removeEventListener('mouseup', resizeEnd);
+				if (isRender.value) detach(context.refs.dialog);
 			})
 
 			return {
@@ -312,13 +339,9 @@
 				toggleMinimize,
 				isMaximize,
 				toggleMaximize,
-        dialogPosition,
-				dialogDimension,
-        isDrag,
+				isRender,
 				dialogClasses,
         dialogStyles,
-				resizeMode,
-				isResize,
 				dragStart
 			}
 		}
