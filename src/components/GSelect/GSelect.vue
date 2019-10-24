@@ -1,39 +1,58 @@
 <template>
-  <!--  fixme: menu positioning-->
-  <g-menu v-model="showOptions" min-width="100%" >
+  <!--  fixme: menu props-->
+  <g-menu v-model="showOptions"
+          :closeOnClick="closeOnClick"
+          :closeOnContentClick="closeOnContentClick"
+          :maxHeight="maxHeight"
+          :offsetY="offsetY"
+          :offsetOverflow="offsetOverflow">
     <template v-slot:activator="{toggleContent}">
-      <slot name="selection">
-        <g-text-field-functional :label="label"
+      <slot name="textfieldValue">
+        <!--          fixme: text field slot to customise text field display : slot prepend-->
+        <g-text-field :label="label"
                                  read-only
                                  clearable
                                  :filled="filled"
+                                 :placeholder="placeholder"
                                  @click="toggleContent"
                                  @click:clearIcon="clearSelection"
-                                 ref="selection"
+                                 :value="textfieldValue"
         >
           <!--          fixme: Wait Chips  add chip to prepend of text field-->
-          <!--          fixme: text field slot to customise text field display -->
           <template v-slot:append-inner>
             <!--          fixme: Wait Icon for arrow dropdown-->
-            <img src="../../assets/delivery/arrow.svg"/>
           </template>
-        </g-text-field-functional>
+        </g-text-field>
       </slot>
     </template>
     <template v-slot:default="{toggleContent}">
       <slot name="prependItems">
       </slot>
-      <template v-if="searchable">
-        <g-text-field-functional placeholder="Search"
-                                 v-model="searchText"
-                                 clearable
-        ></g-text-field-functional>
-        <g-list :items="options" selectable mandatory v-model="selectedItem">
-        </g-list>
-      </template>
-      <g-list v-else-if="multiple" :items="options" mandatory selectable multiple v-model="selectedItem" >
+      <g-text-field v-if="searchable"
+                               placeholder="Search"
+                               v-model="searchText"
+                               clearable
+      ></g-text-field>
+      <g-list v-if="searchable" :items="options" selectable :mandatory="mandatory" v-model="selectedItem"
+              @click:item="showOptions = false">
+        <template v-slot:listItem="{item, isSelected}">
+          <slot name="item" :item="item" :isSelected="isSelected"></slot>
+        </template>
       </g-list>
-      <g-list v-else :items="items" selectable mandatory v-model="selectedItem" @click:item="showOptions = false">
+      <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" :mandatory="mandatory" selectable mandatory
+              multiple v-model="selectedItem" >
+        <template v-slot:prepend="{isSelected}">
+          <g-checkbox v-model="isSelected">
+          </g-checkbox>
+        </template>
+        <template v-slot:listItem="{item, isSelected}">
+          <slot name="item"></slot>
+        </template>
+      </g-list>
+      <g-list v-else :items="items" selectable mandatory v-model="selectedItem" @click:item="showOptions = false" >
+        <template v-slot:listItem="{item, isSelected}">
+          <slot name="item" :item="item" :isSelected="isSelected"></slot>
+        </template>
       </g-list>
     </template>
   </g-menu>
@@ -41,10 +60,8 @@
 <script>
   import {reactive, ref, computed, watch, toRefs} from '@vue/composition-api';
   import GList from "../GList/GList";
-  import GTextFieldFunctional from "../GInput/GTextFieldFunctional";
-  import getVModel from "../../mixins/getVModel";
-  import _ from "lodash";
   import GMenu from "../GMenu/GMenu";
+  import _ from "lodash";
   import GDivider from "../GLayout/GDivider";
   import GListItem from "../GList/GListItem";
   import {
@@ -54,19 +71,27 @@
     GListItemImageBig,
     GListItemSubText, GListItemText
   } from "../GList/GListFunctionalComponent";
-  import groupable from "../../mixins/groupable";
+  import groupable, {makeSelectable} from "../../mixins/groupable";
+  import GCheckbox from "../GCheckbox/GCheckbox";
+  import GTextField from "../GInput/GTextField01";
 
   export default {
     name: "GSelect",
     components: {
+      GTextField,
+      GCheckbox,
       GMenu,
       GTextFieldFunctional,
       GList,
     },
     props: {
       //text field's props
-      chip: Boolean,
+      chips: Boolean,
       filled: Boolean,
+      outlined: Boolean,
+      solo: Boolean,
+      flat: Boolean,
+      hint: String,
       placeholder: String,
       label: String,
 
@@ -76,7 +101,18 @@
       multiple: Boolean,
       mandatory: Boolean,
       allowDuplicates: Boolean,
-
+      //menu props
+      menuProps: {
+        type: Object,
+        default: () => ({
+          closeOnClick: true,
+          closeOnContentClick: false,
+          maxHeight: 300,
+          offsetY: true,
+          offsetOverflow: true,
+        })
+      },
+      //item textfieldValue props
       items: Array,
       itemText: {
         type: String,
@@ -86,7 +122,6 @@
         type: String,
         default: 'value'
       },
-      returnObject: Boolean,
       value: null,
     },
     setup: function (props, context) {
@@ -95,7 +130,7 @@
         fieldItem: null
       })
       const showOptions = ref(false)
-      const {model: selectedItem} = getVModel(props, context)
+      const {internalValue: selectedItem} = makeSelectable(props, context)
 
       //list rendered computed
       const options = computed(() => {
@@ -122,7 +157,7 @@
           if (props.allowDuplicates) {
             return props.items;
           }
-          if (props.returnObject) {
+          if (!props.itemValue) {
             return props.items.filter(item => !selectedItem.value.includes(item));
           }
           return props.items.filter(item => {
@@ -146,14 +181,14 @@
           if (typeof item === 'string' || typeof item === 'number') {
             return item;
           }
-          if (!props.returnObject) {
-            item = props.items.find(_item => _item[props.itemValue] === item);
+          if (props.itemValue) {
+            item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]);
           }
           return {text: item[props.itemText], value: item[props.itemValue]};
         } else {
-          let list = selectedItem.value || []
+          let list = selectedItem.value
           if (props.itemText && props.itemValue) {
-            if (!props.returnObject) {
+            if (props.itemValue) {
               list = list.map(value => {
                 return props.items.find(item => {
                   if (item[props.itemText]) {
@@ -170,41 +205,57 @@
               return item;
             });
           }
-          return props.chip ? list : list.join(', ');
+          return props.chips ? list : list.join(', ');
         }
       })
-      watch(fieldItem, newVal => {
-        const textFieldRef = context.refs.selection
-        if (textFieldRef) {
-          if (props.multiple) {
-            textFieldRef.internalValue  = newVal.map(item => {
-              return item ? (item['text'] || item['value'] || item) : ''
-            }).join(', ')
-          }else if(props.chips){
-            textFieldRef.internalValue = ''
-          } else {
-            textFieldRef.internalValue = newVal ? newVal['text'] || newVal['value'] || newVal : ''
-          }
+      //textfield value computed
+      const textfieldValue = computed(() => {
+        if (props.multiple) {
+          return fieldItem.value.map(item => {
+            return item ? (item['text'] || item['value'] || item) : ''
+          }).join(', ')
+        } else if (props.chips) {
+          return ''
+        } else {
+          return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
         }
 
       })
 
-      function clearSelection(e){
-        selectedItem.value = props.multiple ? [] : null
+      function clearSelection() {
+        selectedItem.value = props.multiple ? [] : ''
         state.searchText = ''
       }
 
+      const {
+        closeOnClick,
+        closeOnContentClick,
+        maxHeight,
+        offsetY,
+        offsetOverflow,
+        transition
+      } = props.menuProps
+
       return {
         selectedItem,
+        textfieldValue,
         options,
         fieldItem,
         searchText,
         clearSelection,
         showOptions,
+        //menu props
+        ...{
+          closeOnClick,
+          closeOnContentClick,
+          maxHeight,
+          offsetY,
+          offsetOverflow,
+        }
       }
     }
   }
 </script>
 <style scoped>
-  @import "_GSelect.scss";
+  /*todo: select css*/
 </style>

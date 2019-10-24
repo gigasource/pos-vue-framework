@@ -46,21 +46,41 @@ function groupable({mandatory, multiple}, vModel) {
 }
 
 export function makeSelectable(props, context) {
-  let rawInternalValue;
-  if (props.multiple && props.value && !Array.isArray(props.value)) {
-    rawInternalValue = ref([props.value]);
-  } else if (props.multiple) {
-    rawInternalValue = ref(props.value || []);
-  } else {
-    //todo: use reactive
-    rawInternalValue = ref(props.value);
+  // 1 -> {a: 1, b: 2}
+  const convertValueToInternalValue = function (value) {
+    if (!props.itemValue) return value;
+    if (!Array.isArray(props.value)) return props.items.find(i => i[props.itemValue] === value);
+    return props.items.filter(i => value.includes(i[props.itemValue]));
   }
 
+  // {a: 1, b: 2} -> 1
+  const convertInternalValueToValue = function (internalValue) {
+    if (!props.itemValue) return internalValue;
+    if (!Array.isArray(internalValue)) return internalValue[props.itemValue];
+    return internalValue.map(i => i[props.itemValue]);
+  }
+
+  let rawInternalValue;
+  if (props.multiple && props.value && !Array.isArray(props.value)) {
+    rawInternalValue = ref([convertValueToInternalValue(props.value)]);
+  } else if (props.multiple) {
+    rawInternalValue = ref(convertValueToInternalValue(props.value) || []);
+  } else {
+    rawInternalValue = ref(convertValueToInternalValue(props.value));
+  }
+
+  let ignoreWatchValue = false;
+
+  //use when props.value is change from outside
   watch(() => props.value, () => {
+    if (ignoreWatchValue) {
+      return ignoreWatchValue = false;
+    }
+
     if (props.multiple && props.value && !Array.isArray(props.value)) {
-      rawInternalValue.value = [props.value];
+      rawInternalValue.value = [convertValueToInternalValue(props.value)];
     } else {
-      rawInternalValue.value = props.value;
+      rawInternalValue.value = convertValueToInternalValue(props.value);
     }
   }, {lazy: true});
 
@@ -70,7 +90,9 @@ export function makeSelectable(props, context) {
     },
     set: (value) => {
       rawInternalValue.value = value;
-      context.emit('input', rawInternalValue.value)
+      //todo: convert here
+      context.emit('input', convertInternalValueToValue(rawInternalValue.value))
+      ignoreWatchValue = true;
     }
   });
 
