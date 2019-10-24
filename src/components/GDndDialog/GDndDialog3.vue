@@ -87,7 +87,10 @@
         if (props.lazy) {
           return;
         }
-        attachToRoot(context.refs.wrapper);
+        isRender.value = true;
+        context.root.$nextTick(() => {
+          attachToRoot(context.refs.wrapper);
+        })
       })
 
       onBeforeUnmount(() => {
