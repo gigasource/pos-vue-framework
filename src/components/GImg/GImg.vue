@@ -1,9 +1,9 @@
 <template>
-    <div v-intersect:[intersectOptions].once="init" class="g-image" :style="containerStyles">
-        <div class="g-image-content" :style="imageStyles"></div>
-        <slot></slot>
-        <slot v-if="!loaded" name="placeholder" class="g-image-placeholder"></slot>
-    </div>
+  <div v-intersect:[intersectOptions].once="init" class="g-image" :style="containerStyles">
+    <div class="g-image-content" :style="imageStyles"></div>
+    <slot></slot>
+    <slot v-if="!loaded" name="placeholder" class="g-image-placeholder"></slot>
+  </div>
 </template>
 
 <script>
@@ -73,7 +73,14 @@
         else loadImage()
       }, {lazy: true})
 
+      /**
+       * init image
+       * @param entries instanceof IntersectionObserverEntry
+       * @param observer instanceof IntersectionObserver
+       * @param isIntersecting
+       */
       function init(entries, observer, isIntersecting) {
+        // do not init if image is not in viewport
         if (!isIntersecting) return
 
         if (normalizedSrc.value.lazySrc) {
@@ -107,8 +114,6 @@
         props.sizes && (_image.sizes = props.sizes)
         normalizedSrc.value.srcset && (_image.srcset = normalizedSrc.value.srcset)
         props.aspectRatio || pollForSize(_image)
-        console.log(normalizedSrc.value.srcset)
-        console.log(_image)
         getSrc()
       }
 
@@ -139,12 +144,14 @@
       }
 
       function calculateWidth(props, state) {
+        //todo write unit tests
         if (props.width) return convertToUnit(props.width)
         if (props.height && props.aspectRatio) return convertToUnit(props.height * props.aspectRatio)
         if (state.naturalWidth) return convertToUnit(state.naturalWidth)
       }
 
       function calculateHeight(props, state) {
+        //todo write unit tests
         if (props.height) return convertToUnit(props.height)
         if (props.width && props.aspectRatio) return convertToUnit(props.width / props.aspectRatio)
         if (props.aspectRatio) return convertToUnit(state.naturalWidth / props.aspectRatio)
@@ -153,12 +160,12 @@
 
       const containerStyles = computed(() => ({
         width: calculateWidth(props, state),
-        maxWidth: !!props.maxWidth && convertToUnit(props.maxWidth),
-        minWidth: !!props.maxWidth && convertToUnit(props.minWidth),
         height: calculateHeight(props, state),
-        maxHeight: !!props.maxHeight && convertToUnit(props.maxHeight),
-        minHeight: !!props.minHeight && convertToUnit(props.minHeight),
         aspectRatio: props.aspectRatio,
+        ...props.maxWidth && {'max-width': convertToUnit(props.maxWidth)},
+        ...props.minWidth && {'min-width': convertToUnit(props.minWidth)},
+        ...props.maxHeight && {'max-height': convertToUnit(props.maxHeight)},
+        ...props.minHeight && {'min-height': convertToUnit(props.minHeight)},
       }))
 
       const backgroundImage = computed(() => {
@@ -175,8 +182,8 @@
 
       const imageStyles = computed(() => {
         return {
-          backgroundImage: backgroundImage.value,
-          backgroundSize: props.contain ? 'contain' : 'cover',
+          'background-image': backgroundImage.value,
+          'background-size': props.contain ? 'contain' : 'cover',
         }
       })
 
@@ -184,8 +191,6 @@
         containerStyles,
         imageStyles,
         loaded,
-        normalizedSrc,
-        backgroundImage,
         init,
       }
     }
