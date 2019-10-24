@@ -9,7 +9,7 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   //Activate label
   const isDirty = computed(() => !!internalValue.value)
   const isLabelActive = computed(() => {
-    return isDirty.value || isFocused.value;
+    return isDirty.value || isFocused.value|| !!props.placeholder;
   })
   const labelClasses = computed(() => isLabelActive.value ? { labelActiveClass: true } : {})
   //Label transform when textfield has prefix, prepend
@@ -83,18 +83,18 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 export function getSlotEventListeners(context) {
   //slot events
   return {
-    onClickPrependOuter: () => context.emit('click :prepend-outer'),
-    onClickPrependInner: () => context.emit('click :prepend-inner'),
-    onClickAppendOuter: () => context.emit('click :append-outer'),
-    onClickAppendInner: () => context.emit('click :append-inner'),
+    onClickPrependOuter: () => context.emit('click:prepend-outer'),
+    onClickPrependInner: () => context.emit('click:prepend-inner'),
+    onClickAppendOuter: () => context.emit('click:append-outer'),
+    onClickAppendInner: () => context.emit('click:append-inner'),
   }
 }
 
 export function getSlotBsEventListeners(context) {
   //slot events
   return {
-    onClickPrepend: () => context.emit('click :prepend-outer'),
-    onClickAppend: () => context.emit('click :append-outer'),
+    onClickPrepend: () => context.emit('click:prepend-outer'),
+    onClickAppend: () => context.emit('click:append-outer'),
   }
 }
 
@@ -131,7 +131,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   function onClearIconClick(event) {
     internalValue.value = ''
     isValidInput.value = true;
-    context.emit('clearIcon', event)
+    context.emit('click:clearIcon', event)
   }
 
   function onChange(event) {
