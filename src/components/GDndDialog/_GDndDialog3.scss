@@ -1,14 +1,16 @@
 .g-dnddialog3 {
-  position: absolute;
-  display: flex;
-  flex: 1 1 100%;
-  flex-direction: column;
-  border: 0px solid rgba(0,0,0,.08);
-  z-index: 10000;
-  transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-property: transform, opacity;
+  &-wrapper{
+    position: absolute;
+    display: flex;
+    flex: 1 1 100%;
+    flex-direction: column;
+    border: 0px solid rgba(0, 0, 0, .08);
+    z-index: 10000;
+    transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-property: transform, opacity;
 
-  @include elevation(12);
+    @include elevation(12);
+  }
 
   &-header {
     flex: 0 0 auto;
