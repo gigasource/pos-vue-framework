@@ -11,19 +11,17 @@
         </slot>
         <div v-for="(item, index) in renderList" :key="index"
              @click="onSelect(item)">
-          <slot :item="item" :isSelected="internalValue === item">
-            <!-- fixme: waves effect does not work  -->
-            <div v-if="item.title"
+          <slot :item="item" :isSelected="isActiveItem(item)">
+            <div v-if="item[itemTitle]"
                  class="g-list-item"
-                 :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}">
-              <slot name="prepend" :item="item">
-                <div :class="prependClasses">
-                  <img alt="" :src="item.prepend">
-                </div>
-              </slot>
+                 :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}">
+<!--              todo: activeClass-->
+              <div :class="prependClasses">
+                <slot name="prepend" :item="item" :isSelected="isActiveItem(item)"></slot>
+              </div>
 
               <div class="g-list-item-content">
-                <div class="g-list-item-text">{{item.title}}</div>
+                <div class="g-list-item-text">{{item[itemTitle]}}</div>
                 <div class="g-list-item-text__sub"
                      v-if="lineNumber > 1">
                   {{item.subtitle|| '&nbsp;'}}
@@ -58,14 +56,12 @@
           <div class="g-list-item"
                :class="{'g-list-item__active': internalValue === item}"
                @click="onSelect(item)">
-            <slot name="prepend" :item="item">
-              <div :class="prependClasses">
-                <img alt="" :src="item.prepend">
-              </div>
-            </slot>
+            <div :class="prependClasses">
+              <slot name="prepend" :item="item"></slot>
+            </div>
 
             <div class="g-list-item-content">
-              <div class="g-list-item-text">{{item.title}}</div>
+              <div class="g-list-item-text">{{item[itemTitle]}}</div>
               <div class="g-list-item-text__sub"
                    v-if="lineNumber > 1">
                 {{item.subtitle || '&nbsp;&nbsp;'}}
@@ -74,9 +70,10 @@
             </div>
 
             <!--fixme: append wait for VIcon-->
-            <div class="g-list-item-action">
-              <slot name="append" :item="item"></slot>
-            </div>
+            <slot name="append" :item="item">
+              <div class="g-list-item-action"></div>
+            </slot>
+
           </div>
         </slot>
 
@@ -121,6 +118,13 @@
       subtitleWrap: Boolean,
       value: [String, Object, Number],
       selectable: Boolean,
+      multiple: Boolean,
+      mandatory: Boolean,
+      itemValue: String,
+      itemTitle: {
+        type: String,
+        default: 'title'
+      }
     },
     setup: function (props, context) {
       //G list computed class
@@ -154,7 +158,7 @@
         return `g-list-item-${props.prependType}`;
       })
 
-      const renderList = computed(() => props.items.filter(item => item.title))
+      const renderList = computed(() => props.items.filter(item => item[props.itemTitle]))
 
       //Select
       function onClick(event) {

@@ -311,6 +311,37 @@ export const gListItemSlotRenderArray = () => ({
       
 `,
 })
+export const gListItemSlot = () => {
+  return ({
+    components: {GList, GListItem, GListItemText},
+    data() {
+      return {
+        items: [
+          {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+          {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+          {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+          {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        ],
+        testValue: null
+      }
+    },
+    template:
+      `
+        <div>
+          selectedItem: {{testValue}}
+          <g-list v-model="testValue" :items="items" rounded dense subheader="subheader" divider=inset selectable mandatory>
+          <template v-slot:items="{item, isSelected}">
+          <g-list-item>
+               <g-list-item-text>
+              jsdfjsdfhj     
+              </g-list-item-text>
+           </g-list-item>
+          </template>
+          </g-list>
+        </div>
+        `,
+  });
+}
 
 
 import Vue from 'vue/dist/vue.common.js'
