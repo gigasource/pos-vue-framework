@@ -1,30 +1,31 @@
 <template>
-    <span>
-        <i v-if="_tagCondition.i" :class="iconClass" :style="iconStyle"
-           :aria-hidden="attributes.ariaHidden"
-           :role="attributes.role">{{materialIcon}}</i>
-        <svg v-if="_tagCondition.svg" :class="iconClass" :style="iconStyle"
-             :aria-hidden="attributes.ariaHidden"
-             :role="attributes.role"
-             xmlns="http://www.w3.org/2000/svg"
-             viewBox="0 0 24 24">
-            <path :d="icon"></path>
-        </svg>
-        <img v-if="_tagCondition.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle"/>
-        <span v-show="_tagCondition.slot">
-            <slot></slot>
-        </span>
+  <fragment>
+    <i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
+       :aria-hidden="attributes.ariaHidden"
+       :role="attributes.role">{{materialIconName}}</i>
+    <svg v-else-if="activeTags.svg" :class="iconClass" :style="iconStyle"
+         :aria-hidden="attributes.ariaHidden"
+         :role="attributes.role"
+         xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24">
+      <path :d="icon"></path>
+    </svg>
+    <img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle"/>
+    <span v-if="activeTags.slot">
+      <slot></slot>
     </span>
+  </fragment>
 </template>
 
 <script>
   import {computed, ref, onMounted, onUpdated} from '@vue/composition-api';
   import {convertToUnit} from '../../utils/helpers';
   import {setBackgroundColor} from "../../mixins/colorable";
+  import {Fragment} from 'vue-fragment'
 
   export default {
     name: "GIcon",
-
+    components: {Fragment},
     props: {
       value: String,
       dense: Boolean,
@@ -46,24 +47,50 @@
     },
 
     setup(props, context) {
-
       const icon = ref('')
-
       function getIcon() {
-        icon.value = context.slots.default()[0].text
+        icon.value = context.slots.default()[0].text.trim()
       }
 
-      onMounted(() => {
-        getIcon()
-      })
+      onMounted(() => getIcon())
+      onUpdated(() => getIcon())
 
-      onUpdated(() => {
-        getIcon()
-      })
+      function renderMaterialOrFAIcon(nodeData) {
+        let iconType = 'material-icons'
+        const delimiterIndex = icon.value.indexOf('-')
+        const isMaterialIcon = delimiterIndex <= -1
 
-      function iconTemplate() {
-        let data = {
-          tagCondition: {
+        if (isMaterialIcon) {
+          nodeData.materialIcon = icon.value
+        } else {
+          iconType = icon.value.slice(0, delimiterIndex)
+          if (isFontAwesome5(iconType)) iconType = ''
+        }
+
+        nodeData.class[iconType] = true
+        nodeData.class[icon.value] = !isMaterialIcon
+        nodeData.style['fontSize'] = getSize(props)
+      }
+      function renderSvgIcon(nodeData) {
+        nodeData.tag.svg = true
+        nodeData.tag.i = false
+
+        nodeData.class['g-icon__svg'] = true
+        nodeData.style['fontSize'] = getSize(props)
+        nodeData.style['width'] = getSize(props)
+        nodeData.style['height'] = getSize(props)
+      }
+      function renderCustomSvgIcon(nodeData) {
+        nodeData.tag.img = true
+        nodeData.tag.i = false
+        nodeData.style['fontSize'] = getSize(props) * 2
+        nodeData.style['width'] = getSize(props) * 2
+        nodeData.style['height'] = getSize(props) * 2
+      }
+
+      let nodeData = computed(() => {
+        let _nodeData = {
+          tag: {
             i: true,
             svg: false,
             img: false,
@@ -74,98 +101,52 @@
           materialIcon: ''
         }
 
-        if (!isSvgPath(icon.value) && !isCustomSvgIcon(icon.value)) { //render Font icons: Material Icon(default), Font Awesome 5
-          let iconType = 'material-icons'
-          const delimiterIndex = icon.value.indexOf('-')
-          const isMaterialIcon = delimiterIndex <= -1
-
-          if (isMaterialIcon) {
-            data.materialIcon = icon.value
-          } else {
-            iconType = icon.value.slice(0, delimiterIndex)
-            if (isFontAwesome5(iconType)) iconType = ''
-          }
-
-          data.class[iconType] = true
-          data.class[icon.value] = !isMaterialIcon
-          data.style['fontSize'] = getSize(props)
-        }
-
-        if (isSvgPath(icon.value)) {
-          data.tagCondition.svg = true
-          data.tagCondition.i = false
-
-          data.class['g-icon__svg'] = true
-          data.style['fontSize'] = getSize(props)
-          data.style['width'] = getSize(props)
-          data.style['height'] = getSize(props)
-        }
-
-        if (isCustomSvgIcon(icon.value)) {
-          data.tagCondition.img = true
-          data.tagCondition.i = false
-          data.style['fontSize'] = getSize(props) * 2
-          data.style['width'] = getSize(props) * 2
-          data.style['height'] = getSize(props) * 2
-        }
-
-        data.tagCondition.slot = false
-
-        return data
-      }
-
-      let data = computed(() => {
-        return iconTemplate()
+        if (!isSvgPath(icon.value) && !isCustomSvgIcon(icon.value)) renderMaterialOrFAIcon(_nodeData)
+        if (isSvgPath(icon.value)) renderSvgIcon(_nodeData);
+        if (isCustomSvgIcon(icon.value)) renderCustomSvgIcon(_nodeData);
+        _nodeData.tag.slot = false
+        return _nodeData
       })
 
-      let materialIcon = computed(() => {
-        return data.value.materialIcon
+      const materialIconName = computed(() => {
+        return nodeData.value.materialIcon
       })
 
-      let _tagCondition = computed(() => {
-        return {
-          ...data.value.tagCondition
-        }
-      })
+      let activeTags = computed(() => ({
+        ...nodeData.value.tag
+      }))
 
-      let color = computed(() => {
-        return setBackgroundColor(props.color, {}) //to do: change to set text color
-      })
+      let iconColor = computed(() => setBackgroundColor(props.color, {}))
 
-      let iconClass = computed(() => {
-        return {
-          ...data.value.class,
-          ...color.value.class,
-          'g-icon': true,
-          'g-icon__dense': props.dense,
-          'g-icon__disabled': props.disabled,
-          'g-icon__left': props.left,
-          'g-icon__right': props.right,
-          'g-icon__link': !!context.listeners.click
-        }
-      })
+      let iconClass = computed(() => ({
+        ...nodeData.value.class,
+        ...iconColor.value.class,
+        'g-icon': true,
+        'g-icon__dense': props.dense,
+        'g-icon__disabled': props.disabled,
+        'g-icon__left': props.left,
+        'g-icon__right': props.right,
+        'g-icon__link': !!context.listeners.click
+      }))
 
-      let iconStyle = computed(() => {
-        return {
-          ...data.value.style,
-          ...color.value.style
-        }
-      })
+      let iconStyle = computed(() => ({
+        ...nodeData.value.style,
+        ...iconColor.value.style
+      }))
 
-      let attributes = computed(() => {
-        return {
-          ariaHidden: !!context.listeners.click,
-          role: context.listeners.click ? 'button' : null
-        }
-      })
+      // accessibility attrs
+      let attributes = computed(() => ({
+        ariaHidden: !!context.listeners.click,
+        role: context.listeners.click ? 'button' : null
+      }))
 
       return {
         iconClass,
         iconStyle,
         attributes,
-        _tagCondition,
+        activeTags,
         icon,
-        materialIcon,
+        materialIconName,
       }
     }
   }
