@@ -1,0 +1,213 @@
+//Use later
+.g-input {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 16px;
+  letter-spacing: normal;
+  max-width: 100%;
+  text-align: left;
+
+  &--control {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    min-width: 0;
+    width: 100%; // For IE11
+  }
+}
+
+
+.g-textarea {
+  // style for input
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 16px;
+  letter-spacing: normal;
+  max-width: 100%;
+  text-align: left;
+  ////textfield
+  padding-top: 12px; //$text-field-active-label-height;
+  margin-top: 4px; //$input-top-spacing - $text-field-active-label-height;
+  textarea {
+    flex: 1 1 auto;
+    line-height: 18px;
+    max-width: 100%;
+    min-height: 32px;
+    outline: none;
+    padding: 7px 0 8px;
+    width: 100%;
+  }
+
+  &--control {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    min-width: 0;
+    width: 100%; // For IE11
+  }
+
+  &--slot {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    margin-bottom: 8px;
+    min-height: inherit;
+    position: relative;
+    //transition: $primary-transition;
+    width: 100%;
+  }
+
+  &--textarea-slot {
+    cursor: text;
+    transition: background $primary-transition;
+    &:before,
+    &:after {
+      bottom: -1px; // Needed for browser autocomplete styles
+      content: '';
+      left: 0;
+      position: absolute;
+      transition: $primary-transition;
+      width: 100%;
+    }
+
+    &:before {
+      border-style: solid;
+      border-width: thin 0 0 0;
+    }
+
+    &:after {
+      border-color: currentColor;
+      border-style: solid;
+      border-width: thin 0 thin 0;
+      transform: scaleX(0);
+    }
+  }
+
+  &__auto-grow {
+    textarea {
+      overflow: hidden;
+    }
+  }
+
+  &__no-resize {
+    textarea {
+      resize: none;
+    }
+  }
+}
+
+
+//+ theme  (v-textarea)  using  ($material)
+//&.v-text-field--solo-inverted.v-text-field--solo {
+//  &.v-input--is-focused {
+//    textarea {
+//      color: map-deep-get ($material, 'inputs', 'solo-inverted-focused-text');
+//    }
+//  }
+//}
+//
+//.g-textarea {
+//  textarea {
+//    flex: 1 1 auto;
+//    line-height: 18px;
+//    max-width: 100%;
+//    min-height: 32px;
+//    outline: none;
+//    padding: 7px 0 8px;
+//    width: 100%;
+//  }
+//
+//  .g-text-field__prefix {
+//    padding-top: 4px;
+//    align-self: start;
+//  }
+//
+//  &.g-text-field--box,
+//  &.g-text-field--enclosed {
+//    .g-text-field__prefix,
+//    textarea {
+//      margin-top: 24px
+//    }
+//  }
+//
+//  &.g-text-field--single-line,
+//  &.g-text-field--outlined {
+//    .g-text-field__prefix,
+//    textarea {
+//      margin-top: 12px
+//    }
+//  }
+//
+//  .g-label {
+//    top: 18px
+//  }
+//
+//  &.g-text-field--solo {
+//    align-items: flex-start;
+//
+//
+//    // Essentially revert styles
+//    // applied by v-text-field
+//    .g-input__prepend-inner,
+//    .g-input__prepend-outer,
+//    .g-input__append-inner,
+//    .g-input__append-outer {
+//      align-self: flex-start;
+//      margin-top: 16px;
+//    }
+//
+//
+//    //.g-input__append-inner {
+//    //+ltr() {
+//    //  padding-left: 12px;
+//    //}
+//    //+rtl() {
+//    //  padding-right: 12px;
+//    //}
+//    //}
+//  }
+//
+//  &--auto-grow {
+//    textarea {
+//      overflow: hidden
+//    }
+//  }
+//
+//  &--no-resize {
+//    textarea {
+//      resize: none;
+//    }
+//  }
+//
+//  &.g-text-field--enclosed {
+//    .g-text-field__slot {
+//      margin-right: -12px
+//    }
+//
+//    textarea {
+//      padding-right: 12px
+//    }
+//  }
+//
+//  //+ rtl()
+//  //&.g-text-field--enclosed {
+//  //  .g-text-field__slot {
+//  //    margin-right: 0;
+//  //    margin-left: -12px;
+//  //
+//  //    textarea {
+//  //      padding-right: 0;
+//  //      padding-left: 12px;
+//  //    }
+//  //  }
+//  //}
+//}
+
+
+
