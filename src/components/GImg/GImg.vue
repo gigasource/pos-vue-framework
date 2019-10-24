@@ -1,21 +1,14 @@
 <template>
-    <div v-intersect:[intersectOptions].once="init" class="g-image" :style="containerStyles">
-        <div v-if="loaded" class="g-image--content" :style="imageStyles">
-            <slot></slot>
-        </div>
-        <template v-else>
-            <slot name="placeholder">
-                <div class="g-image--placeholder" :style="placeholderStyles">
-                    <h3>Loading...</h3>
-                </div>
-            </slot>
-        </template>
-    </div>
+  <div v-intersect:[intersectOptions].once="init" class="g-image" :style="containerStyles">
+    <div class="g-image-content" :style="imageStyles"></div>
+    <slot></slot>
+    <slot v-if="!loaded" name="placeholder" class="g-image-placeholder"></slot>
+  </div>
 </template>
 
 <script>
   import {convertToUnit} from '../../utils/helpers';
-  import {computed, onMounted, reactive, ref, watch} from '@vue/composition-api';
+  import {computed, reactive, ref, watch} from '@vue/composition-api';
   import Intersect from "../../directives/intersect/intersect";
 
   export default {
@@ -27,6 +20,7 @@
 
     props: {
       src: [String, Object],
+      srcset: [String],
       lazySrc: [String],
       width: [Number, String],
       maxWidth: [Number, String],
@@ -54,19 +48,8 @@
         currentSrc: null,
         image: null,
         naturalWidth: 0,
-        calculatedAspectRatio: 0
-      })
-
-      const backgroundImage = computed(() => {
-        if (!(normalizedSrc.value.src || normalizedSrc.value.lazySrc)) return []
-
-        const backgroundImages = []
-        const src = !loaded.value ? normalizedSrc.lazySrc : state.currentSrc
-
-        if (props.gradient) backgroundImages.push(`linear-gradient(${props.gradient})`)
-        if (src) backgroundImages.push(`url("${src}")`)
-
-        return backgroundImages.join(', ')
+        naturalHeight: 0,
+        calculatedAspectRatio: 0,
       })
 
       const normalizedSrc = computed(() => {
@@ -84,27 +67,32 @@
             }
       })
 
-      watch(() => props.src, (newVal) => {
+      watch(() => props.src, () => {
         // init again if src changes
         if (loaded.value) init(undefined, undefined, true)
         else loadImage()
-      }, { lazy: true })
+      }, {lazy: true})
 
+      /**
+       * init image
+       * @param entries instanceof IntersectionObserverEntry
+       * @param observer instanceof IntersectionObserver
+       * @param isIntersecting
+       */
       function init(entries, observer, isIntersecting) {
+        // do not init if image is not in viewport
         if (!isIntersecting) return
 
-        if (normalizedSrc.lazySrc) {
+        if (normalizedSrc.value.lazySrc) {
           const lazyImg = new Image()
-          lazyImg.src = normalizedSrc.lazySrc
+          lazyImg.src = normalizedSrc.value.lazySrc
           pollForSize(lazyImg, null)
         }
 
         if (normalizedSrc.value.src) loadImage()
       }
 
-
       function loadImage() {
-        //load image here
         const _image = new Image()
         state.image = _image
 
@@ -120,26 +108,19 @@
             onLoad()
           }
         }
-        // _image.onerror = onError()
 
         // bind src to image
         normalizedSrc.value.src && (_image.src = normalizedSrc.value.src)
         props.sizes && (_image.sizes = props.sizes)
         normalizedSrc.value.srcset && (_image.srcset = normalizedSrc.value.srcset)
         props.aspectRatio || pollForSize(_image)
+        getSrc()
       }
 
       function onLoad() {
         getSrc()
         loaded.value = true
         context.emit('load', props.src)
-      }
-
-      function onError() {
-        //fires error on Image() constructor
-        console.error(`Image load failed\n\n` +
-            `src: ${normalizedSrc.src}`)
-        context.emit('error', props.src)
       }
 
       function getSrc() {
@@ -153,6 +134,7 @@
 
           if (naturalHeight || naturalWidth) {
             state.naturalWidth = naturalWidth
+            state.naturalHeight = naturalHeight
             state.calculatedAspectRatio = naturalWidth / naturalHeight
           } else {
             timeout != null && setTimeout(poll, timeout)
@@ -161,42 +143,54 @@
         poll()
       }
 
+      function calculateWidth(props, state) {
+        //todo write unit tests
+        if (props.width) return convertToUnit(props.width)
+        if (props.height && props.aspectRatio) return convertToUnit(props.height * props.aspectRatio)
+        if (state.naturalWidth) return convertToUnit(state.naturalWidth)
+      }
+
+      function calculateHeight(props, state) {
+        //todo write unit tests
+        if (props.height) return convertToUnit(props.height)
+        if (props.width && props.aspectRatio) return convertToUnit(props.width / props.aspectRatio)
+        if (props.aspectRatio) return convertToUnit(state.naturalWidth / props.aspectRatio)
+        if (state.naturalHeight) return convertToUnit(state.naturalHeight)
+      }
+
       const containerStyles = computed(() => ({
-        width: convertToUnit(props.width || (props.height * props.aspectRatio) || state.image.width),
-        maxWidth: convertToUnit(props.maxWidth),
-        minWidth: convertToUnit(props.minWidth),
-        height: convertToUnit(props.height || (props.width / props.aspectRatio) || ((state.image.width / props.aspectRatio)) || state.image.height),
-        maxHeight: convertToUnit(props.maxHeight),
-        minHeight: convertToUnit(props.minHeight),
+        width: calculateWidth(props, state),
+        height: calculateHeight(props, state),
         aspectRatio: props.aspectRatio,
+        ...props.maxWidth && {'max-width': convertToUnit(props.maxWidth)},
+        ...props.minWidth && {'min-width': convertToUnit(props.minWidth)},
+        ...props.maxHeight && {'max-height': convertToUnit(props.maxHeight)},
+        ...props.minHeight && {'min-height': convertToUnit(props.minHeight)},
       }))
 
-      const imageStyles = computed(() => {
-        let contain = props.contain ? 'contain' : 'cover'
-        return {
-          backgroundImage: backgroundImage.value,
-          backgroundSize: contain,
-        }
+      const backgroundImage = computed(() => {
+        if (!(normalizedSrc.value.src || normalizedSrc.value.lazySrc)) return []
+
+        const backgroundImages = []
+        const src = !loaded.value ? normalizedSrc.value.lazySrc : state.currentSrc
+
+        if (props.gradient) backgroundImages.push(`linear-gradient(${props.gradient})`)
+        if (src) backgroundImages.push(`url("${src}")`)
+
+        return backgroundImages.join(', ')
       })
 
-      const placeholderStyles = computed(() => {
+      const imageStyles = computed(() => {
         return {
-          width: '100%',
-          height: '100%',
-          backgroundImage: 'url(https://picsum.photos/id/11/100/60)',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center center'
+          'background-image': backgroundImage.value,
+          'background-size': props.contain ? 'contain' : 'cover',
         }
       })
 
       return {
         containerStyles,
         imageStyles,
-        placeholderStyles,
         loaded,
-        normalizedSrc,
-        backgroundImage,
         init,
       }
     }

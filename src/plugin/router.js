@@ -9,15 +9,15 @@ import SliderDemo from '../view/SliderDemo';
 import CardDemo from '../view/CardDemo';
 import ButtonDemo from '../view/ButtonDemo';
 import OverlayDemo from "../view/OverlayDemo";
+import SelectIonControl from '../view/SelectIonControl';
 import DialogDemo from '../view/DialogDemo';
 import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import InputDemo from "../view/InputDemo";
 import TransitionDemo from '../view/TransitionDemo';
-import ImageDemo from "../view/ImageDemo";
-import IconDemo from "../view/IconDemo";
 import ListDemo from '../view/ListDemo';
 import List2Demo from "../view/List2Demo";
+import DatePicker from '../view/DatePickerDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -35,9 +35,8 @@ const routes = [
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
-  {path: '/image-demo', name: 'Image', component: ImageDemo},
-  {path: '/icon-demo', name: 'Icon', component: IconDemo},
-  {path: '/list-demo', name: 'List', component: List2Demo},
+  { path: '/list-demo', name: 'List', component: List2Demo},
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker}
 ];
 
 const router = new VueRouter({

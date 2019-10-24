@@ -86,6 +86,32 @@ export function upperFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export default function colorHandler() {
+
+  function getColorType(color) {
+    if (color && (color.indexOf('rgb') === 0 || color.indexOf('hsl') === 0 || color.indexOf('#') === 0) || color === 'transparent') {
+      return 'style';
+    } else if (color) {
+      return 'class';
+    }
+  }
+
+
+  function convertColorClass(color, option) {
+    if (color) {
+      if (option === 'background') {
+        color = 'bg ' + color;
+      }
+      return color.split(' ').join('-');
+    }
+  }
+
+  return {
+    getColorType,
+    convertColorClass
+  }
+};
+
 export function createSimpleFunctional (c, el = 'div', name) {
   return Vue.extend({
     name: name || c.replace(/__/g, '-'),
@@ -113,27 +139,11 @@ export function getInternalValue(props, context) {
   return internalValue;
 }
 
-export function getObjectValueByPath(obj, path, fallback) {
-  if (obj == null || !path || typeof path !== 'string') return fallback
-  if (obj[path] !== undefined) return obj[path]
-  path = path.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
-  path = path.replace(/^\./, '') // strip a leading dot
-  return getNestedValue(obj, path.split('.'), fallback)
+
+export function createRange (length) {
+  return Array.from({ length }, (v, k) => k)
 }
 
-export function getNestedValue(obj, path, fallback) {
-  const last = path.length - 1
-
-  if (last < 0) return obj === undefined ? fallback : obj
-
-  for (let i = 0; i < last; i++) {
-    if (obj == null) {
-      return fallback
-    }
-    obj = obj[path[i]]
-  }
-
-  if (obj == null) return fallback
-
-  return obj[path[last]] === undefined ? fallback : obj[path[last]]
+export function kebabCase (str) {
+  return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
