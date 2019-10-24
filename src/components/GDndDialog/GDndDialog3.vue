@@ -24,7 +24,7 @@
 	</transition>
 </template>
 <script>
-	import { getElementPosition, getElementDimension } from '../../utils/helpers';
+	import { getTransitionDuration } from '../../utils/helpers';
 	import detachable from '../../mixins/detachable';
 	import getVModel from '../../mixins/getVModel';
   import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
@@ -34,7 +34,12 @@
     name: 'GDndDialog3',
     components: { GBtn },
     props: {
-      value: Boolean,
+      value: {
+        type: Boolean,
+        default: false
+      },
+
+			// Render Options
 			lazy: Boolean,
 			destroyOnClose: Boolean,
 
@@ -98,6 +103,7 @@
 			}, { deep: true })
 
 
+			// Render Options Handling
 			const isRender = ref(false)
 
 			watch(isActive, (newVal) => {
@@ -107,20 +113,19 @@
 					} else {
             setTimeout(() => {
               isRender.value = isActive.value;
-            }, 300)
+            }, getTransitionDuration(context.refs.dialog))
           }
 				}
 
-			  if (newVal) {
-          if (props.lazy || props.destroyOnClose) {
+				if (props.lazy) {
+			  	if (newVal) {
             isRender.value = true;
             context.root.$nextTick(() => {
               attachToRoot(context.refs.dialog);
             })
           }
 				}
-			})
-
+			}, {lazy: true})
 
 			onMounted(() => {
 				dialogDimension.width = props.width ? Math.max(+props.width, minDialogDimension.width) : minDialogDimension.width;

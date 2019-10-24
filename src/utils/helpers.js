@@ -139,22 +139,8 @@ export function getInternalValue(props, context) {
   return internalValue;
 }
 
-export function getElementPosition(el) {
-  const rect = el.getBoundingClientRect(),
-    offsetX = window.scrollX || document.documentElement.scrollLeft,
-    offsetY = window.scrollY || document.documentElement.scrollTop;
-  return {
-    left: rect.left + offsetX,
-    top: rect.top + offsetY,
-    right: rect.right + offsetX,
-    bottom: rect.bottom + offsetY
-  }
-}
-
-export function getElementDimension(el) {
-  const rect = el.getBoundingClientRect()
-  return {
-    width: rect.width,
-    height: rect.height
-  }
+// Return transition duration of an element in millisecond
+export function getTransitionDuration(el) {
+  const duration =  window.getComputedStyle(el).getPropertyValue('transition-duration');
+  return Math.round(parseFloat(duration)*1000);
 }
