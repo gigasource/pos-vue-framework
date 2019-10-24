@@ -86,6 +86,32 @@ export function upperFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export default function colorHandler() {
+
+  function getColorType(color) {
+    if (color && (color.indexOf('rgb') === 0 || color.indexOf('hsl') === 0 || color.indexOf('#') === 0) || color === 'transparent') {
+      return 'style';
+    } else if (color) {
+      return 'class';
+    }
+  }
+
+
+  function convertColorClass(color, option) {
+    if (color) {
+      if (option === 'background') {
+        color = 'bg ' + color;
+      }
+      return color.split(' ').join('-');
+    }
+  }
+
+  return {
+    getColorType,
+    convertColorClass
+  }
+};
+
 export function createSimpleFunctional (c, el = 'div', name) {
   return Vue.extend({
     name: name || c.replace(/__/g, '-'),
@@ -111,4 +137,13 @@ export function getInternalValue(props, context) {
   });
 
   return internalValue;
+}
+
+
+export function createRange (length) {
+  return Array.from({ length }, (v, k) => k)
+}
+
+export function kebabCase (str) {
+  return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }

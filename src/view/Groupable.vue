@@ -51,8 +51,8 @@
 
   import GButton from '../components/GButton/GButton';
   import GDivider from '../components/GLayout/GDivider';
-  import GRadioGroup from '../components/GInput/GRadioGroup';
-  import GRadio from '../components/GInput/GRadio';
+  import GRadioGroup from '../components/GRadio/GRadioGroup';
+  import GRadio from '../components/GRadio/GRadio';
   import GItemGroup from '../components/GItemGroup/GItemGroup';
   import GItem from '../components/GItemGroup/GItem';
   import GContainer from '../components/GLayout/GContainer';
