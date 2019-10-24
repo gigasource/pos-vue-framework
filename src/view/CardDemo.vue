@@ -97,8 +97,8 @@
   import GCardText from '../components/GCard/GCardText';
   import GCardActions from '../components/GCard/GCardActions';
   import GButton from '../components/GButton/GButton';
-  import GRadioGroup from '../components/GInput/GRadioGroup';
-  import GRadio from '../components/GInput/GRadio';
+  import GRadioGroup from '../components/GRadio/GRadioGroup';
+  import GRadio from '../components/GRadio/GRadio';
 
   export default {
     name: 'CardDemo',

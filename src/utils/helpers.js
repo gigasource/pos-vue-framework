@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import {computed, ref, watch} from "@vue/composition-api";
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -85,6 +86,32 @@ export function upperFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export default function colorHandler() {
+
+  function getColorType(color) {
+    if (color && (color.indexOf('rgb') === 0 || color.indexOf('hsl') === 0 || color.indexOf('#') === 0) || color === 'transparent') {
+      return 'style';
+    } else if (color) {
+      return 'class';
+    }
+  }
+
+
+  function convertColorClass(color, option) {
+    if (color) {
+      if (option === 'background') {
+        color = 'bg ' + color;
+      }
+      return color.split(' ').join('-');
+    }
+  }
+
+  return {
+    getColorType,
+    convertColorClass
+  }
+};
+
 export function createSimpleFunctional (c, el = 'div', name) {
   return Vue.extend({
     name: name || c.replace(/__/g, '-'),
@@ -94,4 +121,20 @@ export function createSimpleFunctional (c, el = 'div', name) {
       return h(el, data, children);
     },
   })
+}
+export function getInternalValue(props, context) {
+  // text field internalValue
+  const rawInternalValue = ref(props.value || '');
+
+  watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
+
+  const internalValue = computed({
+    get: () => rawInternalValue.value,
+    set: (value) => {
+      rawInternalValue.value = value;
+      context.emit('input', rawInternalValue.value)
+    }
+  });
+
+  return internalValue;
 }
