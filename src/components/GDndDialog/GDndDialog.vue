@@ -1,11 +1,11 @@
 <template>
 	<transition name="dialog-transition">
-		<div v-if="isRender" v-show="isActive" class="g-dnddialog3-wrapper" :class="wrapperClasses" :style="wrapperStyles" ref="wrapper" @mousedown="dragStart">
-			<div class="g-dnddialog3-header" ref="header">
-				<span class="g-dnddialog3-title" ref="title">
+		<div v-if="isRender" v-show="isActive" class="g-dnddialog-wrapper" :class="wrapperClasses" :style="wrapperStyles" ref="wrapper" @mousedown="dragStart">
+			<div class="g-dnddialog-header" ref="header">
+				<span class="g-dnddialog-title" ref="title">
 					<slot name="title"></slot>
 				</span>
-				<div class="g-dnddialog3-action" ref="action">
+				<div class="g-dnddialog-action" ref="action">
 					<g-btn v-if="!(isMinimize || isMaximize)" small flat width="30" height="30" min-width="30" color="orange" @click="toggleMinimize">
 						<i class="material-icons">minimize</i>
 					</g-btn>
@@ -17,7 +17,7 @@
 					</g-btn>
 				</div>
 			</div>
-			<div v-show="!isMinimize" class="g-dnddialog3-content" ref="content">
+			<div v-show="!isMinimize" class="g-dnddialog-content" ref="content">
 				<slot></slot>
 			</div>
 		</div>
@@ -31,7 +31,7 @@
   import GBtn from '../GBtn/GBtn';
 
   export default {
-    name: 'GDndDialog3',
+    name: 'GDndDialog',
     components: { GBtn },
     props: {
       value: {
@@ -101,8 +101,8 @@
 
       // Dynamic classes and styles
       const wrapperClasses = computed(() => ({
-        'g-dnddialog3__minimize': isMinimize.value,
-        'g-dnddialog3__maximize': isMaximize.value
+        'g-dnddialog__minimize': isMinimize.value,
+        'g-dnddialog__maximize': isMaximize.value
       }))
 
       const wrapperStyles = computed(() => ({
