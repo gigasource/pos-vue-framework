@@ -16,6 +16,7 @@
   "dependencies": {
     "@vue/composition-api": "0.3.2",
     "core-js": "2.6.9",
+    "dayjs": "^1.8.16",
     "lodash": "4.17.15",
     "sass": "^1.22.12",
     "sass-loader": "^8.0.0",
