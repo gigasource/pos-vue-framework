@@ -29,7 +29,7 @@
       const classes = computed(() => ({
 				'g-layout': true,
 				'g-layout__vertical': props.vertical,
-				'g-layout__horizontal': props.horizontal || !props.vertical,
+				'g-layout__horizontal': props.horizontal && !props.vertical,
 				['col-' + props.col]: props.col,
 				['row-' + props.row]: props.row,
 				'no-gutters': props.noGutters,

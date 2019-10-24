@@ -14,9 +14,9 @@ export default {
 export const basic = () => ({
   components: { GLayout, GContainer },
   props: {
-    horizontal: {
+    vertical: {
       type: Boolean,
-      default: boolean('Horizontal', false)
+      default: boolean('vertical', false)
     },
     noGutters: {
       type: Boolean,
@@ -24,7 +24,7 @@ export const basic = () => ({
     },
   },
   template: `<g-container>
-    <g-layout :horizontal="horizontal" :no-gutters="noGutters">
+    <g-layout :vertical="vertical" :no-gutters="noGutters">
       <g-layout>
         <div style="border: 1px solid black; padding: 8px; width: 100%">Column</div>
       </g-layout>
@@ -67,9 +67,9 @@ export const alignment = () => ({
 export const flow = () => ({
   components: { GLayout, GContainer },
   props: {
-    horizontal: {
+    vertical: {
       type: Boolean,
-      default: boolean('Horizontal', false)
+      default: boolean('vertical', false)
     },
     wrap: {
       type: Boolean,
@@ -81,7 +81,7 @@ export const flow = () => ({
     },
   },
   template: `<g-container>
-    <g-layout :horizontal="horizontal" :wrap="wrap" :reverse="reverse" style="height: 100px; width: 300px; background-color: #eeeeee; margin: 10%">
+    <g-layout :vertical="vertical" :wrap="wrap" :reverse="reverse" style="height: 100px; width: 300px; background-color: #eeeeee; margin: 10%">
         <div style="border: 1px solid black; padding: 8px;">Column</div>
         <div style="border: 1px solid black; padding: 8px;">Column</div>
         <div style="border: 1px solid black; padding: 8px;">Column</div>
@@ -143,7 +143,7 @@ export const row = () => ({
     }
   },
   template: `<g-container>
-    <g-layout horizontal :wrap="wrap" :no-gutters="noGutters" style="height: 500px; background-color: #eeeeee">
+    <g-layout vertical :wrap="wrap" :no-gutters="noGutters" style="height: 500px; background-color: #eeeeee">
       <g-layout :row="row">
         <div style="border: 1px solid black; width: 100%">Row-{{row}}</div>
       </g-layout>
