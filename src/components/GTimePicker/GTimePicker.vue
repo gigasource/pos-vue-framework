@@ -1,10 +1,19 @@
 <script>
   import _ from 'lodash'
+  import { computed } from '@vue/composition-api'
+  import GPicker from '../GPicker/GPicker'
   import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil'
   import { computedHandStyle, getSelectedIndex, calcFaceNumberPosition } from './logic/GTimePickerUIHelper';
+  // TODO: bring to general util fils
+  import { pad } from '../GDatePicker/logic/utils';
+  import { setBackgroundColor } from '../../mixins/colorable';
+
+  const MINIMUM_WIDTH = 300
+  const DEFAULT_COLOR = 'rgb(145, 107, 219)'
 
   export default {
     name: 'GTimePicker',
+    components: { GPicker },
     props: {
       // state
       disabled: Boolean,
@@ -20,6 +29,22 @@
         type: String,
         default: HourConvention._12HRS,
         validator: HourConventionValidator
+      },
+
+      color: {
+        type: String,
+        default: DEFAULT_COLOR
+      },
+      headerColor: {
+        type: String,
+        default: DEFAULT_COLOR
+      },
+
+      landscape: Boolean,
+      // Predefined width for date picker
+      width: {
+        type: [Number, String],
+        default: 290,
       },
 
       // ROADMAP
@@ -48,56 +73,83 @@
         showPMPicker,
       } = GTimePickerUtil(props, context)
 
-      const cptHandStyle = computedHandStyle(props, state)
-
       // Title
       const titleRenderFn = (function () {
-        function pad(value) {
-          return value < 10 ? `0${value}` : `${value}`
+        const cptTitleClass = computed(() => ({
+          'g-time-picker__title': true,
+          'g-time-picker__title--landscape': props.landscape
+        }))
+        const cptTitleTimeClass = computed(() => ({
+          'g-time-picker__title__time': true,
+          'g-time-picker__title__time--landscape': props.landscape
+        }))
+        const cptTitleHourClass = computed(() => ({
+          'g-time-picker__title__time__number': true,
+          'g-time-picker__title__time__number--active': state.activeTimePicker.hour
+        }))
+        const cptTitleMinuteClass = computed(() => ({
+          'g-time-picker__title__time__number': true,
+          'g-time-picker__title__time__number--active': state.activeTimePicker.minute
+        }))
+        const cptTitleSecondClass = computed(() => ({
+          'g-time-picker__title__time__number': true,
+          'g-time-picker__title__time__number--active': state.activeTimePicker.second
+        }))
+        const cptAMClass = computed(() => ({
+          'g-time-picker__title__period__value': true,
+          'g-time-picker__title__period__value--active': state.activePeriodPicker.AM,
+          'g-time-picker__title__period__value--readonly': props.readonly,
+        }))
+        const cptPMClass = computed(() => ({
+          'g-time-picker__title__period__value': true,
+          'g-time-picker__title__period__value--active': state.activePeriodPicker.PM,
+          'g-time-picker__title__period__value--readonly': props.readonly,
+        }))
+
+        // render fn
+        function renderSeparator() {
+          return <span class="g-time-picker__title__time__separator">:</span>
         }
 
-        const getNumberClass = function(active) {
-          return {
-            'g-time-picker__title__number': true,
-            'g-time-picker__title__number--active': active
-          }
-        }
-
-        function renderSecond() {
+        function renderSecondIfUseSeconds() {
           return props.useSeconds ? [
-            <span>:</span>,
-            <div class={getNumberClass(state.activeTimePicker.second)} vOn:click_stop={showSecondsPicker}>
+            renderSeparator(),
+            <span class={cptTitleSecondClass.value} vOn:click_stop={showSecondsPicker}>
               {pad(state.selectedTime.seconds)}
-            </div>
+            </span>
           ] : undefined
         }
 
-        function renderPeriod() {
+        function renderPeriodIfShowPeriod() {
           return state.showPeriod
-              ? <div>
-                <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.AM }} vOn:click_stop={showAMPicker}>AM</div>
-                <div class={{ 'g-time-picker__title__period--active': state.activePeriodPicker.PM }} vOn:click_stop={showPMPicker}>PM</div>
+              ? <div class="g-time-picker__title__period">
+                <div class={cptAMClass.value} vOn:click_stop={showAMPicker}>AM</div>
+                <div class={cptPMClass.value} vOn:click_stop={showPMPicker}>PM</div>
               </div>
               : undefined
         }
 
         return () => (
-            <div class="g-time-picker__title">
-              <div class={getNumberClass(state.activeTimePicker.hour)} vOn:click_stop={showHoursPicker}>
-                {pad(getFormattedHours(state.selectedTime.hours, props))}
+            <div class={cptTitleClass.value}>
+              <div class={cptTitleTimeClass.value}>
+                <span class={cptTitleHourClass.value} vOn:click_stop={showHoursPicker}>
+                  {pad(getFormattedHours(state.selectedTime.hours, props))}
+                </span>
+                {renderSeparator()}
+                <span class={cptTitleMinuteClass.value} vOn:click_stop={showMinutesPicker}>
+                  {pad(state.selectedTime.minutes)}
+                </span>
+                {renderSecondIfUseSeconds()}
               </div>
-              <span>:</span>
-              <div class={getNumberClass(state.activeTimePicker.minute)} vOn:click_stop={showMinutesPicker}>
-                {pad(state.selectedTime.minutes)}
-              </div>
-              {renderSecond()}
-              {renderPeriod()}
+              {renderPeriodIfShowPeriod()}
             </div>
         )
-
       })()
 
       // Clock
+      const cptHandStyle = computedHandStyle(props, state)
+      const cptHandColorOptions = computed(() => setBackgroundColor(props.color || DEFAULT_COLOR, {}))
+
       function wheelHandle(e) {
         e.preventDefault()
         e.stopPropagation()
@@ -121,7 +173,12 @@
 
         changeFn(changeValue)
       }
+
       function onClockClicked(e) {
+        if (props.disabled || props.readonly) {
+          return
+        }
+
         const selectedIndex = getSelectedIndex(e.target.getBoundingClientRect(), { x: e.offsetX, y: e.offsetY })
         if (selectedIndex !== -1) {
           if (state.activeTimePicker.minute) {
@@ -134,6 +191,7 @@
           }
         }
       }
+
       function addNumberClass(numbers) {
         _.each(numbers, (el) => {
           el.class = {
@@ -146,72 +204,82 @@
         })
         return numbers
       }
+
+      function getColorObject(timeModel) {
+        return timeModel.selected ? setBackgroundColor(props.color || DEFAULT_COLOR, {}) : {}
+      }
+
+      function renderHourNumber(hour) {
+        let hourColor = getColorObject(hour)
+        return <span
+            class={[hour.class, hourColor.class, { 'g-time-picker__clock__inner__number--selectable': !props.disabled && !props.readonly }]}
+            style={[hour.style, hourColor.style]}
+            vOn:click_stop={() => {
+              hour.select()
+              showMinutesPicker()
+            }}>
+          <span>{hour.value}</span>
+        </span>
+      }
+
       function hourRenderFn() {
         if (state.activeTimePicker.hour) {
+          addNumberClass(hoursModel.value)
+          let outter = hoursModel.value.filter((_, index) => index < 12)
+          let inner = hoursModel.value.filter((_, index) => index >= 12)
           let hourElements = []
           // 0 -> 11
-          hourElements.push(calcFaceNumberPosition(addNumberClass(hoursModel.value.filter((_, index) => index < 12)), 1).map(hour =>
-                  <span
-                      class={[hour.class, 'g-time-picker__clock__inner__number--selectable']}
-                      style={hour.style}
-                      vOn:click_stop={() => {
-                        hour.select()
-                        showMinutesPicker()
-                      }}>
-                    <span>{hour.value}</span>
-                  </span>
-              )
-          )
+          hourElements.push(calcFaceNumberPosition(outter, 1).map(renderHourNumber))
           // 12 -> 23
-          hourElements.push(calcFaceNumberPosition(addNumberClass(hoursModel.value.filter((_, index) => index >= 12)), 0.6).map(hour =>
-                  <span
-                      class={[hour.class, 'g-time-picker__clock__inner__number--selectable']}
-                      style={hour.style}
-                      vOn:click_stop={() => {
-                        hour.select()
-                        showMinutesPicker()
-                      }}>
-                    <span>{hour.value}</span>
-                  </span>
-              )
-          )
+          hourElements.push(calcFaceNumberPosition(inner, 0.6).map(renderHourNumber))
 
           return hourElements
         }
 
         return undefined
       }
+
       function minuteRenderFn() {
         if (state.activeTimePicker.minute) {
-          return calcFaceNumberPosition(addNumberClass(minutesModel.value)).map((minute, index) =>
-              index % 5 === 0
-                  ? <span class={minute.class} style={minute.style}>
-                    <span>{minute.value}</span>
-                  </span>
-                  : undefined)
+          return calcFaceNumberPosition(addNumberClass(minutesModel.value)).map((minute, index) => {
+            if (index % 5 !== 0) {
+              return undefined
+            }
+            let color = getColorObject(minute)
+            return <span class={[minute.class, color.class]} style={[minute.style, color.style]}>
+              <span>{minute.value}</span>
+            </span>
+          })
         }
 
         return undefined
       }
+
       function secondRenderFn() {
         if (props.useSeconds && state.activeTimePicker.second) {
-          return calcFaceNumberPosition(addNumberClass(secondsModel.value)).map((second, index) =>
-              index % 5 === 0
-                  ? <span class={second.class}
-                          style={second.style}>
-                    <span>{second.value}</span>
-                  </span>
-                  : undefined
+          return calcFaceNumberPosition(addNumberClass(secondsModel.value)).map((second, index) => {
+                if (index % 5 !== 0) {
+                  return undefined
+                }
+                let color = getColorObject(second)
+                return <span class={[second.class, color.class]}
+                             style={[second.style, color.style]}>
+                  <span>{second.value}</span>
+                </span>
+
+              }
           )
         }
 
         return undefined
       }
+
       function clockRenderFn() {
         return (
             <div class="g-time-picker__clock" vOn:click_stop={onClockClicked} vOn:wheel={wheelHandle}>
               <div class="g-time-picker__clock__inner">
-                <div class="g-time-picker__clock__inner__hand" style={cptHandStyle.value}></div>
+                <div class={['g-time-picker__clock__inner__hand', cptHandColorOptions.value.class]}
+                     style={[cptHandStyle.value, cptHandColorOptions.value.style]}></div>
                 {hourRenderFn()}
                 {minuteRenderFn()}
                 {secondRenderFn()}
@@ -220,43 +288,94 @@
         )
       }
 
-      //
       return function GTimePickerRenderFn() {
         return (
-            <div class={{ 'g-time-picker--disabled': props.disabled }}>
-              {titleRenderFn()}
-              {clockRenderFn()}
-              <slot></slot>
-            </div>
+            <g-picker
+                disabled={props.disabled}
+                landscape={props.landscape}
+                width={props.width && props.width >= 300 ? props.width : MINIMUM_WIDTH}
+                color={props.headerColor || props.color || DEFAULT_COLOR}>
+              <template slot="title">
+                {titleRenderFn()}
+              </template>
+              <div key={state.activePicker}>
+                {clockRenderFn()}
+              </div>
+              <template slot="actions">
+                <slot/>
+              </template>
+            </g-picker>
         )
       }
     }
   }
 </script>
 <style scoped lang="scss">
-  $clockBgColor: #ddd;
-  $clockSize: 270px;
-  $clockPadding: 25px;
-  $handColor: #000;
-
   .g-time-picker {
     &__title {
-      height: 70px;
+      $inactiveOpacity: 0.6;
+      $activeOpacity: 1;
 
-      &__number {
-        display: inline-block;
+      display: flex;
+      justify-content: center;
+      line-height: 1;
+      color: #FFFFFF;
+
+      &--landscape {
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+      }
+
+      &__time {
+        font-family: "Roboto", sans-serif;
+        font-size: 50px;
+
+        &--landscape {
+          font-size: 30px;
+        }
+
+        &__number {
+          opacity: $inactiveOpacity;
+
+          &--active {
+            opacity: $activeOpacity;
+          }
+        }
+      }
+
+      &__period {
+        font-size: 16px;
+        padding: 10px 5px;
+
+        &__value {
+          opacity: $inactiveOpacity;
+
+          &--active {
+            opacity: $activeOpacity;
+          }
+
+          &--readonly {
+            pointer-events: none;
+          }
+        }
       }
     }
 
     &__clock {
+      $clockBgColor: #f7e6e6;
+      $clockSize: 270px;
+      $clockPadding: 25px;
+      $clockInnerSize: $clockSize - 2 * $clockPadding;
+      $handStartSize: 10px;
+      $handEndSize: 8px;
+      $handColor: rgb(145, 107, 219);
+
       width: $clockSize;
       height: $clockSize;
       border-radius: 100%;
       background-color: $clockBgColor;
-
-      $clockInnerSize: $clockSize - 2 * $clockPadding;
-      $handStartSize: 10px;
-      $handEndSize: 8px;
+      margin: 15px auto;
 
       &__inner {
         width: $clockInnerSize;
@@ -270,7 +389,7 @@
           position: absolute;
           left: calc(50% - 1px);
           width: 2px;
-          border: 1px solid #000;
+          border: 1px solid $handColor;
           -webkit-transform-origin: center bottom;
           transform-origin: center bottom;
 

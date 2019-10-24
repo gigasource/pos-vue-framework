@@ -55,10 +55,16 @@ function getShowTimePickerMethods(state) {
  * @param state
  * @returns {{showAMPicker: (function(): (ActivePeriodPicker.AM|{AM, PM})), showPMPicker: (function(): (ActivePeriodPicker.PM|{AM, PM}))}}
  */
-function getShowPeriodPickerMethods(state) {
+function getShowPeriodPickerMethods(state, context) {
   return {
-    showAMPicker: () => state.activePeriodPicker = ActivePeriodPicker.AM,
-    showPMPicker: () => state.activePeriodPicker = ActivePeriodPicker.PM
+    showAMPicker: () => {
+      state.activePeriodPicker = ActivePeriodPicker.AM
+      context.emit('update:period', 'am')
+    },
+    showPMPicker: () => {
+      state.activePeriodPicker = ActivePeriodPicker.PM
+      context.emit('update:period', 'pm')
+    }
   }
 }
 
@@ -145,7 +151,7 @@ export default function (props, context) {
   })
 
   const { showHoursPicker, showMinutesPicker, showSecondsPicker } = getShowTimePickerMethods(state)
-  const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state)
+  const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state, context)
   const { setHours, setMinutes, setSeconds } = getSetTimeMethods(state, context)
   const { adjustHours, adjustMinutes, adjustSeconds } = getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, cptIs12HoursConvention})
 
