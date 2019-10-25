@@ -1,33 +1,29 @@
 // Created at 2019-10-24 16:39 by Thinh Vu
 import { createLocalVue } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
-import { calcFaceNumberPosition, computedHandStyle, getSelectedIndex } from '../GTimePickerUIHelper'
+import { _calcNumberPositionStyle, computedHandStyle, getSelectedIndex } from '../GTimePickerUIHelper'
 import { HourConvention } from '../GTimePickerUtil';
 
 describe('/GTimePickerUIHelper', () => {
   createLocalVue().use(plugin)
 
-  describe('calcFaceNumberPosition', () => {
+  describe('_calcNumberPositionStyle', () => {
     // reference equals
     it('Should pass the test', () => {
       // Simple test with only 4 number
       // these number will be place in 0, 3, 6, 9 position in a clock
-      let numberModels = [{}, {}, {}, {}]
-      let numberOutput = calcFaceNumberPosition(numberModels, 1)
-      expect(numberModels === numberOutput).toBe(true)
-      expect(numberOutput[0].style).toEqual({ top: '0%', left: '49.99999999999999%' })
-      expect(numberOutput[1].style).toEqual({ top: '49.99999999999999%', left: '100%' })
-      expect(numberOutput[2].style).toEqual({ top: '100%', left: '50.000000000000014%' })
-      expect(numberOutput[3].style).toEqual({ top: '50.000000000000014%', left: '0%' })
+      let numberOutput = _calcNumberPositionStyle(4, 1)
+      expect(numberOutput[0]).toEqual({ top: '0%', left: '49.99999999999999%' })
+      expect(numberOutput[1]).toEqual({ top: '49.99999999999999%', left: '100%' })
+      expect(numberOutput[2]).toEqual({ top: '100%', left: '50.000000000000014%' })
+      expect(numberOutput[3]).toEqual({ top: '50.000000000000014%', left: '0%' })
 
       // scale smaller
-      numberModels = [{}, {}, {}, {}]
-      numberOutput = calcFaceNumberPosition(numberModels, 0.6)
-      expect(numberModels === numberOutput).toBe(true)
-      expect(numberOutput[0].style).toEqual({ top: '20%', left: '50%' })
-      expect(numberOutput[1].style).toEqual({ top: '49.99999999999999%', left: '80%' })
-      expect(numberOutput[2].style).toEqual({ top: '80%', left: '50%' })
-      expect(numberOutput[3].style).toEqual({ top: '50.000000000000014%', left: '20%' })
+      numberOutput = _calcNumberPositionStyle(4, 0.6)
+      expect(numberOutput[0]).toEqual({ top: '20%', left: '50%' })
+      expect(numberOutput[1]).toEqual({ top: '49.99999999999999%', left: '80%' })
+      expect(numberOutput[2]).toEqual({ top: '80%', left: '50%' })
+      expect(numberOutput[3]).toEqual({ top: '50.000000000000014%', left: '20%' })
     })
   })
 

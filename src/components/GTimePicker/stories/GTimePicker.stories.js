@@ -53,7 +53,6 @@ export const Index = () => ({
                 header-color={props.headerColor}
                 width={props.width}
                 landscape={props.landscape}
-                vOn:update_period={action('period')}
                 vOn:input={action('input')}
             >
             </g-time-picker>

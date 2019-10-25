@@ -3,8 +3,7 @@
   import { computed } from '@vue/composition-api'
   import GPicker from '../GPicker/GPicker'
   import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil'
-  import { computedHandStyle, getSelectedIndex, calcFaceNumberPosition } from './logic/GTimePickerUIHelper';
-  // TODO: bring to general util fils
+  import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_59PositionStyle } from './logic/GTimePickerUIHelper';
   import { pad } from '../GDatePicker/logic/utils';
   import { setBackgroundColor } from '../../mixins/colorable';
 
@@ -52,6 +51,10 @@
       // allowedHours: [Function, Array],
       // allowedMinutes: [Function, Array],
       // allowedSeconds: [Function, Array],
+      // ClockBackground color:
+      // Number Color:
+      // Selected Number color
+      // Transition
     },
     setup(props, context) {
       const {
@@ -205,35 +208,24 @@
         return numbers
       }
 
-      function getColorObject(timeModel) {
+      function getNumberColorStyle(timeModel) {
         return timeModel.selected ? setBackgroundColor(props.color || DEFAULT_COLOR, {}) : {}
-      }
-
-      function renderHourNumber(hour) {
-        let hourColor = getColorObject(hour)
-        return <span
-            class={[hour.class, hourColor.class, { 'g-time-picker__clock__inner__number--selectable': !props.disabled && !props.readonly }]}
-            style={[hour.style, hourColor.style]}
-            vOn:click_stop={() => {
-              hour.select()
-              showMinutesPicker()
-            }}>
-          <span>{hour.value}</span>
-        </span>
       }
 
       function hourRenderFn() {
         if (state.activeTimePicker.hour) {
-          addNumberClass(hoursModel.value)
-          let outter = hoursModel.value.filter((_, index) => index < 12)
-          let inner = hoursModel.value.filter((_, index) => index >= 12)
-          let hourElements = []
-          // 0 -> 11
-          hourElements.push(calcFaceNumberPosition(outter, 1).map(renderHourNumber))
-          // 12 -> 23
-          hourElements.push(calcFaceNumberPosition(inner, 0.6).map(renderHourNumber))
-
-          return hourElements
+          return addNumberClass(hoursModel.value).map((hour, index) => {
+            let hourColor = getNumberColorStyle(hour)
+            return <span
+                class={[hour.class, hourColor.class, { 'g-time-picker__clock__inner__number--selectable': !props.disabled && !props.readonly }]}
+                style={[hour.style, hourColor.style, range0_23PositionStyle[index]]}
+                vOn:click_prevent_stop={(e) => {
+                  hour.select()
+                  showMinutesPicker()
+                }}>
+              <span>{hour.value}</span>
+            </span>
+          })
         }
 
         return undefined
@@ -241,12 +233,12 @@
 
       function minuteRenderFn() {
         if (state.activeTimePicker.minute) {
-          return calcFaceNumberPosition(addNumberClass(minutesModel.value)).map((minute, index) => {
+          return addNumberClass(minutesModel.value).map((minute, index) => {
             if (index % 5 !== 0) {
               return undefined
             }
-            let color = getColorObject(minute)
-            return <span class={[minute.class, color.class]} style={[minute.style, color.style]}>
+            let color = getNumberColorStyle(minute)
+            return <span class={[minute.class, color.class]} style={[minute.style, color.style, range0_59PositionStyle[index]]}>
               <span>{minute.value}</span>
             </span>
           })
@@ -257,13 +249,13 @@
 
       function secondRenderFn() {
         if (props.useSeconds && state.activeTimePicker.second) {
-          return calcFaceNumberPosition(addNumberClass(secondsModel.value)).map((second, index) => {
+          return addNumberClass(secondsModel.value).map((second, index) => {
                 if (index % 5 !== 0) {
                   return undefined
                 }
-                let color = getColorObject(second)
+                let color = getNumberColorStyle(second)
                 return <span class={[second.class, color.class]}
-                             style={[second.style, color.style]}>
+                             style={[second.style, color.style, range0_59PositionStyle[index]]}>
                   <span>{second.value}</span>
                 </span>
 
@@ -337,10 +329,15 @@
 
         &__number {
           opacity: $inactiveOpacity;
+          cursor: pointer;
 
           &--active {
             opacity: $activeOpacity;
           }
+        }
+
+        &__separator {
+          opacity: $inactiveOpacity;
         }
       }
 
@@ -350,6 +347,7 @@
 
         &__value {
           opacity: $inactiveOpacity;
+          cursor: pointer;
 
           &--active {
             opacity: $activeOpacity;
@@ -357,6 +355,7 @@
 
           &--readonly {
             pointer-events: none;
+            cursor: default;
           }
         }
       }

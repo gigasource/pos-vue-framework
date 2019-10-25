@@ -99,18 +99,23 @@ export function getSelectedIndex(clockContainer, targetPos, itemsLength = 60) {
 
 
 // Clock's number
-export function calcFaceNumberPosition(numbersModel, ratio = 1) {
-  let anglePerStep = 2 * Math.PI / numbersModel.length
+export function _calcNumberPositionStyle(length, ratio = 1) {
+  let anglePerStep = 2 * Math.PI / length
   let angle = Math.PI / 2
-  _.each(numbersModel, (el, index) => {
-    el.style = {
-      ...el.style,
-      top: `${50 * (1 - ratio * Math.sin(angle + index * anglePerStep))}%`,
-      left: `${50 * (1 - ratio * Math.cos(angle + index * anglePerStep))}%`
-    }
-  })
-  return numbersModel
+  let positionStyle = []
+  for(let i=0; i<length; ++i) {
+    positionStyle.push({
+      top: `${50 * (1 - ratio * Math.sin(angle + i * anglePerStep))}%`,
+      left: `${50 * (1 - ratio * Math.cos(angle + i * anglePerStep))}%`
+    })
+  }
+  return positionStyle
 }
+
+// hour number position
+export const range0_23PositionStyle = [..._calcNumberPositionStyle(range0_11.length), ..._calcNumberPositionStyle(range12_23.length, 0.6)]
+// minute & second position
+export const range0_59PositionStyle = _calcNumberPositionStyle(range0_59.length)
 
 // ---- Clock's hand
 const _computedHandHeightAndTop = (props, state) => {
