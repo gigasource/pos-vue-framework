@@ -3,7 +3,7 @@
 		<div :class="tabsClasses" :style="tabsStyles">
 			<!--			TODO: surround with slider group for handling overflow tabs -->
 			<div class="g-tabs-bar" ref="itemsRef" :class="barClasses" :style="barStyles">
-				<slot name="tabs" :toggle="toggleItem" :isActive="isActiveItem">
+				<slot name="tabs">
 					<template v-if="fullTitle">
 						<g-tab v-for="(item, i) in items" :item="item" :key="i">
 <!--							TODO: change with g-icon component-->
@@ -15,14 +15,7 @@
 			</div>
 			<div class="g-tabs-slider" :style="sliderStyles"></div>
 		</div>
-
-		<!--	TODO: content inside tabs	-->
-		<!--		<g-tab-items :items="items" v-model="model">-->
-		<!--			<template v-slot:default="{isActive}">-->
-		<!--				<slot :isActive="isActive"></slot>-->
-		<!--			</template>-->
-		<!--		</g-tab-items>-->
-
+		<slot></slot>
 	</g-layout>
 </template>
 
@@ -30,16 +23,17 @@
   import GTabItems from '../GTabs/GTabItems';
   import getVModel from '../../mixins/getVModel';
   import GTab from '../GTabs/GTab';
-  import groupable from '../../mixins/groupable';
   import GLayout from '../GLayout/GLayout';
   import { computed, provide, watch, ref, reactive, onMounted } from '@vue/composition-api'
   import { find } from 'lodash'
   import { convertToUnit } from '../../utils/helpers';
   import colorHandler from '../../utils/helpers';
+  import { colors } from '../../utils/colors';
+  import GTabItem from './GTabItem';
 
   export default {
     name: 'GTabs',
-    components: { GLayout, GTab, GTabItems },
+    components: { GTabItem, GLayout, GTab, GTabItems },
     props: {
       items: Array,
       value: null,
@@ -55,13 +49,13 @@
       right: Boolean,
       center: Boolean,
 			icon: Boolean,
+			alignWithTitle: Boolean,
     },
     setup(props, context) {
       const { model } = getVModel(props, context);
-      const { toggleItem, isActiveItem } = groupable({ mandatory: true, multiple: false }, model);
 
       if (!model.value) {
-        model.value = props.items[0];
+        model.value = props.items.find(item => !item.disabled);
       }
 
       provide('model', model);
@@ -74,6 +68,7 @@
         'g-tabs__vertical': props.vertical,
         'g-tabs__right': props.right,
         'g-tabs__center': props.center,
+				'g-tabs__align-title': props.alignWithTitle,
         [convertColorClass(props.textColor)]: props.textColor && getColorType(props.textColor) === 'class'
       }));
 
@@ -94,6 +89,7 @@
         'height': '2px',
         'top': '46px',
         'left': '0',
+				'background-color': 'currentColor'
       });
 
       const itemsRef = ref(null);
@@ -104,9 +100,10 @@
         sliderStyles.height = convertToUnit(props.vertical ? activeTab.offsetHeight : props.sliderSize);
         sliderStyles.top = convertToUnit(props.vertical ? activeTab.offsetTop : (activeTab.offsetHeight - props.sliderSize));
         sliderStyles.left = convertToUnit(activeTab.offsetLeft);
+        sliderStyles['background-color'] = props.sliderColor ? (getColorType(props.sliderColor) === 'style' ? props.sliderColor : colors[props.sliderColor.trim().split(' ').join('-')]) : 'currentColor';
       }
 
-      watch(() => [model.value, props.grow, props.right, props.center, props.vertical], () => {
+      watch(() => [model.value, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
         calculateSliderStyle();
       }, { lazy: true });
 
@@ -127,8 +124,6 @@
         tabsStyles,
         barClasses,
         barStyles,
-        toggleItem,
-        isActiveItem,
         sliderStyles,
         fullTitle,
       }

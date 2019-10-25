@@ -1,7 +1,7 @@
 <template>
-	<a :class="classes" @click="toggle">
+	<div :class="classes" @click="toggle">
 		<slot></slot>
-	</a>
+	</div>
 </template>
 
 <script>
@@ -30,7 +30,7 @@
 				'g-tab': true,
 				'waves-effect': true,
         [props.activeClass]: isActive.value,
-				'g-tab__disabled': props.disabled || props.item.disabled
+				'g-tab__disabled': props.disabled || (props.item && props.item.disabled)
 			}));
 
 

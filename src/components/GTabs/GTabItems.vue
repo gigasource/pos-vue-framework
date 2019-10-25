@@ -1,31 +1,33 @@
 <template>
-	<g-layout>
-		<slot :isActive="isActiveItem">
-			<!-- todo: insert default tab item content -->
-		</slot>
-	</g-layout>
+	<div class="g-tab-items">
+		<slot></slot>
+	</div>
 </template>
 
 <script>
-  import GWindow from '../GWindow/GWindow';
-  import GTabItem from './GTabItem';
   import getVModel from '../../mixins/getVModel';
-  import GLayout from '../GLayout/GLayout';
+  import { provide, ref, watch } from '@vue/composition-api'
 
   export default {
     name: 'GTabItems',
-    components: { GLayout, GTabItem, GWindow },
     props: {
       items: Array,
-			value: null
-		},
-		setup(props, context) {
+      value: null
+    },
+    setup(props, context) {
       const { model } = getVModel(props, context);
-			const isActiveItem = (item) => model.value === item;
-			return {
-			  isActiveItem,
-			}
-		}
+      provide('model', model);
+
+			const reverse = ref(false);
+			provide('reverse', reverse);
+
+			// TODO: reverse transition
+			watch(() => model.value, (newVal, oldVal) => {
+			  const newIndex = props.items.findIndex(item => item === newVal);
+			  const oldIndex = props.items.findIndex(item => item === oldVal);
+			  reverse.value = (newIndex < oldIndex);
+			}, {flush: 'pre'})
+    }
   }
 </script>
 

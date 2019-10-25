@@ -15,6 +15,7 @@
     bottom: 0;
     margin: 0 !important;
     transition: $primary-transition;
+    transition-property: left;
     z-index: 1;
     background-color: currentColor;
   }
@@ -34,7 +35,15 @@
     .g-tab {
       height: 48px;
       flex-direction: row;
-      justify-content: space-between;
+
+      > i,
+      > .g-icon {
+        margin-right: 8px;
+      }
+    }
+
+    .g-tabs-slider {
+      transition-property: top;
     }
   }
 
@@ -53,6 +62,12 @@
       margin-right: auto;
     }
   }
+
+  &__align-title {
+    .g-tab:first-child {
+      margin-left: 42px;
+    }
+  }
 }
 
 .g-tab {
@@ -61,9 +76,9 @@
   flex-direction: column;
   flex: 0 1 auto;
   align-items: center;
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
-  justify-content: space-evenly;
+  justify-content: center;
   line-height: normal;
   min-width: 90px;
   max-width: 360px;
@@ -111,3 +126,74 @@
     order: 1;
   }
 }
+
+.g-tab-items {
+  contain: layout;
+}
+
+.g-tab-item {
+  position: absolute;
+}
+
+.g-tab-transition {
+  &-enter {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  &-enter-to {
+    opacity: 1;
+  }
+
+  &-enter-active {
+    transition-timing-function: linear;
+    transition-duration: 0.3s;
+    transition-delay: 0.3s;
+  }
+
+  &-leave {
+    opacity: 1;
+  }
+
+  &-leave-to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  &-leave-active {
+    transition-timing-function: ease-in;
+    transition-duration: 0.3s;
+  }
+}
+
+.g-tab-transition-reverse {
+  &-enter {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  &-enter-to {
+    opacity: 1;
+  }
+
+  &-enter-active {
+    transition-timing-function: ease-in;
+    transition-duration: 0.3s;
+    transition-delay: 0.3s;
+  }
+
+  &-leave {
+    opacity: 1;
+  }
+
+  &-leave-to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  &-leave-active {
+    transition-timing-function: map-get($transition, 'fast-in-fast-out');
+    transition-duration: 0.2s;
+  }
+}
+
