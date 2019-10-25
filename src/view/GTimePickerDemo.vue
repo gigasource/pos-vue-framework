@@ -6,6 +6,7 @@
           :hour-convention="convention"
           use-seconds
           landscape
+          scrollable
       ></g-time-picker>
     </div>
 

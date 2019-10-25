@@ -114,6 +114,7 @@ export function _calcNumberPositionStyle(length, ratio = 1) {
 
 // hour number position
 export const range0_23PositionStyle = [..._calcNumberPositionStyle(range0_11.length), ..._calcNumberPositionStyle(range12_23.length, 0.6)]
+export const range0_23PositionStyle1 = [..._calcNumberPositionStyle(range0_11.length, 0.6), ..._calcNumberPositionStyle(range12_23.length, 1)]
 // minute & second position
 export const range0_59PositionStyle = _calcNumberPositionStyle(range0_59.length)
 

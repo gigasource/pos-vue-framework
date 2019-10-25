@@ -32,10 +32,38 @@ export const Index = () => ({
       type: String,
       default: text('value', '15:18:30')
     },
-    color: { default: text('color', '#916') },
-    headerColor: { default: text('headerColor', '#916') },
     width: { default: number('width', 300) },
     landscape: { default: boolean('landscape', false)},
+    // color
+    titleBgColor: {
+      type: String,
+      default: text('titleBgColor', '#aaa')
+    },
+    titleTextColor: {
+      type: String,
+      default: text('titleTextColor', '#fff'),
+    },
+    // clock
+    clockWrapperColor: {
+      type: String,
+      default: text('clockWrapperColor','#eee')
+    },
+    clockFaceColor: {
+      type: String,
+      default: text('clockFaceColor', '#eee')
+    },
+    clockNumberColor: {
+      type: String,
+      default: text('clockNumberColor', '#444')
+    },
+    clockSelectedNumberColor: {
+      type: String,
+      default: text('clockSelectedNumberColor', '#aaa')
+    },
+    clockHandColor: {
+      type: String,
+      default: text('clockHandColor','#666')
+    }
   },
   setup(props) {
     return () => (
@@ -53,6 +81,14 @@ export const Index = () => ({
                 header-color={props.headerColor}
                 width={props.width}
                 landscape={props.landscape}
+
+                titleBgColor={props.titleBgColor}
+                titleTextColor={props.titleTextColor}
+                clockWrapperColor={props.clockWrapperColor}
+                clockFaceColor={props.clockFaceColor}
+                clockNumberColor={props.clockNumberColor}
+                clockSelectedNumberColor={props.clockSelectedNumberColor}
+                clockHandColor={props.clockHandColor}
                 vOn:input={action('input')}
             >
             </g-time-picker>
@@ -70,6 +106,14 @@ export const Index = () => ({
                 header-color={props.headerColor}
                 width={props.width}
                 landscape={props.landscape}
+
+                titleBgColor={props.titleBgColor}
+                titleTextColor={props.titleTextColor}
+                clockWrapperColor={props.clockWrapperColor}
+                clockFaceColor={props.clockFaceColor}
+                clockNumberColor={props.clockNumberColor}
+                clockSelectedNumberColor={props.clockSelectedNumberColor}
+                clockHandColor={props.clockHandColor}
                 vOn:update_period={action('period')}
                 vOn:input={action('input')}
             >
