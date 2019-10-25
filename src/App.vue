@@ -1,6 +1,6 @@
 <template>
 	<div id="app" class="body-wrapper__responsive__vertical" data-app>
-		<g-layout column v-if="$route.path === '/'">
+		<g-layout vertical v-if="$route.path === '/'">
 			<router-link to="/keyboard-demo">Keyboard Demo</router-link>
 			<router-link to="/order-default">OrderDefault</router-link>
 			<router-link to="/groupable">Groupable</router-link>
