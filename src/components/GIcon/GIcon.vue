@@ -61,18 +61,19 @@
         nodeData.style['fontSize'] = getSize(props)
       }
 
-      function renderMaterialIcon() {
+      function renderMaterialIcon(nodeData) {
         let iconType = 'material-icons'
         const delimiterIndex = icon.value.indexOf('-')
-        const isMaterialIcon = delimiterIndex <= -1
+        const isNotMdiIcon = delimiterIndex <= -1
 
-        if (isMaterialIcon) {
+        if (isNotMdiIcon) {
           nodeData.materialIcon = icon.value
         } else {
           iconType = icon.value.slice(0, delimiterIndex)
         }
 
         nodeData.class[iconType] = true
+        nodeData.class[icon.value] = !isNotMdiIcon
         nodeData.style['fontSize'] = getSize(props)
       }
 

@@ -1,4 +1,3 @@
-import {boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
 import GImg from '../GImg';
@@ -16,7 +15,6 @@ export const imgBasic = () => ({
   template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"
                gradient="to top right, rgba(100,115,201,.33), rgba(255,32,72,.7)"
                height="400" aspect-ratio="1" :contain="contain"></g-img>`,
-  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"></g-img>`
 })
 
 export const withHeightContain = () => ({
