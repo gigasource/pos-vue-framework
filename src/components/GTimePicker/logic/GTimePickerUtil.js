@@ -2,6 +2,7 @@
 //
 
 import { computed, reactive } from '@vue/composition-api'
+import dayjs from 'dayjs';
 
 // Hour convention
 export const HourConvention = { _12HRS: '12', _24HRS: '24' }
@@ -133,7 +134,7 @@ export default function (props, context) {
 
   // try to parsing initial time
   let initialTime = { hours: 0, minutes: 0, seconds: 0 }
-  let timeParts = props.value.split(':')
+  let timeParts = (props.value ? props.value : dayjs().format('HH:mm:ss')).split(':')
   if (timeParts.length >= 1) initialTime.hours = parseInt(timeParts[0]) % 12
   if (timeParts.length >= 2) initialTime.minutes = parseInt(timeParts[1])
   if (timeParts.length >= 3) initialTime.seconds = parseInt(timeParts[2])

@@ -11,7 +11,6 @@
 
     <div class="clock_Container">
       <g-time-picker
-          :value="'15:18:30'"
           :hour-convention="'24'"
           use-seconds
           scrollable
