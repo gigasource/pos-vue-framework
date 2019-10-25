@@ -63,10 +63,17 @@
       const isRender = ref(!props.lazy)
 			const isBooted = ref(false)
 
+			function renderAndAttachDialog() {
+        isRender.value = true
+        context.root.$nextTick(() => {
+          attachToRoot(context.refs.wrapper)
+        })
+			}
+
       watch(isActive, (newVal) => {
         if (props.destroyOnClose) {
           if (newVal) {
-            isRender.value = newVal;
+            renderAndAttachDialog()
           } else {
             context.refs.wrapper && setTimeout(() => {
               isRender.value = newVal;
@@ -76,10 +83,7 @@
 
         if (props.lazy && !isBooted.value) {
           if (newVal) {
-            isRender.value = true;
-            context.root.$nextTick(() => {
-              attachToRoot(context.refs.wrapper);
-            })
+            renderAndAttachDialog()
 						isBooted.value = !props.destroyOnClose
           }
         }
