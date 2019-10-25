@@ -194,8 +194,10 @@
       })()
 
       // Clock
-      const cptHandStyle = computedHandStyle(props, state)
-      const cptHandColorOptions = computed(() => setBackgroundColor(props.clockHandColor, {}))
+      const cptHandPositionAndRotateStyle = computedHandStyle(props, state)
+      const cptHandColorStyle = computed(() => setBackgroundColor(props.clockHandColor, {}))
+      const cptHandRotateTransition = computed(() => props.scrollable ? undefined : { transition: 'transform 0.8s' })
+
       const cptClockWrapperClassStyle = computed(() => setBackgroundColor(props.clockWrapperColor, {
         class: {
           'g-time-picker__clock-wrapper': true
@@ -338,8 +340,8 @@
                    vOn:click={onClockClicked}
                    vOn:wheel={onWheel}>
                 <div class="g-time-picker__clock__inner">
-                  <div class={['g-time-picker__clock__inner__hand', cptHandColorOptions.value.class]}
-                       style={[cptHandStyle.value, cptHandColorOptions.value.style]}></div>
+                  <div class={['g-time-picker__clock__inner__hand', cptHandColorStyle.value.class]}
+                       style={[cptHandPositionAndRotateStyle.value, cptHandColorStyle.value.style, cptHandRotateTransition.value]}></div>
                   {hourRenderFn()}
                   {minuteRenderFn()}
                   {secondRenderFn()}
