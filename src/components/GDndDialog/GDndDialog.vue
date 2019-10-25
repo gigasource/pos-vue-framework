@@ -66,10 +66,10 @@
       watch(isActive, (newVal) => {
         if (props.destroyOnClose) {
           if (newVal) {
-            isRender.value = isActive.value;
+            isRender.value = newVal;
           } else {
             context.refs.wrapper && setTimeout(() => {
-              isRender.value = isActive.value;
+              isRender.value = newVal;
             }, getTransitionDuration(context.refs.wrapper))
           }
         }
