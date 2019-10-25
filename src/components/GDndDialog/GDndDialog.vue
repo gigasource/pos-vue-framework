@@ -60,37 +60,33 @@
       const { attachToRoot, detach } = detachable(props, context);
 
       // Render Options Handling
-      const isRender = ref(false)
+      const isRender = ref(!props.lazy)
+			const isBooted = ref(false)
 
       watch(isActive, (newVal) => {
         if (props.destroyOnClose) {
           if (newVal) {
             isRender.value = isActive.value;
           } else {
-            setTimeout(() => {
+            context.refs.wrapper && setTimeout(() => {
               isRender.value = isActive.value;
             }, getTransitionDuration(context.refs.wrapper))
           }
         }
 
-        if (props.lazy) {
+        if (props.lazy && !isBooted.value) {
           if (newVal) {
             isRender.value = true;
             context.root.$nextTick(() => {
               attachToRoot(context.refs.wrapper);
             })
+						isBooted.value = !props.destroyOnClose
           }
         }
-      }, { lazy: true })
+      })
 
       onMounted(() => {
-        if (props.lazy) {
-          return;
-        }
-        isRender.value = true;
-        context.root.$nextTick(() => {
-          attachToRoot(context.refs.wrapper);
-        })
+				!props.lazy && attachToRoot(context.refs.wrapper);
       })
 
       onBeforeUnmount(() => {
