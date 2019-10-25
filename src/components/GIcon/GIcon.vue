@@ -48,6 +48,7 @@
 
     setup(props, context) {
       const icon = ref('')
+
       function getIcon() {
         icon.value = context.slots.default()[0].text.trim()
       }
@@ -55,7 +56,12 @@
       onMounted(() => getIcon())
       onUpdated(() => getIcon())
 
-      function renderMaterialOrFAIcon(nodeData) {
+      function renderFontAwesomeIcon(nodeData) {
+        nodeData.class[icon.value] = true
+        nodeData.style['fontSize'] = getSize(props)
+      }
+
+      function renderMaterialIcon() {
         let iconType = 'material-icons'
         const delimiterIndex = icon.value.indexOf('-')
         const isMaterialIcon = delimiterIndex <= -1
@@ -64,13 +70,12 @@
           nodeData.materialIcon = icon.value
         } else {
           iconType = icon.value.slice(0, delimiterIndex)
-          if (isFontAwesome5(iconType)) iconType = ''
         }
 
         nodeData.class[iconType] = true
-        nodeData.class[icon.value] = !isMaterialIcon
         nodeData.style['fontSize'] = getSize(props)
       }
+
       function renderSvgIcon(nodeData) {
         nodeData.tag.svg = true
         nodeData.tag.i = false
@@ -80,6 +85,7 @@
         nodeData.style['width'] = getSize(props)
         nodeData.style['height'] = getSize(props)
       }
+
       function renderCustomSvgIcon(nodeData) {
         nodeData.tag.img = true
         nodeData.tag.i = false
@@ -101,9 +107,10 @@
           materialIcon: ''
         }
 
-        if (!isSvgPath(icon.value) && !isCustomSvgIcon(icon.value)) renderMaterialOrFAIcon(_nodeData)
-        if (isSvgPath(icon.value)) renderSvgIcon(_nodeData);
-        if (isCustomSvgIcon(icon.value)) renderCustomSvgIcon(_nodeData);
+        if (isFontAwesome5(icon.value)) renderFontAwesomeIcon(_nodeData)
+        else if (isSvgPath(icon.value)) renderSvgIcon(_nodeData)
+        else if (isCustomSvgIcon(icon.value)) renderCustomSvgIcon(_nodeData)
+        else renderMaterialIcon(_nodeData)
         _nodeData.tag.slot = false
         return _nodeData
       })
