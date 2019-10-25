@@ -2,43 +2,42 @@
   <div :class="classes"
        class="g-list"
        :style="styles"
-       @click="onClick">
+       @click="onClick"
+  >
 
     <template v-if="!multiSection">
-      <div class="singleSectionList">
-        <slot name="subheader">
-          <div v-if="subheader" class="g-list-header">{{subheader}}</div>
-        </slot>
-        <div v-for="(item, index) in renderList" :key="index"
-             @click="onSelect(item)">
-          <slot :item="item" :isSelected="isActiveItem(item)">
-            <div v-if="item[itemTitle]"
-                 class="g-list-item"
-                 :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}">
-<!--              todo: activeClass-->
-              <div :class="prependClasses">
-                <slot name="prepend" :item="item" :isSelected="isActiveItem(item)"></slot>
+      <slot name="subheader">
+        <div v-if="subheader" class="g-list-header">{{subheader}}</div>
+      </slot>
+      <div v-for="(item, index) in renderList" :key="index"
+           @click="onSelect(item)"
+      >
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)">
+          <!--            todo: add key move event-->
+          <div v-if="item[itemTitle]"
+               class="g-list-item"
+               :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
+          >
+            <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+              <div :class="prependClasses" v-if="item.prepend"> <img :src="item.prepend"></div>
+            </slot>
+            <div class="g-list-item-content">
+              <div class="g-list-item-text">{{item[itemTitle]}}</div>
+              <div class="g-list-item-text__sub"
+                   v-if="lineNumber > 1">
+                {{item.subtitle|| '&nbsp;'}}
               </div>
-
-              <div class="g-list-item-content">
-                <div class="g-list-item-text">{{item[itemTitle]}}</div>
-                <div class="g-list-item-text__sub"
-                     v-if="lineNumber > 1">
-                  {{item.subtitle|| '&nbsp;'}}
-                </div>
-                <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
-              </div>
-              <!--fixme: append wait for VIcon-->
-              <div class="g-list-item-action">
-                <slot name="append" :item="item">
-
-                </slot>
-              </div>
+              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
-            <g-divider v-if="(divider && (index < renderList.length -1))"
-                       :inset="divider === 'inset'"/>
-          </slot>
-        </div>
+            <!--fixme: append wait for VIcon-->
+            <div class="g-list-item-action">
+              <slot name="append" :item="item">
+              </slot>
+            </div>
+          </div>
+          <g-divider v-if="(divider && (index < renderList.length -1))"
+                     :inset="divider === 'inset'"/>
+        </slot>
       </div>
     </template>
 
@@ -49,45 +48,39 @@
             <div class="g-list-header">{{item.subheader}}</div>
           </slot>
         </template>
-
         <g-divider v-else-if="item.type === 'divider'"></g-divider>
-
         <slot :item="item" v-else>
           <div class="g-list-item"
-               :class="{'g-list-item__active': internalValue === item}"
+               :class="{'g-list-item__active': isActiveItem(item)}"
                @click="onSelect(item)">
-            <div :class="prependClasses">
-              <slot name="prepend" :item="item"></slot>
-            </div>
-
+            <slot name="prepend" :item="item">
+              <div :class="prependClasses">
+                <img alt="" :src="item.prepend">
+              </div>
+            </slot>
             <div class="g-list-item-content">
               <div class="g-list-item-text">{{item[itemTitle]}}</div>
               <div class="g-list-item-text__sub"
                    v-if="lineNumber > 1">
-                {{item.subtitle || '&nbsp;&nbsp;'}}
+                {{item.subtitle || '&nbsp;'}}
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
-
             <!--fixme: append wait for VIcon-->
-            <slot name="append" :item="item">
-              <div class="g-list-item-action"></div>
-            </slot>
-
+            <div class="g-list-item-action">
+              <slot name="append" :item="item"></slot>
+            </div>
           </div>
         </slot>
-
       </template>
     </template>
-
-
   </div>
 </template>
 
 <script>
   import {computed} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
-  import {getInternalValue} from '../../utils/helpers';
+  import {makeSelectable} from "../../mixins/groupable";
 
   export default {
     name: 'GList',
@@ -116,7 +109,7 @@
         default: 'icon',
       },
       subtitleWrap: Boolean,
-      value: [String, Object, Number],
+      value: [String, Object, Number, Array],
       selectable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
@@ -165,14 +158,12 @@
         context.emit('click', event)
       }
 
-      const internalValue = getInternalValue(props, context);
-
+      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
         if (!props.selectable) return;
-        internalValue.value = internalValue.value === item ? null : item;
-        context.emit('click:item', item)
+        toggleItem(item)
+        context.emit('click:item')
       }
-
       return {
         classes,
         styles,
@@ -182,11 +173,11 @@
         onClick,
         onSelect,
         internalValue,
+        isActiveItem,
       }
     }
   }
 </script>
 
 <style scoped>
-
 </style>
