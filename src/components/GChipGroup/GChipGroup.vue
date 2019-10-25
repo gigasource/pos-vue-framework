@@ -40,13 +40,6 @@
         }
       });
 
-      //Set mandatory item??
-      onMounted(() => {
-        if (props.mandatory && (props.items && props.items.length > 0)) {
-
-        }
-      });
-
       const model = computed({
         get: () => {
           if (props.value) {

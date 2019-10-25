@@ -61,6 +61,10 @@
       textColor: String,
       backgroundColor: { type: String, default: '#e0e0e0' },
       gradient: String,
+			activeClass: {
+        type: String,
+				default: 'g-chip__active'
+			}
     },
     setup(props, context) {
       //Prepend Icon Rendering States
@@ -103,7 +107,7 @@
           'g-chip__draggable': props.draggable,
           'g-chip__pill': props.pill,
           'g-chip__label': props.label,
-          'g-chip__active': props.active,
+          [props.activeClass]: props.active,
           ...backgroundColorOutput.value && backgroundColorOutput.value.class,
           ...textColorOutput.value && textColorOutput.value.class
         };
