@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import { computed, watch, ref, reactive, onBeforeUpdate, onUpdated } from '@vue/composition-api';
+  import { computed, onBeforeUpdate, onUpdated, reactive, ref, watch } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
   import Resize from '../../directives/resize/resize';
 
@@ -29,6 +29,7 @@
     name: 'GSlideGroup',
     components: {},
     props: {
+      items: null,
       mandatory: Boolean,
       max: Boolean,
       value: null,
@@ -57,7 +58,6 @@
     setup(props, context) {
       //State date
       let data = reactive({
-        selectedItem: null,
         items: [],
         widths: {
           content: 0,
@@ -65,19 +65,17 @@
         }
       });
 
-      let selectedIndex = ref(-1);
-      let selectedItem = reactive({});
       let isOverflowing = ref(false);
       let internalItemsLength = ref(0);
       let scrollOffset = ref(0);
-      let widths = reactive({
-        content: 0,
-        wrapper: 0
+      let widths = computed(() => {
+        return {
+          content: 0,
+          wrapper: 0
+        }
       });
-      let internalValue = reactive({});
 
       //Styles & classes computed
-
       let slideGroupNextClasses = computed(() => {
         return {
           'g-slide-group__next': true,
@@ -178,10 +176,7 @@
       };
 
       function calculateUpdatedOffset(selectedElement, widths, currentScrollOffset) {
-        const clientWidth = selectedElement.clientWidth;
-        let offsetLeft = selectedElement.offsetLeft;
-
-
+        const { offsetLeft, clientWidth } = selectedElement;
         const totalWidth = widths.wrapper + currentScrollOffset;
         const itemOffset = clientWidth + offsetLeft;
         const additionalOffset = clientWidth * 0.4;
@@ -198,33 +193,30 @@
       function calculateCenteredOffset(selectedElement, widths) {
         const { offsetLeft, clientWidth } = selectedElement;
         const offsetCentered = offsetLeft + clientWidth / 2 - widths.wrapper / 2;
+
         return Math.min(widths.content - widths.wrapper, Math.max(0, offsetCentered));
       };
 
       function scrollIntoView() {
-        console.log('scroll into view initial');
-        if (!data.selectedItem) {
+        if (!selectedItem.value) {
           return
         }
-
-        console.log('scroll into view');
 
         if (selectedIndex.value === 0 || (!props.centerActive && !isOverflowing.value)) {
           scrollOffset.value = 0;
         } else if (props.centerActive) {
-          console.log('center active');
           scrollOffset.value = calculateCenteredOffset(
-            data.selectedItem.$el,
+            selectedItem.value,
             data.widths,
-          )
+          );
         } else if (isOverflowing.value) {
           scrollOffset.value = calculateUpdatedOffset(
-            data.selectedItem.$el,
+            selectedItem.value,
             data.widths,
             scrollOffset.value
-          )
+          );
         }
-      };
+      }
 
       function setWidths() {
         window.requestAnimationFrame(() => {
@@ -241,7 +233,7 @@
       };
 
       //Model
-      let model = computed({
+      let internalValue = computed({
         get: () => {
           if (props.value) {
             if (props.multiple && !Array.isArray(props.value)) {
@@ -256,7 +248,31 @@
         }
       });
 
-      const { toggleItem, isActiveItem } = groupable(props, model);
+      let selectedIndex = computed(() => {
+        return internalValue.value ? props.items.findIndex((i) => i === internalValue.value) : -1;
+      });
+
+      let selectedItem = computed(() => {
+        return props.multiple ? undefined : selectedItems.value[0];
+        //return context.refs.content.children[selectedIndex.value];
+      });
+
+      let selectedItems = computed(() => {
+        const clonedValue = _.clone(internalValue.value);
+        const childrenArray = [...context.refs.content.children];
+
+        let clonedInternalValue = !Array.isArray(clonedValue) ? [].concat(clonedValue) : clonedValue;
+        let selectedValues = [];
+        for (const value of clonedInternalValue) {
+          if(value) {
+            selectedValues.push(_.findIndex(props.items, value));
+          } else {
+            selectedValues.push(-1);
+					}
+        }
+        return childrenArray.filter((item, index) => selectedValues.includes(index));
+      });
+      const { toggleItem, isActiveItem } = groupable(props, internalValue);
 
       return {
         classes,
@@ -268,10 +284,13 @@
         isOverflowing,
         scrollOffset,
         widths,
+        internalValue,
         setWidths,
         onAffixClick,
         toggleItem,
         isActiveItem,
+        selectedIndex,
+        selectedItems
       }
     }
   }

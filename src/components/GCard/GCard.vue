@@ -1,5 +1,5 @@
 <template>
-	<div :class="classes" :style="styles">
+	<div :class="classes" :style="styles" @click="onClick">
 		<slot name="default"></slot>
 		<slot name="progress"></slot>
 	</div>
@@ -73,9 +73,14 @@
         };
       });
 
+      let onClick = (event) => {
+        context.emit('click', event);
+			}
+
       return {
         styles,
-        classes
+        classes,
+				onClick
       }
     }
   }

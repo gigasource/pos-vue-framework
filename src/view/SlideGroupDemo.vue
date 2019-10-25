@@ -18,6 +18,29 @@
 			</template>
 
 		</g-slide-group>
+
+		<g-slide-group
+				:items="items2"
+				v-model="activeItemCard"
+				:multiple="multiple"
+				:mandatory="mandatory"
+				:show-arrows="showArrows"
+				:center-active="centerActive">
+			<template v-slot:prev>
+				<i class="material-icons">remove</i>
+			</template>
+			<template v-slot:content="{toggle, active}">
+				<g-card v-for="n in items2" width="200px" height="300px" @click="toggle(n)" :active="active(n)">
+					<g-card-text>
+						<p>
+							{{n.cardText}}</p>
+					</g-card-text>
+				</g-card>
+			</template>
+			<template v-slot:next>
+				<i class="material-icons">add</i>
+			</template>
+		</g-slide-group>
 	</div>
 </template>
 
@@ -41,6 +64,9 @@
         nextIcon: false,
         centerActive: true,
         activeItem: null,
+        activeItemCard: null,
+				activeItemCards: [],
+        activeItems: [],
         activeClass: {
           'button-active': true
         },
@@ -55,8 +81,11 @@
           { id: 8, text: 'BUTTON 8' },
           { id: 9, text: 'BUTTON 9' },
           { id: 10, text: 'BUTTON 10' },
-        ]
+        ],
+        items2: [{ id: 1, cardText: 'CARD 1' }, { id: 2, cardText: 'CARD 2' }, { id: 3, cardText: 'CARD 3' }, { id: 4, cardText: 'CARD 4' }, { id: 5, cardText: 'CARD 5' }, { id: 6, cardText: 'CARD 6' }]
       }
+    }, created() {
+      //this.activeItem = this.items[0];
     }
   }
 </script>
