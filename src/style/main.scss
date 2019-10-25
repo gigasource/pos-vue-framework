@@ -1,5 +1,6 @@
 @import "variables";
 @import "global";
+@import "typography";
 @import "colors";
 @import "atomic-utilities";
 @import "grid";
@@ -27,5 +28,6 @@
 @import "../components/transition/_animation";
 @import "../components/GDialog/_GDialog";
 @import "../components/GChipGroup/GChipGroup";
-
+@import "../components/GImg/_GImg";
+@import "../components/GIcon/_GIcon";
 
