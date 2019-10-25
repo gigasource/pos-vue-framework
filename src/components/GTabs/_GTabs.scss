@@ -1,0 +1,113 @@
+.g-tabs {
+  width: 100%;
+  flex: 1 1 auto;
+  position: relative;
+  display: flex;
+
+  &-bar {
+    display: flex;
+    min-height: 48px;
+    width: 100%;
+  }
+
+  &-slider {
+    position: absolute;
+    bottom: 0;
+    margin: 0 !important;
+    transition: $primary-transition;
+    z-index: 1;
+    background-color: currentColor;
+  }
+
+  &__grow {
+    .g-tab {
+      flex: 1 0 auto;
+    }
+  }
+
+  &__vertical {
+    > .g-tabs-bar {
+      flex-direction: column;
+      width: auto;
+    }
+
+    .g-tab {
+      height: 48px;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  &__right {
+    .g-tab:first-child {
+      margin-left: auto;
+    }
+  }
+
+  &__center {
+    .g-tab:first-child {
+      margin-left: auto;
+    }
+
+    .g-tab:last-child {
+      margin-right: auto;
+    }
+  }
+}
+
+.g-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  justify-content: space-evenly;
+  line-height: normal;
+  min-width: 90px;
+  max-width: 360px;
+  outline: none;
+  padding: 0 16px;
+  text-align: center;
+  text-decoration: none;
+  transition: none;
+  user-select: none;
+  cursor: pointer;
+
+  &:before {
+    position: absolute;
+    content: '';
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    background-color: currentColor;
+    pointer-events: none;
+    transition: $primary-transition;
+  }
+
+  &:hover:before {
+    opacity: 0.24;
+  }
+
+  &__disabled {
+    opacity: 0.42;
+    cursor: none;
+    pointer-events: none;
+  }
+
+  &:not(.g-tab__active):not(.g-tab__disabled) {
+    opacity: 0.7;
+  }
+
+  > i,
+  > .g-icon {
+    order: 0;
+  }
+
+  > *:not(i):not(.g-icon) {
+    order: 1;
+  }
+}

@@ -1,10 +1,13 @@
 <template>
-	<div>
-		<slot :active="isActive" :disabled="disabled" :toggle="toggle" :item="item" :class="itemClass"></slot>
-	</div>
+	<a :class="classes" @click="toggle">
+		<slot></slot>
+	</a>
 </template>
 
 <script>
+	import { computed, inject } from '@vue/composition-api'
+	import { isEqual } from 'lodash'
+
   export default {
     name: 'GTab',
     props: {
@@ -13,25 +16,34 @@
         required: false
       },
       item: null,
-      isActive: Boolean,
+      // isActive: Boolean,
+			activeClass: {
+        type: String,
+				default: 'g-tab__active'
+			}
     },
-    data: () => ({
+    setup(props) {
+      const model = inject('model', null);
+			const isActive = computed(() => (model && isEqual(model.value, props.item)));
 
-    }),
-    computed: {
-      itemClass() {
-        return {
-          [this.activeClass]: this.isActive
-        }
+      const classes = computed(() => ({
+				'g-tab': true,
+				'waves-effect': true,
+        [props.activeClass]: isActive.value,
+				'g-tab__disabled': props.disabled || props.item.disabled
+			}));
+
+
+      function toggle() {
+        if (props.disabled) return;
+        model.value = props.item;
       }
+
+			return {
+        classes,
+				toggle
+			}
     },
-    methods: {
-      toggle() {
-        if (this.disabled) return;
-        console.log('clicked');
-        this.$emit('toggle', this.item);
-      }
-    }
   }
 </script>
 

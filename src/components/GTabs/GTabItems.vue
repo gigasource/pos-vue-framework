@@ -8,11 +8,10 @@
 
 <script>
   import GWindow from '../GWindow/GWindow';
-  import GTabItem from '@/components/GTabs/GTabItem';
-  import getVModel from '@/mixins/getVModel';
-  import GLayout from '@/components/GLayout/GLayout';
-  import { computed } from '@vue/composition-api';
-  import _ from 'lodash';
+  import GTabItem from './GTabItem';
+  import getVModel from '../../mixins/getVModel';
+  import GLayout from '../GLayout/GLayout';
+
   export default {
     name: 'GTabItems',
     components: { GLayout, GTabItem, GWindow },

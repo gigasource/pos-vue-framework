@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import GLayout from '@/components/GLayout/GLayout';
+  import GLayout from '../GLayout/GLayout';
   export default {
     name: 'GTabItem',
     components: { GLayout },
