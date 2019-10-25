@@ -1,8 +1,13 @@
 <template>
   <div>
-    <g-textarea v-model="value" auto-grow rows="5" autofocus></g-textarea>
-    <p>{{value}}</p>
-    <textarea></textarea>
+    <g-textarea rows="3" autofocus outlined auto-grow></g-textarea>
+    <form>
+      <label for="textarea">Primitive textarea</label>
+      <div>
+        <textarea v-model="value" id="textarea"></textarea>
+        <p>Message: {{value}}</p>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -12,12 +17,13 @@
   export default {
     name: "Textarea",
     components: {GTextarea},
-    props: {
-      value: 'Attack'
+    data: function () {
+      return {
+        value: 'attack'
+      }
     }
   }
 </script>
 
 <style scoped>
-
 </style>

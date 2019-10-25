@@ -9,15 +9,15 @@ export default {
 
 export const basicTextarea = () => ({
   components: { GTextarea },
-  template: `<g-textarea noResize></g-textarea>`,
+  template: `<g-textarea rows="3" auto-grow autofocus></g-textarea>`,
 })
 
 import Vue from 'vue/dist/vue.common.js'
 
-describe('test', function () {
-  it('should test1', function () {
-    const vm = new Vue(test1()).$mount();
-    expect(vm.$el.outerHTML).toMatchSnapshot()
-  });
-})
+// describe('test', function () {
+//   it('should test1', function () {
+//     const vm = new Vue(test1()).$mount();
+//     expect(vm.$el.outerHTML).toMatchSnapshot()
+//   });
+// })
 

@@ -1,0 +1,97 @@
+.g-tear {
+  textarea {
+    flex: 1 1 auto;
+    line-height: 18px;
+    max-width: 100%;
+    min-height: 32px;
+    outline: none;
+    padding: 7px 0 8px;
+    width: 100%;
+  }
+
+  .g-text-field__prefix {
+    padding-top: 4px;
+    align-self: start;
+  }
+
+  &.g-text-field--box,
+  &.g-text-field--enclosed {
+    .g-text-field__prefix,
+    textarea {
+      margin-top: 12px;
+    }
+
+    //todo g-label
+    label {
+      top: 18px;
+    }
+  }
+
+  &--auto-grow {
+    textarea {
+      overflow: hidden;
+    }
+  }
+
+  &--no-resize {
+    textarea {
+      resize: none;
+    }
+  }
+
+}
+
+
+.g-input {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 16px;
+  letter-spacing: normal;
+  max-width: 100%;
+  text-align: left;
+
+  &__control {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    min-width: 0;
+    width: 100%; // For IE11}
+  }
+
+  &__slot {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    margin-bottom: 8px;
+    min-height: inherit;
+    position: relative;
+    transition: $primary-transition;
+    width: 100%;
+  }
+}
+
+.g-text-field {
+  padding-top: 12px; //$text-field-active-label-height;
+  margin-top: 4px; //$input-top-spacing - $text-field-active-label-height;
+
+  input {
+    flex: 1 1 auto;
+    line-height: 20px;
+    padding: 8px 0 8px;
+    max-width: 100%;
+    min-width: 0px;
+    width: 100%;
+  }
+
+  & > .g-input__control > .g-input__slot > .g-text-field__slot {
+    display: flex;
+    flex: 1 1 auto;
+    position: relative;
+  }
+
+
+}
+
