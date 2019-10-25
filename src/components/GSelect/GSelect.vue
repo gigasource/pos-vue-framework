@@ -1,15 +1,16 @@
-<template>
+<template xmlns="">
   <!--  fixme: menu props-->
   <g-menu v-model="showOptions"
           :closeOnClick="closeOnClick"
           :closeOnContentClick="closeOnContentClick"
           :maxHeight="maxHeight"
           :offsetY="offsetY"
-          :offsetOverflow="offsetOverflow">
+          :offsetOverflow="offsetOverflow"
+          :top="top">
     <template v-slot:activator="{toggleContent}">
       <slot name="textfieldValue">
         <!--          fixme: text field slot to customise text field display : slot prepend-->
-        <g-text-field-functional :label="label"
+        <g-text-field :label="label"
                                  read-only
                                  clearable
                                  :filled="filled"
@@ -22,31 +23,30 @@
           <template v-slot:append-inner>
             <!--          fixme: Wait Icon for arrow dropdown-->
           </template>
-        </g-text-field-functional>
+        </g-text-field>
       </slot>
     </template>
     <template v-slot:default="{toggleContent}">
       <slot name="prependItems">
       </slot>
-      <g-text-field-functional v-if="searchable"
+      <g-text-field v-if="searchable"
                                placeholder="Search"
                                v-model="searchText"
                                clearable
-      ></g-text-field-functional>
+      ></g-text-field>
       <g-list v-if="searchable" :items="options" selectable :mandatory="mandatory" v-model="selectedItem"
               @click:item="showOptions = false">
         <template v-slot:listItem="{item, isSelected}">
           <slot name="item" :item="item" :isSelected="isSelected"></slot>
         </template>
       </g-list>
-      <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" :mandatory="mandatory" selectable mandatory
+      <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" mandatory selectable
               multiple v-model="selectedItem" >
-        <template v-slot:prepend="{isSelected}">
-          <g-checkbox v-model="isSelected">
-          </g-checkbox>
-        </template>
-        <template v-slot:listItem="{item, isSelected}">
-          <slot name="item"></slot>
+<!--        todo: render unformatted list-->
+<!--        todo: checkbox prepend when multiple-->
+<!--        fixme: CSS for checkbox-->
+        <template v-slot:prepend="{item, isSelected}">
+         <g-checkbox v-model="isSelected"></g-checkbox>
         </template>
       </g-list>
       <g-list v-else :items="items" selectable mandatory v-model="selectedItem" @click:item="showOptions = false" >
@@ -64,26 +64,23 @@
   import _ from "lodash";
   import GDivider from "../GLayout/GDivider";
   import GListItem from "../GList/GListItem";
-  import {
-    GListHeader, GListItemAction,
-    GListItemAvatar, GListItemContent,
-    GListItemIcon, GListItemImage,
-    GListItemImageBig,
-    GListItemSubText, GListItemText
-  } from "../GList/GListFunctionalComponent";
-  import groupable, {makeSelectable} from "../../mixins/groupable";
+  import {makeSelectable} from "../../mixins/groupable";
   import GCheckbox from "../GCheckbox/GCheckbox";
-  import GTextField from "../GInput/GTextField01";
-  import GTextFieldFunctional from "../GInput/GTextFieldFunctional";
+  import GTextField from "../GInput/GTextField";
+  import {GListItemContent, GListItemSubText, GListItemText} from "../GList/GListFunctionalComponent";
 
   export default {
     name: "GSelect",
     components: {
+      GListItem,
       GTextField,
       GCheckbox,
       GMenu,
-      GTextFieldFunctional,
       GList,
+      GListItemContent,
+      GListItemText,
+      GListItemSubText,
+
     },
     props: {
       //text field's props
@@ -111,6 +108,7 @@
           maxHeight: 300,
           offsetY: true,
           offsetOverflow: true,
+          top: false,
         })
       },
       //item textfieldValue props
@@ -123,6 +121,7 @@
         type: String,
         default: 'value'
       },
+      returnObject: Boolean,
       value: null,
     },
     setup: function (props, context) {
@@ -158,7 +157,7 @@
           if (props.allowDuplicates) {
             return props.items;
           }
-          if (!props.itemValue) {
+          if (props.returnObject) {
             return props.items.filter(item => !selectedItem.value.includes(item));
           }
           return props.items.filter(item => {
@@ -182,14 +181,14 @@
           if (typeof item === 'string' || typeof item === 'number') {
             return item;
           }
-          if (props.itemValue) {
+          if (!props.returnObject) {
             item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]);
           }
           return {text: item[props.itemText], value: item[props.itemValue]};
         } else {
           let list = selectedItem.value
           if (props.itemText && props.itemValue) {
-            if (props.itemValue) {
+            if (!props.returnObject) {
               list = list.map(value => {
                 return props.items.find(item => {
                   if (item[props.itemText]) {
@@ -234,7 +233,7 @@
         maxHeight,
         offsetY,
         offsetOverflow,
-        transition
+        top
       } = props.menuProps
 
       return {
@@ -252,6 +251,7 @@
           maxHeight,
           offsetY,
           offsetOverflow,
+          top,
         }
       }
     }
@@ -259,4 +259,8 @@
 </script>
 <style scoped>
   /*todo: select css*/
+  .g-checkbox-wrapper {
+    margin: 2px 4px;
+  }
+
 </style>

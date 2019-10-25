@@ -17,7 +17,7 @@ function groupable({mandatory, multiple}, vModel) {
     if (isSame && mandatory) {
       return;
     }
-    vModel.value = isSame ? null : item;
+    vModel.value = isSame ? '' : item;
   };
 
   const updateMultiple = (item) => {

@@ -21,7 +21,7 @@ export const GSelectListDisplay = () => ({
     }
   },
   template: `
-   <div data-app><g-select :items="items" item-text="title" item-value="prepend" label="Display list" v-model="selected">
+   <div data-app><g-select :items="items" item-text="title" item-value="prepend" label="Display list" v-model="selected" >
    </g-select></div>`,
 })
 
@@ -69,17 +69,17 @@ export const GSelectMultiple = () => ({
   data() {
     return{
       items: [
-        {name: 'Jason Oner',  prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {name: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {name: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {name: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {title: 'Jason Oner',  prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
       selected: []
     }
   },
   template: `
    <div data-app>
-      <g-select :items="items" item-text="name" item-value="prepend" label="Display list" 
+      <g-select :items="items" item-text="title" item-value="prepend" label="Display list" 
                 multiple allow-duplicates v-model="selected">
       </g-select>
     </div>`
@@ -101,7 +101,7 @@ export const GSelectItemSlot = () => ({
    <div data-app>
       <g-select :items="items" item-text="name" item-value="prepend" label="Display list" 
                multiple allow-duplicates v-model="selected">
-          <template v-slot:item="{item}">
+          <template v-slot:listItem="{item}">
           {{item.name}}
           </template>
       </g-select>
@@ -131,7 +131,7 @@ export const GSelectMultipleKnob = () => ({
   },
   template: `
    <div data-app>
-      <g-select :items="items" item-text="title" item-value="title" :label="label" :placeholder="placeholder" :filled="filled" multiple
+      <g-select :items="items" item-text="title" item-value="title" :label="label" :placeholder="placeholder" :filled="filled" multiple allowDuplicates
                  v-model="selected">
       </g-select>
     </div>`
@@ -149,9 +149,10 @@ export const test2 = () => ({
 // testing
 import Vue from 'vue/dist/vue.common.js'
 import GSelect from "../GSelect";
-import GTextFieldFunctional from "../../GInput/GTextFieldFunctional";
+import GTextField from "../../GInput/GTextField";
 import GListItem from "../../GList/GListItem";
-import {GListItemText} from "../../GList/GListFunctionalComponent";
+import {GListItemText, GListItemContent, GListItemSubText} from "../../GList/GListFunctionalComponent";
+import GDivider from "../../GLayout/GDivider";
 
 describe('test', function () {
   it('should', function () {

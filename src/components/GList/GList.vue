@@ -12,21 +12,17 @@
         <div v-for="(item, index) in renderList" :key="index"
              @click="onSelect(item)"
         >
-          <slot :item="item" :isSelected="isActiveItem(item)">
-            <!-- fixme: waves effect does not work  -->
-<!--            todo: add key move event-->
-            <div v-if="item.title"
+          <slot name="listItem" :item="item" :isSelected="isActiveItem(item)">
+            <!--            todo: add key move event-->
+            <div v-if="item[itemTitle]"
                  class="g-list-item"
                  :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
                  >
-              <slot name="prepend" :item="item">
-                <div :class="prependClasses">
-                  <img alt="" :src="item.prepend">
-                </div>
-              </slot>
-
+                <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+                  <div :class="prependClasses" v-if="item.prepend"> <img :src="item.prepend"></div>
+                </slot>
               <div class="g-list-item-content">
-                <div class="g-list-item-text">{{item.title}}</div>
+                <div class="g-list-item-text">{{item[itemTitle]}}</div>
                 <div class="g-list-item-text__sub"
                      v-if="lineNumber > 1">
                   {{item.subtitle|| '&nbsp;'}}
@@ -36,7 +32,6 @@
               <!--fixme: append wait for VIcon-->
               <div class="g-list-item-action">
                 <slot name="append" :item="item">
-
                 </slot>
               </div>
             </div>
@@ -53,9 +48,7 @@
             <div class="g-list-header">{{item.subheader}}</div>
           </slot>
         </template>
-
         <g-divider v-else-if="item.type === 'divider'"></g-divider>
-
         <slot :item="item" v-else>
           <div class="g-list-item"
                :class="{'g-list-item__active': isActiveItem(item)}"
@@ -65,34 +58,28 @@
                 <img alt="" :src="item.prepend">
               </div>
             </slot>
-
             <div class="g-list-item-content">
-              <div class="g-list-item-text">{{item.title}}</div>
+              <div class="g-list-item-text">{{item[itemTitle]}}</div>
               <div class="g-list-item-text__sub"
                    v-if="lineNumber > 1">
-                {{item.subtitle || '&nbsp;&nbsp;'}}
+                {{item.subtitle || '&nbsp;'}}
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
-
             <!--fixme: append wait for VIcon-->
             <div class="g-list-item-action">
               <slot name="append" :item="item"></slot>
             </div>
           </div>
         </slot>
-
       </template>
     </template>
-
-
   </div>
 </template>
 
 <script>
   import {computed} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
-  import {getInternalValue} from '../../utils/helpers';
   import {makeSelectable} from "../../mixins/groupable";
 
   export default {
@@ -126,6 +113,11 @@
       selectable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
+      itemValue: String,
+      itemTitle: {
+        type: String,
+        default: 'title'
+      }
     },
     setup: function (props, context) {
       //G list computed class
@@ -159,7 +151,7 @@
         return `g-list-item-${props.prependType}`;
       })
 
-      const renderList = computed(() => props.items.filter(item => item.title))
+      const renderList = computed(() => props.items.filter(item => item[props.itemTitle]))
 
       //Select
       function onClick(event) {
@@ -188,5 +180,4 @@
 </script>
 
 <style scoped>
-
 </style>
