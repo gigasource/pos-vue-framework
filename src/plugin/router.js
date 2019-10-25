@@ -18,6 +18,7 @@ import TransitionDemo from '../view/TransitionDemo';
 import ListDemo from '../view/ListDemo';
 import List2Demo from "../view/List2Demo";
 import DatePicker from '../view/DatePickerDemo';
+import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -36,7 +37,8 @@ const routes = [
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
-  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker}
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo}
 ];
 
 const router = new VueRouter({
