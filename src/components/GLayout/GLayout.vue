@@ -10,12 +10,12 @@
   export default {
     name: 'GLayout',
     props: {
-      vertical: {
+      horizontal: {
         type: Boolean,
 				default: true,
 			},
 			col: [Number, String],
-			horizontal: Boolean,
+			vertical: Boolean,
 			row: [Number, String],
 			alignItems: String,
 			justifyContent: String,
@@ -28,8 +28,8 @@
 		setup(props) {
       const classes = computed(() => ({
 				'g-layout': true,
-				'g-layout__vertical': props.vertical || !props.horizontal,
-				'g-layout__horizontal': props.horizontal,
+				'g-layout__vertical': props.vertical,
+				'g-layout__horizontal': props.horizontal && !props.vertical,
 				['col-' + props.col]: props.col,
 				['row-' + props.row]: props.row,
 				'no-gutters': props.noGutters,
@@ -41,8 +41,8 @@
 				... props.alignSelf && {'align-self': props.alignSelf},
 				... props.wrap && {'flex-wrap': 'wrap'},
 				... props.wrap && props.reverse && {'flex-wrap': 'wrap-reverse'},
-				... props.reverse && !props.horizontal && {'flex-direction': 'row-reverse'},
-				... props.reverse && props.horizontal && {'flex-direction': 'column-reverse'},
+				... props.reverse && props.horizontal && {'flex-direction': 'row-reverse'},
+				... props.reverse && !props.horizontal && {'flex-direction': 'column-reverse'},
 				... props.order && {'order': props.order}
 			}));
 

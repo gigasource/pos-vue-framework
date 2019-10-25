@@ -1,15 +1,14 @@
 .g-layout {
   display: flex;
   flex-wrap: nowrap;
+  margin: 0;
 
   &__vertical {
-    flex-direction: row;
-    margin: 0 -12px;
+    flex-direction: column;
   }
 
   &__horizontal {
-    flex-direction: column;
-    margin: -12px 0;
+    flex-direction: row;
   }
 
   .g-layout {
