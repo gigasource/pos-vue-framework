@@ -8,7 +8,7 @@ const _computedMultipleDateFormatFn = (props, cptIsMultiSelect, cptSingleDateFor
   const multipleDateFormatFn = dates => Array.isArray(dates) ? dates.length + ' selected' : INVALID_SELECTION
 
   // range
-  const formatFn = (date) => dayjs(date).format('MMM')
+  const formatFn = (date) => dayjs(date).format('MMM, DD')
   const dateRangeFormatFn = (dates) => {
     if (Array.isArray(dates)) {
       let start = 'Start'
