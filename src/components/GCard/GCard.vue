@@ -1,5 +1,5 @@
 <template>
-	<div :class="classes" :style="styles">
+	<div :class="classes" :style="styles" @click="onClick">
 		<slot name="default"></slot>
 		<slot name="progress"></slot>
 	</div>
@@ -14,6 +14,11 @@
     props: {
       //classes
       ...{
+        active: Boolean,
+        activeClass: {
+          type: String,
+          default: 'g-card__active'
+        },
         disabled: Boolean,
         isClickable: Boolean,
         loading: Boolean,
@@ -29,6 +34,7 @@
         maxWidth: [String, Number],
         minHeight: [String, Number],
         maxHeight: [String, Number],
+        ripple: Boolean,
         width: [String, Number],
 				borderRadius: [String, Number],
         elevation: [String, Number],
@@ -43,6 +49,7 @@
         let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : null;
         let _classes = {
           'g-card': true,
+          'waves-effect': props.ripple,
           'g-card__flat': props.flat,
           'g-card__hover': props.hover,
           'g-card__link': props.isClickable,
@@ -50,6 +57,7 @@
           'g-card__disabled': props.loading || props.disabled,
           'g-card__outlined': props.outlined,
           'g-card__raised': props.raised,
+          [props.activeClass]: props.active
         };
         if (elevationClassName) {
           _classes[elevationClassName] = true;
@@ -62,7 +70,7 @@
           ...props.img && { backgroundImage: `url("${props.img}"` },
           ...props.backgroundColor && { backgroundColor: convertToUnit(props.backgroundColor) },
           ...props.color && { color: props.color },
-          ...props.tile && { borderRadius: '0px'},
+          ...props.tile && { borderRadius: '0px' },
           ...props.borderRadius && { borderRadius: props.borderRadius },
           ...props.width && { minWidth: convertToUnit(props.width) },
           ...props.height && { minWidth: convertToUnit(props.height) },
@@ -73,9 +81,14 @@
         };
       });
 
+      let onClick = (event) => {
+        context.emit('click', event);
+      };
+
       return {
         styles,
-        classes
+        classes,
+        onClick
       }
     }
   }
