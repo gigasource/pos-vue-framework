@@ -197,5 +197,5 @@ export function calculateInputHeight(props, context) {
   const minHeight = parseInt(props.rows, 10) * parseFloat(props.rowHeight)
   // This has to be done ASAP, waiting for Vue
   // to update the DOM causes ugly layout jumping
-  input.style.height = Math.max(minHeight,height) + 'px'
+  input.style.height = Math.max(minHeight,height) + 10 + 'px'
 }

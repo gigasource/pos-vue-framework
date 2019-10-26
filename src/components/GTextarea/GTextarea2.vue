@@ -32,6 +32,7 @@
                     v-model="internalValue"
                     :placeholder="placeholder"
                     :rows="rows"
+                    :cols="cols"
                     @input="onInput"
                     @change="onChange"
                     @focus="onFocus"
@@ -132,6 +133,11 @@
       rows: {
         type: [Number, String],
         default: 5,
+        validator: (v) => !isNaN(parseInt(v, 10)),
+      },
+      cols:{
+        type: [Number, String],
+        default: 1,
         validator: (v) => !isNaN(parseInt(v, 10)),
       },
     },
