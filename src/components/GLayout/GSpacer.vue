@@ -1,5 +1,5 @@
 <template>
-	<div class="spacer"></div>
+	<div class="g-spacer"></div>
 </template>
 
 <script>
