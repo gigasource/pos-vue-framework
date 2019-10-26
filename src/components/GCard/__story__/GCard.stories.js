@@ -8,6 +8,7 @@ import GCardTitle from '../GCardTitle';
 import GCardSubtitle from '../GCardSubtitle';
 import GIcon from '../../GIcon/GIcon';
 import GCardActions from '../GCardActions';
+import { GExpandTransition } from '../../transition/transition';
 
 export default {
   title: 'Card',
@@ -59,15 +60,14 @@ export const GCardImage = () => ({
     subtitle: { type: Boolean, default: boolean('subtitle', false) },
   },
   template: `<g-card :shaped="shaped" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto; max-width: 344px;">
-                      <g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg" width="342" height="200" contain>
+                      <g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg" width="342" height="200">
                          <g-card-title textColor="white" absolute left bottom>
                           <p>Lionel Messi, a legend</p>
                          </g-card-title>
                       </g-img>
                       <g-card-text>
                       <p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
-                      making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to
-                      find a way to escape.</p>
+                      making you'll be doing.</p>
                     </g-card-text>
             <g-card-actions>
                 <g-btn depressed>CONFIRM</g-btn>
@@ -86,13 +86,11 @@ export const GCardInformation = () => ({
     disabled: { type: Boolean, default: boolean('disabled', false) },
     shaped: { type: Boolean, default: boolean('shaped', false) },
     ripple: { type: Boolean, default: boolean('ripple', false) },
-    subTitle: { type: Boolean, default: boolean('subtitle', false) },
-    width: { type: Number, default: number('width', 250) },
-    height: { type: Number, default: number('height', 270) },
+    subTitle: { type: Boolean, default: boolean('subtitle', true) },
     maxWidth: { type: Number, default: number('maxWidth', 342) },
-    minWidth: { type: Number, default: number('minWidth', 200) },
+    width: { type: [Number, String], default: text('width', 'fit-content') },
   },
-  template: `<g-card :min-width="minWidth" :width="width" :height="height" :max-width="maxWidth" :shaped="shaped" :ripple="ripple" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto;">
+  template: `<g-card :width="width" :max-width="maxWidth" :shaped="shaped" :ripple="ripple" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto;">
                     <g-card-subtitle>
                       <p>Word of the day</p>
                     </g-card-subtitle>
@@ -112,8 +110,11 @@ export const GCardInformation = () => ({
             </g-card>`,
 });
 
-export const GCardGrid = () => ({
-  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GImg, GIcon },
+export const GCardExpand = () => ({
+  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GImg, GIcon, GExpandTransition },
+  data: () => {
+    return { showExpand: false }
+  },
   props: {
     outlined: { type: Boolean, default: boolean('outlined', true) },
     hover: { type: Boolean, default: boolean('hover', false) },
@@ -133,6 +134,7 @@ export const GCardGrid = () => ({
                       <p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
                       making you'll be doing.</p>
                     </g-card-text>
+                    <div>
             <g-card-actions>
                 <g-btn icon>
                   <g-icon color="red">
@@ -144,12 +146,28 @@ export const GCardGrid = () => ({
                   star
                   </g-icon>
                 </g-btn>
-                <g-btn icon >
+                <g-btn icon>
                   <g-icon color="blue">
                   share
                   </g-icon>
                 </g-btn>
+                 <g-btn icon @click="showExpand = !showExpand">
+                  <g-icon color="blue" v-if="!showExpand">
+                  keyboard_arrow_down
+                  </g-icon>
+                  <g-icon color="blue" v-else="showExpand">
+                  keyboard_arrow_up
+                  </g-icon>
+                </g-btn>
             </g-card-actions>
+                </div>
+                <g-expand-transition>
+                  <div v-show="showExpand" style="padding: 8px; font-weight: 400; font-size: .875rem; ">
+                        <p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
+                        making you'll be doing.</p>
+                  </div>
+                </g-expand-transition>
+            
             </g-card>`
 });
 
