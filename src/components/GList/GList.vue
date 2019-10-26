@@ -113,6 +113,7 @@
       selectable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
+      allowDuplicates: Boolean,
       itemValue: String,
       itemTitle: {
         type: String,
