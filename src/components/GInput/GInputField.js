@@ -20,7 +20,7 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   // ...!isValidInput.value && inValidStyle}))
   {
 
-    if(isLabelActive.value){
+    if(isLabelActive.value && prefixWidth.value){
       if(props.outlined){
         if(props.filled){
           return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }

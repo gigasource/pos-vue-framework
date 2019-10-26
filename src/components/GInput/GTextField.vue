@@ -24,13 +24,13 @@
 								 @focus="onFocus"
 								 @blur="onBlur"
 								 @keydown="onKeyDown">
-					<label for="input" class="tf-label" :style="labelStyles">
+					<label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">
 						<slot name="label">{{label}}</slot>
 					</label>
 				</div>
 				<div v-if="suffix" class="tf-affix">{{suffix}}</div>
 				<div class="tf-append__inner" @click="onClickAppendInner">
-					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick" alt="clearIcon">
+					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click.stop="onClearIconClick" alt="clearIcon">
 					<slot name="append-inner"></slot>
 				</div>
 				<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>

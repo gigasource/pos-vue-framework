@@ -117,7 +117,6 @@ input[type=text] {
 
     &__active {
       transform: translateY(-18px) scale(0.75);
-      background-color: white;
     }
   }
 
@@ -174,7 +173,7 @@ input[type=text] {
   margin: 4px 0 0 4px;
   line-height: 1;
   user-select: none;
-   img{
+  img{
     max-width: 48px;
     max-height: 48px;
   }
@@ -299,6 +298,10 @@ input[type=text] {
     width: auto;
     padding: 1px;
   }
+  .tf-label__active {
+    transform: translateY(-28px)  translateX(-8px) scale(0.75);
+    background-color: transparent;
+  }
 
   .tf-prepend__inner.tf-icon__active ~ .tf-label {
     left: calc(4% + 8px);
@@ -324,9 +327,16 @@ input[type=text] {
 
 .tf__rounded {
   &.tf__solo .tf,
-  &.tf__outlined .tf,
+  &.tf__outlined .tf{
+    border-radius: 9999px;
+    .tf-label__active {
+      transform: translateY(-20px)  translateX(-6px) scale(0.75);
+      background-color: transparent;
+    }
+  }
   &.tf__filled .tf {
     border-radius: 9999px;
+
   }
 
   &.tf__solo .tf-input {
@@ -377,7 +387,22 @@ input[type=text] {
 
 .tf__shaped {
   &.tf__solo .tf,
-  &.tf__outlined .tf,
+  &.tf__outlined{
+    .tf{
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      .tf-label__active {
+        transform: translateY(-20px) translateX(-15px) scale(0.75);
+        background-color: transparent;
+      }
+    }
+    &.tf__filled{
+      .tf-label__active {
+        transform: translateY(-20px) translateX(-8px) scale(0.75);
+        background-color: transparent;
+      }
+    }
+  }
   &.tf__filled .tf {
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
