@@ -116,6 +116,11 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     }
   }
 
+  function onInput() {
+    context.emit('input', event);
+    props.autoGrow && calculateInputHeight(props,context)
+  }
+
   function onBlur(event) {
     context.emit('blur', event);
     if(props.validateOnBlur)
@@ -140,7 +145,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onKeyDown(event) {
-    if (event.keyCode === keyCodes.enter && props.isDirty()) {
+    if (event.keyCode === keyCodes.enter && props.isDirty) {
       context.emit('change', internalValue.value);
     }
     context.emit('keydown', event)
@@ -163,7 +168,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     }
   }
 
-  return { onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown }
+  return { onInput, onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown }
 }
 
 export function getInternalValue(props, context) {
@@ -181,4 +186,16 @@ export function getInternalValue(props, context) {
   });
 
   return internalValue;
+}
+
+export function calculateInputHeight(props, context) {
+  const input = context.refs.input
+  if (!input) return
+
+  input.style.height = '0'
+  const height = input.scrollHeight
+  const minHeight = parseInt(props.rows, 10) * parseFloat(props.rowHeight)
+  // This has to be done ASAP, waiting for Vue
+  // to update the DOM causes ugly layout jumping
+  input.style.height = Math.max(minHeight,height) + 'px'
 }

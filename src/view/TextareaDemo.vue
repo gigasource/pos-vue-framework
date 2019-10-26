@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <g-textarea rows="3" autofocus outlined auto-grow></g-textarea>
+  <div style="width: 600px">
+    <g-text-field-functional></g-text-field-functional>
+    <g-tear no-resize rows="3" outlined></g-tear>
     <form>
       <label for="textarea">Primitive textarea</label>
       <div>
@@ -12,11 +13,14 @@
 </template>
 
 <script>
-  import GTextarea from "../components/GTextarea/GTextarea";
+  import GTear from "../components/GTextarea/GTextarea2";
+  import GIcon from "../components/GIcon/GIcon";
+  import GTextField from "../components/GInput/GTextField";
+  import GTextFieldFunctional from "../components/GInput/GTextFieldFunctional";
 
   export default {
     name: "Textarea",
-    components: {GTextarea},
+    components: {GTextFieldFunctional, GTextField, GIcon, GTear},
     data: function () {
       return {
         value: 'attack'

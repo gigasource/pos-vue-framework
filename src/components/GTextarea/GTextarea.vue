@@ -28,8 +28,8 @@
                     @keydown="onKeyDown">
           </textarea>
         </div>
-        <div id="append-inner">
-          <slot name="append"><i class="material-icon">cancel</i></slot>
+        <div id="append-inner" @click="clearText">
+          <slot name="append"><g-icon>{{clearIcon}}</g-icon></slot>
         </div>
       </div>
       <div id="detail"></div>
@@ -42,9 +42,12 @@
 
 <script>
   import {ref, computed, onMounted, onUpdated, watch} from '@vue/composition-api';
+  import {getInternalValue} from '../GInput/GInputField'
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: "GTextarea",
+    components: {GIcon},
     props: {
       //textarea props
       autoGrow: Boolean,
@@ -65,6 +68,7 @@
       autofocus: Boolean,
       disabled: Boolean,
       readonly: Boolean,
+      clearable: Boolean,
 
       outlined: Boolean,
 
@@ -98,14 +102,12 @@
       }
 
       onMounted(() => {
-        console.log(context.refs.input.rows)
         setTimeout(() => {
           props.autoGrow && calculateInputHeight()
         }, 0)
       })
 
       function onInput() {
-        console.log('input event is emitted')
         props.autoGrow && calculateInputHeight()
       }
 
@@ -121,9 +123,11 @@
 
       }
 
-      function clearTextarea() {
-        props.refs.input && props.refs.input.focus()
-        props.nextTick(() => props.refs.input.internalValue = null)
+      function clearText() {
+        console.log(context.refs)
+        context.refs.input && context.refs.input.focus()
+        context.refs.input.value = null
+        //context.nextTick(() => context.refs.input.internalValue = null)
       }
 
       // watch(props.rowHeight, () => {
@@ -173,7 +177,8 @@
         onBlur,
         onFocus,
         onKeyDown,
-        clearTextarea
+        clearText,
+        //clearIcon
       }
     }
   }
