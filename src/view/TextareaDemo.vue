@@ -1,7 +1,7 @@
 <template>
   <div style="width: 600px">
     <g-text-field-functional></g-text-field-functional>
-    <g-tear no-resize rows="3" outlined></g-tear>
+    <g-tear no-resize outlined></g-tear>
     <form>
       <label for="textarea">Primitive textarea</label>
       <div>

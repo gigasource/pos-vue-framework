@@ -190,8 +190,8 @@
 
       onUpdated(() => {
         setTimeout(() => {
-          //props.autoGrow && calculateInputHeight(props,context)
-          calculateInputHeight(props, context)
+          props.autoGrow && calculateInputHeight(props,context)
+          //calculateInputHeight(props, context)
         }, 0)
       })
 
