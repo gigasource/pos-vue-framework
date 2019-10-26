@@ -10,5 +10,6 @@
     overflow-y: auto;
     overflow-x: hidden;
     contain: content;
+    @include elevation(2);
   }
 }

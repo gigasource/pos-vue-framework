@@ -22,8 +22,8 @@ module.exports = async ({ config, mode }) => {
     include: path.resolve(__dirname, '../'),
   });
 
-  // remove svg from existing rule
-  /*config.module.rules = config.module.rules.map(rule => {
+/*  // remove svg from existing rule
+  config.module.rules = config.module.rules.map(rule => {
     if (
       String(rule.test) === String(/\.(svg|ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani)(\?.*)?$/)
     ) {

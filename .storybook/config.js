@@ -7,7 +7,7 @@ import VueCompositionAPI from '@vue/composition-api';
 import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
 //import './style.css';
-require('../src/plugin/waves')
+import '../src/plugin/waves'
 
 addParameters({
   options: {
