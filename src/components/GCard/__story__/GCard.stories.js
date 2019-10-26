@@ -152,7 +152,7 @@ export const GCardExpand = () => ({
                   share
                   </g-icon>
                 </g-btn>
-                <g-spacer></g-spacer>
+                <g-spacer> </g-spacer>
                  <g-btn icon @click="showExpand = !showExpand">
                   <g-icon color="blue" v-if="!showExpand">
                   keyboard_arrow_down
@@ -164,7 +164,7 @@ export const GCardExpand = () => ({
             </g-card-actions>
                 </div>
                 <g-expand-transition>
-                  <div v-show="showExpand" style="padding: 8px; font-weight: 400; font-size: .875rem; ">
+                  <div v-show="showExpand" style="border-top: 1px solid rgba(0, 0, 0, 0.12); padding: 8px; font-weight: 400; font-size: .875rem; ">
                         <p>I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed
                         making you'll be doing.</p>
                   </div>
