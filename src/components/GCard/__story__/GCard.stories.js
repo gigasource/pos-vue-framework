@@ -8,6 +8,7 @@ import GCardTitle from '../GCardTitle';
 import GCardSubtitle from '../GCardSubtitle';
 import GIcon from '../../GIcon/GIcon';
 import GCardActions from '../GCardActions';
+import GSpacer from '../../GLayout/GSpacer';
 import { GExpandTransition } from '../../transition/transition';
 
 export default {
@@ -111,7 +112,7 @@ export const GCardInformation = () => ({
 });
 
 export const GCardExpand = () => ({
-  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GImg, GIcon, GExpandTransition },
+  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GImg, GIcon, GExpandTransition, GSpacer },
   data: () => {
     return { showExpand: false }
   },
@@ -151,6 +152,7 @@ export const GCardExpand = () => ({
                   share
                   </g-icon>
                 </g-btn>
+                <g-spacer></g-spacer>
                  <g-btn icon @click="showExpand = !showExpand">
                   <g-icon color="blue" v-if="!showExpand">
                   keyboard_arrow_down
