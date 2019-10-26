@@ -1,0 +1,65 @@
+$icon-size: 24px !default;
+$icon-size-dense: 20px !default;
+
+//Theme
+//+theme(v-icon) using ($material){
+//  color: map-deep-get($material, 'icons', 'active');
+//
+//  &--disabled {
+//    color: map-deep-get($material, 'icons', 'inactive') !important;
+//  }
+//}
+
+//Increased specificity to overwrite
+//iconfont css interference
+.g-icon.g-icon {
+  align-items: center;
+  display: inline-flex;
+  font-feature-settings: 'liga';
+  font-size: $icon-size;
+  justify-content: center;
+  letter-spacing: normal;
+  line-height: 1;
+  text-indent: 0;
+  transition: $primary-transition;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.g-icon {
+  &__right {
+    margin-left: map-get($grid-gutters, 'md');
+  }
+
+  &__left {
+    margin-right: map-get($grid-gutters, 'md');
+  }
+
+  &__link {
+    cursor: pointer;
+  }
+
+  &__disabled {
+    pointer-events: none;
+    opacity: .6;
+  }
+
+  &__is-component {
+    height: $icon-size;
+    width: $icon-size;
+  }
+
+  &__svg {
+    height: $icon-size;
+    width: $icon-size;
+    fill: currentColor;
+  }
+
+  &__dense {
+    font-size: $icon-size-dense;
+
+    &__is-component {
+      height: $icon-size-dense;
+    }
+  }
+}
