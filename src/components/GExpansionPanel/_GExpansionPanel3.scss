@@ -1,6 +1,6 @@
 @import "variable";
 
-.g-expansion-panel2 {
+.g-expansion-panel3 {
   flex: 1 0 100%;
   max-width: 100%;
   position: relative;
@@ -32,7 +32,7 @@
   }
 
   &__active {
-    &:not(:first-child), + .g-expansion-panel2 {
+    &:not(:first-child), + .g-expansion-panel3 {
       margin-top: $expansion-panel-active-margin;
 
       &::after {
@@ -40,7 +40,7 @@
       }
     }
 
-    .v-expansion-panel-header {
+    .g-expansion-panel3-header {
       min-height: $expansion-panel-active-header-min-height;
     }
   }
@@ -71,12 +71,12 @@
       border-bottom-right-radius: inherit;
     }
 
-    > .g-expansion-panel2 {
+    > .g-expansion-panel3 {
       &__active {
         border-radius: $expansion-panel-border-radius;
 
 
-      + .g-expansion-panel2 {
+        + .g-expansion-panel3 {
           border-top-left-radius: $expansion-panel-border-radius;
           border-top-right-radius: $expansion-panel-border-radius;
         }
@@ -97,6 +97,7 @@
     position: relative;
     text-align: left;
     width: 100%;
+    transition: .3s min-height map-get($transition, 'swing');
 
     &:before {
       background-color: currentColor;

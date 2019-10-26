@@ -1,7 +1,7 @@
 <template>
 	<g-expand-transition>
 		<div class="g-expansion-panel2-content" v-show="show">
-			<div class="g-expansion-panel2-content__wrap">
+			<div class="g-expansion-panel2-content-wrapper">
 				<slot></slot>
 			</div>
 		</div>
