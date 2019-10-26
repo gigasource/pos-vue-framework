@@ -15,14 +15,18 @@
     flex-shrink: 0;
 
     &:hover {
-      background-color: lightgrey;
+      background-color: rgba(211, 211, 211, 0.41);
     }
-    &:focus{
-      background-color: lightgrey;
+    &:focus {
+      background-color: rgba(211, 211, 211, 0.46);
       outline: none;
     }
     &__active{
-      background-color: lightgrey;
+      background-color: rgb(226, 236, 248);
+      color: rgb(24, 103, 192);
+      &:hover{
+        background-color: rgb(226, 236, 248);
+      }
     }
     &-icon {
       width: 24px;
@@ -158,7 +162,7 @@
       padding: 0 16px;
       &__active{
         border-radius: 9999px;
-        background-color: rgba(0, 0, 0, 0.05) ;
+        background-color: rgba(60, 211, 255, 0.53);
       }
     }
 

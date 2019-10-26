@@ -54,7 +54,7 @@
                :class="{'g-list-item__active': isActiveItem(item)}"
                @click="onSelect(item)">
             <slot name="prepend" :item="item">
-              <div :class="prependClasses">
+              <div :class="prependClasses" >
                 <img alt="" :src="item.prepend">
               </div>
             </slot>
@@ -113,6 +113,7 @@
       selectable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
+      allowDuplicates: Boolean,
       itemValue: String,
       itemTitle: {
         type: String,
@@ -157,7 +158,6 @@
       function onClick(event) {
         context.emit('click', event)
       }
-
       const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
         if (!props.selectable) return;

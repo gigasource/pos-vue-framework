@@ -1,9 +1,10 @@
 import _ from 'lodash'
 import {computed, ref, watch} from "@vue/composition-api";
 
-function groupable({mandatory, multiple}, vModel) {
+function groupable({mandatory, multiple, allowDuplicates}, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
+  //allowDuplicate: choose one item multiple times
   const toggleItem = (item) => {
     if (multiple) {
       updateMultiple(item);
@@ -27,7 +28,7 @@ function groupable({mandatory, multiple}, vModel) {
     if (itemIndex > -1 && mandatory && clonedValue.length - 1 < 1) {
       return;
     }
-    if (itemIndex > -1) {
+    if (itemIndex > -1 && !allowDuplicates) {
       clonedValue.splice(itemIndex, 1);
     } else {
       clonedValue.push(item);

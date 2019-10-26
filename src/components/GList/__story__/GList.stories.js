@@ -328,7 +328,7 @@ export const gListMultiSelect = () => ({
       `
       <div>
         selectedItem: {{testValue}}
-        <g-list v-model="testValue" :items="items" rounded dense subheader="subheader" divider=inset selectable multiple>
+        <g-list v-model="testValue" :items="items" rounded dense subheader="subheader" divider=inset selectable allow-duplicates multiple>
         </g-list>
       </div>
       `,

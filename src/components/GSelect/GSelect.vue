@@ -1,77 +1,108 @@
-<template xmlns="">
-  <!--  fixme: menu props-->
-  <g-menu v-model="showOptions"
-          :closeOnClick="closeOnClick"
-          :closeOnContentClick="closeOnContentClick"
-          :maxHeight="maxHeight"
-          :offsetY="offsetY"
-          :offsetOverflow="offsetOverflow"
-          :top="top">
-    <template v-slot:activator="{toggleContent}">
-      <slot name="textfieldValue">
-        <!--          fixme: text field slot to customise text field display : slot prepend-->
-        <g-text-field :label="label"
-                                 read-only
-                                 clearable
-                                 :filled="filled"
-                                 :placeholder="placeholder"
-                                 @click="toggleContent"
-                                 @click:clearIcon="clearSelection"
-                                 :value="textfieldValue"
-        >
-          <!--          fixme: Wait Chips  add chip to prepend of text field-->
-          <template v-slot:append-inner>
-            <!--          fixme: Wait Icon for arrow dropdown-->
+<template>
+  <div class="g-select" :style="{'width': `${width}`}">
+    <g-menu v-model="showOptions"
+            :closeOnClick="closeOnClick"
+            :closeOnContentClick="closeOnContentClick"
+            :maxWidth="width"
+            :maxHeight="maxHeight"
+            :offsetY="offsetY"
+            :offsetOverflow="offsetOverflow"
+            :top="top"
+            :nudgeBottom="nudgeBottom">
+      <template v-slot:activator="{toggleContent}">
+        <slot name="textfieldValue">
+          <!--          fixme: text field slot to customise text field display : slot prepend-->
+          <g-text-field :label="label"
+                        :clearable="clearable"
+                        :filled="filled"
+                        :solo="solo"
+                        :outlined="outlined"
+                        :flat="flat"
+                        :rounded="rounded"
+                        :shaped="shaped"
+                        :hint="hint"
+                        :persistent="persistent"
+                        :counter="counter"
+                        :placeholder="placeholder"
+                        @click="toggleContent"
+                        read-only
+                        @click:clearIcon="clearSelection"
+                        :value="textfieldValue"
+          >
+            <!--          fixme: Wait Chips  add chip to prepend of text field-->
+            <template v-slot:append-inner="{isFocused, isDirty}">
+              <div class="dropDown" :style="iconStyle">
+                <g-icon :color="showOptions||isFocused ? 'blue' : null">arrow_drop_down</g-icon>
+              </div>
+            </template>
+          </g-text-field>
+        </slot>
+      </template>
+      <template v-slot:default="{toggleContent}">
+        <slot name="prependItems">
+        </slot>
+        <g-text-field v-if="searchable"
+                      placeholder="Search"
+                      v-model="searchText"
+                      clearable
+                      solo
+                      flat
+                      style="margin-bottom: 0; background-color: transparent"
+        ></g-text-field>
+        <g-list v-if="searchable" :items="options" :item-title="itemText" :item-value="itemValue" selectable :mandatory="mandatory" v-model="selectedItem"
+                @click:item="showOptions = false" dense>
+          <template v-slot:listItem="{item, isSelected}">
+            <slot name="item" :item="item" :isSelected="isSelected"></slot>
           </template>
-        </g-text-field>
-      </slot>
-    </template>
-    <template v-slot:default="{toggleContent}">
-      <slot name="prependItems">
-      </slot>
-      <g-text-field v-if="searchable"
-                               placeholder="Search"
-                               v-model="searchText"
-                               clearable
-      ></g-text-field>
-      <g-list v-if="searchable" :items="options" selectable :mandatory="mandatory" v-model="selectedItem"
-              @click:item="showOptions = false">
-        <template v-slot:listItem="{item, isSelected}">
-          <slot name="item" :item="item" :isSelected="isSelected"></slot>
-        </template>
-      </g-list>
-      <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" mandatory selectable
-              multiple v-model="selectedItem" >
-<!--        todo: render unformatted list-->
-<!--        todo: checkbox prepend when multiple-->
-<!--        fixme: CSS for checkbox-->
-        <template v-slot:prepend="{item, isSelected}">
-         <g-checkbox v-model="isSelected"></g-checkbox>
-        </template>
-      </g-list>
-      <g-list v-else :items="items" selectable mandatory v-model="selectedItem" @click:item="showOptions = false" >
-        <template v-slot:listItem="{item, isSelected}">
-          <slot name="item" :item="item" :isSelected="isSelected"></slot>
-        </template>
-      </g-list>
-    </template>
-  </g-menu>
+        </g-list>
+        <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable
+                multiple v-model="selectedItem" dense >
+          <template v-slot:listItem="{item, isSelected}">
+            <slot name="item" :item="item" :isSelected="isSelected"></slot>
+          </template>
+<!--          <template v-if="allowDuplicates" v-slot:prepend="{item, isSelected}">-->
+<!--            <g-checkbox color="#1271ff" v-model="isSelected"></g-checkbox>-->
+<!--          </template>-->
+        </g-list>
+<!--        <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable-->
+<!--                multiple v-model="selectedItem" dense >-->
+<!--          <template v-slot:listItem="{item, isSelected}">-->
+<!--            <slot name="item" :item="item" :isSelected="isSelected">-->
+<!--&lt;!&ndash;              todo: prepend click unselect &ndash;&gt;-->
+<!--              <div class="g-list-item">-->
+<!--                <g-icon>check</g-icon>-->
+<!--                <div class="g-list-item-content">-->
+<!--                  <div class="g-list-item-text">{{item[itemText]}}</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </slot>-->
+<!--          </template>-->
+<!--        </g-list>-->
+        <g-list v-else :items="items" :item-title="itemText" :item-value="itemValue" selectable mandatory v-model="selectedItem" @click:item="showOptions = false" dense>
+          <template v-slot:listItem="{item, isSelected}">
+            <slot name="item" :item="item" :isSelected="isSelected"></slot>
+          </template>
+        </g-list>
+      </template>
+    </g-menu>
+  </div>
 </template>
 <script>
-  import {reactive, ref, computed, watch, toRefs} from '@vue/composition-api';
+  import {reactive, ref, computed, toRefs} from '@vue/composition-api';
   import GList from "../GList/GList";
   import GMenu from "../GMenu/GMenu";
   import _ from "lodash";
-  import GDivider from "../GLayout/GDivider";
   import GListItem from "../GList/GListItem";
   import {makeSelectable} from "../../mixins/groupable";
   import GCheckbox from "../GCheckbox/GCheckbox";
   import GTextField from "../GInput/GTextField";
   import {GListItemContent, GListItemSubText, GListItemText} from "../GList/GListFunctionalComponent";
+  import GIcon from "../GIcon/GIcon";
 
   export default {
     name: "GSelect",
     components: {
+      GIcon,
       GListItem,
       GTextField,
       GCheckbox,
@@ -83,18 +114,61 @@
 
     },
     props: {
+      //select props
+      width: [String, Number],
       //text field's props
-      chips: Boolean,
-      filled: Boolean,
-      outlined: Boolean,
-      solo: Boolean,
-      flat: Boolean,
-      hint: String,
-      placeholder: String,
-      label: String,
+      ...{
+        clearable:{
+        type: Boolean,
+        default: false
+      },
+      filled:{
+        type: Boolean,
+        default: false
+      },
+      solo:{
+        type: Boolean,
+        default: false
+      },
+      outlined:{
+        type: Boolean,
+        default: false
+      },
+      flat:{
+        type: Boolean,
+        default: false
+      },
+      rounded:{
+        type: Boolean,
+        default: false
+      },
+      shaped:{
+        type: Boolean,
+        default: false
+      },
+      hint:{
+        type: String,
+        default: ''
+      },
+      persistent:{
+        type: Boolean,
+        default: false
+      },
+      counter:{
+        type:  [Boolean, Number, String],
+        default: false
+      },
+      placeholder:{
+        type: String,
+        default: ''
+      },
+      label:{
+        type: String,
+        default: 'Label'
+      }
+      },
 
       //list props
-
       searchable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
@@ -121,10 +195,10 @@
         type: String,
         default: 'value'
       },
-      returnObject: Boolean,
       value: null,
     },
     setup: function (props, context) {
+
       const state = reactive({
         searchText: '',
         fieldItem: null
@@ -226,7 +300,7 @@
         selectedItem.value = props.multiple ? [] : ''
         state.searchText = ''
       }
-
+        //menu props computed
       const {
         closeOnClick,
         closeOnContentClick,
@@ -235,7 +309,10 @@
         offsetOverflow,
         top
       } = props.menuProps
-
+      const nudgeBottom = computed(() => !!props.hint ? '10px' : '2px')
+      //dropdown icon
+      const iconStyle = computed(() => (showOptions.value) ? {'transform':'rotateZ(180deg)'} : {})
+      const iconColor = computed(() => (showOptions.value) ? 'blue' : null)
       return {
         selectedItem,
         textfieldValue,
@@ -252,15 +329,24 @@
           offsetY,
           offsetOverflow,
           top,
-        }
+        },
+        nudgeBottom,
+        iconStyle,
+        iconColor,
       }
     }
   }
 </script>
-<style scoped>
+<style scoped >
   /*todo: select css*/
   .g-checkbox-wrapper {
     margin: 2px 4px;
   }
+/*todo: dropdown icon transform*/
+  .dropDown{
+    transition: transform 0.4s;
+  }
+
+  /*fixme:text field filled css fix*/
 
 </style>

@@ -11,7 +11,7 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   const isLabelActive = computed(() => {
     return isDirty.value || isFocused.value|| !!props.placeholder;
   })
-  const labelClasses = computed(() => isLabelActive.value ? { labelActiveClass: true } : {})
+  const labelClasses = computed(() => isLabelActive.value ? { 'tf-label__active': true } : {})
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
@@ -20,7 +20,7 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   // ...!isValidInput.value && inValidStyle}))
   {
 
-    if(isLabelActive.value){
+    if(isLabelActive.value && prefixWidth.value){
       if(props.outlined){
         if(props.filled){
           return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }
