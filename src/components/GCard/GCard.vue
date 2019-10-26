@@ -1,6 +1,6 @@
 <template>
 	<div :class="classes" :style="styles" @click="onClick">
-		<slot name="default"></slot>
+		<slot></slot>
 		<slot name="progress"></slot>
 	</div>
 </template>
@@ -19,6 +19,7 @@
           type: String,
           default: 'g-card__active'
         },
+				shaped: Boolean,
         disabled: Boolean,
         isClickable: Boolean,
         loading: Boolean,
@@ -57,6 +58,7 @@
           'g-card__disabled': props.loading || props.disabled,
           'g-card__outlined': props.outlined,
           'g-card__raised': props.raised,
+					'g-card__shaped': props.shaped,
           [props.activeClass]: props.active
         };
         if (elevationClassName) {
@@ -72,8 +74,8 @@
           ...props.color && { color: props.color },
           ...props.tile && { borderRadius: '0px' },
           ...props.borderRadius && { borderRadius: props.borderRadius },
-          ...props.width && { minWidth: convertToUnit(props.width) },
-          ...props.height && { minWidth: convertToUnit(props.height) },
+          ...props.width && { width: convertToUnit(props.width) },
+          ...props.height && { height: convertToUnit(props.height) },
           ...props.minWidth && { minWidth: convertToUnit(props.minWidth) },
           ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
           ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
