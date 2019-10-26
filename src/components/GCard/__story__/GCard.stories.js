@@ -71,8 +71,8 @@ export const GCardImage = () => ({
                       making you'll be doing.</p>
                     </g-card-text>
             <g-card-actions>
-                <g-btn depressed>CONFIRM</g-btn>
-                <g-btn depressed>CANCEL</g-btn>
+                <g-btn depressed text-color="green">CONFIRM</g-btn>
+                <g-btn depressed text-color="red">CANCEL</g-btn>
             </g-card-actions>
             </g-card>`
 });
