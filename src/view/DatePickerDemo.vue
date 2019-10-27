@@ -1,110 +1,112 @@
 <template>
   <div>
-    <div style="padding: 30px">
-      <h2>Date Picker</h2>
-      <div style="display:flex">
-        <div>
-          <h4>Single select</h4>
-          <g-date-picker value="2019-10-05" scrollable :current="current" show-current></g-date-picker>
-        </div>
-        <div>
-          <h4>Multiple select</h4>
-          <g-date-picker multiple v-model="multipleSelect" :current="current"></g-date-picker>
-        </div>
+<!--    <div style="padding: 30px">-->
+<!--      <h2>Date Picker</h2>-->
+<!--      <div style="display:flex">-->
+<!--        <div>-->
+<!--          <h4>Single select</h4>-->
+<!--          <g-date-picker value="2019-10-05" scrollable :current="current" show-current></g-date-picker>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          <h4>Multiple select</h4>-->
+<!--          <g-date-picker multiple v-model="multipleSelect" :current="current"></g-date-picker>-->
+<!--        </div>-->
 
-        <div>
-          <h4>Range: width 300</h4>
-          <g-date-picker range v-model="rangeSelect" :current="current"></g-date-picker>
-        </div>
+<!--        <div>-->
+<!--          <h4>Range: width 300</h4>-->
+<!--          <g-date-picker range v-model="rangeSelect" :current="current"></g-date-picker>-->
+<!--        </div>-->
 
-        <div>
-          <h4>Range: full-width</h4>
-          <g-date-picker range v-model="rangeSelect2" full-width :current="current"></g-date-picker>
-        </div>
-      </div>
+<!--        <div>-->
+<!--          <h4>Range: full-width</h4>-->
+<!--          <g-date-picker range v-model="rangeSelect2" full-width :current="current"></g-date-picker>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div>
-        <h4>Another Options: </h4>
-        <span>
-          <label for="Landscape">Landscape</label>
-          <input type="checkbox" id="Landscape" v-model="landscape" class="ma-4"/>
-        </span>
-        <span>
-          <label for="Fullwidth">Full width</label>
-          <input type="checkbox" id="Fullwidth" v-model="fullWidth" class="ma-4"/>
-        </span>
-        <span>
-          <label for="ShowCurrentDate">Show current</label>
-          <input type="checkbox" id="ShowCurrentDate" v-model="showCurrent" class="ma-4"/>
-        </span>
-        <span>
-          <label for="Readonly">Readonly</label>
-          <input type="checkbox" id="Readonly" v-model="readonly" class="ma-4"/>
-        </span>
-        <span>
-          <label for="Disabled">Disabled</label>
-          <input type="checkbox" id="Disabled" v-model="disabled" class="ma-4"/>
-        </span>
-        <span>
-          <label for="Events">Events</label>
-          <input type="checkbox" id="Events" v-model="enableEvents" class="ma-4"/>
-        </span>
-        <span>
-          <label for="Color">Color</label>
-          <input style="border: 1px solid black" type="text" id="Color" v-model="color" class="ma-4"/>
-        </span>
-        <span>
-          <label for="HeaderColor">Header Color</label>
-          <input style="border: 1px solid black" type="text" id="HeaderColor" v-model="headerColor" class="ma-4"/>
-        </span>
-      </div>
-      <div style="width: 100%">
-        <g-date-picker
-            v-model="anotherOptionsModel"
-            :landscape="landscape"
-            :full-width="fullWidth"
-            :show-current="showCurrent"
-            :type="month ? 'month' : 'date'"
-            :readonly="readonly"
-            :disabled="disabled"
-            :events="enableEvents ? functionEvents : null"
-            :color="color"
-            :header-color="headerColor"
-        >
-          <div style="height: 40px; flex-direction: row-reverse; display: flex; margin-bottom: 10px; margin-right: 10px;">
-            <button style="width: 80px; background-color: #fff" @click="log('Cancel clicked')">Cancel</button>&nbsp;
-            <button style="width: 80px; background-color: #fff" @click="log('OK Clicked')">OK</button>
-          </div>
-        </g-date-picker>
-      </div>
-      <div>
-        <h4>No Title</h4>
-        <g-date-picker no-title v-model="anotherOptionsModel"></g-date-picker>
-      </div>
-    </div>
-    <div  style="padding: 30px">
-      <h2>Month picker</h2>
-      <div style="display: flex">
-        <div>
-          <h4>Single select, scrollable</h4>
-          <g-date-picker type="month" v-model="monthSelect" scrollable :landscape="landscape" :min="'2019-01-25'" :max="'2019-10-10'"></g-date-picker>
-        </div>
+<!--      <div>-->
+<!--        <h4>Another Options: </h4>-->
+<!--        <span>-->
+<!--          <label for="Landscape">Landscape</label>-->
+<!--          <input type="checkbox" id="Landscape" v-model="landscape" class="ma-4"/>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          <label for="Fullwidth">Full width</label>-->
+<!--          <input type="checkbox" id="Fullwidth" v-model="fullWidth" class="ma-4"/>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          <label for="ShowCurrentDate">Show current</label>-->
+<!--          <input type="checkbox" id="ShowCurrentDate" v-model="showCurrent" class="ma-4"/>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          <label for="Readonly">Readonly</label>-->
+<!--          <input type="checkbox" id="Readonly" v-model="readonly" class="ma-4"/>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          <label for="Disabled">Disabled</label>-->
+<!--          <input type="checkbox" id="Disabled" v-model="disabled" class="ma-4"/>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          <label for="Events">Events</label>-->
+<!--          <input type="checkbox" id="Events" v-model="enableEvents" class="ma-4"/>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          <label for="Color">Color</label>-->
+<!--          <input style="border: 1px solid black" type="text" id="Color" v-model="color" class="ma-4"/>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          <label for="HeaderColor">Header Color</label>-->
+<!--          <input style="border: 1px solid black" type="text" id="HeaderColor" v-model="headerColor" class="ma-4"/>-->
+<!--        </span>-->
+<!--      </div>-->
+<!--      <div style="width: 100%">-->
+<!--        <g-date-picker-->
+<!--            v-model="anotherOptionsModel"-->
+<!--            :landscape="landscape"-->
+<!--            :full-width="fullWidth"-->
+<!--            :show-current="showCurrent"-->
+<!--            :type="month ? 'month' : 'date'"-->
+<!--            :readonly="readonly"-->
+<!--            :disabled="disabled"-->
+<!--            :events="enableEvents ? functionEvents : null"-->
+<!--            :color="color"-->
+<!--            :header-color="headerColor"-->
+<!--        >-->
+<!--          <div style="height: 40px; flex-direction: row-reverse; display: flex; margin-bottom: 10px; margin-right: 10px;">-->
+<!--            <button style="width: 80px; background-color: #fff" @click="log('Cancel clicked')">Cancel</button>&nbsp;-->
+<!--            <button style="width: 80px; background-color: #fff" @click="log('OK Clicked')">OK</button>-->
+<!--          </div>-->
+<!--        </g-date-picker>-->
+<!--      </div>-->
+<!--      <div>-->
+<!--        <h4>No Title</h4>-->
+<!--        <g-date-picker no-title v-model="anotherOptionsModel"></g-date-picker>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div  style="padding: 30px">-->
+<!--      <h2>Month picker</h2>-->
+<!--      <div style="display: flex">-->
+<!--        <div>-->
+<!--          <h4>Single select, scrollable</h4>-->
+<!--          <g-date-picker type="month" v-model="monthSelect" scrollable :landscape="landscape" :min="'2019-01-25'" :max="'2019-10-10'"></g-date-picker>-->
+<!--        </div>-->
 
-        <div>
-          <h4>Multiple select</h4>
-          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape show-current></g-date-picker>
-        </div>
-      </div>
-    </div>
+<!--        <div>-->
+<!--          <h4>Multiple select</h4>-->
+<!--          <g-date-picker type="month" v-model="monthMultipleSelect" multiple landscape show-current></g-date-picker>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+    <g-tree-view></g-tree-view>
   </div>
 </template>
 <script>
   import GDatePicker from '../components/GDatePicker/GDatePicker';
   import GDateRangePicker from '../components/GDateRangePicker/GDateRangePicker';
+  import GTreeView from '../components/GTreeView/GTreeView';
 
   export default {
     name: 'DatePickerDemo',
-    components: { GDatePicker, GDateRangePicker },
+    components: { GTreeView, GDatePicker, GDateRangePicker },
     props: {},
     data: function () {
       const now = new Date();
