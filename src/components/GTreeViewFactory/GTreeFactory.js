@@ -1,6 +1,6 @@
 import { reactive, set, computed } from '@vue/composition-api'
 import traverse from 'traverse'
-
+import * as _ from 'lodash';
 
 
 export function genTextFactory(itemText) {
@@ -9,43 +9,24 @@ export function genTextFactory(itemText) {
 
 //consider: lazy
 // expandLevel,
-// formatText: function => string
-// itemText (function | String) // un-necessary
-// itemChildrenPath : (default: items , type: function | String)
+// itemText (function | String)
+// itemChildren : (default: items , type: function | String)
 export default function ({
                            genRootWrapper, genWrapper, genNode,
-                           itemChildrenPath,
+                           itemText,
+                           itemChildren,
                            cptExpandLevel,
-                           treeData
+                           data
                          }) {
-  const PATH_SEPARATOR = '.'
-  if (itemChildrenPath.indexOf(PATH_SEPARATOR) >= 0) {
-    console.warn(`itemChildrenPath must not contain ${PATH_SEPARATOR}`)
-  }
-
-  /**
-   * Get node level from node path
-   * @param path
-   * @returns {number}
-   */
-  function getNodeLevel(path) {
-    return path.split(PATH_SEPARATOR).filter(part => part === itemChildrenPath).length
-  }
-
-  /**
-   * Get initial collapse state of node
-   * @param path
-   * @returns {boolean}
-   */
-  function getInitialCollapseState(path) {
-    return cptExpandLevel.value <= getNodeLevel(path)
-  }
+  const CHILDREN_PROP_NAME = 'children'
 
   // An object contain collapse state of node
   // key: node path
   // value: object contain state of current node
   //     { collapse: Boolean }
   const treeStates = reactive({});
+
+  const genText = computed(() => typeof itemText === 'function' ? itemText : (node, isRoot) => node[itemText]);
 
   /**
    * A function do some stuff to prepare data which
@@ -56,14 +37,17 @@ export default function ({
    * @param isLast
    * @returns {*}
    */
-  const preGenNode = function (node, path, childrenVNodes, isLast) {
+  const preGenNode = function (node, path, childrenVNodes, isLast, isRoot, actualLevel) {
     // initialize collapsed/expand
     if (!treeStates[path]) {
-      set(treeStates, path, { collapse: getInitialCollapseState(path) })
+      set(treeStates, path, { collapse: cptExpandLevel.value <= actualLevel })
       // ... more state go there
     }
-    return genNode(node, childrenVNodes, isLast, treeStates[path], path);
+    const text = genText.value(node, isRoot);
+    return genNode(node, text, childrenVNodes, isLast, treeStates[path], path);
   }
+
+  const genChildren = computed(() => typeof itemChildren === 'function' ? itemChildren : node => node[itemChildren]);
 
   const genTree = function () {
     /**
@@ -75,27 +59,50 @@ export default function ({
      * @returns {boolean}
      */
     const blockUnnecessaryNode = function () {
+      let stopExecutionImmediately = false
       if (this.isRoot) {
-      } else if (this.key === itemChildrenPath) {
-        return true;
-      } else if (this.parent && this.parent.key === itemChildrenPath) {
+      } else if (this.key === CHILDREN_PROP_NAME) {
+        stopExecutionImmediately = true;
+      } else if (this.parent && this.parent.key === CHILDREN_PROP_NAME) {
       } else {
         this.block();
-        return true;
+        stopExecutionImmediately = true;
       }
+      return stopExecutionImmediately
     }
 
-    const treeVNodeWithoutRoot = traverse(treeData).map(function (node) {
+    /**
+     * Get level_ of parent node if it's not root node
+     * @param ctx
+     * @returns {number|*}
+     * @private
+     */
+    function getParentLevel_(ctx) {
+      if (ctx.parent.level_ === undefined)
+        return getParentLevel_(ctx.parent)
+      else
+        return ctx.parent.level_
+    }
+
+    const treeVNodeWithoutRoot = traverse(data).map(function (node) {
       if (blockUnnecessaryNode.bind(this)()) {
         return;
       }
 
       const isLastNode = () => this.parent && this.parent.node.length - 1 === +this.key;
 
-      this.after(() => {
-        this.update(preGenNode(this.node, this.path.join(PATH_SEPARATOR),
-            node[itemChildrenPath] ? genWrapper(this.node[itemChildrenPath]) : null,
-            isLastNode()),
+      // since original object has been modified, this.level no longer correct anymore
+      // that why we need to cache the level_ value in this object
+      this.level_ = this.isRoot ? 0 : getParentLevel_(this) + 1
+      const children = genChildren.value(node, this.isRoot);
+
+      // convert current node  to { level, children }
+      this.update({ [CHILDREN_PROP_NAME]: children })
+
+      this.after(nodeAfterConvert => {
+        this.update(preGenNode(node, this.path.join('.'),
+            Array.isArray(nodeAfterConvert.children) && nodeAfterConvert.children.length > 0 ? genWrapper(nodeAfterConvert.children) : null,
+            isLastNode(), this.isRoot, this.level_),
             true);
       })
     })

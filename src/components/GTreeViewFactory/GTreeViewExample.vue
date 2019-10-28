@@ -1,23 +1,42 @@
 <script>
 
-  import { reactive } from '@vue/composition-api';
-  import GTreeFactory from './GTreeFactory'
+  import { computed } from '@vue/composition-api';
+  import GTreeFactory, { genTextFactory } from './GTreeFactory';
+  import traverse from 'traverse'
+
+
 
   export default {
-    name: 'GTreeView',
-    props: {},
+    name: 'GTreeViewExample',
+    props: {
+      itemText: {
+        default: 'text',
+        type: [Function, String]
+      },
+      itemChildren: {
+        default: 'items',
+        type: [Function, String]
+      },
+      expandLevel: {
+        type: Number,
+        default: 0
+      },
+      data: Object
+    },
     setup(props, context) {
-      const genNode = function (node, childrenVNodes, isLast, state, path) {
+      const genText = genTextFactory(props.itemText);
+
+      const genNode = function (node, text, childrenVNodes, isLast, state, path) {
         return <li>
           <span
               class='g-tree-view__collapse-expand'
-              vShow={!!childrenVNodes}
+              vShow={childrenVNodes}
               vOn:click={() => state.collapse = !state.collapse}>
             <span>
-              {state.collapse? '+' : '-'}
+              {state.collapse ? '+' : '-'}
             </span>
           </span>
-          {node.content}
+          {genText.value(node)}
           {!state.collapse ? childrenVNodes : null}
           {isLast ? <span style="color: #959595">&nbsp;last</span> : null}
         </li>
@@ -35,18 +54,17 @@
         )
       }
 
-      const treeData = reactive({ content: 'src', children: [{ content: 'assets', children: [{ content: 'config', children: [{ content: 'advance_printer.svg' }] }, { content: 'delivery' }] }, { content: 'components' }] });
+      const cptExpandLevel = computed(() => props.expandLevel)
       const { treeStates, genTree } = GTreeFactory({
         genNode,
         genWrapper,
         genRootWrapper,
-        treeData,
-        itemText: 'content',
-        itemChildrenPath: 'children',
-        formatText: (v) => v[0].toUpperCase() + v.substr(1),
+        data: props.data,
+        itemChildren: props.itemChildren,
+        cptExpandLevel
       })
 
-      return { treeData, treeStates, genTree }
+      return { treeStates, genTree }
     },
     render() {
       return this.genTree();

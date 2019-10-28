@@ -101,11 +101,10 @@
 <script>
   import GDatePicker from '../components/GDatePicker/GDatePicker';
   import GDateRangePicker from '../components/GDateRangePicker/GDateRangePicker';
-  import GTreeView from '../components/GTreeView/GTreeView';
 
   export default {
     name: 'DatePickerDemo',
-    components: { GTreeView, GDatePicker, GDateRangePicker },
+    components: { GDatePicker, GDateRangePicker },
     props: {},
     data: function () {
       const now = new Date();
