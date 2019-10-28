@@ -123,7 +123,7 @@
         if (content.value) detach(content.value)
         if (el.value) detach(el.value)
       })
-
+//todo: update content position to activator
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
         return convertToUnit(calcXOverflow(computedLeft.value, menuWidth)) || '0'

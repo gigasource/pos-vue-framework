@@ -10,33 +10,61 @@
             :top="top"
             :nudgeBottom="nudgeBottom">
       <template v-slot:activator="{toggleContent}">
-        <slot name="textfieldValue">
-          <!--          fixme: text field slot to customise text field display : slot prepend-->
-          <g-text-field :label="label"
-                        :clearable="clearable"
-                        :filled="filled"
-                        :solo="solo"
-                        :outlined="outlined"
-                        :flat="flat"
-                        :rounded="rounded"
-                        :shaped="shaped"
-                        :hint="hint"
-                        :persistent="persistent"
-                        :counter="counter"
-                        :placeholder="placeholder"
-                        @click="toggleContent"
-                        read-only
-                        @click:clearIcon="clearSelection"
-                        :value="textfieldValue"
-          >
-            <!--          fixme: Wait Chips  add chip to prepend of text field-->
-            <template v-slot:append-inner="{isFocused, isDirty}">
-              <div class="dropDown" :style="iconStyle">
-                <g-icon :color="showOptions||isFocused ? 'blue' : null">arrow_drop_down</g-icon>
-              </div>
-            </template>
-          </g-text-field>
-        </slot>
+        <!--          fixme: text field slot to customise text field display : slot prepend-->
+        <g-text-field :label="label"
+                      :clearable="clearable"
+                      :filled="filled"
+                      :solo="solo"
+                      :outlined="outlined"
+                      :flat="flat"
+                      :rounded="rounded"
+                      :shaped="shaped"
+                      :hint="hint"
+                      :persistent="persistent"
+                      :counter="counter"
+                      :placeholder="placeholder"
+                      :prefix="prefix"
+                      :suffix="suffix"
+                      :type="type"
+                      :rules="rules"
+                      @click="toggleContent"
+                      read-only
+                      @click:clearIcon="clearSelection"
+                      :value="textfieldValue"
+
+        >
+          <template v-slot:inputSlot v-if="selections">
+            <div class="tf-input" style="{color: #1d1d1d}">
+              <template v-if="multiple">
+                <template v-for="(value, index) in selections">
+                  <!--          fixme: Wait Chips  add chip to prepend of text field-->
+                  <template v-if="chips||allowDuplicates">
+                    <g-chip close @click:close="onChipCloseClick(index)">{{value}}</g-chip>
+                  </template>
+                  <template v-else>
+                    <div v-if="index ===0 ">{{value}}</div>
+                    <div v-else>{{', ' + value}}</div>
+                  </template>
+                </template>
+              </template>
+              <template v-else-if="chips">
+                <g-chip close @click:close="onChipCloseClick(index)">{{selections}}</g-chip>
+              </template>
+              <template v-else>
+                <div>{{selections}}</div>
+              </template>
+
+            </div>
+          </template>
+          <template v-slot:label>
+            <label class="tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
+          </template>
+          <template v-slot:append-inner="{isFocused}">
+            <div class="dropDown" :style="iconStyle">
+              <g-icon :color="showOptions||isFocused ? 'blue' : null">arrow_drop_down</g-icon>
+            </div>
+          </template>
+        </g-text-field>
       </template>
       <template v-slot:default="{toggleContent}">
         <slot name="prependItems">
@@ -60,24 +88,8 @@
           <template v-slot:listItem="{item, isSelected}">
             <slot name="item" :item="item" :isSelected="isSelected"></slot>
           </template>
-<!--          <template v-if="allowDuplicates" v-slot:prepend="{item, isSelected}">-->
-<!--            <g-checkbox color="#1271ff" v-model="isSelected"></g-checkbox>-->
-<!--          </template>-->
         </g-list>
-<!--        <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable-->
-<!--                multiple v-model="selectedItem" dense >-->
-<!--          <template v-slot:listItem="{item, isSelected}">-->
-<!--            <slot name="item" :item="item" :isSelected="isSelected">-->
-<!--&lt;!&ndash;              todo: prepend click unselect &ndash;&gt;-->
-<!--              <div class="g-list-item">-->
-<!--                <g-icon>check</g-icon>-->
-<!--                <div class="g-list-item-content">-->
-<!--                  <div class="g-list-item-text">{{item[itemText]}}</div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </slot>-->
-<!--          </template>-->
-<!--        </g-list>-->
+<!--              todo: prepend click unselect-->
         <g-list v-else :items="items" :item-title="itemText" :item-value="itemValue" selectable mandatory v-model="selectedItem" @click:item="showOptions = false" dense>
           <template v-slot:listItem="{item, isSelected}">
             <slot name="item" :item="item" :isSelected="isSelected"></slot>
@@ -98,10 +110,14 @@
   import GTextField from "../GInput/GTextField";
   import {GListItemContent, GListItemSubText, GListItemText} from "../GList/GListFunctionalComponent";
   import GIcon from "../GIcon/GIcon";
+  import {getLabel} from "../GInput/GInputField";
+  import {getList, getSelections} from "./GSelect";
+  import GChip from "../GChip/GChip";
 
   export default {
     name: "GSelect",
     components: {
+      GChip,
       GIcon,
       GListItem,
       GTextField,
@@ -165,7 +181,19 @@
       label:{
         type: String,
         default: 'Label'
-      }
+      },
+      prefix:{
+          type: String,
+            default:''},
+        suffix:{
+          type: String,
+          default:''},
+        rules: Array,
+        type:{
+          type: String,
+          default: 'text'
+        }
+
       },
 
       //list props
@@ -186,6 +214,10 @@
         })
       },
       //item textfieldValue props
+      chips:{
+        type: Boolean,
+        default: false
+      },
       items: Array,
       itemText: {
         type: String,
@@ -207,99 +239,32 @@
       const {internalValue: selectedItem} = makeSelectable(props, context)
 
       //list rendered computed
-      const options = computed(() => {
-        if (!props.multiple) {
-          let items = _.cloneDeep(props.items);
-          if (!state.searchText) {
-            return items;
-          }
-          const searchText = state.searchText.trim().toLowerCase();
-          if (!searchText) {
-            return items;
-          }
-          //Search text match
-          let _options = items.filter(item => {
-            const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
-            return text.startsWith(searchText);
-          });
-          _options = _options.concat(items.filter(item => {
-            const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
-            return !text.startsWith(searchText) && text.includes(searchText);
-          }));
-          return _options;
-        } else {
-          if (props.allowDuplicates) {
-            return props.items;
-          }
-          if (props.returnObject) {
-            return props.items.filter(item => !selectedItem.value.includes(item));
-          }
-          return props.items.filter(item => {
-            if (item[props.itemText]) {
-              return !selectedItem.value.find(value => value === item[props.itemValue]);
-            }
-            return selectedItem.value.find(value => value === item);
-          });
-        }
-
-      })
+      const options =  getList(props, selectedItem, state)
       const {searchText} = toRefs(state)
 
       //textfield selection computed
-      const fieldItem = computed(() => {
-        if (!props.multiple) {
-          let item = selectedItem.value;
-          if (!item) {
-            return '';
-          }
-          if (typeof item === 'string' || typeof item === 'number') {
-            return item;
-          }
-          if (!props.returnObject) {
-            item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]);
-          }
-          return {text: item[props.itemText], value: item[props.itemValue]};
-        } else {
-          let list = selectedItem.value
-          if (props.itemText && props.itemValue) {
-            if (!props.returnObject) {
-              list = list.map(value => {
-                return props.items.find(item => {
-                  if (item[props.itemText]) {
-                    return item[props.itemValue] === value;
-                  }
-                  return item === value;
-                });
-              });
-            }
-            return list.map(item => {
-              if (item[props.itemText]) {
-                return {text: item[props.itemText], value: item[props.itemValue]};
-              }
-              return item;
-            });
-          }
-          return props.chips ? list : list.join(', ');
-        }
-      })
+      const fieldItem = getSelections(props, selectedItem)
       //textfield value computed
-      const textfieldValue = computed(() => {
+      const selections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
             return item ? (item['text'] || item['value'] || item) : ''
-          }).join(', ')
-        } else if (props.chips) {
-          return ''
-        } else {
+          })
+        }else {
           return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
         }
 
       })
-
+      const textfieldValue = computed(() => {
+        props.multiple ? selections.value.join(', ') : selections
+      })
       function clearSelection() {
         selectedItem.value = props.multiple ? [] : ''
         state.searchText = ''
       }
+      //label computed
+      const isValidInput = ref(true)
+      const {labelClasses, labelStyles, isDirty} = getLabel(props, textfieldValue, isValidInput, showOptions, 'tf-label__active',{ 'color': 'red' })
         //menu props computed
       const {
         closeOnClick,
@@ -313,14 +278,24 @@
       //dropdown icon
       const iconStyle = computed(() => (showOptions.value) ? {'transform':'rotateZ(180deg)'} : {})
       const iconColor = computed(() => (showOptions.value) ? 'blue' : null)
+      //chips click
+      function onChipCloseClick(index){
+        props.multiple ? selectedItem.value.splice(index, 1) : selectedItem.value = ''
+      }
       return {
+        //
         selectedItem,
-        textfieldValue,
+        selections,
         options,
         fieldItem,
+        textfieldValue,
         searchText,
         clearSelection,
         showOptions,
+        //label
+        labelClasses,
+        labelStyles,
+        isDirty,
         //menu props
         ...{
           closeOnClick,
@@ -333,20 +308,24 @@
         nudgeBottom,
         iconStyle,
         iconColor,
+        onChipCloseClick,
       }
     }
   }
 </script>
-<style scoped >
-  /*todo: select css*/
+<style>
   .g-checkbox-wrapper {
     margin: 2px 4px;
   }
-/*todo: dropdown icon transform*/
   .dropDown{
     transition: transform 0.4s;
   }
-
-  /*fixme:text field filled css fix*/
-
+  .tf-input{
+    color: #1d1d1d;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  input:first-of-type{
+    width: 0;
+  }
 </style>

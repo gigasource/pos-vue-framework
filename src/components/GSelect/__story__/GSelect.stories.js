@@ -24,6 +24,7 @@ export const GSelectSingle = () => ({
     counter: {type:[String, Number], default: Number('counter', 25) },
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
+    chips: { default: boolean('chips', false) },
     mandatory:{ default: boolean('mandatory', false) },
   },
   data() {
@@ -56,6 +57,7 @@ export const GSelectSingle = () => ({
  :persistent="persistent"
  :counter="counter"
  :placeholder="placeholder"
+ :chips="chips"
  
  v-model="selected" 
   >
@@ -69,9 +71,11 @@ export const GSelectMultiple = () => ({
     label:{ default: text('Input label', 'Label') },
     placeholder:{ default: text('Input placeholder', '') },
     allowDuplicates:{type: Boolean,default: boolean('allow duplicates', true) } ,
+    chips:{default: boolean('chips', false) },
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
     mandatory:{ default: boolean('mandatory', false) },
+    clearable:{ default: boolean('mandatory', false) },
   },
   data() {
     return{
@@ -90,8 +94,10 @@ export const GSelectMultiple = () => ({
       :items="items" 
       :item-text="itemText" 
       :item-value="itemValue" 
+      :chips="chips"
       :label="label" 
       :placeholder="placeholder" 
+      :clearable="clearable"
        multiple 
       :allow-duplicates="allowDuplicates"
       :mandatory="mandatory"

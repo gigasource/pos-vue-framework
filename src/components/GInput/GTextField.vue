@@ -7,31 +7,37 @@
 			<legend :style="legendStyles">{{label}}</legend>
 			<div class='tf' :class="tfErrClasses">
 				<div class="tf-prepend__inner" @click="onClickPrependInner">
-					<slot name="prepend-inner"></slot>
+					<slot name="prependInner">
+						<g-icon>{{prependIcon}}</g-icon>
+					</slot>
 				</div>
 				<div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
-					<input id="input" type="text"
-								 class="tf-input"
-								 :style="inputErrStyles"
-								 :type="type"
-								 :label="label"
-								 v-model="internalValue"
-								 :placeholder="placeholder"
-								 :readonly="readOnly"
-								 ref="input"
-								 @change="onChange"
-								 @focus="onFocus"
-								 @blur="onBlur"
-								 @keydown="onKeyDown">
-					<label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">
-						<slot name="label">{{label}}</slot>
-					</label>
+					<div class="input">
+						<slot name="inputSlot"></slot>
+						<input id="input" type="text"
+									 class="tf-input"
+									 :style="inputErrStyles"
+									 :type="type"
+									 :label="label"
+									 v-model="internalValue"
+									 :placeholder="placeholder"
+									 :readonly="readOnly"
+									 ref="input"
+									 @change="onChange"
+									 @focus="onFocus"
+									 @blur="onBlur"
+									 @keydown="onKeyDown"/>
+					</div>
+					<slot name="label">
+						<label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
+					</slot>
 				</div>
 				<div v-if="suffix" class="tf-affix">{{suffix}}</div>
 				<div class="tf-append__inner" @click="onClickAppendInner">
-					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick" alt="clearIcon">
+					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click.stop="onClearIconClick" alt="clearIcon">
 					<slot name="append-inner" :isFocused="isFocused" :isDirty="isDirty">
+						<g-icon>{{appendIcon}}</g-icon>
 					</slot>
 				</div>
 				<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
@@ -50,10 +56,12 @@
 <script>
   import { ref, computed } from '@vue/composition-api';
   import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputField';import VueTheMask from 'vue-the-mask'
+	import GIcon from "../GIcon/GIcon";
 
   export default {
     name: 'GTextField',
-    props: {
+		components: {GIcon},
+		props: {
       ...{//display props
         label: String,
         placeholder: String,
@@ -93,7 +101,7 @@
       flat: Boolean,
 
       // basic props
-      value: [String, Number],
+      value: [String, Number, Array],
       type: {
         type: String,
         default: 'text',
