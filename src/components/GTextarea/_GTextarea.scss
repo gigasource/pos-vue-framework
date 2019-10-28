@@ -9,6 +9,7 @@
     outline: none;
     padding: 7px 0 8px;
     width: 100%;
+    resize: vertical;
     // inherit from input
     border: none;
     font-family: "Muli", sans-serif;
@@ -24,6 +25,13 @@
     textarea {
       resize: none;
     }
+  }
+
+  .tf-append__inner,
+  .tf-append__outer,
+  .tf-prepend__inner,
+  .tf-append__outer{
+    align-items: baseline;
   }
 }
 

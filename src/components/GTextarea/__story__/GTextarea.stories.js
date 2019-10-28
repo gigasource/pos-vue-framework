@@ -19,13 +19,13 @@ export const Textarea = () => ({
     autoGrow: {default: boolean('auto grow', false)},
     noResize: {default: boolean('no resize', false)},
     rows: {type: Number, default: number('rows', 3)},
-    rowHeight: {type: Number, default: number('rowHeight', 30)}
+    rowHeight: {type: Number, default: number('rowHeight', 30)},
   },
   template: `<div style="width: 600px"><g-textarea :auto-grow="autoGrow" :no-resize="noResize" :rows="rows" :rowHeight="rowHeight"></g-textarea></div>`,
 })
 
 export const InheritFeature = () => ({
-  components: {GTextarea,GIcon},
+  components: {GTextarea, GIcon},
   data() {
     return {
       text1: '',
@@ -41,7 +41,11 @@ export const InheritFeature = () => ({
     }
   },
   props: {
-    label: {default: text('Input label', 'Label')},
+    autoGrow: {default: boolean('auto grow', false)},
+    noResize: {default: boolean('no resize', false)},
+    rows: {type: Number, default: number('rows', 5)},
+    rowHeight: {type: Number, default: number('rowHeight', 24)},
+    label: {default: text('Input label', '')},
     placeholder: {default: text('Input placeholder', '')},
     filled: {default: boolean('filled', false)},
     solo: {default: boolean('solo', false)},
@@ -56,9 +60,16 @@ export const InheritFeature = () => ({
     prefix: {default: text('prefix', '')},
     suffix: {default: text('suffix', '')},
   },
-  template: `<g-textarea :label="label"
+  template: `<g-textarea   :label="label"
+                           :auto-grow="autoGrow"
+                           :no-resize="noResize"
+                           :rows="rows"
+                           :row-height="rowHeight"
                            :clearable="clearable"
+                           
                            prepend-icon="person"
+                           append-icon="person"
+                           
                            :filled="filled"
                            :solo="solo"
                            :outlined="outlined"
@@ -75,15 +86,15 @@ export const InheritFeature = () => ({
                            :rules="[rules.required, rules.counter]">
 
                           
-                          <template v-slot:prepend-outer>
+<!--                          <template v-slot:prepend-outer>-->
 <!--                          <g-icon>mdi-glasses</g-icon>-->
-                          </template>
-                          <template v-slot:append-inner>
-                          <g-icon>mdi-ninja</g-icon>
-                          </template>
-                          <template v-slot:append-outer>
+<!--                          </template>-->
+<!--                          <template v-slot:append-inner>-->
+<!--                          <g-icon>mdi-ninja</g-icon>-->
+<!--                          </template>-->
+<!--                          <template v-slot:append-outer>-->
 <!--                          <g-icon>mdi-coffee</g-icon>-->
-                          </template>
+<!--                          </template>-->
               </g-textarea>`,
 })
 

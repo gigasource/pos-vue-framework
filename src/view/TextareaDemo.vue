@@ -1,7 +1,16 @@
 <template>
   <div style="width: 600px">
     <g-text-field v-model="value" solo outlined filled prependIcon="person" clearable></g-text-field>
-    <g-textarea v-model="value" no-resize solo outlined filled prependIcon="person" clearable></g-textarea>
+    <g-textarea v-model="value"
+
+                solo
+                outlined
+                filled
+                prependIcon="person"
+                prependInnerIcon="person"
+                appendIcon="person"
+                appendOuterIcon="person"
+                clearable></g-textarea>
     <form>
       <label for="textarea">Primitive textarea</label>
       <div>

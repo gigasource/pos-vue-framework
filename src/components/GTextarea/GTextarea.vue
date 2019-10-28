@@ -2,13 +2,17 @@
   <div class="tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp"
        @mousedown="onMouseDown">
     <div class="tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-      <slot name="prepend-outer"></slot>
+      <slot name="prepend-outer">
+        <g-icon>{{prependIcon}}</g-icon>
+      </slot>
     </div>
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
       <div class='tf' :class="tfErrClasses">
         <div class="tf-prepend__inner" @click="onClickPrependInner">
-          <slot name="prepend-inner"></slot>
+          <slot name="prepend-inner">
+            <g-icon>{{prependInnerIcon}}</g-icon>
+          </slot>
         </div>
         <div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
@@ -32,8 +36,12 @@
         </div>
         <div v-if="suffix" class="tf-affix">{{suffix}}</div>
         <div class="tf-append__inner" @click="onClickAppendInner">
-          <div v-if="isDirty && clearable" @click="onClearIconClick"><g-icon class="g-icon__link">cancel</g-icon></div>
-          <slot name="append-inner"></slot>
+          <div v-if="isDirty && clearable" @click="onClearIconClick">
+            <g-icon class="g-icon__link">cancel</g-icon>
+          </div>
+          <slot name="append-inner">
+            <g-icon>{{appendIcon}}</g-icon>
+          </slot>
         </div>
         <div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
         <div class="tf-hint" v-else :class="hintClasses">{{hint}}</div>
@@ -43,8 +51,9 @@
       </div>
     </fieldset>
     <div class="tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
-
-      <slot name="append-outer"></slot>
+      <slot name="append-outer">
+        <g-icon>{{appendOuterIcon}}</g-icon>
+      </slot>
     </div>
   </div>
 </template>
@@ -67,8 +76,10 @@
       ...{//display props
         label: String,
         placeholder: String,
-        appendIcon: String,
         prependIcon: String,
+        prependInnerIcon: String,
+        appendIcon: String,
+        appendOuterIcon: String,
         prefix: {
           type: String,
           default: ''
@@ -179,8 +190,8 @@
 
         input.style.height = '0'
         const height = input.scrollHeight
-        const minHeight = parseInt(props.rows, 10) * parseFloat(props.rowHeight)
-        input.style.height = Math.max(minHeight,height) + 10 + 'px'
+        const minHeight = (parseInt(props.rows, 10) + 1) * parseFloat(props.rowHeight)
+        input.style.height = Math.max(minHeight, height) - 10 + 'px'
       }
 
       onMounted(() => {
@@ -261,7 +272,6 @@
       'g-textarea__no-resize': props.noResize || props.autoGrow,
     }))
   }
-
 
 
 </script>

@@ -135,7 +135,6 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onChange(event) {
-    console.log('change')
     context.emit('change', event)
   }
 
