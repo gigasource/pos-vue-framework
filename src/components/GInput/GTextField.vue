@@ -1,14 +1,16 @@
 <template>
 	<div class="tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
 		<div class="tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-			<slot name="prepend-outer"></slot>
+			<slot name="prepend-outer">
+				<g-icon>{{prependIcon}}</g-icon>
+			</slot>
 		</div>
 		<fieldset>
 			<legend :style="legendStyles">{{label}}</legend>
 			<div class='tf' :class="tfErrClasses">
 				<div class="tf-prepend__inner" @click="onClickPrependInner">
 					<slot name="prepend-inner">
-						<g-icon>{{prependIcon}}</g-icon>
+						<g-icon>{{prependInnerIcon}}</g-icon>
 					</slot>
 				</div>
 				<div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
@@ -34,7 +36,7 @@
 				<div class="tf-append__inner" @click="onClickAppendInner">
 					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click.stop="onClearIconClick" alt="clearIcon">
 					<slot name="append-inner">
-						<g-icon>{{appendIcon}}</g-icon>
+						<g-icon>{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
 				<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
@@ -43,8 +45,9 @@
 			</div>
 		</fieldset>
 		<div class="tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
-
-			<slot name="append-outer"></slot>
+			<slot name="append-outer">
+				<g-icon>{{appendIcon}}</g-icon>
+			</slot>
 		</div>
 
 	</div>
@@ -64,6 +67,8 @@
         placeholder: String,
         appendIcon: String,
         prependIcon: String,
+				prependInnerIcon: String,
+				appendInnerIcon: String,
         prefix: {
           type: String,
           default: ''
