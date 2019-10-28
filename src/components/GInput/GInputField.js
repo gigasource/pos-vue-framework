@@ -131,6 +131,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onClearIconClick(event) {
+    console.log('ok')
     internalValue.value = ''
     context.emit('clear', event)
     isValidInput.value = true;
