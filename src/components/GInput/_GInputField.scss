@@ -50,9 +50,6 @@ input[type=text] {
     }
   }
 
-  &-readonly {
-    pointer-events: none;
-  }
 }
 
 .tf {
@@ -120,7 +117,6 @@ input[type=text] {
 
     &__active {
       transform: translateY(-18px) scale(0.75);
-      background-color: white;
     }
   }
 
@@ -142,7 +138,7 @@ input[type=text] {
   &-error,
   &-counter {
     position: absolute;
-    bottom: -18px;
+    bottom: -22px;
     font-size: 12px;
     font-weight: 400;
     line-height: 1.34;
@@ -167,15 +163,20 @@ input[type=text] {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 4px;
+  margin: 4px 0 4px;
 }
 
 .tf-prepend__inner,
 .tf-append__inner {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  margin-bottom: 4px;
+  display: inline-flex;
+  align-items: center;
+  margin: 4px 0 0 4px;
+  line-height: 1;
+  user-select: none;
+  img{
+    max-width: 48px;
+    max-height: 48px;
+  }
 }
 
 .tf-icon__active {
@@ -297,6 +298,10 @@ input[type=text] {
     width: auto;
     padding: 1px;
   }
+  .tf-label__active {
+    transform: translateY(-28px)  translateX(-8px) scale(0.75);
+    background-color: transparent;
+  }
 
   .tf-prepend__inner.tf-icon__active ~ .tf-label {
     left: calc(4% + 8px);
@@ -322,9 +327,16 @@ input[type=text] {
 
 .tf__rounded {
   &.tf__solo .tf,
-  &.tf__outlined .tf,
+  &.tf__outlined .tf{
+    border-radius: 9999px;
+    .tf-label__active {
+      transform: translateY(-20px)  translateX(-6px) scale(0.75);
+      background-color: transparent;
+    }
+  }
   &.tf__filled .tf {
     border-radius: 9999px;
+
   }
 
   &.tf__solo .tf-input {
@@ -375,7 +387,22 @@ input[type=text] {
 
 .tf__shaped {
   &.tf__solo .tf,
-  &.tf__outlined .tf,
+  &.tf__outlined{
+    .tf{
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      .tf-label__active {
+        transform: translateY(-20px) translateX(-15px) scale(0.75);
+        background-color: transparent;
+      }
+    }
+    &.tf__filled{
+      .tf-label__active {
+        transform: translateY(-20px) translateX(-8px) scale(0.75);
+        background-color: transparent;
+      }
+    }
+  }
   &.tf__filled .tf {
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;

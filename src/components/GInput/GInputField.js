@@ -9,7 +9,7 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   //Activate label
   const isDirty = computed(() => !!internalValue.value)
   const isLabelActive = computed(() => {
-    return isDirty.value || isFocused.value;
+    return isDirty.value || isFocused.value|| !!props.placeholder;
   })
   const labelClasses = computed(() => isLabelActive.value ? { labelActiveClass: true } : {})
   //Label transform when textfield has prefix, prepend
@@ -20,7 +20,7 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   // ...!isValidInput.value && inValidStyle}))
   {
 
-    if(isLabelActive.value){
+    if(isLabelActive.value && prefixWidth.value){
       if(props.outlined){
         if(props.filled){
           return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }
@@ -29,8 +29,11 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
           return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` }
         }
       }
+      else if(props.filled){
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)` }
+      }
       else{
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +5}px)  scale(0.75)` }
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +7}px)  scale(0.75)` }
       }
     }
     !isValidInput.value && inValidStyle
@@ -80,18 +83,18 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 export function getSlotEventListeners(context) {
   //slot events
   return {
-    onClickPrependOuter: () => context.emit('click :prepend-outer'),
-    onClickPrependInner: () => context.emit('click :prepend-inner'),
-    onClickAppendOuter: () => context.emit('click :append-outer'),
-    onClickAppendInner: () => context.emit('click :append-inner'),
+    onClickPrependOuter: () => context.emit('click:prepend-outer'),
+    onClickPrependInner: () => context.emit('click:prepend-inner'),
+    onClickAppendOuter: () => context.emit('click:append-outer'),
+    onClickAppendInner: () => context.emit('click:append-inner'),
   }
 }
 
 export function getSlotBsEventListeners(context) {
   //slot events
   return {
-    onClickPrepend: () => context.emit('click :prepend-outer'),
-    onClickAppend: () => context.emit('click :append-outer'),
+    onClickPrepend: () => context.emit('click:prepend-outer'),
+    onClickAppend: () => context.emit('click:append-outer'),
   }
 }
 
@@ -133,8 +136,8 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   function onClearIconClick(event) {
     console.log('ok')
     internalValue.value = ''
-    context.emit('clear', event)
     isValidInput.value = true;
+    context.emit('click:clearIcon', event)
   }
 
   function onChange(event) {

@@ -6,7 +6,7 @@ import plugin from '@vue/composition-api'
 Vue.use(plugin)
 
 // Import your components after all of above import
-import GTextFieldFunctional from '../GTextFieldFunctional';
+import GTextFieldFunctional from '../GTextField';
 
 
 describe('GTextField', function () {
@@ -18,7 +18,7 @@ describe('GTextField', function () {
 
   it('validate test', async function (done) {
     let vm = new Vue({
-      template: `<g-text-field-functional label="Has prefix"
+      template: `<g-text-field label="Has prefix"
                                filled
                                clearable
                                counter="25"
@@ -41,7 +41,7 @@ describe('GTextField', function () {
         <template v-slot:append-outer >
           <img src="../../../assets/delivery/avatar.svg" alt="avatar">
         </template>
-      </g-text-field-functional>`,
+      </g-text-field>`,
       components: { GTextFieldFunctional },
       data: () => {
         return {
@@ -68,14 +68,14 @@ describe('GTextField', function () {
   })
   it('should render wrapper', function () {
     let vm = new Vue({
-      template:`<g-text-field-functional filled></g-text-field-functional>`,
+      template:`<g-text-field filled></g-text-field>`,
       components:{ GTextFieldFunctional}
     }).$mount() ;
     expect(vm.$el.getElementsByClassName('tf__filled')).toBeTruthy()
   })
   it('should render hint, activate, deactivate hint', function () {
     let vm = new Vue({
-      template:`<g-text-field-functional hint="Test hint"></g-text-field-functional>`,
+      template:`<g-text-field hint="Test hint"></g-text-field>`,
       components:{ GTextFieldFunctional}
     }).$mount() ;
     const input = vm.$el.querySelector('input');
@@ -95,7 +95,7 @@ describe('GTextField', function () {
   ;
   it('should render label, transform label when input focused', function () {
     let vm = new Vue({
-      template:`<g-text-field-functional label="Test label"></g-text-field-functional>`,
+      template:`<g-text-field label="Test label"></g-text-field>`,
       components:{ GTextFieldFunctional}
     }).$mount() ;
     const input = vm.$el.querySelector('input');
@@ -113,7 +113,7 @@ describe('GTextField', function () {
   });
   it('should render prefix, transform label align to prefix', function () {
     let vm = new Vue({
-      template:`<g-text-field-functional label="Test label" prefix="Prefix"></g-text-field-functional>`,
+      template:`<g-text-field label="Test label" prefix="Prefix"></g-text-field>`,
       components:{ GTextFieldFunctional}
     }).$mount();
     const prefix = vm.$el.querySelector('.tf-affix');
