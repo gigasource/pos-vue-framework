@@ -1,7 +1,7 @@
 <template>
 	<button :class="classes" :style="styles" @click="onClick">
 		<span class="g-btn__content">
-			<slot>{{text}}</slot>
+			<slot></slot>
 		</span>
 	</button>
 </template>
@@ -20,7 +20,6 @@
         disabled: Boolean,
         rounded: Boolean,
         text: Boolean,
-        flat: Boolean,
         fab: Boolean,
         tile: Boolean,
         icon: Boolean,
@@ -170,11 +169,8 @@
 
       return {
         classes,
-        contained,
         styles,
-        onClick,
-        isRound,
-        isFlat
+        onClick
       }
     }
   }
