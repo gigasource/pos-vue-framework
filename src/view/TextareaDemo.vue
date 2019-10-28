@@ -1,11 +1,11 @@
 <template>
   <div style="width: 600px">
-    <g-text-field-functional solo outlined prependIcon="person" type="password"></g-text-field-functional>
-    <g-tear no-resize solo outlined prependIcon="person" clearable></g-tear>
+    <g-text-field v-model="value" solo outlined filled prependIcon="person" clearable></g-text-field>
+    <g-textarea v-model="value" no-resize solo outlined filled prependIcon="person" clearable></g-textarea>
     <form>
       <label for="textarea">Primitive textarea</label>
       <div>
-        <textarea v-model="value" id="textarea"></textarea>
+        <textarea id="textarea"></textarea>
         <p>Message: {{value}}</p>
       </div>
     </form>
@@ -13,14 +13,13 @@
 </template>
 
 <script>
-  import GTear from "../components/GTextarea/GTear";
+  import GTextarea from "../components/GTextarea/GTextarea";
   import GIcon from "../components/GIcon/GIcon";
   import GTextField from "../components/GInput/GTextField";
-  import GTextFieldFunctional from "../components/GInput/GTextFieldFunctional";
 
   export default {
     name: "Textarea",
-    components: {GTextFieldFunctional, GTextField, GIcon, GTear},
+    components: {GTextarea, GTextField, GIcon},
     data: function () {
       return {
         value: 'attack'

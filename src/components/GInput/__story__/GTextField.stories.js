@@ -1,5 +1,5 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions'
+import {boolean, text, withKnobs} from '@storybook/addon-knobs';
+import {action} from '@storybook/addon-actions'
 
 //
 export default {
@@ -24,24 +24,25 @@ export const TextField = () => ({
     }
   },
   props: {
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    clearable: { default: boolean('clearable', false) },
-    hint: { default: text('hint', 'Hint') },
-    persistent: { default: boolean('persistent', false) },
-    counter: {type:[String, Number], default: Number('counter', 25) },
-    prefix: { default: text('prefix', '')},
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
+    hint: {default: text('hint', 'Hint')},
+    persistent: {default: boolean('persistent', false)},
+    counter: {type: [String, Number], default: Number('counter', 25)},
+    prefix: {default: text('prefix', '')},
     suffix: {default: text('suffix', '')},
     type: {default: text('type', 'text')},
   },
   template: `<g-text-field :label="label"
                            :clearable="clearable"
+                           prepend-icon="person"
                            :filled="filled"
                            :solo="solo"
                            :outlined="outlined"
@@ -58,9 +59,7 @@ export const TextField = () => ({
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">
 
-                          <template v-slot:prepend-inner>
-                          <g-icon>person</g-icon>
-                          </template>
+                          
                           <template v-slot:prepend-outer>
 <!--                          <g-icon>mdi-glasses</g-icon>-->
                           </template>
