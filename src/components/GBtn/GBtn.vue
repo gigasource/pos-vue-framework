@@ -1,5 +1,5 @@
 <template>
-	<button :class="classes" :style="styles" @click="onClick">
+	<button v-ripple :class="classes" :style="styles" @click="onClick">
 		<span class="g-btn__content">
 			<slot></slot>
 		</span>
@@ -9,9 +9,13 @@
 <script>
   import { computed } from '@vue/composition-api';
   import { convertToGradient, convertToUnit } from '../../utils/helpers';
+  import Ripple from '../../directives/ripple/ripple';
 
   export default {
     name: 'GBtn',
+    directives: {
+      Ripple
+    },
     props: {
       //classes
       ...{
@@ -62,7 +66,6 @@
       let classes = computed(() => {
         let _classes = {
           'g-btn': true,
-          'waves-effect': true,
           'g-btn__raised': props.raised,
           'g-btn__flat': isFlat.value,
           'g-btn__tile': props.tile,
@@ -87,7 +90,7 @@
         };
 
         let size = '';
-        let iconSize = '';
+
         if (props.large) {
           size = 'g-size__large';
         } else if (props.small) {
@@ -131,7 +134,7 @@
       });
 
       let isRound = computed(() => {
-        return props.icon|| props.fab;
+        return props.icon || props.fab;
       });
 
       let isFlat = computed(() => {
@@ -146,7 +149,6 @@
         let _styles = {
           ...props.textColor && { color: props.textColor.replace('-', '') },
           ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
-          //...props.color && { backgroundColor: props.color.replace('-', ''), color: '#fff' },
           ...props.width && { width: convertToUnit(props.width) },
           ...props.height && { height: convertToUnit(props.height) },
           ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
@@ -170,7 +172,7 @@
       return {
         classes,
         styles,
-        onClick
+        onClick,
       }
     }
   }
