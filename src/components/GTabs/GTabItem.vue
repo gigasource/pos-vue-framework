@@ -20,16 +20,39 @@
       const model = inject('model');
       const show = computed(() => (model.value === props.item));
 
-      const reverse = inject('reverse');
-      const transition = ref(null);
+      // const reverse = inject('reverse');
+      // const transition = ref(null);
 
-      watch(() => reverse.value, (newVal) => {
-        if(newVal) {
-          transition.value = 'g-tab-transition-reverse';
-				} else {
-          transition.value = 'g-tab-transition';
-				}
-			}, {flush: 'pre'});
+			const transition = inject('transition');
+
+      // watch(() => model.value, (newVal, oldVal) => {
+      //   const newIndex = props.items.findIndex(item => item === newVal);
+      //   const oldIndex = props.items.findIndex(item => item === oldVal);
+      //   const index = props.items.findIndex(item => item === props.item);
+      //   if (newIndex > index) {
+      //     transition.value = 'g-tab-transition-reverse';
+			// 	} else {
+      //     transition.value = 'g-tab-transition';
+			// 	}
+      //   if (oldIndex === index) {
+      //     if (newIndex > oldIndex ) {
+      //       transition.value = 'g-tab-transition';
+      //     } else {
+      //       transition.value = 'g-tab-transition-reverse';
+      //     }
+			// 	}
+      //   console.log(transition.value);
+			// });
+
+			// const transition = computed(() => {
+      //   const newIndex = props.items.findIndex(item => item === model.value);
+      //   const index = props.items.findIndex(item => item === props.item);
+      //   if (newIndex > index) {
+      //     return 'g-tab-transition-reverse';
+      //   } else {
+      //     return 'g-tab-transition';
+      //   }
+			// });
 
       return {
         show,

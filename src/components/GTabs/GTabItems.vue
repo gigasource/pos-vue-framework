@@ -18,15 +18,28 @@
       const { model } = getVModel(props, context);
       provide('model', model);
 
-			const reverse = ref(false);
-			provide('reverse', reverse);
+      const transition = ref('g-tab-transition');
+      provide('transition', transition);
 
-			// TODO: reverse transition
-			watch(() => model.value, (newVal, oldVal) => {
-			  const newIndex = props.items.findIndex(item => item === newVal);
-			  const oldIndex = props.items.findIndex(item => item === oldVal);
-			  reverse.value = (newIndex < oldIndex);
-			}, {flush: 'pre'})
+      watch(() => model.value, (newVal, oldVal) => {
+        const newIndex = props.items.findIndex(item => item === newVal);
+        const oldIndex = props.items.findIndex(item => item === oldVal);
+        if (newIndex < oldIndex) {
+          transition.value = 'g-tab-transition-reverse';
+        } else {
+          transition.value = 'g-tab-transition';
+        }
+      }, { flush: 'pre' })
+
+      // const reverse = ref(false);
+      // provide('reverse', reverse);
+
+      // TODO: reverse transition
+      // watch(() => model.value, (newVal, oldVal) => {
+      //   const newIndex = props.items.findIndex(item => item === newVal);
+      //   const oldIndex = props.items.findIndex(item => item === oldVal);
+      //   reverse.value = (newIndex < oldIndex);
+      // }, {flush: 'pre'})
     }
   }
 </script>

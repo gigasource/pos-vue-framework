@@ -1,5 +1,5 @@
 <template>
-	<g-layout vertical>
+	<g-layout :vertical="!vertical">
 		<div :class="tabsClasses" :style="tabsStyles">
 			<!--			TODO: surround with slider group for handling overflow tabs -->
 			<div class="g-tabs-bar" ref="itemsRef" :class="barClasses" :style="barStyles">
@@ -24,10 +24,9 @@
   import getVModel from '../../mixins/getVModel';
   import GTab from '../GTabs/GTab';
   import GLayout from '../GLayout/GLayout';
-  import { computed, provide, watch, ref, reactive, onMounted } from '@vue/composition-api'
+  import { computed, onMounted, provide, reactive, ref, watch } from '@vue/composition-api'
   import { find } from 'lodash'
-  import { convertToUnit } from '../../utils/helpers';
-  import colorHandler from '../../utils/helpers';
+  import colorHandler, { convertToUnit } from '../../utils/helpers';
   import { colors } from '../../utils/colors';
   import GTabItem from './GTabItem';
 
@@ -88,8 +87,11 @@
         'width': '90px',
         'height': '2px',
         'top': '46px',
+				'right': 'auto',
         'left': '0',
-				'background-color': 'currentColor'
+				'bottom': 'auto',
+				'background-color': 'currentColor',
+				'transition-property': 'left'
       });
 
       const itemsRef = ref(null);
@@ -103,9 +105,33 @@
         sliderStyles['background-color'] = props.sliderColor ? (getColorType(props.sliderColor) === 'style' ? props.sliderColor : colors[props.sliderColor.trim().split(' ').join('-')]) : 'currentColor';
       }
 
-      watch(() => [model.value, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
+      watch(() => [props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
         calculateSliderStyle();
       }, { lazy: true });
+
+      watch(() => model.value, () => {
+        const parent = context.refs.itemsRef;
+        const activeTab = find(context.refs.itemsRef.children, i => i.classList.contains('g-tab__active'));
+        if (props.vertical) {
+          if (activeTab.offsetTop < +sliderStyles.top.replace("px", "")) {
+            sliderStyles['transition-property'] = 'bottom';
+          } else {
+            sliderStyles['transition-property'] = 'top';
+          }
+          sliderStyles.bottom = convertToUnit(parent.offsetHeight - activeTab.offsetHeight - activeTab.offsetTop);
+          sliderStyles.top = convertToUnit(activeTab.offsetTop);
+          sliderStyles.height = 'auto';
+				} else {
+          if (activeTab.offsetLeft < +sliderStyles.left.replace("px", "")) {
+            sliderStyles['transition-property'] = 'right';
+          } else {
+            sliderStyles['transition-property'] = 'left';
+          }
+          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft);
+          sliderStyles.left = convertToUnit(activeTab.offsetLeft);
+          sliderStyles.width = 'auto';
+				}
+			}, {lazy: true});
 
       onMounted(() => {
         context.root.$nextTick(() => {
