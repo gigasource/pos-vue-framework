@@ -12,7 +12,8 @@
 				<g-btn v-for="(item, index) in items"
 							 :key="index"
 							 @click="toggle(item)"
-							 :active="active(item)">
+							 :active="active(item)"
+							 :class="[active(item) ? activeClass : {}]">
 					{{item.text}}
 				</g-btn>
 			</template>
@@ -57,8 +58,8 @@
     data: () => {
       return {
         model: null,
-        multiple: false,
-        mandatory: false,
+        multiple: true,
+        mandatory: true,
         showArrows: true,
         prevIcon: false,
         nextIcon: false,
@@ -93,5 +94,9 @@
 <style scoped>
 	.demo-wrapper * {
 		margin: 16px;
+	}
+	.button-active {
+		background-color: red;
+		color: white;
 	}
 </style>
