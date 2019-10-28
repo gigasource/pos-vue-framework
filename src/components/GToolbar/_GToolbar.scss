@@ -1,0 +1,161 @@
+.g-toolbar {
+  display: block;
+  flex: 1 1 auto;
+  max-width: 100%;
+  contain: layout;
+  border-radius: 0 0 16px 16px;
+
+  &-content,
+  &-extension {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 0;
+    padding: 8px 16px;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .g-btn {
+      height: 100% !important;
+      min-height: 64px;
+
+      &.g-btn-icon {
+        width: 48px !important;
+        min-width: 48px;
+      }
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    > .g-btn {
+      &:first-child {
+        margin-left: -12px;
+
+        + *:not(button) {
+          padding-left: 20px;
+        }
+      }
+
+      &:last-child {
+        margin-right: -12px;
+      }
+    }
+
+    > .g-tabs {
+      height: inherit;
+      margin-top: -4px;
+      margin-bottom: -4px;
+
+      .g-tab {
+        height: inherit;
+
+        &:first-child {
+          margin-left: -16px;
+        }
+
+        &:last-child {
+          margin-right: -16px;
+        }
+      }
+    }
+  }
+
+  &-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    contain: strict;
+    border-radius: inherit;
+
+    .g-image {
+      border-radius: inherit;
+    }
+  }
+
+  &__absolute {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+  }
+
+  &__bottom {
+    position: absolute;
+    top: initial;
+    bottom: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+  }
+
+  &__dense {
+    .g-toolbar-content {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  &__prominent {
+    .g-btn {
+      align-self: flex-start;
+    }
+
+    .g-toolbar-content {
+      align-items: flex-end;
+    }
+  }
+
+  &__floating {
+    .g-toolbar-content {
+      display: inline-flex;
+    }
+  }
+
+  &__tile {
+    border-radius: 0;
+  }
+
+  &__collapse {
+    max-width: 112px;
+    overflow: hidden;
+
+    .g-toolbar-content > span,
+    .g-toolbar-extension {
+      display: none;
+    }
+  }
+
+  //custom materialize search bar in toolbar
+  .tf-wrapper {
+    margin: 0;
+    background-color: rgba(230, 230, 230, 0.3);
+    color: white;
+    border-radius: 4px;
+
+    .tf-input,
+    .tf-input::placeholder {
+      color: inherit;
+      background-color: inherit;
+    }
+
+    &:hover {
+      background-color: rgba(230, 230, 230, 0.12);
+    }
+
+    .tf-prepend__inner {
+      margin: 8px;
+    }
+
+    .tf-prepend__outer,
+    .tf-append__outer {
+      margin: 0;
+    }
+  }
+}
