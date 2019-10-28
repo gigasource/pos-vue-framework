@@ -176,8 +176,7 @@
   import GButton from '../components/GButton/GButton';
   import GCard from '../components/GCard/GCard';
   import GCardTitle from '../components/GCard/GCardTitle';
-  import GCardActions from '../components/GCard/GCardActions';
-  import GCardText from '../components/GCard/GCardText';
+  import {GCardText, GCardActions} from '../components/GCard/GCardFunctionalComponent'
 
   export default {
     name: 'DialogDemo',

@@ -3,13 +3,11 @@ import { action } from '@storybook/addon-actions';
 import GCard from '../GCard';
 import GBtn from '../../GBtn/GBtn';
 import GImg from '../../GImg/GImg';
-import GCardText from '../GCardText';
 import GCardTitle from '../GCardTitle';
-import GCardSubtitle from '../GCardSubtitle';
 import GIcon from '../../GIcon/GIcon';
-import GCardActions from '../GCardActions';
 import GSpacer from '../../GLayout/GSpacer';
 import { GExpandTransition } from '../../transition/transition';
+import {GCardText, GCardActions, GCardSubtitle} from '../GCardFunctionalComponent'
 
 export default {
   title: 'Card',
