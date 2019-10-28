@@ -7,6 +7,7 @@
   display: inline-flex;
   line-height: 20px;
   max-width: 100%;
+  min-width: fit-content;
   outline: none;
   overflow: hidden;
   padding: 0 12px;
@@ -18,17 +19,40 @@
   vertical-align: middle;
   white-space: nowrap;
   font-weight: 400;
+  font-size: 14px;
+  height: 32px;
+  border-radius: 16px;
+
+  .g-avatar, .g-overlay {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+  }
 
   .g-avatar {
-    height: $chip-avatar-size !important;
-    min-width: $chip-avatar-size !important;
-    width: $chip-avatar-size !important;
+    & > .g-icon {
+      z-index: 0;
+    }
+  }
+
+  .g-overlay {
+    .g-icon {
+      margin: 2px 0 0 2px;
+      font-size: 20px;
+      position: absolute;
+    }
+  }
+
+  .g-avatar {
+    height: $chip-avatar-size;
+    min-width: $chip-avatar-size;
+    width: $chip-avatar-size;
     position: relative;
 
     .g-icon {
-      z-index: 5;
-      margin-left: -1px;
-      margin-top: 3px;
+      position: relative;
+      z-index: 0;
+      color: #ffffff;
     }
 
     .g-overlay {
@@ -43,18 +67,7 @@
       right: 0;
       transition: .3s ease;
       background-color: rgba(0, 0, 0, 0.4);
-
-      .g-icon {
-        color: #ffffff;
-        margin-left: 3px;
-        margin-top: 3px;
-      }
     }
-  }
-
-  //TODO: Icon not yet defined
-  .g-icon {
-    font-size: $chip-icon-size;
   }
 
   //Avatar, icons
@@ -66,6 +79,8 @@
     &__left {
       margin-left: $chip-icon-margin-before;
       margin-right: 3px;
+      height: 24px;
+      width: 24px;
     }
 
     &__right {
@@ -73,7 +88,6 @@
       margin-right: $chip-icon-margin-before;
       height: $chip-close-size;
     }
-
   }
 
   .g-chip-content {
@@ -84,18 +98,19 @@
   }
 
   // Close
-  &.g-chip__close .g-icon {
-    font-size: $chip-close-size;
-    max-height: $chip-close-size;
-    max-width: $chip-close-size;
+  &.g-chip__close {
     user-select: none;
 
-    &.g-icon__right {
-      margin-right: $chip-icon-right-margin-after;
-    }
+    .g-icon {
+      .g-icon__right {
+        font-size: $chip-close-size;
+        margin-right: $chip-icon-right-margin-after;
+      }
 
-    &.g-icon__left {
-      margin-right: $chip-icon-right-margin-before;
+      .g-icon__left {
+        font-size: $chip-close-size;
+        margin-right: $chip-icon-right-margin-before;
+      }
     }
 
     &:hover,
@@ -104,8 +119,6 @@
       opacity: .72
     }
   }
-
-
 }
 
 //Label
@@ -151,23 +164,6 @@
   }
 }
 
-
-.g-chip__active {
-  .g-icon {
-    color: inherit;
-  }
-}
-
-.g-chip__link {
-  &::before {
-    //transition: opacity $primary-transition;
-  }
-
-  &:focus::before {
-    opacity: $chip-link-focus-opacity;
-  }
-}
-
 //Clickable
 .g-chip__clickable {
   cursor: pointer;
@@ -201,56 +197,64 @@
   }
 
   .g-avatar {
+    position: absolute;
+
     &__left {
       position: relative;
+      left: 0 !important;
+      bottom: 0 !important;
       margin-left: $chip-pill-avatar-margin-before;
     }
 
     .g-overlay {
-      width: 32px;
-      height: 32px;
+      margin-left: 0 !important;
+      width: 32px !important;
+      height: 32px !important;
       border-radius: 50%;
       z-index: 2;
       position: absolute;
-      top: 0px;
+      top: 0;
       bottom: 0;
-      left: -6px;
+      left: -6px !important;
       right: 0;
       transition: .3s ease;
       background-color: rgba(0, 0, 0, 0.4);
 
       .g-icon {
         z-index: 5;
-        margin-left: 7px;
-        margin-top: 7px;
+        user-select: none;
+        font-size: 18px !important;
+        margin-left: 7px !important;
+        margin-top: 7px !important;
       }
 
     }
-
-
   }
-
-  //&__right {
-  //  margin-right: $chip-pill-avatar-margin-before;
-  //}
-
-
 }
 
 //Filter
 .g-chip__filter {
-  & .g-icon {
-    font-size: $chip-close-size;
-    max-height: $chip-close-size;
-    max-width: $chip-close-size;
+  .g-icon {
+    &__left {
+      position: relative;
+      font-size: 24px;
+      .g-icon {
+        font-size: 24px;
+      }
+    }
+
     user-select: none;
     color: inherit;
   }
 
-  &.expand-x-transition-leave-active,
-  &.expand-x-transition-enter {
+  .expand-x-transition-leave-active,
+  .expand-x-transition-enter {
     margin: 0
   }
+}
+
+.g-chip__active {
+  opacity: 0.82;
 }
 
 .g-chip {
@@ -260,5 +264,151 @@
       font-size: #{map-get($size, 'font-size')}px;
       height: #{map-get($size, 'height')}px;
     }
+  }
+
+  &.g-avatar-size__large {
+    .g-avatar, .g-overlay {
+      width: 33px;
+      height: 33px;
+      min-width: 33px;
+    }
+
+    .g-avatar {
+      &__left {
+        left: 5px;
+        margin-right: 16px;
+      }
+
+      & > .g-avatar {
+        position: absolute;
+      }
+
+      & > .g-icon {
+        position: relative;
+        top: 0;
+        left: 5px;
+        font-size: 33px;
+        width: 33px;
+        height: 33px;
+        z-index: 0;
+      }
+    }
+
+    .g-overlay {
+      left: 1px;
+
+      .g-icon {
+        margin: 5px 0 0 5px;
+        font-size: 24px;
+        position: absolute;
+      }
+    }
+  }
+
+  &.g-avatar-size__small {
+    .g-avatar, .g-overlay {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+    }
+
+    .g-avatar {
+      & > .g-avatar {
+        position: absolute;
+      }
+
+      & > .g-icon {
+        position: initial;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        z-index: 0;
+      }
+    }
+
+    .g-overlay {
+      .g-icon {
+        margin: 1px 0 0 1px;
+        font-size: 15px;
+        position: absolute;
+      }
+    }
+  }
+
+  &.g-avatar-size__x-large {
+    .g-avatar, .g-overlay {
+      width: 40px;
+      height: 40px;
+    }
+
+    .g-avatar {
+      margin: 0 8px 0 1px;
+
+      & > .g-icon {
+        position: relative;
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        top: 0;
+        left: 5px;
+        z-index: 0;
+      }
+    }
+
+    .g-overlay {
+      margin: 0 0 0 5px;
+
+      .g-icon {
+        margin: 6px 0 0 6px;
+        font-size: 30px;
+        position: absolute;
+      }
+    }
+  }
+
+  &.g-avatar-size__x-small {
+    .g-avatar, .g-overlay {
+      width: 12px;
+      height: 12px;
+      min-width: 12px;
+    }
+
+    .g-avatar {
+      & > .g-avatar {
+        position: relative;
+        bottom: 5px;
+        left: -2px;
+      }
+
+      .g-icon {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+        top: -5px;
+        left: -1px;
+        bottom: 3px;
+        z-index: 0;
+      }
+    }
+
+    .g-icon__left {
+      .g-icon {
+        font-size: 18px;
+        position: relative;
+        top: 2px;
+      }
+    }
+
+    .g-overlay {
+      left: -6px;
+
+      .g-icon {
+        margin: 1px 0 0 2px;
+        font-size: 10px;
+        position: absolute;
+        top: 0;
+      }
+    }
+
   }
 }

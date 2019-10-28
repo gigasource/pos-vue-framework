@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import {computed, ref, watch} from "@vue/composition-api";
 
-function groupable({mandatory, multiple, allowDuplicates}, vModel) {
+function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
@@ -18,7 +18,7 @@ function groupable({mandatory, multiple, allowDuplicates}, vModel) {
     if (isSame && mandatory) {
       return;
     }
-    vModel.value = isSame ? '' : item;
+    vModel.value = isSame ? null : item;
   };
 
   const updateMultiple = (item) => {
@@ -31,7 +31,15 @@ function groupable({mandatory, multiple, allowDuplicates}, vModel) {
     if (itemIndex > -1 && !allowDuplicates) {
       clonedValue.splice(itemIndex, 1);
     } else {
-      clonedValue.push(item);
+      if (maxSelection) {
+        if (clonedValue.length < maxSelection) {
+          clonedValue.push(item);
+        } else {
+          return;
+        }
+      } else {
+        clonedValue.push(item);
+      }
     }
     vModel.value = clonedValue;
   };

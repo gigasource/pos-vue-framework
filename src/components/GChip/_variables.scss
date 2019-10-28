@@ -8,7 +8,7 @@ $chip-icon-size: 24px !default;
 $chip-label-border-radius: $border-radius-root !default;
 $chip-link-focus-opacity: 0.32 !default;
 $chip-pill-avatar-margin-after: 8px !default;
-$chip-pill-avatar-margin-before: -6px !default;
+$chip-pill-avatar-margin-before: -6px !important;
 $chip-pill-avatar-size: 32px !default;
 $chip-pill-filter-margin: 0 16px 0 0 !default;
 $chip-transition-duration: 0.28s !default;
