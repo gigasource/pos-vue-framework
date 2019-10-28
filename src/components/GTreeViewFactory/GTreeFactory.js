@@ -1,26 +1,27 @@
-import { reactive, set } from '@vue/composition-api'
+import { reactive, set, computed } from '@vue/composition-api'
 import traverse from 'traverse'
 
+
+
+export function genTextFactory(itemText) {
+  return computed(() => typeof itemText === 'function' ? itemText : node => node[itemText])
+}
 
 //consider: lazy
 // expandLevel,
 // formatText: function => string
 // itemText (function | String) // un-necessary
 // itemChildrenPath : (default: items , type: function | String)
-export default function({ genRootWrapper, genWrapper, genNode,
-                          itemText,
-                          itemChildrenPath,
-                          formatText,
-                          expandLevel,
-                          treeData}) {
+export default function ({
+                           genRootWrapper, genWrapper, genNode,
+                           itemChildrenPath,
+                           cptExpandLevel,
+                           treeData
+                         }) {
   const PATH_SEPARATOR = '.'
-
-  itemText = typeof itemText === 'function' ? itemText() : (itemText || 'text')
-  itemChildrenPath = typeof itemChildrenPath === 'function' ? itemChildrenPath() : (itemChildrenPath || 'items')
-  if (itemChildrenPath.indexOf(PATH_SEPARATOR) >= 0)
+  if (itemChildrenPath.indexOf(PATH_SEPARATOR) >= 0) {
     console.warn(`itemChildrenPath must not contain ${PATH_SEPARATOR}`)
-  formatText = typeof formatText === 'function'? formatText : (text => text)
-  expandLevel = expandLevel || 0
+  }
 
   /**
    * Get node level from node path
@@ -37,7 +38,7 @@ export default function({ genRootWrapper, genWrapper, genNode,
    * @returns {boolean}
    */
   function getInitialCollapseState(path) {
-    return expandLevel < getNodeLevel(path)
+    return cptExpandLevel.value <= getNodeLevel(path)
   }
 
   // An object contain collapse state of node
@@ -61,7 +62,6 @@ export default function({ genRootWrapper, genWrapper, genNode,
       set(treeStates, path, { collapse: getInitialCollapseState(path) })
       // ... more state go there
     }
-    node[itemText] = formatText(node[itemText])
     return genNode(node, childrenVNodes, isLast, treeStates[path], path);
   }
 
@@ -86,8 +86,9 @@ export default function({ genRootWrapper, genWrapper, genNode,
     }
 
     const treeVNodeWithoutRoot = traverse(treeData).map(function (node) {
-      if (blockUnnecessaryNode.bind(this)())
+      if (blockUnnecessaryNode.bind(this)()) {
         return;
+      }
 
       const isLastNode = () => this.parent && this.parent.node.length - 1 === +this.key;
 
@@ -104,6 +105,6 @@ export default function({ genRootWrapper, genWrapper, genNode,
 
   return {
     treeStates,
-    genTree
+    genTree,
   }
 }
