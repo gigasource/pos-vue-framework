@@ -7,7 +7,9 @@
 			<legend :style="legendStyles">{{label}}</legend>
 			<div class='tf' :class="tfErrClasses">
 				<div class="tf-prepend__inner" @click="onClickPrependInner">
-					<slot name="prepend-inner"></slot>
+					<slot name="prepend-inner">
+						<g-icon>{{prependIcon}}</g-icon>
+					</slot>
 				</div>
 				<div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
@@ -31,7 +33,9 @@
 				<div v-if="suffix" class="tf-affix">{{suffix}}</div>
 				<div class="tf-append__inner" @click="onClickAppendInner">
 					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click.stop="onClearIconClick" alt="clearIcon">
-					<slot name="append-inner"></slot>
+					<slot name="append-inner">
+						<g-icon>{{appendIcon}}</g-icon>
+					</slot>
 				</div>
 				<div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
 				<div class="tf-hint" v-else :class="hintClasses" >{{hint}}</div>
@@ -49,9 +53,11 @@
 <script>
   import { ref, computed } from '@vue/composition-api';
   import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputField';import VueTheMask from 'vue-the-mask'
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GTextField',
+    components: { GIcon },
     props: {
       ...{//display props
         label: String,

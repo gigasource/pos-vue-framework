@@ -39,6 +39,8 @@ export const TextField = () => ({
     prefix: { default: text('prefix', '')},
     suffix: {default: text('suffix', '')},
     type: {default: text('type', 'text')},
+    prependIcon: {default: text('prependIcon', 'person')},
+    appendIcon: {default: text('prependIcon', 'person')},
   },
   template: `<g-text-field :label="label"
                            :clearable="clearable"
@@ -55,20 +57,16 @@ export const TextField = () => ({
                            :prefix="prefix"
                            :suffix="suffix"
                            :type="type"
+                           :prepend-icon="prependIcon"
+                           :append-icon="appendIcon"
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">
-
-                          <template v-slot:prepend-inner>
-                          <g-icon>person</g-icon>
-                          </template>
                           <template v-slot:prepend-outer>
-<!--                          <g-icon>mdi-glasses</g-icon>-->
                           </template>
                           <template v-slot:append-inner>
                           <g-icon>mdi-ninja</g-icon>
                           </template>
                           <template v-slot:append-outer>
-<!--                          <g-icon>mdi-coffee</g-icon>-->
                           </template>
               </g-text-field>`,
 });
