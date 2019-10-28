@@ -126,7 +126,7 @@
 				onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
 			//set legend width for label in outlined textfield
 			const legendStyles = computed(() => {
-			  if(isFocused.value || internalValue.value) {
+			  if( !props.solo && props.label && (isFocused.value || internalValue.value)) {
 			    return {
 			      'width': 'auto',
 						'padding': '1px',

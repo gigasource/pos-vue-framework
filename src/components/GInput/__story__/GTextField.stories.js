@@ -62,13 +62,13 @@ export const TextField = () => ({
                           <g-icon>person</g-icon>
                           </template>
                           <template v-slot:prepend-outer>
-                          <g-icon>mdi-glasses</g-icon>
+<!--                          <g-icon>mdi-glasses</g-icon>-->
                           </template>
                           <template v-slot:append-inner>
                           <g-icon>mdi-ninja</g-icon>
                           </template>
                           <template v-slot:append-outer>
-                          <g-icon>mdi-coffee</g-icon>
+<!--                          <g-icon>mdi-coffee</g-icon>-->
                           </template>
               </g-text-field>`,
 });
