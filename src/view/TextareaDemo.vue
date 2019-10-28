@@ -1,7 +1,7 @@
 <template>
   <div style="width: 600px">
-    <g-text-field-functional></g-text-field-functional>
-    <g-tear no-resize outlined></g-tear>
+    <g-text-field-functional solo outlined prependIcon="person" type="password"></g-text-field-functional>
+    <g-tear no-resize solo outlined prependIcon="person" clearable></g-tear>
     <form>
       <label for="textarea">Primitive textarea</label>
       <div>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import GTear from "../components/GTextarea/GTextarea2";
+  import GTear from "../components/GTextarea/GTear";
   import GIcon from "../components/GIcon/GIcon";
   import GTextField from "../components/GInput/GTextField";
   import GTextFieldFunctional from "../components/GInput/GTextFieldFunctional";

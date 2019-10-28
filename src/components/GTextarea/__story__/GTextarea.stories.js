@@ -1,6 +1,6 @@
 import {withKnobs, text, number, boolean} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
-import GTear from '../GTextarea2';
+import GTear from '../GTear';
 
 export default {
   title: 'Textarea',
@@ -21,6 +21,17 @@ export const Textarea = () => ({
     rowHeight: {type: Number, default: number('rowHeight', 50)}
   },
   template: `<div style="width: 600px"><g-tear :auto-grow="autoGrow" :no-resize="noResize" :rows="rows" :rowHeight="rowHeight"></g-tear></div>`,
+})
+
+export const InheritFeature = () => ({
+  components: {GTear},
+  props: {
+    clearable: {default: boolean('clearable', false)},
+    prependIcon: {default: text('prepend icon','person')},
+    rows: {type: Number, default: number('rows', 3)},
+    rowHeight: {type: Number, default: number('rowHeight', 50)}
+  },
+  template: `<div style="width: 600px"><g-tear :clearable="clearable" :prependIcon="prependIcon" :rows="rows" :rowHeight="rowHeight"></g-tear></div>`,
 })
 
 import Vue from 'vue/dist/vue.common.js'

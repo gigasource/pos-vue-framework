@@ -55,7 +55,11 @@
       </div>
     </fieldset>
     <div class="tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
-      <img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick">
+      <!--      <img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click="onClearIconClick">-->
+      <div v-if="isDirty && clearable" @click="onClearIconClick">
+        <g-icon class="g-icon__link">cancel</g-icon>
+      </div>
+      <!--      <g-icon v-if="isDirty && clearable" @click="onClearIconClick">cancel</g-icon>-->
       <slot name="append-outer"></slot>
     </div>
   </div>
@@ -135,7 +139,7 @@
         default: 5,
         validator: (v) => !isNaN(parseInt(v, 10)),
       },
-      cols:{
+      cols: {
         type: [Number, String],
         default: 1,
         validator: (v) => !isNaN(parseInt(v, 10)),
@@ -160,7 +164,7 @@
       const tearStyles = computed(() => {
         return {
           ...inputErrStyles,
-          'line-height': props.rowHeight+'px',
+          'line-height': props.rowHeight + 'px',
         }
       })
       //change input border color
@@ -196,7 +200,7 @@
 
       onUpdated(() => {
         setTimeout(() => {
-          props.autoGrow && calculateInputHeight(props,context)
+          props.autoGrow && calculateInputHeight(props, context)
           //calculateInputHeight(props, context)
         }, 0)
       })
@@ -264,7 +268,7 @@
 </script>
 
 <style lang="scss">
-  @import "_GTextarea2.scss";
+  @import "GTear";
 </style>
 
 
