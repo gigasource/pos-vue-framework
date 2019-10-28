@@ -1,0 +1,264 @@
+@import "./variables";
+
+.g-chip {
+  border-color: rgba(map-get($shades, 'black'), 0.12);
+  align-items: center;
+  cursor: default;
+  display: inline-flex;
+  line-height: 20px;
+  max-width: 100%;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-decoration: none;
+  transition-duration: $chip-transition-duration;
+  transition-property: box-shadow, opacity;
+  transition-timing-function: $chip-transition-fn;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-weight: 400;
+
+  .g-avatar {
+    height: $chip-avatar-size !important;
+    min-width: $chip-avatar-size !important;
+    width: $chip-avatar-size !important;
+    position: relative;
+
+    .g-icon {
+      z-index: 5;
+      margin-left: -1px;
+      margin-top: 3px;
+    }
+
+    .g-overlay {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -4px;
+      right: 0;
+      transition: .3s ease;
+      background-color: rgba(0, 0, 0, 0.4);
+
+      .g-icon {
+        color: #ffffff;
+        margin-left: 3px;
+        margin-top: 3px;
+      }
+    }
+  }
+
+  //TODO: Icon not yet defined
+  .g-icon {
+    font-size: $chip-icon-size;
+  }
+
+  //Avatar, icons
+  .g-avatar,
+  .g-icon {
+    font-size: $chip-close-size;
+    user-select: none;
+
+    &__left {
+      margin-left: $chip-icon-margin-before;
+      margin-right: 3px;
+    }
+
+    &__right {
+      margin-left: $chip-icon-margin-after;
+      margin-right: $chip-icon-margin-before;
+      height: $chip-close-size;
+    }
+
+  }
+
+  .g-chip-content {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+    max-width: 100%;
+  }
+
+  // Close
+  &.g-chip__close .g-icon {
+    font-size: $chip-close-size;
+    max-height: $chip-close-size;
+    max-width: $chip-close-size;
+    user-select: none;
+
+    &.g-icon__right {
+      margin-right: $chip-icon-right-margin-after;
+    }
+
+    &.g-icon__left {
+      margin-right: $chip-icon-right-margin-before;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      opacity: .72
+    }
+  }
+
+
+}
+
+//Label
+.g-chip-label {
+  border-radius: $chip-label-border-radius !important;
+}
+
+//Outlined
+.g-chip.g-chip__outlined {
+  border-width: $icon-outlined-border-width;
+  border-style: solid;
+
+  &:not(g-chip__active):before {
+    opacity: 0;
+  }
+
+  &.g-chip__active:before {
+    opacity: 0.08;
+  }
+
+  &.g-icon {
+    color: inherit;
+    font-size: $chip-close-size;
+    max-height: $chip-close-size;
+    max-width: $chip-close-size;
+    user-select: none;
+
+    // Needs increased specificity
+    &.g-chip.g-chip {
+      background-color: transparent !important;
+    }
+  }
+}
+
+
+// Needs increased specificity
+// to overwrite theme color
+.g-chip.g-chip__selected {
+  background: transparent;
+
+  &:after {
+    opacity: .28;
+  }
+}
+
+
+.g-chip__active {
+  .g-icon {
+    color: inherit;
+  }
+}
+
+.g-chip__link {
+  &::before {
+    //transition: opacity $primary-transition;
+  }
+
+  &:focus::before {
+    opacity: $chip-link-focus-opacity;
+  }
+}
+
+//Clickable
+.g-chip__clickable {
+  cursor: pointer;
+
+  &:active {
+    @include elevation(2);
+  }
+}
+
+//Disabled
+.g-chip__disabled {
+  opacity: .4;
+  pointer-events: none;
+  user-select: none;
+}
+
+//Label
+.g-chip__label {
+  border-radius: $chip-label-border-radius !important;
+}
+
+//Pill
+.g-chip__pill {
+  .g-chip__filter {
+    margin-right: $chip-pill-filter-margin;
+  }
+
+  .g-avatar {
+    height: $chip-pill-avatar-size !important;
+    width: $chip-pill-avatar-size !important;
+  }
+
+  .g-avatar {
+    &__left {
+      position: relative;
+      margin-left: $chip-pill-avatar-margin-before;
+    }
+
+    .g-overlay {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      top: 0px;
+      bottom: 0;
+      left: -6px;
+      right: 0;
+      transition: .3s ease;
+      background-color: rgba(0, 0, 0, 0.4);
+
+      .g-icon {
+        z-index: 5;
+        margin-left: 7px;
+        margin-top: 7px;
+      }
+
+    }
+
+
+  }
+
+  //&__right {
+  //  margin-right: $chip-pill-avatar-margin-before;
+  //}
+
+
+}
+
+//Filter
+.g-chip__filter {
+  & .g-icon {
+    font-size: $chip-close-size;
+    max-height: $chip-close-size;
+    max-width: $chip-close-size;
+    user-select: none;
+    color: inherit;
+  }
+
+  &.expand-x-transition-leave-active,
+  &.expand-x-transition-enter {
+    margin: 0
+  }
+}
+
+.g-chip {
+  @each $name, $size in $icon-sizes {
+    &.g-size__#{$name} {
+      border-radius: #{map-get($size, 'height') / 2}px;
+      font-size: #{map-get($size, 'font-size')}px;
+      height: #{map-get($size, 'height')}px;
+    }
+  }
+}
