@@ -1,24 +1,52 @@
-.layout {
-  width: 100%;
-  height: 100%;
+.g-layout {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0;
+
+  &__vertical {
+    flex-direction: column;
+  }
+
+  &__horizontal {
+    flex-direction: row;
+  }
+
+  .g-layout {
+    padding: 12px;
+    margin: 0;
+  }
+
+  &.no-gutters {
+    margin: 0;
+
+    .g-layout {
+      padding: 0;
+    }
+  }
+
+  &:not([class*=col-]):not([class*=row-]) {
+    flex: 1;
+  }
 }
 
-.spacer {
+.g-spacer {
   flex-grow: 1;
   visibility: hidden;
 }
 
-.container {
-  padding: 0.5rem;
-}
+.g-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 12px;
 
-.side-bar {
-  position: absolute;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  background: url("../../assets/order/bg_right.svg");
+  &__fluid {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .g-row {
+    flex: 1 1 100%;
+  }
 }
 
 .tool-bar {
@@ -42,3 +70,35 @@
     margin: 0.5rem 0;
   }
 }
+
+.g-row {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  margin: 0 -12px;
+
+  &__dense {
+    margin: 0 -6px;
+
+    > .g-col,
+    > [class*=col-] {
+      padding: 6px;
+    }
+  }
+
+  &.no-gutters {
+    margin: 0;
+
+    > .g-col,
+    > [class*=col-] {
+      padding: 0;
+    }
+  }
+}
+
+.g-col:not([class*=col-]) {
+  flex-basis: 0;
+  flex-grow: 1;
+  width: 100%;
+}
+

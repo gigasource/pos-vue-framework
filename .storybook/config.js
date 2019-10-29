@@ -7,11 +7,12 @@ import VueCompositionAPI from '@vue/composition-api';
 import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
 //import './style.css';
+import '../src/plugin/waves'
 
 addParameters({
   options: {
     theme: themes.light,
-    panelPosition: 'bottom',
+    panelPosition: 'right',
     hierarchySeparator: /\//,
     hierarchyRootSeparator: /\|/,
   },
