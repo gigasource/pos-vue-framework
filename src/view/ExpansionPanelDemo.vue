@@ -11,30 +11,34 @@
 <!-- </g-expansion-panel-group2>-->
 
 	<div style="background-color: #e6e9ec; height: 100%">
-		<g-expansion-panel-group3 v-model="activeItem">
-			<template v-slot:default="{ toggle, isActive }">
-				<g-expansion-panel3 v-for="(item, index) in items" :item="item" :is-active="isActive(item)" @toggle="toggle" :key="index">
-					<template v-slot:prepend>
-						<g-icon small>fas fa-caret-right</g-icon>
-					</template>
-					<template v-slot:header>{{ item.name }}</template>
-					{{ item.message }}
-				</g-expansion-panel3>
-			</template>
-		</g-expansion-panel-group3>
+<!--		<g-expansion-panel-group3 v-model="activeItem">-->
+<!--			<template v-slot:default="{ toggle, isActive }">-->
+<!--				<g-expansion-panel3 v-for="(item, index) in items" :item="item" :is-active="isActive(item)" @toggle="toggle" :key="index">-->
+<!--					<template v-slot:prepend>-->
+<!--						<g-icon small>fas fa-caret-right</g-icon>-->
+<!--					</template>-->
+<!--					<template v-slot:header>{{ item.name }}</template>-->
+<!--					{{ item.message }}-->
+<!--				</g-expansion-panel3>-->
+<!--			</template>-->
+<!--		</g-expansion-panel-group3>-->
 
-		<g-expansion-panel-group3 v-model="activeItem2">
-			<template v-slot:default="{ toggle, isActive }">
-				<g-expansion-panel3 v-for="(item, index) in items" :item="item" :is-active="isActive(item)" @toggle="toggle" :key="index">
-					<template v-slot:header>{{ item.name }}</template>
-					<template v-slot:append>
-						<g-btn small flat width="30" height="30" min-width="30"><g-icon small>far fa-copy</g-icon></g-btn>
-						<g-btn small flat width="30" height="30" min-width="30"><g-icon small>fas fa-times</g-icon></g-btn>
-					</template>
-					{{ item.message }}
-				</g-expansion-panel3>
-			</template>
-		</g-expansion-panel-group3>
+<!--		<g-expansion-panel-group3 v-model="activeItem2">-->
+<!--			<template v-slot:default="{ toggle, isActive }">-->
+<!--				<g-expansion-panel3 v-for="(item, index) in items" :item="item" :is-active="isActive(item)" @toggle="toggle" :key="index">-->
+<!--					<template v-slot:header>{{ item.name }}</template>-->
+<!--					<template v-slot:append>-->
+<!--						<g-btn small flat width="30" height="30" min-width="30"><g-icon small>far fa-copy</g-icon></g-btn>-->
+<!--						<g-btn small flat width="30" height="30" min-width="30"><g-icon small>fas fa-times</g-icon></g-btn>-->
+<!--					</template>-->
+<!--					{{ item.message }}-->
+<!--				</g-expansion-panel3>-->
+<!--			</template>-->
+<!--		</g-expansion-panel-group3>-->
+
+		<g-expansion-panel4 v-model="activeItem" :items="items" item-header="name" item-content="message">
+		</g-expansion-panel4>
+
 	</div>
 </template>
 <script>
@@ -46,9 +50,10 @@
   import GExpansionPanel3 from '../components/GExpansionPanel/GExpansionPanel3';
   import GIcon from '../components/GIcon/GIcon';
   import GBtn from '../components/GBtn/GBtn';
+  import GExpansionPanel4 from '../components/GExpansionPanel/GExpansionPanel4';
   export default {
     name: 'ExpansionPanel',
-    components: { GExpansionPanel3, GExpansionPanelGroup3, GExpansionPanelContent2, GExpansionPanelHeader2, GExpansionPanel2, GExpansionPanelGroup2, GIcon, GBtn },
+    components: { GExpansionPanel4, GExpansionPanel3, GExpansionPanelGroup3, GExpansionPanelContent2, GExpansionPanelHeader2, GExpansionPanel2, GExpansionPanelGroup2, GIcon, GBtn },
     props: {},
     data: function () {
       return {
