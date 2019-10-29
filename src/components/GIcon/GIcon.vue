@@ -1,5 +1,5 @@
 <template>
-  <fragment>
+  <span>
     <i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
        :aria-hidden="attributes.ariaHidden"
        :role="attributes.role">{{materialIconName}}</i>
@@ -14,7 +14,7 @@
     <span v-if="activeTags.slot">
       <slot></slot>
     </span>
-  </fragment>
+  </span>
 </template>
 
 <script>

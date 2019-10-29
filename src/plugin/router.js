@@ -15,8 +15,12 @@ import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import InputDemo from "../view/InputDemo";
 import TransitionDemo from '../view/TransitionDemo';
+import ChipDemo from '../view/ChipDemo';
 import ListDemo from '../view/ListDemo';
 import List2Demo from "../view/List2Demo";
+import DndDialogDemo from '../view/DndDialogDemo';
+import GChipGroupDemo from '../view/GChipGroupDemo';
+import SlideGroupDemo from '../view/SlideGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import GStepper from '../components/GStepper/GStepper';
 import StepperDemo from '../view/StepperDemo';
@@ -35,12 +39,16 @@ const routes = [
   { path: '/button', name: 'Button', component: ButtonDemo},
   { path: '/pulse-demo', name: 'Pulse', component: PulseDemo},
   { path: '/tool-tip-demo', name: 'ToolTip', component: ToolTipDemo},
+  { path: '/chip', name: 'Chip', component: ChipDemo},
   { path: '/input', name: 'Input', component: InputDemo},
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
+  { path: '/chip-group', name: 'Chip Group', component: GChipGroupDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/stepper-demo', name: 'Stepper', component: StepperDemo}
-
+  { path: '/slide-group', name: 'SlideGroup', component: SlideGroupDemo},
+  { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker}
 ];
 
 const router = new VueRouter({
