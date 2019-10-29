@@ -1,13 +1,12 @@
 <template>
-	<g-layout :vertical="!vertical">
+	<g-layout class="g-tabs-wrapper" :vertical="!vertical">
 		<div :class="tabsClasses" :style="tabsStyles">
 			<!--			TODO: surround with slider group for handling overflow tabs -->
 			<div class="g-tabs-bar" ref="itemsRef" :class="barClasses" :style="barStyles">
 				<slot name="tabs">
 					<template v-if="fullTitle">
 						<g-tab v-for="(item, i) in items" :item="item" :key="i">
-<!--							TODO: change with g-icon component-->
-							<i v-if="icon && item.icon" class="material-icons">{{item.icon}}</i>
+							<g-icon v-if="icon && item.icon">{{item.icon}}</g-icon>
 							{{item.title}}
 						</g-tab>
 					</template>
@@ -20,19 +19,20 @@
 </template>
 
 <script>
-  import GTabItems from '../GTabs/GTabItems';
-  import getVModel from '../../mixins/getVModel';
-  import GTab from '../GTabs/GTab';
   import GLayout from '../GLayout/GLayout';
+  import GTab from '../GTabs/GTab';
+  import GTabItems from '../GTabs/GTabItems';
+  import GTabItem from './GTabItem';
+  import GIcon from '../GIcon/GIcon';
+  import getVModel from '../../mixins/getVModel';
   import { computed, onMounted, provide, reactive, ref, watch } from '@vue/composition-api'
   import { find } from 'lodash'
   import colorHandler, { convertToUnit } from '../../utils/helpers';
   import { colors } from '../../utils/colors';
-  import GTabItem from './GTabItem';
 
   export default {
     name: 'GTabs',
-    components: { GTabItem, GLayout, GTab, GTabItems },
+    components: { GIcon, GTabItem, GLayout, GTab, GTabItems },
     props: {
       items: Array,
       value: null,

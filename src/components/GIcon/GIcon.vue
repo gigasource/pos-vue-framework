@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span class="g-icon-wrapper">
     <i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
        :aria-hidden="attributes.ariaHidden"
        :role="attributes.role">{{materialIconName}}</i>

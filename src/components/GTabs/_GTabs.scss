@@ -115,11 +115,11 @@
   }
 
   > i,
-  > .g-icon {
+  > .g-icon-wrapper {
     order: 0;
   }
 
-  > *:not(i):not(.g-icon) {
+  > *:not(i):not(.g-icon-wrapper) {
     order: 1;
   }
 }
