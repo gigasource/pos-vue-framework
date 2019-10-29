@@ -10,11 +10,13 @@ export default {
 export const gMenuLookAndFeel = () => ({
   components: { GMenu, GBtn },
   data: () => ({
-    showMenu: true,
     activatorHeight: 40,
     activatorWidth: 120
   }),
   props: {
+    showMenu: {
+      default: boolean('show menu', true)
+    },
     top: {
       default: boolean('align top', false)
     },
@@ -45,7 +47,7 @@ export const gMenuLookAndFeel = () => ({
     setTimeout(() => {
       this.activatorHeight = 100;
       this.activatorWidth = 300
-    }, 5000)
+    }, 2000)
   },
   template: `
     <div data-app class="row-flex">
@@ -63,9 +65,11 @@ export const gMenuLookAndFeel = () => ({
 export const gMenuBehavior = () => ({
   components: { GMenu, GBtn },
   data: () => ({
-    showMenu: false
   }),
   props: {
+    showMenu: {
+      default: boolean('show menu', false)
+    },
     closeOnContentClick: {
       type: Boolean,
       default: boolean('close on content click', true)
