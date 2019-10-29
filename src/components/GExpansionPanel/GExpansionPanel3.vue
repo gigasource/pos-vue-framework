@@ -1,30 +1,34 @@
 <template>
 	<div class="g-expansion-panel3" :class="expansionPanelClasses">
 		<div class="g-expansion-panel3-header" :class="headerClasses" @click="toggle">
-			<slot name="prepend-icon"></slot>
+			<div class="g-expansion-panel3-header-prepend">
+				<slot name="prepend"></slot>
+			</div>
 			<slot name="header">
 
 			</slot>
-			<slot name="append-icon"></slot>
-		</div>
-		<g-expand-transition>
-			<div class="g-expansion-panel3-content" :class="contentClasses" v-show="isActive">
-				<div class="g-expansion-panel3-content-wrapper">
-					<slot>
-
-					</slot>
-				</div>
+			<g-spacer></g-spacer>
+			<div class="g-expansion-panel3-header-append">
+				<slot name="append"></slot>
 			</div>
-		</g-expand-transition>
+		</div>
+		<div class="g-expansion-panel3-content" :class="contentClasses" v-show="isActive">
+			<div class="g-expansion-panel3-content-wrapper">
+				<slot>
+
+				</slot>
+			</div>
+		</div>
 	</div>
 </template>
 <script>
   import { GExpandTransition } from '../transition/transition';
   import { computed } from '@vue/composition-api';
+  import GSpacer from '../GLayout/GSpacer';
 
   export default {
     name: 'GExpansionPanel3',
-		components: { GExpandTransition },
+		components: { GSpacer, GExpandTransition },
     props: {
 			item: null,
 			isActive: Boolean

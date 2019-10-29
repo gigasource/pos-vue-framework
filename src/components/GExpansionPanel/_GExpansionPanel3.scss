@@ -5,7 +5,8 @@
   max-width: 100%;
   position: relative;
   background-color: #FFFFFF;
-  transition: .3s map-get($transition, 'swing');
+  margin-top: 10px;
+  //transition: .3s map-get($transition, 'swing');
 
   &::before {
     border-radius: inherit;
@@ -17,12 +18,12 @@
     top: 0;
     z-index: -1;
 
-    @include elevation(2)
+    //@include elevation(2)
   }
 
 
   &:not(:first-child)::after {
-    border-top: thin solid rgb(216, 216, 216);
+    //border-top: thin solid rgb(216, 216, 216);
     content: '';
     left: 0;
     position: absolute;
@@ -33,28 +34,24 @@
 
   &__active {
     &:not(:first-child), + .g-expansion-panel3 {
-      margin-top: $expansion-panel-active-margin;
+      //margin-top: $expansion-panel-active-margin;
 
       &::after {
         opacity: 0
       }
     }
-
-    .g-expansion-panel3-header {
-      min-height: $expansion-panel-active-header-min-height;
-    }
   }
 
 
   &-group {
-    border-radius: $expansion-panel-border-radius;
+    //border-radius: $expansion-panel-border-radius;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     list-style-type: none;
     padding: 0;
     //width: 100%;
-    margin: 15px;
+    //margin: 15px;
     z-index: 1;
 
     > * {
@@ -73,12 +70,12 @@
 
     > .g-expansion-panel3 {
       &__active {
-        border-radius: $expansion-panel-border-radius;
+        //border-radius: $expansion-panel-border-radius;
 
 
         + .g-expansion-panel3 {
-          border-top-left-radius: $expansion-panel-border-radius;
-          border-top-right-radius: $expansion-panel-border-radius;
+          //border-top-left-radius: $expansion-panel-border-radius;
+          //border-top-right-radius: $expansion-panel-border-radius;
         }
       }
     }
@@ -97,7 +94,7 @@
     position: relative;
     text-align: left;
     width: 100%;
-    transition: .3s min-height map-get($transition, 'swing');
+    //transition: .3s min-height map-get($transition, 'swing');
 
     &:before {
       background-color: currentColor;
@@ -110,6 +107,23 @@
       position: absolute;
       right: 0;
       top: 0;
+    }
+
+    &-prepend {
+      width: 24px;
+    }
+
+    &__active {
+      border-bottom: thin solid rgb(216, 216, 216);
+      margin-bottom: 10px;
+
+      .g-expansion-panel3-header-prepend .g-icon {
+        transform : rotate(90deg)
+      }
+
+      .g-expansion-panel3-header-append > .g-icon {
+        transform : rotate(-180deg)
+      }
     }
   }
 

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-	import { GExpandTransition } from '../transition/transition';
+  	import { GExpandTransition } from '../transition/transition';
 
   export default {
     name: 'GExpansionPanelContent2',
