@@ -17,6 +17,7 @@
 			<router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/chip">Chip</router-link>
 			<router-link to="/list-demo">List</router-link>
+			<router-link to="/dnd-dialog-demo">Dnd Dialog Demo</router-link>
 			<router-link to="/selection-control">SelectIonControl</router-link>
       <router-link to="/date-picker-demo">DatePicker</router-link>
 			<router-link to="/chip-group">Chip Group</router-link>
