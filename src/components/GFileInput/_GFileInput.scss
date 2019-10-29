@@ -1,0 +1,44 @@
+.g-file-input {
+  input[type="file"] {
+    opacity: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.g-file-input .g-file-input--text {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+
+  &.g-file-input--text--chips {
+    flex-wrap: wrap;
+  }
+
+  .g-chip {
+    margin: 4px;
+  }
+}
+
+//todo check corresponding class in g-text-field
+//.v-file-input.v-text-field--filled:not(.v-text-field--single-line) {
+//  .v-file-input__text {
+//    padding-top: 22px;
+//  }
+//}
+//
+//.v-file-input.v-text-field--outlined {
+//  .v-text-field__slot {
+//    padding: 6px 0;
+//  }
+//}
+//
+//&.v-input--dense {
+//  .v-text-field__slot {
+//    padding: 3px 0;
+//  }
+//}

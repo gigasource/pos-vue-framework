@@ -1,45 +1,41 @@
-import { computed, ref, watch } from '@vue/composition-api';
-import { keyCodes } from '../../utils/helpers';
-
+import {computed, ref, watch} from '@vue/composition-api';
+import {keyCodes} from '../../utils/helpers';
 
 
 export function getLabel(props, internalValue, isValidInput, isFocused,
                          labelActiveClass = 'tf-label__active',
-                         inValidStyle = { 'color': 'red' }) {
+                         inValidStyle = {'color': 'red'}) {
   //Activate label
   const isDirty = computed(() => !!internalValue.value)
   const isLabelActive = computed(() => {
-    return isDirty.value || isFocused.value|| !!props.placeholder;
+    return isDirty.value || isFocused.value || !!props.placeholder;
   })
-  const labelClasses = computed(() => isLabelActive.value ? { 'tf-label__active': true } : {})
+  const labelClasses = computed(() => isLabelActive.value ? {'tf-label__active': true} : {})
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
   const labelStyles = computed(() =>
-  // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
-  // ...!isValidInput.value && inValidStyle}))
+      // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
+      // ...!isValidInput.value && inValidStyle}))
   {
 
-    if(isLabelActive.value && prefixWidth.value){
-      if(props.outlined){
-        if(props.filled){
-          return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }
+    if (isLabelActive.value && prefixWidth.value) {
+      if (props.outlined) {
+        if (props.filled) {
+          return {'transform': `translateY(-32px) translateX(${-prefixWidth.value - 11}px)  scale(0.75)`}
+        } else {
+          return {'transform': `translateY(-26px) translateX(${-prefixWidth.value - 4}px)  scale(0.75)`}
         }
-        else{
-          return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` }
-        }
-      }
-      else if(props.filled){
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)` }
-      }
-      else{
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +7}px)  scale(0.75)` }
+      } else if (props.filled) {
+        return {'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)`}
+      } else {
+        return {'transform': `translateY(-16px) translateX(${-prefixWidth.value + 7}px)  scale(0.75)`}
       }
     }
     !isValidInput.value && inValidStyle
   })
 
-  return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef }
+  return {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef}
 }
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
@@ -60,8 +56,9 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
       errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
       errorBucket.length ? isValid.value = false : isValid.value = true
       return isValid
+    } else {
+      isValid.value = true
     }
-    else { isValid.value = true}
   }
 
   const errorMessages = ref('')
@@ -70,14 +67,13 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
     validate(internalValue.value)
     if (!props.validateOnBlur) {
       isValidInput.value = isValid.value
-    }
-    else if (isValid.value){
+    } else if (isValid.value) {
       isValidInput.value = true
     }
 
-  }, !props.value ? { lazy: true } : null)
+  }, !props.value ? {lazy: true} : null)
 
-  return { errorMessages, validate };
+  return {errorMessages, validate};
 }
 
 export function getSlotEventListeners(context) {
@@ -107,6 +103,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onFocus(event) {
+    console.log('focus')
     if (!context.refs.input) {
       return;
     }
@@ -121,20 +118,21 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
   function onBlur(event) {
     context.emit('blur', event);
-    if(props.validateOnBlur)
-    {
+    if (props.validateOnBlur) {
       isValidInput.value = validate(internalValue.value).value
     }
     isFocused.value = false
   }
 
   function onClearIconClick(event) {
+    console.log('clearIconClick')
     internalValue.value = ''
     isValidInput.value = true;
     context.emit('click:clearIcon', event)
   }
 
   function onChange(event) {
+    console.log('change')
     context.emit('change', event)
   }
 
@@ -166,14 +164,14 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     }
   }
 
-  return { onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown }
+  return {onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown}
 }
 
 export function getInternalValue(props, context) {
   // text field internalValue
   const rawInternalValue = ref(props.value || '');
 
-  watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
+  watch(() => props.value, () => rawInternalValue.value = props.value, {lazy: true});
 
   const internalValue = computed({
     get: () => rawInternalValue.value,

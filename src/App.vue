@@ -20,7 +20,7 @@
 			<router-link to="/selection-control">SelectIonControl</router-link>
       <router-link to="/date-picker-demo">DatePicker</router-link>
 			<router-link to="/chip-group">Chip Group</router-link>
-
+			<router-link to="/file-input-demo">FileInput</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
