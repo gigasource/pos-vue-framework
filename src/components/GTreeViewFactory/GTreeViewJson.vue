@@ -43,7 +43,7 @@
           case 'boolean':
             return text.value ? 'true' : 'false'
           case 'function':
-            return text.value.toString()
+            return 'function'
           default:
             return text.value
         }
