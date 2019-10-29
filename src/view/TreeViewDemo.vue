@@ -17,7 +17,7 @@
             f: 1,
             d: true,
             gasdqweasvasd: '123asdsebrthse5ts56nsyrd5tbesawaraw45346546hsr5ytetse4vserfsversdrtbdrtydrtydrtybdrtydrtybdrtybdrty',
-            gasdqweasvasd1: 12,
+            gasdqweasvasd1: { x: 12, y: false } ,
             gasdqweasvasd2: 14,
             gasdqweasvasd123123asd: 12
           },
