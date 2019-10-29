@@ -57,14 +57,14 @@ function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vMode
 export function makeSelectable(props, context) {
   // 1 -> {a: 1, b: 2}
   const convertValueToInternalValue = function (value) {
-    if (!props.itemValue) return value;
+    if (!props.itemValue || !value) return value;
     if (!Array.isArray(props.value)) return props.items.find(i => i[props.itemValue] === value);
     return props.items.filter(i => value.includes(i[props.itemValue]));
   }
 
   // {a: 1, b: 2} -> 1
   const convertInternalValueToValue = function (internalValue) {
-    if (!props.itemValue) return internalValue;
+    if (!props.itemValue || !internalValue) return internalValue;
     if (!Array.isArray(internalValue)) return internalValue[props.itemValue];
     return internalValue.map(i => i[props.itemValue]);
   }
@@ -79,6 +79,7 @@ export function makeSelectable(props, context) {
   }
 
   let ignoreWatchValue = false;
+  let ignoreWatchInternalValue = false;
 
   //use when props.value is change from outside
   watch(() => props.value, () => {
@@ -91,23 +92,21 @@ export function makeSelectable(props, context) {
     } else {
       rawInternalValue.value = convertValueToInternalValue(props.value);
     }
+    ignoreWatchInternalValue = true;
   }, {lazy: true});
 
-  const internalValue = computed({
-    get: () => {
-      return rawInternalValue.value;
-    },
-    set: (value) => {
-      rawInternalValue.value = value;
-      //todo: convert here
-      context.emit('input', convertInternalValueToValue(rawInternalValue.value))
-      ignoreWatchValue = true;
+  watch(() => rawInternalValue.value, () => {
+    if (ignoreWatchInternalValue) {
+      return ignoreWatchInternalValue = false;
     }
-  });
 
-  const {toggleItem, isActiveItem} = groupable(props, internalValue);
+    context.emit('input', convertInternalValueToValue(rawInternalValue.value));
+    ignoreWatchValue = true;
+  })
 
-  return {toggleItem, isActiveItem, internalValue};
+  const {toggleItem, isActiveItem} = groupable(props, rawInternalValue);
+
+  return {toggleItem, isActiveItem, internalValue: rawInternalValue};
 }
 
 export default groupable

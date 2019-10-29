@@ -31,7 +31,7 @@ export function getList(props, selectedItem, state){
       }
       return props.items.filter(item => {
         if (item[props.itemText]) {
-          return !selectedItem.value.find(value => value === item[props.itemValue]);
+          return !selectedItem.value.find(value => value === item);
         }
         return selectedItem.value.find(value => value === item);
       });
@@ -57,7 +57,7 @@ export function getSelections(props, selectedItem){
     } else {
       let list = selectedItem.value
       if (props.itemText && props.itemValue) {
-        if (props.itemValue) {
+        /*if (props.itemValue) {
           list = list.map(value => {
             return props.items.find(item => {
               if (item[props.itemText]) {
@@ -66,7 +66,7 @@ export function getSelections(props, selectedItem){
               return item === value;
             });
           });
-        }
+        }*/
         return list.map(item => {
           if (item[props.itemText]) {
             return {text: item[props.itemText], value: item[props.itemValue]};

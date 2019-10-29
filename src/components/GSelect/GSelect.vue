@@ -79,7 +79,7 @@
             <slot name="item" :item="item" :isSelected="isSelected"></slot>
           </template>
         </g-list>
-        <g-list v-else-if="multiple" :item-title="itemText" :item-value="itemValue" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable
+        <g-list v-else-if="multiple" :item-title="itemText" :item-value0="itemValue" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable
                 multiple v-model="selectedItem" dense >
           <template v-slot:listItem="{item, isSelected}">
             <slot name="item" :item="item" :isSelected="isSelected"></slot>
@@ -229,6 +229,7 @@
         fieldItem: null
       })
       const showOptions = ref(false)
+
       const {internalValue: selectedItem} = makeSelectable(props, context)
 
       //list rendered computed
@@ -265,13 +266,17 @@
         offsetOverflow,
         top
       } = props.menuProps
-      const nudgeBottom = computed(() => !!props.hint ? '10px' : '2px')
+      const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
       //dropdown icon
       const iconStyle = computed(() => (showOptions.value) ? {'transform':'rotateZ(180deg)'} : {})
       const iconColor = computed(() => (showOptions.value) ? 'blue' : null)
       //chips click
       function onChipCloseClick(index){
-        props.multiple ? selectedItem.value.splice(index, 1) : selectedItem.value = ''
+        if (props.multiple) {
+          selectedItem.value.splice(index, 1);
+        } else {
+          selectedItem.value = ''
+        }
       }
       return {
         //

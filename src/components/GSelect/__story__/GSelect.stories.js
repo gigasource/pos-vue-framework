@@ -172,6 +172,46 @@ export const GSelectMultiple = () => ({
       </g-select>
     </div>`
 })
+export const GSelectMultipleNotAllowDuplicates = () => ({
+  components: {GSelect},
+  props:{
+    label:{ default: text('Input label', 'Label') },
+    placeholder:{ default: text('Input placeholder', '') },
+    allowDuplicates:{type: Boolean,default: boolean('allow duplicates', false) } ,
+    chips:{default: boolean('chips', true) },
+    itemText:{ default: text('itemText', 'text') },
+    itemValue:{ default: text('itemText', 'value') },
+    mandatory:{ default: boolean('mandatory', false) },
+    clearable:{ default: boolean('mandatory', false) },
+  },
+  data() {
+    return{
+      items: [
+        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+      ],
+      selected: []
+    }
+  },
+  template: `
+   <div data-app>
+      <g-select 
+      :items="items" 
+      :item-text="itemText" 
+      :item-value="itemValue" 
+      :chips="chips"
+      :label="label" 
+      :placeholder="placeholder" 
+      :clearable="clearable"
+       multiple 
+      :allow-duplicates="allowDuplicates"
+      :mandatory="mandatory"
+      v-model="selected">
+      </g-select>
+    </div>`
+})
 export const GSelectListDisplaySearchable = () => ({
   components: {GSelect},
   props:{
