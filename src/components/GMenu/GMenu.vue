@@ -204,6 +204,12 @@
             if (isActive.value) isActive.value = false
             state.hasJustFocused = false
           }
+        },
+        ...(props.openOnHover) && {
+          mouseleave() {
+            if (isActive.value) isActive.value = false
+            state.hasJustFocused = false
+          }
         }
       }
 
