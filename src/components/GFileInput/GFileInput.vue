@@ -14,21 +14,13 @@
         <div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
           <label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
-          <!--          <div v-if="dirty && !(chips||smallChips)" class="g-file-input&#45;&#45;text"></div>-->
-          <div v-if="dirty" class="g-file-input--text">
-            <slot name="selection">
-              <div v-if="chips || smallChips"><g-chip v-for="file in files" :small="smallChips">{{file.name}}{{showSize?' ('+fileSize+')':''}}</g-chip></div>
-              <div v-else>{{file.name}}{{showSize?' ('+fileSize+')':''}}</div>
-            </slot>
-          </div>
           <input id="input" :type="type"
                  ref="input"
                  class="tf-input"
                  :style="inputErrStyles"
                  :label="label"
-                 :placeholder="placeholder"
                  :disabled="disabled"
-                 :aria-readonly="readonly"
+                 :readonly="readonly"
                  :multiple="multiple"
                  :accept="accept"
                  v-model="internalValue"
@@ -36,6 +28,16 @@
                  @focus="onFocus"
                  @keydown="onKeyDown"
                  @blur="onBlur">
+          <div class="g-file-input--text">
+            <slot v-if="dirty" name="selection">
+              <div v-if="chips || smallChips">
+                <g-chip v-for="file in files" :small="smallChips">{{file.name}}{{showSize?' ('+fileSize+')':''}}
+                </g-chip>
+              </div>
+              <div v-else>{{file.name}}{{showSize?' ('+fileSize+')':''}}</div>
+            </slot>
+            <slot v-else>{{placeholder}}</slot>
+          </div>
         </div>
         <div v-if="suffix" class="tf-affix">{{suffix}}</div>
         <div class="tf-append__inner" @click="onClickAppendInner">
