@@ -68,7 +68,7 @@ export const TextField = () => ({
                           <template v-slot:prepend-outer>
                           </template>
                           <template v-slot:append-inner>
-                          <g-icon>mdi-ninja</g-icon>
+                          <g-icon>{{appendInnerIcon}}</g-icon>
                           </template>
                           <template v-slot:append-outer>
                           </template>
