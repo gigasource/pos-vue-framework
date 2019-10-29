@@ -91,7 +91,7 @@
         'left': '0',
 				'bottom': 'auto',
 				'background-color': 'currentColor',
-				'transition-property': 'left'
+				'transition': 'left 1s, right 0.5s'
       });
 
       const itemsRef = ref(null);
@@ -114,18 +114,18 @@
         const activeTab = find(context.refs.itemsRef.children, i => i.classList.contains('g-tab__active'));
         if (props.vertical) {
           if (activeTab.offsetTop < +sliderStyles.top.replace("px", "")) {
-            sliderStyles['transition-property'] = 'bottom';
+            sliderStyles['transition'] = 'top 0.5s, bottom 1s';
           } else {
-            sliderStyles['transition-property'] = 'top';
+            sliderStyles['transition'] = 'bottom 0.5s, top 1s';
           }
           sliderStyles.bottom = convertToUnit(parent.offsetHeight - activeTab.offsetHeight - activeTab.offsetTop);
           sliderStyles.top = convertToUnit(activeTab.offsetTop);
           sliderStyles.height = 'auto';
 				} else {
           if (activeTab.offsetLeft < +sliderStyles.left.replace("px", "")) {
-            sliderStyles['transition-property'] = 'right';
+            sliderStyles['transition'] = 'left 0.5s, right 1s';
           } else {
-            sliderStyles['transition-property'] = 'left';
+            sliderStyles['transition'] = 'left 1s, right 0.5s';
           }
           sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft);
           sliderStyles.left = convertToUnit(activeTab.offsetLeft);

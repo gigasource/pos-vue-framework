@@ -12,7 +12,7 @@
     position: absolute;
     bottom: 0;
     margin: 0 !important;
-    transition: $primary-transition;
+    transition-timing-function: map_get($transition, 'swing');
     z-index: 1;
     background-color: currentColor;
   }
