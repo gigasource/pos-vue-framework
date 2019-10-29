@@ -1,7 +1,8 @@
 <template>
-  <div v-resize="setWidths" :class="classes" :style="styles">
+  <div v-resize="setWidths" :class="containerClasses">
     <div :class="slideGroupPrevClasses" @click="onAffixClick('prev')">
       <slot name="prev" @click="onAffixClick('prev')">
+      <!--TODO use g-icon-->
         <i class="material-icons">{{prevIcon}}</i>
       </slot>
     </div>
@@ -14,6 +15,7 @@
     </div>
     <div :class="slideGroupNextClasses" @click="onAffixClick('next')">
       <slot name="next" @click="onAffixClick('next')">
+        <!--TODO use g-icon-->
         <i class="material-icons">{{nextIcon}}</i>
       </slot>
     </div>
@@ -25,6 +27,7 @@
   import groupable from '../../mixins/groupable';
   import Resize from '../../directives/resize/resize';
 
+  //TODO add stories + tests
   export default {
     name: 'GSlideGroup',
     components: {},
@@ -55,7 +58,6 @@
       Resize
     },
     setup(props, context) {
-      //State date
       const data = reactive({
         items: [],
         widths: {
@@ -67,12 +69,6 @@
       const isOverflowing = ref(false);
       const internalItemsLength = ref(0);
       const scrollOffset = ref(0);
-      const widths = computed(() => {
-        return {
-          content: 0,
-          wrapper: 0
-        }
-      });
 
       //Styles & classes computed
       const slideGroupNextClasses = computed(() => {
@@ -89,7 +85,7 @@
         }
       });
 
-      const classes = computed(() => {
+      const containerClasses = computed(() => {
         return {
           'g-slide-group': true,
           'g-slide-group__has-affixes': hasAffixes.value,
@@ -97,52 +93,28 @@
         }
       });
 
-      const styles = computed(() => {
-
-      });
-
-      //Update & beforeUpdate
       onBeforeUpdate(() => {
         internalItemsLength.value = (context.refs.content.children || []).length
       });
 
       onUpdated(() => {
-        if (internalItemsLength.value === (context.refs.content.children || []).length) {
-          return
-        }
-
+        if (internalItemsLength.value === (context.refs.content.children || []).length) return
         setWidths();
       });
 
-
-      //Has affixes when overflowing
-      const hasAffixes = computed(() => {
-        return (
-          props.showArrows && isOverflowing.value
-        )
-      });
+      //show arrows if overflowing
+      const hasAffixes = computed(() => props.showArrows && isOverflowing.value);
 
       const hasNext = computed(() => {
-        if (!hasAffixes) {
-          return false;
-        }
-
+        if (!hasAffixes) return false;
         const { content, wrapper } = data.widths;
         // Check one scroll ahead to know the width of right-most item
         return content > Math.abs(scrollOffset.value) + wrapper;
       });
 
+      const hasPrev = computed(() => hasAffixes && scrollOffset.value !== 0);
 
-      const hasPrev = computed(() => {
-        return hasAffixes && scrollOffset.value !== 0
-      });
-
-      watch(isOverflowing, () => {
-        setWidths()
-      });
-
-
-      watch(() => props.value, () => {
+      watch(() => [props.value, isOverflowing.value], () => {
         setWidths();
       });
 
@@ -164,11 +136,10 @@
 
       function calculateNewOffset(direction, widths, currentScrollOffset) {
         const newAbsoluteOffset = currentScrollOffset + (direction === 'prev' ? -1 : 1) * widths.wrapper;
-
         return Math.max(Math.min(newAbsoluteOffset, widths.content - widths.wrapper), 0);
       }
 
-      //onClick 'prev/next'
+      //prev/next arrow click handler
       function onAffixClick(location) {
         context.emit(`click:${location}`);
         scrollTo(location);
@@ -197,9 +168,7 @@
       }
 
       function scrollIntoView() {
-        if (!selectedItem.value) {
-          return
-        }
+        if (!selectedItem.value) return
 
         if (selectedIndex.value === 0 || (!props.centerActive && !isOverflowing.value)) {
           scrollOffset.value = 0;
@@ -231,7 +200,7 @@
         });
       }
 
-      //Model
+      //v-model
       const internalValue = computed({
         get: () => {
           if (props.value) {
@@ -251,10 +220,7 @@
         return internalValue.value ? props.items.findIndex((i) => i === internalValue.value) : -1;
       });
 
-      const selectedItem = computed(() => {
-        return props.multiple ? undefined : selectedItems.value[0];
-        //return context.refs.content.children[selectedIndex.value];
-      });
+      const selectedItem = computed(() => props.multiple ? undefined : selectedItems.value[0])
 
       const selectedItems = computed(() => {
         const clonedValue = _.clone(internalValue.value);
@@ -271,25 +237,17 @@
         }
         return childrenArray.filter((item, index) => selectedValues.includes(index));
       });
+
       const { toggleItem, isActiveItem } = groupable(props, internalValue);
 
       return {
-        classes,
-        styles,
-        slideGroupNextClasses,
-        slideGroupPrevClasses,
-        internalItemsLength,
-        selectedItem,
-        isOverflowing,
-        scrollOffset,
-        widths,
-        internalValue,
         setWidths,
+        containerClasses,
+        slideGroupPrevClasses,
+        slideGroupNextClasses,
         onAffixClick,
         toggleItem,
-        isActiveItem,
-        selectedIndex,
-        selectedItems
+        isActiveItem
       }
     }
   }
