@@ -43,7 +43,8 @@ const routes = [
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   { path: '/chip-group', name: 'Chip Group', component: GChipGroupDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
-  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker}
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  { path: '/file-input-demo', name: 'File Input', component: FileInputDemo}
 ];
 
 const router = new VueRouter({

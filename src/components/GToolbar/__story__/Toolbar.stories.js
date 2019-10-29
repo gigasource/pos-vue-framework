@@ -2,7 +2,6 @@ import { text, withKnobs, boolean, number } from '@storybook/addon-knobs';
 import GToolbar from '../GToolbar';
 import GBtn from '../../GBtn/GBtn';
 import GSpacer from '../../GLayout/GSpacer';
-import GTextFieldFunctional from '../../GInput/GTextFieldFunctional';
 import GMenu from '../../GMenu/GMenu';
 import GList from '../../GList/GList';
 import GListItem from '../../GList/GListItem';

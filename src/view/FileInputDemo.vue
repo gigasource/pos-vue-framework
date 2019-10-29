@@ -1,6 +1,6 @@
 <template>
   <div>
-    <g-file-input multiple counter readonly smallChips show-size label="label"></g-file-input>
+    <g-file-input outlined></g-file-input>
     <g-file-input multiple
                   counter
                   readonly

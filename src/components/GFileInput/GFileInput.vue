@@ -34,7 +34,7 @@
                 <g-chip v-for="file in files" :small="smallChips">{{file.name}}{{showSize?' ('+fileSize+')':''}}
                 </g-chip>
               </div>
-              <div v-else>{{file.name}}{{showSize?' ('+fileSize+')':''}}</div>
+              <div v-else>{{fileName}}{{showSize?' ('+fileSize+')':''}}</div>
             </slot>
             <slot v-else>{{placeholder}}</slot>
           </div>
