@@ -24,7 +24,7 @@
 	</transition>
 </template>
 <script>
-  import { getTransitionDuration } from '../../utils/helpers';
+  import { convertToUnit, getTransitionDuration } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import getVModel from '../../mixins/getVModel';
   import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
@@ -106,12 +106,12 @@
       }))
 
       const wrapperStyles = computed(() => ({
-        top: isMaximize.value ? undefined : dialogPosition.top + 'px',
-        left: isMaximize.value ? undefined : dialogPosition.left + 'px',
-        width: isMaximize.value ? undefined : dialogDimension.width + 'px',
-        height: isMinimize.value || isMaximize.value ? undefined : dialogDimension.height + 'px',
-        minWidth: isMaximize.value ? undefined : minDialogDimension.width + 'px',
-        minHeight: isMinimize.value || isMaximize.value ? undefined : minDialogDimension.height + 'px',
+        top: isMaximize.value ? undefined : convertToUnit(dialogPosition.top),
+        left: isMaximize.value ? undefined : convertToUnit(dialogPosition.left),
+        width: isMaximize.value ? undefined : convertToUnit(dialogDimension.width),
+        height: isMinimize.value || isMaximize.value ? undefined : convertToUnit(dialogDimension.height),
+        minWidth: isMaximize.value ? undefined : convertToUnit(minDialogDimension.width),
+        minHeight: isMinimize.value || isMaximize.value ? undefined : convertToUnit(minDialogDimension.height),
         cursor: cursor.value
       }))
 
