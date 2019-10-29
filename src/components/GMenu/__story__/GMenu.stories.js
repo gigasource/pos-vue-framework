@@ -73,7 +73,7 @@ export const gMenuBehavior = () => ({
     },
   },
   template: `
-    <div data-app>
+    <div data-app style="min-height: 80vh">
       <g-menu v-model="showMenu" :close-on-content-click="closeOnContentClick" :close-on-click="closeOnClick"
               :open-on-hover="openOnHover" :open-delay="openDelay" :close-delay="closeDelay">
         <template v-slot:activator="{toggleContent}"><g-btn @click="toggleContent">Activator</g-btn></template>
