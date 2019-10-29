@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs';
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 
 //
@@ -35,7 +35,7 @@ export const TextField = () => ({
     clearable: { default: boolean('clearable', false) },
     hint: { default: text('hint', 'Hint') },
     persistent: { default: boolean('persistent', false) },
-    counter: {type:[String, Number], default: Number('counter', 25) },
+    counter: {type:[String, Number], default: number('counter', 25) },
     prefix: { default: text('prefix', '')},
     suffix: {default: text('suffix', '')},
     type: {default: text('type', 'text')},

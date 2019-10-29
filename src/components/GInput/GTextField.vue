@@ -117,7 +117,7 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef } = getLabel(props, internalValue, isValidInput, isFocused, 'tf-label__active', { 'color': 'red' });
+      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef } = getLabel(props, internalValue, isValidInput, isFocused, 'tf-label__active');
 
       //Activate non persistent hint
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'tf-hint__active': true } : {})

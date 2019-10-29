@@ -118,6 +118,9 @@ input[type=text] {
     &__active {
       transform: translateY(-18px) scale(0.75);
     }
+    &__error{
+      color: red
+    }
   }
 
   &-hint {
