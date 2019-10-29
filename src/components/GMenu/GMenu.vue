@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed, onBeforeUnmount, onMounted, reactive, ref } from '@vue/composition-api';
+  import { computed, onBeforeUnmount, onMounted, onUpdated, reactive, ref } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
@@ -66,7 +66,7 @@
       ...{
         maxWidth: {
           type: [Number, String],
-          default: '80%'
+          default: '100%'
         },
         minWidth: [Number, String],
         maxHeight: {
@@ -74,6 +74,10 @@
           default: 'auto'
         },
         minHeight: [Number, String],
+        contentFillWidth: {
+          type: Boolean,
+          default: true
+        }
       },
       // delay
       ...{
@@ -112,14 +116,18 @@
         attachToRoot();
       }
 
+      let activatorResizeObserver
       onMounted(() => {
-        if (props.lazy) {
-          return
-        }
+        activatorResizeObserver = new ResizeObserver(() => {
+          updateDimensions()
+        })
+        context.refs.activator && activatorResizeObserver.observe(context.refs.activator)
+        if (props.lazy) return
         initContent();
       });
 
       onBeforeUnmount(() => {
+        context.refs.activator && activatorResizeObserver.unobserve(context.refs.activator)
         if (content.value) detach(content.value)
         if (el.value) detach(el.value)
       })
@@ -138,9 +146,8 @@
       })
 
       const calculatedMinWidth = computed(() => {
-        if (props.minWidth) {
-          return convertToUnit(props.minWidth) || '0'
-        }
+        if (props.contentFillWidth) return convertToUnit(Math.max(dimensions.activator.width, dimensions.content.width))
+        if (props.minWidth) return convertToUnit(props.minWidth) || '0'
 
         const minWidth = Math.min(dimensions.content.width, state.pageWidth);
         const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
@@ -242,7 +249,7 @@
 
       return () =>
         <div {...{ on: elListeners }} ref="el" class="menu">
-          <div ref="activator">{context.slots.activator({ toggleContent })}</div>
+          <div ref="activator" class="g-menu--activator">{context.slots.activator({ toggleContent })}</div>
           <div style={contentStyles.value}
                class="menu-content"
                ref="content"
