@@ -19,7 +19,7 @@
     setup(props, context) {
       // TODO:
       //  + Complete Playground: Computed props expand level doesn't work
-      //  + Fix bug with input value is function
+      //  + Adjust icon position
       //  + Test cases
 
       // Render itemText
