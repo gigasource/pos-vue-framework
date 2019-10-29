@@ -89,10 +89,11 @@ export function getSelectedIndex(clockContainer, targetPos, itemsLength = 60) {
   const anglePerUnit = 360 / itemsLength
   const angle = computeAngle(clockContainer, targetPos)
   if (angle !== false) {
-    let selectedItemIndex = Math.floor(angle / anglePerUnit)
+    let selectedItemIndex = Math.floor((angle + 0.5 * anglePerUnit) / anglePerUnit)
     // reset if selected index reach the boundary
     if (selectedItemIndex >= itemsLength)
       selectedItemIndex = 0
+
     return selectedItemIndex
   } else return -1
 }

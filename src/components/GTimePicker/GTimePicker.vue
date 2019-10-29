@@ -8,7 +8,7 @@
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 
   const MINIMUM_WIDTH = 300
-  const DEFAULT_COLOR = 'rgb(145, 107, 219)'
+  const DEFAULT_COLOR = 'rgb(98, 0, 237)'
 
   export default {
     name: 'GTimePicker',
@@ -41,7 +41,7 @@
       // title
       titleBgColor: {
         type: String,
-        default: '#916',
+        default: DEFAULT_COLOR,
       },
       titleTextColor: {
         type: String,
@@ -50,7 +50,7 @@
       // clock
       clockWrapperColor: {
         type: String,
-        default: '#e068b3'
+        default: '#fff'
       },
       clockFaceColor: {
         type: String,
@@ -58,7 +58,7 @@
       },
       clockNumberColor: {
         type: String,
-        default: '#916'
+        default: DEFAULT_COLOR
       },
       clockSelectedNumberColor: {
         type: String,
@@ -66,7 +66,7 @@
       },
       clockHandColor: {
         type: String,
-        default: '#916'
+        default: DEFAULT_COLOR
       },
 
       // ROADMAP
@@ -74,7 +74,6 @@
       // allowedHours: [Function, Array],
       // allowedMinutes: [Function, Array],
       // allowedSeconds: [Function, Array],
-      // Transition
     },
     setup(props, context) {
       const {
@@ -196,8 +195,6 @@
       // Clock
       const cptHandPositionAndRotateStyle = computedHandStyle(props, state)
       const cptHandColorStyle = computed(() => setBackgroundColor(props.clockHandColor, {}))
-      const cptHandRotateTransition = computed(() => props.scrollable ? undefined : { transition: 'transform 0.8s' })
-
       const cptClockWrapperClassStyle = computed(() => setBackgroundColor(props.clockWrapperColor, {
         class: {
           'g-time-picker__clock-wrapper': true
@@ -233,26 +230,47 @@
         changeFn(changeValue)
       }
 
-      function onClockClicked(e) {
-        e.stopPropagation()
-        e.preventDefault()
-
-        if (props.disabled || props.readonly) {
-          return
-        }
-
-        const selectedIndex = getSelectedIndex(e.target.getBoundingClientRect(), { x: e.offsetX, y: e.offsetY })
-        if (selectedIndex !== -1) {
-          if (state.activeTimePicker.minute) {
-            minutesModel.value[selectedIndex].select()
-            if (props.useSeconds) {
-              showSecondsPicker()
-            }
+      function updateTime(e) {
+        const {width, height, left, top} = e.target.getBoundingClientRect()
+        const itemsLength = state.activeTimePicker.hour ?  12: 60;
+        const targetPos = { x: e.clientX - left, y: e.clientY - top }
+        let index = getSelectedIndex({width, height}, targetPos, itemsLength)
+        if (index !== -1) {
+          if (state.activeTimePicker.hour) {
+            // 24 hours specified
+            const { Ox, Oy } = { Ox: width/2, Oy: height/2 }
+            const distance = Math.sqrt(Math.pow(targetPos.x - Ox, 2) + Math.pow(targetPos.y - Oy, 2))
+            if ((distance < (width / 2 * 0.6)) && props.hourConvention === HourConvention._24HRS)
+              index += 12
+            hoursModel.value[index].select()
+          } else if (state.activeTimePicker.minute) {
+            minutesModel.value[index].select()
           } else if (state.activeTimePicker.second) {
-            secondsModel.value[selectedIndex].select()
+            secondsModel.value[index].select()
           }
         }
       }
+
+      let mouseDownState = false
+      function onMouseDown(e) {
+        mouseDownState = true
+      }
+      function onMouseMove(e) {
+        if (mouseDownState) {
+          updateTime(e)
+        }
+      }
+      function onMouseUp(e) {
+        mouseDownState = false
+        if (state.activeTimePicker.hour)
+          showMinutesPicker()
+        else if (state.activeTimePicker.minute && props.useSeconds)
+          showSecondsPicker()
+      }
+      function onClick(e) {
+        updateTime(e)
+      }
+
 
       function addNumberClass(numbers) {
         _.each(numbers, (el) => {
@@ -282,8 +300,8 @@
         if (state.activeTimePicker.hour) {
           return addNumberClass(hoursModel.value).map((hour, index) => {
             let hourColor = getNumberColorStyle(hour)
-            return <span
-                class={[hour.class, hourColor.class, { 'g-time-picker__clock__inner__number--selectable': !props.disabled && !props.readonly }]}
+            return <span vShow={state.activeTimePicker.hour}
+                class={[hour.class, hourColor.class, ]}
                 style={[hour.style, hourColor.style, range0_23PositionStyle[index]]}
                 vOn:click_prevent_stop={(e) => {
                   hour.select()
@@ -293,7 +311,6 @@
             </span>
           })
         }
-
         return undefined
       }
 
@@ -337,11 +354,14 @@
             <div class={cptClockWrapperClassStyle.value.class} style={cptClockWrapperClassStyle.value.style}>
               <div class={cptClockClassStyle.value.class}
                    style={cptClockClassStyle.value.style}
-                   vOn:click={onClockClicked}
-                   vOn:wheel={onWheel}>
+                   vOn:click={onClick}
+                   vOn:wheel={onWheel}
+                   vOn:mousemove={onMouseMove}
+                   vOn:mouseup={onMouseUp}
+                   vOn:mousedown={onMouseDown}>
                 <div class="g-time-picker__clock__inner">
                   <div class={['g-time-picker__clock__inner__hand', cptHandColorStyle.value.class]}
-                       style={[cptHandPositionAndRotateStyle.value, cptHandColorStyle.value.style, cptHandRotateTransition.value]}></div>
+                       style={[cptHandPositionAndRotateStyle.value, cptHandColorStyle.value.style]}></div>
                   {hourRenderFn()}
                   {minuteRenderFn()}
                   {secondRenderFn()}
