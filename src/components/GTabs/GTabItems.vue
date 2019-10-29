@@ -30,16 +30,6 @@
           transition.value = 'g-tab-transition';
         }
       }, { flush: 'pre' })
-
-      // const reverse = ref(false);
-      // provide('reverse', reverse);
-
-      // TODO: reverse transition
-      // watch(() => model.value, (newVal, oldVal) => {
-      //   const newIndex = props.items.findIndex(item => item === newVal);
-      //   const oldIndex = props.items.findIndex(item => item === oldVal);
-      //   reverse.value = (newIndex < oldIndex);
-      // }, {flush: 'pre'})
     }
   }
 </script>
