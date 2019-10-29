@@ -31,7 +31,6 @@
                       read-only
                       @click:clearIcon="clearSelection"
                       :value="textfieldValue"
-
         >
           <template v-slot:inputSlot v-if="selections">
             <div class="tf-input" style="{color: #1d1d1d}">
@@ -56,10 +55,7 @@
 
             </div>
           </template>
-          <template v-slot:label>
-            <label class="tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
-          </template>
-          <template v-slot:append-inner="{isFocused}">
+          <template v-slot:append-inner="{isFocused, isValidInput }">
             <div class="dropDown" :style="iconStyle">
               <g-icon :color="showOptions||isFocused ? 'blue' : null">arrow_drop_down</g-icon>
             </div>
@@ -89,7 +85,6 @@
             <slot name="item" :item="item" :isSelected="isSelected"></slot>
           </template>
         </g-list>
-<!--              todo: prepend click unselect-->
         <g-list v-else :items="items" :item-title="itemText" :item-value="itemValue" selectable mandatory v-model="selectedItem" @click:item="showOptions = false" dense>
           <template v-slot:listItem="{item, isSelected}">
             <slot name="item" :item="item" :isSelected="isSelected"></slot>
@@ -106,7 +101,6 @@
   import _ from "lodash";
   import GListItem from "../GList/GListItem";
   import {makeSelectable} from "../../mixins/groupable";
-  import GCheckbox from "../GCheckbox/GCheckbox";
   import GTextField from "../GInput/GTextField";
   import {GListItemContent, GListItemSubText, GListItemText} from "../GList/GListFunctionalComponent";
   import GIcon from "../GIcon/GIcon";
@@ -121,7 +115,6 @@
       GIcon,
       GListItem,
       GTextField,
-      GCheckbox,
       GMenu,
       GList,
       GListItemContent,
@@ -256,15 +249,13 @@
 
       })
       const textfieldValue = computed(() => {
-        props.multiple ? selections.value.join(', ') : selections
+        if(props.multiple) return selections.value.join(', ')
+        return selections.value
       })
       function clearSelection() {
         selectedItem.value = props.multiple ? [] : ''
         state.searchText = ''
       }
-      //label computed
-      const isValidInput = ref(true)
-      const {labelClasses, labelStyles, isDirty} = getLabel(props, textfieldValue, isValidInput, showOptions, 'tf-label__active',{ 'color': 'red' })
         //menu props computed
       const {
         closeOnClick,
@@ -292,10 +283,6 @@
         searchText,
         clearSelection,
         showOptions,
-        //label
-        labelClasses,
-        labelStyles,
-        isDirty,
         //menu props
         ...{
           closeOnClick,

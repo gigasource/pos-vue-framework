@@ -1,4 +1,4 @@
-import {boolean, text, withKnobs} from '@storybook/addon-knobs';
+import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions'
 
 //
@@ -21,7 +21,7 @@ export const GSelectSingle = () => ({
     clearable: { default: boolean('clearable', false) },
     hint: { default: text('hint', 'Hint') },
     persistent: { default: boolean('persistent', false) },
-    counter: {type:[String, Number], default: Number('counter', 25) },
+    counter: {type:[String, Number], default: number('counter', 25) },
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
     chips: { default: boolean('chips', false) },
@@ -58,13 +58,80 @@ export const GSelectSingle = () => ({
  :counter="counter"
  :placeholder="placeholder"
  :chips="chips"
- 
  v-model="selected" 
   >
    </g-select>
 </div>
   `,
 })
+export const GSelectSingleWithValidate = () => ({
+  components: {GSelect},
+  props:{
+    label:{ default: text('Input label', 'Label') },
+    placeholder:{ default: text('Input placeholder', '') },
+    filled: { default: boolean('filled', false) },
+    solo: { default: boolean('solo', false) },
+    outlined: { default: boolean('outlined', false) },
+    flat: { default: boolean('flat', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
+    clearable: { default: boolean('clearable', false) },
+    hint: { default: text('hint', 'Hint') },
+    persistent: { default: boolean('persistent', false) },
+    counter: {type:[String, Number], default: Number('counter', 25) },
+    itemText:{ default: text('itemText', 'text') },
+    itemValue:{ default: text('itemText', 'value') },
+    chips: { default: boolean('chips', false) },
+    mandatory:{ default: boolean('mandatory', false) },
+  },
+  data() {
+    return{
+      items: [
+        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+      ],
+      selected: null,
+      rules: {
+        required: value => !!value || 'Required',
+        counter: value => value.length > 4 || 'Min 5 characters',
+        max: value => value.length < 10 || 'Max 9 characters',
+        email: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail'
+        }
+      },
+    }
+  },
+  template: `
+<div data-app>
+ <g-select
+ width="100%" 
+ :items="items" 
+ :item-text="itemText" 
+ :item-value="itemValue"  
+ :label="label"
+ :clearable="clearable"
+ :filled="filled"
+ :solo="solo"
+ :outlined="outlined"
+ :flat="flat"
+ :rounded="rounded"
+ :shaped="shaped"
+ :hint="hint"
+ :persistent="persistent"
+ :counter="counter"
+ :placeholder="placeholder"
+ :chips="chips"
+ :rules="[rules.required, rules.counter, rules.max]"
+ v-model="selected" 
+  >
+   </g-select>
+</div>
+  `,
+})
+
 export const GSelectMultiple = () => ({
   components: {GSelect},
   props:{
@@ -195,12 +262,13 @@ export const test2 = () => ({
 
 // testing
 import Vue from 'vue/dist/vue.common.js'
-import GSelect from "../GSelect";
+
 import GCheckbox from "../../GCheckbox/GCheckbox";
 import GTextField from "../../GInput/GTextField";
 import GListItem from "../../GList/GListItem";
 import {GListItemText, GListItemContent, GListItemSubText} from "../../GList/GListFunctionalComponent";
 import GDivider from "../../GLayout/GDivider";
+import GSelect from "../GSelect.vue";
 
 describe('test', function () {
   it('should', function () {
