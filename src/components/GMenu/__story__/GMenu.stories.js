@@ -10,9 +10,13 @@ export default {
 export const gMenuLookAndFeel = () => ({
   components: { GMenu, GBtn },
   data: () => ({
-    showMenu: false
+    activatorHeight: 40,
+    activatorWidth: 120
   }),
   props: {
+    showMenu: {
+      default: boolean('show menu', true)
+    },
     top: {
       default: boolean('align top', false)
     },
@@ -39,11 +43,19 @@ export const gMenuLookAndFeel = () => ({
     },
 
   },
+  mounted() {
+    setTimeout(() => {
+      this.activatorHeight = 100;
+      this.activatorWidth = 300
+    }, 2000)
+  },
   template: `
     <div data-app class="row-flex">
       <g-menu v-model="showMenu" :top="top" :bottom="bottom" :offset-x="offsetX" :offset-y="offsetY" :nudge-top="nudgeTop" 
               :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight">
-        <template v-slot:activator="{toggleContent}"><g-btn @click="toggleContent">Activator</g-btn></template>
+        <template v-slot:activator="{toggleContent}">
+          <g-btn @click="toggleContent" :width="activatorWidth" :height="activatorHeight">Activator</g-btn>
+        </template>
         <div>Content</div>
       </g-menu>
     </div>
@@ -53,22 +65,29 @@ export const gMenuLookAndFeel = () => ({
 export const gMenuBehavior = () => ({
   components: { GMenu, GBtn },
   data: () => ({
-    showMenu: false
   }),
   props: {
+    showMenu: {
+      default: boolean('show menu', false)
+    },
     closeOnContentClick: {
+      type: Boolean,
       default: boolean('close on content click', true)
     },
     closeOnClick: {
+      type: Boolean,
       default: boolean('close on outside click', true)
     },
     openOnHover: {
+      type: Boolean,
       default: boolean('open on hover', true)
     },
     openDelay: {
+      type: Number,
       default: number('open delay (ms)', 500)
     },
     closeDelay: {
+      type: Number,
       default: number('close delay (ms)', 500)
     },
   },
