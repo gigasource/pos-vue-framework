@@ -17,29 +17,25 @@ export const playground = () => ({
   },
   setup(props) {
     const jsonData = {
-      a: 5,
-      b: {
-        c: 1,
-        d: 1
-      }
-
-      // name: "TreeViewJson",
-      // props: ["data", "expandLevel", "itemText"],
-      // propsDescription: [
-      //   {
-      //     type: "Object | Array | any",
-      //     propName: 'data',
-      //     // defaultValue: null,
-      //   }, {
-      //     propName: 'expandLevel',
-      //     type: "Number",
-      //     // defaultValue: 0,
-      //   }, {
-      //     propName: 'itemText',
-      //     type: "[String, Function]",
-      //     // defaultValue: null,
-      //   }
-      // ],
+      name: "TreeViewJson",
+      props: ["data", "expandLevel", "itemText"],
+      propsDescription: [
+        {
+          type: "Object | Array | any",
+          propName: 'data',
+          defaultValue: null,
+        }, {
+          propName: 'expandLevel',
+          type: "Number",
+          defaultValue: 0,
+        }, {
+          propName: 'itemText',
+          type: "[String, Function]",
+          defaultValue: null,
+        }
+      ],
+      highlightOnHover: false,
+      formatText: (text) => text + text
     }
 
     return () => (

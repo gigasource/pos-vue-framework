@@ -1,7 +1,7 @@
 // Created at 2019-10-28 14:07 by Thinh Vu
 import { createLocalVue } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
-import {getPropsNameAZPrimitiveFirst} from '../GTreeViewJson'
+import {getPropsNameAZPrimitiveFirst} from '../util'
 
 describe('/GTreeFactoryTest', () => {
   createLocalVue().use(plugin)

@@ -2,30 +2,8 @@
   import { computed } from '@vue/composition-api';
   import GTreeFactory, { genTextFactory } from './GTreeFactory';
   import GIcon from '../GIcon/GIcon';
+  import { getPropsNameAZPrimitiveFirst } from './util'
 
-  export function getPropsNameAZPrimitiveFirst(obj) {
-    // the higher the index, the higher priority
-    const typePriority = ['function', 'object', 'array', 'string', 'number', 'boolean']
-
-    let objKeys = Object.keys(obj)
-    let objKeysValueType = {}
-
-    objKeys.forEach(key => objKeysValueType[key] = typeof obj[key])
-
-    const sortResult = objKeys.sort((key1, key2) => {
-      let typePriority1 = typePriority.indexOf(objKeysValueType[key1])
-      let typePriority2 = typePriority.indexOf(objKeysValueType[key2])
-      // the same type, compare key name
-      if (typePriority1 === typePriority2) {
-        return key1 > key2 ? 1 : -1
-      } else // different type, order by type
-      {
-        return typePriority2 - typePriority1
-      }
-    })
-
-    return sortResult
-  }
 
   export default {
     name: 'GTreeViewJson',
@@ -41,7 +19,7 @@
     setup(props, context) {
       // TODO:
       //  + Complete Playground: Computed props expand level doesn't work
-      //  + Fix bug with input value is array, primitive value, function
+      //  + Fix bug with input value is function
       //  + Test cases
 
       // Render itemText
@@ -64,6 +42,8 @@
             return `Array (${text.value.length})`
           case 'boolean':
             return text.value ? 'true' : 'false'
+          case 'function':
+            return text.value.toString()
           default:
             return text.value
         }
@@ -110,6 +90,8 @@
             // cut the string if it's length too long
             if (typeOfVal === 'string' && val.length > 50) {
               valDesc = createValueDesc(key, val.substr(0, 20) + '...' + val.substr(val.length - 1 - 20), typeOfVal)
+            } else if (typeOfVal === 'function') {
+              valDesc = createValueDesc(key, 'function(...){...}', typeOfVal)
             } else {
               valDesc = createValueDesc(key, val, typeOfVal)
             }
@@ -134,7 +116,15 @@
       const itemText = props.itemText || ((node, isRoot) => {
         let nodeDescription;
         if (isRoot) {
-          nodeDescription = { varName: 'result', valueType: 'object', value: jsonStringifyReplacer(node) }
+          if (node == undefined) {
+            nodeDescription = { varName: 'result', valueType: 'null', value: 'null' }
+          } else if (Array.isArray(node)) {
+            nodeDescription = { varName: 'result', valueType: 'array', value: node }
+          } else if (typeof(node) === 'object') {
+            nodeDescription = { varName: 'result', valueType: 'object', value: jsonStringifyReplacer(node) }
+          } else {
+            nodeDescription = { varName: 'result', value: node, valueType: typeof node }
+          }
         } else {
           if (typeof node === 'object') {
             const firstPropName = Object.keys(node)[0];
@@ -270,10 +260,7 @@
   .g-tree-view {
     &__item {
       &-icon-wrapper {
-        display: inline-block;
         width: 20px;
-        height: 100%;
-        vertical-align: middle;
       }
 
       &-var-name {
@@ -285,6 +272,10 @@
       }
 
       &-value {
+        &-function {
+          color: rgb(150, 125, 82);
+        }
+
         &-string {
           color: rgb(185, 125, 82);
         }
