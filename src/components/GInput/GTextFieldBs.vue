@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-g-tf--wrapper" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown"
+  <div class="bs-tf-wrapper" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown"
        :class="{'g-tf--wrapper-disabled': disabled, 'g-tf--wrapper-readonly': readOnly}">
     <label class="bs-tf-label">
       <slot name="label">{{label}}</slot>
