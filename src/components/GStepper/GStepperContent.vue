@@ -1,25 +1,29 @@
 <template>
-  <g-layout vertical>
-    <slot :isActive="isActiveItem"></slot>
+  <g-layout v-if="show">
+    <g-layout vertical>
+      <slot></slot>
+    </g-layout>
   </g-layout>
 </template>
 
 <script>
-  import getVModel from '../../mixins/getVModel';
   import GLayout from '../GLayout/GLayout';
+  import { computed, inject } from '@vue/composition-api'
 
   export default {
     name: 'GStepperContent',
-    props: {
-      steps: Array,
-      value: null
-    },
     components: { GLayout },
+    props: {
+      step: null
+    },
     setup(props, context) {
-      const { model } = getVModel(props, context);
-      const isActiveItem = (item) => model.value === item;
+      const model = inject('model');
+      const show = computed(() => {
+        return model.value === props.step
+      });
+
       return {
-        isActiveItem,
+        show
       }
     }
   }

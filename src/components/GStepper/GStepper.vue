@@ -1,14 +1,14 @@
 <template>
   <div :class="classes">
     <g-stepper-header>
-      <slot name="steps" :toggle="toggleItem" :active="isActiveItem"></slot>
-    </g-stepper-header>
-    <g-stepper-content v-model="model">
-      <template v-slot:default="{isActive}">
-        <slot name="content" :model="model"></slot>
+      <template v-for="(step, index) in steps">
+        <g-stepper-step @click="toggleItem" :step="step" :disabled="step" :editable="step.editable" :complete="step.complete">
+          <slot name="step">Step {{index + 1}}</slot>
+        </g-stepper-step>
+        <g-divider v-if="index !== steps.length-1"></g-divider>
       </template>
-    </g-stepper-content>
-
+    </g-stepper-header>
+    <slot></slot>
   </div>
 </template>
 
@@ -16,21 +16,23 @@
   import { computed, ref } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
   import getVModel from '../../mixins/getVModel';
-  import GStepperContents from './GStepperContents';
+  import GStepperContents from './GStepperContent';
   import GStepperHeader from './GStepperHeader';
   import GStepperStep from './GStepperStep';
   import GDivider from '../GLayout/GDivider';
-  import GStepperContent from './GStepperContent';
+  import GStepperContent from './GStepperContents';
+  import GSpacer from '../GLayout/GSpacer';
+  import GCard from '../GCard/GCard';
 
   export default {
     name: 'GStepper',
-    components: { GStepperContent, GDivider, GStepperStep, GStepperHeader, GStepperContents },
+    components: { GCard, GSpacer, GStepperContent, GDivider, GStepperStep, GStepperHeader, GStepperContents },
     props: {
       altLabels: Boolean,
       nonLinear: Boolean,
-      steps: Number,
+      steps: Array,
       vertical: Boolean,
-      value: [Number, String, Boolean],
+      value: [Number, String, Boolean, Object],
       contents: Array
     },
     setup(props, context) {

@@ -45,7 +45,7 @@ const routes = [
   { path: '/chip-group', name: 'Chip Group', component: GChipGroupDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
-  { path: '/stepper-demo', name: 'Stepper', component: StepperDemo}
+  { path: '/stepper-demo', name: 'Stepper', component: StepperDemo},
   { path: '/slide-group', name: 'SlideGroup', component: SlideGroupDemo},
   { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker}

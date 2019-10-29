@@ -39,7 +39,7 @@
         type: Array,
         default: () => [],
       },
-      step: [Number, String],
+      step: null,
     }, setup(props, context) {
       //reactive data
       let isActive = ref(false);
