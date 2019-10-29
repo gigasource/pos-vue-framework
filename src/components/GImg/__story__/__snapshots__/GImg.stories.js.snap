@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GImg with width height 1`] = `
+<div>
+  <div class="g-image"
+       style="background-size: contain; width: 500px; height: 500px; background-image: url(https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg);"
+  >
+  </div>
+  <div class="g-placeholder"
+       style="background-size: contain; width: 500px; height: 500px;"
+  >
+  </div>
+</div>
+`;

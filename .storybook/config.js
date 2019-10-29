@@ -12,7 +12,7 @@ import '../src/plugin/waves'
 addParameters({
   options: {
     theme: themes.light,
-    panelPosition: 'bottom',
+    panelPosition: 'right',
     hierarchySeparator: /\//,
     hierarchyRootSeparator: /\|/,
   },
