@@ -60,9 +60,11 @@ export default function ({
     const blockUnnecessaryNode = function () {
       let stopExecutionImmediately = false
       if (this.isRoot) {
+
       } else if (this.key === childrenProp) {
         stopExecutionImmediately = true;
       } else if (this.parent && this.parent.key === childrenProp) {
+
       } else {
         this.block();
         stopExecutionImmediately = true;
@@ -95,7 +97,6 @@ export default function ({
       this._level = this.isRoot ? 0 : getParentLevel_(this) + 1
       const children = genChildren.value(node, this.isRoot);
 
-      // convert current node  to { level, children }
       this.update({ [childrenProp]: children })
 
       this.after(nodeAfterConvert => {

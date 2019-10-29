@@ -225,32 +225,19 @@
         }
       }
 
+      // TODO: Correct the algorithm
       // const converter = node => Object.keys(node).map(k => ({ [k]: node[k], __primitive: true }))
-      // const itemChildren2 = (node, isRoot) => {
+      // const itemChildren = (node) => {
       //   if (Array.isArray(node)) {
       //     return node
       //   } else if (typeof node === 'object') {
-      //     // fake not is an object created by primitive
-      //     if (node.__primitive)
+      //     if (node.__primitive) {
       //       return node[Object.keys(node)[0]]
-      //
-      //
-      //     const firstPropValue = node[Object.keys(node)[0]];
-      //
-      //     if (isRoot) {
+      //     }
+      //     else {
       //       return converter(node)
-      //     } else if (Array.isArray(firstPropValue)) {
-      //       return firstPropValue.map((item, index) => {
-      //         if (typeof item === 'object') return ({ [index]: item });
-      //         return item;
-      //       });
-      //     } else if (typeof firstPropValue === 'object') {
-      //       return converter(firstPropValue);
-      //     } else {
-      //       return firstPropValue;
       //     }
       //   } else {
-      //     // primitive
       //     return node;
       //   }
       // }
