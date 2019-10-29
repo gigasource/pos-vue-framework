@@ -18,6 +18,7 @@
 			<router-link to="/list-demo">List</router-link>
 			<router-link to="/selection-control">SelectIonControl</router-link>
       <router-link to="/date-picker-demo">DatePicker</router-link>
+			<router-link to="/stepper-demo">Stepper</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

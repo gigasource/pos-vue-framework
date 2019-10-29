@@ -1,0 +1,56 @@
+$stepper-border-radius: 4px !default;
+$grid-breakpoints: () !default;
+$grid-breakpoints: map-deep-merge(
+                (
+                        'xs': 0,
+                        'sm': 600px,
+                        'md': 960px,
+                        'lg': 1280px - 16px,
+                        'xl': 1920px - 16px
+                ),
+                $grid-breakpoints
+);
+$display-breakpoints: () !default;
+$display-breakpoints: map-deep-merge(
+                (
+                        'print-only': 'only print',
+                        'screen-only': 'only screen',
+                        'xs-only': 'only screen and (max-width: #{map-get($grid-breakpoints, 'sm') - 1})',
+                        'sm-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'sm')}) and (max-width: #{map-get($grid-breakpoints, 'md') - 1})',
+                        'sm-and-down': 'only screen and (max-width: #{map-get($grid-breakpoints, 'md') - 1})',
+                        'sm-and-up': 'only screen and (min-width: #{map-get($grid-breakpoints, 'sm')})',
+                        'md-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'md')}) and (max-width: #{map-get($grid-breakpoints, 'lg') - 1})',
+                        'md-and-down': 'only screen and (max-width: #{map-get($grid-breakpoints, 'lg') - 1})',
+                        'md-and-up': 'only screen and (min-width: #{map-get($grid-breakpoints, 'md')})',
+                        'lg-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'lg')}) and (max-width: #{map-get($grid-breakpoints, 'xl') - 1})',
+                        'lg-and-down': 'only screen and (max-width: #{map-get($grid-breakpoints, 'xl') - 1})',
+                        'lg-and-up': 'only screen and (min-width: #{map-get($grid-breakpoints, 'lg')})',
+                        'xl-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'xl')})'
+                ),
+                $display-breakpoints
+);
+
+
+// Adapted from https://gist.github.com/pentzzsolt/4949bbd7691d43d00616dc4f1451cae9#file-non-destructive-map-merge-4-scss
+@function map-deep-merge($parent-map, $child-map) {
+  $result: $parent-map;
+
+  @each $key, $child in $child-map {
+    $parent-has-key: map-has-key($result, $key);
+    $parent-value: map-get($result, $key);
+    $parent-type: type-of($parent-value);
+    $child-type: type-of($child);
+    $parent-is-map: $parent-type == map;
+    $child-is-map: $child-type == map;
+
+    @if (not $parent-has-key) or ($parent-type != $child-type) or (not ($parent-is-map and $child-is-map)) {
+      $result: map-merge($result, ($key: $child))
+    } @else {
+      $result: map-merge($result, ($key: map-deep-merge($parent-value, $child)))
+    }
+  }
+
+
+  @return $result
+}
+

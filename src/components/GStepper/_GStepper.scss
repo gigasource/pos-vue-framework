@@ -1,0 +1,264 @@
+@import './variables';
+
+.g-stepper {
+  background: #FFFFFF;
+
+  .g-stepper__step {
+    &:not(.g-stepper__step__active):not(.g-stepper__step__complete):not(.g-stepper__step__error) {
+
+      .g-stepper__step__step {
+        background: rgba(0, 0, 0, 0.38);
+      }
+    }
+
+    &__step {
+      color: rgba(255, 255, 255, 1);
+
+      .g-icon {
+        color: rgba(255, 255, 255, 1);
+      }
+    }
+  }
+
+  .g-stepper__header {
+    .v-divider {
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .g-stepper__step {
+    &__active {
+      .g-stepper__label {
+        text-shadow: 0 0 0 rgba(0, 0, 0, 1);
+      }
+    }
+
+    &__editable:hover {
+      background: rgba(0, 0, 0, .06);
+
+      .g-stepper__label {
+        text-shadow: 0 0 0 rgba(0, 0, 0, 1);
+      }
+    }
+
+    &__complete {
+      .g-stepper__label {
+        color: rgba(0, 0, 0, 0.87);
+      }
+    }
+
+    &__inactive {
+      &.g-stepper__step__editable:not(.g-stepper__step__error) {
+        &:hover {
+          .g-stepper__step__step {
+            background: rgba(0, 0, 0, 0.54);
+          }
+        }
+      }
+    }
+  }
+
+  .g-stepper__label {
+    color: rgba(0, 0, 0, 0.38);
+
+    small {
+      color: rgba(0, 0, 0, 0.54);
+    }
+  }
+
+  &__non-linear {
+    .g-stepper__step:not(.g-stepper__step__complete):not(.g-stepper__step__error) {
+      .g-stepper__label {
+        color: rgba(0, 0, 0, 0.54);
+      }
+    }
+  }
+
+  &__vertical {
+    .g-stepper__content:not(:last-child) {
+      border-left: 1px solid rgba(0, 0, 0, 0.12);
+    }
+  }
+}
+
+.g-stepper {
+  border-radius: $stepper-border-radius;
+  overflow: hidden;
+  position: relative;
+  @include elevation(2);
+
+  &__header {
+    height: 72px;
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    @include elevation(2);
+
+    .v-divider {
+      align-self: center;
+      margin: 0 -16px;
+    }
+  }
+
+  &__items {
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__step__step {
+    align-items: center;
+    border-radius: 50%;
+    display: inline-flex;
+    font-size: 12px;
+    justify-content: center;
+    height: 24px;
+    margin-right: 8px;
+    min-width: 24px;
+    width: 24px;
+    transition: .3s map-get($transition, 'fast-in-fast-out');
+
+    .v-icon.v-icon {
+      font-size: 18px;
+    }
+  }
+
+  &__step {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    padding: 24px;
+    position: relative;
+
+    &__active {
+      .g-stepper__label {
+        transition: .3s map-get($transition, 'ease-in-out');
+      }
+    }
+
+    &__editable {
+      cursor: pointer;
+    }
+
+    &.g-stepper__step__error {
+      .g-stepper__step__step {
+        background: transparent;
+        color: inherit;
+
+        .v-icon {
+          font-size: 24px;
+          color: inherit;
+        }
+      }
+
+      .g-stepper__label {
+        color: inherit;
+        text-shadow: none;
+        font-weight: 500;
+
+        small {
+          color: inherit;
+        }
+      }
+    }
+  }
+
+  &__label {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    text-align: left;
+
+    small {
+      font-size: 12px;
+      font-weight: 300;
+      text-shadow: none;
+    }
+  }
+
+  &__wrapper {
+    overflow: hidden;
+    transition: none;
+  }
+
+  &__content {
+    top: 0;
+    padding: 24px 24px 16px 24px;
+    flex: 1 0 auto;
+    // Chrome has an issue with overflow hidden for rendering
+    // Originally used translateZ but this messes up fixed
+    // elements within the stepper
+    // Fix for #512 and #620
+    // overflow: hidden
+    width: 100%;
+
+    > .v-btn {
+      margin: 24px 8px 8px 0;
+    }
+  }
+
+  &__is-booted {
+    .g-stepper__content, .g-stepper__wrapper {
+      transition: .3s cubic-bezier(0.25, 0.8, 0.5, 1);
+    }
+  }
+
+  &__vertical {
+    padding-bottom: 36px;
+
+    .g-stepper__content {
+      margin: -8px -36px -16px 36px;
+      padding: 16px 60px 16px 23px;
+      width: auto;
+    }
+
+    .g-stepper__step {
+      padding: 24px 24px 16px;
+    }
+
+    .g-stepper__step__step {
+      margin-right: 12px;
+    }
+  }
+
+  &__alt-labels {
+    .g-stepper__header {
+      height: auto;
+
+      .v-divider {
+        margin: 35px -67px 0;
+        align-self: flex-start
+      }
+    }
+
+    .g-stepper__step {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      flex-basis: 175px;
+
+      small {
+        align-self: center;
+      }
+    }
+
+    .g-stepper__step__step {
+      margin-right: 0;
+      margin-bottom: 11px;
+    }
+  }
+}
+
+@media #{map-get($display-breakpoints, 'sm-and-down')} {
+  .g-stepper:not(.g-stepper__vertical) {
+    .g-stepper__label {
+      display: none
+    }
+
+    .g-stepper__step__step {
+      margin-right: 0;
+    }
+  }
+}
+
