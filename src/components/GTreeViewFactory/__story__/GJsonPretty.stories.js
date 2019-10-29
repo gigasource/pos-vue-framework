@@ -1,4 +1,4 @@
-import { text, withKnobs } from '@storybook/addon-knobs';
+import { text, withKnobs, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 import GTreeViewJson from '../GTreeViewJson';
 //
@@ -7,51 +7,43 @@ export default {
   decorators: [withKnobs],
 }
 
-/*export const playground = () => ({
-  components: { GJsonPretty },
-  setup() {
-    const jsonData = {"status":200,"error":"","data":[{"news_id":51184,"title":"iPhone X Review: Innovative future with real black technology","source":"Netease phone"},{"news_id":51183,"title":"Traffic paradise: How to design streets for people and unmanned vehicles in the future?","source":"Netease smart"},{"news_id":51182,"title":"Teslamask's American Business Relations: The government does not pay billions to build factories","source":"AI Finance","members":["Daniel","Mike","John"]}]}
-    const expandLevel = 0
-
-    return () => (
-        <g-json-pretty
-            json-data={jsonData}
-            expand-level={expandLevel}
-            item-children-path='data'
-            prop-icon=''
-            method-icon=''
-        ></g-json-pretty>
-    )
-  }
-})*/
-
-export const playground2 = () => ({
+export const playground = () => ({
   components: { GTreeViewJson },
-  setup() {
-    //const jsonData = { a: { c: 2, d: 3 }, b: 1 }
-    //const jsonData = [1, 2]
-    //const jsonData = { a: [1, 2], b: 1 }
-    // const jsonData = { a: [{ c: 2}, { c: 3}, 5], b: 1 }
-
+  props: {
+    expandLevel: {
+      type: Number,
+      default: number('expandLevel', 3, { min: 0, max: 999999})
+    }
+  },
+  setup(props) {
     const jsonData = {
-      a: 1,
-      b: [2, 3],
-      c: {
-        d: 4,
-        e: 5
+      a: 5,
+      b: {
+        c: 1,
+        d: 1
       }
+
+      // name: "TreeViewJson",
+      // props: ["data", "expandLevel", "itemText"],
+      // propsDescription: [
+      //   {
+      //     type: "Object | Array | any",
+      //     propName: 'data',
+      //     // defaultValue: null,
+      //   }, {
+      //     propName: 'expandLevel',
+      //     type: "Number",
+      //     // defaultValue: 0,
+      //   }, {
+      //     propName: 'itemText',
+      //     type: "[String, Function]",
+      //     // defaultValue: null,
+      //   }
+      // ],
     }
 
-    const expandLevel = 3
-
     return () => (
-        <g-tree-view-json
-            data={jsonData}
-            expand-level={expandLevel}
-            item-children-path='data'
-            prop-icon=''
-            method-icon=''
-        ></g-tree-view-json>
+        <g-tree-view-json data={jsonData} expand-level={props.expandLevel}></g-tree-view-json>
     )
   }
 })

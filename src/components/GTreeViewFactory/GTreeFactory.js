@@ -18,7 +18,7 @@ export default function ({
                            cptExpandLevel,
                            data
                          }) {
-  const CHILDREN_PROP_NAME = 'children'
+  const childrenProp = 'children'
 
   // An object contain collapse state of node
   // key: node path
@@ -41,7 +41,6 @@ export default function ({
     // initialize collapsed/expand
     if (!treeStates[path]) {
       set(treeStates, path, { collapse: cptExpandLevel.value <= actualLevel })
-      // ... more state go there
     }
     const text = genText.value(node, isRoot);
     return genNode(node, text, childrenVNodes, isLast, treeStates[path], path);
@@ -61,9 +60,9 @@ export default function ({
     const blockUnnecessaryNode = function () {
       let stopExecutionImmediately = false
       if (this.isRoot) {
-      } else if (this.key === CHILDREN_PROP_NAME) {
+      } else if (this.key === childrenProp) {
         stopExecutionImmediately = true;
-      } else if (this.parent && this.parent.key === CHILDREN_PROP_NAME) {
+      } else if (this.parent && this.parent.key === childrenProp) {
       } else {
         this.block();
         stopExecutionImmediately = true;
@@ -78,10 +77,10 @@ export default function ({
      * @private
      */
     function getParentLevel_(ctx) {
-      if (ctx.parent.level_ === undefined)
+      if (ctx.parent._level === undefined)
         return getParentLevel_(ctx.parent)
       else
-        return ctx.parent.level_
+        return ctx.parent._level
     }
 
     const treeVNodeWithoutRoot = traverse(data).map(function (node) {
@@ -92,17 +91,17 @@ export default function ({
       const isLastNode = () => this.parent && this.parent.node.length - 1 === +this.key;
 
       // since original object has been modified, this.level no longer correct anymore
-      // that why we need to cache the level_ value in this object
-      this.level_ = this.isRoot ? 0 : getParentLevel_(this) + 1
+      // that why we need to cache the _level value in this object
+      this._level = this.isRoot ? 0 : getParentLevel_(this) + 1
       const children = genChildren.value(node, this.isRoot);
 
       // convert current node  to { level, children }
-      this.update({ [CHILDREN_PROP_NAME]: children })
+      this.update({ [childrenProp]: children })
 
       this.after(nodeAfterConvert => {
         this.update(preGenNode(node, this.path.join('.'),
             Array.isArray(nodeAfterConvert.children) && nodeAfterConvert.children.length > 0 ? genWrapper(nodeAfterConvert.children) : null,
-            isLastNode(), this.isRoot, this.level_),
+            isLastNode(), this.isRoot, this._level),
             true);
       })
     })

@@ -37,7 +37,7 @@ describe('/GTreeFactoryTest', () => {
   it('array', () => {
     expect(itemChildren([])).toEqual([])
     expect(itemChildren([1, 2])).toEqual([1, 2])
-    expect(itemChildren([{a:1}, {b:2}])).toEqual([{a:1}, {b:2}])
+    expect(itemChildren([{a:1, b:2}, {c:2, d:4}])).toEqual([{a:1, b:2}, {c:2, d:4}])
   })
 
   it('object', () => {
