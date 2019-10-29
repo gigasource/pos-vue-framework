@@ -20,7 +20,7 @@
   import GChipGroup from '../components/GChipGroup/GChipGroup';
   import GChip from '../components/GChip/GChip';
   import GCard from '../components/GCard/GCard';
-  import GCardText from '../components/GCard/GCardText';
+  import {GCardText} from '../components/GCard/GCardFunctionalComponent';
   import _ from 'lodash'
 
   export default {

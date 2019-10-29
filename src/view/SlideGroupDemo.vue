@@ -48,7 +48,7 @@
 <script>
   import GSlideGroup from '../components/GSlideGroup/GSlideGroup';
   import GCard from '../components/GCard/GCard';
-  import GCardText from '../components/GCard/GCardText';
+  import {GCardText} from '../components/GCard/GCardFunctionalComponent';
   import GCardTitle from '../components/GCard/GCardTitle';
   import GBtn from '../components/GBtn/GBtn';
 
