@@ -20,6 +20,7 @@
       // TODO:
       //  + Complete Playground: Computed props expand level doesn't work
       //  + Adjust icon position
+      //  + Correct function, null color
       //  + Test cases
 
       // Render itemText
@@ -264,7 +265,7 @@
       }
 
       &-var-name {
-        color: rgb(246, 123, 121);
+        color: rgb(123, 49, 49);
       }
 
       &-separate-symbol {
@@ -273,11 +274,15 @@
 
       &-value {
         &-function {
-          color: rgb(150, 125, 82);
+          color: rgb(109, 109, 109);
         }
 
         &-string {
           color: rgb(185, 125, 82);
+        }
+
+        &-null {
+          color: rgb(17, 0, 113);
         }
 
         &-boolean {
