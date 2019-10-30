@@ -133,11 +133,10 @@ export const Multiple = () => ({
   },
   template: `
     <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
-    <g-expansion-panel4-new
-    v-model="activeItem" 
-    :items="items" 
-    item-header="name" 
-    item-content="message" multiple :accordion="accordion" :popout="popout" :inset="inset">
-    </g-expansion-panel4-new>
+      <g-expansion-panel-new
+      v-model="activeItem" 
+      :items="items"
+      item-header="name" 
+      item-content="message" multiple :accordion="accordion" :popout="popout" :inset="inset"/>
     </div>`
 })

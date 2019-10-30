@@ -1,24 +1,23 @@
 <script>
   import { GExpandTransition } from '../transition/transition';
-  import { genHeaderFactory, genContentFactory } from './GExpansionPanelFactory';
-  import groupable from '../../mixins/groupable';
+  import { genHeaderFactory, genContentFactory, getExpansionPanelModel } from './GExpansionPanelFactory';
   import { computed } from '@vue/composition-api';
   import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GExpansionPanelNew',
-		components: {
+    components: {
       GIcon, GExpandTransition
-		},
+    },
     props: {
       items: Array,
-			mandatory: Boolean,
+      mandatory: Boolean,
       multiple: Boolean,
       value: null,
 
       accordion: Boolean,
-			popout: Boolean,
-			inset: Boolean,
+      popout: Boolean,
+      inset: Boolean,
 
       itemHeader: {
         default: 'header',
@@ -26,52 +25,53 @@
       },
       itemContent: {
         default: 'content',
-				type: [String, Function]
-			}
+        type: [String, Function]
+      }
     },
     setup(props, context) {
-			const { model, toggleItem, isActiveItem } = getExpansionPanelModel(props, context)
+      const { model, toggleItem, isActiveItem } = getExpansionPanelModel(props, context)
 
-			const genHeaderText = genHeaderFactory(props.itemHeader);
-			const genContentText = genContentFactory(props.itemContent);
+      const genHeaderText = genHeaderFactory(props.itemHeader);
+      const genContentText = genContentFactory(props.itemContent);
 
       const genHeader = function (item) {
         return <div
-					class={['g-expansion-panel-header', { 'g-expansion-panel-header__active': isActiveItem(item) }]}
-					vOn:click={() => toggleItem(item)}>
-						<div class="g-expansion-panel-header-prepend">
-              <g-icon small>fas fa-caret-right</g-icon>
-						</div>
-						{genHeaderText.value(item)}
+          class={['g-expansion-panel-header', { 'g-expansion-panel-header__active': isActiveItem(item) }]}
+          vOn:click={() => toggleItem(item)}>
+          <div class="g-expansion-panel-header-prepend">
+            <g-icon small>fas fa-caret-right</g-icon>
           </div>
+          {genHeaderText.value(item)}
+        </div>
       }
 
-			const genContent = function(item) {
-				return <g-expand-transition>
-					<div
-						class={['g-expansion-panel-content', { 'g-expansion-panel-content__active': isActiveItem(item) }]}
-						vShow={isActiveItem(item)}>
-							<div class="g-expansion-panel-content-wrapper">
-								{genContentText.value(item)}
-							</div>
-					</div>
+      const genContent = function (item) {
+        return <g-expand-transition>
+          <div
+            class={['g-expansion-panel-content', { 'g-expansion-panel-content__active': isActiveItem(item) }]}
+            vShow={isActiveItem(item)}>
+            <div class="g-expansion-panel-content-wrapper">
+              {genContentText.value(item)}
+            </div>
+          </div>
         </g-expand-transition>
-			}
+      }
 
-			const expansionPanelGroupClasses = computed(() => ({
-				'g-expansion-panel-group__accordion': props.accordion,
+      const expansionPanelGroupClasses = computed(() => ({
+        'g-expansion-panel-group__accordion': props.accordion,
         'g-expansion-panel-group__popout': props.popout,
         'g-expansion-panel-group__inset': props.inset
-			}))
+      }))
 
       function genExpansionPanelGroup() {
         return <div class={['g-expansion-panel-group', expansionPanelGroupClasses.value]}>
           {
-            props.items.map(item => <div
-							class={['g-expansion-panel', { 'g-expansion-panel__active': isActiveItem(item)}]}>
-								{genHeader(item)}
-              	{genContent(item)}
-            </div>)
+            props.items.map(item =>
+              <div
+                class={['g-expansion-panel', { 'g-expansion-panel__active': isActiveItem(item) }]}>
+                {genHeader(item)}
+                {genContent(item)}
+              </div>)
           }
         </div>
       }
@@ -83,31 +83,6 @@
     render() {
       return this.genExpansionPanelGroup()
     }
-  }
-
-  const getExpansionPanelModel = function (props, context) {
-    const model = computed({
-      get: () => {
-        if (props.value) {
-          if (props.multiple && !Array.isArray(props.value)) {
-            props.value = [props.value];
-          }
-          return props.value;
-        }
-        return props.multiple ? [] : null;
-      },
-      set: (value) => {
-        context.emit('input', value);
-      }
-    });
-
-    const { toggleItem, isActiveItem } = groupable({ mandatory: props.mandatory, multiple: props.multiple }, model);
-
-    return {
-      model,
-			toggleItem,
-			isActiveItem
-		}
   }
 </script>
 
@@ -194,30 +169,30 @@
 			width: 100%;
 
 			&:before {
-				 background-color: currentColor;
-				 border-radius: inherit;
-				 bottom: 0;
-				 content: '';
-				 left: 0;
-				 opacity: 0;
-				 pointer-events: none;
-				 position: absolute;
-				 right: 0;
-				 top: 0;
-			 }
+				background-color: currentColor;
+				border-radius: inherit;
+				bottom: 0;
+				content: '';
+				left: 0;
+				opacity: 0;
+				pointer-events: none;
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
 
 			&-prepend {
-				 width: 24px;
+				width: 24px;
 			}
 
 			&__active {
 
 				.g-expansion-panel-header-prepend > .g-icon {
-					transform : rotate(90deg)
+					transform: rotate(90deg)
 				}
 
 				.g-expansion-panel-header-append > .g-icon {
-					transform : rotate(-180deg)
+					transform: rotate(-180deg)
 				}
 			}
 		}
