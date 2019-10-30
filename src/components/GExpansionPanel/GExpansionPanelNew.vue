@@ -86,7 +86,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	@import "variable";
 	@import "../../style/elevation";
 
@@ -187,11 +187,11 @@
 
 			&__active {
 
-				.g-expansion-panel-header-prepend > .g-icon {
+				.g-expansion-panel-header-prepend > ::v-deep.g-icon {
 					transform: rotate(90deg)
 				}
 
-				.g-expansion-panel-header-append > .g-icon {
+				.g-expansion-panel-header-append > ::v-deep.g-icon {
 					transform: rotate(-180deg)
 				}
 			}
