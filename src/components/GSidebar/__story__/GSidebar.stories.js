@@ -2,6 +2,7 @@ import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import GSidebar from '../GSidebar';
 import GList from '../../GList/GList';
 import GSideBarTreeView from '../GSideBarTreeView'
+import { reactive, ref } from '@vue/composition-api'
 
 export default {
   title: 'GSidebar',
@@ -88,7 +89,7 @@ export const treeView = () => ({
       return node.items
     }
 
-    const data = [
+    const data = ref([
       { subheader: 'Family', type: 'subheader' },
       { title: 'Ranee Carlson', icon: 'home'},
       { title: 'Ranee Carlson', icon: 'home'},
@@ -115,7 +116,12 @@ export const treeView = () => ({
       { title: 'Ranee Carlson', icon: 'home'},
       { title: 'Ranee Carlson', icon: 'home'},
       { title: 'Ranee Carlson', icon: 'home'},
-    ]
+    ])
+
+    let state = reactive({
+      value: null,
+      data
+    })
 
     return () =>
         <g-sidebar color={props.color}
@@ -128,8 +134,10 @@ export const treeView = () => ({
             <div class="elevation-2" style="padding: 16px">CONTACT</div>
           </template>
           <g-side-bar-tree-view
-              data={data}
-              expand-level={3}/>
+              data={data.value}
+              expand-level={3}
+              rounded
+              vModel={state.value}/>
         </g-sidebar>
   }
 });
