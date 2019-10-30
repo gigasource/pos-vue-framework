@@ -22,6 +22,7 @@ import DndDialogDemo from '../view/DndDialogDemo';
 import GChipGroupDemo from '../view/GChipGroupDemo';
 import SlideGroupDemo from '../view/SlideGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
+import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import ConnectorDemo from '../view/ConnectorDemo';
 
 const routes = [
@@ -47,6 +48,8 @@ const routes = [
   { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/connector-demo', name: 'Connector', component: ConnectorDemo},
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo}
 ];
 
 const router = new VueRouter({

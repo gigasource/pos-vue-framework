@@ -21,6 +21,7 @@
 			<router-link to="/selection-control">SelectIonControl</router-link>
 			<router-link to="/slide-group">Slide Group</router-link>
       <router-link to="/date-picker-demo">DatePicker</router-link>
+			<router-link to="/expansion-panel-demo">Expansion Panel</router-link>
 			<router-link to="/chip-group">Chip Group</router-link>
 			<router-link to="/connector-demo">Connector</router-link>
 		</g-layout>

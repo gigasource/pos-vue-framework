@@ -143,15 +143,6 @@
           opacity: $picker-active-btn-opacity;
           cursor: pointer;
         }
-
-        $currentSelector: &;
-        &:not(#{$currentSelector}--active) {
-          opacity: $picker-inactive-btn-opacity;
-
-          &:hover:not(:focus) {
-            opacity: 1
-          }
-        }
       }
     }
 
