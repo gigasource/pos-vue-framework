@@ -15,10 +15,14 @@
 			<router-link to="/button">Button</router-link>
 			<router-link to="/input">Input</router-link>
 			<router-link to="/transition-demo">Transition</router-link>
+			<router-link to="/chip">Chip</router-link>
 			<router-link to="/list-demo">List</router-link>
+			<router-link to="/dnd-dialog-demo">Dnd Dialog Demo</router-link>
 			<router-link to="/selection-control">SelectIonControl</router-link>
+			<router-link to="/slide-group">Slide Group</router-link>
       <router-link to="/date-picker-demo">DatePicker</router-link>
 			<router-link to="/expansion-panel-demo">Expansion Panel</router-link>
+			<router-link to="/chip-group">Chip Group</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
