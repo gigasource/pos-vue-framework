@@ -43,15 +43,10 @@
     max-width: 100%;
     max-height: 100%;
   }
-}
 
-.side-bar {
-  position: absolute;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  background: url("../../assets/order/bg_right.svg");
+  .g-row {
+    flex: 1 1 100%;
+  }
 }
 
 .tool-bar {
@@ -75,3 +70,35 @@
     margin: 0.5rem 0;
   }
 }
+
+.g-row {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  margin: 0 -12px;
+
+  &__dense {
+    margin: 0 -6px;
+
+    > .g-col,
+    > [class*=col-] {
+      padding: 6px;
+    }
+  }
+
+  &.no-gutters {
+    margin: 0;
+
+    > .g-col,
+    > [class*=col-] {
+      padding: 0;
+    }
+  }
+}
+
+.g-col:not([class*=col-]) {
+  flex-basis: 0;
+  flex-grow: 1;
+  width: 100%;
+}
+

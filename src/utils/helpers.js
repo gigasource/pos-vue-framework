@@ -148,6 +148,11 @@ export function kebabCase (str) {
   return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
+// Return transition duration of an element in millisecond
+export function getTransitionDuration(el) {
+  const duration =  window.getComputedStyle(el).getPropertyValue('transition-duration');
+  return Math.round(parseFloat(duration)*1000);
+}
 export function padEnd (str, length, char = '0') {
   return str + char.repeat(Math.max(0, length - str.length))
 }

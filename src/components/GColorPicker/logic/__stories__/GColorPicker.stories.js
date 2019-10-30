@@ -11,7 +11,7 @@ export const test2 = () => ({
   components: { GColorPicker },
   setup() {
     return () => (
-        <g-color-picker></g-color-picker>
+        <g-color-picker show-canvas></g-color-picker>
     )
   }
 })
