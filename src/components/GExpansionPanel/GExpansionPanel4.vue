@@ -113,6 +113,7 @@
 
 <style lang="scss">
 	@import "variable";
+	@import "../../style/elevation";
 
 	.g-expansion-panel4 {
 		flex: 1 0 100%;
@@ -136,6 +137,7 @@
 
 			&__accordion {
 				margin: 10px;
+				@include elevation(4);
 
 				> *:last-child {
 					border-bottom: thin solid rgb(216, 216, 216);

@@ -42,7 +42,7 @@ export const Basic = () => ({
     }
   },
   template: `
-    <div style="background-color: #e6e9ec; height: 600px">
+    <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
     <g-expansion-panel4 
     v-model="activeItem" 
     :items="items" 
@@ -87,7 +87,7 @@ export const Mandatory = () => ({
     }
   },
   template: `
-    <div style="background-color: #e6e9ec; height: 600px">
+    <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
     <g-expansion-panel4 
     v-model="activeItem" 
     :items="items" 
@@ -132,7 +132,7 @@ export const Multiple = () => ({
     }
   },
   template: `
-    <div style="background-color: #e6e9ec; height: 600px">
+    <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
     <g-expansion-panel4 
     v-model="activeItem" 
     :items="items" 
