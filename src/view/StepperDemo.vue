@@ -3,12 +3,10 @@
     <g-stepper-contents v-model="activeStep" :steps="stepData">
       <g-stepper-content v-for="(step, index) in stepData" :step="step">
         <g-card width="100%">
-          <g-card width="100%">
-            <g-card-title>{{step.title}}</g-card-title>
-            <g-card-text>{{step.text}}</g-card-text>
-          </g-card>
+          <g-card-title>{{step.title}}</g-card-title>
+          <g-card-text>{{step.text}}</g-card-text>
           <g-card-actions>
-            <g-btn depressed>CONTINUE</g-btn>
+            <g-btn depressed @click="onClickContinue">CONTINUE</g-btn>
             <g-btn depressed>CANCEL</g-btn>
           </g-card-actions>
         </g-card>
@@ -28,8 +26,6 @@
   import GCard from '../components/GCard/GCard';
   import GButton from '../components/GButton/GButton';
   import GCardTitle from '../components/GCard/GCardTitle';
-  // import GCardText from '../components/GCard/GCardText';
-  // import GCardActions from '../components/GCard/GCardActions';
   import { GCardActions, GCardText } from '../components/GCard/GCardFunctionalComponent'
   import GBtn from '../components/GBtn/GBtn';
   import GLayout from '../components/GLayout/GLayout';
@@ -43,7 +39,7 @@
         steps: 10,
         altLabels: '',
         nonLinear: false,
-        vertical: true,
+        vertical: false,
         editable: true,
         activeStep: null,
         stepData: [
@@ -73,13 +69,14 @@
       }
     },
     methods: {
-      onClickContinue(value) {
-        console.log('value:', value);
-      },
-      isActiveContent(value) {
-        return value
+      onClickContinue() {
+        let index = this.stepData.findIndex((i) => i === this.activeStep);
+        if (index < this.stepData.length - 1) {
+          this.activeStep = this.stepData[index + 1];
+        } else {
+          this.activeStep = this.stepData[0];
+        }
       }
-
 
     },
   }
