@@ -20,7 +20,7 @@
       data: Object
     },
     setup(props) {
-      const genText = genTextFactory(props.itemText);
+      const genText = genTextFactory(props.itemText)
 
       const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
         return <li>
@@ -63,7 +63,7 @@
       return { treeStates, genTree }
     },
     render() {
-      return this.genTree();
+      return this.genTree()
     }
   }
 

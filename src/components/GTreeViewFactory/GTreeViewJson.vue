@@ -1,8 +1,8 @@
 <script>
   import { computed } from '@vue/composition-api';
-  import GTreeFactory, { genTextFactory } from './GTreeFactory';
-  import GIcon from '../GIcon/GIcon';
   import { getPropsNameAZPrimitiveFirst } from './util'
+  import GTreeFactory from './GTreeFactory';
+  import GIcon from '../GIcon/GIcon';
 
 
   export default {
@@ -23,11 +23,10 @@
       //  + Complete Playground: Computed props expand level doesn't work
       //  + Test cases
 
-      // Render itemText
-
-      /*Get corresponding class of a value to display in a line
-      Note that this method is not designed to be used by 'object' nodeDesc
-      Instead, each prop of an object nodeDesc will use this method to get corresponding class*/
+      //// Render itemText
+      // Get corresponding class of a value to display in a line
+      // Note that this method is not designed to be used by 'object' nodeDesc
+      // Instead, each prop of an object nodeDesc will use this method to get corresponding class
       function getNodeClass(nodeDesc) {
         let outputClass = 'g-tree-view__item-value-'
         if (nodeClassFromValueType.indexOf(nodeDesc.valueType) >= 0)
@@ -113,7 +112,7 @@
 
           if (index === 5) {
             moreSymbol = true
-            break;
+            break
           }
         }
 
@@ -137,8 +136,8 @@
           }
         } else {
           if (typeof node === 'object') {
-            const firstPropName = Object.keys(node)[0];
-            const firstPropValue = node[firstPropName];
+            const firstPropName = Object.keys(node)[0]
+            const firstPropValue = node[firstPropName]
             if (Array.isArray(firstPropValue)) {
               nodeDescription = { varName: firstPropName, valueType: 'array', value: firstPropValue }
             } else if (firstPropValue === null) {
@@ -172,7 +171,8 @@
       const genNode = function ({node, text , childrenVNodes, isLast, state, path}) {
         return (
             <li>
-              <span class={['g-tree-view__item', { 'g-tree-view__item--expandable': childrenVNodes != null }]} vOn:click={() => childrenVNodes && (state.collapse = !state.collapse)}>
+              <span class={['g-tree-view__item', { 'g-tree-view__item--expandable': childrenVNodes != null }]}
+                    vOn:click={() => childrenVNodes && (state.collapse = !state.collapse)}>
                 {
                   childrenVNodes
                       ? <g-icon small color="red"> {state.collapse ? 'chevron_right' : 'expand_more'}</g-icon>
@@ -206,19 +206,19 @@
             return converter(node)
           } else if (Array.isArray(firstPropValue)) {
             return firstPropValue.map((item, index) => {
-              if (typeof item === 'object') return ({ [index]: item });
-              return item;
-            });
+              if (typeof item === 'object')
+                return ({ [index]: item })
+              return item
+            })
           } else if (firstPropValue === null) {
-            return null;
+            return null
           } else if (typeof firstPropValue === 'object') {
             return converter(firstPropValue);
           } else {
-            return firstPropValue;
+            return firstPropValue
           }
         } else {
-          // primitive
-          return node;
+          return node // primitive
         }
       }
 
@@ -235,7 +235,7 @@
       return { treeStates, genTree }
     },
     render() {
-      return this.genTree();
+      return this.genTree()
     }
   }
 
