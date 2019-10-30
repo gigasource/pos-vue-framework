@@ -1,6 +1,6 @@
 <template>
-	<div :class="classes" :style="styles">
-		<slot name="default"></slot>
+	<div :class="classes" :style="styles" @click="onClick">
+		<slot></slot>
 		<slot name="progress"></slot>
 	</div>
 </template>
@@ -14,6 +14,12 @@
     props: {
       //classes
       ...{
+        active: Boolean,
+        activeClass: {
+          type: String,
+          default: 'g-card__active'
+        },
+				shaped: Boolean,
         disabled: Boolean,
         isClickable: Boolean,
         loading: Boolean,
@@ -29,6 +35,7 @@
         maxWidth: [String, Number],
         minHeight: [String, Number],
         maxHeight: [String, Number],
+        ripple: Boolean,
         width: [String, Number],
 				borderRadius: [String, Number],
         elevation: [String, Number],
@@ -43,6 +50,7 @@
         let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : null;
         let _classes = {
           'g-card': true,
+          'waves-effect': props.ripple,
           'g-card__flat': props.flat,
           'g-card__hover': props.hover,
           'g-card__link': props.isClickable,
@@ -50,6 +58,8 @@
           'g-card__disabled': props.loading || props.disabled,
           'g-card__outlined': props.outlined,
           'g-card__raised': props.raised,
+					'g-card__shaped': props.shaped,
+          [props.activeClass]: props.active
         };
         if (elevationClassName) {
           _classes[elevationClassName] = true;
@@ -62,10 +72,10 @@
           ...props.img && { backgroundImage: `url("${props.img}"` },
           ...props.backgroundColor && { backgroundColor: convertToUnit(props.backgroundColor) },
           ...props.color && { color: props.color },
-          ...props.tile && { borderRadius: '0px'},
+          ...props.tile && { borderRadius: '0px' },
           ...props.borderRadius && { borderRadius: props.borderRadius },
-          ...props.width && { minWidth: convertToUnit(props.width) },
-          ...props.height && { minWidth: convertToUnit(props.height) },
+          ...props.width && { width: convertToUnit(props.width) },
+          ...props.height && { height: convertToUnit(props.height) },
           ...props.minWidth && { minWidth: convertToUnit(props.minWidth) },
           ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
           ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
@@ -73,9 +83,14 @@
         };
       });
 
+      let onClick = (event) => {
+        context.emit('click', event);
+      };
+
       return {
         styles,
-        classes
+        classes,
+        onClick
       }
     }
   }

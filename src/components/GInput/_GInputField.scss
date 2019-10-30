@@ -25,6 +25,7 @@ input[type=text] {
   width: calc(100% - 10px);
   margin: 16px 5px 24px;
   position: relative;
+  color: rgba(0, 0, 0, 0.32);
 
   &__error {
     color: red;
@@ -55,7 +56,6 @@ input[type=text] {
 .g-tf {
   position: relative;
   flex: 1 1 auto;
-  color: rgba(0, 0, 0, 0.32);
   display: flex;
 
   &::before {
