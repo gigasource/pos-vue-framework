@@ -22,7 +22,7 @@ import DndDialogDemo from '../view/DndDialogDemo';
 import GChipGroupDemo from '../view/GChipGroupDemo';
 import SlideGroupDemo from '../view/SlideGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
-import GTimePickerDemo from '../view/GTimePickerDemo';
+import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -46,7 +46,7 @@ const routes = [
   { path: '/slide-group', name: 'SlideGroup', component: SlideGroupDemo},
   { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
-  { path: '/time-picker-demo', name: 'TimePicker', component: GTimePickerDemo}
+  { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo}
 ];
 
 const router = new VueRouter({

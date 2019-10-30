@@ -37,32 +37,32 @@ export const Index = () => ({
     // color
     titleBgColor: {
       type: String,
-      default: text('titleBgColor', '#aaa')
+      default: text('titleBgColor', null)
     },
     titleTextColor: {
       type: String,
-      default: text('titleTextColor', '#fff'),
+      default: text('titleTextColor', null),
     },
     // clock
     clockWrapperColor: {
       type: String,
-      default: text('clockWrapperColor','#eee')
+      default: text('clockWrapperColor',null)
     },
     clockFaceColor: {
       type: String,
-      default: text('clockFaceColor', '#eee')
+      default: text('clockFaceColor', null)
     },
     clockNumberColor: {
       type: String,
-      default: text('clockNumberColor', '#444')
+      default: text('clockNumberColor', null)
     },
     clockSelectedNumberColor: {
       type: String,
-      default: text('clockSelectedNumberColor', '#aaa')
+      default: text('clockSelectedNumberColor', null)
     },
     clockHandColor: {
       type: String,
-      default: text('clockHandColor','#666')
+      default: text('clockHandColor',null)
     }
   },
   setup(props) {

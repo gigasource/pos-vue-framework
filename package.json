@@ -23,6 +23,7 @@
     "material-design-icons-iconfont": "^5.0.1",
     "sass": "^1.22.12",
     "sass-loader": "^8.0.0",
+    "traverse": "^0.6.6",
     "vue": "2.6.10",
     "vue-fragment": "^1.5.1",
     "vue-router": "^3.1.3",
