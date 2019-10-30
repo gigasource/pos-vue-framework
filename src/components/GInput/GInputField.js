@@ -1,8 +1,3 @@
-import { computed, ref, watch } from '@vue/composition-api';
-import { keyCodes } from '../../utils/helpers';
-
-
-
 export function getLabel(props, internalValue, isValidInput, isFocused,
                          labelActiveClass = 'g-tf--label__active'){
   //Activate label
@@ -10,13 +5,21 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   const isLabelActive = computed(() => {
     return isDirty.value || isFocused.value|| !!props.placeholder;
   })
-  const labelClasses = computed(() => isLabelActive.value ? { 'g-tf--label__active': isLabelActive.value, 'g-tf--label__error': !isValidInput.value } : {})
+  const labelClasses = computed(() => {
+    return{
+      'g-tf--label__disabled': props.disabled,
+      'g-tf--label__readOnly': props.readOnly,
+      'g-tf--label__active': isLabelActive.value,
+      'g-tf--label__error': !isValidInput.value
+    }
+  }
+  )
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
   const labelStyles = computed(() =>
-  // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
-  // ...!isValidInput.value && inValidStyle}))
+    // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
+    // ...!isValidInput.value && inValidStyle}))
   {
 
     if(isLabelActive.value && prefixWidth.value){
@@ -39,6 +42,11 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
 
   return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef }
 }
+import { computed, ref, watch } from '@vue/composition-api';
+
+
+
+import { keyCodes } from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation

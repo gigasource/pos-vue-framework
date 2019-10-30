@@ -1,9 +1,9 @@
 @import "../../style/elevation";
-
 input[type=password] {
   outline: none;
   border: transparent;
   font-family: "Muli", sans-serif;
+  background-color: transparent;
 }
 
 input[type=text] {
@@ -15,7 +15,6 @@ input[type=text] {
 .inputGroup {
   position: relative;
   width: 100%;
-  left: 5px;
 }
 
 .g-tf--wrapper {
@@ -100,7 +99,7 @@ input[type=text] {
   }
 
   &--affix {
-    padding: 12px 0 4px 12px;
+    padding: 12px 6px 4px 6px;
     line-height: 24px;
     font-size: 16px;
   }
@@ -114,12 +113,14 @@ input[type=text] {
     pointer-events: none;
     color: #1867c0;
     font-size: 16px;
-
     &__active {
       transform: translateY(-18px) scale(0.75);
     }
     &__error{
       color: red
+    }
+    &__disabled, &__readOnly{
+      color: gray;
     }
   }
 
@@ -266,7 +267,6 @@ input[type=text] {
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.87);
     border-radius: 4px;
-    padding: 4px 8px;
     transition: 0.2s ease-in;
     width: 100%;
   }
@@ -302,7 +302,7 @@ input[type=text] {
     padding: 1px;
   }
   .g-tf--label__active {
-    transform: translateY(-28px)  translateX(-8px) scale(0.75);
+    transform: translateY(-26px)  translateX(-3px) scale(0.75);
     background-color: transparent;
   }
 
@@ -333,7 +333,7 @@ input[type=text] {
   &.g-tf__outlined .g-tf{
     border-radius: 9999px;
     .g-tf--label__active {
-      transform: translateY(-20px)  translateX(-6px) scale(0.75);
+      transform: translateY(-18px)  translateX(-3px) scale(0.75);
       background-color: transparent;
     }
   }
@@ -387,7 +387,9 @@ input[type=text] {
     left: calc(4% + 16px);
   }
 }
-
+.g-tf__outlined .g-tf-label__active{
+  transform: translateY(-20px) translateX(-24px) scale(0.75);
+}
 .g-tf__shaped {
   &.g-tf__solo .g-tf,
   &.g-tf__outlined{
@@ -395,13 +397,13 @@ input[type=text] {
       border-top-left-radius: 16px;
       border-top-right-radius: 16px;
       .g-tf--label__active {
-        transform: translateY(-20px) translateX(-15px) scale(0.75);
+        transform: translateY(-23px) translateX(-3px) scale(0.75);
         background-color: transparent;
       }
     }
     &.g-tf__filled{
-      .g-g-tf--label__active {
-        transform: translateY(-20px) translateX(-8px) scale(0.75);
+      .g-tf--label__active {
+        transform: translateY(-29px) translateX(-19px) scale(0.75);
         background-color: transparent;
       }
     }
