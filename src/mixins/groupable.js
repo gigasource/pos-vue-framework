@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-function groupable({ mandatory, multiple }, vModel) {
+function groupable({ mandatory, multiple, maxSelection }, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   const toggleItem = (item) => {
@@ -29,7 +29,15 @@ function groupable({ mandatory, multiple }, vModel) {
     if (itemIndex > -1) {
       clonedValue.splice(itemIndex, 1);
     } else {
-      clonedValue.push(item);
+      if (maxSelection) {
+        if (clonedValue.length < maxSelection) {
+          clonedValue.push(item);
+        } else {
+          return;
+        }
+      } else {
+        clonedValue.push(item);
+      }
     }
     vModel.value = clonedValue;
   };
