@@ -22,7 +22,6 @@
 			<router-link to="/slide-group">Slide Group</router-link>
       <router-link to="/date-picker-demo">DatePicker</router-link>
 			<router-link to="/chip-group">Chip Group</router-link>
-
 		</g-layout>
 		<router-view></router-view>
 	</div>
