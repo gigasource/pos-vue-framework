@@ -1,5 +1,6 @@
 <script>
   import { GExpandTransition } from '../transition/transition';
+  import { genHeaderFactory, genContentFactory } from './GExpansionPanelFactory';
   import groupable from '../../mixins/groupable';
   import { computed } from '@vue/composition-api';
   import GIcon from '../GIcon/GIcon';
@@ -7,12 +8,18 @@
   export default {
     name: 'GExpansionPanel4',
 		components: {
-      GIcon
+      GIcon, GExpandTransition
 		},
     props: {
       items: Array,
+			mandatory: Boolean,
       multiple: Boolean,
       value: null,
+
+      accordion: Boolean,
+			popout: Boolean,
+			inset: Boolean,
+
       itemHeader: {
         default: 'header',
         type: [String, Function]
@@ -23,20 +30,10 @@
 			}
     },
     setup(props, context) {
+			const { model, toggleItem, isActiveItem } = getExpansionPanelModel(props, context)
 
-      const itemHeader = computed(() => {
-        if (typeof props.itemHeader === 'string') {
-          return (item) => item[props.itemHeader];
-        }
-        return itemHeader;
-      })
-
-      const itemContent = computed(() => {
-        if (typeof props.itemContent === 'string') {
-          return (item) => item[props.itemContent];
-        }
-        return itemContent;
-      })
+			const genHeaderText = genHeaderFactory(props.itemHeader);
+			const genContentText = genContentFactory(props.itemContent);
 
       const genHeader = function (item) {
         return <div
@@ -45,39 +42,75 @@
 						<div class="g-expansion-panel4-header-prepend">
               <g-icon small>fas fa-caret-right</g-icon>
 						</div>
-						{itemHeader.value(item)}
+						{genHeaderText.value(item)}
           </div>
       }
 
 			const genContent = function(item) {
-				return <div
-					class={['g-expansion-panel4-content', { 'g-expansion-panel4-content__active': isActiveItem(item) }]}
-					vShow={isActiveItem(item)}>
-						<div class="g-expansion-panel4-content-wrapper">
-							{itemContent.value(item)}
-						</div>
-				</div>
+				return <g-expand-transition>
+					<div
+						class={['g-expansion-panel4-content', { 'g-expansion-panel4-content__active': isActiveItem(item) }]}
+						vShow={isActiveItem(item)}>
+							<div class="g-expansion-panel4-content-wrapper">
+								{genContentText.value(item)}
+							</div>
+					</div>
+        </g-expand-transition>
 			}
 
-      const genGroup = function () {
-        return <div class="g-expansion-panel4-group">
+			const expansionPanelGroupClasses = computed(() => ({
+				'g-expansion-panel4-group__accordion': props.accordion,
+        'g-expansion-panel4-group__popout': props.popout,
+        'g-expansion-panel4-group__inset': props.inset
+			}))
+
+      function genExpansionPanelGroup() {
+        return <div class={['g-expansion-panel4-group', expansionPanelGroupClasses.value]}>
           {
-            props.items.map(item => <div class="g-expansion-panel4">
-							{genHeader(item)}
-							{genContent(item)}
-						</div>)
+            props.items.map(item => <div
+							class={['g-expansion-panel4', { 'g-expansion-panel4__active': isActiveItem(item)}]}>
+								{genHeader(item)}
+              	{genContent(item)}
+            </div>)
           }
         </div>
       }
+
       return {
-        genGroup
+        genExpansionPanelGroup
       }
     },
     render() {
-      return this.genGroup()
+      return this.genExpansionPanelGroup()
     }
   }
+
+  const getExpansionPanelModel = function (props, context) {
+    const model = computed({
+      get: () => {
+        if (props.value) {
+          if (props.multiple && !Array.isArray(props.value)) {
+            props.value = [props.value];
+          }
+          return props.value;
+        }
+        return props.multiple ? [] : null;
+      },
+      set: (value) => {
+        context.emit('input', value);
+      }
+    });
+
+    const { toggleItem, isActiveItem } = groupable({ mandatory: props.mandatory, multiple: props.multiple }, model);
+
+    return {
+      model,
+			toggleItem,
+			isActiveItem
+		}
+  }
 </script>
+
 <style lang="scss">
 	@import "variable";
 
@@ -87,75 +120,60 @@
 		position: relative;
 		background-color: #FFFFFF;
 		margin-top: 10px;
-		//transition: .3s map-get($transition, 'swing');
-
-		&::before {
-			 border-radius: inherit;
-			 bottom: 0;
-			 content: '';
-			 left: 0;
-			 position: absolute;
-			 right: 0;
-			 top: 0;
-			 z-index: -1;
-
-		 //@include elevation(2)
-	  }
-
-		&:not(:first-child)::after {
-		 //border-top: thin solid rgb(216, 216, 216);
-			 content: '';
-			 left: 0;
-			 position: absolute;
-			 right: 0;
-			 top: 0;
-			 transition: .2s border-color map-get($transition, 'fast-out-slow-in'), .2s opacity map-get($transition, 'fast-out-slow-in')
-		 }
-
-		&__active {
-			&:not(:first-child), + .g-expansion-panel3 {
-		 		//margin-top: $expansion-panel-active-margin;
-
-				&::after {
-					 opacity: 0
-				}
-			}
-		}
-
+		transition: .3s map-get($transition, 'swing');
 
 		&-group {
-		 	//border-radius: $expansion-panel-border-radius;
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: center;
 			list-style-type: none;
 			padding: 0;
-		 	//width: 100%;
-		 	//margin: 15px;
-			 z-index: 1;
+			z-index: 1;
 
 			> * {
 				cursor: auto;
 			}
 
-			> *:first-child {
-				border-top-left-radius: inherit;
-				border-top-right-radius: inherit;
+			&__accordion {
+				margin: 10px;
+
+				> *:last-child {
+					border-bottom: thin solid rgb(216, 216, 216);
+				}
+
+				> .g-expansion-panel4 {
+					margin-top: 0;
+
+					> .g-expansion-panel4-header {
+						border-top: thin solid rgb(216, 216, 216);
+						border-left: thin solid rgb(216, 216, 216);
+						border-right: thin solid rgb(216, 216, 216);
+					}
+
+					> .g-expansion-panel4-content {
+						background-color: rgb(242, 244, 248);
+						border-left: thin solid rgb(216, 216, 216);
+						border-right: thin solid rgb(216, 216, 216);
+					}
+				}
 			}
 
-			> *:last-child {
-				border-bottom-left-radius: inherit;
-				border-bottom-right-radius: inherit;
+			&__popout {
+				.g-expansion-panel4 {
+					max-width: $expansion-panel-popout-max-width;
+
+					&__active {
+						max-width: $expansion-panel-popout-active-max-width;
+					}
+				}
 			}
 
-			> .g-expansion-panel3 {
-				&__active {
-					//border-radius: $expansion-panel-border-radius;
+			&__inset {
+				.g-expansion-panel4 {
+					max-width: $expansion-panel-inset-max-width;
 
-
-					+ .g-expansion-panel3 {
-						//border-top-left-radius: $expansion-panel-border-radius;
-						//border-top-right-radius: $expansion-panel-border-radius;
+					&__active {
+						max-width: $expansion-panel-inset-active-max-width;
 					}
 				}
 			}
@@ -163,8 +181,6 @@
 
 		&-header {
 			align-items: center;
-			border-top-left-radius: inherit;
-			border-top-right-radius: inherit;
 			display: flex;
 			font-size: 14px;
 			line-height: 1;
@@ -174,7 +190,6 @@
 			position: relative;
 			text-align: left;
 			width: 100%;
-		 	//transition: .3s min-height map-get($transition, 'swing');
 
 			&:before {
 				 background-color: currentColor;
@@ -194,8 +209,6 @@
 			}
 
 			&__active {
-				border-bottom: thin solid rgb(216, 216, 216);
-				margin-bottom: 10px;
 
 				.g-expansion-panel4-header-prepend > .g-icon {
 					transform : rotate(90deg)
@@ -211,9 +224,11 @@
 			display: flex;
 
 			&-wrapper {
-				padding: $expansion-panel-content-padding;
+				border-top: thin solid rgb(216, 216, 216);
+				padding: 16px 24px;
 				flex: 1 1 auto;
 				max-width: 100%;
+				//background-color: rgb(242, 244, 248);
 			}
 		}
 

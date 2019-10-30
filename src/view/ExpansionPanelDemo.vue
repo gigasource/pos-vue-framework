@@ -36,7 +36,7 @@
 <!--			</template>-->
 <!--		</g-expansion-panel-group3>-->
 
-		<g-expansion-panel4 v-model="activeItem" :items="items" item-header="name" item-content="message">
+		<g-expansion-panel4 v-model="activeItem" :items="items" item-header="name" item-content="message" popout mandatory>
 		</g-expansion-panel4>
 
 	</div>
