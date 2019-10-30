@@ -1,6 +1,7 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import GSidebar from '../GSidebar';
 import GList from '../../GList/GList';
+import GSideBarTreeView from '../GSideBarTreeView'
 
 export default {
   title: 'GSidebar',
@@ -9,28 +10,28 @@ export default {
 
 
 export const basic = () => ({
-  components: { GList, GSidebar},
-  data () {
+  components: { GList, GSidebar },
+  data() {
     return {
       items: [
-        {subheader: 'Family', type: 'subheader'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {type: 'divider'},
-        {subheader: 'Friends', type: 'subheader'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240'},
+        { subheader: 'Family', type: 'subheader' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { type: 'divider' },
+        { subheader: 'Friends', type: 'subheader' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+        { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
       ],
       value: null
     }
@@ -58,7 +59,7 @@ export const basic = () => ({
     },
     overlayOpacity: {
       type: Number,
-      default: number('Overlay Opacity', 0.46, {min: 0, max: 1})
+      default: number('Overlay Opacity', 0.46, { min: 0, max: 1 })
     }
   },
   template: `
@@ -73,4 +74,64 @@ export const basic = () => ({
     </template>
     <g-list :items="items" multi-section v-model="value" nav selectable shaped />
   </g-sidebar>`
+});
+
+
+export const sidebarTreeView = () => ({
+  components: { GSideBarTreeView, GSidebar },
+  setup(props, context) {
+    function getItemText(node) {
+      return node.subheader || node.title
+    }
+
+    function getItemChildren(node) {
+      return node.items
+    }
+
+    const data = [
+      { subheader: 'Family', type: 'subheader' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      {
+        title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240',
+        items: [
+          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' }
+        ]
+      },
+      { type: 'divider' },
+      { subheader: 'Friends', type: 'subheader' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+    ]
+
+    return () =>
+        <g-sidebar color={props.color}
+                   src={props.src}
+                   collapsed={props.collapsed}
+                   overlay={props.overlay}
+                   overlay-color={props.overlayColor}
+                   overlay-opacity={props.overlayOpacity}>
+          <template slot="header">
+            <div class="elevation-2" style="padding: 16px">CONTACT</div>
+          </template>
+          <g-side-bar-tree-view
+              data={data}
+              expand-level={3}
+              itemText={getItemText}
+              itemChildren={getItemChildren}/>
+        </g-sidebar>
+  }
 });
