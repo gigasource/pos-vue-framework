@@ -75,20 +75,28 @@ export default function ({
       // since original object has been modified, this.level no longer correct anymore
       // that why we need to cache the _level value in this object
       this._level = this.isRoot ? 0 : getParentLevel(this) + 1
-      const children = genChildren.value(node, this.isRoot)
+
+      const isNodeRootArray = this.isRoot && Array.isArray(node)
+      const children = isNodeRootArray ? node : genChildren.value(node, this.isRoot)
 
       this.update({ [childrenProp]: children })
 
       this.after(nodeAfterConvert => {
-        this.update(preGenNode({
-              node: node,
-              path: this.path.join('.'),
-              childrenVNodes: Array.isArray(nodeAfterConvert.children) && nodeAfterConvert.children.length > 0 ? genWrapper(nodeAfterConvert.children) : null,
-              isLast: isLastNode(),
-              isRoot: this.isRoot,
-              actualLevel: this._level
-            }),
-            true)
+        if (isNodeRootArray) {
+          this.update(nodeAfterConvert.children)
+        } else {
+          const childrenVNodes = Array.isArray(nodeAfterConvert.children) && nodeAfterConvert.children.length > 0 ? genWrapper(nodeAfterConvert.children) : null;
+          this.update(preGenNode({
+                node: node,
+                path: this.path.join('.'),
+                childrenVNodes,
+                isLast: isLastNode(),
+                isRoot: this.isRoot,
+                actualLevel: this._level
+              }),
+              true)
+        }
+
       })
     })
 
