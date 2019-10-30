@@ -55,6 +55,9 @@ export const tab = () => ({
       type: Boolean,
       default: boolean('Center', false)
     },
+    centerActive: {
+      default: boolean('Center active tab', true)
+    },
     grow: {
       type: Boolean,
       default: boolean('Grow', false)
@@ -80,6 +83,7 @@ export const tab = () => ({
           :vertical="vertical"
           :right="right" 
           :center="center"
+          :center-active="centerActive"
           :grow="grow"
           :icon="icon"
           :slider-size="sliderSize"
@@ -97,7 +101,7 @@ export const insideToolbar = () => ({
   data() {
     return {
       items: [
-        { title: 'Tab 1', icon: 'home', disabled: true, color: '#ff4455' },
+        { title: 'Tab 1', icon: 'home', disabled: false, color: '#ff4455' },
         { title: 'Tab 2', icon: 'group', color: '#1271ff' },
         { title: 'Tab 3', icon: 'notifications', color: '#1271ff' },
         { title: 'Tab 4', icon: 'block', color: '#ff4455' },

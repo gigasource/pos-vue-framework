@@ -2,9 +2,9 @@
   <g-layout class="g-tabs-wrapper" :vertical="!vertical">
     <div :class="tabsClasses" :style="tabsStyles">
       <!--			TODO: surround with slider group for handling overflow tabs -->
-      <div class="g-tabs-bar" ref="itemsRef" :class="barClasses" :style="barStyles">
+      <div class="g-tabs-bar" ref="itemsRef" :class="barClasses" :style="barStyles" v-resize="calculateSliderStyle">
         <template v-if="fullTitle">
-          <g-slide-group :center-active="true"
+          <g-slide-group :center-active="centerActive"
                          :items="items"
                          v-model="model"
                          @click:prev="calculateSliderStyle"
@@ -36,9 +36,11 @@
   import colorHandler, { convertToUnit } from '../../utils/helpers';
   import { colors } from '../../utils/colors';
   import GSlideGroup from '../GSlideGroup/GSlideGroup';
+  import Resize from '../../directives/resize/resize';
 
   export default {
     name: 'GTabs',
+    directives: { Resize },
     components: { GSlideGroup, GIcon, GTabItem, GLayout, GTab, GTabItems },
     props: {
       items: Array,
@@ -54,6 +56,7 @@
       vertical: Boolean,
       right: Boolean,
       center: Boolean,
+      centerActive: Boolean,
       icon: Boolean,
       alignWithTitle: Boolean,
     },
@@ -153,19 +156,6 @@
           sliderStyles.left = convertToUnit(activeTab.offsetLeft)
         }
       }, { lazy: true });
-
-      // calculate slider when tab bar is resized
-      let wrapperResizeObserver
-      onMounted(() => {
-        wrapperResizeObserver = new ResizeObserver(() => {
-          calculateSliderStyle()
-        })
-        wrapperResizeObserver.observe(context.refs.itemsRef.querySelector('.g-slide-group__wrapper'))
-      })
-
-      onBeforeUnmount(() => {
-        wrapperResizeObserver.disconnect()
-      })
 
       const fullTitle = computed(() => {
         const noTitle = find(props.items, item => item.title === undefined);
