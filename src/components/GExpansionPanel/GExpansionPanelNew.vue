@@ -6,7 +6,7 @@
   import GIcon from '../GIcon/GIcon';
 
   export default {
-    name: 'GExpansionPanel4',
+    name: 'GExpansionPanelNew',
 		components: {
       GIcon, GExpandTransition
 		},
@@ -37,9 +37,9 @@
 
       const genHeader = function (item) {
         return <div
-					class={['g-expansion-panel4-header', { 'g-expansion-panel4-header__active': isActiveItem(item) }]}
+					class={['g-expansion-panel-header', { 'g-expansion-panel-header__active': isActiveItem(item) }]}
 					vOn:click={() => toggleItem(item)}>
-						<div class="g-expansion-panel4-header-prepend">
+						<div class="g-expansion-panel-header-prepend">
               <g-icon small>fas fa-caret-right</g-icon>
 						</div>
 						{genHeaderText.value(item)}
@@ -49,9 +49,9 @@
 			const genContent = function(item) {
 				return <g-expand-transition>
 					<div
-						class={['g-expansion-panel4-content', { 'g-expansion-panel4-content__active': isActiveItem(item) }]}
+						class={['g-expansion-panel-content', { 'g-expansion-panel-content__active': isActiveItem(item) }]}
 						vShow={isActiveItem(item)}>
-							<div class="g-expansion-panel4-content-wrapper">
+							<div class="g-expansion-panel-content-wrapper">
 								{genContentText.value(item)}
 							</div>
 					</div>
@@ -59,16 +59,16 @@
 			}
 
 			const expansionPanelGroupClasses = computed(() => ({
-				'g-expansion-panel4-group__accordion': props.accordion,
-        'g-expansion-panel4-group__popout': props.popout,
-        'g-expansion-panel4-group__inset': props.inset
+				'g-expansion-panel-group__accordion': props.accordion,
+        'g-expansion-panel-group__popout': props.popout,
+        'g-expansion-panel-group__inset': props.inset
 			}))
 
       function genExpansionPanelGroup() {
-        return <div class={['g-expansion-panel4-group', expansionPanelGroupClasses.value]}>
+        return <div class={['g-expansion-panel-group', expansionPanelGroupClasses.value]}>
           {
             props.items.map(item => <div
-							class={['g-expansion-panel4', { 'g-expansion-panel4__active': isActiveItem(item)}]}>
+							class={['g-expansion-panel', { 'g-expansion-panel__active': isActiveItem(item)}]}>
 								{genHeader(item)}
               	{genContent(item)}
             </div>)
@@ -115,7 +115,7 @@
 	@import "variable";
 	@import "../../style/elevation";
 
-	.g-expansion-panel4 {
+	.g-expansion-panel {
 		flex: 1 0 100%;
 		max-width: 100%;
 		position: relative;
@@ -143,16 +143,16 @@
 					border-bottom: thin solid rgb(216, 216, 216);
 				}
 
-				> .g-expansion-panel4 {
+				> .g-expansion-panel {
 					margin-top: 0;
 
-					> .g-expansion-panel4-header {
+					> .g-expansion-panel-header {
 						border-top: thin solid rgb(216, 216, 216);
 						border-left: thin solid rgb(216, 216, 216);
 						border-right: thin solid rgb(216, 216, 216);
 					}
 
-					> .g-expansion-panel4-content {
+					> .g-expansion-panel-content {
 						background-color: rgb(242, 244, 248);
 						border-left: thin solid rgb(216, 216, 216);
 						border-right: thin solid rgb(216, 216, 216);
@@ -161,7 +161,7 @@
 			}
 
 			&__popout {
-				.g-expansion-panel4 {
+				.g-expansion-panel {
 					max-width: $expansion-panel-popout-max-width;
 
 					&__active {
@@ -171,7 +171,7 @@
 			}
 
 			&__inset {
-				.g-expansion-panel4 {
+				.g-expansion-panel {
 					max-width: $expansion-panel-inset-max-width;
 
 					&__active {
@@ -212,11 +212,11 @@
 
 			&__active {
 
-				.g-expansion-panel4-header-prepend > .g-icon {
+				.g-expansion-panel-header-prepend > .g-icon {
 					transform : rotate(90deg)
 				}
 
-				.g-expansion-panel4-header-append > .g-icon {
+				.g-expansion-panel-header-append > .g-icon {
 					transform : rotate(-180deg)
 				}
 			}

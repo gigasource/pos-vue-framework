@@ -1,5 +1,5 @@
 import { text, withKnobs, boolean } from '@storybook/addon-knobs';
-import GExpansionPanel4 from '../GExpansionPanel4';
+import GExpansionPanelNew from '../GExpansionPanelNew';
 import GIcon from '../../GIcon/GIcon';
 
 export default {
@@ -8,7 +8,7 @@ export default {
 }
 
 export const Basic = () => ({
-  components: { GExpansionPanel4 },
+  components: { GExpansionPanelNew },
   props: {
     accordion: {default: boolean('Accordion', false)},
     popout: {default: boolean('Popout', false)},
@@ -43,17 +43,17 @@ export const Basic = () => ({
   },
   template: `
     <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
-    <g-expansion-panel4 
+    <g-expansion-panel-new 
     v-model="activeItem" 
     :items="items" 
     item-header="name" 
     item-content="message" :accordion="accordion" :popout="popout" :inset="inset">
-    </g-expansion-panel4>
+    </g-expansion-panel-new>
     </div>`
 })
 
 export const Mandatory = () => ({
-  components: { GExpansionPanel4 },
+  components: { GExpansionPanelNew },
   props: {
     accordion: {default: boolean('Accordion', false)},
     popout: {default: boolean('Popout', false)},
@@ -88,17 +88,17 @@ export const Mandatory = () => ({
   },
   template: `
     <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
-    <g-expansion-panel4 
+    <g-expansion-panel-new 
     v-model="activeItem" 
     :items="items" 
     item-header="name" 
     item-content="message" mandatory :accordion="accordion" :popout="popout" :inset="inset">
-    </g-expansion-panel4>
+    </g-expansion-panel-new>
     </div>`
 })
 
 export const Multiple = () => ({
-  components: { GExpansionPanel4 },
+  components: { GExpansionPanelNew },
   props: {
     accordion: {default: boolean('Accordion', false)},
     popout: {default: boolean('Popout', false)},
@@ -133,11 +133,11 @@ export const Multiple = () => ({
   },
   template: `
     <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
-    <g-expansion-panel4 
+    <g-expansion-panel4-new
     v-model="activeItem" 
     :items="items" 
     item-header="name" 
     item-content="message" multiple :accordion="accordion" :popout="popout" :inset="inset">
-    </g-expansion-panel4>
+    </g-expansion-panel4-new>
     </div>`
 })
