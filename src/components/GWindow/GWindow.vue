@@ -12,7 +12,7 @@
 
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import getVModel from '@/mixins/getVModel';
+  import getVModel from '../../mixins/getVModel';
 
   export default {
     name: 'GWindow',

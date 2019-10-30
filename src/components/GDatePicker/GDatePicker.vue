@@ -1,13 +1,13 @@
 <script type="text/jsx">
   import _ from 'lodash'
-  import { ref } from '@vue/composition-api'
+  import { ref, computed } from '@vue/composition-api'
   import GDatePickerUtil from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
 
   const MINIMUM_WIDTH = 300
-  const DEFAULT_COLOR = 'rgb(77, 0, 234)'
-  const DEFAULT_RANGE_COLOR = 'rgb(145, 107, 219)'
+  const DEFAULT_COLOR = 'rgb(98, 0, 237)'
+  const DEFAULT_RANGE_COLOR = '#ece0fd'
 
 
   export default {
@@ -121,19 +121,24 @@
       } = GDatePickerUtil(props, context)
 
       // Title render function
+      const cptDatePickerTitleClass = computed(() => ({
+        'g-date-picker-title': true,
+        'g-date-picker-title--disabled': props.disabled
+      }))
       function datePickerTitleRenderFn() {
-        return (<div class='g-date-picker-title'>
-          <div class='g-picker__title__btn g-date-picker-title__year'
-               v-on:click_stop={ e => titleModel.value.on.yearClicked(titleModel.value.year)}>
-            { titleModel.value.year }
-          </div>
-          <div class='g-picker__title__btn g-date-picker-title__date'>
-            <transition name='picker-transition'>
-              <div key={titleModel.value.date}
-                   domPropsInnerHTML={ titleModel.value.date }/>
-            </transition>
-          </div>
-        </div>)
+        return (
+            <div class={cptDatePickerTitleClass.value}>
+              <div class='g-picker__title__btn g-date-picker-title__year'
+                   v-on:click_stop={e => titleModel.value.on.yearClicked(titleModel.value.year)}>
+                {titleModel.value.year}
+              </div>
+              <div class='g-picker__title__btn g-date-picker-title__date'>
+                <transition name='picker-transition'>
+                  <div key={titleModel.value.date}
+                       domPropsInnerHTML={titleModel.value.date}/>
+                </transition>
+              </div>
+            </div>)
       }
 
       // year list
@@ -141,10 +146,10 @@
         return <ul class='g-date-picker-years' ref='years'>{
           yearModel.value.years.map(year => (
               <li
-                  key={ year }
+                  key={year}
                   class={{ 'active': parseInt(yearModel.value.selectedYear) === year }}
                   v-on:click_stop={() => yearModel.value.on.yearClicked(year)}>
-                { year }
+                {year}
               </li>
           ))
         }</ul>
@@ -164,10 +169,15 @@
           headerModel.value.on.nextClicked()
         }
       }
+      const cptHeaderValueClass = computed(() => ({
+        'g-date-picker-header__value': true,
+        'g-date-picker-header__value--disabled': props.disabled,
+      }))
+
       function headerRenderFn() {
         return (
             <div class='g-date-picker-header'>
-              <div class='g-date-picker-header__value'>
+              <div class={cptHeaderValueClass.value}>
                 <transition name={transitionName.value}>
                   <div key={headerModel.value.content}>
                     <button
@@ -175,7 +185,7 @@
                         v-on:click_stop={() => {
                           headerModel.value.on.headerClicked()
                         }}>
-                      { headerModel.value.content }
+                      {headerModel.value.content}
                     </button>
                   </div>
                 </transition>
@@ -211,10 +221,11 @@
             if (!date.isWeek && !date.isBlank) {
               date.class = {
                 'g-table-item--active': date.isSelected,
+                'g-table-item--in-range': date.isInRange,
                 'g-table-item--rounded': true,
                 'g-table-item--readonly': props.readonly,
-                'g-table-item--disabled': !date.isAllowed || props.disabled,
-                'g-table-item--outlined': date.isCurrent && !date.isSelected
+                'g-table-item--outlined': date.isCurrent && !date.isSelected,
+                'g-table-item--disabled': !date.isAllowed || props.disabled
               }
 
               // range
@@ -230,19 +241,20 @@
               // selected
               const color = props.color || DEFAULT_COLOR
               if (!props.range) {
-                if (date.isSelected)
+                if (date.isSelected) {
                   setBackgroundColor(color, date)
-                else if (date.isCurrent)
-                  setTextColor(color, date)
+                }
               } else {
                 // set start/end range color
-                if (date.isSelected && !date.isInRange)
+                if (date.isSelected && !date.isInRange) {
                   setBackgroundColor(color, date)
+                }
 
                 // start, end, in
                 // it's similar to date.isSelected, except when selected range contain only 1 value (user just select start point)
-                if (date.isRangeStart || date.isRangeEnd || date.isInRange)
+                if (date.isRangeStart || date.isRangeEnd || date.isInRange) {
                   setBackgroundColor(props.rangeColor || DEFAULT_RANGE_COLOR, date.background)
+                }
               }
             }
           })
@@ -250,6 +262,7 @@
 
         return dateRows
       }
+
       function dateButtonRenderFn(dateItem) {
         return ([<button
             type="button"
@@ -265,19 +278,22 @@
             }
           </div>
         </button>,
-        <div class={['g-table-item__background', dateItem.background.class]}
-             style={dateItem.background.style}
-        >
-        </div>])
+          <div class={['g-table-item__background', dateItem.background.class]}
+               style={dateItem.background.style}
+          >
+          </div>])
       }
+
       function weekRenderFn(week) {
         return (<small class="g-date-picker-table--date__week">
           {String(week).padStart(2, '0')}
         </small>)
       }
+
       function dateTableDataRenderFn(date) {
         return <td>{date.isWeek ? weekRenderFn(date.value) : (date.isBlank ? '' : dateButtonRenderFn(date))}</td>
       }
+
       function dateTableRenderFn() {
         return (
             <div class='g-date-picker-table g-date-picker-table--date' v-on:wheel_stop={onWheelHandler}>
@@ -308,13 +324,15 @@
               'g-table-item--readonly': props.type === 'month' && props.readonly,
               'g-table-item--outlined': monthItem.isCurrent && !monthItem.isSelected
             }
-            const setColor = monthItem.isSelected ? setBackgroundColor : setTextColor
-            const color = (monthItem.isSelected || monthItem.isCurrent) && (props.color || '')
-            setColor(color, monthItem)
+            const color = props.color || DEFAULT_COLOR
+            if (monthItem.isSelected) {
+              setBackgroundColor(color, monthItem)
+            }
           })
         })
         return monthRows
       }
+
       function monthTableRenderFn() {
         return (<div class='g-date-picker-table g-date-picker-table--month' v-on:wheel={onWheelHandler}>
           <transition name={transitionName.value}>
@@ -386,6 +404,8 @@
   @import "../../style/variables";
   @import "../../style/colors";
 
+  $textDisabled: #9e9e9e;
+
   /*TITLE*/
   .g-date-picker-title {
     display: flex;
@@ -408,6 +428,10 @@
       overflow: hidden;
       padding-bottom: 8px;
       margin-bottom: -8px;
+    }
+
+    &--disabled {
+      color: $textDisabled;
     }
   }
 
@@ -468,7 +492,13 @@
         transition: $primary-transition;
         background-color: transparent;
         border-style: none;
-        color: rgb(83, 83, 83);
+        color: #666666;
+      }
+
+      &--disabled {
+        button {
+          color: $textDisabled;
+        }
       }
     }
 
@@ -522,10 +552,12 @@
 
     th {
       font-size: 12px;
+      color: #6e6e6e;
     }
 
     td {
       position: relative;
+      color: #232323;
     }
 
     button {
@@ -552,12 +584,16 @@
         color: map-get($shades, 'white');
       }
 
+      &--in-range {
+        color: #232323;
+      }
+
       &--rounded {
         border-radius: 28px;
       }
 
       &--outlined {
-        border: thin solid currentColor;
+        border: thin solid #232323;
       }
 
       &--readonly {
@@ -565,7 +601,8 @@
       }
 
       &--disabled {
-        color: rgba(0, 0, 0, 0.38);
+        color: $textDisabled;
+        border-color: $textDisabled;
       }
 
       &__background {
@@ -626,6 +663,7 @@
 
       .g-table-item {
         width: 100%;
+        height: 34px;
       }
     }
   }
