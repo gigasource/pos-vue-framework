@@ -76,6 +76,7 @@
         'g-tabs__grow': props.grow,
         'g-tabs__vertical': props.vertical,
         'g-tabs__right': props.right,
+        'g-tabs__icon': props.icon,
         'g-tabs__center': props.center,
         'g-tabs__align-title': props.alignWithTitle,
         [convertColorClass(props.textColor)]: props.textColor && getColorType(props.textColor) === 'class'

@@ -182,3 +182,39 @@ export const insideToolbar = () => ({
       </g-tab-items>
   </div>`
 });
+
+export const verticalTabs = () => ({
+  components: { GTabs, GTab, GTabItems, GTabItem },
+  data() {
+    return {
+      items: [
+        { title: 'Tab 1', icon: 'home' },
+        { title: 'Tab 2', icon: 'group' },
+        { title: 'Tab 3', icon: 'notifications' },
+        { title: 'Tab 4', icon: 'block', disabled: true }
+      ],
+      model: null,
+    }
+  },
+  created() {
+    this.model = this.items[0]
+  },
+  props: {
+    vertical: {
+      type: Boolean,
+      default: boolean('Vertical', true)
+    }
+  },
+  template: `
+    <g-tabs v-model="model" 
+          :items="items"
+          color="blue darken 2"
+          text-color="white"
+          :vertical="vertical">
+      <g-tab-items :items="items" v-model="model">
+        <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
+          {{item.title}}
+        </g-tab-item>
+      </g-tab-items>
+    </g-tabs>`
+});

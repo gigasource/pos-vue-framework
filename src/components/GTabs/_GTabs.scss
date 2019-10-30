@@ -27,6 +27,14 @@
     }
   }
 
+  &__icon {
+    min-height: 72px;
+
+    &.g-tabs__vertical {
+      min-height: 48px;
+    }
+  }
+
   &__vertical {
     > .g-tabs-bar {
       flex-direction: column;
@@ -87,6 +95,7 @@
   padding: 0 16px;
   text-align: center;
   text-decoration: none;
+  text-transform: uppercase;
   transition: none;
   user-select: none;
   cursor: pointer;
@@ -121,6 +130,7 @@
   > i,
   > .g-icon-wrapper {
     order: 0;
+    margin-bottom: 6px;
   }
 
   > *:not(i):not(.g-icon-wrapper) {
@@ -131,6 +141,7 @@
 .g-tab-items {
   contain: layout;
   flex: 1 1 auto;
+  z-index: -1;
 }
 
 .g-tab-item {
