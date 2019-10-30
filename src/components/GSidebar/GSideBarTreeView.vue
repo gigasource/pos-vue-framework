@@ -1,12 +1,14 @@
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed, onMounted } from '@vue/composition-api';
   import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
+  import GDivider from '../GLayout/GDivider';
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GSideBarTreeView',
+    components: { GIcon, GDivider },
     props: {
       itemText: {
-        default: 'text',
         type: [Function, String]
       },
       itemChildren: {
@@ -20,29 +22,35 @@
       data: [Object, Array]
     },
     setup(props) {
+
       const itemText = props.itemText || ((node, isRoot) => {
         if (node.type === 'subheader') {
-          return <span>{node.subheader}</span>
+          return node.subheader
         } else if (node.type === 'divider') {
-          return <hr/>
+					return <g-divider/>
         } else {
-          return <span>{node.title}</span>
+          return node.title
         }
       })
 
       const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
+        const icon = node.icon
+          ?		<g-icon class="g-treeview-icon">{node.icon}</g-icon>
+					: null
         return <li>
-          <span
-              class='g-tree-view__collapse-expand'
+					<a class="waves-effect g-treeview-item">
+            {icon}
+            <span class="g-treeview-title">{text}</span>
+            <span
+              class='g-treeview-action'
               vShow={childrenVNodes}
               vOn:click={() => state.collapse = !state.collapse}>
-            <span>
-              {state.collapse ? '+' : '-'}
+              <g-icon>
+                {state.collapse ? 'chevron_right' : 'expand_more'}
+              </g-icon>
             </span>
-          </span>
-          {text}
+					</a>
           {!state.collapse ? childrenVNodes : null}
-          {isLast ? <span style="color: #959595">&nbsp;last</span> : null}
         </li>
       }
 
@@ -75,24 +83,34 @@
       return this.genTree()
     }
   }
-
-
 </script>
+
 <style scoped lang="scss">
   ul {
     list-style-type: none;
-    padding-left: 20px;
-    border-left: 1px dashed #aaa;
+		padding: 0;
   }
 
-  .g-tree-view__collapse-expand {
-    alignment: center;
-    margin-right: 3px;
+	li {
+		padding: 0;
+	}
 
-    span {
-      width: 5px;
-      height: 5px;
-    }
-  }
+	.g-treeview {
+		&-item {
+			display: flex;
+			align-items: center;
+		}
 
+		&-icon {
+			margin: 16px;
+		}
+
+		&-title {
+			font-size: 16px;
+			line-height: 1.75;
+			flex: 1 1 100%;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+	}
 </style>

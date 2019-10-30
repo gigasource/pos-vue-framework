@@ -9,7 +9,7 @@ export default {
 }
 
 
-export const basic = () => ({
+export const listView = () => ({
   components: { GList, GSidebar },
   data() {
     return {
@@ -77,7 +77,7 @@ export const basic = () => ({
 });
 
 
-export const sidebarTreeView = () => ({
+export const treeView = () => ({
   components: { GSideBarTreeView, GSidebar },
   setup(props, context) {
     function getItemText(node) {
@@ -90,31 +90,31 @@ export const sidebarTreeView = () => ({
 
     const data = [
       { subheader: 'Family', type: 'subheader' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
       {
-        title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240',
+        title: 'Ranee Carlson', icon: 'home',
         items: [
-          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-          { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' }
+          { title: 'Ranee Carlson', icon: 'home'},
+          { title: 'Ranee Carlson', icon: 'home'},
+          { title: 'Ranee Carlson', icon: 'home'},
+          { title: 'Ranee Carlson', icon: 'home'}
         ]
       },
       { type: 'divider' },
       { subheader: 'Friends', type: 'subheader' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
-      { title: 'Ranee Carlson', prepend: 'https://loremflickr.com/320/240' },
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
+      { title: 'Ranee Carlson', icon: 'home'},
     ]
 
     return () =>
@@ -129,9 +129,7 @@ export const sidebarTreeView = () => ({
           </template>
           <g-side-bar-tree-view
               data={data}
-              expand-level={3}
-              itemText={getItemText}
-              itemChildren={getItemChildren}/>
+              expand-level={3}/>
         </g-sidebar>
   }
 });
