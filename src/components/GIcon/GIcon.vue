@@ -1,31 +1,29 @@
 <template>
-  <span class="g-icon-wrapper">
-    <i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
-       :aria-hidden="attributes.ariaHidden"
-       :role="attributes.role">{{materialIconName}}</i>
-    <svg v-else-if="activeTags.svg" :class="iconClass" :style="iconStyle"
-         :aria-hidden="attributes.ariaHidden"
-         :role="attributes.role"
-         xmlns="http://www.w3.org/2000/svg"
-         viewBox="0 0 24 24">
-      <path :d="icon"></path>
-    </svg>
-    <img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle"/>
-    <span v-if="activeTags.slot">
-      <slot></slot>
-    </span>
-  </span>
+	<i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
+		 :aria-hidden="attributes.ariaHidden"
+		 :role="attributes.role">{{materialIconName}}</i>
+	<svg v-else-if="activeTags.svg" :class="iconClass" :style="iconStyle"
+			 :aria-hidden="attributes.ariaHidden"
+			 :role="attributes.role"
+			 xmlns="http://www.w3.org/2000/svg"
+			 viewBox="0 0 24 24">
+		<path :d="icon"></path>
+	</svg>
+	<img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle"/>
+	<span v-else-if="activeTags.slot">
+		<slot></slot>
+	</span>
 </template>
 
 <script>
-  import {computed, ref, onMounted, onUpdated} from '@vue/composition-api';
-  import {convertToUnit} from '../../utils/helpers';
-  import {setBackgroundColor} from "../../mixins/colorable";
-  import {Fragment} from 'vue-fragment'
+  import { computed, ref, onMounted, onUpdated } from '@vue/composition-api';
+  import { convertToUnit } from '../../utils/helpers';
+  import { setBackgroundColor } from '../../mixins/colorable';
+  import { Fragment } from 'vue-fragment'
 
   export default {
-    name: "GIcon",
-    components: {Fragment},
+    name: 'GIcon',
+    components: { Fragment },
     props: {
       value: String,
       dense: Boolean,
@@ -108,10 +106,15 @@
           materialIcon: ''
         }
 
-        if (isFontAwesome5(icon.value)) renderFontAwesomeIcon(_nodeData)
-        else if (isSvgPath(icon.value)) renderSvgIcon(_nodeData)
-        else if (isCustomSvgIcon(icon.value)) renderCustomSvgIcon(_nodeData)
-        else renderMaterialIcon(_nodeData)
+        if (isFontAwesome5(icon.value)) {
+          renderFontAwesomeIcon(_nodeData)
+        } else if (isSvgPath(icon.value)) {
+          renderSvgIcon(_nodeData)
+        } else if (isCustomSvgIcon(icon.value)) {
+          renderCustomSvgIcon(_nodeData)
+        } else {
+          renderMaterialIcon(_nodeData)
+        }
         _nodeData.tag.slot = false
         return _nodeData
       })

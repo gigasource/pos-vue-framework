@@ -1,10 +1,10 @@
 <template>
 	<div id="app" class="body-wrapper__responsive__vertical">
-		<g-layout row>
+		<g-layout horizontal>
 			<div class="col-6">
-				<g-layout column class="r">
+				<g-layout vertical class="r">
 					<g-container class="h-90">
-						<g-layout column>
+						<g-layout vertical>
 							<div class="row-10 table-scroll table-rounded">
 								<g-table striped class="table">
 									<template v-slot:header>
@@ -26,7 +26,7 @@
 													</g-expansion-panel-header>
 													<g-expansion-panel-content v-show="isActive(item)" class="table-row">
 														<td colspan="4" class="pl-2 pr-2" style="height: 3rem; background-color: rgba(20, 113, 255, 0.2)">
-															<g-layout row>
+															<g-layout horizontal>
 																<div class="col-4 row-flex">
 																	<g-button class="btn__small-rounded bg-transparent ba-grey-darken-3 ba-thin fw-500 self-center">-</g-button>
 																	<div class="bg-white ba-blue blue ba-thin col-3" style="display: inline-flex; align-items: center; justify-content: center">{{ item.quantity}}</div>
@@ -54,7 +54,7 @@
 							</div>
 							<div class="row-2 row-flex pt-3">
 								<div class="col-12 h-80 self-center">
-									<g-layout row>
+									<g-layout horizontal>
 										<div class="col-6 pa-2 pr-4 pl-4 fw-400 col-flex justify-between">
 											<p class="row-6 row-flex pa-1">
 												<span class="col-6 ta-left">Discount</span>
@@ -98,7 +98,7 @@
 				</g-layout>
 			</div>
 			<div class="col-6 pa-2 col-flex" style="box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);">
-				<g-layout row class="h-12 align-items-center">
+				<g-layout horizontal class="h-12 align-items-center">
 						<g-text-field v-model="balance" class="col-6" large bordered text-color="#1271ff">
 							<template v-slot:label>
 								<span class="fw-700 fs-small">Balance due</span>
@@ -117,7 +117,7 @@
 				</g-layout>
 					<g-tabs v-model="tabActiveItem" class="flex-grow-1">
 						<template v-slot:tabs="{toggle, isActive}">
-							<g-layout row class="row-3 mt-5">
+							<g-layout horizontal class="row-3 mt-5">
 								<g-tab v-for="(item, i) in tabItems" :key="i" class="flex-grow-1 mr-1">
 									<g-button class="btn__centered w-100 h-100" outline :class="{'button__active': isActive(item)}" @click="toggleTab(toggle, item)">
 										<img class="col-4" :src="getImg(item.img)">
@@ -132,17 +132,17 @@
 							</g-tab-item>
 						</template>
 					</g-tabs>
-				<g-layout column class="row-6">
-					<g-layout row class="h-80">
+				<g-layout vertical class="row-6">
+					<g-layout horizontal class="h-80">
 						<g-keyboard class="col-8 pr-1 pb-2" :template="template" :items="keyboard" v-model="keyboardModel"></g-keyboard>
-						<g-layout column class="col-4">
+						<g-layout vertical class="col-4">
 							<g-button class="flex-equal mb-2" outline color="#8191ab" text-color="#1c1c1c">Voucher € 10</g-button>
 							<g-button class="flex-equal mb-2" outline color="#8191ab" text-color="#1c1c1c">Discount 10%</g-button>
 							<g-button class="flex-equal mb-2" color="#eaeaea"></g-button>
 							<g-button class="flex-equal mb-2" color="#eaeaea"></g-button>
 						</g-layout>
 					</g-layout>
-					<g-layout row class="h-20">
+					<g-layout horizontal class="h-20">
 						<g-button class="flex-equal" outline color="#8191ab" text-color="#1c1c1c">Multiple Payment</g-button>
 						<g-button class="flex-equal ml-1" color="#eaeaea"></g-button>
 						<g-button class="flex-equal ml-1 fs-large-2" color="#ff4452" text-color="#ffffff">Pay</g-button>
