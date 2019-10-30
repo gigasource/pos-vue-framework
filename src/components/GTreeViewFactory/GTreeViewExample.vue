@@ -1,10 +1,6 @@
 <script>
-
   import { computed } from '@vue/composition-api';
   import GTreeFactory, { genTextFactory } from './GTreeFactory';
-  import traverse from 'traverse'
-
-
 
   export default {
     name: 'GTreeViewExample',
@@ -23,10 +19,10 @@
       },
       data: Object
     },
-    setup(props, context) {
+    setup(props) {
       const genText = genTextFactory(props.itemText);
 
-      const genNode = function (node, text, childrenVNodes, isLast, state, path) {
+      const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
         return <li>
           <span
               class='g-tree-view__collapse-expand'

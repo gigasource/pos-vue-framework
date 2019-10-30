@@ -43,7 +43,7 @@ export default function ({
       set(treeStates, path, { collapse: cptExpandLevel.value <= actualLevel })
     }
     const text = genText.value(node, isRoot);
-    return genNode(node, text, childrenVNodes, isLast, treeStates[path], path);
+    return genNode({node, text, childrenVNodes, isLast, state: treeStates[path], path});
   }
 
   const genChildren = computed(() => typeof itemChildren === 'function' ? itemChildren : node => node[itemChildren]);
