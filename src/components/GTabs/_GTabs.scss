@@ -2,6 +2,10 @@
   position: relative;
   display: flex;
 
+  &-wrapper {
+    width: 100%;
+  }
+
   &-bar {
     display: flex;
     min-height: 48px;
@@ -55,12 +59,8 @@
   }
 
   &__center {
-    .g-tab:first-child {
-      margin-left: auto;
-    }
-
-    .g-tab:last-of-type {
-      margin-right: auto;
+    .g-slide-group__content {
+      justify-content: center;
     }
   }
 

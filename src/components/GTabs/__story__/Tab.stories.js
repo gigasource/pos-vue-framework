@@ -6,6 +6,7 @@ import GTabItem from '../GTabItem';
 import GToolbar from '../../GToolbar/GToolbar';
 import GBtn from '../../GBtn/GBtn';
 import GSpacer from '../../GLayout/GSpacer';
+import GIcon from '../../GIcon/GIcon';
 
 export default {
   title: 'Tab',
@@ -92,7 +93,7 @@ export const tab = () => ({
 });
 
 export const insideToolbar = () => ({
-  components: { GTabs, GTab, GToolbar, GBtn, GSpacer, GTabItems, GTabItem },
+  components: { GTabs, GTab, GToolbar, GBtn, GSpacer, GTabItems, GTabItem, GIcon },
   data() {
     return {
       items: [
@@ -151,9 +152,9 @@ export const insideToolbar = () => ({
       <g-btn icon flat><i class="material-icons">menu</i></g-btn>
       <span>Title</span>
       <g-spacer/>
-      <g-btn icon flat><i class="material-icons">search</i></g-btn>
-      <g-btn icon flat><i class="material-icons">favorite</i></g-btn>
-      <g-btn icon flat><i class="material-icons">more_vert</i></g-btn>
+      <g-btn icon><g-icon>search</g-icon></g-btn>
+      <g-btn icon><g-icon>favorite</g-icon></g-btn>
+      <g-btn icon><g-icon>more_vert</g-icon></g-btn>
       <template v-slot:extension>
         <g-tabs v-model="model" 
           :items="items" 
