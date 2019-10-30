@@ -1,9 +1,9 @@
 <template>
-	<button v-ripple :class="classes" :style="styles" @click="onClick">
-		<span class="g-btn__content">
-			<slot></slot>
-		</span>
-	</button>
+  <button :class="classes" :style="styles" @click="onClick" v-ripple>
+    <span class="g-btn__content">
+      <slot></slot>
+    </span>
+  </button>
 </template>
 
 <script>
@@ -24,7 +24,7 @@
         disabled: Boolean,
         rounded: Boolean,
         text: Boolean,
-				flat: Boolean,
+        flat: Boolean,
         fab: Boolean,
         tile: Boolean,
         icon: Boolean,
