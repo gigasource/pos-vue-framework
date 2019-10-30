@@ -1,5 +1,6 @@
 @import "variables";
 @import "global";
+@import "typography";
 @import "colors";
 @import "atomic-utilities";
 @import "grid";
@@ -31,4 +32,6 @@
 @import "../components/GImg/_GImg";
 @import "../components/GIcon/_GIcon";
 @import "../components/GToolbar/_GToolbar";
+@import "../components/GSlideGroup/_GSlideGroup";
+
 

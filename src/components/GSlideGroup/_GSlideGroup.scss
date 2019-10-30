@@ -1,0 +1,63 @@
+@import "_variables";
+
+// Block
+.g-slide-group {
+  display: flex;
+
+  &:not(.g-slide-group__has-affixes) {
+    .g-slide-group__prev,
+    .g-slide-group__next {
+      display: none
+    }
+  }
+
+  // Needed increased specificity
+  // to overwrite v-tabs pointer
+  // replacement
+  &.g-item-group {
+    > .g-slide-group__next,
+    > .g-slide-group__prev {
+      cursor: pointer;
+    }
+  }
+}
+
+.g-slide-item {
+  display: inline-flex;
+  flex: 0 1 auto;
+}
+
+// Element
+.g-slide-group__next,
+.g-slide-group__prev {
+  cursor: pointer;
+  align-items: center;
+  display: flex;
+  flex: 0 1 $slide-group-prev-basis;
+  justify-content: center;
+  min-width: $slide-group-prev-basis;
+}
+
+.g-slide-group__content {
+  display: flex;
+  flex: 1 0 auto;
+  position: relative;
+  transition: $slide-primary-transition;
+  white-space: nowrap;
+}
+
+.g-slide-group__wrapper {
+  contain: content;
+  display: flex;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+// Modifiers
+.g-slide-group__next,
+.g-slide-group__prev {
+  &--disabled {
+    opacity: 0.27;
+    pointer-events: none
+  }
+}
