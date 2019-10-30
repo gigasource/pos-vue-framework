@@ -1,0 +1,101 @@
+$badge-border-radius: 11px !default;
+$badge-color: map-get($shades, 'white') !default;
+//$badge-font-family: $body-font-family !default;
+$badge-font-size: 14px !default;
+$badge-height: 22px !default;
+$badge-width: 22px !default;
+$badge-top: -($badge-height / 2) !default;
+$badge-right: -($badge-width) !default;
+
+.g-badge {
+  display: inline-block;
+  line-height: 1;
+  position: relative;
+
+  &--badge {
+    align-items: center;
+    border-radius: $badge-border-radius;
+    color: $badge-color;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    font-size: $badge-font-size;
+    height: $badge-height;
+    justify-content: center;
+    line-height: normal;
+    min-width: $badge-width;
+    padding: 0 4px;
+    position: absolute;
+    right: $badge-right;
+    top: $badge-top;
+    transition: $primary-transition;
+
+    .g-icon {
+      font-size: 14px !important;
+    }
+  }
+
+  &__overlap {
+    .g-badge--badge {
+      top: -6px;
+      right: -8px;
+    }
+
+    &.g-badge__left {
+      .g-badge--badge {
+        left: -8px;
+        right: initial;
+      }
+    }
+
+    &.g-badge__bottom {
+      .g-badge--badge {
+        bottom: -6px;
+        top: initial;
+      }
+    }
+  }
+
+  &__left {
+    .g-badge--badge {
+      left: $badge-right;
+      right: initial;
+    }
+  }
+
+  &__bottom {
+    .g-badge--badge {
+      bottom: $badge-top;
+      top: initial;
+    }
+  }
+
+  //+ rtl() {
+  //  &--badge {
+  //    right: initial;
+  //    left: $badge-right;
+  //  }
+  //
+  //  &__overlap {
+  //    .g-badge--badge {
+  //      right: initial;
+  //      left: -8px;
+  //    }
+  //
+  //    &.g-badge__left {
+  //      .g-badge--badge {
+  //        right: -8px;
+  //        left: initial;
+  //      }
+  //    }
+  //  }
+  //
+  //  &__left {
+  //    .g-badge--badge {
+  //      right: $badge-right;
+  //      left: initial;
+  //    }
+  //  }
+  //}
+
+}
