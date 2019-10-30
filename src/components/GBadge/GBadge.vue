@@ -1,7 +1,7 @@
 <template>
   <span :class="wrapClass">
     <slot></slot>
-    <span :class="badgeSlotClass" :style="badgeSlotStyle"><slot name="badge"></slot></span>
+    <span v-show="show" :class="badgeSlotClass" :style="badgeSlotStyle"><slot name="badge"></slot></span>
   </span>
 </template>
 
@@ -13,10 +13,15 @@
   export default {
     name: "GBadge",
     components: {GIcon},
+    model: {
+      prop: 'show',
+      event: 'change'
+    },
     props: {
-      value: {
-        type: null
-      },
+      // value: {
+      //   default: null
+      // },
+      show: {type: Boolean, default: true},
       //style
       bottom: Boolean,
       left: Boolean,
