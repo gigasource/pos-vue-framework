@@ -34,7 +34,7 @@ export const SingleValueDatePicker = () => ({
       <g-date-picker
         max={props.max}
         min={props.min}
-        vModel={props.value}
+        value={props.value}
         color={props.color}
         header-color={props.headerColor}
         full-width={props.fullWidth}
@@ -76,7 +76,7 @@ export const MultipleValueDatePicker = () => ({
         <g-date-picker
             max={props.max}
             min={props.min}
-            vModel={props.value}
+            value={props.value}
             color={props.color}
             header-color={props.headerColor}
             full-width={props.fullWidth}
@@ -121,7 +121,7 @@ export const RangeValueDatePicker = () => ({
         <g-date-picker
             max={props.max}
             min={props.min}
-            vModel={props.value}
+            value={props.value}
             color={props.color}
             range-color={props.rangeColor}
             header-color={props.headerColor}
@@ -162,7 +162,7 @@ export const SingleValueMonthPicker = () => ({
     return () =>
         <div>
           <g-date-picker
-              vModel={props.value}
+              value={props.value}
               color={props.color}
               header-color={props.headerColor}
               full-width={props.fullWidth}
@@ -205,7 +205,7 @@ export const MultipleValueMonthPicker = () => ({
     return () =>
         <div>
           <g-date-picker
-              vModel={props.value}
+              value={props.value}
               color={props.color}
               header-color={props.headerColor}
               full-width={props.fullWidth}
