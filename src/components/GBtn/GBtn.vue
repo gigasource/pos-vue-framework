@@ -24,6 +24,7 @@
         disabled: Boolean,
         rounded: Boolean,
         text: Boolean,
+				flat: Boolean,
         fab: Boolean,
         tile: Boolean,
         icon: Boolean,
@@ -138,7 +139,7 @@
       });
 
       let isFlat = computed(() => {
-        return props.text || props.icon || props.outlined;
+        return props.text || props.icon || props.outlined || props.flat;
       });
 
       let contained = computed(() => {
