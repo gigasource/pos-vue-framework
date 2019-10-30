@@ -17,14 +17,21 @@ export const tab = () => ({
   data() {
     return {
       items: [
-        {title: 'Tab 1', icon: 'home'},
-        {title: 'Tab 2', icon: 'group'},
-        {title: 'Tab 3', icon: 'notifications'},
-        {title: 'Tab 4', icon: 'block', disabled: true},
-        {title: 'Tab 5', icon: 'phone'},
+        { title: 'Tab 1', icon: 'home' },
+        { title: 'Tab 2', icon: 'group' },
+        { title: 'Tab 3', icon: 'notifications' },
+        { title: 'Tab 4', icon: 'block', disabled: true },
+        { title: 'Tab 5', icon: 'phone' },
+        { title: 'Tab 6', icon: 'phone' },
+        { title: 'Tab 7', icon: 'phone' },
+        { title: 'Tab 8', icon: 'phone' },
+        { title: 'Tab 9', icon: 'phone' },
       ],
       model: null,
     }
+  },
+  created() {
+    this.model = this.items[0]
   },
   props: {
     color: {
@@ -85,18 +92,18 @@ export const tab = () => ({
 });
 
 export const insideToolbar = () => ({
-  components: { GTabs, GTab, GToolbar, GBtn, GSpacer, GTabItems, GTabItem  },
+  components: { GTabs, GTab, GToolbar, GBtn, GSpacer, GTabItems, GTabItem },
   data() {
     return {
       items: [
-        {title: 'Tab 1', icon: 'home', disabled: true, color: '#ff4455'},
-        {title: 'Tab 2', icon: 'group', color: '#1271ff'},
-        {title: 'Tab 3', icon: 'notifications', color: '#1271ff'},
-        {title: 'Tab 4', icon: 'block', color: '#ff4455'},
-        {title: 'Tab 5', icon: 'phone', color: '#1271ff'},
-        {title: 'Tab 6', icon: 'phone', color: '#ff4455'},
-        {title: 'Tab 7', icon: 'phone', color: '#1271ff'},
-        {title: 'Tab 8', icon: 'phone', color: '#ff4455'},
+        { title: 'Tab 1', icon: 'home', disabled: true, color: '#ff4455' },
+        { title: 'Tab 2', icon: 'group', color: '#1271ff' },
+        { title: 'Tab 3', icon: 'notifications', color: '#1271ff' },
+        { title: 'Tab 4', icon: 'block', color: '#ff4455' },
+        { title: 'Tab 5', icon: 'phone', color: '#1271ff' },
+        { title: 'Tab 6', icon: 'phone', color: '#ff4455' },
+        { title: 'Tab 7', icon: 'phone', color: '#1271ff' },
+        { title: 'Tab 8', icon: 'phone', color: '#ff4455' },
       ],
       model: null,
     }

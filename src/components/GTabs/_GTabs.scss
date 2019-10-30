@@ -42,6 +42,10 @@
     .g-tabs-slider {
       transition-property: top;
     }
+
+    .g-slide-group__content {
+      flex-direction: column;
+    }
   }
 
   &__right {
@@ -55,7 +59,7 @@
       margin-left: auto;
     }
 
-    .g-tab:last-child {
+    .g-tab:last-of-type {
       margin-right: auto;
     }
   }
