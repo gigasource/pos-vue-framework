@@ -14,59 +14,75 @@
         default: 100
       },
       data: [Object, Array],
-      itemText: [Function, String]
+      itemText: [Function, String],
+      // coloring
+
     },
     setup(props, context) {
       // TODO:
       //  + Complete Playground: Computed props expand level doesn't work
-      //  + Adjust icon position
-      //  + Correct function, null color
       //  + Test cases
 
       // Render itemText
-      function getValueClass(text) {
-        switch (text.valueType) {
-          case 'array':
-            return 'g-tree-view__item-value-array'
-          case 'string':
-            return 'g-tree-view__item-value-string'
-          default:
-            return 'g-tree-view__item-value-' + typeof (text.value)
-        }
+      /**
+       * Get corresponding class of a value to display in a line
+       * Note that this method is not designed to be used by 'object' nodeDesc
+       * Instead, each prop of an object nodeDesc will use this method to get corresponding class
+       * @param nodeDesc Description about the node
+       * @returns {string}
+       */
+      function getNodeClass(nodeDesc) {
+        let outputClass = 'g-tree-view__item-value-'
+        if (nodeClassFromValueType.indexOf(nodeDesc.valueType) >= 0)
+          outputClass += nodeDesc.valueType
+        else
+          outputClass += typeof (nodeDesc.value)
+        return outputClass
       }
+      const nodeClassFromValueType = ['array', 'null', 'function']
 
-      function formatTextValue(text) {
-        switch (text.valueType) {
+      /**
+       * Format displayed text value of a node
+       * NOTE THAT, this method is not designed to be used by 'object' nodeDesc
+       * Instead, each prop of an Object nodeDesc will use this method to format value
+       * @param nodeDesc
+       * @returns {string|*}
+       */
+      function getFormattedNodeContent(nodeDesc) {
+        switch (nodeDesc.valueType) {
           case 'string':
-            return `"${text.value}"`
+            return `"${nodeDesc.value}"`
           case 'array' :
-            return `Array (${text.value.length})`
+            return `Array (${nodeDesc.value.length})`
           case 'boolean':
-            return text.value ? 'true' : 'false'
+            return nodeDesc.value ? 'true' : 'false'
           case 'function':
             return 'function'
+          case 'null':
+            return 'null'
+          case 'number': // we can round the number in this place, etc... by default, just return its value
           default:
-            return text.value
+            return nodeDesc.value
         }
       }
 
-      function genValueNode(text) {
-        if (text.valueType === 'skip') return null
-        if (text.valueType === 'object') {
+      function genValueNode(nodeDesc) {
+        if (nodeDesc.valueType === 'skip') return null
+        if (nodeDesc.valueType === 'object') {
           return [
             <span class='g-tree-view__item-value-object'>Object &#123;&nbsp;</span>,
-            text.value.outputValues.map(outputValue => [
+            nodeDesc.value.outputValues.map(outputValue => [
                   <span class="g-tree-view__item-var-name">{outputValue.varName}</span>,
                   <span class='g-tree-view__item-separate-symbol'>:&nbsp;</span>,
                   genValueNode(outputValue),
                   <span class='g-tree-view__item-separate-symbol'>,&nbsp;</span>
                 ]
             ),
-            text.value.moreSymbol ? <span class='g-tree-view__item-separate-symbol'>...</span> : undefined,
+            nodeDesc.value.moreSymbol ? <span class='g-tree-view__item-separate-symbol'>...</span> : undefined,
             <span class='g-tree-view__item-value-object'> &#125;</span>
           ]
         } else {
-          return <span class={getValueClass(text)}>{formatTextValue(text)}</span>
+          return <span class={getNodeClass(nodeDesc)}>{getFormattedNodeContent(nodeDesc)}</span>
         }
       }
 
@@ -212,23 +228,6 @@
           return node;
         }
       }
-
-      // TODO: Correct the algorithm
-      // const converter = node => Object.keys(node).map(k => ({ [k]: node[k], __primitive: true }))
-      // const itemChildren = (node) => {
-      //   if (Array.isArray(node)) {
-      //     return node
-      //   } else if (typeof node === 'object') {
-      //     if (node.__primitive) {
-      //       return node[Object.keys(node)[0]]
-      //     }
-      //     else {
-      //       return converter(node)
-      //     }
-      //   } else {
-      //     return node;
-      //   }
-      // }
 
       const cptExpandLevel = computed(() => props.expandLevel)
       const { treeStates, genTree } = GTreeFactory({
