@@ -9,7 +9,7 @@ export function genContentFactory(itemContent) {
   return computed(() => typeof itemContent === 'function' ? itemContent : item => item[itemContent])
 }
 
-export const getExpansionPanelModel = function (props, context) {
+export const getExpansionModel = function (props, context) {
   const model = computed({
     get: () => {
       if (props.value) {
