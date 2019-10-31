@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs';
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 
 //
@@ -35,12 +35,14 @@ export const TextField = () => ({
     clearable: { default: boolean('clearable', false) },
     hint: { default: text('hint', 'Hint') },
     persistent: { default: boolean('persistent', false) },
-    counter: {type:[String, Number], default: Number('counter', 25) },
+    counter: {type:[String, Number], default: number('counter', 25) },
     prefix: { default: text('prefix', '')},
     suffix: {default: text('suffix', '')},
     type: {default: text('type', 'text')},
-    prependIcon: {default: text('prependIcon', 'person')},
-    appendIcon: {default: text('prependIcon', 'person')},
+    prependIcon: {default: text('prepend Icon', 'person')},
+    appendIcon: {default: text('append Icon', 'mdi-bike')},
+    prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-owl')},
+    appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
   },
   template: `<g-text-field :label="label"
                            :clearable="clearable"
@@ -59,12 +61,14 @@ export const TextField = () => ({
                            :type="type"
                            :prepend-icon="prependIcon"
                            :append-icon="appendIcon"
+                           :prepend-inner-icon="prependInnerIcon"
+                           :append-inner-icon="appendInnerIcon"
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">
                           <template v-slot:prepend-outer>
                           </template>
                           <template v-slot:append-inner>
-                          <g-icon>mdi-ninja</g-icon>
+                          <g-icon>{{appendInnerIcon}}</g-icon>
                           </template>
                           <template v-slot:append-outer>
                           </template>
