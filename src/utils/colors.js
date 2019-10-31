@@ -1,9 +1,11 @@
 import colorList from '../style/_colors.scss';
 import { isCssColor } from '../mixins/colorable';
+import _ from 'lodash'
 import { chunk, padEnd } from './helpers'
 import { toXYZ } from './transformSRGB'
 
-export const colors = Object.freeze(colorList);
+export const colors = Object.freeze(_.pickBy(colorList, (val, key) => !key.startsWith('gradient-')));
+export const gradientColors = Object.freeze(_.pickBy(colorList, (val, key) => key.startsWith('gradient-')));
 
 export function linearGradient(colorArr, angle = 45) {
   if(!colorArr) {
@@ -175,3 +177,4 @@ export function contrastRatio (c1, c2) {
 
   return (Math.max(y1, y2) + 0.05) / (Math.min(y1, y2) + 0.05)
 }
+
