@@ -103,7 +103,6 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onFocus(event) {
-    console.log('focus')
     if (!context.refs.input) {
       return;
     }
@@ -125,14 +124,12 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onClearIconClick(event) {
-    console.log('clearIconClick')
-    internalValue.value = ''
+    internalValue.value = '';
     isValidInput.value = true;
     context.emit('click:clearIcon', event)
   }
 
   function onChange(event) {
-    console.log('change')
     context.emit('change', event)
   }
 

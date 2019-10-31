@@ -1,35 +1,18 @@
 <template>
-  <div class="tf-wrapper g-file-input" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick"
+  <div class="tf-wrapper g-file-input" :class="[tfWrapperClasses, tfErrWrapperClass]"
+       @click="onClickWrapper"
        @mouseup="onMouseUp"
        @mousedown="onMouseDown">
-    <div class="tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-      <g-icon>{{prependIcon}}</g-icon>
-    </div>
+    <div class="tf-prepend__outer" ref="prependRef"><g-icon>{{prependIcon}}</g-icon></div>
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
       <div class='tf' :class="tfErrClasses">
-        <div class="tf-prepend__inner" @click="onClickPrependInner">
-          <g-icon>{{prependInnerIcon}}</g-icon>
-        </div>
+        <div class="tf-prepend__inner"><g-icon>{{prependInnerIcon}}</g-icon></div>
         <div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
           <label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
-          <input id="input" :type="type"
-                 ref="input"
-                 class="tf-input"
-                 :style="inputErrStyles"
-                 :label="label"
-                 :disabled="disabled"
-                 :readonly="readonly"
-                 :multiple="multiple"
-                 :accept="accept"
-                 v-model="internalValue"
-                 @change="onChange"
-                 @focus="onFocus"
-                 @keydown="onKeyDown"
-                 @blur="onBlur">
           <div class="g-file-input--text">
-            <slot v-if="dirty" name="selection">
+            <slot v-if="isDirty" name="selection">
               <div v-if="chips || smallChips">
                 <g-chip v-for="file in files" :small="smallChips">{{file.name}}{{showSize?' ('+fileSize+')':''}}
                 </g-chip>
@@ -38,30 +21,34 @@
             </slot>
             <slot v-else>{{placeholder}}</slot>
           </div>
+          <input id="input" ref="input"
+                 class="tf-input"
+                 :type="type"
+                 :multiple="multiple"
+                 :accept="accept"
+                 @focus="onFocus"
+                 @blur="onBlur"
+                 v-model="internalValue">
         </div>
         <div v-if="suffix" class="tf-affix">{{suffix}}</div>
-        <div class="tf-append__inner" @click="onClickAppendInner">
-          <div v-if="dirty && clearable" @click="onClearIconClick">
-            <g-icon style="cursor: pointer">cancel</g-icon>
-          </div>
+        <div class="tf-append__inner">
+          <div v-if="isDirty && clearable" @click="onClearIconClick"><g-icon style="cursor: pointer">mdi-close</g-icon></div>
           <g-icon>{{appendIcon}}</g-icon>
         </div>
-        <div class="tf-error" v-if="!isValidInput">{{errorMessages}}</div>
-        <div class="tf-hint" v-else :class="hintClasses">{{hint}}</div>
+        <div v-if="!isValidInput" class="tf-error" >{{errorMessages}}</div>
+        <div v-else class="tf-hint" :class="hintClasses">{{hint}}</div>
         <div v-show="counter" :class="{'tf-counter': true, 'tf-counter__error': !isValidInput}">
           {{fileNumber + ' (' + fileSize + ' in total)'}}
         </div>
       </div>
     </fieldset>
-    <div class="tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
-      <g-icon>{{appendOuterIcon}}</g-icon>
-    </div>
+    <div class="tf-append__outer" ref="appendOuter"><g-icon>{{appendOuterIcon}}</g-icon></div>
   </div>
 </template>
 
 <script>
-  import {ref, computed, onMounted, onUpdated} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from '../GInput/GInputField';
+  import {ref, computed} from '@vue/composition-api';
+  import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputField';
   import GIcon from '../GIcon/GIcon';
   import GChip from "../GChip/GChip";
 
@@ -124,19 +111,17 @@
       accept: String,
       showSize: Boolean,
       chips: Boolean,
-      smallChips: Boolean
-
+      smallChips: Boolean,
     },
     setup(props, context) {
       const tfWrapperClasses = getTfWrapperClasses(props)
 
       const internalValue = getInternalValue(props, context)
-      //dirty for file input
-      const dirty = computed(() => internalValue.value.length > 0)
-
+      const isDirty = computed(() => internalValue.value.length > 0)
       const isValidInput = ref(true)
       const isFocused = ref(false)
-      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(props, internalValue, isValidInput, isFocused, 'tf-label__active', {'color': 'red'})
+
+      const {labelClasses, labelStyles, isLabelActive, prefixRef} = getLabel(props, internalValue, isValidInput, isFocused, 'tf-label__active', {'color': 'red'})
 
       //Activate non persistent hint
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'tf-hint__active': true} : {})
@@ -150,11 +135,8 @@
 
       const tfErrWrapperClass = computed(() => ({'tf-wrapper__error': !isValidInput.value}))
 
-      const {onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner,} = getSlotEventListeners(context)
-
       const {
-        onClick, onFocus, onBlur, onClearIconClick,
-        onMouseDown, onMouseUp, onChange, onKeyDown
+        onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp,
       } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
       //set legend width for label in outlined textfield
       const legendStyles = computed(() => {
@@ -168,10 +150,19 @@
       })
 
       //file input logic
-      const files = computed(() => dirty.value ? context.refs.input.files : [])
+      function onClickWrapper() {
+        onClick()
+        triggerFileInput()
+      }
+
+      function triggerFileInput() {
+        context.refs.input.click()
+      }
+
+      const files = computed(() => isDirty.value ? context.refs.input.files : [])
 
       function totalFileSize(files) {
-        if (!dirty.value) return 0
+        if (!isDirty.value) return 0
 
         let size = 0
         for (let file of files)
@@ -202,8 +193,6 @@
         if (files.value.length > 1) return files.value.length + ' files'
       })
 
-      onMounted(() => console.log(context.refs))
-
       return {
         //calculated styles and classes
         labelClasses,
@@ -217,28 +206,23 @@
         //calculated state
         isLabelActive,
         isFocused,
-        dirty, //isDirty,
+        isDirty,
         isValidInput,
         //calculated error
         errorMessages,
         //event listeners
         onClick,
-        onChange,
         onFocus,
         onBlur,
-        onKeyDown,
         onMouseUp,
         onMouseDown,
-        onClickPrependOuter,
-        onClickPrependInner,
-        onClickAppendOuter,
-        onClickAppendInner,
+        onClickWrapper,
         onClearIconClick,
         //ref
         prefixRef,
         tfErrWrapperClass,
         legendStyles,
-        //
+        //fileInput
         files,
         fileSize,
         fileName,

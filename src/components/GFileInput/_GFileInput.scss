@@ -1,13 +1,24 @@
 .g-file-input {
   input[type="file"] {
     opacity: 0;
-    max-width: 100%;
-    width: 100%;
-    height: 100%;
-    position: absolute;
+    max-width: 0;
+    width: 0;
+    padding: 0  0 12px 0 !important;
   }
   label {
     top: 6px;
+  }
+
+  .inputGroup{
+    display: flex;
+  }
+
+  .tf-append__inner,
+  .tf-prepend__inner,
+  .tf-append__outer,
+  .tf-prepend__outer{
+    align-self: baseline;
+    //padding-top: 8px;
   }
 
 }
@@ -18,7 +29,6 @@
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  height: 100%;
 
   &.g-file-input--text--chips {
     flex-wrap: wrap;
