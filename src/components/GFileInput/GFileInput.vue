@@ -3,18 +3,23 @@
        @click="onClickWrapper"
        @mouseup="onMouseUp"
        @mousedown="onMouseDown">
-    <div class="tf-prepend__outer" ref="prependRef"><g-icon>{{prependIcon}}</g-icon></div>
+    <div class="tf-prepend__outer" ref="prependRef">
+      <g-icon>{{prependIcon}}</g-icon>
+    </div>
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
       <div class='tf' :class="tfErrClasses">
-        <div class="tf-prepend__inner"><g-icon>{{prependInnerIcon}}</g-icon></div>
+        <div class="tf-prepend__inner">
+          <g-icon>{{prependInnerIcon}}</g-icon>
+        </div>
         <div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
           <label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
           <div class="g-file-input--text">
             <slot v-if="isDirty" name="selection">
               <div v-if="chips || smallChips">
-                <g-chip v-for="file in files" :small="smallChips">{{file.name}}{{showSize?' ('+fileSize+')':''}}
+                <g-chip v-for="file in files" :small="smallChips">
+                  {{file.name}}{{showSize?'('+convertFileSize(file.size)+')':''}}
                 </g-chip>
               </div>
               <div v-else>{{fileName}}{{showSize?' ('+fileSize+')':''}}</div>
@@ -32,17 +37,21 @@
         </div>
         <div v-if="suffix" class="tf-affix">{{suffix}}</div>
         <div class="tf-append__inner">
-          <div v-if="isDirty && clearable" @click="onClearIconClick"><g-icon style="cursor: pointer">mdi-close</g-icon></div>
+          <div v-if="isDirty && clearable" @click="onClearIconClick">
+            <g-icon style="cursor: pointer">mdi-close</g-icon>
+          </div>
           <g-icon>{{appendIcon}}</g-icon>
         </div>
-        <div v-if="!isValidInput" class="tf-error" >{{errorMessages}}</div>
+        <div v-if="!isValidInput" class="tf-error">{{errorMessages}}</div>
         <div v-else class="tf-hint" :class="hintClasses">{{hint}}</div>
         <div v-show="counter" :class="{'tf-counter': true, 'tf-counter__error': !isValidInput}">
           {{fileNumber + ' (' + fileSize + ' in total)'}}
         </div>
       </div>
     </fieldset>
-    <div class="tf-append__outer" ref="appendOuter"><g-icon>{{appendOuterIcon}}</g-icon></div>
+    <div class="tf-append__outer" ref="appendOuter">
+      <g-icon>{{appendOuterIcon}}</g-icon>
+    </div>
   </div>
 </template>
 
@@ -161,6 +170,18 @@
 
       const files = computed(() => isDirty.value ? context.refs.input.files : [])
 
+      function convertFileSize(fileSize) {
+        let size = fileSize
+        let level = 0
+        let units = ['B', 'KB', 'MB', 'GB']
+        while (size > 1024) {
+          size = size / 1024
+          level++
+        }
+        let unit = units[level]
+        return Math.round(size * 1000) / 1000 + unit
+      }
+
       function totalFileSize(files) {
         if (!isDirty.value) return 0
 
@@ -171,15 +192,7 @@
       }
 
       const fileSize = computed(() => {
-        let size = totalFileSize(files.value)
-        let level = 0
-        let units = ['B', 'KB', 'MB', 'GB']
-        while (size > 1024) {
-          size = size / 1024
-          level++
-        }
-        let unit = units[level]
-        return Math.round(size * 1000) / 1000 + unit
+        return convertFileSize(totalFileSize(files.value))
       })
 
       const fileName = computed(() => {
@@ -226,7 +239,8 @@
         files,
         fileSize,
         fileName,
-        fileNumber
+        fileNumber,
+        convertFileSize,
       }
     }
   }
