@@ -2,10 +2,8 @@
   <div style="width: 600px">
     <g-text-field v-model="value" solo outlined filled prependIcon="person" clearable></g-text-field>
     <g-textarea v-model="value"
+                label="label"
 
-                solo
-                outlined
-                filled
                 prependIcon="person"
                 prependInnerIcon="person"
                 appendIcon="person"

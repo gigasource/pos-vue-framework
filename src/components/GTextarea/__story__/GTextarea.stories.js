@@ -10,21 +10,24 @@ export default {
 
 export const basicTextarea = () => ({
   components: {GTextarea},
-  template: `<div style="width: 600px"><g-textarea></g-textarea></div>`,
+  template: `<div style="width: 600px" prepend-inner-icon="mdi-pen"><g-textarea></g-textarea></div>`,
 })
 
-export const Textarea = () => ({
+export const mainFeatureTextarea = () => ({
   components: {GTextarea},
   props: {
     autoGrow: {default: boolean('auto grow', false)},
     noResize: {default: boolean('no resize', false)},
-    rows: {type: Number, default: number('rows', 3)},
-    rowHeight: {type: Number, default: number('rowHeight', 30)},
+    rows: {type: Number, default: number('rows', 5)},
+    rowHeight: {type: Number, default: number('rowHeight', 24)},
   },
-  template: `<div style="width: 600px"><g-textarea :auto-grow="autoGrow" :no-resize="noResize" :rows="rows" :rowHeight="rowHeight"></g-textarea></div>`,
+  template: `<div style="width: 600px">
+             <g-textarea :auto-grow="autoGrow" :no-resize="noResize" :rows="rows" :rowHeight="rowHeight" 
+                         prepend-inner-icon="mdi-pen"></g-textarea>
+             </div>`,
 })
 
-export const InheritFeature = () => ({
+export const fullFeatureTextarea = () => ({
   components: {GTextarea, GIcon},
   data() {
     return {
@@ -45,30 +48,44 @@ export const InheritFeature = () => ({
     noResize: {default: boolean('no resize', false)},
     rows: {type: Number, default: number('rows', 5)},
     rowHeight: {type: Number, default: number('rowHeight', 24)},
-    label: {default: text('Input label', '')},
-    placeholder: {default: text('Input placeholder', '')},
+
+    clearable: {default: boolean('clearable', false)},
+
+    label: {default: text('label', 'label')},
+    placeholder: {default: text('placeholder', '')},
+    hint: {default: text('hint', 'hint')},
+    prefix: {default: text('prefix', '')}, //bug
+    suffix: {default: text('suffix', '')}, //bug
+    counter: {type: [String, Number], default: Number('counter', 25)},
+
+    persistent: {default: boolean('persistent', false)},
     filled: {default: boolean('filled', false)},
     solo: {default: boolean('solo', false)},
     outlined: {default: boolean('outlined', false)},
     flat: {default: boolean('flat', false)},
     rounded: {default: boolean('rounded', false)},
     shaped: {default: boolean('shaped', false)},
-    clearable: {default: boolean('clearable', false)},
-    hint: {default: text('hint', 'Hint')},
-    persistent: {default: boolean('persistent', false)},
-    counter: {type: [String, Number], default: Number('counter', 25)},
-    prefix: {default: text('prefix', '')},
-    suffix: {default: text('suffix', '')},
   },
-  template: `<g-textarea   :label="label"
+  template: `<div style="width: 600px"><g-textarea   
                            :auto-grow="autoGrow"
                            :no-resize="noResize"
                            :rows="rows"
                            :row-height="rowHeight"
-                           :clearable="clearable"
+                           v-model="text1"                           
                            
+                           :clearable="clearable"
                            prepend-icon="person"
+                           prepend-inner-icon="mdi-pen"
                            append-icon="person"
+                           append-outer-icon="home"          
+                           
+                           :label="label"
+                           :hint="hint"
+                           :placeholder="placeholder"
+                           :prefix="prefix"
+                           :suffix="suffix"
+                           :counter="counter"
+                           :persistent="persistent"
                            
                            :filled="filled"
                            :solo="solo"
@@ -76,16 +93,9 @@ export const InheritFeature = () => ({
                            :flat="flat"
                            :rounded="rounded"
                            :shaped="shaped"
-                           :hint="hint"
-                           :persistent="persistent"
-                           :counter="counter"
-                           :placeholder="placeholder"
-                           :prefix="prefix"
-                           :suffix="suffix"
-                           v-model="text1"
+                             
                            :rules="[rules.required, rules.counter]">
 
-                          
 <!--                          <template v-slot:prepend-outer>-->
 <!--                          <g-icon>mdi-glasses</g-icon>-->
 <!--                          </template>-->
@@ -95,15 +105,6 @@ export const InheritFeature = () => ({
 <!--                          <template v-slot:append-outer>-->
 <!--                          <g-icon>mdi-coffee</g-icon>-->
 <!--                          </template>-->
-              </g-textarea>`,
+              </g-textarea></div>`,
 })
-
-import Vue from 'vue/dist/vue.common.js'
-
-// describe('test', function () {
-//   it('should test1', function () {
-//     const vm = new Vue(test1()).$mount();
-//     expect(vm.$el.outerHTML).toMatchSnapshot()
-//   });
-// })
 
