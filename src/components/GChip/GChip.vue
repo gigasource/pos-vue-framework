@@ -4,14 +4,14 @@
 			<i class="material-icons g-icon" v-if="filter">{{filterIcon}}</i>
 		</span>
 
-		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_FILTER'">
+		<div class="g-avatar g-avatar__left" v-else-if="renderState === 'RENDER_AVATAR_FILTER'">
 			<slot name="prependItem"></slot>
 			<div class="g-overlay" v-if="filter">
 				<i class="material-icons g-icon">{{filterIcon}}</i>
 			</div>
 		</div>
 
-		<div class="g-avatar g-avatar__left" v-if="renderState === 'RENDER_AVATAR_ONLY'">
+		<div class="g-avatar g-avatar__left" v-else-if="renderState === 'RENDER_AVATAR_ONLY'">
 			<slot name="prependItem"></slot>
 		</div>
 
