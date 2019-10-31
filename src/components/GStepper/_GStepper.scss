@@ -11,8 +11,8 @@
   &-step {
     white-space: nowrap;
     padding: 16px;
-    contain: layout;
     display: flex;
+    flex-shrink: 0;
     pointer-events: none;
     cursor: default;
 

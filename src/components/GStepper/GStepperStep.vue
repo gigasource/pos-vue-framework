@@ -32,7 +32,7 @@
       editable: Boolean,
       editIcon: {
         type: String,
-        default: 'mdi-pencil-circle',
+        default: 'edit',
       },
       errorIcon: {
         type: String,
@@ -50,6 +50,7 @@
 
       let classes = computed(() => ({
         'g-stepper-step': true,
+        'waves-effect': true,
         'g-stepper-step__active': props.isActive,
         'g-stepper-step__error': hasError.value,
         'g-stepper-step__complete': props.complete,

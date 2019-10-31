@@ -40,13 +40,11 @@
     },
     setup(props, context) {
 
-      let isBooted = ref(false);
       let content = ref([]);
       let isReverse = ref(false);
 
       let classes = computed(() => ({
         'g-stepper': true,
-        'g-stepper__is-booted': isBooted.value,
         'g-stepper__alt-labels': props.altLabels,
         'g-stepper__vertical': props.vertical,
         'g-stepper__editable': props.editable,
@@ -60,21 +58,25 @@
         model.value = props.value || internalData.steps[0];
       });
 
-      watch(() => internalData.step, (val, oldVal) => {
-        oldVal && (isBooted.value = true);
-      });
-
-
-      let isCompleted = function (index) {
-        return Number(index) < props.steps.findIndex((i) => i === model.value);
-      };
+      const completes = ref([]);
+      for(let step of props.steps) {
+        completes.value.push(false);
+			}
 
       const { model } = getVModel(props, context);
       const { toggleItem, isActiveItem } = groupable({ mandatory: true, multiple: false }, model);
 
+      watch(() => model.value, (newVal, oldVal) => {
+        const oldIndex = props.steps.findIndex(s => s === oldVal)
+        completes.value[oldIndex] = true
+      }, {lazy:true, flush: 'pre'})
+
+      let isCompleted = function (index) {
+        return props.nonLinear ? completes.value[index] : Number(index) < props.steps.findIndex((i) => i === model.value);
+      };
+
       return {
         classes,
-        isBooted,
         content,
         isReverse,
         model,
