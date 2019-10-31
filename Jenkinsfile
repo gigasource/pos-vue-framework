@@ -14,7 +14,7 @@ pipeline {
       steps {
         script {
           CURRENT_DATETIME = sh (
-            script: "date +%m-%d-%Y_%Hh.%Mm.%Ss",
+            script: "date +%Y-%m-%d_%Hh.%Mm.%Ss",
             returnStdout: true
           ).trim()
         }
