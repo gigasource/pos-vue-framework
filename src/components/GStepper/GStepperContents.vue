@@ -1,5 +1,5 @@
 <template>
-  <g-layout vertical>
+  <g-layout vertical class="g-stepper-contents">
     <slot></slot>
   </g-layout>
 </template>

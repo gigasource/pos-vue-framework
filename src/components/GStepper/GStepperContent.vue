@@ -1,14 +1,14 @@
 <template>
-  <g-layout v-if="show">
-    <g-layout vertical>
-      <slot></slot>
-    </g-layout>
-  </g-layout>
+	<transition name="g-stepper-transition">
+		<div class="g-stepper-content" v-if="show">
+			<slot></slot>
+		</div>
+	</transition>
 </template>
 
 <script>
-  import GLayout from '../GLayout/GLayout';
   import { computed, inject } from '@vue/composition-api'
+  import GLayout from '../GLayout/GLayout';
 
   export default {
     name: 'GStepperContent',

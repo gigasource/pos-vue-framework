@@ -1,17 +1,20 @@
 <template>
-  <div :class="classes" @click="click" :complete="complete">
-    <span class="g-stepper-step-icon">
-      <g-icon v-if="complete && editable">create</g-icon>
-      <g-icon v-else-if="hasError">warning</g-icon>
-      <g-icon v-else-if="complete && !editable">done</g-icon>
-    </span>
+  <div :class="classes" @click="click">
+    <div :style="iconStyles">
+      <g-icon v-if="complete && editable">{{editIcon}}</g-icon>
+      <g-icon v-else-if="hasError">{{errorIcon}}</g-icon>
+      <g-icon v-else-if="complete && !editable">{{completeIcon}}</g-icon>
+			<div v-else class="g-stepper-step-icon" :style="iconBackground">{{index + 1}}</div>
+    </div>
     <slot></slot>
   </div>
 </template>
 
 <script>
-  import { computed, ref } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
   import GIcon from '../GIcon/GIcon';
+  import { isCssColor } from '../../mixins/colorable';
+  import { colors } from '../../utils/colors';
 
   export default {
     name: 'GStepperStep',
@@ -29,7 +32,7 @@
       editable: Boolean,
       editIcon: {
         type: String,
-        default: 'create',
+        default: 'mdi-pencil-circle',
       },
       errorIcon: {
         type: String,
@@ -40,15 +43,14 @@
         default: () => [],
       },
       isActive: Boolean,
-      isInactive: Boolean,
       step: null,
-    }, setup(props, context) {
+			index: Number,
+    },
+    setup(props, context) {
 
       let classes = computed(() => ({
         'g-stepper-step': true,
         'g-stepper-step__active': props.isActive,
-        'g-stepper-step__editable': props.editable,
-        'g-stepper-step__inactive': props.isInactive,
         'g-stepper-step__error': hasError.value,
         'g-stepper-step__complete': props.complete,
       }));
@@ -62,10 +64,21 @@
         context.emit('click', props.step);
       }
 
+			const iconStyles = computed(() => ({
+      	'color':!hasError.value && (isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')]),
+				'margin-right' : '4px'
+			}))
+
+      const iconBackground = computed(() => ({
+        'background-color': props.isActive && !hasError.value && isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')],
+      }))
+
       return {
         classes,
         click,
-        hasError
+        hasError,
+        iconStyles,
+        iconBackground,
       }
     }
   }

@@ -1,14 +1,12 @@
 <template>
-  <g-layout horizontal>
+  <div class="g-stepper-header">
     <slot></slot>
-  </g-layout>
+  </div>
 </template>
 
 <script>
-  import GLayout from '../GLayout/GLayout';
   export default {
     name: 'GStepperHeader',
-    components: { GLayout }
   }
 </script>
 

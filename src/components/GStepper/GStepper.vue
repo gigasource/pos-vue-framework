@@ -1,12 +1,12 @@
 <template>
 	<div :class="classes">
-		<slot name="header">
+		<slot name="header" :toggle="toggleItem" :is-active-item="isActiveItem" :is-completed="isCompleted">
 			<g-stepper-header ref="header">
 				<template v-for="(step, index) in steps">
-					<g-stepper-step @click="toggleItem" :step="step" :disabled="step" :editable="step.editable" :isActive="isActiveItem(step)" :isInactive="isInactive(step)" :complete="isCompleted(index)">
+					<g-stepper-step @click="toggleItem" :step="step" :index="index" :isActive="isActiveItem(step)" :complete="isCompleted(index)" :editable="editable">
 						<slot name="step">Step {{index + 1}}</slot>
 					</g-stepper-step>
-					<g-divider v-if="index !== steps.length-1"></g-divider>
+					<g-divider :vertical="vertical" v-if="index !== steps.length-1"></g-divider>
 				</template>
 			</g-stepper-header>
 		</slot>
@@ -35,7 +35,8 @@
       steps: Array,
       vertical: Boolean,
       value: [Number, String, Boolean, Object],
-      contents: Array
+      contents: Array,
+      editable: Boolean,
     },
     setup(props, context) {
 
@@ -46,8 +47,9 @@
       let classes = computed(() => ({
         'g-stepper': true,
         'g-stepper__is-booted': isBooted.value,
-        'g-stepper__vertical': props.vertical,
         'g-stepper__alt-labels': props.altLabels,
+        'g-stepper__vertical': props.vertical,
+        'g-stepper__editable': props.editable,
         'g-stepper__non-linear': props.nonLinear,
       }));
 
@@ -67,10 +69,6 @@
         return Number(index) < props.steps.findIndex((i) => i === model.value);
       };
 
-      let isInactive = function (step) {
-        return props.steps.findIndex((i) => i === model.value) < props.steps.findIndex((i) => i === step);
-      };
-
       const { model } = getVModel(props, context);
       const { toggleItem, isActiveItem } = groupable({ mandatory: true, multiple: false }, model);
 
@@ -82,7 +80,6 @@
         model,
         toggleItem,
         isActiveItem,
-        isInactive,
         isCompleted,
       }
     }
