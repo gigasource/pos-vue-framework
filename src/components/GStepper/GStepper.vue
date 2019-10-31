@@ -1,28 +1,17 @@
 <template>
-  <div :class="classes">
-    <div v-if="vertical" style="display: flex;">
-      <g-stepper-header ref="header" style="display: flex; flex-direction: column; flex:0 1 0;">
-        <template v-for="(step, index) in steps">
-          <g-stepper-step @click="toggleItem" :step="step" :disabled="step" :editable="step.editable" :isActive="isActiveItem(step)" :isInactive="isInactive(step)" :complete="isCompleted(index)">
-            <slot name="step">Step {{index + 1}}</slot>
-          </g-stepper-step>
-          <g-divider v-if="index !== steps.length-1" vertical></g-divider>
-        </template>
-      </g-stepper-header>
-      <slot></slot>
-    </div>
-    <div v-else style="display: flex; flex-direction: column;">
-      <g-stepper-header ref="header">
-        <template v-for="(step, index) in steps">
-          <g-stepper-step @click="toggleItem" :step="step" :disabled="step" :editable="step.editable" :isActive="isActiveItem(step)" :isInactive="isInactive(step)" :complete="isCompleted(index)">
-            <slot name="step">Step {{index + 1}}</slot>
-          </g-stepper-step>
-          <g-divider v-if="index !== steps.length-1"></g-divider>
-        </template>
-      </g-stepper-header>
-      <slot></slot>
-    </div>
-  </div>
+	<div :class="classes">
+		<slot name="header">
+			<g-stepper-header ref="header">
+				<template v-for="(step, index) in steps">
+					<g-stepper-step @click="toggleItem" :step="step" :disabled="step" :editable="step.editable" :isActive="isActiveItem(step)" :isInactive="isInactive(step)" :complete="isCompleted(index)">
+						<slot name="step">Step {{index + 1}}</slot>
+					</g-stepper-step>
+					<g-divider v-if="index !== steps.length-1"></g-divider>
+				</template>
+			</g-stepper-header>
+		</slot>
+		<slot></slot>
+	</div>
 </template>
 
 <script>

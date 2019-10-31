@@ -1,6 +1,6 @@
 <template>
-  <div :class="classes" @click="click" :toggle="click" :step="step" :complete="complete">
-    <span class="g-stepper__step__step">
+  <div :class="classes" @click="click" :complete="complete">
+    <span class="g-stepper-step-icon">
       <g-icon v-if="complete && editable">create</g-icon>
       <g-icon v-else-if="hasError">warning</g-icon>
       <g-icon v-else-if="complete && !editable">done</g-icon>
@@ -45,12 +45,12 @@
     }, setup(props, context) {
 
       let classes = computed(() => ({
-        'g-stepper__step': true,
-        'g-stepper__step__active': props.isActive,
-        'g-stepper__step__editable': props.editable,
-        'g-stepper__step__inactive': props.isInactive,
-        'g-stepper__step__error error--text': hasError.value,
-        'g-stepper__step__complete': props.complete,
+        'g-stepper-step': true,
+        'g-stepper-step__active': props.isActive,
+        'g-stepper-step__editable': props.editable,
+        'g-stepper-step__inactive': props.isInactive,
+        'g-stepper-step__error': hasError.value,
+        'g-stepper-step__complete': props.complete,
       }));
 
       let hasError = computed(() => {

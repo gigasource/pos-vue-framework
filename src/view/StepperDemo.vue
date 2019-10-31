@@ -12,7 +12,6 @@
         </g-card>
       </g-stepper-content>
     </g-stepper-contents>
-
   </g-stepper>
 </template>
 
