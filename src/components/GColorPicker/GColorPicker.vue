@@ -67,6 +67,7 @@
       }
 
       let mouseDown
+
       function handleCanvasMouseDown(e) {
         if (props.disabled) {
           return
@@ -142,7 +143,7 @@
               vOn:input={val => {
                 if (colorPickerState.color.alpha !== val) {
                   console.log(colorPickerState.color.hsva)
-                  const newColor = fromHSVA({...colorPickerState.color.hsva, a: val})
+                  const newColor = fromHSVA({ ...colorPickerState.color.hsva, a: val })
                   updateColor(newColor)
                 }
               }}
@@ -151,37 +152,38 @@
       }
 
       // editor
-      const editorModes = {
-        rgba: {
-          inputs: [
-            ['r', 255, 'int'],
-            ['g', 255, 'int'],
-            ['b', 255, 'int'],
-            ['a', 1, 'float'],
-          ],
-          from: fromRGBA,
-        },
-        hsla: {
-          inputs: [
-            ['h', 360, 'int'],
-            ['s', 1, 'float'],
-            ['l', 1, 'float'],
-            ['a', 1, 'float'],
-          ],
-          from: fromHSLA,
-        },
-        hexa: {
-          from: fromHexa
-        }
+      const editorModes = [{
+        name: 'hexa',
+        from: fromHexa
+      }, {
+        name: 'rgba',
+        inputs: [
+          ['r', 255, 'int'],
+          ['g', 255, 'int'],
+          ['b', 255, 'int'],
+          ['a', 1, 'float'],
+        ],
+        from: fromRGBA,
+      }, {
+        name: 'hsla',
+        inputs: [
+          ['h', 360, 'int'],
+          ['s', 1, 'float'],
+          ['l', 1, 'float'],
+          ['a', 1, 'float'],
+        ],
+        from: fromHSLA,
       }
+      ]
+
       const editorState = reactive({
-        currentMode: editorModes.hexa
+        currentMode: editorModes[0]
       })
 
       function changeMode() {
-        const modeNames = Object.keys(editorModes)
-        const index = modeNames.indexOf(editorState.currentMode)
-        editorState.currentMode = editorModes[modeNames[(index + 1) % modeNames.length]]
+        const currenModeIndex = editorModes.indexOf(editorState.currentMode)
+        editorState.currentMode = editorModes[(currenModeIndex + 1) % editorModes.length]
+        console.log(editorState.currentMode.name)
       }
 
       function getValue(v, type) {
@@ -207,7 +209,7 @@
       function renderHexaEditorInput() {
         return (
             <div class='g-color-picker__edit__input'
-                 vShow={editorState.currentMode === editorModes.hexa}>
+                 vShow={editorState.currentMode === editorModes[0]}>
               <input type='text'
                      key='hex'
                      maxLength="9"
@@ -220,7 +222,7 @@
       function renderNonHexaEditorInput() {
         return (
             <div class='g-color-picker__edit__input'
-                 vShow={editorState.currentMode !== editorModes.hexa}>
+                 vShow={editorState.currentMode !== editorModes[0]}>
               Non-Hexa
             </div>)
       }
