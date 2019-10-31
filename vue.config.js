@@ -1,7 +1,7 @@
 const path = require('path');
 module.exports = {
   runtimeCompiler: true,
-  outputDir: '../dist',
+  outputDir: './dist',
   chainWebpack(config) {
     config.module.rule('scss')
     .oneOf('vue')

@@ -2,14 +2,14 @@
   <div v-resize="setWidths" :class="containerClasses">
     <div :class="slideGroupPrevClasses" @click="onAffixClick('prev')">
       <slot name="prev" @click="onAffixClick('prev')">
-      <!--TODO use g-icon-->
+        <!--TODO use g-icon-->
         <i class="material-icons">{{prevIcon}}</i>
       </slot>
     </div>
 
     <div ref="wrapper" class="g-slide-group__wrapper">
       <div ref="content" class="g-slide-group__content">
-        <slot name="content" :toggle="toggleItem" :active="isActiveItem"></slot>
+        <slot :toggle="toggleItem" :isActive="isActiveItem"></slot>
       </div>
 
     </div>
@@ -30,7 +30,6 @@
   //TODO add stories + tests
   export default {
     name: 'GSlideGroup',
-    components: {},
     props: {
       items: null,
       mandatory: Boolean,
@@ -52,14 +51,16 @@
         type: String,
         default: 'navigate_next',
       },
-      showArrows: Boolean,
+      showArrows: {
+        type: Boolean,
+        default: true
+      },
     },
     directives: {
       Resize
     },
     setup(props, context) {
       const data = reactive({
-        items: [],
         widths: {
           content: 0,
           wrapper: 0

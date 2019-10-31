@@ -3,6 +3,7 @@
 // Block
 .g-slide-group {
   display: flex;
+  width: 100%;
 
   &:not(.g-slide-group__has-affixes) {
     .g-slide-group__prev,
