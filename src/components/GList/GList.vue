@@ -9,14 +9,17 @@
       <slot name="subheader">
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
       </slot>
-      <div v-for="(item, index) in renderList" :key="index"
-           @click="onSelect(item)"
-      >
+      <template v-for="(item, index) in renderList">
         <slot name="listItem" :item="item" :isSelected="isActiveItem(item)">
           <!--            todo: add key move event-->
           <div v-if="item[itemTitle]"
                class="g-list-item"
                :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
+               tabindex="0"
+               @click="onSelect(item)"
+               @keydown.enter="onSelect(item)"
+               @keydown.down="onArrowDown(item)"
+               @keydown.up="onArrowUp(item)"
           >
             <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
               <div :class="prependClasses" v-if="item.prepend"> <img :src="item.prepend"></div>
@@ -30,19 +33,21 @@
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
             <!--fixme: append wait for VIcon-->
-            <div class="g-list-item-action">
+
               <slot name="append" :item="item">
+                <div class="g-list-item-action">
+                  <g-icon>check</g-icon>
+                </div>
               </slot>
-            </div>
           </div>
           <g-divider v-if="(divider && (index < renderList.length -1))"
                      :inset="divider === 'inset'"/>
         </slot>
-      </div>
+      </template>
     </template>
 
     <template v-else>
-      <template v-for="(item) in items">
+      <template v-for="(item, index) in items">
         <template v-if="item.type === 'subheader'">
           <slot name="subheader">
             <div class="g-list-header">{{item.subheader}}</div>
@@ -52,7 +57,11 @@
         <slot :item="item" v-else>
           <div class="g-list-item"
                :class="{'g-list-item__active': isActiveItem(item)}"
-               @click="onSelect(item)">
+               tabindex="0"
+               @click="onSelect(item)"
+               @keydown.enter="onSelect(item)"
+               @keydown.down="onArrowDown2(item)"
+               @keydown.up="onArrowUp2(item)">
             <slot name="prepend" :item="item">
               <div :class="prependClasses">
                 <img alt="" :src="item.prepend">
@@ -81,10 +90,11 @@
   import {computed} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
   import {makeSelectable} from "../../mixins/groupable";
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GList',
-    components: {GDivider},
+    components: { GIcon, GDivider},
     props: {
       height: String,
       width: String,
@@ -158,6 +168,20 @@
       function onClick(event) {
         context.emit('click', event)
       }
+      function onArrowDown(item){
+        let index = renderList.value.findIndex(i=> i.title === item.title && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index < (renderList.value.length -1) ? i += 1 : i=0
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:up')
+      }
+      function onArrowUp(item){
+        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index > 0 ? i -= 1 : i = props.items.length -1
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:down')
+      }
 
       const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
@@ -172,6 +196,8 @@
         renderList,
         lineNumber,
         onClick,
+        onArrowDown,
+        onArrowUp,
         onSelect,
         internalValue,
         isActiveItem,
