@@ -1,0 +1,45 @@
+.g-badge-wrapper {
+  position: relative;
+  display: inline-flex;
+  line-height: 1;
+}
+
+.g-badge {
+  display: inline-flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  color: #ffffff;
+  font-size: 14px;
+  line-height: normal;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 11px;
+  padding: 0 4px;
+
+  &__left {
+    right: initial;
+    left: 0;
+  }
+
+  &__bottom {
+    top: initial;
+    bottom: 0;
+  }
+
+  &__hover {
+    .g-badge {
+       display: none;
+    }
+
+    &:hover {
+      .g-badge {
+        display: inline-flex;
+      }
+    }
+  }
+}

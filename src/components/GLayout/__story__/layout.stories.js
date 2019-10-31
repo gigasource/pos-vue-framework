@@ -1,9 +1,10 @@
-import {withKnobs, boolean, select, number } from '@storybook/addon-knobs';
+import { withKnobs, boolean, select, number } from '@storybook/addon-knobs';
 import GLayout from '../GLayout';
 import GContainer from '../GContainer';
 import GSpacer from '../GSpacer';
 import GCard from '../../GCard/GCard';
-
+import GRow from '../GRow';
+import GCol from '../GCol';
 
 export default {
   title: 'Layout',
@@ -97,7 +98,7 @@ export const col = () => ({
   props: {
     col: {
       type: Number,
-      default: select('Col', {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, '11': 11, '12': 12}, 3)
+      default: select('Col', { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, '11': 11, '12': 12 }, 3)
     },
     noGutters: {
       type: Boolean,
@@ -131,7 +132,7 @@ export const row = () => ({
   props: {
     row: {
       type: Number,
-      default: select('Col', {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, '11': 11, '12': 12}, 3)
+      default: select('Col', { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, '11': 11, '12': 12 }, 3)
     },
     noGutters: {
       type: Boolean,
@@ -201,4 +202,82 @@ export const layoutInside = () => ({
       </g-layout>
     </g-layout>
   </g-container>`
+});
+
+export const layoutWithRowCol = () => ({
+  components: { GCol, GRow, GCard, GContainer },
+  props: {
+    align: {
+      type: String,
+      default: select('Align Items', { center: 'center', start: 'flex-start', end: 'flex-end', baseline: 'baseline', stretch: 'stretch' }, 'center')
+    },
+    justify: {
+      type: String,
+      default: select('Justify Content', { center: 'center', start: 'flex-start', end: 'flex-end', 'space-around': 'space-around', 'space-between': 'space-between', 'space-evenly': 'space-evenly' }, 'center')
+    },
+    nowrap: {
+      type: Boolean,
+      default: boolean('No wrap', false)
+    },
+    reverse: {
+      type: Boolean,
+      default: boolean('Reverse', false)
+    },
+    col: {
+      type: Number,
+      default: number('Cols', 2, {range: true, min: 1, max: 12, step: 1})
+    },
+    align1: {
+      type: String,
+      default: select('Align Self 1', {none: false, center: 'center', start: 'flex-start', end: 'flex-end', baseline: 'baseline', stretch: 'stretch' }, false)
+    },
+    align2: {
+      type: String,
+      default: select('Align Self 2', {none: false,  center: 'center', start: 'flex-start', end: 'flex-end', baseline: 'baseline', stretch: 'stretch' }, false)
+    },
+    align3: {
+      type: String,
+      default: select('Align Self 3', {none: false,  center: 'center', start: 'flex-start', end: 'flex-end', baseline: 'baseline', stretch: 'stretch' }, false)
+    },
+    order1: {
+      type: Number,
+      default: number('Order 1', 1)
+    },
+    order2: {
+      type: Number,
+      default: number('Order 2', 2)
+    },
+    order3: {
+      type: Number,
+      default: number('Order 3', 3)
+    },
+  },
+  template: `
+<g-container>
+    <g-row :align-items="align"
+       :justify-content="justify"
+       :nowrap="nowrap"
+       :reverse="reverse"
+       class="bg-grey-lighten-5"
+       style="height: 300px;">
+      <g-col :cols="col"
+        :align-self="align1"
+        :order="order1"
+        style="border: 1px solid black; padding: 12px">
+          Column 1 Col-{{col}}
+      </g-col>
+      <g-col :cols="col"
+        :align-self="align2"
+        :order="order2"
+        style="border: 1px solid black; padding: 12px">
+          Column 2 Col-{{col}}
+      </g-col>
+      <g-col :cols="col"
+        :align-self="align3"
+        :order="order3"
+        style="border: 1px solid black; padding: 12px">
+          Column 3 Col-{{col}}
+      </g-col>
+    </g-row>
+</g-container>`
 });
