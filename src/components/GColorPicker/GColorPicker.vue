@@ -152,28 +152,29 @@
       }
 
       // editor
-      const editorModes = [{
-        name: 'hexa',
-        from: fromHexa
-      }, {
-        name: 'rgba',
-        inputs: [
-          ['r', 255, 'int'],
-          ['g', 255, 'int'],
-          ['b', 255, 'int'],
-          ['a', 1, 'float'],
-        ],
-        from: fromRGBA,
-      }, {
-        name: 'hsla',
-        inputs: [
-          ['h', 360, 'int'],
-          ['s', 1, 'float'],
-          ['l', 1, 'float'],
-          ['a', 1, 'float'],
-        ],
-        from: fromHSLA,
-      }
+      const editorModes = [
+        {
+          name: 'hexa',
+          from: fromHexa
+        }, {
+          name: 'rgba',
+          inputs: [
+            ['r', 255, 'int'],
+            ['g', 255, 'int'],
+            ['b', 255, 'int'],
+            ['a', 1, 'float'],
+          ],
+          from: fromRGBA,
+        }, {
+          name: 'hsla',
+          inputs: [
+            ['h', 360, 'int'],
+            ['s', 1, 'float'],
+            ['l', 1, 'float'],
+            ['a', 1, 'float'],
+          ],
+          from: fromHSLA,
+        }
       ]
 
       const editorState = reactive({
@@ -186,26 +187,6 @@
         console.log(editorState.currentMode.name)
       }
 
-      function getValue(v, type) {
-        if (type === 'float') {
-          return Math.round(v * 100) / 100
-        } else if (type === 'int') {
-          return Math.round(v)
-        } else {
-          return 0
-        }
-      }
-
-      function parseValue(v, type) {
-        if (type === 'float') {
-          return parseFloat(v)
-        } else if (type === 'int') {
-          return parseInt(v, 10) || 0
-        } else {
-          return 0
-        }
-      }
-
       function renderHexaEditorInput() {
         return (
             <div class='g-color-picker__edit__input'
@@ -214,17 +195,76 @@
                      key='hex'
                      maxLength="9"
                      disabled={props.disabled}
-                     value={colorPickerState.color.hexa}/>
+                     value={colorPickerState.color.hexa}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromHexa(e.target.value))
+                     }}/>
             </div>
         )
       }
 
-      function renderNonHexaEditorInput() {
+      function renderRGBAEditor() {
         return (
-            <div class='g-color-picker__edit__input'
-                 vShow={editorState.currentMode !== editorModes[0]}>
-              Non-Hexa
-            </div>)
+            <div className='g-color-picker__edit__input'
+                 vShow={editorState.currentMode === editorModes[1]}>
+              <label>R: </label>
+              <input type='text' key='r' disabled={props.disabled}
+                     value={colorPickerState.color.rgba.r}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromRGBA({...colorPickerState.color.rgba, r: parseInt(e.target.value || 0)}))
+                     }}/>
+              <label>G: </label>
+              <input type='text' key='g' disabled={props.disabled}
+                     value={colorPickerState.color.rgba.g}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromRGBA({...colorPickerState.color.rgba, g: parseInt(e.target.value || 0)}))
+                     }}/>
+              <label>B: </label>
+              <input type='text' key='b' disabled={props.disabled}
+                     value={colorPickerState.color.rgba.b}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromRGBA({...colorPickerState.color.rgba, b: parseInt(e.target.value || 0)}))
+                     }}/>
+              <label>A: </label>
+              <input type='text' key='a' disabled={props.disabled}
+                     value={colorPickerState.color.rgba.a}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromRGBA({...colorPickerState.color.rgba, a: parseFloat(e.target.value || 0)}))
+                     }}/>
+            </div>
+        )
+      }
+
+      function renderHSLAEditor() {
+        return (
+            <div className='g-color-picker__edit__input'
+                 vShow={editorState.currentMode === editorModes[2]}>
+              <label>H: </label>
+              <input type='text' key='h' disabled={props.disabled}
+                     value={colorPickerState.color.hsla.h}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromHSLA({...colorPickerState.color.hsla, h: parseInt(e.target.value || 0)}))
+                     }}/>
+              <label>S: </label>
+              <input type='text' key='s' disabled={props.disabled}
+                     value={colorPickerState.color.hsla.s}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromHSLA({...colorPickerState.color.hsla, s: parseFloat(e.target.value || 0)}))
+                     }}/>
+              <label>L: </label>
+              <input type='text' key='l' disabled={props.disabled}
+                     value={colorPickerState.color.hsla.l}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromHSLA({...colorPickerState.color.hsla, l: parseFloat(e.target.value || 0)}))
+                     }}/>
+              <label>A: </label>
+              <input type='text' key='a' disabled={props.disabled}
+                     value={colorPickerState.color.hsla.a}
+                     vOn:input_stop_prevent={(e) => {
+                       updateColor(fromHSLA({...colorPickerState.color.hsla, a: parseFloat(e.target.value || 0)}))
+                     }}/>
+            </div>
+        )
       }
 
       function renderEditorModeSwitch() {
@@ -281,7 +321,6 @@
         </div>
       }
 
-
       //// gradients
       const gradientModels = createGradientModels()
       const gradientItemStyle = {
@@ -333,8 +372,8 @@
 
       let model = ref(null)
       const tabItems = [
-        { title: 'Swatches', renderFn: renderSwatches },
-        { title: 'Gradient', renderFn: renderGradientColors },
+        // { title: 'Swatches', renderFn: renderSwatches },
+        // { title: 'Gradient', renderFn: renderGradientColors },
         {
           title: 'ColorPicker', renderFn: () => [
             <div class='g-color-picker__color-field'>
@@ -351,7 +390,8 @@
               </div>
               <div class='g-color-picker__edit'>
                 {renderHexaEditorInput()}
-                {renderNonHexaEditorInput()}
+                {renderRGBAEditor()}
+                {renderHSLAEditor()}
                 {renderEditorModeSwitch()}
               </div>
             </div>
@@ -441,8 +481,19 @@
           min-width: 0;
           outline: none;
           text-align: center;
-          width: 100%;
           height: 28px;
+
+          &.hexa {
+            width: 100%;
+          }
+
+          &.rgba {
+            width: 20%;
+          }
+
+          &.hsla {
+            width: 20%;
+          }
         }
       }
     }
