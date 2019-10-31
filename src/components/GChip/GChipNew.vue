@@ -3,6 +3,7 @@
   import Ripple from '../../directives/ripple/ripple';
   import GBtn from '../GBtn/GBtn';
   import GChipUtils from './logic/GChipUtils';
+  import { onMounted, ref } from '@vue/composition-api';
 
   export default {
     name: 'GChipNew',
@@ -35,16 +36,41 @@
         type: String,
         default: 'g-chip__active'
       }
-    }, directives: {
+    },
+    directives: {
       Ripple
-    }, setup(props, context) {
+    },
+    setup(props, context) {
+      let { getSizeClass, classes, styles } = GChipUtils(props, context);
+      let hasAvatarIcon = ref(false);
 
-      let {getSizeClass, classes, styles} = GChipUtils(props, context);
+      function hasAvatarOrIcon() {
+        let nodes = context.slots.default();
+        return nodes[0] && nodes[0].componentInstance && (nodes[0].componentInstance.$options.name === 'GAvatar' || nodes[0].componentInstance.$options.name === 'GIcon');
+      }
+
+      onMounted(() => {
+        hasAvatarIcon.value = hasAvatarOrIcon();
+      });
 
       function genPrepend() {
-        if (props.filter) {
+        if (props.filter && !hasAvatarIcon.value) {
           return <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
         }
+
+        if (props.filter && hasAvatarIcon.value && !props.pill) {
+          return <div class="g-chip-overlay">
+            <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
+          </div>
+        }
+
+        if (props.filter && hasAvatarIcon.value && props.pill) {
+          return <div class="g-chip-pill-overlay">
+            <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
+          </div>
+        }
+
+
       }
 
       function genAppend() {
@@ -66,7 +92,7 @@
 
       function genChip() {
         if (props.ripple) {
-          return <span v-ripple draggable={props.draggable} style={styles} vOn:click={() => context.emit('click', props.value)} class={['g-chip',  classes.value, getSizeClass()]}>
+          return <span v-ripple draggable={props.draggable} style={styles} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
             {genContent()}
           </span>
         }
