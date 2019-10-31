@@ -593,3 +593,11 @@ $gradient-colors: (
     }
   }
 }
+
+@each $gradient_name, $gradient_obj in $gradient-colors {
+  @each $property, $value in $gradient_obj {
+    :export {
+      #{$gradient_name}--#{$property}: $value
+    }
+  }
+}
