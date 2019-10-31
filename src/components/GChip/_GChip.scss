@@ -38,6 +38,7 @@
     opacity: 0.12;
   }
 
+
   &__active {
     &:hover::before, &::before {
       opacity: 0.12;
@@ -72,10 +73,11 @@
     font-size: $chip-icon-size;
   }
 
+  //Currently not applied
   .g-avatar,
   .g-icon {
     &__left {
-      margin-left: $chip-icon-margin-before;
+      margin-left: -7px;
       margin-right: $chip-icon-margin-after;
     }
 
@@ -145,14 +147,14 @@
     margin-right: $chip-pill-filter-margin;
   }
 
-  .v-avatar {
+  .g-avatar {
     height: $chip-pill-avatar-size !important;
     width: $chip-pill-avatar-size !important;
   }
 
-  .v-avatar {
+  .g-avatar {
     &__left {
-      margin-left: $chip-pill-avatar-margin-before;
+      margin-left: -12px !important;
     }
 
     &__right {

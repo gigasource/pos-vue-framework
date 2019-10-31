@@ -1,12 +1,33 @@
 <template>
-	<div class="container">
-		<div class="wrapper">
-			<g-chip-new filter close text-color="red" draggable ripple>
-<!--			<g-icon>mdi-account-circle</g-icon>-->
-				Default chip
+  <div class="container">
+    <div class="wrapper">
+      <g-chip-new close draggable ripple text-color="red" outlined x-large>
+        <g-avatar class="g-avatar__left">
+          <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"></g-img>
+        </g-avatar>
+        Default chip
+      </g-chip-new>
+
+			<g-chip-new close draggable ripple text-color="red" outlined pill>
+				<g-avatar class="g-avatar__left">
+					<g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"></g-img>
+				</g-avatar>
+				Pill chip
 			</g-chip-new>
-		</div>
-	</div>
+
+			<g-chip-new close draggable ripple text-color="red" pill>
+				<g-avatar class="g-avatar__left" background-color="bg-red">
+					P
+				</g-avatar>
+				Pill chip
+			</g-chip-new>
+
+			<g-chip-new close draggable ripple text-color="red" outlined x-large>
+        <g-icon class="g-icon__left">mdi-account-circle</g-icon>
+        Default chip
+      </g-chip-new>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -15,30 +36,32 @@
   import GBtn from '../components/GBtn/GBtn';
   import GList from '../components/GList/GList';
   import GListItem from '../components/GList/GListItem';
-	import GChipNew from '../components/GChip/GChipNew';
-	import GIcon from '../components/GIcon/GIcon';
+  import GChipNew from '../components/GChip/GChipNew';
+  import GIcon from '../components/GIcon/GIcon';
+  import GAvatar from '../components/GAvatar/GAvatar';
+  import GImg from '../components/GImg/GImg';
 
   export default {
     name: 'ChipDemo',
-    components: { GIcon, GChipNew, GListItem, GList, GBtn, GMenu, GChip }
+    components: { GImg, GAvatar, GIcon, GChipNew, GListItem, GList, GBtn, GMenu, GChip }
   }
 </script>
 
 <style scoped>
-	.avatar-image {
-		border-radius: 50%;
-	}
+  .avatar-image {
+    border-radius: 50%;
+  }
 
-	.wrapper {
-		display: block;
-		flex-wrap: wrap;
-	}
+  .wrapper {
+    display: block;
+    flex-wrap: wrap;
+  }
 
-	.container {
-		display: block;
-	}
+  .container {
+    display: block;
+  }
 
-	.wrapper > * {
-		margin: 10px 0 10px 10px;
-	}
+  .wrapper > * {
+    margin: 10px 0 10px 10px;
+  }
 </style>

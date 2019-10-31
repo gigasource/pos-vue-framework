@@ -1,10 +1,8 @@
 <script>
-  import { computed } from '@vue/composition-api';
   import GIcon from '../GIcon/GIcon';
   import Ripple from '../../directives/ripple/ripple';
-  import { convertToGradient } from '../../utils/helpers';
-  import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import GBtn from '../GBtn/GBtn';
+  import GChipUtils from './logic/GChipUtils';
 
   export default {
     name: 'GChipNew',
@@ -41,57 +39,7 @@
       Ripple
     }, setup(props, context) {
 
-      const chipClasses = computed(() => ({
-        'g-chip__outlined': props.outlined,
-        'g-chip__close': props.close,
-        'g-chip__disabled': props.disabled,
-        'g-chip__filter': props.filter,
-        'g-chip__draggable': props.draggable,
-        'g-chip__pill': props.pill,
-        'g-chip__label': props.label,
-        [props.activeClass]: props.active,
-        ...backgroundColorOutput.value && backgroundColorOutput.value.class,
-        ...textColorOutput.value && textColorOutput.value.class
-      }));
-
-      function getSizeClass() {
-        if (props.xSmall) {
-          return 'g-size__x-small';
-        } else if (props.small) {
-          return 'g-size__small';
-        } else if (props.large) {
-          return 'g-size__large';
-        } else if (props.xLarge) {
-          return 'g-size__x-large';
-        }
-        return 'g-size__default';
-      }
-
-      let backgroundColorOutput = computed(() => {
-        if (props.backgroundColor) {
-          return props.backgroundColor && setBackgroundColor(props.backgroundColor, {})
-        }
-      });
-
-      let textColorOutput = computed(() => {
-        return props.textColor && setTextColor(props.textColor, {})
-      });
-
-      let styles = computed(() => {
-        let _styles = {
-          ...backgroundColorOutput.value && backgroundColorOutput.value.style,
-          ...textColorOutput.value && textColorOutput.value.style,
-        };
-
-        // Params: linear-gradient(45deg, yellow, green)
-        //includes('-'): check if grandient is gradient-45deg-yellow-green or array of colors
-        if (props.gradient && !props.gradient.toString().includes('-')) {
-          _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
-        }
-
-        return _styles;
-      });
-
+      let {getSizeClass, classes, styles} = GChipUtils(props, context);
 
       function genPrepend() {
         if (props.filter) {
@@ -114,16 +62,15 @@
           {context.slots.default()}
           {genAppend()}
         </span>
-
       }
 
       function genChip() {
         if (props.ripple) {
-          return <span v-ripple draggable={props.draggable} style={styles} vOn:click={(e) => context.emit('click', e)} class={['g-chip', chipClasses.value, getSizeClass()]}>
+          return <span v-ripple draggable={props.draggable} style={styles} vOn:click={() => context.emit('click', props.value)} class={['g-chip',  classes.value, getSizeClass()]}>
             {genContent()}
           </span>
         }
-        return <span draggable={props.draggable} style={styles} vOn:click={(e) => context.emit('click', e)} class={['g-chip', chipClasses.value, getSizeClass()]}>
+        return <span draggable={props.draggable} style={styles} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
           {genContent()}
         </span>
       }
