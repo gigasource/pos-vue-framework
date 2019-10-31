@@ -1,5 +1,5 @@
 <script>
-  import { watch, onMounted, reactive, computed } from '@vue/composition-api'
+  import { watch, onMounted, reactive, computed, ref } from '@vue/composition-api'
   import { fromHexa, fromHSLA, fromHSVA, fromRGBA } from './logic/GColorPickerUtil'
   import { clamp } from 'lodash/number'
   import { RGBAtoCSS, RGBtoCSS } from '../../utils/colors'
@@ -8,10 +8,14 @@
   import GSlider from '../GInput/GSlider'
   import GToolTip from '../GToolTip/GToolTip';
   import _ from 'lodash'
+  import GTab from '../GTabs/GTab';
+  import GTabs from '../GTabs/GTabs';
+  import GTabItems from '../GTabs/GTabItems';
+  import GTabItem from '../GTabs/GTabItem';
 
   export default {
     name: 'GColorPicker',
-    components: { GToolTip, GSlider },
+    components: { GTabItem, GTabItems, GTab, GToolTip, GSlider, GTabs },
     props: {
       disabled: Boolean,
 
@@ -42,6 +46,7 @@
         // but emit entire color object into custom event update:color
         context.emit('update:color', state.color)
       }
+
       function emitColor(x, y) {
         const { width, height, left, top } = context.refs[canvasRef].getBoundingClientRect()
         updateColor(fromHSVA({
@@ -60,6 +65,7 @@
           watch(() => state.hue, () => updateCanvas(context.refs[canvasRef], state.hue))
         }
       })
+
       function handleCanvasClick(e) {
         e.stopPropagation()
         e.preventDefault()
@@ -68,6 +74,7 @@
         }
         emitColor(e.clientX, e.clientY)
       }
+
       function handleCanvasMouseDown(e) {
         e.stopPropagation()
         e.preventDefault()
@@ -77,14 +84,17 @@
         window.addEventListener('mousemove', _handleCanvasMouseMove)
         window.addEventListener('mouseup', _handleCanvasMouseUp)
       }
+
       function _handleCanvasMouseMove(e) {
         emitColor(e.clientX, e.clientY)
       }
+
       function _handleCanvasMouseUp() {
         window.removeEventListener('mousemove', _handleCanvasMouseMove)
         window.removeEventListener('mouseup', _handleCanvasMouseUp)
       }
-      const dotPos = computed(() => {
+
+      const cptDotPos = computed(() => {
         if (!state.color) {
           return { x: 0, y: 0 }
         }
@@ -93,6 +103,7 @@
           y: (1 - state.color.hsva.v) * parseInt(state.canvasSize.height)
         }
       })
+
       function renderColorCanvas() {
         return (
             <canvas
@@ -104,11 +115,12 @@
             </canvas>
         )
       }
+
       function renderDotFn() {
         return (
             <div
                 class='g-color-picker__color-field__dot'
-                style={{ left: `${dotPos.value.x}px`, top: `${dotPos.value.y}px` }}>
+                style={{ left: `${cptDotPos.value.x}px`, top: `${cptDotPos.value.y}px` }}>
             </div>
         )
       }
@@ -126,6 +138,7 @@
       const alphaSliderStyleObj = {
         backgroundColor: `linear-gradient(to right, transparent, ${RGBtoCSS(state.color.rgba)})`
       }
+
       function renderHueAdjustSlider() {
         return (
             <div class='g-color-picker__slider__hue'>
@@ -139,8 +152,9 @@
             </div>
         )
       }
+
       function renderAlphaAdjustSlider() {
-        return <div className='g-color-picker__slider__alpha'>
+        return <div class='g-color-picker__slider__alpha'>
           <g-slider
               thumbColor='grey lighten-2'
               style={alphaSliderStyleObj}
@@ -178,11 +192,13 @@
       const editorState = reactive({
         currentMode: editModes.hexa
       })
+
       function changeMode() {
         const modeNames = Object.keys(editModes)
         const index = modeNames.indexOf(editorState.currentMode)
         editorState.currentMode = editModes[modeNames[(index + 1) % modeNames.length]]
       }
+
       function getValue(v, type) {
         if (type === 'float') {
           return Math.round(v * 100) / 100
@@ -192,6 +208,7 @@
           return 0
         }
       }
+
       function parseValue(v, type) {
         if (type === 'float') {
           return parseFloat(v)
@@ -201,6 +218,7 @@
           return 0
         }
       }
+
       function renderHexaEditorInput() {
         return (
             <div class='g-color-picker__edit__input'
@@ -213,12 +231,14 @@
             </div>
         )
       }
+
       function renderNonHexaEditorInput() {
         return (
             <div vShow={editorState.currentMode !== editModes.hexa}>
               Non-Hexa
             </div>)
       }
+
       function renderEditorModeSwitch() {
         return (
             <button type="button" vOn:click={changeMode}>switch</button>
@@ -240,6 +260,7 @@
         width: '50px',
         height: '50px'
       }
+
       function renderSwatches() {
         return <div class="__swatches">
           {
@@ -329,32 +350,79 @@
           }
         </div>
       }
+
       // color picker
+
+      const items = [
+        { title: 'Swatches', renderFn: renderSwatches },
+        {
+          title: 'ColorPicker', renderFn: () => [
+            <div class='g-color-picker__color-field'>
+              {renderColorCanvas()}
+              {renderDotFn()}
+            </div>,
+            <div class='g-color-picker__controls'>
+              <div class='g-color-picker__preview-slider-wrapper'>
+                {renderPreviewColorField()}
+                <div class='g-color-picker__sliders'>
+                  {renderHueAdjustSlider()}
+                  {renderAlphaAdjustSlider()}
+                </div>
+              </div>
+              <div class='g-color-picker__edit'>
+                {renderHexaEditorInput()}
+                {renderNonHexaEditorInput()}
+                {renderEditorModeSwitch()}
+              </div>
+            </div>
+          ]
+        },
+        {
+          title: 'Gradient', renderFn: () => <h1>Gradient</h1>
+        }
+      ]
+
+      let model = ref(null)
+
       return function renderColorPicker() {
         return (
             <div class='g-color-picker'>
-              <div class='g-color-picker__color-field'>
-                {renderColorCanvas()}
-                {renderDotFn()}
-              </div>
-              <div class='g-color-picker__controls'>
-                <div class='g-color-picker__preview-slider-wrapper'>
-                  {renderPreviewColorField()}
-                  <div class='g-color-picker__sliders'>
-                    {renderHueAdjustSlider()}
-                    {renderAlphaAdjustSlider()}
-                  </div>
-                </div>
-                <div className='g-color-picker__edit'>
-                  {renderHexaEditorInput()}
-                  {renderNonHexaEditorInput()}
-                  {renderEditorModeSwitch()}
-                </div>
-                {renderSwatches2()}
-              </div>
-            </div>)
+              <g-tabs items={items} vModel={model.value} color='purple lighten-2' sliderSize={2}>
+                <g-tab-items items={items} vModel={model.value}>
+                  {_.map(items, (item, index) =>
+                      <g-tab-item key={index} item={item}>
+                        <div style="margin-top: 10px; border: 1px solid red; width: 100%">
+                          {item.renderFn()}
+                        </div>
+                      </g-tab-item>
+                  )}
+                </g-tab-items>
+              </g-tabs>
+            </div>
+        )
 
-        // return (<div class='g-color-picker'>{renderSwatches2()}</div>)
+        // return (
+        //     <div class='g-color-picker'>
+        //       <div class='g-color-picker__color-field'>
+        //         {renderColorCanvas()}
+        //         {renderDotFn()}
+        //       </div>
+        //       <div class='g-color-picker__controls'>
+        //         <div class='g-color-picker__preview-slider-wrapper'>
+        //           {renderPreviewColorField()}
+        //           <div class='g-color-picker__sliders'>
+        //             {renderHueAdjustSlider()}
+        //             {renderAlphaAdjustSlider()}
+        //           </div>
+        //         </div>
+        //         <div class='g-color-picker__edit'>
+        //           {renderHexaEditorInput()}
+        //           {renderNonHexaEditorInput()}
+        //           {renderEditorModeSwitch()}
+        //         </div>
+        //         {renderSwatches2()}
+        //       </div>
+        //     </div>)
       }
     }
   }
@@ -362,9 +430,8 @@
 <style scoped lang="scss">
   .g-color-picker {
     width: 300px;
-    box-shadow: 0 2px 6px 2px #0004;
+    /*box-shadow: 0 2px 6px 2px #0004;*/
     border-radius: 5px;
-    overflow: hidden;
 
     &__color-field {
       position: relative;

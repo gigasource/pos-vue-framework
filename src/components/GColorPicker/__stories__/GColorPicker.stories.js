@@ -10,7 +10,9 @@ export default {
 export const test2 = () => ({
   components: { GColorPicker },
   setup() {
-    return () => (<div style={'padding-top: 200px; padding-left: 200px'}><g-color-picker show-swatches></g-color-picker></div>
+    return () => (<div><
+      g-color-picker></g-color-picker>
+    </div>
 
     )
   }
