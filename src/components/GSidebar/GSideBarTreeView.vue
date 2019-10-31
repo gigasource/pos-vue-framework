@@ -76,11 +76,7 @@
       }
 
       const genRootWrapper = function (childrenVNodes) {
-        return (
-          <div root>
-            <ul>{childrenVNodes}</ul>
-          </div>
-        )
+        return <ul>{childrenVNodes}</ul>
       }
 
       const cptExpandLevel = computed(() => props.expandLevel)
@@ -105,81 +101,81 @@
 <style scoped lang="scss">
   ul {
     list-style-type: none;
-		padding: 0;
-		margin: 0;
-	}
+    padding: 0;
+    margin: 0;
+  }
 
-	li {
-		padding: 0;
-	}
+  li {
+    padding: 0;
+  }
 
-	.g-treeview {
-		&-item {
-			display: flex;
-			align-items: center;
-			contain: layout;
+  .g-treeview {
+    &-item {
+      display: flex;
+      align-items: center;
+      contain: layout;
 
-			&:not(.g-treeview-subheader):hover {
-				margin-right: 8px;
-				background: rgba(0, 0, 0, 0.12);
+      &:not(.g-treeview-subheader):hover {
+        margin-right: 8px;
+        background: rgba(0, 0, 0, 0.12);
 
-				> .g-treeview-action {
-					/*margin-right: 8px;*/
-				}
-			}
+        > .g-treeview-action {
+          /*margin-right: 8px;*/
+        }
+      }
 
-			&__rounded {
-				border-top-right-radius: 32px;
-				border-bottom-right-radius: 32px;
-			}
-		}
+      &__rounded {
+        border-top-right-radius: 32px;
+        border-bottom-right-radius: 32px;
+      }
+    }
 
-		&-icon {
-			margin: 16px;
-			font-size: 20px !important;
-		}
+    &-icon {
+      margin: 16px;
+      font-size: 20px !important;
+    }
 
-		&-title {
-			font-size: 14px;
-			line-height: 1.75;
-			flex: 1 1 100%;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-		}
+    &-title {
+      font-size: 14px;
+      line-height: 1.75;
+      flex: 1 1 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
-		&-action {
-			margin-right: 16px;
-		}
+    &-action {
+      margin-right: 16px;
+    }
 
-		&__open {
-			background-color: rgba(0, 0, 0, .035);
-		}
+    &__open {
+      background-color: rgba(0, 0, 0, .035);
+    }
 
-		&__active {
-			margin-right: 8px;
-			background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
-		}
+    &__active {
+      margin-right: 8px;
+      background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
+    }
 
-		&-subheader {
-			display: flex;
-			align-items: center;
-			height: 48px;
-			padding: 0 16px;
-			font-size: 14px;
-			font-weight: 400;
-			color: rgba(0, 0, 0, 0.54);
-			pointer-events: none;
-			cursor: default;
-		}
+    &-subheader {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.54);
+      pointer-events: none;
+      cursor: default;
+    }
 
-		&-children {
-			.g-treeview-icon {
-				font-size: 12px !important;
-			}
+    &-children {
+      .g-treeview-icon {
+        font-size: 12px !important;
+      }
 
-			ul {
-				padding-left: 4px;
-			}
-		}
-	}
+      ul {
+        padding-left: 4px;
+      }
+    }
+  }
 </style>
