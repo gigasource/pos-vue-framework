@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-wrap: wrap;">
-    <g-card style="padding-left: auto; padding-right: auto; max-width: 344px;">
+    <g-card-new style="padding-left: auto; padding-right: auto; max-width: 344px;">
       <g-card-title>
         <p>GCard Title</p>
       </g-card-title>
@@ -14,13 +14,13 @@
         <g-btn depressed>CONFIRM</g-btn>
         <g-btn depressed>CANCEL</g-btn>
       </g-card-actions>
-    </g-card>
+    </g-card-new>
   </div>
 
 </template>
 
 <script>
-  import GCard from '../components/GCard/GCard';
+  import GCardNew from '../components/GCard/GCardNew';
   import GCardTitle from '../components/GCard/GCardTitle';
   import GButton from '../components/GButton/GButton';
   import GRadioGroup from '../components/GRadio/GRadioGroup';
@@ -30,7 +30,7 @@
 
   export default {
     name: 'CardDemo',
-    components: { GBtn, GRadio, GRadioGroup, GButton, GCardActions, GCardText, GCardTitle, GCard },
+    components: { GCardNew, GBtn, GRadio, GRadioGroup, GButton, GCardActions, GCardText, GCardTitle },
     data() {
       return {}
     }
