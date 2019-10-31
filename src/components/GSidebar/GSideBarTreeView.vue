@@ -156,7 +156,7 @@
 		}
 
 		&__active {
-			padding-right: 8px;
+			margin-right: 8px;
 			background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
 		}
 
