@@ -1,5 +1,5 @@
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed, ref } from '@vue/composition-api';
   import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
   import GDivider from '../GLayout/GDivider';
   import GIcon from '../GIcon/GIcon';
@@ -30,6 +30,8 @@
 				set: (val) => context.emit('input', val)
 			})
 
+			const openPath = ref(null)
+
       const itemText = props.itemText || ((node, isRoot) => {
         if (node.type === 'subheader') {
           return node.subheader
@@ -44,15 +46,18 @@
         const icon = node.icon
           ?		<g-icon class="g-treeview-icon">{node.icon}</g-icon>
 					: null
-				const children = childrenVNodes ? <div vShow={!state.collapse}>{childrenVNodes}</div> : null
-        return <li class={[!state.collapse && childrenVNodes ? 'g-treeview__open' : null]}>
+				if(openPath.value !== path) {
+				  state.collapse = true
+				}
+				const children = childrenVNodes ? <div vShow={!state.collapse} class="g-treeview-children">{childrenVNodes}</div> : null
+        return <li class={[!state.collapse && childrenVNodes && openPath.value === path ? 'g-treeview__open' : null]}>
 					<a class={[node.type === 'subheader'? null : 'g-treeview-item waves-effect', props.rounded ? 'g-treeview-item__rounded' : null, !childrenVNodes && activePath.value === path ? 'g-treeview__active' : null]} vOn:click={() => activePath.value = path}>
             {icon}
             <span class={node.type === 'subheader'? 'g-treeview-subheader': 'g-treeview-title'}>{text}</span>
             <span
               class='g-treeview-action'
               vShow={childrenVNodes}
-              vOn:click={() => state.collapse = !state.collapse}>
+              vOn:click={() => {state.collapse = !state.collapse; openPath.value = path}}>
               <g-icon>
                 {state.collapse ? 'chevron_right' : 'expand_more'}
               </g-icon>
@@ -97,6 +102,7 @@
   ul {
     list-style-type: none;
 		padding: 0;
+		margin: 0;
   }
 
 	li {
@@ -121,10 +127,11 @@
 
 		&-icon {
 			margin: 16px;
+			font-size: 20px !important;
 		}
 
 		&-title {
-			font-size: 16px;
+			font-size: 14px;
 			line-height: 1.75;
 			flex: 1 1 100%;
 			white-space: nowrap;
@@ -153,6 +160,13 @@
 			color: rgba(0, 0, 0, 0.54);
 			pointer-events: none;
 			cursor: default;
+		}
+
+		&-children {
+			.g-treeview-icon {
+				width: 24px;
+				font-size: 10px !important;
+			}
 		}
 	}
 </style>
