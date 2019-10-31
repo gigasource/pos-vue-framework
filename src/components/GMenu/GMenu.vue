@@ -248,10 +248,10 @@
       }
 
       return () =>
-        <div {...{ on: elListeners }} ref="el" class="menu">
+        <div {...{ on: elListeners }} ref="el" class="g-menu">
           <div ref="activator" class="g-menu--activator">{context.slots.activator({ toggleContent })}</div>
           <div style={contentStyles.value}
-               class="menu-content"
+               class="g-menu--content"
                ref="content"
                {...{ directives: genDirectives(), on: contentListeners }}>
             {context.slots.default()}
