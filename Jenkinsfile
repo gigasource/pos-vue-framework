@@ -13,12 +13,12 @@ pipeline {
     stage('Build Docker image') {
       steps {
         script {
-          PACKAGE_VERSION = sh (
-            script: "./get-version.sh",
+          CURRENT_DATETIME = sh (
+            script: "date +%m-%d-%Y_%Hh.%Mm.%Ss",
             returnStdout: true
           ).trim()
         }
-        script {image = docker.build imageName + ":$PACKAGE_VERSION"}
+        script {image = docker.build imageName + ":$CURRENT_DATETIME"}
       }
     }
 
@@ -34,14 +34,14 @@ pipeline {
 
     stage('Remove locally built Docker image') {
       steps {
-        sh "docker rmi $imageName:$PACKAGE_VERSION"
+        sh "docker rmi $imageName:$CURRENT_DATETIME"
       }
     }
 
     stage('Upgrade image version in Rancher') {
       steps {
         withKubeConfig([credentialsId: 'kubectl-config']) {
-          sh "kubectl set image deployment/$rancherDeploymentName $rancherDeploymentName=$imageName:$PACKAGE_VERSION --record"
+          sh "kubectl set image deployment/$rancherDeploymentName $rancherDeploymentName=$imageName:$CURRENT_DATETIME --record"
         }
       }
     }
