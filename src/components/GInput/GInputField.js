@@ -141,7 +141,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onKeyDown(event) {
-    if (event.keyCode === keyCodes.enter && props.isDirty()) {
+    if (event.keyCode === keyCodes.enter && props.isDirty) {
       context.emit('change', internalValue.value);
     }
     context.emit('keydown', event)

@@ -32,17 +32,16 @@
                       @click:clearIcon="clearSelection"
                       :value="textfieldValue"
         >
-          <template v-slot:inputSlot v-if="selections">
-            <div class="tf-input" style="{color: #1d1d1d}">
+          <template v-slot:inputSlot="{inputErrStyles}" v-if="textfieldValue">
+            <div class="tf-input" style="{color: #1d1d1d}" :style="inputErrStyles">
               <template v-if="multiple">
                 <template v-for="(value, index) in selections">
-                  <!--          fixme: Wait Chips  add chip to prepend of text field-->
                   <template v-if="chips||allowDuplicates">
                     <g-chip close @click:close="onChipCloseClick(index)">{{value}}</g-chip>
                   </template>
                   <template v-else>
-                    <div v-if="index ===0 ">{{value}}</div>
-                    <div v-else>{{', ' + value}}</div>
+                    <div v-if="index +1 ===selections.length ">{{value}}</div>
+                    <div v-else>{{value +',&nbsp;'}}</div>
                   </template>
                 </template>
               </template>
@@ -52,7 +51,6 @@
               <template v-else>
                 <div>{{selections}}</div>
               </template>
-
             </div>
           </template>
           <template v-slot:append-inner="{isFocused, isValidInput }">
@@ -73,14 +71,8 @@
                       flat
                       style="margin-bottom: 0; background-color: transparent"
         ></g-text-field>
-        <g-list v-if="searchable" :items="options" :item-title="itemText" :item-value="itemValue" selectable :mandatory="mandatory" v-model="selectedItem"
-                @click:item="showOptions = false" dense>
-          <template v-slot:listItem="{item, isSelected}">
-            <slot name="item" :item="item" :isSelected="isSelected"></slot>
-          </template>
-        </g-list>
-        <g-list v-else-if="multiple" :item-title="itemText" :item-value0="itemValue" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable
-                multiple v-model="selectedItem" dense >
+        <g-list v-if="multiple||searchable" :item-title="itemText" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable
+                :multiple="multiple" v-model="selectedItem" @click:item="!multiple ? showOptions = false : ''" dense>
           <template v-slot:listItem="{item, isSelected}">
             <slot name="item" :item="item" :isSelected="isSelected"></slot>
           </template>
@@ -236,7 +228,7 @@
       const options =  getList(props, selectedItem, state)
       const {searchText} = toRefs(state)
 
-      //textfield selection computed
+      //selections from list
       const fieldItem = getSelections(props, selectedItem)
       //textfield value computed
       const selections = computed(() => {
@@ -317,7 +309,10 @@
     display: flex;
     flex-wrap: wrap;
   }
-  input:first-of-type{
-    width: 0;
+  input{
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    cursor: pointer;
   }
 </style>

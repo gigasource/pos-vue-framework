@@ -10,13 +10,17 @@
           <div v-if="subheader" class="g-list-header">{{subheader}}</div>
         </slot>
         <div v-for="(item, index) in renderList" :key="index"
-             @click="onSelect(item)"
         >
           <slot name="listItem" :item="item" :isSelected="isActiveItem(item)">
             <!--            todo: add key move event-->
             <div v-if="item[itemTitle]"
                  class="g-list-item"
                  :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
+                 tabindex="0"
+                 @click="onSelect(item)"
+                 @keydown.enter="onSelect(item)"
+                 @keydown.down="onArrowDown(item)"
+                 @keydown.up="onArrowUp(item)"
                  >
                 <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
                   <div :class="prependClasses" v-if="item.prepend"> <img :src="item.prepend"></div>
@@ -52,7 +56,11 @@
         <slot :item="item" v-else>
           <div class="g-list-item"
                :class="{'g-list-item__active': isActiveItem(item)}"
-               @click="onSelect(item)">
+               tabindex="0"
+               @click="onSelect(item)"
+               @keydown.enter="onSelect(item)"
+               @keydown.down="onArrowDown(item)"
+               @keydown.up="onArrowUp(item)">
             <slot name="prepend" :item="item">
               <div :class="prependClasses" >
                 <img alt="" :src="item.prepend">
@@ -138,6 +146,8 @@
         ['elevation-' + props.elevation]: true,
         'g-list__dense': props.dense,
         'g-list__nav': props.nav,
+        'g-list__empty': !props.items.length
+
       }));
 
       const styles = computed(() => ({
@@ -158,6 +168,20 @@
       function onClick(event) {
         context.emit('click', event)
       }
+      function onArrowDown(item){
+        let index = renderList.value.findIndex(i=> i.title === item.title && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index < (renderList.value.length -1) ? i += 1 : i=0
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:up')
+      }
+      function onArrowUp(item){
+        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index > 0 ? i -= 1 : i = props.items.length -1
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:down')
+      }
       const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
         if (!props.selectable) return;
@@ -171,6 +195,8 @@
         renderList,
         lineNumber,
         onClick,
+        onArrowDown,
+        onArrowUp,
         onSelect,
         internalValue,
         isActiveItem,

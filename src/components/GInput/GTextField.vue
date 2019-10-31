@@ -14,7 +14,7 @@
 				<div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
 					<div class="input">
-						<slot name="inputSlot"></slot>
+						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
 						<input id="input" type="text"
 									 class="tf-input"
 									 :style="inputErrStyles"
@@ -101,7 +101,7 @@
       flat: Boolean,
 
       // basic props
-      value: [String, Number, Array],
+      value: [String, Number, Array, Object],
       type: {
         type: String,
         default: 'text',

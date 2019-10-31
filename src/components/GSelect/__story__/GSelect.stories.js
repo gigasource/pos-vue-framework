@@ -141,7 +141,6 @@ export const GSelectMultiple = () => ({
     chips:{default: boolean('chips', false) },
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
-    mandatory:{ default: boolean('mandatory', false) },
     clearable:{ default: boolean('mandatory', false) },
   },
   data() {
@@ -167,7 +166,6 @@ export const GSelectMultiple = () => ({
       :clearable="clearable"
        multiple 
       :allow-duplicates="allowDuplicates"
-      :mandatory="mandatory"
       v-model="selected">
       </g-select>
     </div>`
@@ -181,7 +179,6 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
     chips:{default: boolean('chips', true) },
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
-    mandatory:{ default: boolean('mandatory', false) },
     clearable:{ default: boolean('mandatory', false) },
   },
   data() {
@@ -207,12 +204,11 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
       :clearable="clearable"
        multiple 
       :allow-duplicates="allowDuplicates"
-      :mandatory="mandatory"
       v-model="selected">
       </g-select>
     </div>`
 })
-export const GSelectListDisplaySearchable = () => ({
+export const GSelectSearchableSingleSelect = () => ({
   components: {GSelect},
   props:{
     label:{ default: text('Input label', 'Label') },
@@ -220,11 +216,13 @@ export const GSelectListDisplaySearchable = () => ({
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
     mandatory:{ default: boolean('mandatory', false) },
+    chips:{default: boolean('chips', true) },
+    clearable: { default: boolean('clearable', false) },
   },
   data() {
     return{
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -238,12 +236,47 @@ export const GSelectListDisplaySearchable = () => ({
    :item-text="itemText" 
    :item-value="itemValue" 
    :label="label" 
+   :chips="chips"
    :mandatory="mandatory"
+   :clearable="clearable"
    v-model="selected" 
    searchable>
    </g-select></div>`,
 })
-
+export const GSelectSearchableMultipleSelect = () => ({
+  components: {GSelect},
+  props:{
+    label:{ default: text('Input label', 'Label') },
+    placeholder:{ default: text('Input placeholder', '') },
+    itemText:{ default: text('itemText', 'text') },
+    itemValue:{ default: text('itemText', 'value') },
+    allowDuplicates:{type: Boolean,default: boolean('allow duplicates', false) } ,
+    clearable: { default: boolean('clearable', false) },
+  },
+  data() {
+    return{
+      items: [
+        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+      ],
+      selected: null
+    }
+  },
+  template: `
+   <div data-app><g-select 
+   :items="items" 
+   :item-text="itemText" 
+   :item-value="itemValue" 
+   :label="label" 
+   :clearable="clearable"
+   :allow-duplicates="allowDuplicates"
+   v-model="selected" 
+   multiple
+   searchable>
+   </g-select></div>`,
+})
 export const GSelectPrependItem = () => ({
   components: {GSelect},
   data() {
