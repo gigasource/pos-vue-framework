@@ -28,7 +28,7 @@
     },
     setup(props, context) {
       const canvasRef = 'canvas'
-      const colorPickerState = reactive({
+      const state = reactive({
         color: {
           rgba: { r: 255, g: 0, b: 0, a: 1 },
           hsva: { h: 0, s: 1, v: 1, a: 1 },
@@ -44,25 +44,25 @@
       /// canvas
       onMounted(() => {
         const { width, height } = context.refs[canvasRef]
-        colorPickerState.canvasSize = { width, height }
-        watch(() => colorPickerState.color.hue, () => updateCanvas(context.refs[canvasRef], colorPickerState.color.hue))
+        state.canvasSize = { width, height }
+        watch(() => state.color.hue, () => updateCanvas(context.refs[canvasRef], state.color.hue))
       })
 
       function updateColor(color) {
-        colorPickerState.color = color
+        state.color = color
         // we only emit input with rgba value
-        context.emit('input', colorPickerState.color.rgba)
+        context.emit('input', state.color.rgba)
         // but emit entire color object into custom event update:color
-        context.emit('update:color', colorPickerState.color)
+        context.emit('update:color', state.color)
       }
 
       function emitColor(x, y) {
         const { width, height, left, top } = context.refs[canvasRef].getBoundingClientRect()
         updateColor(fromHSVA({
-          h: colorPickerState.color.hue,
+          h: state.color.hue,
           s: clamp(x - left, 0, width) / width,
           v: 1 - clamp(y - top, 0, height) / height,
-          a: colorPickerState.color.alpha,
+          a: state.color.alpha,
         }))
       }
 
@@ -100,8 +100,8 @@
       }
 
       const cptDotStyle = computed(() => ({
-        left: `${colorPickerState.color.hsva.s * parseInt(colorPickerState.canvasSize.width)}px`,
-        top: `${(1 - colorPickerState.color.hsva.v) * parseInt(colorPickerState.canvasSize.height)}px`
+        left: `${state.color.hsva.s * parseInt(state.canvasSize.width)}px`,
+        top: `${(1 - state.color.hsva.v) * parseInt(state.canvasSize.height)}px`
       }))
 
       function renderDot() {
@@ -110,7 +110,7 @@
 
       // preview
       function renderPreview() {
-        return <div class='g-color-picker__preview' style={{ borderRadius: '100%', backgroundColor: RGBAtoCSS(colorPickerState.color.rgba) }}></div>
+        return <div class='g-color-picker__preview' style={{ borderRadius: '100%', backgroundColor: RGBAtoCSS(state.color.rgba) }}></div>
       }
 
       // adjust
@@ -118,7 +118,7 @@
         background: `linear-gradient(to right, #F00 0%, #FF0 16.66%, #0F0 33.33%, #0FF 50%, #00F 66.66%, #F0F 83.33%, #F00 100%)`,
       }
       const alphaSliderStyleObj = {
-        backgroundImage: `linear-gradient(to right, transparent, ${RGBtoCSS(colorPickerState.color.rgba)})`
+        backgroundImage: `linear-gradient(to right, transparent, ${RGBtoCSS(state.color.rgba)})`
       }
 
       function renderHueAdjustSlider() {
@@ -126,9 +126,9 @@
             <div class='g-color-picker__adjust__hue'>
               <g-slider
                   style={hueSliderStyleObj}
-                  value={colorPickerState.color ? colorPickerState.color.hue : 0}
+                  value={state.color ? state.color.hue : 0}
                   step={1} min={0} max={360}
-                  vOn:input={val => colorPickerState.color.hue !== val && updateColor(fromHSVA({ ...colorPickerState.color.hsva, h: val }))}
+                  vOn:input={val => state.color.hue !== val && updateColor(fromHSVA({ ...state.color.hsva, h: val }))}
               ></g-slider>
             </div>
         )
@@ -138,12 +138,12 @@
         return <div class='g-color-picker__adjust__alpha'>
           <g-slider
               style={alphaSliderStyleObj}
-              value={colorPickerState.color ? colorPickerState.color.alpha : 0}
+              value={state.color ? state.color.alpha : 0}
               step={0.01} min={0} max={1}
               vOn:input={val => {
-                if (colorPickerState.color.alpha !== val) {
-                  console.log(colorPickerState.color.hsva)
-                  const newColor = fromHSVA({ ...colorPickerState.color.hsva, a: val })
+                if (state.color.alpha !== val) {
+                  console.log(state.color.hsva)
+                  const newColor = fromHSVA({ ...state.color.hsva, a: val })
                   updateColor(newColor)
                 }
               }}
@@ -195,7 +195,7 @@
                      key='hex'
                      maxLength="9"
                      disabled={props.disabled}
-                     value={colorPickerState.color.hexa}
+                     value={state.color.hexa}
                      vOn:input_stop_prevent={(e) => {
                        updateColor(fromHexa(e.target.value))
                      }}/>
@@ -209,27 +209,27 @@
                  vShow={editorState.currentMode === editorModes[1]}>
               <label>R: </label>
               <input type='text' key='r' disabled={props.disabled}
-                     value={colorPickerState.color.rgba.r}
+                     value={state.color.rgba.r}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromRGBA({...colorPickerState.color.rgba, r: parseInt(e.target.value || 0)}))
+                       updateColor(fromRGBA({...state.color.rgba, r: parseInt(e.target.value || 0)}))
                      }}/>
               <label>G: </label>
               <input type='text' key='g' disabled={props.disabled}
-                     value={colorPickerState.color.rgba.g}
+                     value={state.color.rgba.g}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromRGBA({...colorPickerState.color.rgba, g: parseInt(e.target.value || 0)}))
+                       updateColor(fromRGBA({...state.color.rgba, g: parseInt(e.target.value || 0)}))
                      }}/>
               <label>B: </label>
               <input type='text' key='b' disabled={props.disabled}
-                     value={colorPickerState.color.rgba.b}
+                     value={state.color.rgba.b}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromRGBA({...colorPickerState.color.rgba, b: parseInt(e.target.value || 0)}))
+                       updateColor(fromRGBA({...state.color.rgba, b: parseInt(e.target.value || 0)}))
                      }}/>
               <label>A: </label>
               <input type='text' key='a' disabled={props.disabled}
-                     value={colorPickerState.color.rgba.a}
+                     value={state.color.rgba.a}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromRGBA({...colorPickerState.color.rgba, a: parseFloat(e.target.value || 0)}))
+                       updateColor(fromRGBA({...state.color.rgba, a: parseFloat(e.target.value || 0)}))
                      }}/>
             </div>
         )
@@ -241,27 +241,27 @@
                  vShow={editorState.currentMode === editorModes[2]}>
               <label>H: </label>
               <input type='text' key='h' disabled={props.disabled}
-                     value={colorPickerState.color.hsla.h}
+                     value={state.color.hsla.h}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromHSLA({...colorPickerState.color.hsla, h: parseInt(e.target.value || 0)}))
+                       updateColor(fromHSLA({...state.color.hsla, h: parseInt(e.target.value || 0)}))
                      }}/>
               <label>S: </label>
               <input type='text' key='s' disabled={props.disabled}
-                     value={colorPickerState.color.hsla.s}
+                     value={state.color.hsla.s}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromHSLA({...colorPickerState.color.hsla, s: parseFloat(e.target.value || 0)}))
+                       updateColor(fromHSLA({...state.color.hsla, s: parseFloat(e.target.value || 0)}))
                      }}/>
               <label>L: </label>
               <input type='text' key='l' disabled={props.disabled}
-                     value={colorPickerState.color.hsla.l}
+                     value={state.color.hsla.l}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromHSLA({...colorPickerState.color.hsla, l: parseFloat(e.target.value || 0)}))
+                       updateColor(fromHSLA({...state.color.hsla, l: parseFloat(e.target.value || 0)}))
                      }}/>
               <label>A: </label>
               <input type='text' key='a' disabled={props.disabled}
-                     value={colorPickerState.color.hsla.a}
+                     value={state.color.hsla.a}
                      vOn:input_stop_prevent={(e) => {
-                       updateColor(fromHSLA({...colorPickerState.color.hsla, a: parseFloat(e.target.value || 0)}))
+                       updateColor(fromHSLA({...state.color.hsla, a: parseFloat(e.target.value || 0)}))
                      }}/>
             </div>
         )
