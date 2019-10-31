@@ -19,7 +19,8 @@ export const test1 = () => ({
 export const GBtnDefault = () => ({
   components: { GBtn },
   props: {
-    text: { default: text('Button Text', 'XLARGE BUTTON') },
+    text: { default: text('Button Text', 'NORMAL BUTTON') },
+    flat: { type: Boolean, default: boolean('flat', false) },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
     small: { type: Boolean, default: boolean('small', false) },
     large: { type: Boolean, default: boolean('large', false) },
@@ -35,7 +36,7 @@ export const GBtnDefault = () => ({
     right: { type: Boolean, default: boolean('right', false) },
     tile: { type: Boolean, default: boolean('tile', false) },
   },
-  template: `<g-btn :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :elevation="elevation" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn>`,
+  template: `<g-btn :tile="tile" :flat="flat" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :elevation="elevation" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn>`,
 })
 
 export const GBtnOutlined = () => ({
