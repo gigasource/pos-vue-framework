@@ -25,11 +25,8 @@ import { colors } from '../../../../utils/colors'
  *   }
  * ]
  */
-export default function createSwatchesModels(onColorSelected) {
-  function createColorModel(name, value) {
-    return { name: name, value: value, select: () => onColorSelected(name, value) }
-  }
-
+export default function createSwatchesModels() {
+  const createColorModel = (name, value) => ({ name, value })
   const subColorEndedNumbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
   // generate color pallets
@@ -44,18 +41,9 @@ export default function createSwatchesModels(onColorSelected) {
 
       palletCategory = {
         name: key,
-        shortPallet: [
-          createColorModel(key, colors[key])
-        ],
-        pallet: [
-          createColorModel(key, colors[key])
-        ]
+        pallet: [ createColorModel(key, colors[key]) ]
       }
     } else {
-      // otherwise, add color to existed category
-      if (subColorEndedNumbers.indexOf(key[key.length-1]) < 2) {
-        palletCategory.shortPallet.push(createColorModel(key, colors[key]))
-      }
       palletCategory.pallet.push(createColorModel(key, colors[key]))
     }
   })

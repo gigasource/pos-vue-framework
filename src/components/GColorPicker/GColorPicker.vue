@@ -4,14 +4,15 @@
   import { clamp } from 'lodash/number'
   import { RGBAtoCSS, RGBtoCSS } from '../../utils/colors'
   import { updateCanvas } from './logic/uiHelper/GColorPickerUIHelper'
-  import swatches from './logic/uiHelper/materialSwatches'
+  import swatches from './logic/uiHelper/swatches'
   import GSlider from '../GInput/GSlider'
-  import GToolTip from '../GToolTip/GToolTip';
+  import GToolTip from '../GToolTip/GToolTip'
   import _ from 'lodash'
-  import GTab from '../GTabs/GTab';
-  import GTabs from '../GTabs/GTabs';
-  import GTabItems from '../GTabs/GTabItems';
-  import GTabItem from '../GTabs/GTabItem';
+  import GTab from '../GTabs/GTab'
+  import GTabs from '../GTabs/GTabs'
+  import GTabItems from '../GTabs/GTabItems'
+  import GTabItem from '../GTabs/GTabItem'
+  import createGradientModels from './logic/uiHelper/gradientColors'
 
   export default {
     name: 'GColorPicker',
@@ -27,146 +28,130 @@
     },
     setup(props, context) {
       const canvasRef = 'canvas'
-      const state = reactive({
+      const colorPickerState = reactive({
         color: {
           rgba: { r: 255, g: 0, b: 0, a: 1 },
-          hsva: { h: 0, s: 100, v: 100, a: 1 },
-          hexa: '#FF0000FF'
+          hsva: { h: 0, s: 1, v: 1, a: 1 },
+          hsla: { h: 0, s: 1, l: 0.5, a: 1 },
+          hexa: '#FF0000FF',
+          hex: '#FF0000',
+          hue: 0,
+          alpha: 1
         },
-        hue: 0,
-        alpha: 1,
         canvasSize: { width: 0, height: 0 }
       })
 
-      //
+      /// canvas
+      onMounted(() => {
+        const { width, height } = context.refs[canvasRef]
+        colorPickerState.canvasSize = { width, height }
+        watch(() => colorPickerState.color.hue, () => updateCanvas(context.refs[canvasRef], colorPickerState.color.hue))
+      })
+
       function updateColor(color) {
-        state.color = color
+        colorPickerState.color = color
         // we only emit input with rgba value
-        context.emit('input', state.color.rgba)
+        context.emit('input', colorPickerState.color.rgba)
         // but emit entire color object into custom event update:color
-        context.emit('update:color', state.color)
+        context.emit('update:color', colorPickerState.color)
       }
 
       function emitColor(x, y) {
         const { width, height, left, top } = context.refs[canvasRef].getBoundingClientRect()
         updateColor(fromHSVA({
-          h: state.hue,
+          h: colorPickerState.color.hue,
           s: clamp(x - left, 0, width) / width,
           v: 1 - clamp(y - top, 0, height) / height,
-          a: state.alpha,
+          a: colorPickerState.color.alpha,
         }))
       }
 
-      // canvas
-      onMounted(() => {
-        if (context.refs[canvasRef]) {
-          const { width, height } = context.refs[canvasRef].getBoundingClientRect()
-          state.canvasSize = { width, height }
-          watch(() => state.hue, () => updateCanvas(context.refs[canvasRef], state.hue))
-        }
-      })
-
-      function handleCanvasClick(e) {
-        e.stopPropagation()
-        e.preventDefault()
-        if (props.disabled) {
-          return
-        }
-        emitColor(e.clientX, e.clientY)
-      }
-
+      let mouseDown
       function handleCanvasMouseDown(e) {
-        e.stopPropagation()
-        e.preventDefault()
         if (props.disabled) {
           return
         }
-        window.addEventListener('mousemove', _handleCanvasMouseMove)
-        window.addEventListener('mouseup', _handleCanvasMouseUp)
+        mouseDown = true
       }
 
-      function _handleCanvasMouseMove(e) {
-        emitColor(e.clientX, e.clientY)
-      }
-
-      function _handleCanvasMouseUp() {
-        window.removeEventListener('mousemove', _handleCanvasMouseMove)
-        window.removeEventListener('mouseup', _handleCanvasMouseUp)
-      }
-
-      const cptDotPos = computed(() => {
-        if (!state.color) {
-          return { x: 0, y: 0 }
+      function handleCanvasMouseMove(e) {
+        if (mouseDown) {
+          emitColor(e.clientX, e.clientY)
         }
-        return {
-          x: state.color.hsva.s * parseInt(state.canvasSize.width),
-          y: (1 - state.color.hsva.v) * parseInt(state.canvasSize.height)
-        }
-      })
+      }
 
-      function renderColorCanvas() {
+      function handleCanvasMouseUp() {
+        mouseDown = false
+      }
+
+      function renderCanvas() {
         return (
             <canvas
                 ref={canvasRef}
                 width={props.width}
                 height={150}
-                vOn:click={handleCanvasClick}
-                vOn:mousedown={handleCanvasMouseDown}>
+                vOn:mousedown={handleCanvasMouseDown}
+                vOn:mousemove={handleCanvasMouseMove}
+                vOn:mouseup={handleCanvasMouseUp}
+            >
             </canvas>
         )
       }
 
-      function renderDotFn() {
-        return (
-            <div
-                class='g-color-picker__color-field__dot'
-                style={{ left: `${cptDotPos.value.x}px`, top: `${cptDotPos.value.y}px` }}>
-            </div>
-        )
+      const cptDotStyle = computed(() => ({
+        left: `${colorPickerState.color.hsva.s * parseInt(colorPickerState.canvasSize.width)}px`,
+        top: `${(1 - colorPickerState.color.hsva.v) * parseInt(colorPickerState.canvasSize.height)}px`
+      }))
+
+      function renderDot() {
+        return <div class='g-color-picker__color-field__dot' style={cptDotStyle.value}></div>
       }
 
       // preview
-      function renderPreviewColorField() {
-        return <div class='g-color-picker__preview' style={{ borderRadius: '100%', backgroundColor: RGBAtoCSS(state.color.rgba) }}></div>
+      function renderPreview() {
+        return <div class='g-color-picker__preview' style={{ borderRadius: '100%', backgroundColor: RGBAtoCSS(colorPickerState.color.rgba) }}></div>
       }
 
       // adjust
       const hueSliderStyleObj = {
         background: `linear-gradient(to right, #F00 0%, #FF0 16.66%, #0F0 33.33%, #0FF 50%, #00F 66.66%, #F0F 83.33%, #F00 100%)`,
-        padding: '5px'
       }
       const alphaSliderStyleObj = {
-        backgroundColor: `linear-gradient(to right, transparent, ${RGBtoCSS(state.color.rgba)})`
+        backgroundImage: `linear-gradient(to right, transparent, ${RGBtoCSS(colorPickerState.color.rgba)})`
       }
 
       function renderHueAdjustSlider() {
         return (
-            <div class='g-color-picker__slider__hue'>
+            <div class='g-color-picker__adjust__hue'>
               <g-slider
-                  thumbColor='grey lighten-2'
                   style={hueSliderStyleObj}
-                  value={state.color ? state.color.hue : 0}
+                  value={colorPickerState.color ? colorPickerState.color.hue : 0}
                   step={1} min={0} max={360}
-                  vOn:input={val => state.color.hue !== val && updateColor(fromHSVA({ ...state.color.hsva, h: val }))}
+                  vOn:input={val => colorPickerState.color.hue !== val && updateColor(fromHSVA({ ...colorPickerState.color.hsva, h: val }))}
               ></g-slider>
             </div>
         )
       }
 
       function renderAlphaAdjustSlider() {
-        return <div class='g-color-picker__slider__alpha'>
+        return <div class='g-color-picker__adjust__alpha'>
           <g-slider
-              thumbColor='grey lighten-2'
               style={alphaSliderStyleObj}
-              value={state.color ? state.color.alpha : 0}
+              value={colorPickerState.color ? colorPickerState.color.alpha : 0}
               step={0.01} min={0} max={1}
-              vOn:input={val => state.color.alpha !== val && updateColor(fromHSVA(...state.color.hsva, val))}
+              vOn:input={val => {
+                if (colorPickerState.color.alpha !== val) {
+                  console.log(colorPickerState.color.hsva)
+                  const newColor = fromHSVA({...colorPickerState.color.hsva, a: val})
+                  updateColor(newColor)
+                }
+              }}
           ></g-slider>
         </div>
       }
 
-      // edit
-      const editModes = {
+      // editor
+      const editorModes = {
         rgba: {
           inputs: [
             ['r', 255, 'int'],
@@ -190,13 +175,13 @@
         }
       }
       const editorState = reactive({
-        currentMode: editModes.hexa
+        currentMode: editorModes.hexa
       })
 
       function changeMode() {
-        const modeNames = Object.keys(editModes)
+        const modeNames = Object.keys(editorModes)
         const index = modeNames.indexOf(editorState.currentMode)
-        editorState.currentMode = editModes[modeNames[(index + 1) % modeNames.length]]
+        editorState.currentMode = editorModes[modeNames[(index + 1) % modeNames.length]]
       }
 
       function getValue(v, type) {
@@ -222,148 +207,141 @@
       function renderHexaEditorInput() {
         return (
             <div class='g-color-picker__edit__input'
-                 vShow={editorState.currentMode === editModes.hexa}>
+                 vShow={editorState.currentMode === editorModes.hexa}>
               <input type='text'
                      key='hex'
                      maxLength="9"
                      disabled={props.disabled}
-                     value={state.color.hexa}/>
+                     value={colorPickerState.color.hexa}/>
             </div>
         )
       }
 
       function renderNonHexaEditorInput() {
         return (
-            <div vShow={editorState.currentMode !== editModes.hexa}>
+            <div class='g-color-picker__edit__input'
+                 vShow={editorState.currentMode !== editorModes.hexa}>
               Non-Hexa
             </div>)
       }
 
       function renderEditorModeSwitch() {
-        return (
-            <button type="button" vOn:click={changeMode}>switch</button>
-        )
+        return <button type="button" vOn:click={changeMode}>switch</button>
       }
 
-      // swatches
-      const onColorSelected = (name, colorValue) => {
-        console.log('color selected', name, ':', colorValue)
-      }
-      const swatchesModel = swatches(onColorSelected)
-      const tooltipStyleObj = {
+      //// swatches
+      const swatchesModel = swatches()
+      const tooltipContentStyleObj = {
         boxShadow: '0 2px 8px 4px #0003',
-        marginLeft: '50%',
-        transform: 'translateX(-50%)',
-        marginTop: '10px',
-        marginBottom: '10px',
+        margin: '10px',
         borderRadius: '100%',
         width: '50px',
         height: '50px'
       }
+      const swatchItemStyleObj = {
+        border: '1px solid #0003',
+        margin: '0px',
+        width: '20px',
+        height: '20px',
+        display: 'inline-block',
+      }
 
       function renderSwatches() {
-        return <div class="__swatches">
-          {
-            _.map(swatchesModel, colorPalletModel => {
-              return (
-                  <div class="__pallet-category">
-                    <span class='__pallet-name'>{colorPalletModel.name}</span>
-                    {
-                      _.map(colorPalletModel.shortPallet, pallet => {
-                            const styleObj = {
-                              borderRadius: '100%',
-                              border: '1px solid #0003',
-                              margin: '0px',
-                              width: '20px',
-                              height: '20px',
-                              display: 'inline-block',
-                              backgroundColor: pallet.value
-                            }
-                            const scopedSlots = {
-                              activator: (scope) => {
-                                return (
-                                    <span style={styleObj}
-                                          vOn:mouseleave={scope.on.mouseleave}
-                                          vOn:mouseenter={scope.on.mouseenter}
-                                          vOn:blur={scope.on.blur}
-                                          vOn:click={() => console.log(pallet.value)}
-                                    ></span>)
-                              }
-                            }
-                            return (
-                                <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333">
-                                  <div style={'text-align: center;'}>
-                                    <div style={{ ...tooltipStyleObj, backgroundColor: pallet.value }}></div>
-                                    {pallet.name}
-                                  </div>
-                                </g-tool-tip>)
-                          }
-                      )
+        return <div class='g-color-picker__swatches'> {
+          _.map(swatchesModel, colorPalletModel =>
+              <div class='g-color-picker__swatches__pallet-category'> {
+                _.map(colorPalletModel.pallet, pallet => {
+                      const scopedSlots = {
+                        activator: (scope) => <span
+                            style={{ ...swatchItemStyleObj, backgroundColor: pallet.value }}
+                            vOn:mouseleave={scope.on.mouseleave}
+                            vOn:mouseenter={scope.on.mouseenter}
+                            vOn:blur={scope.on.blur}
+                            vOn:click={() => {
+                              // TODO: Define action when color is selected
+                            }}></span>
+                      }
+                      return (
+                          <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333">
+                            <div style={'display: flex; align-items: center'}>
+                              <div style={{ ...tooltipContentStyleObj, backgroundColor: pallet.value }}></div>
+                              <div>
+                                <div>{colorPalletModel.name}</div>
+                                <div>{pallet.name}</div>
+                              </div>
+                            </div>
+                          </g-tool-tip>)
                     }
-                  </div>)
-            })
-          }
+                )
+              }
+              </div>)
+        }
         </div>
       }
 
 
-      function renderSwatches2() {
-        return <div class="__swatches">
-          {
-            _.map(swatchesModel, colorPalletModel => {
-              return (
-                  <div class="__pallet-category">
-                    {
-                      _.map(colorPalletModel.pallet, pallet => {
-                            const styleObj = {
-                              border: '1px solid #0003',
-                              margin: '0px',
-                              width: '20px',
-                              height: '20px',
-                              display: 'inline-block',
-                              backgroundColor: pallet.value
-                            }
-                            const scopedSlots = {
-                              activator: (scope) => {
-                                return (
-                                    <span style={styleObj}
-                                          vOn:mouseleave={scope.on.mouseleave}
-                                          vOn:mouseenter={scope.on.mouseenter}
-                                          vOn:blur={scope.on.blur}
-                                          vOn:click={() => console.log(pallet.value)}
-                                    ></span>)
-                              }
-                            }
-                            return (
-                                <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#aaa">
-                                  <div style={'text-align: center;'}>
-                                    <div style={{ ...tooltipStyleObj, backgroundColor: pallet.value }}></div>
-                                    <div>{colorPalletModel.name}</div>
-                                    <div>{pallet.name}</div>
-                                  </div>
-                                </g-tool-tip>)
-                          }
-                      )
-                    }
-                  </div>)
-            })
-          }
-        </div>
+      //// gradients
+      const gradientModels = createGradientModels()
+      const gradientItemStyle = {
+        display: 'inline-block',
+        width: '40px',
+        height: '40px',
+        margin: '10px',
+        border: '1px solid #0003',
+        borderRadius: '100%',
       }
 
-      // color picker
+      function renderGradientColors() {
+        return (
+            <div> {
+              _.map(gradientModels, gradient => {
+                const scopedSlot = {
+                  activator: (scope) => <span
+                      style={{
+                        ...gradientItemStyle,
+                        background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
+                      }}
+                      vOn:mouseleave={scope.on.mouseleave}
+                      vOn:mouseenter={scope.on.mouseenter}
+                      vOn:blur={scope.on.blur}
+                      vOn:click={() => console.log(gradient.name)}></span>
+                }
 
-      const items = [
+                return <g-tool-tip top open-on-hover scopedSlots={scopedSlot} color="#333">
+                  <div style={'display: flex; align-items: center'}>
+                    <div>
+                      <div style={{
+                        ...tooltipContentStyleObj,
+                        background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
+                      }}></div>
+                    </div>
+                    <div>
+                      <div>{`name: ${gradient.name}`}</div>
+                      <div>{`angle: ${gradient.angle}`}</div>
+                      <div>{`color-stop 1: ${gradient.colorStop1}`}</div>
+                      <div>{`color-stop 2: ${gradient.colorStop2}`}</div>
+                    </div>
+                  </div>
+                </g-tool-tip>
+              })
+            }
+            </div>
+        )
+      }
+
+      let model = ref(null)
+      const tabItems = [
         { title: 'Swatches', renderFn: renderSwatches },
+        { title: 'Gradient', renderFn: renderGradientColors },
         {
           title: 'ColorPicker', renderFn: () => [
             <div class='g-color-picker__color-field'>
-              {renderColorCanvas()}
-              {renderDotFn()}
+              {renderCanvas()}
+              {renderDot()}
             </div>,
             <div class='g-color-picker__controls'>
               <div class='g-color-picker__preview-slider-wrapper'>
-                {renderPreviewColorField()}
+                {renderPreview()}
                 <div class='g-color-picker__sliders'>
                   {renderHueAdjustSlider()}
                   {renderAlphaAdjustSlider()}
@@ -376,22 +354,17 @@
               </div>
             </div>
           ]
-        },
-        {
-          title: 'Gradient', renderFn: () => <h1>Gradient</h1>
         }
       ]
-
-      let model = ref(null)
 
       return function renderColorPicker() {
         return (
             <div class='g-color-picker'>
-              <g-tabs items={items} vModel={model.value} color='purple lighten-2' sliderSize={2}>
-                <g-tab-items items={items} vModel={model.value}>
-                  {_.map(items, (item, index) =>
+              <g-tabs items={tabItems} vModel={model.value} sliderSize={2}>
+                <g-tab-items items={tabItems} vModel={model.value}>
+                  {_.map(tabItems, (item, index) =>
                       <g-tab-item key={index} item={item}>
-                        <div style="margin-top: 10px; border: 1px solid red; width: 100%">
+                        <div style="padding: 10px; width: 100%">
                           {item.renderFn()}
                         </div>
                       </g-tab-item>
@@ -400,29 +373,6 @@
               </g-tabs>
             </div>
         )
-
-        // return (
-        //     <div class='g-color-picker'>
-        //       <div class='g-color-picker__color-field'>
-        //         {renderColorCanvas()}
-        //         {renderDotFn()}
-        //       </div>
-        //       <div class='g-color-picker__controls'>
-        //         <div class='g-color-picker__preview-slider-wrapper'>
-        //           {renderPreviewColorField()}
-        //           <div class='g-color-picker__sliders'>
-        //             {renderHueAdjustSlider()}
-        //             {renderAlphaAdjustSlider()}
-        //           </div>
-        //         </div>
-        //         <div class='g-color-picker__edit'>
-        //           {renderHexaEditorInput()}
-        //           {renderNonHexaEditorInput()}
-        //           {renderEditorModeSwitch()}
-        //         </div>
-        //         {renderSwatches2()}
-        //       </div>
-        //     </div>)
       }
     }
   }
@@ -444,6 +394,14 @@
         border-radius: 50%;
         transform: translate(-50%, -50%);
         box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 1), inset 0 0 1px 1.5px rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+      }
+    }
+
+    &__adjust {
+
+      &__alpha {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC) repeat;
       }
     }
 
@@ -456,11 +414,9 @@
     }
 
     &__preview {
-      position: relative;
+      width: 30px;
       height: 30px;
       margin: 10px;
-      width: 30px;
-      overflow: hidden;
     }
 
     &__sliders {
@@ -487,11 +443,6 @@
           height: 28px;
         }
       }
-    }
-
-
-    &__swatches {
-
     }
   }
 
