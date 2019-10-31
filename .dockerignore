@@ -1,0 +1,8 @@
+node_modules
+.idea
+.git
+.gitignore
+.dockerignore
+Dockerfile
+Jenkinsfile
+README.md
