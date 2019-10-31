@@ -21,49 +21,53 @@
         default: 0
       },
       data: [Object, Array],
-			rounded: Boolean,
-			value: null,
+      rounded: Boolean,
+      value: null,
     },
     setup(props, context) {
-			const activePath = computed({
-				get: () => props.value,
-				set: (val) => context.emit('input', val)
-			})
+      const activePath = computed({
+        get: () => props.value,
+        set: (val) => context.emit('input', val)
+      })
 
-			const openPath = ref(null)
+      const openPath = ref(null)
 
       const itemText = props.itemText || ((node, isRoot) => {
         if (node.type === 'subheader') {
-          return node.subheader
+          return <span class='g-treeview-subheader'>{node.subheader}</span>
         } else if (node.type === 'divider') {
-					return <g-divider/>
+          return <g-divider/>
         } else {
-          return node.title
+          return <span class='g-treeview-title'>{node.title}</span>
         }
       })
 
-      const genNode = function ({node, text, childrenVNodes, state, path}) {
-        const icon = node.icon
-          ?		<g-icon class="g-treeview-icon">{node.icon}</g-icon>
-					: null
-				if(openPath.value !== path) {
-				  state.collapse = true
-				}
-				const children = childrenVNodes ? <div vShow={!state.collapse} class="g-treeview-children">{childrenVNodes}</div> : null
+      const genNode = function ({ node, text, childrenVNodes, state, path }) {
+        const icon = node.icon && <g-icon class="g-treeview-icon">{node.icon}</g-icon>
+        if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path))) {
+          state.collapse = true
+        }
+        const children = childrenVNodes && <div vShow={!state.collapse} class="g-treeview-children">{childrenVNodes}</div>
         return <li class={[!state.collapse && childrenVNodes && openPath.value === path ? 'g-treeview__open' : null]}>
-					<a class={[node.type === 'subheader'? null : 'g-treeview-item waves-effect', props.rounded ? 'g-treeview-item__rounded' : null, !childrenVNodes && activePath.value === path ? 'g-treeview__active' : null]} vOn:click={() => activePath.value = path}>
+          <a class={[node.type === 'subheader' ? null : 'g-treeview-item waves-effect', props.rounded ? 'g-treeview-item__rounded' : null, !childrenVNodes && activePath.value === path ? 'g-treeview__active' : null]}
+             vOn:click_stop={() => {
+               activePath.value = path;
+               if (childrenVNodes) {
+                 state.collapse = !state.collapse;
+                 openPath.value = path
+               }
+             }}>
             {icon}
-            <span class={node.type === 'subheader'? 'g-treeview-subheader': 'g-treeview-title'}>{text}</span>
+            {text}
             <span
               class='g-treeview-action'
-              vShow={childrenVNodes}
-              vOn:click={() => {state.collapse = !state.collapse; openPath.value = path}}>
+              vShow={childrenVNodes}>
               <g-icon>
                 {state.collapse ? 'chevron_right' : 'expand_more'}
               </g-icon>
             </span>
-					</a>
-					<g-expand-transition>{children}</g-expand-transition>
+          </a>
+          <g-expand-transition>{children}</g-expand-transition>
         </li>
       }
 
@@ -73,9 +77,9 @@
 
       const genRootWrapper = function (childrenVNodes) {
         return (
-            <div root>
-              <ul>{childrenVNodes}</ul>
-            </div>
+          <div root>
+            <ul>{childrenVNodes}</ul>
+          </div>
         )
       }
 
@@ -103,10 +107,10 @@
     list-style-type: none;
 		padding: 0;
 		margin: 0;
-  }
+	}
 
 	li {
-		padding: 0 8px 0 0;
+		padding: 0;
 	}
 
 	.g-treeview {
@@ -116,7 +120,12 @@
 			contain: layout;
 
 			&:not(.g-treeview-subheader):hover {
+				margin-right: 8px;
 				background: rgba(0, 0, 0, 0.12);
+
+				> .g-treeview-action {
+					/*margin-right: 8px;*/
+				}
 			}
 
 			&__rounded {
@@ -147,6 +156,7 @@
 		}
 
 		&__active {
+			padding-right: 8px;
 			background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
 		}
 
@@ -164,8 +174,11 @@
 
 		&-children {
 			.g-treeview-icon {
-				width: 24px;
-				font-size: 10px !important;
+				font-size: 12px !important;
+			}
+
+			ul {
+				padding-left: 4px;
 			}
 		}
 	}

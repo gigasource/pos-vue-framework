@@ -102,6 +102,7 @@ export const treeView = () => ({
           {title: 'Horizontal', icon: 'radio_button_unchecked'},
         ]
       },
+      { type: 'divider' },
       { subheader: 'APPLICATIONS', type: 'subheader' },
       { title: 'Mail', icon: 'mail_outline'},
       { title: 'Chat', icon: 'chat_bubble_outline'},
@@ -116,6 +117,7 @@ export const treeView = () => ({
           {title: 'Invoice', icon: 'radio_button_unchecked'},
         ]
       },
+      { type: 'divider' },
       { subheader: 'PAGES', type: 'subheader' },
       {
         title: 'Pages', icon: 'content_paste',
@@ -153,6 +155,19 @@ export const treeView = () => ({
           {title: '500', icon: 'radio_button_unchecked'},
         ]
       },
+      { type: 'divider' },
+      { subheader: 'Three Level', type: 'subheader'},
+      {
+        title: 'Level 1', icon: 'menu',
+        items: [
+          {
+            title: 'Level 2', icon: 'radio_button_unchecked',
+            items: [
+              { title: 'Level 3', icon: 'radio_button_unchecked'}
+            ]
+          }
+        ]
+      }
     ])
 
     let state = reactive({
