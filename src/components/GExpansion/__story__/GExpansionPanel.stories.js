@@ -1,14 +1,14 @@
-import { text, withKnobs, boolean } from '@storybook/addon-knobs';
-import GExpansionPanelNew from '../GExpansionPanelNew';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
+import GExpansion from '../GExpansion';
 import GIcon from '../../GIcon/GIcon';
 
 export default {
-  title: 'Expansion panel',
+  title: 'GExpansion',
   decorators: [withKnobs]
 }
 
 export const Basic = () => ({
-  components: { GExpansionPanelNew },
+  components: { GExpansion },
   props: {
     accordion: {default: boolean('Accordion', false)},
     popout: {default: boolean('Popout', false)},
@@ -43,17 +43,17 @@ export const Basic = () => ({
   },
   template: `
     <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
-    <g-expansion-panel-new 
+    <g-expansion
     v-model="activeItem" 
     :items="items" 
     item-header="name" 
     item-content="message" :accordion="accordion" :popout="popout" :inset="inset">
-    </g-expansion-panel-new>
+    </g-expansion>
     </div>`
 })
 
 export const Mandatory = () => ({
-  components: { GExpansionPanelNew },
+  components: { GExpansion },
   props: {
     accordion: {default: boolean('Accordion', false)},
     popout: {default: boolean('Popout', false)},
@@ -88,17 +88,17 @@ export const Mandatory = () => ({
   },
   template: `
     <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
-    <g-expansion-panel-new 
+    <g-expansion
     v-model="activeItem" 
     :items="items" 
     item-header="name" 
     item-content="message" mandatory :accordion="accordion" :popout="popout" :inset="inset">
-    </g-expansion-panel-new>
+    </g-expansion>
     </div>`
 })
 
 export const Multiple = () => ({
-  components: { GExpansionPanelNew },
+  components: { GExpansion },
   props: {
     accordion: {default: boolean('Accordion', false)},
     popout: {default: boolean('Popout', false)},
@@ -133,7 +133,7 @@ export const Multiple = () => ({
   },
   template: `
     <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
-      <g-expansion-panel-new
+      <g-expansion
       v-model="activeItem" 
       :items="items"
       item-header="name" 

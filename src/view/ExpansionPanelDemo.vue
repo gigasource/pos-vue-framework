@@ -1,16 +1,16 @@
 <template>
 	<div style="background-color: #e6e9ec; height: 100%">
-		<g-expansion-panel-new v-model="activeItem" :items="items" item-header="name" item-content="message" popout mandatory>
-		</g-expansion-panel-new>
+		<g-expansion v-model="activeItem" :items="items" item-header="name" item-content="message" popout mandatory>
+		</g-expansion>
 	</div>
 </template>
 <script>
   import GIcon from '../components/GIcon/GIcon';
   import GBtn from '../components/GBtn/GBtn';
-  import GExpansionPanelNew from '../components/GExpansionPanel/GExpansionPanelNew';
+  import GExpansion from '../components/GExpansion/GExpansion';
   export default {
     name: 'ExpansionPanel',
-    components: { GExpansionPanelNew, GIcon, GBtn },
+    components: { GExpansion, GIcon, GBtn },
     props: {},
     data: function () {
       return {
