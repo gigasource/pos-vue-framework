@@ -1,6 +1,6 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
-import GColorPicker from '../../GColorPicker'
+import GColorPicker from '../GColorPicker'
 //
 export default {
   title: 'GColorPicker',
@@ -10,8 +10,8 @@ export default {
 export const test2 = () => ({
   components: { GColorPicker },
   setup() {
-    return () => (
-        <g-color-picker show-canvas></g-color-picker>
+    return () => (<div style={'padding-top: 200px; padding-left: 200px'}><g-color-picker show-swatches></g-color-picker></div>
+
     )
   }
 })
