@@ -1,66 +1,172 @@
 <template>
-	<div>
-		<g-button @click="show = !show" width="200px" height="100px" class="waves-effect waves-green-1">Show</g-button>
-		<g-dialog v-model="show">
-			<g-layout column class="dialog-wrapper__dark">
-				<div class="row-11 pa-2">
-					<g-layout column class="align-items-center">
-						<div class="row-2 w-60 col-flex mb-3 bg-white pa-2 br-2">
-							<p class="row-3 ta-center fs-large-2">Redefined % Discount</p>
-							<div class="row-9 pa-2 row-flex mt-2">
-								<g-tabs v-model="tabActiveItem">
-									<template v-slot:tabs="{toggle, isActive}">
-										<g-layout row>
-											<g-tab v-for="(item, i) in discountItems" :key="i" class="flex-grow-1 mr-1">
-												<div class="flex-grow-1 h-100 ma-1 bg-lgray-6 ba-lgray-4 ba-thin row-flex justify-center align-items-center pa-2 br-2 op-5" :class="{'tab__active': isActive(item)}" @click="toggle(item)">{{item.content}}</div>
-											</g-tab>
-										</g-layout>
-									</template>
-								</g-tabs>
-							</div>
-						</div>
-						<div class="row-5 w-60 mb-3 bg-white pa-2 br-2 ba-blue-7 ba-1 col-flex">
-							<p class="ta-center blue-7 fs-large">Manual Input</p>
-							<div class="col-flex flex-grow-1">
-								<div class="row-4 row-flex">
-									<p class="col-3 ta-right mr-2 mt-3">% Discount</p>
-									<g-text-field class="col-6 mt-2" centered :rules="isNumber" error-message="Invalid price!" placeholder="your number" v-model="percentage.value" :active="percentage.isActive" @focus="changeInput(percentage.type)">
-										<template v-slot:after="{isValidInput}">
-											<img v-if="isValidInput && percentage.value.length > 0" src="../assets/order/checked2.svg">
-										</template>
-									</g-text-field>
-								</div>
-								<div class="row-4 row-flex">
-									<p class="col-3 ta-right mr-2 mt-3">€ Discount</p>
-									<g-text-field class="col-6 mt-2" centered :rules="isNumber" error-message="Invalid price!" placeholder="your number" v-model="number.value" :active="number.isActive" @focus="changeInput(number.type)">
-										<template v-slot:after="{isValidInput}">
-											<img v-if="isValidInput && number.value.length > 0" src="../assets/order/checked2.svg">
-										</template>
-									</g-text-field>
-								</div>
-								<div class="row-4 row-flex align-items-center">
-									<p class="col-3 ta-right mr-2">New Price (€)</p>
-									<p class="col-6 ta-center">100</p>
-								</div>
-							</div>
-						</div>
-						<div class="row-4 w-30 mb-3 pa-3">
-							<g-keyboard class="bg-transparent h-100" :items="keyboard" :template="keyboardTemplate" v-model="discountAmount.value"></g-keyboard>
-						</div>
-					</g-layout>
+	<div class="outerdiv">
+		<g-dialog v-model="dialog" width="500px">
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog</g-button>
+			</template>
+			<g-card flat elevation="16">
+				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
+					Privacy Policy
+				</g-card-title>
+				<g-card-text>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</g-card-text>
+				<div>
+					<hr/>
 				</div>
-				<g-toolbar height="8%">
-					<g-button color="#212121" width="12%" class="btn__centered justify-center" @click="close()">
-						<img src="../assets/order/back.svg">
-						<span class="ml-2 white">Back</span>
-					</g-button>
-					<g-spacer></g-spacer>
-					<g-button color="#ff4452" text-color="#ffffff" width="12%" class="btn__centered">
-						<span class="col-8">Save</span>
-						<span class="col-4 fs-large-2">&rarr;</span>
-					</g-button>
-				</g-toolbar>
-			</g-layout>
+				<g-card-actions>
+					<g-button @click="dialog = false">I accept</g-button>
+				</g-card-actions>
+			</g-card>
+		</g-dialog>
+
+		<g-dialog v-model="dialogPersistent" width="500px" persistent>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Persistent</g-button>
+			</template>
+			<g-card flat elevation="16">
+				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
+					Privacy Policy
+				</g-card-title>
+				<g-card-text>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</g-card-text>
+				<div>
+					<hr/>
+				</div>
+				<g-card-actions>
+					<g-button @click="dialogPersistent = false">I accept</g-button>
+				</g-card-actions>
+			</g-card>
+		</g-dialog>
+
+		<g-dialog v-model="dialogHideOverlay" width="500px" hide-overlay>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Hide Overlay</g-button>
+			</template>
+			<g-card flat elevation="16">
+				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
+					Privacy Policy
+				</g-card-title>
+				<g-card-text>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</g-card-text>
+				<div>
+					<hr/>
+				</div>
+				<g-card-actions>
+					<g-button @click="dialogHideOverlay = false">I accept</g-button>
+				</g-card-actions>
+			</g-card>
+		</g-dialog>
+
+		<g-dialog v-model="dialogOverflow" width="500px">
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Overflow</g-button>
+			</template>
+			<g-card flat elevation="16">
+				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
+					Privacy Policy
+				</g-card-title>
+				<g-card-text>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</g-card-text>
+				<div>
+					<hr/>
+				</div>
+				<g-card-actions>
+					<g-button @click="dialogOverflow = false">I accept</g-button>
+				</g-card-actions>
+			</g-card>
+		</g-dialog>
+
+		<g-dialog v-model="dialogScrollable" width="500px" scrollable>
+			<template v-slot:activator="{ toggleDialog }">
+				<g-button width="100px" height="50px" @click="toggleDialog">Dialog Scrollable</g-button>
+			</template>
+			<g-card flat elevation="16">
+				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
+					Privacy Policy
+				</g-card-title>
+				<g-card-text>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</g-card-text>
+				<div>
+					<hr/>
+				</div>
+				<g-card-actions>
+					<g-button @click="dialogScrollable = false">I accept</g-button>
+					<g-button @click="dialog = true">Open Dialog</g-button>
+				</g-card-actions>
+			</g-card>
+		</g-dialog>
+
+		<div></div>
+		<g-button width="100px" height="50px" @click="dialogFullscreen = true">Dialog Fullscreen</g-button>
+		<g-dialog v-model="dialogFullscreen" width="500px" scrollable fullscreen>
+			<g-card flat elevation="16">
+				<g-card-title class="bg-grey-lighten-2 fs-large fw-700">
+					Privacy Policy
+				</g-card-title>
+				<g-card-text>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</g-card-text>
+				<div>
+					<hr/>
+				</div>
+				<g-card-actions>
+					<g-button @click="dialogFullscreen = false">I accept</g-button>
+					<g-button @click="dialogScrollable = true">Open Dialog</g-button>
+				</g-card-actions>
+			</g-card>
 		</g-dialog>
 	</div>
 </template>
@@ -68,91 +174,26 @@
 <script>
   import GDialog from '../components/GDialog/GDialog';
   import GButton from '../components/GButton/GButton';
-  import GTextField from '../components/GInput/GTextField';
-  import GLayout from '../components/GLayout/GLayout';
-  import GToolbar from '../components/GToolbar/GToolbar';
-  import GSpacer from '../components/GLayout/GSpacer';
-  import GKeyboard from '../components/GKeyboard/GKeyboard';
-  import GTabs from '../components/GTabs/GTabs';
-  import GTab from '../components/GTabs/GTab';
+  import GCard from '../components/GCard/GCard';
+  import GCardTitle from '../components/GCard/GCardTitle';
+  import {GCardText, GCardActions} from '../components/GCard/GCardFunctionalComponent'
+
   export default {
     name: 'DialogDemo',
-    components: { GTab, GTabs, GKeyboard, GSpacer, GToolbar, GLayout, GTextField, GButton, GDialog },
+    components: { GCardText, GCardActions, GCardTitle, GCard, GButton, GDialog },
     data() {
-      return{
-        show: false,
-				text: 'asd',
-				keyboard: [
-					{content: ['0'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key0', action: (value, append) => (value + append)},
-					{content: ['1'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key1', action: (value, append) => (value + append)},
-					{content: ['2'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key2', action: (value, append) => (value + append)},
-					{content: ['3'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key3', action: (value, append) => (value + append)},
-					{content: ['4'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key4', action: (value, append) => (value + append)},
-					{content: ['5'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key5', action: (value, append) => (value + append)},
-					{content: ['6'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key6', action: (value, append) => (value + append)},
-					{content: ['7'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key7', action: (value, append) => (value + append)},
-					{content: ['8'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key8', action: (value, append) => (value + append)},
-					{content: ['9'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: key9', action: (value, append) => (value + append)},
-					{content: ['.'], classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: comma', action: (value, append) => (value + append)},
-					{img: 'delivery/key_delete', classes: 'key-number bg-white ba-transparent waves-effect', style: 'grid-area: delete', action: value => value.substring(0, value.length-1)},
-				],
-				keyboardTemplate: 'grid-template: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 comma delete"/1fr 1fr 1fr',
-				discountItems: [
-					{content: '10%', value: 0.1},
-					{content: '15%', value: 0.15},
-					{content: '20%', value: 0.2},
-					{content: '25%', value: 0.25},
-					{content: '30%', value: 0.3},
-				],
-				tabActiveItem: null,
-				isNumber: value => !isNaN(value),
-				discountAmount: {value: ''},
-				number: {type: 'number', value: '', isActive: false},
-				percentage: {type: 'percentage', value: '', isActive: false},
-			}
-		},
-		computed: {
-      keyboardModel: {
-        get() {
-          return this.discountAmount.value;
-				},
-				set(value) {
-          this.discountAmount.value = value;
-          if(this.discountAmount.type === this.percentage.type) {
-            this.percentage = this.discountAmount;
-					} else if (this.discountAmount.type === this.number.type) {
-            this.number = this.discountAmount;
-					}
-				}
-			}
-		},
-		methods: {
-      close() {
-        this.show = false;
-			},
-			changeInput(type){
-        if(type === this.percentage.type) {
-          this.percentage.isActive = true;
-          this.number.isActive = false;
-          this.discountAmount = this.percentage;
-				} else if(type === this.number.type) {
-          this.percentage.isActive = false;
-          this.number.isActive = true;
-          this.discountAmount = this.number;
-				}
-			}
-		}
+      return {
+        dialog: false,
+        dialogPersistent: false,
+        dialogHideOverlay: false,
+        dialogOverflow: false,
+        dialogScrollable: false,
+        dialogFullscreen: false,
+      }
+    }
   }
 </script>
 
 <style scoped>
-	.tab__active {
-		border: 1px solid #1271ff !important;
-		color: #1271ff !important;
-		opacity: 1 !important;
-	}
 
-	.input__active {
-		border: 1px solid #1271ff !important;
-	}
 </style>

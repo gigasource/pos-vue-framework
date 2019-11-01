@@ -1,0 +1,24 @@
+@mixin states($material) {
+  &:hover::before {
+    opacity: 0.04;
+  }
+
+  &:focus::before {
+    opacity: 0.12;
+  }
+}
+
+&--active {
+  @include active-states($material);
+}
+
+@mixin active-states($material) {
+  &:hover::before,
+  &::before {
+    opacity: 0.12;
+  }
+
+  &:focus::before {
+    opacity: 0.16;
+  }
+}
