@@ -8,7 +8,9 @@
                          :items="items"
                          v-model="model"
                          @click:prev="calculateSliderStyle"
-                         @click:next="calculateSliderStyle">
+                         @click:next="calculateSliderStyle"
+                         dense
+          >
             <slot name="tabs">
               <g-tab v-for="(item, i) in items" :item="item" :key="i">
                 <g-icon v-if="icon && item.icon">{{item.icon}}</g-icon>
