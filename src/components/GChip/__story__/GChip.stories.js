@@ -1,6 +1,6 @@
 import { text, withKnobs, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import GChipNew from '../GChipNew';
+import GChip from '../GChip';
 import GIcon from '../../GIcon/GIcon';
 import GImg from '../../GImg/GImg';
 import GAvatar from '../../GAvatar/GAvatar';
@@ -11,7 +11,7 @@ export default {
 };
 
 export const DefaultChip = () => ({
-  components: { GChipNew },
+  components: { GChip },
   props: {
     text: { default: text('Chip Text', 'NORMAL CHIP') },
     close: { default: boolean('close', true) },
@@ -21,11 +21,11 @@ export const DefaultChip = () => ({
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
   },
-  template: `<g-chip-new x-large :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">{{text}}</g-chip-new>`,
+  template: `<g-chip x-large :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">{{text}}</g-chip>`,
 });
 
 export const OutlinedChip = () => ({
-  components: { GChipNew },
+  components: { GChip },
   props: {
     text: { default: text('Chip Text', 'OUTLINED CHIP') },
     filter: { default: boolean('filter', true) },
@@ -37,11 +37,11 @@ export const OutlinedChip = () => ({
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
   },
-  template: `<g-chip-new outlined :filter="filter" :active="active"  :disabled="disabled" :close="close" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-chip-new>`,
+  template: `<g-chip outlined :filter="filter" :active="active"  :disabled="disabled" :close="close" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-chip>`,
 });
 
 export const LabelChip = () => ({
-  components: { GChipNew, GIcon, GAvatar, GImg },
+  components: { GChip, GIcon, GAvatar, GImg },
   props: {
     showImg: { type: Boolean, default: boolean('showImg', true) },
     filter: { default: boolean('filter', false) },
@@ -54,7 +54,7 @@ export const LabelChip = () => ({
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
   },
-  template: `<g-chip-new :label="label" :filter="filter" x-large :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">
+  template: `<g-chip :label="label" :filter="filter" x-large :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">
                 <g-avatar class="g-avatar__left" v-if="showImg">
                  <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"> </g-img>
                 </g-avatar>   
@@ -62,11 +62,11 @@ export const LabelChip = () => ({
                 cake
                 </g-icon> 
 
-      {{text}}</g-chip-new>`,
+      {{text}}</g-chip>`,
       });
 
 export const PillChip = () => ({
-  components: { GChipNew, GIcon, GImg, GAvatar },
+  components: { GChip, GIcon, GImg, GAvatar },
   props: {
     text: { type: String, default: text('Chip Text', 'PILL CHIP') },
     showImg: { type: Boolean, default: boolean('showImg', true) },
@@ -81,7 +81,7 @@ export const PillChip = () => ({
     large: { type: Boolean, default: boolean('large', false) },
     xLarge: { type: Boolean, default: boolean('xLarge', false) },
   },
-  template: `<g-chip-new x-large :ripple="ripple" :close="close" :pill="pill" :filter="filter" :active="active" :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
+  template: `<g-chip x-large :ripple="ripple" :close="close" :pill="pill" :filter="filter" :active="active" :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
                 <g-avatar class="g-avatar__left" v-if="showImg">
                  <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"> </g-img>
                 </g-avatar>       
@@ -89,11 +89,11 @@ export const PillChip = () => ({
                 P
                 </g-avatar>
             {{text}}
-            </g-chip-new>`,
+            </g-chip>`,
 });
 
 export const AvatarChip = () => ({
-  components: { GChipNew, GAvatar, GImg },
+  components: { GChip, GAvatar, GImg },
   props: {
     text: { default: text('Chip Text', 'AVATAR CHIP') },
     close: { default: boolean('close', true) },
@@ -105,12 +105,12 @@ export const AvatarChip = () => ({
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
   },
-  template: `<g-chip-new x-large :ripple="ripple" :close="close" :filter="filter" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
+  template: `<g-chip x-large :ripple="ripple" :close="close" :filter="filter" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
                <g-avatar class="g-avatar__left">
                  <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"> </g-img>
                </g-avatar>    
                 {{text}}
-            </g-chip-new>`,
+            </g-chip>`,
 });
 
 

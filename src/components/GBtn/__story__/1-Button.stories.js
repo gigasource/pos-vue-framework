@@ -1,7 +1,6 @@
 import { text, withKnobs, boolean, number, array } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import GBtn from '../GBtn';
-import GBtnNew from '../GBtnNew';
 
 export default {
   title: 'Button',
@@ -18,7 +17,7 @@ export const test1 = () => ({
 })
 
 export const GBtnDefault = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     text: { default: text('Button Text', 'NORMAL BUTTON') },
     flat: { type: Boolean, default: boolean('flat', false) },
@@ -37,11 +36,11 @@ export const GBtnDefault = () => ({
     right: { type: Boolean, default: boolean('right', false) },
     tile: { type: Boolean, default: boolean('tile', false) },
   },
-  template: `<g-btn-new :tile="tile" :flat="flat" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :elevation="elevation" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn-new>`,
+  template: `<g-btn :tile="tile" :flat="flat" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :elevation="elevation" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn>`,
 })
 
 export const GBtnOutlined = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     text: { default: text('Button Text', 'OUTLINED BUTTON') },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
@@ -61,11 +60,11 @@ export const GBtnOutlined = () => ({
     tile: { type: Boolean, default: boolean('tile', false) },
 
   },
-  template: `<g-btn-new :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled"  :block="block" :text-color="textColor" :outlined="outlined" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn-new>`,
+  template: `<g-btn :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled"  :block="block" :text-color="textColor" :outlined="outlined" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn>`,
 })
 
 export const GBtnDepressed = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     text: { default: text('Button Text', 'DEPRESSED BUTTON') },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
@@ -85,11 +84,11 @@ export const GBtnDepressed = () => ({
     tile: { type: Boolean, default: boolean('tile', false) },
 
   },
-  template: `<g-btn-new :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled"  :block="block" :text-color="textColor" :depressed="depressed" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn-new>`,
+  template: `<g-btn :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled"  :block="block" :text-color="textColor" :depressed="depressed" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn>`,
 })
 
 export const GBtnText = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     textValue: { default: text('Button Text', 'TEXT BUTTON') },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
@@ -109,12 +108,12 @@ export const GBtnText = () => ({
     tile: { type: Boolean, default: boolean('tile', false) },
 
   },
-  template: `<g-btn-new :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :text="text" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{textValue}}</g-btn-new>`,
+  template: `<g-btn :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :text="text" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{textValue}}</g-btn>`,
 })
 
 
 export const GBtnRounded = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     textValue: { default: text('Button Text', 'ROUNDED BUTTON') },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
@@ -135,12 +134,12 @@ export const GBtnRounded = () => ({
     tile: { type: Boolean, default: boolean('tile', false) },
 
   },
-  template: `<g-btn-new :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled"  :block="block" :background-color="backgroundColor" :rounded="rounded" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{textValue}}</g-btn-new>`,
+  template: `<g-btn :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled"  :block="block" :background-color="backgroundColor" :rounded="rounded" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{textValue}}</g-btn>`,
 })
 
 
 export const GBtnFab = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     textValue: { default: text('Button Text', 'ROUNDED BUTTON') },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
@@ -160,13 +159,13 @@ export const GBtnFab = () => ({
     tile: { type: Boolean, default: boolean('tile', false) },
 
   },
-  template: `<g-btn-new :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :fab="fab" :background-color="backgroundColor" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
+  template: `<g-btn :tile="tile" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :fab="fab" :background-color="backgroundColor" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
               <i class="material-icons g-icon">android</i>
-            </g-btn-new>`,
+            </g-btn>`,
 })
 
 export const GBtnIcon = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     textValue: { default: text('Button Text', 'ROUNDED BUTTON') },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
@@ -184,13 +183,13 @@ export const GBtnIcon = () => ({
     right: { type: Boolean, default: boolean('right', false) },
 
   },
-  template: `<g-btn-new :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :icon="icon" :disabled="disabled" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
+  template: `<g-btn :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :icon="icon" :disabled="disabled" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
               <i class="material-icons g-icon">star</i>
-            </g-btn-new>`,
+            </g-btn>`,
 })
 
 export const GBtnGradient = () => ({
-  components: { GBtnNew },
+  components: { GBtn },
   props: {
     textValue: { default: text('Button Text', 'GRADIENT BUTTON') },
     xSmall: { type: Boolean, default: boolean('xSmall', false) },
@@ -209,9 +208,9 @@ export const GBtnGradient = () => ({
     gradientAngle: { type: String, default: text('gradientAngle', '120deg') },
     tile: { type: Boolean, default: boolean('tile', false) },
   },
-  template: `<g-btn-new :tile="tile" :gradient-angle="gradientAngle" :gradient="gradient" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right"  :disabled="disabled" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
+  template: `<g-btn :tile="tile" :gradient-angle="gradientAngle" :gradient="gradient" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right"  :disabled="disabled" :text-color="textColor" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
             {{textValue}}
-            </g-btn-new>`,
+            </g-btn>`,
 })
 
 export const test2 = () => ({

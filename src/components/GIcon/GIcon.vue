@@ -1,16 +1,16 @@
 <template>
 	<i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
 		 :aria-hidden="attributes.ariaHidden"
-		 :role="attributes.role">{{materialIconName}}</i>
+		 :role="attributes.role" @click="onClick">{{materialIconName}}</i>
 	<svg v-else-if="activeTags.svg" :class="iconClass" :style="iconStyle"
 			 :aria-hidden="attributes.ariaHidden"
 			 :role="attributes.role"
 			 xmlns="http://www.w3.org/2000/svg"
-			 viewBox="0 0 24 24">
+			 viewBox="0 0 24 24" @click="onClick">
 		<path :d="icon"></path>
 	</svg>
-	<img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle"/>
-	<span v-else-if="activeTags.slot">
+	<img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle" @click="onClick"/>
+	<span v-else-if="activeTags.slot" @click="onClick">
 		<slot></slot>
 	</span>
 </template>
@@ -151,6 +151,10 @@
         role: context.listeners.click ? 'button' : null
       }))
 
+			let onClick = (event) => {
+				context.emit('click', event);
+			}
+
       return {
         iconClass,
         iconStyle,
@@ -158,7 +162,8 @@
         activeTags,
         icon,
         materialIconName,
-      }
+				onClick,
+			}
     }
   }
 
