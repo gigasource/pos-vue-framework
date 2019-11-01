@@ -42,4 +42,10 @@
       }
     }
   }
+
+  &__inline {
+    .g-badge {
+      position: static;
+    }
+  }
 }
