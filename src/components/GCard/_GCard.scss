@@ -67,6 +67,12 @@
 
   &__shaped {
     border-radius: 24px 4px;
+    .g-image {
+      border-top-left-radius: inherit;
+      .g-image-content {
+        border-top-left-radius: inherit;
+      }
+    }
   }
 
   &__raised {
