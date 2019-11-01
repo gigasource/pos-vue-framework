@@ -44,8 +44,8 @@
       })
 
       const genNode = function ({ node, text, childrenVNodes, state, path }) {
-        const icon = node.icon && <g-icon class="g-treeview-icon">{node.icon}</g-icon>
-        if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path))) {
+        const icon = node.icon && <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}>{node.icon}</g-icon>
+        if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path+'.'))) {
           state.collapse = true
         }
         const children = childrenVNodes && <div vShow={!state.collapse} class="g-treeview-children">{childrenVNodes}</div>
@@ -72,7 +72,7 @@
             }
           },
         }
-        return <li class={[!state.collapse && childrenVNodes && openPath.value === path ? 'g-treeview__open' : null]}>
+        return <li class={!state.collapse && childrenVNodes && 'g-treeview__open'}>
           <a {...data}>
             {icon}
             {text}
@@ -147,9 +147,14 @@
 		}
 
 		&-icon {
-			margin: 16px;
+			margin: 12px 16px;
 			font-size: 20px !important;
 			color: rgba(0, 0, 0, .54);
+
+			&__small {
+				font-size: 12px !important;
+				margin: 16px 16px 16px 20px;
+			}
 		}
 
 		&-title {
@@ -195,12 +200,8 @@
 		}
 
 		&-children {
-			.g-treeview-icon {
-				font-size: 12px !important;
-			}
-
 			ul {
-				padding-left: 4px;
+				/*padding-left: 4px;*/
 			}
 		}
 	}
