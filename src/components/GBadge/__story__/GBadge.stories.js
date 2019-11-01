@@ -35,14 +35,39 @@ export const basic = () => ({
     showOnHover: {
       type: Boolean,
       default: boolean('Show on hover', false)
+    },
+    inline: {
+      type: Boolean,
+      default: boolean('Inline', false)
     }
   },
   template: `
-  <g-badge :overlay="overlay" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" v-model="show" style="margin: 12px">
+  <g-badge :overlay="overlay" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
     <template v-slot:badge>
       <g-icon x-small>notifications</g-icon>
     </template>
     <g-btn @click="show = !show">Toggle</g-btn>
+  </g-badge>
+  `
+})
+
+export const soloInline = () => ({
+  components: { GBadge, GIcon },
+  props: {
+    color: {
+      type: String,
+      default: text('Color', 'blue')
+    },
+    inline: {
+      type: Boolean,
+      default: boolean('Inline', true)
+    }
+  },
+  template: `
+  <g-badge :color="color" :inline="inline">
+    <template v-slot:badge>
+      <g-icon x-small>notifications</g-icon>
+    </template>
   </g-badge>
   `
 })
