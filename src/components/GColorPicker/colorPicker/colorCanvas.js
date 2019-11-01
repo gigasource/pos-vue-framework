@@ -33,7 +33,7 @@ export function getRenderCanvasFn(props, context, state, updateColor) {
   }))
 
   onMounted(() => {
-    watch(() => state.color.hue, () => updateCanvas(context.refs[canvasRef], state.color.hue))
+    props.showColorPicker && watch(() => state.color.hue, () => updateCanvas(context.refs[canvasRef], state.color.hue))
   })
 
   function emitColor(x, y) {

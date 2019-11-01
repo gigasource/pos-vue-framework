@@ -1,6 +1,7 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 import GColorPicker from '../GColorPicker'
+import { reactive } from '@vue/composition-api';
 //
 export default {
   title: 'GColorPicker',
@@ -10,10 +11,66 @@ export default {
 export const test2 = () => ({
   components: { GColorPicker },
   setup() {
-    return () => (<div><
-      g-color-picker></g-color-picker>
-    </div>
 
-    )
+    const state = reactive({
+      currentColor: '',
+      currentColorName: ''
+    })
+
+
+    const inputStyle = {
+      border: '1px solid #0003',
+      borderRadius: '2px',
+      width: '300px',
+      height: '30px',
+      padding: '5px'
+    }
+
+    const previewStyle = {
+      display: 'inline-flex',
+      width: '30px',
+      height: '15px',
+      marginLeft: '-37px',
+      marginRight: '7px'
+    }
+
+    const activatorStyle = {
+      border: '1px solid #0003',
+      borderRadius: 0,
+      background: 'transparent',
+      width: '30px',
+      height: '30px',
+    }
+
+    const slotScoped = {
+      default: (scope) => (
+          <div style='display: flex; align-items: center;'>
+            <input type='text' value={state.currentColorName} style={inputStyle}/>
+            <span style={{...previewStyle, background: state.currentColor}}></span>
+            <button type='button' style={activatorStyle} vOn:click={() => scope.toggleColorPicker()}>...</button>
+          </div>
+      )
+    }
+
+    return () => (
+        <div data-app style='position: absolute; left: 200px; top: 200px'>
+          <g-color-picker
+              scopedSlots={slotScoped}
+              vOn:updatecolor={(color) => {
+                state.currentColor = color
+                state.currentColorName = color
+              }}
+              vOn:updateswatches={(color) => {
+                state.currentColor = color.value
+                state.currentColorName = color.name
+              }}
+              vOn:updategradient={(color) => {
+                state.currentColor = `linear-gradient(${color.angle}, ${color.colorStop1}, ${color.colorStop2})`
+                state.currentColorName = color.name
+              }}
+              show-swatches
+              show-gradient
+          ></g-color-picker>
+        </div>)
   }
 })

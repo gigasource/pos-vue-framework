@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { ref } from '@vue/composition-api'
+  import { ref, reactive, onMounted, computed } from '@vue/composition-api'
   // slider used in colorPicker/adjustPreview
   import GSlider from '../GInput/GSlider'
   // tooltip used in gradientColors & swatches
@@ -12,48 +12,103 @@
   import getSwatchesRenderFn from './swatches'
   import getGradientRenderFn from './gradientColors'
   import getColorPickerRenderFn from './colorPicker'
+  import detachable from '../../mixins/detachable';
 
   export default {
     name: 'GColorPicker',
     components: { GTabItem, GTabItems, GTab, GToolTip, GSlider, GTabs },
     props: {
       disabled: Boolean,
+      showSwatches: {
+        type: Boolean,
+        default: false
+      },
+      showGradient: {
+        type: Boolean,
+        default: false,
+      },
+      showColorPicker: {
+        type: Boolean,
+        default: true
+      },
       width: {
         type: [String, Number],
         default: 300
       }
     },
     setup(props, context) {
+      const activatorRef = 'activator'
+      const colorPickerRef = 'colorPicker'
+      const { attachToRoot } = detachable(props, context);
+
+      const state = reactive({
+        show: false,
+        colorPickerLocation: {
+          x: 0,
+          y: 0
+        }
+      })
+
       let model = ref(null)
-      const emitColor = color => context.emit('update:color', color)
-      const emitGradient = gradient => context.emit('update:gradient', gradient)
+      const emitColor = color => context.emit('updatecolor', color)
+      const emitSwatches = color => context.emit('updateswatches', color)
+      const emitGradient = gradient => context.emit('updategradient', gradient)
 
       const renderColorPicker = getColorPickerRenderFn(props, context, emitColor)
-      const renderSwatches = getSwatchesRenderFn(colorModel => emitColor(colorModel.value))
+      const renderSwatches = getSwatchesRenderFn(emitSwatches)
       const renderGradientColors = getGradientRenderFn(emitGradient)
 
-      const tabItems = [
-        { title: 'swatches', renderFn: renderSwatches },
-        { title: 'gradient', renderFn: renderGradientColors },
-        { title: 'color picker', renderFn: renderColorPicker }
-      ]
+      const tabItems = []
+      props.showSwatches && tabItems.push({ title: 'swatches', renderFn: renderSwatches })
+      props.showGradient && tabItems.push({ title: 'gradient', renderFn: renderGradientColors })
+      props.showColorPicker && tabItems.push({ title: 'color picker', renderFn: renderColorPicker })
+
+      onMounted(() => attachToRoot(context.refs[colorPickerRef]))
+
+      const activatorScope = {
+        toggleColorPicker: () => {
+          state.show = !state.show
+          if (state.show) {
+            const {bottom, left} = context.refs[activatorRef].getBoundingClientRect()
+            state.colorPickerLocation = {
+              x: left,
+              y: bottom
+            }
+          }
+        }
+      }
+
+      const cptColorPickerStyle = computed(() => ({
+        position: 'fixed',
+        left: `${state.colorPickerLocation.x}px`,
+        top: `${state.colorPickerLocation.y}px`
+      }))
 
       return function renderFn() {
         return (
-            <div class='g-color-picker' style={{ width: `${props.width}px` }}>
-              <g-tabs items={tabItems} vModel={model.value} sliderSize={2}>
-                <g-tab-items items={tabItems} vModel={model.value}>
-                  {
-                    _.map(tabItems, (item, index) =>
-                        <g-tab-item key={index} item={item}>
-                          <div class='g-color-picker__tab-content'>
-                            {item.renderFn()}
-                          </div>
-                        </g-tab-item>
-                    )
-                  }
-                </g-tab-items>
-              </g-tabs>
+            <div class='g-color-picker'
+                 style={{ width: `${props.width}px` }}>
+              <div ref={activatorRef}>
+                {context.slots.default(activatorScope)}
+              </div>
+
+              <div vShow={state.show}
+                   ref={colorPickerRef}
+                   style={cptColorPickerStyle.value}>
+                <g-tabs items={tabItems} vModel={model.value} sliderSize={2}>
+                  <g-tab-items items={tabItems} vModel={model.value}>
+                    {
+                      _.map(tabItems, (item, index) =>
+                          <g-tab-item key={index} item={item}>
+                            <div className='g-color-picker__tab-content'>
+                              {item.renderFn()}
+                            </div>
+                          </g-tab-item>
+                      )
+                    }
+                  </g-tab-items>
+                </g-tabs>
+              </div>
             </div>
         )
       }
