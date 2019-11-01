@@ -59,9 +59,9 @@
       const renderGradientColors = getGradientRenderFn(emitGradient)
 
       const tabItems = []
-      props.showSwatches && tabItems.push({ title: 'swatches', renderFn: renderSwatches })
-      props.showGradient && tabItems.push({ title: 'gradient', renderFn: renderGradientColors })
-      props.showColorPicker && tabItems.push({ title: 'color picker', renderFn: renderColorPicker })
+      props.showSwatches && tabItems.push({ title: 'swatches', icon: '#F00', renderFn: renderSwatches })
+      props.showGradient && tabItems.push({ title: 'gradient', icon: '#FF0', renderFn: renderGradientColors })
+      props.showColorPicker && tabItems.push({ title: 'color picker', icon: '#0F0', renderFn: renderColorPicker })
 
       onMounted(() => attachToRoot(context.refs[colorPickerRef]))
 
@@ -80,11 +80,29 @@
 
       const cptColorPickerStyle = computed(() => ({
         position: 'fixed',
+        width: '322px',
+        border: '1px solid #0009',
+        borderBottom: 'none',
         left: `${state.colorPickerLocation.x}px`,
         top: `${state.colorPickerLocation.y}px`
       }))
 
       return function renderFn() {
+        const tabHeaderStyle = {
+          width: '30px',
+          height: '30px',
+          borderRadius: '100%',
+          border: '1px solid #0009',
+        }
+
+        const tabSlotsObj = {
+          tabs: () =>
+              tabItems.map((tabItem, i) =>
+                  <g-tab item={tabItem}>
+                    <div style={ {...tabHeaderStyle, background: tabItem.icon } }></div>
+                  </g-tab>)
+        }
+
         return (
             <div class='g-color-picker'
                  style={{ width: `${props.width}px` }}>
@@ -95,12 +113,15 @@
               <div vShow={state.show}
                    ref={colorPickerRef}
                    style={cptColorPickerStyle.value}>
-                <g-tabs items={tabItems} vModel={model.value} sliderSize={2}>
+                <g-tabs items={tabItems}
+                        vModel={model.value}
+                        scopedSlots={tabSlotsObj}
+                        sliderColor='transparent'>
                   <g-tab-items items={tabItems} vModel={model.value}>
                     {
                       _.map(tabItems, (item, index) =>
                           <g-tab-item key={index} item={item}>
-                            <div className='g-color-picker__tab-content'>
+                            <div class='g-color-picker__tab-content'>
                               {item.renderFn()}
                             </div>
                           </g-tab-item>
@@ -121,6 +142,11 @@
   @import 'colorPicker';
 
   .g-color-picker__tab-content {
-    margin-top: 20px; /*g-tabs issue work-around*/
+    /*margin-top: 20px; !*g-tabs issue work-around*!*/
+    width: 322px;
+    padding: 20px 10px;
+    border: 1px solid #0009;
+    border-top: none;
+    border-radius: 0px 0px 5px 5px;
   }
 </style>
