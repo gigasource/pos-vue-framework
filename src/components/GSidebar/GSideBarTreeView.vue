@@ -64,11 +64,11 @@
           on: {
             click: (e) => {
               e.stopPropagation()
-              activePath.value = path;
               if (childrenVNodes) {
                 state.collapse = !state.collapse;
                 openPath.value = path
-              }
+              } else
+              	activePath.value = path;
             }
           },
         }
@@ -94,7 +94,7 @@
       }
 
       const genRootWrapper = function (childrenVNodes) {
-        return <ul>{childrenVNodes}</ul>
+        return <ul class="g-treeview-wrapper">{childrenVNodes}</ul>
       }
 
       const cptExpandLevel = computed(() => props.expandLevel)
@@ -121,6 +121,26 @@
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
+	}
+
+	.g-treeview-wrapper {
+		overflow-y: auto;
+
+		/* TODO custom scrollbar */
+		/*&:hover::-webkit-scrollbar {*/
+		/*	width: 6px;*/
+		/*	display: block;*/
+		/*}*/
+
+		/*&::-webkit-scrollbar {*/
+		/*	width: 6px;*/
+		/*	display: none;*/
+		/*}*/
+
+		/*&::-webkit-scrollbar-thumb{*/
+		/*	background-color: rgba(170, 170, 170, 0.6);*/
+		/*	border-radius: 4px;*/
+		/*}*/
 	}
 
 	li {
@@ -176,6 +196,14 @@
 
 		&__open {
 			background-color: rgba(0, 0, 0, .035);
+
+			> .g-treeview-item {
+				border-radius: 0;
+			}
+
+			.g-treeview__open {
+				background-color: rgba(0, 0, 0, .015);
+			}
 		}
 
 		&__active {
