@@ -2,9 +2,9 @@ import { computed } from '@vue/composition-api'
 import { convertToUnit } from '../../../utils/helpers';
 
 export default (props, context) => {
-  let classes = computed(() => {
-    let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : null;
-    let _classes = {
+  const classes = computed(() => {
+    const elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : null;
+    const _classes = {
       'g-card': true,
       'waves-effect': props.ripple,
       'g-card__flat': props.flat,
@@ -23,7 +23,7 @@ export default (props, context) => {
     return _classes;
   });
 
-  let styles = computed(() => {
+  const styles = computed(() => {
     return {
       ...props.img && { backgroundImage: `url("${props.img}"` },
       ...props.backgroundColor && { backgroundColor: convertToUnit(props.backgroundColor) },

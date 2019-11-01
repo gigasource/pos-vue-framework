@@ -20,7 +20,7 @@
       tile: Boolean,
     },
     setup(props, context) {
-      let classes = computed(() => ({
+      const classes = computed(() => ({
         'g-avatar': true,
         'g-avatar__left': props.left,
         'g-avatar__tile': props.tile,
@@ -28,7 +28,7 @@
         ...textColorOutput.value && textColorOutput.value.class
       }));
 
-      let styles = computed(() => ({
+      const styles = computed(() => ({
         height: convertToUnit(props.size),
         width: convertToUnit(props.size),
         minWidth: convertToUnit(props.size),
@@ -39,13 +39,13 @@
         ...textColorOutput.value && textColorOutput.value.style,
       }));
 
-      let backgroundColorOutput = computed(() => {
+      const backgroundColorOutput = computed(() => {
         if (props.backgroundColor) {
           return props.backgroundColor && setBackgroundColor(props.backgroundColor, {})
         }
       });
 
-      let textColorOutput = computed(() => {
+      const textColorOutput = computed(() => {
         return props.textColor && setTextColor(props.textColor, {})
       });
 

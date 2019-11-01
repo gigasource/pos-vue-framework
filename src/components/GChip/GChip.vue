@@ -3,7 +3,7 @@
   import Ripple from '../../directives/ripple/ripple';
   import GBtn from '../GBtn/GBtn';
   import GChipUtils from './logic/GChipUtils';
-  import { onMounted, ref } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
 
   export default {
     name: 'GChip',
@@ -41,16 +41,10 @@
       Ripple
     },
     setup(props, context) {
-      let { getSizeClass, classes, styles } = GChipUtils(props, context);
-      let hasAvatarIcon = ref(false);
-
-      function hasAvatarOrIcon() {
+      const { getSizeClass, classes, styles } = GChipUtils(props, context);
+      const hasAvatarIcon = computed(() => {
         let nodes = context.slots.default();
         return nodes[0] && nodes[0].componentInstance && (nodes[0].componentInstance.$options.name === 'GAvatar' || nodes[0].componentInstance.$options.name === 'GIcon');
-      }
-
-      onMounted(() => {
-        hasAvatarIcon.value = hasAvatarOrIcon();
       });
 
       function genPrepend() {
@@ -69,8 +63,6 @@
             <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
           </div>
         }
-
-
       }
 
       function genAppend() {
@@ -104,7 +96,8 @@
       return {
         genChip
       }
-    }, render(createElement, context) {
+    },
+    render() {
       return this.genChip();
     }
   }

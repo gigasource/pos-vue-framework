@@ -29,17 +29,17 @@ export default (props, context) => {
     return 'g-size__default';
   }
 
-  let backgroundColorOutput = computed(() => {
+  const backgroundColorOutput = computed(() => {
     if (props.backgroundColor) {
       return props.backgroundColor && setBackgroundColor(props.backgroundColor, {})
     }
   });
 
-  let textColorOutput = computed(() => {
+  const textColorOutput = computed(() => {
     return props.textColor && setTextColor(props.textColor, {})
   });
 
-  let styles = computed(() => {
+  const styles = computed(() => {
     let _styles = {
       ...backgroundColorOutput.value && backgroundColorOutput.value.style,
       ...textColorOutput.value && textColorOutput.value.style,

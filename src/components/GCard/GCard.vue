@@ -40,9 +40,16 @@
       const { classes, styles } = GCardUtils(props, context);
 
       function genCard() {
-        return <div class={classes.value} style={styles.value} vOn:click={(event) => {
-          context.emit('click', event)
-        }}>
+        const nodeData = {
+          class: classes.value,
+          style: styles.value,
+          on: {
+            click: (event) => {
+              context.emit('click', event)
+            }
+          }
+        }
+        return <div {...nodeData}>
           {context.slots.default()}
         </div>
       }

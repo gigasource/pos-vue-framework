@@ -59,7 +59,7 @@ export default (props, context) => {
     return _classes;
   });
 
-  let elevationClasses = computed(() => {
+  const elevationClasses = computed(() => {
     const elevation = props.elevation;
     if (!!elevation) {
       return {};
@@ -72,19 +72,19 @@ export default (props, context) => {
     return { [`g-btn__elevation-${props.elevation}`]: true }
   });
 
-  let isRound = computed(() => {
+  const isRound = computed(() => {
     return props.icon || props.fab;
   });
 
-  let isFlat = computed(() => {
+  const isFlat = computed(() => {
     return props.text || props.icon || props.outlined;
   });
 
-  let contained = computed(() => {
+  const contained = computed(() => {
     return !isFlat.value && !props.depressed && !props.elevation;
   });
 
-  let styles = computed(() => {
+  const styles = computed(() => {
     let _styles = {
       ...props.textColor && { color: props.textColor.replace('-', '') },
       ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
