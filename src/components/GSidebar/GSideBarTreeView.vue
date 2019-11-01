@@ -4,10 +4,11 @@
   import GDivider from '../GLayout/GDivider';
   import GIcon from '../GIcon/GIcon';
   import { GExpandTransition } from '../transition/transition';
+  import GBadge from '../GBadge/GBadge';
 
   export default {
     name: 'GSideBarTreeView',
-    components: { GIcon, GDivider, GExpandTransition },
+    components: { GBadge, GIcon, GDivider, GExpandTransition },
     props: {
       itemText: {
         type: [Function, String]
@@ -48,17 +49,34 @@
           state.collapse = true
         }
         const children = childrenVNodes && <div vShow={!state.collapse} class="g-treeview-children">{childrenVNodes}</div>
+        const scopedSlots = {
+					badge: scope => <span>{node.badge}</span>
+        }
+        const badge = node.badge && <g-badge inline color={node.badgeColor} scopedSlots={scopedSlots} style={childrenVNodes ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
+        const data = {
+          class: [node.type !== 'subheader' && node.type !== 'divider'
+            ? 'g-treeview-item waves-effect'
+            : null,
+            props.rounded ? 'g-treeview-item__rounded' : null,
+            !childrenVNodes && activePath.value === path
+              ? 'g-treeview__active'
+              : null],
+          on: {
+            click: (e) => {
+              e.stopPropagation()
+              activePath.value = path;
+              if (childrenVNodes) {
+                state.collapse = !state.collapse;
+                openPath.value = path
+              }
+            }
+          },
+        }
         return <li class={[!state.collapse && childrenVNodes && openPath.value === path ? 'g-treeview__open' : null]}>
-          <a class={[node.type === 'subheader' ? null : 'g-treeview-item waves-effect', props.rounded ? 'g-treeview-item__rounded' : null, !childrenVNodes && activePath.value === path ? 'g-treeview__active' : null]}
-             vOn:click_stop={() => {
-               activePath.value = path;
-               if (childrenVNodes) {
-                 state.collapse = !state.collapse;
-                 openPath.value = path
-               }
-             }}>
+          <a {...data}>
             {icon}
             {text}
+            {badge}
             <span
               class='g-treeview-action'
               vShow={childrenVNodes}>
@@ -99,83 +117,91 @@
 </script>
 
 <style scoped lang="scss">
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
+	ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
 
-  li {
-    padding: 0;
-  }
+	li {
+		padding: 0;
+	}
 
-  .g-treeview {
-    &-item {
-      display: flex;
-      align-items: center;
-      contain: layout;
+	.g-treeview {
+		&-item {
+			display: flex;
+			align-items: center;
+			contain: layout;
+			margin-right: 8px;
+			transition: none;
+			color: rgba(0, 0, 0, .87);
 
-      &:not(.g-treeview-subheader):hover {
-        margin-right: 8px;
-        background: rgba(0, 0, 0, 0.12);
+			&:not(.g-treeview-subheader):hover {
+				background: rgba(0, 0, 0, 0.035);
+			}
 
-        > .g-treeview-action {
-          /*margin-right: 8px;*/
-        }
-      }
+			&__rounded {
+				border-top-right-radius: 32px;
+				border-bottom-right-radius: 32px;
+			}
+		}
 
-      &__rounded {
-        border-top-right-radius: 32px;
-        border-bottom-right-radius: 32px;
-      }
-    }
+		&-icon {
+			margin: 16px;
+			font-size: 20px !important;
+			color: rgba(0, 0, 0, .54);
+		}
 
-    &-icon {
-      margin: 16px;
-      font-size: 20px !important;
-    }
+		&-title {
+			font-size: 14px;
+			line-height: 1.75;
+			flex: 1 1 100%;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
 
-    &-title {
-      font-size: 14px;
-      line-height: 1.75;
-      flex: 1 1 100%;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
+		&-action {
+			margin-right: 16px;
 
-    &-action {
-      margin-right: 16px;
-    }
+			> .g-icon {
+				font-size: 18px !important;
+				color: rgba(0, 0, 0, .54);
+			}
+		}
 
-    &__open {
-      background-color: rgba(0, 0, 0, .035);
-    }
+		&__open {
+			background-color: rgba(0, 0, 0, .035);
+		}
 
-    &__active {
-      margin-right: 8px;
-      background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
-    }
+		&__active {
+			background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
+			color: white;
 
-    &-subheader {
-      display: flex;
-      align-items: center;
-      height: 48px;
-      padding: 0 16px;
-      font-size: 14px;
-      font-weight: 400;
-      color: rgba(0, 0, 0, 0.54);
-      pointer-events: none;
-      cursor: default;
-    }
+			.g-icon {
+				color: inherit;
+			}
+		}
 
-    &-children {
-      .g-treeview-icon {
-        font-size: 12px !important;
-      }
+		&-subheader {
+			display: flex;
+			align-items: center;
+			height: 48px;
+			padding: 0 16px;
+			font-size: 14px;
+			font-weight: 400;
+			color: rgba(0, 0, 0, 0.54);
+			pointer-events: none;
+			cursor: default;
+		}
 
-      ul {
-        padding-left: 4px;
-      }
-    }
-  }
+		&-children {
+			.g-treeview-icon {
+				font-size: 12px !important;
+			}
+
+			ul {
+				padding-left: 4px;
+			}
+		}
+	}
 </style>

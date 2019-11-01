@@ -91,7 +91,7 @@ export const treeView = () => ({
 
     const data = ref([
       {
-        title: 'Dashboard', icon: 'settings_input_svideo',
+        title: 'Dashboard', icon: 'settings_input_svideo', badge: '3', badgeColor: 'orange',
         items: [
           { title: 'Modern', icon: 'radio_button_unchecked' },
           { title: 'eCommerce', icon: 'radio_button_unchecked' },
@@ -107,7 +107,7 @@ export const treeView = () => ({
       },
       { type: 'divider' },
       { subheader: 'APPLICATIONS', type: 'subheader' },
-      { title: 'Mail', icon: 'mail_outline' },
+      { title: 'Mail', icon: 'mail_outline', badge: '5 new', badgeColor: 'pink accent 2' },
       { title: 'Chat', icon: 'chat_bubble_outline' },
       { title: 'ToDo', icon: 'check' },
       { title: 'Contacts', icon: 'import_contacts' },
@@ -141,7 +141,7 @@ export const treeView = () => ({
         ]
       },
       {
-        title: 'User', icon: 'face',
+        title: 'User', icon: 'face', badge: '10', badgeColor: 'purple',
         items: [
           { title: 'User Profile', icon: 'radio_button_unchecked' },
           { title: 'Login', icon: 'radio_button_unchecked' },
