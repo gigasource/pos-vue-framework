@@ -21,6 +21,7 @@
     "dayjs": "^1.8.16",
     "lodash": "4.17.15",
     "material-design-icons-iconfont": "^5.0.1",
+    "portal-vue": "^2.1.6",
     "sass": "^1.22.12",
     "traverse": "^0.6.6",
     "vue": "2.6.10",
