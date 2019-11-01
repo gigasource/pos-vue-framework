@@ -1,12 +1,11 @@
-.menu {
+.g-menu {
   display: inline;
   position: relative;
 
-  &-content {
+  &--content {
     z-index: $z-index-menu;
     position: absolute;
     display: inline-block;
-    max-width: 80%;
     overflow-y: auto;
     overflow-x: hidden;
     contain: content;

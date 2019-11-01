@@ -1,9 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import KeyboardDemo from '@/view/KeyboardDemo';
-import OrderDefault from '@/view/OrderDefault';
 import Groupable from '@/view/Groupable';
-import Payment from '@/view/Payment';
 import MenuDemo from '@/view/MenuDemo';
 import SliderDemo from '../view/SliderDemo';
 import CardDemo from '../view/CardDemo';
@@ -18,14 +16,15 @@ import TransitionDemo from '../view/TransitionDemo';
 import ChipDemo from '../view/ChipDemo';
 import ListDemo from '../view/ListDemo';
 import List2Demo from "../view/List2Demo";
+import DndDialogDemo from '../view/DndDialogDemo';
 import GChipGroupDemo from '../view/GChipGroupDemo';
+import SlideGroupDemo from '../view/SlideGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
+import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
-  { path: '/order-default', name: 'OrderDefault', component: OrderDefault},
   { path: '/groupable', name: 'Groupable', component: Groupable},
-  { path: '/payment', name: 'Payment', component: Payment},
   { path: '/slider', name: 'Slider', component: SliderDemo},
   { path: '/menu-demo', name: 'Menu', component: MenuDemo},
   { path: '/overlay-demo', name: 'Overlay', component: OverlayDemo},
@@ -40,7 +39,10 @@ const routes = [
   { path: '/transition-demo', name: 'Transition', component: TransitionDemo},
   { path: '/chip-group', name: 'Chip Group', component: GChipGroupDemo},
   { path: '/list-demo', name: 'List', component: List2Demo},
-  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker}
+  { path: '/slide-group', name: 'SlideGroup', component: SlideGroupDemo},
+  { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo}
 ];
 
 const router = new VueRouter({
