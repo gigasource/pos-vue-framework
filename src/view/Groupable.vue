@@ -27,7 +27,7 @@
 
 		<g-tabs v-model="activeItem">
 			<template v-slot:tabs="{toggle, isActive}">
-				<g-tab v-for="(item, index) in items" :key="index">
+				<g-tab v-for="(item, index) in items" :item="item" :key="index">
 					<g-button width="200px"
 										@click="toggle(item)"
 										:key="index"
@@ -41,6 +41,10 @@
 			<template v-slot:default="{isActive}">
 				<g-tab-item v-for="(item, index) in items" :key="index" v-if="isActive(item)">
 					{{item}}
+					<g-radio-group>
+						<g-radio label="111"></g-radio>
+						<g-radio label="222"></g-radio>
+					</g-radio-group>
 				</g-tab-item>
 			</template>
 		</g-tabs>

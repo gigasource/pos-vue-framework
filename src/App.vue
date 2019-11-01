@@ -2,9 +2,7 @@
 	<div id="app" class="body-wrapper__responsive__vertical" data-app>
 		<g-layout vertical v-if="$route.path === '/'">
 			<router-link to="/keyboard-demo">Keyboard Demo</router-link>
-			<router-link to="/order-default">OrderDefault</router-link>
 			<router-link to="/groupable">Groupable</router-link>
-			<router-link to="/payment">Payment</router-link>
 			<router-link to="/slider">Slider demo</router-link>
 			<router-link to="/menu-demo">Menu</router-link>
 			<router-link to="/pulse-demo">Pulse</router-link>

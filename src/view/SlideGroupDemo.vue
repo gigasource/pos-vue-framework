@@ -12,8 +12,8 @@
         <g-btn v-for="(item, index) in items"
                :key="index"
                @click="toggle(item)"
-               :active="active(item)"
-               :class="[active(item) ? activeClass : {}]">
+               :active="isActive(item)"
+               :class="[isActive(item) ? activeClass : {}]">
           {{item.text}}
         </g-btn>
       </template>
@@ -30,8 +30,8 @@
       <template v-slot:prev>
         <i class="material-icons">remove</i>
       </template>
-      <template v-slot:content="{toggle, active}">
-        <g-card v-for="(n, i) in items2" width="200px" height="300px" @click="toggle(n)" :active="active(n)" :key="i">
+      <template v-slot:default="{toggle, isActive}">
+        <g-card v-for="(n, i) in items2" width="200px" height="300px" @click="toggle(n)" :active="isActive(n)" :key="i">
           <g-card-text>
             <p>
               {{n.cardText}}</p>
