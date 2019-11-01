@@ -1,19 +1,3 @@
-<template>
-	<div :class="classes">
-		<slot name="header" :toggle="toggleItem" :is-active-item="isActiveItem" :is-completed="isCompleted">
-			<g-stepper-header ref="header">
-				<template v-for="(step, index) in steps">
-					<g-stepper-step @click="toggleItem" :step="step" :index="index" :isActive="isActiveItem(step)" :complete="isCompleted(index)" :editable="editable">
-						<slot name="step">Step {{index + 1}}</slot>
-					</g-stepper-step>
-					<g-divider :vertical="vertical" v-if="index !== steps.length-1"></g-divider>
-				</template>
-			</g-stepper-header>
-		</slot>
-		<slot></slot>
-	</div>
-</template>
-
 <script>
   import { computed, onMounted, reactive, ref, watch } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
@@ -39,11 +23,10 @@
       editable: Boolean,
     },
     setup(props, context) {
+      const content = ref([]);
+      const isReverse = ref(false);
 
-      let content = ref([]);
-      let isReverse = ref(false);
-
-      let classes = computed(() => ({
+      const classes = computed(() => ({
         'g-stepper': true,
         'g-stepper__alt-labels': props.altLabels,
         'g-stepper__vertical': props.vertical,
@@ -51,39 +34,91 @@
         'g-stepper__non-linear': props.nonLinear,
       }));
 
-      let internalData = reactive({ steps: props.steps, step: model });
+      const internalData = reactive({ steps: props.steps, step: model });
 
-      // //TODO: CURRENTLY NOT THE SAME AS VUETIFY
       onMounted(() => {
         model.value = props.value || internalData.steps[0];
       });
 
       const completes = ref([]);
-      for(let step of props.steps) {
+      for (let step of props.steps) {
         completes.value.push(false);
-			}
+      }
 
       const { model } = getVModel(props, context);
       const { toggleItem, isActiveItem } = groupable({ mandatory: true, multiple: false }, model);
 
       watch(() => model.value, (newVal, oldVal) => {
-        const oldIndex = props.steps.findIndex(s => s === oldVal)
+        const oldIndex = props.steps.findIndex(s => s === oldVal);
         completes.value[oldIndex] = true
-      }, {lazy:true, flush: 'pre'})
+      }, { lazy: true, flush: 'pre' });
 
       let isCompleted = function (index) {
         return props.nonLinear ? completes.value[index] : Number(index) < props.steps.findIndex((i) => i === model.value);
       };
 
-      return {
-        classes,
-        content,
-        isReverse,
-        model,
-        toggleItem,
-        isActiveItem,
-        isCompleted,
+      function genStepSlot(index) {
+        return context.slots.step ? context.slots.step() : `Step ${index + 1}`
       }
+
+      function genStep(step, index) {
+        const nodeData = {
+          props: {
+            complete: isCompleted(index),
+            editable: props.editable,
+            index: index,
+            isActive: isActiveItem(step),
+            step: step
+          },
+          on: {
+            click: toggleItem
+          }
+        };
+
+        return <g-stepper-step {...nodeData}>
+          {genStepSlot(index)}
+        </g-stepper-step>
+      }
+
+      function genDivider() {
+        return <g-divider/>
+      }
+
+      function genHeader() {
+        return context.slots.header ? context.slots.header({ isCompleted, isActiveItem, toggle: toggleItem }) : <g-stepper-header ref="header">
+          {props.steps.map((step, index) => ([
+            genStep(step, index),
+            index !== props.steps.length - 1 ? genDivider() : null
+          ]))}
+        </g-stepper-header>
+      }
+
+      function genStepper() {
+        return <div class={classes.value}>
+          {genHeader()}
+          {context.slots.default()}
+        </div>
+      }
+
+			function genContent() {
+				return context.slots.default ? context.slots.default() : <div> </div>
+			}
+
+      function genVerticalStepper() {
+				return <div class={classes.value} style="display: block;">
+					{props.steps.map((step, index) => ([
+					genStep(step, index),
+					isActiveItem(step) ? genContent() : <div> </div>
+					]))}
+				</div>
+      }
+
+      return {
+        genStepper,
+        genVerticalStepper
+      }
+    }, render() {
+      return this.vertical ? this.genVerticalStepper() : this.genStepper();
     }
   }
 </script>
