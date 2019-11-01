@@ -14,11 +14,161 @@ export default {
 };
 
 
-export const GSlideGroupDefault = () => ({
+export const GSlideGroupSingleSelect = () => ({
   components: { GSlideGroup, GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle },
   props: {
-    multiple: { type: Boolean, default: boolean('multiple //Not reactive', false) },
-    mandatory: { type: Boolean, default: boolean('mandatory //Not reactive', false) },
+    multiple: { type: Boolean, default: boolean('multiple', false) },
+    mandatory: { type: Boolean, default: boolean('mandatory', false) },
+    showArrows: { type: Boolean, default: boolean('showArrows', false) },
+    prevIcon: { type: String },
+    nextIcon: { type: String },
+    centerActive: { type: Boolean, default: boolean('centerActive', false) },
+  },
+  data: () => ({
+    model: null,
+    activeItems: null,
+    items: [
+      { id: 1, text: 'BUTTON 1' },
+      { id: 2, text: 'BUTTON 2' },
+      { id: 3, text: 'BUTTON 3' },
+      { id: 4, text: 'BUTTON 4' },
+      { id: 5, text: 'BUTTON 5' },
+      { id: 6, text: 'BUTTON 6' },
+      { id: 7, text: 'BUTTON 7' },
+      { id: 8, text: 'BUTTON 8' },
+      { id: 9, text: 'BUTTON 9' },
+      { id: 10, text: 'BUTTON 10' },
+    ]
+  }),
+  template: `<div>
+                <g-slide-group
+                        :items="items"
+                        v-model="activeItems"
+                        :multiple="multiple"
+                        :mandatory="mandatory"
+                        :show-arrows="showArrows"
+                        :center-active="centerActive">
+                
+                      <template v-slot:default="{toggle, active}">
+                        <g-btn v-for="(item, index) in items"
+                               :key="index"
+                               @click="toggle(item)"
+                               :active="active"
+                               outlined
+                               :class="[active ? activeClass : {}]">
+                          {{item.text}}
+                        </g-btn>
+                      </template>
+                </g-slide-group>
+                <p>Active items: {{ activeItems}}</p>
+              </div>`
+})
+
+export const GSlideGroupMultipleSelect = () => ({
+  components: { GSlideGroup, GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle },
+  props: {
+    multiple: { type: Boolean, default: boolean('multiple', true) },
+    mandatory: { type: Boolean, default: boolean('mandatory', false) },
+    showArrows: { type: Boolean, default: boolean('showArrows', false) },
+    prevIcon: { type: String },
+    nextIcon: { type: String },
+    centerActive: { type: Boolean, default: boolean('centerActive', false) },
+  },
+  data: () => ({
+    model: null,
+    activeItems: null,
+    items: [
+      { id: 1, text: 'BUTTON 1' },
+      { id: 2, text: 'BUTTON 2' },
+      { id: 3, text: 'BUTTON 3' },
+      { id: 4, text: 'BUTTON 4' },
+      { id: 5, text: 'BUTTON 5' },
+      { id: 6, text: 'BUTTON 6' },
+      { id: 7, text: 'BUTTON 7' },
+      { id: 8, text: 'BUTTON 8' },
+      { id: 9, text: 'BUTTON 9' },
+      { id: 10, text: 'BUTTON 10' },
+    ]
+  }),
+  template: `<div>
+                <g-slide-group
+                        :items="items"
+                        v-model="activeItems"
+                        :multiple="multiple"
+                        :mandatory="mandatory"
+                        :show-arrows="showArrows"
+                        :center-active="centerActive">
+                
+                      <template v-slot:default="{toggle, active}">
+                        <g-btn v-for="(item, index) in items"
+                               :key="index"
+                               @click="toggle(item)"
+                               :active="active"
+                               outlined
+                               :class="[active ? activeClass : {}]">
+                          {{item.text}}
+                        </g-btn>
+                      </template>
+                </g-slide-group>
+                <p>Active items: {{ activeItems}}</p>
+              </div>`
+})
+
+export const GSlideGroupSingleMandatorySelect = () => ({
+  components: { GSlideGroup, GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle },
+  props: {
+    multiple: { type: Boolean, default: boolean('multiple', false) },
+    mandatory: { type: Boolean, default: boolean('mandatory', true) },
+    showArrows: { type: Boolean, default: boolean('showArrows', false) },
+    prevIcon: { type: String },
+    nextIcon: { type: String },
+    centerActive: { type: Boolean, default: boolean('centerActive', false) },
+  },
+  data: () => ({
+    model: null,
+    activeItems: null,
+    items: [
+      { id: 1, text: 'BUTTON 1' },
+      { id: 2, text: 'BUTTON 2' },
+      { id: 3, text: 'BUTTON 3' },
+      { id: 4, text: 'BUTTON 4' },
+      { id: 5, text: 'BUTTON 5' },
+      { id: 6, text: 'BUTTON 6' },
+      { id: 7, text: 'BUTTON 7' },
+      { id: 8, text: 'BUTTON 8' },
+      { id: 9, text: 'BUTTON 9' },
+      { id: 10, text: 'BUTTON 10' },
+    ]
+  }),
+  template: `<div>
+                <g-slide-group
+                        :items="items"
+                        v-model="activeItems"
+                        :multiple="multiple"
+                        :mandatory="mandatory"
+                        :show-arrows="showArrows"
+                        :center-active="centerActive">
+                
+                      <template v-slot:default="{toggle, active}">
+                        <g-btn v-for="(item, index) in items"
+                               :key="index"
+                               @click="toggle(item)"
+                               :active="active"
+                               outlined
+                               :class="[active ? activeClass : {}]">
+                          {{item.text}}
+                        </g-btn>
+                      </template>
+                </g-slide-group>
+                <p>Active items: {{ activeItems}}</p>
+              </div>`
+})
+
+export const GSlideGroupMultipleMandatorySelect = () => ({
+  components: { GSlideGroup, GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle },
+  props: {
+    multiple: { type: Boolean, default: boolean('multiple', true) },
+    mandatory: { type: Boolean, default: boolean('mandatory', true) },
     showArrows: { type: Boolean, default: boolean('showArrows', false) },
     prevIcon: { type: String },
     nextIcon: { type: String },
