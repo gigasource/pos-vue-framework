@@ -105,7 +105,7 @@ export default function getGradientRenderFn(onGradientSelected) {
                   vOn:click={() => onGradientSelected(gradient)}></span>
             }
 
-            return <g-tool-tip top open-on-hover scopedSlots={scopedSlot} color="#333">
+            return <g-tool-tip top open-on-hover scopedSlots={scopedSlot} color="#333" transition='none'>
               <div style={'display: flex; align-items: center'}>
                 <div>
                   <div style={{

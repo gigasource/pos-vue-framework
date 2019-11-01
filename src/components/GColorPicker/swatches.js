@@ -104,7 +104,7 @@ export default function getSwatchesRenderFn(onColorSelected) {
                         vOn:click={() => onColorSelected(pallet)}></span>
                   }
                   return (
-                      <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333">
+                      <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333" transition='none'>
                         <div style='display: flex; align-items: center;'>
                           <div style={{
                             ...tooltipContentStyleObj,
