@@ -1,37 +1,39 @@
 <template>
-  <div style="margin-left: auto; margin-right: auto; max-width: 900px; width: 100%; padding: 12px;" class="demo-wrapper">
+  <div class="demo-wrapper" style="margin-left: auto; margin-right: auto; max-width: 900px; width: 100%; padding: 12px;">
     <g-slide-group
+        :center-active="centerActive"
         :items="items"
-        v-model="activeItem"
-        :multiple="multiple"
         :mandatory="mandatory"
+        :multiple="multiple"
         :show-arrows="showArrows"
-        :center-active="centerActive">
+        v-model="activeItems">
 
-      <template v-slot:content="{toggle, active}">
-        <g-btn v-for="(item, index) in items"
+      <template v-slot:default="{toggle, active}">
+        <g-btn :active="active"
+               :class="[active ? activeClass : {}]"
                :key="index"
                @click="toggle(item)"
-               :active="isActive(item)"
-               :class="[isActive(item) ? activeClass : {}]">
+               v-for="(item, index) in items">
           {{item.text}}
         </g-btn>
       </template>
 
     </g-slide-group>
+    <p>Active items: {{activeItems}}</p>
 
     <g-slide-group
+        :center-active="centerActive"
+        :dense="dense"
         :items="items2"
-        v-model="activeItemCard"
-        :multiple="multiple"
         :mandatory="mandatory"
+        :multiple="multiple"
         :show-arrows="showArrows"
-        :center-active="centerActive">
+        v-model="activeItemCards">
       <template v-slot:prev>
-        <i class="material-icons">remove</i>
+        <g-icon>mdi-arrow-left</g-icon>
       </template>
       <template v-slot:default="{toggle, isActive}">
-        <g-card v-for="(n, i) in items2" width="200px" height="300px" @click="toggle(n)" :active="isActive(n)" :key="i">
+        <g-card :active="isActive(n)" :key="i" @click="toggle(n)" height="300px" v-for="(n, i) in items2" width="200px">
           <g-card-text>
             <p>
               {{n.cardText}}</p>
@@ -39,9 +41,10 @@
         </g-card>
       </template>
       <template v-slot:next>
-        <i class="material-icons">add</i>
+        <g-icon>mdi-arrow-right</g-icon>
       </template>
     </g-slide-group>
+    <p>Active items: {{activeItemCards}}}</p>
   </div>
 </template>
 
@@ -51,22 +54,22 @@
   import { GCardText } from '../components/GCard/GCardFunctionalComponent';
   import GCardTitle from '../components/GCard/GCardTitle';
   import GBtn from '../components/GBtn/GBtn';
+  import GIcon from '../components/GIcon/GIcon';
 
   export default {
     name: 'SlideGroupDemo',
-    components: { GBtn, GCardTitle, GCardText, GCard, GSlideGroup },
+    components: { GIcon, GBtn, GCardTitle, GCardText, GCard, GSlideGroup },
     data: () => ({
       model: null,
+      dense: false,
       multiple: true,
       mandatory: true,
       showArrows: true,
       prevIcon: false,
       nextIcon: false,
       centerActive: true,
-      activeItem: null,
-      activeItemCard: null,
-      activeItemCards: [],
-      activeItems: [],
+      activeItems: null,
+      activeItemCards: null,
       activeClass: {
         'button-active': true
       },
@@ -94,10 +97,6 @@
 </script>
 
 <style scoped>
-  .demo-wrapper * {
-    margin: 16px;
-  }
-
   .button-active {
     background-color: red;
     color: white;
