@@ -2,7 +2,7 @@
 import { createLocalVue } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
 import { fromHSVA } from '../GColorPickerUtil';
-import { HSVAtoRGBA } from '../../../../utils/colors';
+import { HSVAtoRGBA } from '../../../utils/colors';
 
 describe('/GColorPickerUtil', () => {
   createLocalVue().use(plugin)
