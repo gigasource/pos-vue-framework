@@ -56,7 +56,7 @@
 
         <slot :item="item" v-else>
           <div class="g-list-item"
-               :class="{'g-list-item__active': internalValue === item}"
+               :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}"
                @click="onSelect(item)">
             <slot name="prepend" :item="item">
               <div :class="prependClasses">
