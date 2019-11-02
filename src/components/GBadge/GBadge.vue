@@ -22,12 +22,17 @@
 				default: 'blue'
 			},
 			showOnHover: Boolean,
-			value: null,
+			inline: Boolean,
+			value: {
+			  type: Boolean,
+				default: true
+			},
 		},
 		setup(props) {
       const wrapperClasses = computed(() => ({
 				'g-badge-wrapper': true,
-				'g-badge__hover': props.showOnHover
+				'g-badge__hover': props.showOnHover,
+				'g-badge__inline': props.inline,
 			}));
 
 			const classes = computed(() => ({
@@ -43,7 +48,7 @@
 			});
 
 			const styles = computed(() => ({
-				transform: transform.value,
+				... !props.inline && { transform: transform.value },
 				... isCssColor(props.color) && { 'background-color': props.color },
 			}));
 
