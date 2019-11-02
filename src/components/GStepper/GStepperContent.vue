@@ -1,18 +1,10 @@
-<template>
-	<transition name="g-stepper-transition">
-		<div class="g-stepper-content" v-if="show">
-			<slot></slot>
-		</div>
-	</transition>
-</template>
-
 <script>
   import { computed, inject } from '@vue/composition-api'
-  import GLayout from '../GLayout/GLayout';
+  import { GExpandTransition } from '../transition/transition';
 
   export default {
     name: 'GStepperContent',
-    components: { GLayout },
+    components: { GExpandTransition },
     props: {
       step: null
     },
@@ -22,9 +14,24 @@
         return model.value === props.step
       });
 
-      return {
-        show
+      function genDefaultSlot() {
+        return context.slots.default && context.slots.default()
       }
+
+      function genContent() {
+        return <transition name="g-stepper-transition">
+          <div className="g-stepper-content" vShow={show.value}>
+            {genDefaultSlot()}
+          </div>
+        </transition>
+      }
+
+      return {
+        genContent
+      }
+    },
+    render() {
+      return this.genContent()
     }
   }
 </script>

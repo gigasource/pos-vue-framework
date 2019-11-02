@@ -34,6 +34,9 @@
 
   &-contents {
     contain: layout;
+    padding: 16px;
+    overflow: hidden;
+    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
   }
 
   &-content {
@@ -57,6 +60,10 @@
     .g-stepper-header {
       flex-direction: column;
       flex: 0 1 0;
+    }
+
+    .g-stepper-contents {
+      padding: 0;
     }
   }
 

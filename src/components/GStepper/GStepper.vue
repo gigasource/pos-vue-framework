@@ -1,5 +1,5 @@
 <script>
-  import { computed, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { computed, onMounted, reactive, ref, watch, provide } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
   import getVModel from '../../mixins/getVModel';
   import GStepperContents from './GStepperContent';
@@ -101,14 +101,14 @@
       }
 
 			function genContent() {
-				return context.slots.default ? context.slots.default() : <div> </div>
+				return context.slots.default && context.slots.default()
 			}
 
       function genVerticalStepper() {
-				return <div class={classes.value} style="display: block;">
+				return <div class={classes.value} style="display: block">
 					{props.steps.map((step, index) => ([
 					genStep(step, index),
-					isActiveItem(step) ? genContent() : <div> </div>
+					isActiveItem(step) && genContent()
 					]))}
 				</div>
       }
