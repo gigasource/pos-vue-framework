@@ -142,10 +142,7 @@
   contain: layout;
   flex: 1 1 auto;
   z-index: -1;
-}
-
-.g-tab-item {
-  position: absolute;
+  overflow: hidden;
 }
 
 .g-tab-transition {
@@ -161,7 +158,6 @@
   &-enter-active {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 0.3s;
-    transition-delay: 0.3s;
   }
 
   &-leave {
@@ -176,6 +172,7 @@
   &-leave-active {
     transition-timing-function: ease-in;
     transition-duration: 0.3s;
+    position: absolute;
   }
 }
 
@@ -193,6 +190,7 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 0.3s;
     transition-delay: 0.3s;
+    position: absolute;
   }
 
   &-leave {
