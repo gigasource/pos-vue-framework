@@ -95,7 +95,7 @@
             };
 
             ripple.className = ripple.className + ' waves-notransition';
-            ripple.setAttribute('style', convertStyle(rippleStyle));
+            ripple.setAttribute('bgStyle', convertStyle(rippleStyle));
             ripple.className = ripple.className.replace('waves-notransition', '');
 
             // Scale the ripple
@@ -116,7 +116,7 @@
             rippleStyle['-o-transition-timing-function']      = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
             rippleStyle['transition-timing-function']         = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
 
-            ripple.setAttribute('style', convertStyle(rippleStyle));
+            ripple.setAttribute('bgStyle', convertStyle(rippleStyle));
         },
 
         hide: function(e) {
@@ -165,7 +165,7 @@
                     'transform': scale,
                 };
 
-                ripple.setAttribute('style', convertStyle(style));
+                ripple.setAttribute('bgStyle', convertStyle(style));
 
                 setTimeout(function() {
                     try {
@@ -190,20 +190,20 @@
                         continue;
                     }
 
-                    // Put element class and style to the specified parent
+                    // Put element class and bgStyle to the specified parent
                     var wrapper = document.createElement('i');
                     wrapper.className = el.className + ' waves-input-wrapper';
 
-                    var elementStyle = el.getAttribute('style');
+                    var elementStyle = el.getAttribute('bgStyle');
 
                     if (!elementStyle) {
                         elementStyle = '';
                     }
 
-                    wrapper.setAttribute('style', elementStyle);
+                    wrapper.setAttribute('bgStyle', elementStyle);
 
                     el.className = 'waves-button-input';
-                    el.removeAttribute('style');
+                    el.removeAttribute('bgStyle');
 
                     // Put element as child
                     parent.replaceChild(wrapper, el);

@@ -144,14 +144,14 @@
         })
         // render fn
         function renderSeparator() {
-          return <span class={cptSeparatorClassStyle.value.class} style={cptSeparatorClassStyle.value.style}>:</span>
+          return <span class={cptSeparatorClassStyle.value.class} style={cptSeparatorClassStyle.value.bgStyle}>:</span>
         }
 
         function renderSecondIfUseSeconds() {
           return props.useSeconds ? [
             renderSeparator(),
             <span class={cptTitleSecondClassStyle.value.class}
-                  style={cptTitleSecondClassStyle.value.style}
+                  style={cptTitleSecondClassStyle.value.bgStyle}
                   vOn:click_stop={showSecondsPicker}>
               {pad(state.selectedTime.seconds)}
             </span>
@@ -162,10 +162,10 @@
           return state.showPeriod
               ? <div class="g-time-picker__title__period">
                   <div class={cptAMClassStyle.value.class}
-                       style={cptAMClassStyle.value.style}
+                       style={cptAMClassStyle.value.bgStyle}
                        vOn:click_stop={showAMPicker}>AM</div>
                   <div class={cptPMClassStyle.value.class}
-                       style={cptPMClassStyle.value.style}
+                       style={cptPMClassStyle.value.bgStyle}
                        vOn:click_stop={showPMPicker}>PM</div>
                 </div>
               : undefined
@@ -175,13 +175,13 @@
             <div class={cptTitleClass.value}>
               <div class={cptTitleTimeClass.value}>
                 <span class={cptTitleHourClassStyle.value.class}
-                      style={cptTitleHourClassStyle.value.style}
+                      style={cptTitleHourClassStyle.value.bgStyle}
                       vOn:click_stop={showHoursPicker}>
                   {pad(getFormattedHours(state.selectedTime.hours, props))}
                 </span>
                 {renderSeparator()}
                 <span class={cptTitleMinuteClassStyle.value.class}
-                      style={cptTitleMinuteClassStyle.value.style}
+                      style={cptTitleMinuteClassStyle.value.bgStyle}
                       vOn:click_stop={showMinutesPicker}>
                   {pad(state.selectedTime.minutes)}
                 </span>
@@ -302,7 +302,7 @@
             let hourColor = getNumberColorStyle(hour)
             return <span vShow={state.activeTimePicker.hour}
                 class={[hour.class, hourColor.class, ]}
-                style={[hour.style, hourColor.style, range0_23PositionStyle[index]]}
+                style={[hour.bgStyle, hourColor.bgStyle, range0_23PositionStyle[index]]}
                 vOn:click_prevent_stop={(e) => {
                   hour.select()
                   showMinutesPicker()
@@ -321,7 +321,7 @@
               return undefined
             }
             let color = getNumberColorStyle(minute)
-            return <span class={[minute.class, color.class]} style={[minute.style, color.style, range0_59PositionStyle[index]]}>
+            return <span class={[minute.class, color.class]} style={[minute.bgStyle, color.bgStyle, range0_59PositionStyle[index]]}>
               <span>{minute.value}</span>
             </span>
           })
@@ -338,7 +338,7 @@
                 }
                 let color = getNumberColorStyle(second)
                 return <span class={[second.class, color.class]}
-                             style={[second.style, color.style, range0_59PositionStyle[index]]}>
+                             style={[second.bgStyle, color.bgStyle, range0_59PositionStyle[index]]}>
                   <span>{second.value}</span>
                 </span>
 
@@ -351,9 +351,9 @@
 
       function clockRenderFn() {
         return (
-            <div class={cptClockWrapperClassStyle.value.class} style={cptClockWrapperClassStyle.value.style}>
+            <div class={cptClockWrapperClassStyle.value.class} style={cptClockWrapperClassStyle.value.bgStyle}>
               <div class={cptClockClassStyle.value.class}
-                   style={cptClockClassStyle.value.style}
+                   style={cptClockClassStyle.value.bgStyle}
                    vOn:click={onClick}
                    vOn:wheel={onWheel}
                    vOn:mousemove={onMouseMove}
@@ -361,7 +361,7 @@
                    vOn:mousedown={onMouseDown}>
                 <div class="g-time-picker__clock__inner">
                   <div class={['g-time-picker__clock__inner__hand', cptHandColorStyle.value.class]}
-                       style={[cptHandPositionAndRotateStyle.value, cptHandColorStyle.value.style]}></div>
+                       style={[cptHandPositionAndRotateStyle.value, cptHandColorStyle.value.bgStyle]}></div>
                   {hourRenderFn()}
                   {minuteRenderFn()}
                   {secondRenderFn()}

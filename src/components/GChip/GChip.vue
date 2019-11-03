@@ -26,7 +26,7 @@
       xSmall: Boolean,
       xLarge: Boolean,
       draggable: Boolean,
-      //style
+      //bgStyle
       color: String,
       ripple: Boolean,
       textColor: String,

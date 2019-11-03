@@ -45,7 +45,7 @@
       }));
 
       const styles = computed(() => ({
-        ...props.color && getColorType(props.color) === 'style' && { 'background-color': props.color },
+        ...props.color && getColorType(props.color) === 'bgStyle' && { 'background-color': props.color },
         ...props.src && {
           'background-image': 'url("' + props.src + '")',
           'background-position': 'center center',

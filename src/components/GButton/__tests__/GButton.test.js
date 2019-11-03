@@ -34,7 +34,7 @@ describe('Button', () => {
     expect(wrapper.emitted()).toBeTruthy()
   });
 
-  it('should have correct style', function () {
+  it('should have correct bgStyle', function () {
     const wrapper = mountFunction({
       propsData: {
         height: 40,

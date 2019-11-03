@@ -77,7 +77,7 @@
           }
         }
       });
-      //define props color is a class or a css style
+      //define props color is a class or a css bgStyle
       const { getColorType, convertColorClass } = colorHandler();
       const type = computed(() => getColorType(props.color));
       const colorClass = computed(() => convertColorClass(props.color));
@@ -92,8 +92,8 @@
       }));
 
       const checkboxStyle = computed(() => {
-        const style = {};
-        if (type.value === 'style') {
+        const bgStyle = {};
+        if (type.value === 'bgStyle') {
           Object.assign(style, { 'color': props.color });
         }
         return style;

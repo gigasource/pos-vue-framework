@@ -20,7 +20,7 @@ export /*public for test only*/ function shouldApplyColor(color, data) {
   if (data == null) return false
   if (typeof data !== 'object') return false
   if (Array.isArray(data)) return false
-  if (typeof data.style === 'string') return false
+  if (typeof data.bgStyle === 'string') return false
   if (typeof data.class === 'string') return false
   return true
 }
@@ -30,7 +30,7 @@ export /*public for test only*/ function shouldApplyColor(color, data) {
  * @param color {String | any} CSS color or color name
  * @param data {object | undefined} plain object
  * @returns {*|{}} data
- *  - If data.style is string or data.class is string, return data without any modification
+ *  - If data.bgStyle is string or data.class is string, return data without any modification
  *  - If color is CSS color, add 'background-color' & 'border-color' with value is color
  *  - If color is not CSS color, add [color] as property in data.class
  */
@@ -42,7 +42,7 @@ export function setBackgroundColor(color, data) {
 
   if (isCssColor(color)) {
     data.style = {
-      ...data.style,
+      ...data.bgStyle,
       'background-color': `${color}`,
       'border-color': `${color}`,
     }
@@ -60,8 +60,8 @@ export function setBackgroundColor(color, data) {
  * @param color {String} CSS color or color name
  * @param data {Object | undefined} plain object
  * @returns {*|{}}
- *  - If data.style is string or data.class is string, return data without any modification
- *  - If color is CSS color, add 'color' & 'caret-color' prop to data.style object with value is color value
+ *  - If data.bgStyle is string or data.class is string, return data without any modification
+ *  - If color is CSS color, add 'color' & 'caret-color' prop to data.bgStyle object with value is color value
  *  - If color is not CSS color (accepted color format is: "<colorName>" or "<colorName> <colorModifier>"):
  *    + <colorName>: add [<colorName>--text] property in data.class
  *    + <colorName> <colorModifier>: add [<colorName>--text] and [text--<colorModifier>] in data.class
@@ -74,7 +74,7 @@ export function setTextColor(color, data) {
 
   if (isCssColor(color)) {
     data.style = {
-      ...data.style,
+      ...data.bgStyle,
       color: `${color}`,
       'caret-color': `${color}`,
     }

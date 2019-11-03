@@ -56,7 +56,7 @@
 
       function renderFontAwesomeIcon(nodeData) {
         nodeData.class[icon.value] = true
-        nodeData.style['fontSize'] = getSize(props)
+        nodeData.bgStyle['fontSize'] = getSize(props)
       }
 
       function renderMaterialIcon(nodeData) {
@@ -72,7 +72,7 @@
 
         nodeData.class[iconType] = true
         nodeData.class[icon.value] = !isNotMdiIcon
-        nodeData.style['fontSize'] = getSize(props)
+        nodeData.bgStyle['fontSize'] = getSize(props)
       }
 
       function renderSvgIcon(nodeData) {
@@ -80,17 +80,17 @@
         nodeData.tag.i = false
 
         nodeData.class['g-icon__svg'] = true
-        nodeData.style['fontSize'] = getSize(props)
-        nodeData.style['width'] = getSize(props)
-        nodeData.style['height'] = getSize(props)
+        nodeData.bgStyle['fontSize'] = getSize(props)
+        nodeData.bgStyle['width'] = getSize(props)
+        nodeData.bgStyle['height'] = getSize(props)
       }
 
       function renderCustomSvgIcon(nodeData) {
         nodeData.tag.img = true
         nodeData.tag.i = false
-        nodeData.style['fontSize'] = getSize(props) * 2
-        nodeData.style['width'] = getSize(props) * 2
-        nodeData.style['height'] = getSize(props) * 2
+        nodeData.bgStyle['fontSize'] = getSize(props) * 2
+        nodeData.bgStyle['width'] = getSize(props) * 2
+        nodeData.bgStyle['height'] = getSize(props) * 2
       }
 
       let nodeData = computed(() => {
@@ -102,7 +102,7 @@
             slot: true
           },
           class: {},
-          style: {},
+          bgStyle: {},
           materialIcon: ''
         }
 
@@ -141,8 +141,8 @@
       }))
 
       let iconStyle = computed(() => ({
-        ...nodeData.value.style,
-        ...iconColor.value.style
+        ...nodeData.value.bgStyle,
+        ...iconColor.value.bgStyle
       }))
 
       // accessibility attrs

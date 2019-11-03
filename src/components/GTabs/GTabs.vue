@@ -85,7 +85,7 @@
       }));
 
       const tabsStyles = computed(() => ({
-        ...props.textColor && getColorType(props.textColor) === 'style' && { color: props.textColor }
+        ...props.textColor && getColorType(props.textColor) === 'bgStyle' && { color: props.textColor }
       }));
 
       const barClasses = computed(() => ({
@@ -93,7 +93,7 @@
       }));
 
       const barStyles = computed(() => ({
-        ...props.color && getColorType(props.color) === 'style' && { 'background-color': props.color }
+        ...props.color && getColorType(props.color) === 'bgStyle' && { 'background-color': props.color }
       }));
 
       const sliderStyles = reactive({
@@ -120,7 +120,7 @@
         sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft)
 
         sliderStyles['background-color'] = props.sliderColor
-          ? (getColorType(props.sliderColor) === 'style'
+          ? (getColorType(props.sliderColor) === 'bgStyle'
             ? props.sliderColor
             : colors[props.sliderColor.trim().split(' ').join('-')])
           : 'currentColor';

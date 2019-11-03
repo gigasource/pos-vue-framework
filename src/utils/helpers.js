@@ -90,7 +90,7 @@ export default function colorHandler() {
 
   function getColorType(color) {
     if (color && (color.indexOf('rgb') === 0 || color.indexOf('hsl') === 0 || color.indexOf('#') === 0) || color === 'transparent' || color === 'currentColor') {
-      return 'style';
+      return 'bgStyle';
     } else if (color) {
       return 'class';
     }

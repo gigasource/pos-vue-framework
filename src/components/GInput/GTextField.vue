@@ -90,7 +90,7 @@
         }
       },
       styles() {
-        let style = {};
+        let bgStyle = {};
         if (this.textColor) {
           Object.assign(style, { 'color': this.textColor });
         }

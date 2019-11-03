@@ -125,7 +125,7 @@
       // the widths of the content and wrapper
       // and need to be recalculated
       watch(scrollOffset, (val) => {
-        context.refs.content.style.transform = `translateX(${-val}px)`
+        context.refs.content.bgStyle.transform = `translateX(${-val}px)`
       }, { lazy: true });
 
 
