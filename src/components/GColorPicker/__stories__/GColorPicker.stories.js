@@ -57,19 +57,8 @@ export const test2 = () => ({
           <g-color-picker
               scopedSlots={slotScoped}
               vOn:updatecolor={(color) => {
-                state.currentColor = color
-                state.currentColorName = color
+                console.log(color)
               }}
-              vOn:updateswatches={(color) => {
-                state.currentColor = color.value
-                state.currentColorName = color.name
-              }}
-              vOn:updategradient={(color) => {
-                state.currentColor = `linear-gradient(${color.angle}, ${color.colorStop1}, ${color.colorStop2})`
-                state.currentColorName = color.name
-              }}
-              show-swatches
-              show-gradient
           ></g-color-picker>
         </div>)
   }

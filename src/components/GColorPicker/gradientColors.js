@@ -71,56 +71,17 @@ function createGradientModels() {
  */
 export default function getGradientRenderFn(onGradientSelected) {
   const gradientModels = createGradientModels()
-
-  const gradientItemStyleObj = {
-    display: 'inline-block',
-    width: '40px',
-    height: '40px',
-    margin: '10px',
-    border: '1px solid #0003',
-    borderRadius: '100%',
-  }
-
-  const tooltipStyleObj = {
-    boxShadow: '0 2px 8px 4px #0003',
-    margin: '10px',
-    borderRadius: '100%',
-    width: '50px',
-    height: '50px'
-  }
-
   return function renderGradientColors() {
     return (
         <div> {
           _.map(gradientModels, gradient => {
-            const scopedSlot = {
-              activator: (scope) => <span
-                  style={{
-                    ...gradientItemStyleObj,
-                    background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
-                  }}
-                  vOn:mouseleave={scope.on.mouseleave}
-                  vOn:mouseenter={scope.on.mouseenter}
-                  vOn:blur={scope.on.blur}
-                  vOn:click={() => onGradientSelected(gradient)}></span>
-            }
-
-            return <g-tool-tip top open-on-hover scopedSlots={scopedSlot} color="#333" transition='none'>
-              <div style={'display: flex; align-items: center'}>
-                <div>
-                  <div style={{
-                    ...tooltipStyleObj,
-                    background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
-                  }}></div>
-                </div>
-                <div>
-                  <div>{`name: ${gradient.name}`}</div>
-                  <div>{`angle: ${gradient.angle}`}</div>
-                  <div>{`color-stop 1: ${gradient.colorStop1}`}</div>
-                  <div>{`color-stop 2: ${gradient.colorStop2}`}</div>
-                </div>
-              </div>
-            </g-tool-tip>
+            return <span class='g-color-picker__gradient__item'
+                style={{
+                  background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
+                }}
+                vOn:mouseleave={() => {}}
+                vOn:mouseenter={() => {}}
+                vOn:click={() => onGradientSelected(gradient)}></span>
           })
         }
         </div>

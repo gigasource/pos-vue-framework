@@ -27,13 +27,18 @@ export function getRenderCanvasFn(props, context, state, updateColor) {
     width: props.width || 300,
     height: 150
   }))
+
   const cptDotStyle = computed(() => ({
     left: `${state.color.hsva.s * parseInt(cptCanvasSize.value.width)}px`,
     top: `${(1 - state.color.hsva.v) * parseInt(cptCanvasSize.value.height)}px`
   }))
 
   onMounted(() => {
-    props.showColorPicker && watch(() => state.color.hue, () => updateCanvas(context.refs[canvasRef], state.color.hue))
+    console.log('mouted')
+    watch(() => state.color.hue, () => {
+      console.log('update canvas')
+      updateCanvas(context.refs[canvasRef], state.color.hue)
+    }, { lazy: true})
   })
 
   function emitColor(x, y) {
