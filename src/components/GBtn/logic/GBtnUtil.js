@@ -12,7 +12,7 @@ export default (props, context) => {
       'g-btn__icon': props.icon,
       'g-btn__text': props.text,
       'g-btn__top': props.top,
-      'g-btn__fixed': props.fixed,
+      'g-btn__fixed': isFixed.value,
       'g-btn__absolute': props.absolute,
       'g-btn__bottom': props.bottom,
       'g-btn__left': props.left,
@@ -77,11 +77,15 @@ export default (props, context) => {
   });
 
   const isFlat = computed(() => {
-    return props.text || props.icon || props.outlined;
+    return props.text || props.icon || props.outlined || props.flat;
   });
 
   const contained = computed(() => {
     return !isFlat.value && !props.depressed && !props.elevation;
+  });
+
+  const isFixed = computed(()=> {
+    return props.fixed || props.fab;
   });
 
   const styles = computed(() => {

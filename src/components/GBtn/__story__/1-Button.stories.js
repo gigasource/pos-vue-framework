@@ -153,9 +153,9 @@ export const GBtnFab = () => ({
     absolute: { type: Boolean, default: boolean('absolute', false) },
     fixed: { type: Boolean, default: boolean('fixed', false) },
     top: { type: Boolean, default: boolean('top', false) },
-    bottom: { type: Boolean, default: boolean('bottom', false) },
+    bottom: { type: Boolean, default: boolean('bottom', true) },
     left: { type: Boolean, default: boolean('left', false) },
-    right: { type: Boolean, default: boolean('right', false) },
+    right: { type: Boolean, default: boolean('right', true) },
     tile: { type: Boolean, default: boolean('tile', false) },
 
   },
