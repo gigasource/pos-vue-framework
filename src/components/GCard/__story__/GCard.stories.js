@@ -7,7 +7,7 @@ import GCardTitle from '../GCardTitle';
 import GIcon from '../../GIcon/GIcon';
 import GSpacer from '../../GLayout/GSpacer';
 import { GExpandTransition } from '../../transition/transition';
-import {GCardText, GCardActions, GCardSubtitle} from '../GCardFunctionalComponent'
+import { GCardText, GCardActions, GCardSubtitle } from '../GCardFunctionalComponent'
 
 export default {
   title: 'Card',
@@ -26,9 +26,9 @@ export const GCardDefault = () => ({
     shaped: { type: Boolean, default: boolean('shaped', false) },
     ripple: { type: Boolean, default: boolean('ripple', false) },
     subTitle: { type: Boolean, default: boolean('subtitle', false) },
-
+    elevation: { type: Number, default: number('elevation', 2, { min: 0, max: 24, step: 1 }) },
   },
-  template: `<g-card :shaped="shaped" :ripple="ripple" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto; max-width: 344px;">
+  template: `<g-card :shaped="shaped" :ripple="ripple" :elevation="elevation" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto; max-width: 344px;">
                     <g-card-title>
                       <p>GCard Title</p>
                     </g-card-title>
@@ -41,8 +41,8 @@ export const GCardDefault = () => ({
                       find a way to escape.</p>
                     </g-card-text>
             <g-card-actions>
-                <g-btn depressed>CONFIRM</g-btn>
-                <g-btn depressed>CANCEL</g-btn>
+                <g-btn depressed text-color="#32CD32">CONFIRM</g-btn>
+                <g-btn depressed text-color="#FA8072">CANCEL</g-btn>
             </g-card-actions>
             </g-card>`,
 });
@@ -57,8 +57,9 @@ export const GCardImage = () => ({
     disabled: { type: Boolean, default: boolean('disabled', false) },
     shaped: { type: Boolean, default: boolean('shaped', false) },
     subtitle: { type: Boolean, default: boolean('subtitle', false) },
+    elevation: { type: Number, default: number('elevation', 2, { min: 0, max: 24, step: 1 }) },
   },
-  template: `<g-card :shaped="shaped" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto; max-width: 344px;">
+  template: `<g-card :shaped="shaped" :outlined="outlined" :hover="hover" :elevation="elevation" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto; max-width: 344px;">
                       <g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg" width="342" height="200">
                          <g-card-title textColor="white" absolute left bottom>
                           <p>Lionel Messi, a legend</p>
@@ -69,8 +70,8 @@ export const GCardImage = () => ({
                       making you'll be doing.</p>
                     </g-card-text>
             <g-card-actions>
-                <g-btn depressed text-color="green">CONFIRM</g-btn>
-                <g-btn depressed text-color="red">CANCEL</g-btn>
+                <g-btn depressed text-color="#32CD32">CONFIRM</g-btn>
+                <g-btn depressed text-color="#FA8072">CANCEL</g-btn>
             </g-card-actions>
             </g-card>`
 });
@@ -88,8 +89,11 @@ export const GCardInformation = () => ({
     subTitle: { type: Boolean, default: boolean('subtitle', true) },
     maxWidth: { type: Number, default: number('maxWidth', 342) },
     width: { type: [Number, String], default: text('width', 'fit-content') },
+    elevation: { type: Number, default: number('elevation', 2, { min: 0, max: 24, step: 1 }) },
+    textColor: {type: String, default: text('textColor', '')}
+
   },
-  template: `<g-card :width="width" :max-width="maxWidth" :shaped="shaped" :ripple="ripple" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto;">
+  template: `<g-card :width="width" :text-color="textColor" :max-width="maxWidth" :shaped="shaped" :elevation="elevation" :ripple="ripple" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto;">
                     <g-card-subtitle>
                       <p>Word of the day</p>
                     </g-card-subtitle>
@@ -104,7 +108,7 @@ export const GCardInformation = () => ({
                       <p>"a benevolent smile"</p>
                     </g-card-text>
             <g-card-actions>
-                <g-btn depressed text-color="violet">LEARN MORE</g-btn>
+                <g-btn depressed text-color="#EE82EE">LEARN MORE</g-btn>
             </g-card-actions>
             </g-card>`,
 });
@@ -122,8 +126,11 @@ export const GCardExpand = () => ({
     disabled: { type: Boolean, default: boolean('disabled', false) },
     shaped: { type: Boolean, default: boolean('shaped', false) },
     subtitle: { type: Boolean, default: boolean('subtitle', false) },
+    elevation: { type: Number, default: number('elevation', 2, { min: 0, max: 24, step: 1 }) },
+    textColor: {type: String, default: text('textColor', '')}
+
   },
-  template: `<g-card :shaped="shaped" :outlined="outlined" :hover="hover" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto; max-width: 344px;">
+  template: `<g-card :shaped="shaped" :text-color="textColor" :outlined="outlined" :hover="hover" :elevation="elevation" :raised="raised" :tile="tile" :disabled="disabled" style="padding-left: auto; padding-right: auto; max-width: 344px;">
                       <g-img src="https://image.shutterstock.com/image-photo/plitvice-lakes-croatia-beautiful-place-260nw-1050138794.jpg" width="342" height="200" >
                          <g-card-title textColor="white" absolute left bottom>
                           <p>DISCOVER</p>

@@ -1,29 +1,18 @@
-@import "variables";
-
 // Block
 .g-chip-group {
   .g-chip {
-    margin: $chip-group-margin;
+    margin: 4px 8px 4px 0;
   }
 
   .g-chip__active {
-    color: inherit;
-
-    //&.g-chip--no-color {
-    //  &:after {
-    //    opacity: .22
-    //  }
-    //
-    //  &:focus:after {
-    //    opacity: .32
-    //  }
-    //}
+    color: #1867c0;
+    background-color: rgba(24,103,192, 0.1);
   }
 }
 
 // Element
 .g-chip-group .g-chip-group__content {
-  padding: $chip-group-content-padding;
+  padding: 4px 0;
 }
 
 // Modifiers

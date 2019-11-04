@@ -170,6 +170,7 @@
 .g-chip.g-chip__outlined {
   border-width: $icon-outlined-border-width;
   border-style: solid;
+  border-color: currentColor;
 
   &:not(.g-chip__active):before {
     opacity: 0;

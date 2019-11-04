@@ -1,6 +1,7 @@
 import { computed } from '@vue/composition-api'
 import { convertToGradient, convertToUnit } from '../../../utils/helpers';
 import { setBackgroundColor, setTextColor } from '../../../mixins/colorable';
+import { linearGradient } from '../../../utils/colors';
 
 export default (props, context) => {
   let classes = computed(() => {
@@ -113,10 +114,7 @@ export default (props, context) => {
       ...textColorOutput.value && textColorOutput.value.style,
     };
 
-    // Params: linear-gradient(45deg, yellow, green)
-    if (props.gradient && !props.gradient.toString().includes('-')) {
-      _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
-    }
+    _styles['background-image'] = linearGradient(props.gradient && props.gradient.split(','), props.gradientAngle);
 
     return _styles;
   });

@@ -67,10 +67,6 @@ button {
     background-color: #f5f5f5;
   }
 
-  &.g-btn__outlined.g-btn__text {
-    border-color: rgba(0, 0, 0, 0.12);
-  }
-
   &.g-btn__icon {
     color: rgba(0, 0, 0, 0.54);
   }
@@ -92,11 +88,7 @@ button {
     position: absolute;
     right: 0;
     top: 0;
-    transition: $btn-transition
-  }
-;
-
-  &:before {
+    transition: $btn-transition;
     background-color: currentColor;
   }
 
@@ -146,7 +138,6 @@ button {
   }
 }
 
-//Modifier
 // Modifiers
 .g-btn:not(.g-btn__text):not(.g-btn__outlined) {
   &.g-btn__active:before {
@@ -193,10 +184,6 @@ button {
 
 .g-btn__contained {
   @include elevation(2);
-
-  &:after {
-    @include elevation(4);
-  }
 
   &:active {
     @include elevation(8);

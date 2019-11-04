@@ -3,12 +3,13 @@
   background-color: #FFFFFF;
   color: rgba(0, 0, 0, 0.87);
 
-  > .g-card__text, .g-card__subtitle {
-    color: rgba(0, 0, 0, 0.54);
-  }
+  //> .g-card-text, .g-card-subtitle {
+  //  color: rgba(0, 0, 0, 0.54);
+  //}
 
   &.g-card__outlined {
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: none;
+    border: 0.5px solid currentColor;
   }
 
   display: block;
@@ -49,26 +50,18 @@
     pointer-events: none;
     user-select: none;
 
-    > *:not(.v-card__progress) {
+    > *:not(.g-card__progress) {
       opacity: 0.6;
       transition: inherit;
     }
   }
 
-  &__loading {
-    overflow: hidden
-  }
-
-
-  &__outlined {
-    box-shadow: none;
-    border: 1px solid map_get($grey, 'lighten-1')
-  }
-
   &__shaped {
     border-radius: 24px 4px;
+
     .g-image {
       border-top-left-radius: inherit;
+
       .g-image-content {
         border-top-left-radius: inherit;
       }
@@ -78,40 +71,31 @@
   &__raised {
     @include elevation(8);
   }
-
-  //Generate elevation classes
-  $elevationMin: 1;
-  $elevationMax: 24;
-  @for $i from $elevationMin through $elevationMax {
-    &__elevation-#{$i} {
-      @include elevation($i)
-    }
-  }
 }
 
 //New refactor
-.g-card__subtitle {
+.g-card-subtitle {
   padding: 16px;
 
-  & + .g-card__text {
+  & + .g-card-text {
     padding-top: 0
   }
 }
 
-.g-card__subtitle,
-.g-card__text {
+.g-card-subtitle,
+.g-card-text {
   font-size: .875rem;
   font-weight: 400 !important;
   line-height: 1.375rem;
   letter-spacing: .0071428571em;
 }
 
-.g-card__text,
-.g-card__title {
+.g-card-text,
+.g-card-title {
   padding: 16px
 }
 
-.g-card__title {
+.g-card-title {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
@@ -121,20 +105,20 @@
   line-height: 2rem;
   word-break: break-all;
 
-  & + .g-card__subtitle, & + .g-card__text {
+  & + .g-card-subtitle, & + .g-card-text {
     padding-top: 0;
   }
 
-  & + .v-card__subtitle {
+  & + .g-card-subtitle {
     margin-top: -16px;
   }
 }
 
-.g-card__text {
+.g-card-text {
   width: 100%;
 }
 
-.g-card__actions {
+.g-card-actions {
   align-items: center;
   display: flex;
   padding: 8px;
@@ -156,23 +140,23 @@
   }
 }
 
-.g-card__text__top {
+.g-card-title__top {
   top: map-get($grid-gutters, 'xs');
 }
 
-.g-card__text__left {
+.g-card-title__left {
   left: map-get($grid-gutters, 'xs');
 }
 
-.g-card__text__bottom {
+.g-card-title__bottom {
   bottom: map-get($grid-gutters, 'xs');
 }
 
-.g-card__text__right {
+.g-card-title__right {
   right: map-get($grid-gutters, 'xs');
 }
 
-.g-card__text__absolute {
+.g-card-title__absolute {
   position: absolute;
 }
 
