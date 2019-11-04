@@ -81,7 +81,7 @@
       }
 
       function genDivider() {
-        return <g-divider/>
+        return context.slots.divider ? context.slots.divider() : <g-divider/>
       }
 
       function genHeader() {
