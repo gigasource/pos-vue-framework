@@ -15,7 +15,7 @@
         type: [Number, String],
         default: 100,
       },
-      vertical: Boolean, //todo
+      vertical: Boolean, //todo fix css
       readonly: Boolean,
       disabled: Boolean,
       //step
@@ -37,17 +37,17 @@
       trackBgrColor: String,
       //thumb
       thumbColor: String,
-      thumbSize: { //todo
+      thumbSize: {
         type: [Number, String],
         default: 32,
       },
-      // todo label
-      inverseLabel: Boolean,
       thumbLabel: {
         type: [Boolean, String],
         default: null,
         validator: v => typeof v === 'boolean' || v === 'always',
       },
+      // todo label
+      inverseLabel: Boolean,
       tickLabels: {
         type: Array,
         default: () => ([]),
@@ -143,7 +143,44 @@
       }
 
       //function genThumbContainer
-      const showThumbLabel = computed(() => !props.disabled && step.value && props.ticks)
+      const thumbStyle = computed(() => {
+        return {'background-color': props.thumbColor}
+      })
+
+      function genThumb() {
+        return <div class="g-slider--thumb" style={thumbStyle.value}/>
+      }
+
+      //todo thumb label
+      const showThumbLabel = computed(() => !props.disabled && !!(props.thumbLabel))
+
+      function genThumbLabelContent(value) {
+        return context.slots['thumb-label'] ?
+            context.slots['thumb-label'](value) :
+            <span>{[String(value)]}</span>
+      }
+
+      function genThumbLabel(content) {
+        const size = convertToUnit(props.thumbSize)
+        const transform = props.vertical
+            ? `translateY(20%) translateY(${(Number(props.thumbSize) / 3) - 1}px) translateX(55%) rotate(135deg)`
+            : `translateY(-20%) translateY(-12px) translateX(-50%) rotate(45deg)`
+        const style = {
+          backgroundColor: props.thumbColor || '#cccc',
+          height: size,
+          width: size,
+          transform
+        }
+        const show = state.isFocused || state.isActive || props.thumbLabel === 'always' ? '' : 'none'
+
+        return <div class="g-slider--thumb-label-container"
+                    style={{'display': show}}>
+          <div class="g-slider--thumb-label" style={style}>
+            <div>{content}</div>
+          </div>
+        </div>
+      }
+
       const thumbContainerClasses = computed(() => {
         return {
           'g-slider--thumb-container': true,
@@ -161,10 +198,6 @@
           [direction]: `${value}%`,
         }
       })
-      const thumbStyle = computed(() => {
-        return {'background-color': props.thumbColor}
-      })
-
 
       function genThumbContainer() {
         const content = genThumbLabelContent(internalValue.value)
@@ -179,27 +212,6 @@
           {genThumb()}
           {showThumbLabel.value && genThumbLabel(content)}
         </div>
-      }
-
-      function genThumb() {
-        return <div class="g-slider--thumb" style={thumbStyle.value}/>
-      }
-
-      //todo thumb label
-      function genThumbLabel(content) {
-        const size = convertToUnit(props.thumbSize)
-
-        const transform = props.vertical
-            ? `translateY(20%) translateY(${(Number(props.thumbSize) / 3) - 1}px) translateX(55%) rotate(135deg)`
-            : `translateY(-20%) translateY(-12px) translateX(-50%) rotate(45deg)`
-
-        return <div>
-
-        </div>
-      }
-
-      function genThumbLabelContent(value) {
-
       }
 
       //function genStep
@@ -222,34 +234,35 @@
         if (props.vertical) range.reverse()
 
         function genTickLabel() {
-           return range.map(i => {
-             const index = i
-             const children = []
+          return range.map(i => {
+            const index = i
+            const children = []
 
-             if (props.tickLabels[index]) {
-               children.push(() => {
-                 return <div class="g-slider--tick-label">
-                   {props.tickLabels[index]}
-                 </div>
-               })
-             }
+            if (props.tickLabels[index]) {
+              children.push(() => {
+                return <div class="g-slider--tick-label">
+                  {props.tickLabels[index]}
+                </div>
+              })
+            }
 
-             const width = i * (100 / numTicks.value)
-             const filled = width < inputWidth.value
-             const tickStyle = {
-               width: `${tickSize}px`,
-               height: `${tickSize}px`,
-               [direction]: `calc(${width}% - ${tickSize / 2}px)`,
-               [offsetDirection]: `calc(50% - ${tickSize / 2}px)`,
-             }
+            const width = i * (100 / numTicks.value)
+            const filled = width < inputWidth.value
+            const tickStyle = {
+              width: `${tickSize}px`,
+              height: `${tickSize}px`,
+              [direction]: `calc(${width}% - ${tickSize / 2}px)`,
+              [offsetDirection]: `calc(50% - ${tickSize / 2}px)`,
+            }
 
-             return <span
-                 class={["g-slider--tick", {'g-slider--tick__filled': filled}]}
-                 style={tickStyle}>
+            return <span
+                class={["g-slider--tick", {'g-slider--tick__filled': filled}]}
+                style={tickStyle}>
             {children}
           </span>
-           })
+          })
         }
+
         return <div
             class={['g-slider--ticks-container', {'g-slider--ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
           {genTickLabel()}
