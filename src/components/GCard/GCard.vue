@@ -1,13 +1,5 @@
-<template>
-	<div :class="classes" :style="styles" @click="onClick">
-		<slot></slot>
-		<slot name="progress"></slot>
-	</div>
-</template>
-
 <script>
-  import { computed } from '@vue/composition-api';
-  import { convertToUnit } from '../../utils/helpers';
+  import GCardUtils from './logic/GCardUtils';
 
   export default {
     name: 'GCard',
@@ -19,7 +11,7 @@
           type: String,
           default: 'g-card__active'
         },
-				shaped: Boolean,
+        shaped: Boolean,
         disabled: Boolean,
         isClickable: Boolean,
         loading: Boolean,
@@ -37,7 +29,7 @@
         maxHeight: [String, Number],
         ripple: Boolean,
         width: [String, Number],
-				borderRadius: [String, Number],
+        borderRadius: [String, Number],
         elevation: [String, Number],
         height: [String, Number],
         img: String,
@@ -45,55 +37,33 @@
         raised: Boolean,
       }
     }, setup(props, context) {
+      const { classes, styles } = GCardUtils(props, context);
 
-      let classes = computed(() => {
-        let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : null;
-        let _classes = {
-          'g-card': true,
-          'waves-effect': props.ripple,
-          'g-card__flat': props.flat,
-          'g-card__hover': props.hover,
-          'g-card__link': props.isClickable,
-          'g-card__loading': props.loading,
-          'g-card__disabled': props.loading || props.disabled,
-          'g-card__outlined': props.outlined,
-          'g-card__raised': props.raised,
-					'g-card__shaped': props.shaped,
-          [props.activeClass]: props.active
-        };
-        if (elevationClassName) {
-          _classes[elevationClassName] = true;
+      function genCard() {
+        const nodeData = {
+          class: classes.value,
+          style: styles.value,
+          on: {
+            click: (event) => {
+              context.emit('click', event)
+            }
+          }
         }
-        return _classes;
-      });
-
-      let styles = computed(() => {
-        return {
-          ...props.img && { backgroundImage: `url("${props.img}"` },
-          ...props.backgroundColor && { backgroundColor: convertToUnit(props.backgroundColor) },
-          ...props.color && { color: props.color },
-          ...props.tile && { borderRadius: '0px' },
-          ...props.borderRadius && { borderRadius: props.borderRadius },
-          ...props.width && { width: convertToUnit(props.width) },
-          ...props.height && { height: convertToUnit(props.height) },
-          ...props.minWidth && { minWidth: convertToUnit(props.minWidth) },
-          ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
-          ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
-          ...props.maxHeight && { maxHeight: convertToUnit(props.maxHeight) },
-        };
-      });
-
-      let onClick = (event) => {
-        context.emit('click', event);
-      };
+        return <div {...nodeData}>
+          {context.slots.default()}
+        </div>
+      }
 
       return {
-        styles,
-        classes,
-        onClick
+        genCard
       }
+    },
+    render() {
+      return this.genCard();
     }
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
