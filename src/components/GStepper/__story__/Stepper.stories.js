@@ -20,6 +20,7 @@ export const basic = () => ({
   components: { GBtn, GCardActions, GCardText, GCardTitle, GButton, GCard, GStepperContent, GStepperContents, GStepperHeader, GDivider, GStepperStep, GStepper },
   data: () => {
     return {
+      vertical: false,
       activeStep: null,
       stepData: [
         {
@@ -84,6 +85,7 @@ export const customDivider = () => ({
   components: { GBtn, GCardActions, GCardText, GCardTitle, GButton, GCard, GStepperContent, GStepperContents, GStepper },
   data: () => {
     return {
+      vertical: false,
       activeStep: null,
       stepData: [
         {
@@ -154,6 +156,7 @@ export const customHeader = () => ({
   components: { GBtn, GCardActions, GCardText, GCardTitle, GButton, GCard, GStepperContent, GStepperContents, GStepperHeader, GDivider, GStepperStep, GStepper },
   data: () => {
     return {
+      vertical: false,
       activeStep: null,
       stepData: [
         {
@@ -205,10 +208,10 @@ export const customHeader = () => ({
   },
   template: `
   <g-stepper :altLabels="altLabels" :non-linear="nonLinear" :vertical="vertical" :editable="editable" :steps="stepData"  v-model="activeStep">
-    <template v-slot:header="{ isCompleted, isActiveItem, toggle: toggleItem }">
+    <template v-slot:header="{ isCompleted, isActiveItem, toggle }">
       <g-stepper-header>
       <template v-for="(step, i) in stepData">
-      <g-stepper-step :key="i" :step="step" :index="i" :editable="editable" :complete="isCompleted(i)" :is-active="isActiveItem(step)" @click="toggle"
+      <g-stepper-step :key="i" :step="step" :error="i === 2" :index="i" :editable="editable" :complete="isCompleted(i)" :is-active="isActiveItem(step)" @click="toggle"
              :completeIcon="completeIcon" :editIcon="editIcon" >
           Step No.{{i+1}}
         </g-stepper-step>

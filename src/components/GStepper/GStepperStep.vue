@@ -22,6 +22,7 @@
         type: String,
         default: 'edit',
       },
+      error: Boolean,
       errorIcon: {
         type: String,
         default: 'warning',
@@ -40,13 +41,9 @@
         'g-stepper-step': true,
         'waves-effect': true,
         'g-stepper-step__active': props.isActive,
-        'g-stepper-step__error': hasError.value,
+        'g-stepper-step__error': props.error,
         'g-stepper-step__complete': props.complete,
       }));
-
-      let hasError = computed(() => {
-        return props.rules.some(validate => validate() !== true);
-      });
 
       function click(e) {
         e.stopPropagation();
@@ -54,12 +51,12 @@
       }
 
       const iconStyles = computed(() => ({
-        'color': !hasError.value && (isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')]),
+        'color': !props.error && (isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')]),
         'margin-right': '4px'
       }))
 
       const iconBackground = computed(() => ({
-        'background-color': props.isActive && !hasError.value && isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')],
+        'background-color': props.isActive && !props.error && isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')],
       }))
 
       function genIcon() {
@@ -67,7 +64,7 @@
           return <g-icon>{props.editIcon}</g-icon>
         } else if (props.complete && !props.editable) {
           return <g-icon>{props.completeIcon}</g-icon>
-        } else if (hasError.value) {
+        } else if (props.error) {
           return <g-icon>{props.errorIcon}</g-icon>
         }
         return <div style={iconBackground.value} class="g-stepper-step-icon">{props.index + 1}</div>

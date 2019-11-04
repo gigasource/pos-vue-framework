@@ -66,6 +66,7 @@
           props: {
             complete: isCompleted(index),
             editable: props.editable,
+
             index: index,
             isActive: isActiveItem(step),
             step: step
