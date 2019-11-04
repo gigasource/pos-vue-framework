@@ -4,14 +4,14 @@ import { keyCodes } from '../../utils/helpers';
 
 
 export function getLabel(props, internalValue, isValidInput, isFocused,
-                         labelActiveClass = 'tf-label__active',
+                         labelActiveClass = 'g-tf--label__active',
                          inValidStyle = { 'color': 'red' }) {
   //Activate label
   const isDirty = computed(() => !!internalValue.value)
   const isLabelActive = computed(() => {
     return isDirty.value || isFocused.value|| !!props.placeholder;
   })
-  const labelClasses = computed(() => isLabelActive.value ? { 'tf-label__active': true } : {})
+  const labelClasses = computed(() => isLabelActive.value ? { 'g-tf--label__active': true } : {})
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
