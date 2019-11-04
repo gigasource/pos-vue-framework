@@ -13,10 +13,10 @@
     display: flex;
   }
 
-  .tf-append__inner,
-  .tf-prepend__inner,
-  .tf-append__outer,
-  .tf-prepend__outer{
+  .g-tf--append__inner,
+  .g-tf--prepend__inner,
+  .g-tf--append__outer,
+  .g-tf--prepend__outer{
     align-self: baseline;
     //padding-top: 8px;
   }
@@ -29,6 +29,7 @@
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  color: #1d1d1d;
 
   &.g-file-input--text--chips {
     flex-wrap: wrap;

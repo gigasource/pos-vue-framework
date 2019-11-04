@@ -205,7 +205,7 @@
   }
 
   function getTfWrapperClasses(props) {
-    return computed(() => (props.disabled ? { 'g-tf--wrapper-disabled': true } : {
+    return computed(() => (props.disabled ? { 'g-tf--wrapper__disabled': true } : {
       'g-tf__filled': props.filled,
       'g-tf__outlined': props.outlined,
       'g-tf__solo': props.solo,

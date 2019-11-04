@@ -1,7 +1,6 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions'
-import Vue from 'vue/dist/vue.common.js'
-import GFileInput from '../GFileInput';
+import {action} from '@storybook/addon-actions';
+import GFileInput from '../GFileInputJSX';
 import GIcon from '../../GIcon/GIcon';
 import GChip from "../../GChip/GChip";
 
@@ -31,7 +30,7 @@ export const mainFeatureFileInput = () => ({
                            :counter="counter"
                            :chips="chips"
                            :smallChips="smallChips"
-                           ></g-file-input>`,
+                           />`,
 });
 
 export const fullFeatureFileInput = () => ({
@@ -67,7 +66,7 @@ export const fullFeatureFileInput = () => ({
                            :label="label"
                            :placeholder="placeholder"   
                            :hint="hint" 
-                           ></g-file-input>`,
+                           />`,
 });
 
 

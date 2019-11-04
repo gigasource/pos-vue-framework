@@ -1,20 +1,20 @@
 <template>
-  <div class="tf-wrapper g-file-input" :class="[tfWrapperClasses, tfErrWrapperClass]"
+  <div class="g-tf--wrapper g-file-input" :class="[tfWrapperClasses, tfErrWrapperClass]"
        @click="onClickWrapper"
        @mouseup="onMouseUp"
        @mousedown="onMouseDown">
-    <div class="tf-prepend__outer" ref="prependRef">
+    <div class="g-tf--prepend__outer" ref="prependRef">
       <g-icon>{{prependIcon}}</g-icon>
     </div>
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
-      <div class='tf' :class="tfErrClasses">
-        <div class="tf-prepend__inner">
+      <div class='g-tf' :class="tfErrClasses">
+        <div class="g-tf--prepend__inner">
           <g-icon>{{prependInnerIcon}}</g-icon>
         </div>
-        <div v-if="prefix" class="tf-affix" ref="prefixRef">{{prefix}}</div>
+        <div v-if="prefix" class="g-tf--affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
-          <label for="input" class="tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
+          <label for="input" class="g-tf--label" :class="labelClasses" :style="labelStyles">{{label}}</label>
           <div class="g-file-input--text">
             <slot v-if="isDirty" name="selection">
               <div v-if="chips || smallChips">
@@ -27,7 +27,7 @@
             <slot v-else>{{placeholder}}</slot>
           </div>
           <input id="input" ref="input"
-                 class="tf-input"
+                 class="g-tf--input"
                  :type="type"
                  :multiple="multiple"
                  :accept="accept"
@@ -35,21 +35,21 @@
                  @blur="onBlur"
                  v-model="internalValue">
         </div>
-        <div v-if="suffix" class="tf-affix">{{suffix}}</div>
-        <div class="tf-append__inner">
-          <div v-if="isDirty && clearable" @click="onClearIconClick">
+        <div v-if="suffix" class="g-tf--affix">{{suffix}}</div>
+        <div class="g-tf--append__inner">
+          <div v-if="isDirty && clearable" @click.stop="onClearIconClick">
             <g-icon style="cursor: pointer">mdi-close</g-icon>
           </div>
           <g-icon>{{appendIcon}}</g-icon>
         </div>
-        <div v-if="!isValidInput" class="tf-error">{{errorMessages}}</div>
-        <div v-else class="tf-hint" :class="hintClasses">{{hint}}</div>
-        <div v-show="counter" :class="{'tf-counter': true, 'tf-counter__error': !isValidInput}">
+        <div v-if="!isValidInput" class="g-tf__error">{{errorMessages}}</div>
+        <div v-else class="g-tf--hint" :class="hintClasses">{{hint}}</div>
+        <div v-show="counter" :class="{'g-tf--counter': true, 'g-tf--counter__error': !isValidInput}">
           {{fileNumber + ' (' + fileSize + ' in total)'}}
         </div>
       </div>
     </fieldset>
-    <div class="tf-append__outer" ref="appendOuter">
+    <div class="g-tf--append__outer" ref="appendOuter">
       <g-icon>{{appendOuterIcon}}</g-icon>
     </div>
   </div>
@@ -140,9 +140,9 @@
 
       const inputErrStyles = computed(() => isValidInput.value ? {} : {'color': 'red'})
       //change input border color
-      const tfErrClasses = computed(() => isValidInput.value ? {} : {'tf__error': true})
+      const tfErrClasses = computed(() => isValidInput.value ? {} : {'g-tf__error': true})
 
-      const tfErrWrapperClass = computed(() => ({'tf-wrapper__error': !isValidInput.value}))
+      const tfErrWrapperClass = computed(() => ({'g-tf-wrapper__error': !isValidInput.value}))
 
       const {
         onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp,
@@ -247,13 +247,17 @@
 
   function getTfWrapperClasses(props) {
     return computed(() => (props.disabled ? {'tf-wrapper-disabled': true} : {
-      'tf__filled': props.filled,
-      'tf__outlined': props.outlined,
-      'tf__solo': props.solo,
-      'tf__rounded': props.rounded,
-      'tf__shaped': props.shaped,
-      'tf__flat': props.flat,
+      'g-tf__filled': props.filled,
+      'g-tf__outlined': props.outlined,
+      'g-tf__solo': props.solo,
+      'g-tf__rounded': props.rounded,
+      'g-tf__shaped': props.shaped,
+      'g-tf__flat': props.flat,
     }))
   }
 
 </script>
+
+<style scoped lang="scss">
+  @import "_GFileInput.scss";
+</style>
