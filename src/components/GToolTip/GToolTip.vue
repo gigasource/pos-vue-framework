@@ -1,16 +1,10 @@
 <template>
   <span class="g-tooltip" ref="el">
     <g-tool-tip-content
-        v-if="state.isActive || state.contentCreated"
-        :absolute="absolute"
-        :absoluteX="absoluteX"
-        :absoluteY="absoluteY"
-        :bottom="bottom"
-        :left="left"
-        :top="top"
-        :right="right"
+        v-if="state.isActive || state.tooltipContentCreated"
         :show="state.isActive"
-        :activator="activator">
+        :activator="activator"
+        v-bind="props">
       <slot></slot>
     </g-tool-tip-content>
     <div class="g-tooltip__activator" ref="activator">
@@ -138,33 +132,35 @@
     },
     setup(props, context) {
       // tooltip state
-      const state = reactive({ isActive: false, contentCreated: false })
+      const state = reactive({ isActive: false, tooltipContentCreated: false })
       const { runDelay } = delayable(props, state)
       const { attachToParent } = detachable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
-
-
       //// ACTIVATOR
+      // This variable will be used by Tooltip content to calculate position
       const activator = ref(null)
       const activatorListeners = computed(() => {
         let listeners = {}
 
         if (props.openOnHover) {
-          listeners.mouseenter = (e/*: MouseEvent*/) => {
+          listeners.mouseenter = () => {
+            if (!state.tooltipContentCreated)
+              state.tooltipContentCreated = true
             runDelay('open')
           }
-          listeners.mouseleave = (e/*: MouseEvent*/) => {
+          listeners.mouseleave = () => {
             runDelay('close')
           }
         } else {
-          listeners.click = (e/*: MouseEvent*/) => {
+          listeners.click = () => {
+            if (!state.tooltipContentCreated)
+              state.tooltipContentCreated = true
             state.isActive = !state.isActive
-            state.contentCreated = true
           }
         }
 
-        //listeners.blur = () => runDelay('close')
+        listeners.blur = () => runDelay('close')
 
         return listeners
       })
@@ -178,12 +174,16 @@
       })
 
       onMounted(() => {
-        activator.value = context.refs.activator
-        attachToParent()
+        context.root.$nextTick(() => {
+          attachToParent(context.refs.activator)
+          // store activator reference
+          activator.value = context.refs.activator
+        })
       })
 
       // template data
       return {
+        props,
         state,
         activator,
         transitionName,
