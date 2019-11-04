@@ -1,26 +1,28 @@
-import { computed, ref, watch } from '@vue/composition-api';
-import { keyCodes } from '../../utils/helpers';
-
-
-
 export function getLabel(props, internalValue, isValidInput, isFocused,
-                         labelActiveClass = 'tf-label__active',
-                         inValidStyle = { 'color': 'red' }) {
+                         labelActiveClass = 'g-tf--label__active'){
   //Activate label
   const isDirty = computed(() => !!internalValue.value)
   const isLabelActive = computed(() => {
-    return isDirty.value || isFocused.value;
+    return isDirty.value || isFocused.value|| !!props.placeholder;
   })
-  const labelClasses = computed(() => isLabelActive.value ? { labelActiveClass: true } : {})
+  const labelClasses = computed(() => {
+    return{
+      'g-tf--label__disabled': props.disabled,
+      'g-tf--label__readOnly': props.readOnly,
+      'g-tf--label__active': isLabelActive.value,
+      'g-tf--label__error': !isValidInput.value
+    }
+  }
+  )
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
   const labelStyles = computed(() =>
-  // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
-  // ...!isValidInput.value && inValidStyle}))
+    // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
+    // ...!isValidInput.value && inValidStyle}))
   {
 
-    if(isLabelActive.value){
+    if(isLabelActive.value && prefixWidth.value){
       if(props.outlined){
         if(props.filled){
           return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }
@@ -29,15 +31,22 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
           return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` }
         }
       }
+      else if(props.filled){
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)` }
+      }
       else{
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +5}px)  scale(0.75)` }
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +7}px)  scale(0.75)` }
       }
     }
-    !isValidInput.value && inValidStyle
   })
 
   return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef }
 }
+import { computed, ref, watch } from '@vue/composition-api';
+
+
+
+import { keyCodes } from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
@@ -80,18 +89,18 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 export function getSlotEventListeners(context) {
   //slot events
   return {
-    onClickPrependOuter: () => context.emit('click :prepend-outer'),
-    onClickPrependInner: () => context.emit('click :prepend-inner'),
-    onClickAppendOuter: () => context.emit('click :append-outer'),
-    onClickAppendInner: () => context.emit('click :append-inner'),
+    onClickPrependOuter: () => context.emit('click:prepend-outer'),
+    onClickPrependInner: () => context.emit('click:prepend-inner'),
+    onClickAppendOuter: () => context.emit('click:append-outer'),
+    onClickAppendInner: () => context.emit('click:append-inner'),
   }
 }
 
 export function getSlotBsEventListeners(context) {
   //slot events
   return {
-    onClickPrepend: () => context.emit('click :prepend-outer'),
-    onClickAppend: () => context.emit('click :append-outer'),
+    onClickPrepend: () => context.emit('click:prepend-outer'),
+    onClickAppend: () => context.emit('click:append-outer'),
   }
 }
 
@@ -127,8 +136,8 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
   function onClearIconClick(event) {
     internalValue.value = ''
-    context.emit('clear', event)
     isValidInput.value = true;
+    context.emit('click:clearIcon', event)
   }
 
   function onChange(event) {
