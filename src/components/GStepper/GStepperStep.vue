@@ -1,15 +1,3 @@
-<template>
-  <div :class="classes" @click="click">
-    <div :style="iconStyles">
-      <g-icon v-if="complete && editable">{{editIcon}}</g-icon>
-      <g-icon v-else-if="hasError">{{errorIcon}}</g-icon>
-      <g-icon v-else-if="complete && !editable">{{completeIcon}}</g-icon>
-			<div v-else class="g-stepper-step-icon" :style="iconBackground">{{index + 1}}</div>
-    </div>
-    <slot></slot>
-  </div>
-</template>
-
 <script>
   import { computed } from '@vue/composition-api';
   import GIcon from '../GIcon/GIcon';
@@ -44,7 +32,7 @@
       },
       isActive: Boolean,
       step: null,
-			index: Number,
+      index: Number,
     },
     setup(props, context) {
 
@@ -65,22 +53,39 @@
         context.emit('click', props.step);
       }
 
-			const iconStyles = computed(() => ({
-      	'color':!hasError.value && (isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')]),
-				'margin-right' : '4px'
-			}))
+      const iconStyles = computed(() => ({
+        'color': !hasError.value && (isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')]),
+        'margin-right': '4px'
+      }))
 
       const iconBackground = computed(() => ({
         'background-color': props.isActive && !hasError.value && isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')],
       }))
 
-      return {
-        classes,
-        click,
-        hasError,
-        iconStyles,
-        iconBackground,
+      function genIcon() {
+        if (props.complete && props.editable) {
+          return <g-icon>{props.editIcon}</g-icon>
+        } else if (props.complete && !props.editable) {
+          return <g-icon>{props.completeIcon}</g-icon>
+        } else if (hasError.value) {
+          return <g-icon>{props.errorIcon}</g-icon>
+        }
+        return <div style={iconBackground.value} class="g-stepper-step-icon">{props.index + 1}</div>
       }
+
+      function genStepperStep() {
+        return <div class={classes.value} vOn:click={click}>
+          <div style={iconStyles.value}>{genIcon()}</div>
+          {context.slots.default ? context.slots.default() : null}
+        </div>
+      }
+
+      return {
+        genStepperStep,
+      }
+    },
+    render() {
+      return this.genStepperStep()
     }
   }
 </script>

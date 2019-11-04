@@ -3,7 +3,7 @@
   import groupable from '../../mixins/groupable';
   import getVModel from '../../mixins/getVModel';
   import GStepperContents from './GStepperContent';
-  import GStepperHeader from './GStepperHeader';
+  import { GStepperHeader } from './GStepperFunctionalComponent';
   import GStepperStep from './GStepperStep';
   import GDivider from '../GLayout/GDivider';
   import GStepperContent from './GStepperContents';
@@ -100,17 +100,17 @@
         </div>
       }
 
-			function genContent() {
-				return context.slots.default && context.slots.default()
-			}
+      function genContent() {
+        return context.slots.default && context.slots.default()
+      }
 
       function genVerticalStepper() {
-				return <div class={classes.value} style="display: block">
-					{props.steps.map((step, index) => ([
-					genStep(step, index),
-					isActiveItem(step) && genContent()
-					]))}
-				</div>
+        return <div class={classes.value} style="display: block">
+          {props.steps.map((step, index) => ([
+            genStep(step, index),
+            isActiveItem(step) && genContent()
+          ]))}
+        </div>
       }
 
       return {

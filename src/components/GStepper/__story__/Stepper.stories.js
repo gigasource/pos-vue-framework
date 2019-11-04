@@ -2,7 +2,7 @@ import { boolean, withKnobs } from '@storybook/addon-knobs';
 import GStepper from '../../GStepper/GStepper';
 import GStepperStep from '../../GStepper/GStepperStep';
 import GDivider from '../../GLayout/GDivider';
-import GStepperHeader from '../../GStepper/GStepperHeader';
+import { GStepperHeader } from '../../GStepper/GStepperFunctionalComponent';
 import GStepperContents from '../../GStepper/GStepperContents';
 import GStepperContent from '../../GStepper/GStepperContent';
 import GCard from '../../GCard/GCard';
