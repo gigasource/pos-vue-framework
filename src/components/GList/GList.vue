@@ -2,8 +2,7 @@
   <div :class="classes"
        class="g-list"
        :style="styles"
-       @click="onClick"
-  >
+       @click="onClick">
 
     <template v-if="!multiSection">
       <slot name="subheader">
@@ -53,10 +52,13 @@
             <div class="g-list-header">{{item.subheader}}</div>
           </slot>
         </template>
+
         <g-divider v-else-if="item.type === 'divider'"></g-divider>
+
         <slot :item="item" v-else>
           <div class="g-list-item"
-               :class="{'g-list-item__active': isActiveItem(item)}"
+               :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}"
+               @click="onSelect(item)"
                tabindex="0"
                @click="onSelect(item)"
                @keydown.enter="onSelect(item)"
@@ -67,6 +69,7 @@
                 <img alt="" :src="item.prepend">
               </div>
             </slot>
+
             <div class="g-list-item-content">
               <div class="g-list-item-text">{{item[itemTitle]}}</div>
               <div class="g-list-item-text__sub"
@@ -75,6 +78,7 @@
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
+
             <!--fixme: append wait for VIcon-->
             <div class="g-list-item-action">
               <slot name="append" :item="item"></slot>
