@@ -69,9 +69,9 @@
                   {
                     _.map(tabItems.tabs, item =>
                         <span class={{
-                          'g-color-picker__tab-header__item': true,
-                          'g-color-picker__tab-header__item--selected': item.id === tabState.selectedTab
-                        }}
+                                'g-color-picker__tab-header__item': true,
+                                'g-color-picker__tab-header__item--selected': item.id === tabState.selectedTab
+                              }}
                               style={item.id === tabState.selectedTab ? item.bgSelectedStyle : item.bgStyle}
                               vOn:click={() => {
                                 tabState.selectedTab = item.id
@@ -79,11 +79,14 @@
                   }
                 </div>
                 <div class='g-color-picker__tab-body'>
-                  {_.map(tabItems.tabs, item => item.id === tabState.selectedTab && [
-                    <div class='g-color-picker__tab-body__content'>
+                  {_.map(tabItems.tabs, item =>
+                    <div
+                        key={item.id}
+                        vShow={item.id === tabState.selectedTab}
+                        class='g-color-picker__tab-body__content'>
                       {item.renderFn()}
                     </div>
-                  ])}
+                  )}
                 </div>
               </div>
             </g-menu>

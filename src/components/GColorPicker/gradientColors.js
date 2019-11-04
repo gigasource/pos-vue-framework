@@ -95,6 +95,7 @@ export default function getGradientRenderFn(onGradientSelected) {
           _.map(gradientModels, gradient => {
             const scopedSlot = {
               activator: (scope) => <span
+                  key={gradient.name}
                   style={{
                     ...gradientItemStyleObj,
                     background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
@@ -106,7 +107,7 @@ export default function getGradientRenderFn(onGradientSelected) {
                   vOn:click={() => onGradientSelected(gradient)}></span>
             }
 
-            return <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlot} color="#333" transition='none'>
+            return <g-tool-tip key={gradient.name} top speech-bubble open-on-hover scopedSlots={scopedSlot} color="#333" transition='none'>
               <div style={'display: flex; align-items: center'}>
                 <div>
                   <div style={{

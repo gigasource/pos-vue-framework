@@ -92,7 +92,7 @@ export default function getSwatchesRenderFn(onColorSelected) {
           <div class='g-color-picker__pallet'> {
               _.map(colorPalletModel.pallet, pallet => {
                 const scopedSlots = {
-                  activator: (scope) => <span class='g-color-picker__pallet__item'
+                  activator: (scope) => <span key={pallet.name} class='g-color-picker__pallet__item'
                       style={{ ...getTransparentImageStyle(pallet), ...palletItemStyleObj, backgroundColor: pallet.value }}
                       key={pallet.value}
                       vOn:mouseleave={scope.on.mouseleave}
@@ -101,7 +101,7 @@ export default function getSwatchesRenderFn(onColorSelected) {
                       vOn:click={() => onColorSelected(pallet)}></span>
                 }
                 return (
-                    <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333" transition='none'>
+                    <g-tool-tip key={pallet.name} top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333" transition='none'>
                       <div style='display: flex; align-items: center;'>
                         <div style={{
                           ...tooltipContentStyleObj,
