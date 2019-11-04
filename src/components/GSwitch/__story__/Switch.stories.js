@@ -9,7 +9,7 @@ export default {
 }
 
 export const basic = () => ({
-  components: {GSwitch},
+  components: { GSwitch },
   data() {
     return {
       model: null
@@ -20,88 +20,32 @@ export const basic = () => ({
       default: color('Color', '#1271ff')
     },
     label: {
-      default: text('Label', 'Switch' )
-    }
-  },
-  template: `<g-switch v-model="model" :color="color" :label="label"></g-switch>`
-});
-
-export const flat = () => ({
-  components: {GSwitch},
-  data() {
-    return {
-      model: null
-    }
-  },
-  props: {
-    color: {
-      default: color('Color', '#1271ff')
+      default: text('Label', 'Switch')
     },
-    label: {
-      default: text('Label', 'Flat Switch' )
+    flat: {
+      default: boolean('Flat', false)
+    },
+    inset: {
+      default: boolean('Inset', false)
+    },
+    disabled: {
+      default: boolean('Disabled', false)
+    },
+    readonly: {
+      default: boolean('Readonly', false)
     }
   },
-  template: `<g-switch v-model="model" :color="color" :label="label" flat></g-switch>`
-});
-
-export const inset = () => ({
-  components: {GSwitch},
-  data() {
-    return {
-      model: null
-    }
-  },
-  props: {
-    color: {
-      default: color('Color', '#1271ff')
-    },
-    label: {
-      default: text('Label', 'Inset Switch' )
-    }
-  },
-  template: `<g-switch v-model="model" :color="color" :label="label" inset></g-switch>`
-});
-
-export const disabled = () => ({
-  components: {GSwitch},
-  props: {
-    state: {
-      default: boolean('State', false)
-    },
-    color: {
-      default: color('Color', '#1271ff')
-    },
-    label: {
-      default: text('Label', 'Disabled Switch')
-    }
-  },
-  template: `<div>
-    <g-switch v-model="state" :color="color" :label="label" disabled></g-switch>
-    <g-switch v-model="state" :color="color" :label="label" inset disabled></g-switch>
-  </div>`
-});
-
-export const readonly = () => ({
-  components: {GSwitch},
-  props: {
-    state: {
-      default: boolean('State', false)
-    },
-    color: {
-      default: color('Color', '#1271ff')
-    },
-    label: {
-      default: text('Label', 'Disabled Switch')
-    }
-  },
-  template: `<div>
-    <g-switch v-model="state" :color="color" :label="label" readonly></g-switch>
-    <g-switch v-model="state" :color="color" :label="label" inset readonly></g-switch>
-  </div>`
+  template: `<g-switch v-model="model" 
+                    :color="color" 
+                    :label="label" 
+                    :flat="flat" 
+                    :inset="inset"
+                    :disabled="disabled"
+                    :readonly="readonly"/>`
 });
 
 export const multiple = () => ({
-  components: {GSwitch},
+  components: { GSwitch },
   data() {
     return {
       val: [],
@@ -116,8 +60,8 @@ export const multiple = () => ({
     }
   },
   template: `<div> Value: {{val}}
-    <g-switch v-model="val" :color="color" :label="label+1" value="switch1"></g-switch>
-    <g-switch v-model="val" :color="color" :label="label+2" value="switch2"></g-switch>
-    <g-switch v-model="val" :color="color" :label="label+3" value="switch3"></g-switch>
+    <g-switch v-model="val" :color="color" :label="label+1" value="switch1"/>
+    <g-switch v-model="val" :color="color" :label="label+2" value="switch2"/>
+    <g-switch v-model="val" :color="color" :label="label+3" value="switch3"/>
   </div>`
 });
