@@ -19,7 +19,7 @@ export const mainFeatureFileInput = () => ({
   components: {GFileInput, GIcon, GChip},
   props: {
     multiple: {default: boolean('multiple', false)},
-    accept: {default: text('accept', 'null')},
+    accept: {default: text('accept', '')},
     showSize: {default: boolean('show size', false)},
     counter: {default: boolean('counter', false)},
     chips: {default: boolean('chips', false)},
@@ -38,7 +38,7 @@ export const fullFeatureFileInput = () => ({
   components: {GFileInput, GIcon, GChip},
   props: {
     multiple: {default: boolean('multiple', false)},
-    accept: {default: text('accept', null)},
+    accept: {default: text('accept', '')},
     showSize: {default: boolean('show size', false)},
     counter: {default: boolean('counter', false)},
     chips: {default: boolean('chips', false)},
@@ -49,9 +49,9 @@ export const fullFeatureFileInput = () => ({
     appendIcon: {default: text('append-inner', 'check')},
     appendOuterIcon: {default: text('append-outer', 'home')},
 
-    label: {default: text('label', null)},
-    placeholder: {default: text('placeholder', null)},
-    hint: {default: text('hint', null)},
+    label: {default: text('label', '')},
+    placeholder: {default: text('placeholder', '')},
+    hint: {default: text('hint', '')},
   },
   template: `<g-file-input :multiple="multiple"
                            :accept="accept"
