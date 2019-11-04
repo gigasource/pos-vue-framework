@@ -13,7 +13,7 @@ export const GAvatarDefault = () => ({
   props: {
     textValue: { type: String, default: text('textValue', 'P') },
     textColor: { type: String, default: text('textColor', 'white') },
-    backgroundColor: { type: String, default: text('backgroundColor', 'bg-red') },
+    backgroundColor: { type: String, default: text('backgroundColor', 'red') },
   },
   template: `<g-avatar :text-color="textColor" :background-color="backgroundColor">{{textValue}}</g-avatar>`,
 })

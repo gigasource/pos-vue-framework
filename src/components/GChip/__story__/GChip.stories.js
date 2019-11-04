@@ -85,7 +85,7 @@ export const PillChip = () => ({
                 <g-avatar class="g-avatar__left" v-if="showImg">
                  <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"> </g-img>
                 </g-avatar>       
-                <g-avatar class="g-avatar__left" background-color="bg-red" v-else>
+                <g-avatar class="g-avatar__left" background-color="red" v-else>
                 P
                 </g-avatar>
             {{text}}

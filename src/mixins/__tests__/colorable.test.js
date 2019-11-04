@@ -45,12 +45,14 @@ describe('isCssColor', () => {
     expect(isCssColor('hsla')).toBe(false)
   })
 
-  it('should return true if css start with # | rgb( | rgba( | hsl( | hsla(', () => {
+  it('should return true if css start with # | rgb( | rgba( | hsl( | hsla( or transparent | currentColor', () => {
     expect(isCssColor('#')).toBe(true)
     expect(isCssColor('rgb(')).toBe(true)
     expect(isCssColor('rgba(')).toBe(true)
     expect(isCssColor('hsl(')).toBe(true)
     expect(isCssColor('hsla(')).toBe(true)
+    expect(isCssColor('transparent')).toBe(true)
+    expect(isCssColor('currentColor')).toBe(true)
 
     // Note that: Vuetify isCssColor test run still passed with invalid colors
     expect(isCssColor('#_after_that_every_thing_is_okay')).toBe(true)
