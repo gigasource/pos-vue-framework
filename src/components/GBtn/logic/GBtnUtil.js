@@ -1,5 +1,6 @@
 import { computed } from '@vue/composition-api'
 import { convertToGradient, convertToUnit } from '../../../utils/helpers';
+import { setBackgroundColor, setTextColor } from '../../../mixins/colorable';
 
 export default (props, context) => {
   let classes = computed(() => {
@@ -25,7 +26,9 @@ export default (props, context) => {
       'g-btn__round': isRound.value,
       'g-btn__contained': contained.value,
       [props.activeClass]: props.active,
-      ...elevationClasses.value
+      ...elevationClasses.value,
+      ...backgroundColorOutput.value && backgroundColorOutput.value.class,
+      ...textColorOutput.value && textColorOutput.value.class
     };
 
     let size = '';
@@ -88,16 +91,26 @@ export default (props, context) => {
     return props.fixed || props.fab;
   });
 
+  const backgroundColorOutput = computed(() => {
+    if (props.backgroundColor) {
+      return props.backgroundColor && setBackgroundColor(props.backgroundColor, {})
+    }
+  });
+
+  const textColorOutput = computed(() => {
+    return props.textColor && setTextColor(props.textColor, {})
+  });
+
   const styles = computed(() => {
     let _styles = {
-      ...props.textColor && { color: props.textColor.replace('-', '') },
-      ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
       ...props.width && { width: convertToUnit(props.width) },
       ...props.height && { height: convertToUnit(props.height) },
       ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
       ...props.maxHeight && { maxHeight: convertToUnit(props.maxHeight) },
       ...props.minWidth && { minWidth: convertToUnit(props.minWidth) },
       ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
+      ...backgroundColorOutput.value && backgroundColorOutput.value.style,
+      ...textColorOutput.value && textColorOutput.value.style,
     };
 
     // Params: linear-gradient(45deg, yellow, green)
