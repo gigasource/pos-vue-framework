@@ -60,8 +60,8 @@
                tabindex="0"
                @click="onSelect(item)"
                @keydown.enter="onSelect(item)"
-               @keydown.down="onArrowDown2(item)"
-               @keydown.up="onArrowUp2(item)">
+               @keydown.down="onArrowDown(item)"
+               @keydown.up="onArrowUp(item)">
             <slot name="prepend" :item="item">
               <div :class="prependClasses">
                 <img alt="" :src="item.prepend">
