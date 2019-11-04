@@ -6,14 +6,14 @@
 		<div class="g-toolbar-content" :style="contentStyles">
 			<slot></slot>
 		</div>
-		<div v-if="extension" class="g-toolbar-extension" :style="extensionStyles">
+		<div v-if="extended" class="g-toolbar-extension" :style="extensionStyles" ref="extension">
 			<slot name="extension"></slot>
 		</div>
 	</div>
 </template>
 
 <script>
-  import { computed } from '@vue/composition-api';
+	import { computed, onMounted, ref } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
   import { isCssColor } from '../../mixins/colorable';
   import { linearGradient } from '../../utils/colors';
@@ -37,7 +37,7 @@
       extended: Boolean,
       extensionHeight: {
         type: [String, Number],
-        default: 48
+				default: 'auto'
       },
       flat: Boolean,
       floating: Boolean,
@@ -50,8 +50,7 @@
       },
       height: String,
     },
-    setup(props) {
-      const extension = computed(() => !!props.extended);
+    setup(props, context) {
       const classes = computed(() => ({
         'g-toolbar': true,
         ['elevation-' + (props.flat ? '0' : props.elevation)]: true,
@@ -75,8 +74,19 @@
         return 64
       });
 
+			const computedExtensionHeight = computed(() => {
+				context.root.$nextTick(() => {
+					const extension = context.refs.extension
+					if (extension) {
+						if (!isNaN(parseInt(props.extensionHeight))) return props.extensionHeight
+						return extension.offsetHeight
+					}
+					return 0
+				})
+			})
+
       const totalHeight = computed(() => {
-        return contentHeight.value + (props.extended ? parseInt(props.extensionHeight) : 0);
+        return contentHeight.value + (props.extended ? parseInt(computedExtensionHeight.value) : 0);
       });
 
       const contentStyles = computed(() => ({
@@ -88,7 +98,7 @@
       }));
 
       const extensionStyles = computed(() => ({
-        'height': convertToUnit(props.extensionHeight)
+        'height': convertToUnit(computedExtensionHeight.value)
       }));
 
       const backgroundStyles = computed(() => ({
@@ -112,12 +122,12 @@
       }));
 
       return {
-        extension,
         classes,
         contentStyles,
         totalHeightStyles,
         extensionStyles,
         backgroundStyles,
+				computedExtensionHeight
       }
     }
   }
