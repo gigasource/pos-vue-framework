@@ -7,7 +7,6 @@
 @import 'waves';
 @import "elevation";
 @import "../components/GButton/_GButton";
-@import "../components/GExpansionPanel/_GExpressionPanel";
 @import "../components/GItemGroup/_GItemGroup";
 @import "../components/GKeyboard/_GKeyboard";
 @import "../components/GLayout/_GLayout";
@@ -23,10 +22,16 @@
 @import "../components/GRadio/_GRadio";
 @import "../components/GSwitch/_GSwitch";
 @import "../components/GToolTip/_GToolTip";
-@import "../components/GBtn/GBtn";
+@import "../components/GBtn/_GBtn";
+@import "../components/GChip/_GChip";
 @import "../components/transition/_animation";
 @import "../components/GDialog/_GDialog";
+@import "../components/GDndDialog/GDndDialog";
+@import "../components/GChipGroup/GChipGroup";
 @import "../components/GImg/_GImg";
 @import "../components/GIcon/_GIcon";
 @import "../components/GTextarea/GTextarea";
+@import "../components/GToolbar/_GToolbar";
+@import "../components/GSlideGroup/_GSlideGroup";
+@import "../components/GSidebar/_GSidebar";
 

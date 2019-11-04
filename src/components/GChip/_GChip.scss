@@ -1,0 +1,664 @@
+@import "./variables";
+
+.g-chip {
+  align-items: center;
+  cursor: default;
+  display: inline-flex;
+  line-height: 20px;
+  max-width: 100%;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-decoration: none;
+  transition-duration: $chip-transition-duration;
+  transition-property: box-shadow, opacity;
+  transition-timing-function: $chip-transition-fn;
+  vertical-align: middle;
+  white-space: nowrap;
+
+  border-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.87);
+
+  &:not(.g-chip__active) {
+    background: #e0e0e0;
+  }
+
+  //&:hover,
+  //&:focus,
+  //&:active {
+  //  opacity: .72;
+  //}
+
+  &:hover::before {
+    opacity: 0.08;
+  }
+
+  &:focus::before {
+    opacity: 0.12;
+  }
+
+
+  &__active {
+    &:hover::before, &::before {
+      opacity: 0.12;
+    }
+
+    &:focus::before {
+      opacity: 0.16;
+    }
+  }
+
+
+  &:before {
+    background-color: currentColor;
+    bottom: 0;
+    border-radius: inherit;
+    content: '';
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+    right: 0;
+    top: 0;
+  }
+
+  .g-avatar {
+    height: $chip-avatar-size !important;
+    min-width: $chip-avatar-size !important;
+    width: $chip-avatar-size !important;
+  }
+
+  .g-icon {
+    font-size: $chip-icon-size;
+  }
+
+  //Currently not applied
+  .g-avatar,
+  .g-icon {
+    &__left {
+      margin-left: -7px;
+      margin-right: $chip-icon-margin-after;
+    }
+
+    &__right {
+      margin-left: $chip-icon-margin-after;
+      margin-right: $chip-icon-margin-before;
+    }
+  }
+
+  &:not(.g-chip__no-color) {
+    .g-icon {
+      color: inherit;
+    }
+  }
+}
+
+// Elements
+.g-chip__close.g-icon {
+  font-size: $chip-close-size;
+  max-height: $chip-close-size;
+  max-width: $chip-close-size;
+  user-select: none;
+
+  &.g-icon__right {
+    margin-right: $chip-icon-right-margin-after;
+    //color: rgba(0,0,0,0.54)
+  }
+}
+
+.g-chip__content {
+  align-items: center;
+  display: inline-flex;
+  height: 100%;
+  max-width: 100%;
+}
+
+//Modifiers
+.g-chip__active {
+  .g-icon {
+    color: inherit;
+  }
+}
+
+
+.g-chip__clickable {
+  cursor: pointer;
+
+  &:active {
+    @include elevation(2)
+  }
+}
+
+.g-chip__disabled {
+  opacity: .4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.g-chip__filter {
+  &.g-icon {
+    color: inherit;
+  }
+}
+
+.g-chip__pill {
+  .g-chip__filter {
+    margin-right: $chip-pill-filter-margin;
+  }
+
+  .g-avatar {
+    height: $chip-pill-avatar-size !important;
+    width: $chip-pill-avatar-size !important;
+  }
+
+  .g-avatar {
+    &__left {
+      margin-left: -12px !important;
+    }
+
+    &__right {
+      margin-right: $chip-pill-avatar-margin-before;
+    }
+  }
+}
+
+.g-chip__label {
+  border-radius: $chip-label-border-radius !important;
+}
+
+.g-chip.g-chip__outlined {
+  border-width: $icon-outlined-border-width;
+  border-style: solid;
+
+  &:not(.g-chip__active):before {
+    opacity: 0;
+  }
+
+  &.g-chip__active:before {
+    opacity: 0.08;
+  }
+
+  .g-icon {
+    color: inherit;
+  }
+
+  // Needs increased specificity
+  &.g-chip.g-chip {
+    background-color: transparent !important;
+  }
+}
+
+.g-chip-overlay {
+  width: 24px;
+  height: 24px;
+  margin-left: -7px;
+  margin-right: 8px;
+  position: absolute;
+  z-index: 99;
+  color: white;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  .g-icon {
+    margin-left: 3px;
+  }
+}
+
+.g-chip-pill-overlay {
+  width: 32px;
+  height: 32px;
+  margin-left: -12px;
+  margin-right: 8px;
+  position: absolute;
+  z-index: 99;
+  color: white;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  .g-icon {
+    margin: 7px 0 0 7px;
+  }
+}
+
+
+.g-chip.g-chip__selected {
+  background: transparent;
+
+  &:after {
+    opacity: .28;
+  }
+}
+
+.g-chip {
+  @each $name, $size in $icon-sizes {
+    &.g-size__#{$name} {
+      border-radius: #{map-get($size, 'height') / 2}px;
+      font-size: #{map-get($size, 'font-size')}px;
+      height: #{map-get($size, 'height')}px;
+    }
+  }
+}
+
+.g-chip:not(.g-chip__outlined) {
+  color: rgba(0, 0, 0, 0.87);
+}
+
+
+//Fix color of default size, default color chip
+.g-chip.g-chip__close {
+  .g-icon.g-icon__right {
+    opacity: 0.54;
+  }
+}
+
+//.g-chip {
+//  border-color: rgba(map-get($shades, 'black'), 0.12);
+//  align-items: center;
+//  cursor: default;
+//  display: inline-flex;
+//  line-height: 20px;
+//  max-width: 100%;
+//  min-width: fit-content;
+//  outline: none;
+//  overflow: hidden;
+//  padding: 0 12px;
+//  position: relative;
+//  text-decoration: none;
+//  transition-duration: $chip-transition-duration;
+//  transition-property: box-shadow, opacity;
+//  transition-timing-function: $chip-transition-fn;
+//  vertical-align: middle;
+//  white-space: nowrap;
+//  font-weight: 400;
+//  font-size: 14px;
+//  height: 32px;
+//  border-radius: 16px;
+//
+//  .g-avatar, .g-overlay {
+//    width: 24px;
+//    height: 24px;
+//    min-width: 24px;
+//  }
+//
+//  .g-avatar {
+//    & > .g-icon {
+//      z-index: 0;
+//    }
+//  }
+//
+//  .g-overlay {
+//    .g-icon {
+//      margin: 2px 0 0 2px;
+//      font-size: 20px;
+//      position: absolute;
+//    }
+//  }
+//
+//  .g-avatar {
+//    height: $chip-avatar-size;
+//    min-width: $chip-avatar-size;
+//    width: $chip-avatar-size;
+//    position: relative;
+//
+//    .g-icon {
+//      position: relative;
+//      z-index: 0;
+//      color: #ffffff;
+//    }
+//
+//    .g-overlay {
+//      width: 24px;
+//      height: 24px;
+//      border-radius: 50%;
+//      z-index: 2;
+//      position: absolute;
+//      top: 0;
+//      bottom: 0;
+//      left: -4px;
+//      right: 0;
+//      transition: .3s ease;
+//      background-color: rgba(0, 0, 0, 0.4);
+//    }
+//  }
+//
+//  //Avatar, icons
+//  .g-avatar,
+//  .g-icon {
+//    font-size: $chip-close-size;
+//    user-select: none;
+//
+//    &__left {
+//      margin-left: $chip-icon-margin-before;
+//      margin-right: 3px;
+//      height: 24px;
+//      width: 24px;
+//    }
+//
+//    &__right {
+//      margin-left: $chip-icon-margin-after;
+//      margin-right: $chip-icon-margin-before;
+//      height: $chip-close-size;
+//    }
+//  }
+//
+//  .g-chip-content {
+//    align-items: center;
+//    display: inline-flex;
+//    height: 100%;
+//    max-width: 100%;
+//  }
+//
+//  // Close
+//  &.g-chip__close {
+//    user-select: none;
+//
+//    .g-icon {
+//      .g-icon__right {
+//        font-size: $chip-close-size;
+//        margin-right: $chip-icon-right-margin-after;
+//      }
+//
+//      .g-icon__left {
+//        font-size: $chip-close-size;
+//        margin-right: $chip-icon-right-margin-before;
+//      }
+//    }
+//
+//    &:hover,
+//    &:focus,
+//    &:active {
+//      opacity: .72
+//    }
+//  }
+//}
+//
+////Label
+//.g-chip-label {
+//  border-radius: $chip-label-border-radius !important;
+//}
+//
+////Outlined
+//.g-chip.g-chip__outlined {
+//  border-width: $icon-outlined-border-width;
+//  border-style: solid;
+//
+//  &:not(g-chip__active):before {
+//    opacity: 0;
+//  }
+//
+//  &.g-chip__active:before {
+//    opacity: 0.08;
+//  }
+//
+//  &.g-icon {
+//    color: inherit;
+//    font-size: $chip-close-size;
+//    max-height: $chip-close-size;
+//    max-width: $chip-close-size;
+//    user-select: none;
+//
+//    // Needs increased specificity
+//    &.g-chip.g-chip {
+//      background-color: transparent !important;
+//    }
+//  }
+//}
+//
+//
+//// Needs increased specificity
+//// to overwrite theme color
+//.g-chip.g-chip__selected {
+//  background: transparent;
+//
+//  &:after {
+//    opacity: .28;
+//  }
+//}
+//
+////Clickable
+//.g-chip__clickable {
+//  cursor: pointer;
+//
+//  &:active {
+//    @include elevation(2);
+//  }
+//}
+//
+////Disabled
+//.g-chip__disabled {
+//  opacity: .4;
+//  pointer-events: none;
+//  user-select: none;
+//}
+//
+////Label
+//.g-chip__label {
+//  border-radius: $chip-label-border-radius !important;
+//}
+//
+////Pill
+//.g-chip__pill {
+//  .g-chip__filter {
+//    margin-right: $chip-pill-filter-margin;
+//  }
+//
+//  .g-avatar {
+//    height: $chip-pill-avatar-size !important;
+//    width: $chip-pill-avatar-size !important;
+//  }
+//
+//  .g-avatar {
+//    position: absolute;
+//
+//    &__left {
+//      position: relative;
+//      left: 0 !important;
+//      bottom: 0 !important;
+//      margin-left: $chip-pill-avatar-margin-before;
+//    }
+//
+//    .g-overlay {
+//      margin-left: 0 !important;
+//      width: 32px !important;
+//      height: 32px !important;
+//      border-radius: 50%;
+//      z-index: 2;
+//      position: absolute;
+//      top: 0;
+//      bottom: 0;
+//      left: -6px !important;
+//      right: 0;
+//      transition: .3s ease;
+//      background-color: rgba(0, 0, 0, 0.4);
+//
+//      .g-icon {
+//        z-index: 5;
+//        user-select: none;
+//        font-size: 18px !important;
+//        margin-left: 7px !important;
+//        margin-top: 7px !important;
+//      }
+//
+//    }
+//  }
+//}
+//
+////Filter
+//.g-chip__filter {
+//  .g-icon {
+//    &__left {
+//      position: relative;
+//      font-size: 24px;
+//      .g-icon {
+//        font-size: 24px;
+//      }
+//    }
+//
+//    user-select: none;
+//    color: inherit;
+//  }
+//
+//  .expand-x-transition-leave-active,
+//  .expand-x-transition-enter {
+//    margin: 0
+//  }
+//}
+//
+//.g-chip__active {
+//  opacity: 0.82;
+//}
+//
+//.g-chip {
+//  @each $name, $size in $icon-sizes {
+//    &.g-size__#{$name} {
+//      border-radius: #{map-get($size, 'height') / 2}px;
+//      font-size: #{map-get($size, 'font-size')}px;
+//      height: #{map-get($size, 'height')}px;
+//    }
+//  }
+//
+//  &.g-avatar-size__large {
+//    .g-avatar, .g-overlay {
+//      width: 33px;
+//      height: 33px;
+//      min-width: 33px;
+//    }
+//
+//    .g-avatar {
+//      &__left {
+//        left: 5px;
+//        margin-right: 16px;
+//      }
+//
+//      & > .g-avatar {
+//        position: absolute;
+//      }
+//
+//      & > .g-icon {
+//        position: relative;
+//        top: 0;
+//        left: 5px;
+//        font-size: 33px;
+//        width: 33px;
+//        height: 33px;
+//        z-index: 0;
+//      }
+//    }
+//
+//    .g-overlay {
+//      left: 1px;
+//
+//      .g-icon {
+//        margin: 5px 0 0 5px;
+//        font-size: 24px;
+//        position: absolute;
+//      }
+//    }
+//  }
+//
+//  &.g-avatar-size__small {
+//    .g-avatar, .g-overlay {
+//      width: 18px;
+//      height: 18px;
+//      min-width: 18px;
+//    }
+//
+//    .g-avatar {
+//      & > .g-avatar {
+//        position: absolute;
+//      }
+//
+//      & > .g-icon {
+//        position: initial;
+//        font-size: 18px;
+//        width: 18px;
+//        height: 18px;
+//        z-index: 0;
+//      }
+//    }
+//
+//    .g-overlay {
+//      .g-icon {
+//        margin: 1px 0 0 1px;
+//        font-size: 15px;
+//        position: absolute;
+//      }
+//    }
+//  }
+//
+//  &.g-avatar-size__x-large {
+//    .g-avatar, .g-overlay {
+//      width: 40px;
+//      height: 40px;
+//    }
+//
+//    .g-avatar {
+//      margin: 0 8px 0 1px;
+//
+//      & > .g-icon {
+//        position: relative;
+//        font-size: 40px;
+//        width: 40px;
+//        height: 40px;
+//        top: 0;
+//        left: 5px;
+//        z-index: 0;
+//      }
+//    }
+//
+//    .g-overlay {
+//      margin: 0 0 0 5px;
+//
+//      .g-icon {
+//        margin: 6px 0 0 6px;
+//        font-size: 30px;
+//        position: absolute;
+//      }
+//    }
+//  }
+//
+//  &.g-avatar-size__x-small {
+//    .g-avatar, .g-overlay {
+//      width: 12px;
+//      height: 12px;
+//      min-width: 12px;
+//    }
+//
+//    .g-avatar {
+//      & > .g-avatar {
+//        position: relative;
+//        bottom: 5px;
+//        left: -2px;
+//      }
+//
+//      .g-icon {
+//        font-size: 10px;
+//        width: 10px;
+//        height: 10px;
+//        top: -5px;
+//        left: -1px;
+//        bottom: 3px;
+//        z-index: 0;
+//      }
+//    }
+//
+//    .g-icon__left {
+//      .g-icon {
+//        font-size: 18px;
+//        position: relative;
+//        top: 2px;
+//      }
+//    }
+//
+//    .g-overlay {
+//      left: -6px;
+//
+//      .g-icon {
+//        margin: 1px 0 0 2px;
+//        font-size: 10px;
+//        position: absolute;
+//        top: 0;
+//      }
+//    }
+//
+//  }
+//}

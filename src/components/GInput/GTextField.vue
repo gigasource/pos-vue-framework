@@ -1,8 +1,8 @@
 <template>
 	<div class="g-tf--wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
 		<div class="g-tf--prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-			<slot name="prepend-outer">
-				<g-icon>{{prependIcon}}</g-icon>
+			<slot name="prepend-outer" >
+				<g-icon :color="isLabelActive ? 'blue' : null">{{prependIcon}}</g-icon>
 			</slot>
 		</div>
 		<fieldset>
@@ -10,7 +10,7 @@
 			<div class='g-tf' :class="tfErrClasses">
 				<div class="g-tf--prepend__inner" @click="onClickPrependInner">
 					<slot name="prepend-inner">
-						<g-icon>{{prependInnerIcon}}</g-icon>
+						<g-icon :color="isLabelActive ? 'blue' : null ">{{prependInnerIcon}}</g-icon>
 					</slot>
 				</div>
 				<div v-if="prefix" class="g-tf--affix" ref="prefixRef">{{prefix}}</div>
@@ -34,9 +34,11 @@
 				</div>
 				<div v-if="suffix" class="g-tf--affix">{{suffix}}</div>
 				<div class="g-tf--append__inner" @click="onClickAppendInner">
-					<img v-if="isDirty && clearable" src="../../assets/delivery/cancel.svg" @click.stop="onClearIconClick" alt="clearIcon">
+					<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
+						<g-icon>{{clearIcon}}</g-icon>
+					</div>
 					<slot name="append-inner">
-						<g-icon>{{appendInnerIcon}}</g-icon>
+						<g-icon :color="isLabelActive ? 'blue' : null ">{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
 				<div class="g-tf--error" v-if="!isValidInput">{{errorMessages}}</div>
@@ -46,7 +48,7 @@
 		</fieldset>
 		<div class="g-tf--append__outer" @click="onClickAppendOuter" ref="appendOuter">
 			<slot name="append-outer">
-				<g-icon>{{appendIcon}}</g-icon>
+				<g-icon :color="isLabelActive ? 'blue' : null ">{{appendIcon}}</g-icon>
 			</slot>
 		</div>
 
@@ -65,10 +67,26 @@
       ...{//display props
         label: String,
         placeholder: String,
-        appendIcon: String,
-        prependIcon: String,
-				prependInnerIcon: String,
-				appendInnerIcon: String,
+        appendIcon:{
+          type: String,
+          default: ''
+        } ,
+        prependIcon: {
+          type: String,
+          default: ''
+        } ,
+				prependInnerIcon:{
+          type: String,
+          default: ''
+        } ,
+				appendInnerIcon: {
+          type: String,
+          default: ''
+        } ,
+				clearIcon:  {
+          type: String,
+          default: 'clear'
+        },
         prefix: {
           type: String,
           default: ''
@@ -137,7 +155,8 @@
 				onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
 			//set legend width for label in outlined textfield
 			const legendStyles = computed(() => {
-			  if( !props.solo && props.label && (isFocused.value || internalValue.value)) {
+			  if( !props.solo && props.label && (isFocused.value || internalValue.value||props.placeholder)) {
+
 			    return {
 			      'width': 'auto',
 						'padding': '1px',
