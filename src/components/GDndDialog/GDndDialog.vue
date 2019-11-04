@@ -333,26 +333,26 @@
             case 'n':
             case 's':
               cursor.value = 'ns-resize';
-              document.body.bgStyle.cursor = 'ns-resize';
+              document.body.style.cursor = 'ns-resize';
               break;
             case 'e':
             case 'w':
               cursor.value = 'ew-resize';
-              document.body.bgStyle.cursor = 'ew-resize';
+              document.body.style.cursor = 'ew-resize';
               break;
             case 'ne':
             case 'sw':
               cursor.value = 'nesw-resize';
-              document.body.bgStyle.cursor = 'nesw-resize';
+              document.body.style.cursor = 'nesw-resize';
               break;
             case 'nw':
             case 'se':
               cursor.value = 'nwse-resize';
-              document.body.bgStyle.cursor = 'nwse-resize';
+              document.body.style.cursor = 'nwse-resize';
               break;
             default:
               cursor.value = '';
-              document.body.bgStyle.cursor = '';
+              document.body.style.cursor = '';
               break;
           }
         }

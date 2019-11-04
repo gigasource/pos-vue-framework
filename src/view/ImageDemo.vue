@@ -27,7 +27,7 @@
         <!--                contain-->
         <!--            <template v-slot:placeholder>-->
         <!--            </template>-->
-        <!--            <p bgStyle="color: #00AEFF;">Hello World!</p>-->
+        <!--            <p style="color: #00AEFF;">Hello World!</p>-->
         <!--        </g-img>-->
         <!--        <g-img-->
         <!--                src="https://i.ytimg.resdefault.jpg"-->
@@ -39,13 +39,13 @@
         <!--                contain-->
         <!--        >-->
         <!--            <template v-slot:placeholder>-->
-        <!--                <div bgStyle="height: 100%;width: 100%; align-content: center">-->
+        <!--                <div style="height: 100%;width: 100%; align-content: center">-->
         <!--                    <p>$$$</p>-->
         <!--                </div>-->
         <!--            </template>-->
-        <!--            <p bgStyle="color: #00AEFF;">Hello World!</p>-->
+        <!--            <p style="color: #00AEFF;">Hello World!</p>-->
         <!--        </g-img>-->
-        <!--        <div bgStyle="height: 3000px; width: 500px"></div>-->
+        <!--        <div style="height: 3000px; width: 500px"></div>-->
         <!--        <g-img-->
         <!--                src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"-->
         <!--                lazy-src="https://picsum.photos/id/11/10/6"-->
@@ -58,7 +58,7 @@
         <!--            <template v-slot:placeholder>-->
 
         <!--            </template>-->
-        <!--            <p bgStyle="color: #00AEFF;">Hello World!</p>-->
+        <!--            <p style="color: #00AEFF;">Hello World!</p>-->
         <!--        </g-img>-->
     </div>
 </template>

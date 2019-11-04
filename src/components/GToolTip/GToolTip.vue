@@ -131,7 +131,7 @@
           type: String,
           default: '#616161'
         },
-        // boolean value indicate whether tooltip should be shown in speech bubble bgStyle
+        // boolean value indicate whether tooltip should be shown in speech bubble style
         speechBubble: Boolean,
         zIndex: {
           type: [Number, String],
@@ -155,7 +155,7 @@
       })
       const tooltipContentStyle = computed(() => {
         return {
-          ...colorOutput.value.bgStyle,
+          ...colorOutput.value.style,
           top: calcTop(props, dimensions, menuableState, calcYOverFlow),
           left: calcLeft(props, dimensions, calcXOverflow),
           maxWidth: convertToUnit(props.maxWidth),

@@ -18,7 +18,7 @@ module.exports = async ({ config, mode }) => {
   // Make whatever fine-grained changes you need
   config.module.rules.push({
     test: /\.scss$/,
-    use: ['bgStyle-loader', 'css-loader', 'resolve-url-loader', 'sass-loader'],
+    use: ['style-loader', 'css-loader', 'resolve-url-loader', 'sass-loader'],
     include: path.resolve(__dirname, '../'),
   });
 

@@ -74,7 +74,7 @@
 
       const styles = computed(() => {
         const styles = {};
-        if (type.value === 'bgStyle') {
+        if (type.value === 'style') {
           Object.assign(styles, { 'color': props.color });
         }
         return styles;

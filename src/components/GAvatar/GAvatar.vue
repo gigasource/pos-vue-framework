@@ -35,8 +35,8 @@
         minHeight: convertToUnit(props.minHeight),
         maxHeight: convertToUnit(props.maxHeight),
         maxWidth: convertToUnit(props.maxWidth),
-        ...backgroundColorOutput.value && backgroundColorOutput.value.bgStyle,
-        ...textColorOutput.value && textColorOutput.value.bgStyle,
+        ...backgroundColorOutput.value && backgroundColorOutput.value.style,
+        ...textColorOutput.value && textColorOutput.value.style,
       }));
 
       const backgroundColorOutput = computed(() => {

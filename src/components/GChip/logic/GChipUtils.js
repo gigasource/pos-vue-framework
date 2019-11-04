@@ -41,8 +41,8 @@ export default (props, context) => {
 
   const styles = computed(() => {
     let _styles = {
-      ...backgroundColorOutput.value && backgroundColorOutput.value.bgStyle,
-      ...textColorOutput.value && textColorOutput.value.bgStyle,
+      ...backgroundColorOutput.value && backgroundColorOutput.value.style,
+      ...textColorOutput.value && textColorOutput.value.style,
     };
 
     // Params: linear-gradient(45deg, yellow, green)

@@ -47,17 +47,17 @@ export function createSimpleTransition (name, origin = 'top center 0', mode) {
 
       const ourBeforeEnter = [];
       const ourLeave = [];
-      const absolute = el => (el.bgStyle.position = 'absolute');
+      const absolute = el => (el.style.position = 'absolute');
 
       ourBeforeEnter.push((el) => {
-        el.bgStyle.transformOrigin = context.props.origin
-        el.bgStyle.webkitTransformOrigin = context.props.origin
+        el.style.transformOrigin = context.props.origin
+        el.style.webkitTransformOrigin = context.props.origin
       });
 
       if (context.props.leaveAbsolute)
         ourLeave.push(absolute);
       if (context.props.hideOnLeave)
-        ourLeave.push(el => (el.bgStyle.display = 'none'));
+        ourLeave.push(el => (el.style.display = 'none'));
 
       const { beforeEnter, leave } = context.data.on;
 
@@ -104,10 +104,10 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
     beforeEnter (el) {
       el._parent = el.parentNode;
       el._initialStyle = {
-        transition: el.bgStyle.transition,
-        visibility: el.bgStyle.visibility,
-        overflow: el.bgStyle.overflow,
-        [sizeProperty]: el.bgStyle[sizeProperty],
+        transition: el.style.transition,
+        visibility: el.style.visibility,
+        overflow: el.style.overflow,
+        [sizeProperty]: el.style[sizeProperty],
       };
     },
 
@@ -115,22 +115,22 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
       const initialStyle = el._initialStyle;
       const offset = `${el[offsetProperty]}px`;
 
-      el.bgStyle.setProperty('transition', 'none', 'important');
-      el.bgStyle.visibility = 'hidden';
-      el.bgStyle.visibility = initialStyle.visibility;
-      el.bgStyle.overflow = 'hidden';
-      el.bgStyle[sizeProperty] = '0';
+      el.style.setProperty('transition', 'none', 'important');
+      el.style.visibility = 'hidden';
+      el.style.visibility = initialStyle.visibility;
+      el.style.overflow = 'hidden';
+      el.style[sizeProperty] = '0';
 
       void el.offsetHeight; // force reflow
 
-      el.bgStyle.transition = initialStyle.transition;
+      el.style.transition = initialStyle.transition;
 
       if (expandedParentClass && el._parent) {
         el._parent.classList.add(expandedParentClass);
       }
 
       requestAnimationFrame(() => {
-        el.bgStyle[sizeProperty] = offset
+        el.style[sizeProperty] = offset
       });
     },
 
@@ -141,15 +141,15 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
       el._initialStyle = {
         transition: '',
         visibility: '',
-        overflow: el.bgStyle.overflow,
-        [sizeProperty]: el.bgStyle[sizeProperty],
+        overflow: el.style.overflow,
+        [sizeProperty]: el.style[sizeProperty],
       };
 
-      el.bgStyle.overflow = 'hidden';
-      el.bgStyle[sizeProperty] = `${el[offsetProperty]}px`;
+      el.style.overflow = 'hidden';
+      el.style[sizeProperty] = `${el[offsetProperty]}px`;
       void el.offsetHeight // force reflow
 
-      requestAnimationFrame(() => (el.bgStyle[sizeProperty] = '0'));
+      requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
     },
 
     afterLeave,
@@ -165,8 +165,8 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
 
   function resetStyles (el) {
     const size = el._initialStyle[sizeProperty];
-    el.bgStyle.overflow = el._initialStyle.overflow;
-    if (size != null) el.bgStyle[sizeProperty] = size;
+    el.style.overflow = el._initialStyle.overflow;
+    if (size != null) el.style[sizeProperty] = size;
     delete el._initialStyle;
   }
 }

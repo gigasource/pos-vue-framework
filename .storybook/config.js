@@ -6,7 +6,7 @@ import VueCompositionAPI from '@vue/composition-api';
 //import 'github-markdown-css';
 import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
-//import './bgStyle.css';
+//import './style.css';
 import '../src/plugin/waves'
 
 addParameters({

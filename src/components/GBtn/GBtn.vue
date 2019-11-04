@@ -26,7 +26,7 @@
           default: 'g-btn__active',
         }
       },
-      //bgStyle
+      //style
       ...{
         elevation: [String, Number],
         gradientAngle: { type: String, default: '45deg' },

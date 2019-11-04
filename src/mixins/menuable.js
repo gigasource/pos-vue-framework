@@ -122,13 +122,13 @@ export default function menuable(props, context) {
   function sneakPeek(cb) {
     requestAnimationFrame(() => {
       const contentElement = context.refs.content;
-      if (!contentElement || contentElement.bgStyle.display !== 'none') {
+      if (!contentElement || contentElement.style.display !== 'none') {
         cb();
         return;
       }
-      contentElement.bgStyle.display = 'inline-block';
+      contentElement.style.display = 'inline-block';
       cb();
-      contentElement.bgStyle.display = 'none';
+      contentElement.style.display = 'none';
     })
   }
 

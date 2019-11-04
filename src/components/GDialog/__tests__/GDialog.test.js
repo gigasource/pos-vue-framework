@@ -262,7 +262,7 @@ describe('Dialog', () => {
           expect(vm.$el.outerHTML).toMatchSnapshot();
 
           // Dialog1 is the nested dialog, Dialog2 is the outer dialog
-          expect(dialog1.bgStyle.zIndex > dialog2.bgStyle.zIndex).toBe(true);
+          expect(dialog1.style.zIndex > dialog2.style.zIndex).toBe(true);
         })
       })
     })

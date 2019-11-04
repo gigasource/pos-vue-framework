@@ -459,7 +459,7 @@
         let legend = input.parentElement.previousElementSibling;
         const wrapper = legend.parentElement.parentElement;
         if (wrapper.classList.contains('tf__outlined') && input.placeholder && legend.tagName.toLowerCase() === 'legend') {
-          legend.bgStyle.width = 'auto';
+          legend.style.width = 'auto';
         }
         input.addEventListener('change', function () {
           let label = this.nextElementSibling;
@@ -471,9 +471,9 @@
           }
           if (legend.tagName.toLowerCase() === 'legend') {
             if (this.value) {
-              legend.bgStyle.width = 'auto';
+              legend.style.width = 'auto';
             } else {
-              legend.bgStyle.width = null;
+              legend.style.width = null;
             }
           }
         });
@@ -483,12 +483,12 @@
         const prepend = bsInput.previousElementSibling;
         const append = bsInput.nextElementSibling;
         if (prepend.childElementCount > 0) {
-          bsInput.bgStyle.borderBottomLeftRadius = '0';
-          bsInput.bgStyle.borderTopLeftRadius = '0';
+          bsInput.style.borderBottomLeftRadius = '0';
+          bsInput.style.borderTopLeftRadius = '0';
         }
         if (append.childElementCount > 0) {
-          bsInput.bgStyle.borderBottomRightRadius = '0';
-          bsInput.bgStyle.borderTopRightRadius = '0';
+          bsInput.style.borderBottomRightRadius = '0';
+          bsInput.style.borderTopRightRadius = '0';
 				}
 			}
     });

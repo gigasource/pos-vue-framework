@@ -1,6 +1,6 @@
 <template>
   <div class="g-picker" :class="gPickerClasses">
-    <div class="g-picker__title" v-if="shouldGenTitleSlot" :class="titleData.class" :style="titleData.bgStyle">
+    <div class="g-picker__title" v-if="shouldGenTitleSlot" :class="titleData.class" :style="titleData.style">
       <slot name="title"></slot>
     </div>
     <div class="g-picker__body" :class="bodyClass" :style="bodyStyle">

@@ -28,7 +28,7 @@ describe('Tooltip', () => {
 
   describe('2) Position - ', () => {
     describe('Absolute - ', () => {
-      it('Should set tooltip bgStyle with left: 0px, top: 0px', () => {
+      it('Should set tooltip style with left: 0px, top: 0px', () => {
         // without unit
         let dom = prepare('<div><g-tool-tip absolute><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
@@ -38,7 +38,7 @@ describe('Tooltip', () => {
         expect(dom.$el.outerHTML).toMatchSnapshot();
       })
 
-      it('Should set tooltip bgStyle with left: 100px, top: 0px', () => {
+      it('Should set tooltip style with left: 100px, top: 0px', () => {
         // without unit
         let dom = prepare('<div><g-tool-tip absolute absolute-x="100"><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
@@ -48,7 +48,7 @@ describe('Tooltip', () => {
         expect(dom.$el.outerHTML).toMatchSnapshot();
       })
 
-      it('Should set tooltip bgStyle with left: 0px, top: 100px', () => {
+      it('Should set tooltip style with left: 0px, top: 100px', () => {
         // wo unit
         let dom = prepare('<div><g-tool-tip absolute absolute-y="100"><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
@@ -57,7 +57,7 @@ describe('Tooltip', () => {
         expect(dom.$el.outerHTML).toMatchSnapshot();
       })
 
-      it('Should set tooltip bgStyle with left: 100px, top: 100px', () => {
+      it('Should set tooltip style with left: 100px, top: 100px', () => {
         // wo unit
         let dom = prepare('<div><g-tool-tip absolute absolute-x="100" absolute-y="100"><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
@@ -67,27 +67,27 @@ describe('Tooltip', () => {
         expect(dom.$el.outerHTML).toMatchSnapshot();
       })
 
-      it('Should set tooltip bgStyle with left: 0px, top: 0px if absolute is not set', () => {
+      it('Should set tooltip style with left: 0px, top: 0px if absolute is not set', () => {
         const dom = prepare('<div><g-tool-tip absolute-x="100" absolute-y="100"><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
       })
 
       it('Should ignore all alignment setting if absolute is set', () => {
-        let dom = prepare('<div bgStyle="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute top><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
+        let dom = prepare('<div style="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute top><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
 
-        dom = prepare('<div bgStyle="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute left><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
+        dom = prepare('<div style="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute left><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
 
-        dom = prepare('<div bgStyle="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute right><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
+        dom = prepare('<div style="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute right><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
 
-        dom = prepare('<div bgStyle="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute bottom><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
+        dom = prepare('<div style="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute bottom><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
       })
 
       it('Should ignore all nudge setting if absolute is set', () => {
-        const dom = prepare('<div bgStyle="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute nudge-top="200" nudge-right="200" nudge-bottom="200" nudge-left="200"><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
+        const dom = prepare('<div style="padding-top: 500px; padding-left: 500px"><g-tool-tip absolute nudge-top="200" nudge-right="200" nudge-bottom="200" nudge-left="200"><template #activator="{on}"><button v-on="on">Click me</button></template><span>Tooltip content</span></g-tool-tip></div>');
         expect(dom.$el.outerHTML).toMatchSnapshot();
       })
     })

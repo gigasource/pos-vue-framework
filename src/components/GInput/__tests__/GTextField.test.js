@@ -104,10 +104,10 @@ describe('GTextField', function () {
     expect(label).toBeTruthy();
     input.click();
     vm.$nextTick(() => {
-      expect(label.bgStyle).toContain('transform');
+      expect(label.style).toContain('transform');
       input.blur();
       vm.$nextTick(() =>{
-        expect(label.bgStyle).not.toContain('transform');
+        expect(label.style).not.toContain('transform');
       })
     })
   });

@@ -34,7 +34,7 @@
         }
       },
       buttonStyle() {
-        let bgStyle = {};
+        let style = {};
         if (this.height) {
           Object.assign(style, { height: this.height });
         }

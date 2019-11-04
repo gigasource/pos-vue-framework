@@ -235,7 +235,7 @@
                   'g-table-item__background--end-range': date.isRangeEnd,
                   'g-table-item__background--in-range': date.isInRange
                 },
-                bgStyle: {}
+                style: {}
               }
 
               // selected
@@ -267,19 +267,19 @@
         return ([<button
             type="button"
             class={['g-table-item', dateItem.class]}
-            style={dateItem.bgStyle}
+            style={dateItem.style}
             disabled={!dateItem.isAllowed}
             v-on:click_stop={() => dateTableModel.value.on.onDateClicked(dateItem)}
             v-on:dblclick_stop={() => dateTableModel.value.on.onDateDoubleClicked(dateItem)}>
           <div class="g-table-item__content">{dateItem.formattedValue}</div>
           <div class="g-date-picker-table__events">
             {
-              (dateItem.events || []).map(event => <div class={event.class} style={event.bgStyle}></div>)
+              (dateItem.events || []).map(event => <div class={event.class} style={event.style}></div>)
             }
           </div>
         </button>,
           <div class={['g-table-item__background', dateItem.background.class]}
-               style={dateItem.background.bgStyle}
+               style={dateItem.background.style}
           >
           </div>])
       }
@@ -347,7 +347,7 @@
                             <button
                                 type="button"
                                 class={['g-table-item', monthItem.class]}
-                                style={monthItem.bgStyle}
+                                style={monthItem.style}
                                 disabled={!monthItem.isAllowed}
                                 v-on:click_stop={() => monthTableModel.value.on.monthClicked(monthItem)}
                                 v-on:dblclick_stop={() => monthTableModel.value.on.monthDoubleClicked(monthItem)}

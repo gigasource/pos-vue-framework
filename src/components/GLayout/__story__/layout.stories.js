@@ -27,16 +27,16 @@ export default {
 //   template: `<g-container>
 //     <g-layout :vertical="vertical" :no-gutters="noGutters">
 //       <g-layout>
-//         <div bgStyle="border: 1px solid black; padding: 8px; width: 100%">Column</div>
+//         <div style="border: 1px solid black; padding: 8px; width: 100%">Column</div>
 //       </g-layout>
 //       <g-layout>
-//         <div bgStyle="border: 1px solid black; padding: 8px; width: 100%">Column</div>
+//         <div style="border: 1px solid black; padding: 8px; width: 100%">Column</div>
 //       </g-layout>
 //       <g-layout>
-//         <div bgStyle="border: 1px solid black; padding: 8px; width: 100%">Column</div>
+//         <div style="border: 1px solid black; padding: 8px; width: 100%">Column</div>
 //       </g-layout>
 //       <g-layout>
-//         <div bgStyle="border: 1px solid black; padding: 8px; width: 100%">Column</div>
+//         <div style="border: 1px solid black; padding: 8px; width: 100%">Column</div>
 //       </g-layout>
 //     </g-layout>
 //   </g-container>`
@@ -55,11 +55,11 @@ export default {
 //     },
 //   },
 //   template: `<g-container>
-//     <g-layout :align-items="align" :justify-content="justify" bgStyle="height: 100px; background-color: #eeeeee">
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
+//     <g-layout :align-items="align" :justify-content="justify" style="height: 100px; background-color: #eeeeee">
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
 //       </g-layout>
 //     </g-layout>
 //   </g-container>`
@@ -82,12 +82,12 @@ export default {
 //     },
 //   },
 //   template: `<g-container>
-//     <g-layout :vertical="vertical" :wrap="wrap" :reverse="reverse" bgStyle="height: 100px; width: 300px; background-color: #eeeeee; margin: 10%">
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
-//         <div bgStyle="border: 1px solid black; padding: 8px;">Column</div>
+//     <g-layout :vertical="vertical" :wrap="wrap" :reverse="reverse" style="height: 100px; width: 300px; background-color: #eeeeee; margin: 10%">
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
+//         <div style="border: 1px solid black; padding: 8px;">Column</div>
 //       </g-layout>
 //     </g-layout>
 //   </g-container>`
@@ -110,18 +110,18 @@ export default {
 //     }
 //   },
 //   template: `<g-container>
-//     <g-layout :wrap="wrap" :no-gutters="noGutters" bgStyle="background-color: #eeeeee">
+//     <g-layout :wrap="wrap" :no-gutters="noGutters" style="background-color: #eeeeee">
 //       <g-layout :col="col">
-//         <div bgStyle="border: 1px solid black; width: 100%">Col-{{col}}</div>
+//         <div style="border: 1px solid black; width: 100%">Col-{{col}}</div>
 //       </g-layout>
 //       <g-layout :col="col">
-//         <div bgStyle="border: 1px solid black; width: 100%">Col-{{col}}</div>
+//         <div style="border: 1px solid black; width: 100%">Col-{{col}}</div>
 //       </g-layout>
 //       <g-layout :col="col">
-//         <div bgStyle="border: 1px solid black; width: 100%">Col-{{col}}</div>
+//         <div style="border: 1px solid black; width: 100%">Col-{{col}}</div>
 //       </g-layout>
 //       <g-layout :col="col">
-//         <div bgStyle="border: 1px solid black; width: 100%">Col-{{col}}</div>
+//         <div style="border: 1px solid black; width: 100%">Col-{{col}}</div>
 //       </g-layout>
 //     </g-layout>
 //   </g-container>`
@@ -144,18 +144,18 @@ export default {
 //     }
 //   },
 //   template: `<g-container>
-//     <g-layout vertical :wrap="wrap" :no-gutters="noGutters" bgStyle="height: 500px; background-color: #eeeeee">
+//     <g-layout vertical :wrap="wrap" :no-gutters="noGutters" style="height: 500px; background-color: #eeeeee">
 //       <g-layout :row="row">
-//         <div bgStyle="border: 1px solid black; width: 100%">Row-{{row}}</div>
+//         <div style="border: 1px solid black; width: 100%">Row-{{row}}</div>
 //       </g-layout>
 //       <g-layout :row="row">
-//         <div bgStyle="border: 1px solid black; width: 100%">Row-{{row}}</div>
+//         <div style="border: 1px solid black; width: 100%">Row-{{row}}</div>
 //       </g-layout>
 //       <g-layout :row="row">
-//         <div bgStyle="border: 1px solid black; width: 100%">Row-{{row}}</div>
+//         <div style="border: 1px solid black; width: 100%">Row-{{row}}</div>
 //       </g-layout>
 //       <g-layout :row="row">
-//         <div bgStyle="border: 1px solid black; width: 100%">Row-{{row}}</div>
+//         <div style="border: 1px solid black; width: 100%">Row-{{row}}</div>
 //       </g-layout>
 //     </g-layout>
 //   </g-container>`
@@ -190,15 +190,15 @@ export default {
 //     },
 //   },
 //   template: `<g-container>
-//     <g-layout bgStyle="height: 100px; background-color: #eeeeee">
+//     <g-layout style="height: 100px; background-color: #eeeeee">
 //       <g-layout :align-self="align1" :order="order1">
-//         <div bgStyle="border: 1px solid black; padding: 8px; width: 100%">Column 1</div>
+//         <div style="border: 1px solid black; padding: 8px; width: 100%">Column 1</div>
 //       </g-layout>
 //       <g-layout :align-self="align2" :order="order2">
-//         <div bgStyle="border: 1px solid black; padding: 8px; width: 100%">Column 2</div>
+//         <div style="border: 1px solid black; padding: 8px; width: 100%">Column 2</div>
 //       </g-layout>
 //       <g-layout :align-self="align3" :order="order3">
-//         <div bgStyle="border: 1px solid black; padding: 8px; width: 100%">Column 3</div>
+//         <div style="border: 1px solid black; padding: 8px; width: 100%">Column 3</div>
 //       </g-layout>
 //     </g-layout>
 //   </g-container>`

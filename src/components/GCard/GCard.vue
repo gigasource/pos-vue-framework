@@ -42,7 +42,7 @@
       function genCard() {
         const nodeData = {
           class: classes.value,
-          bgStyle: styles.value,
+          style: styles.value,
           on: {
             click: (event) => {
               context.emit('click', event)

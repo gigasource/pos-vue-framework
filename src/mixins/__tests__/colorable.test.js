@@ -20,8 +20,8 @@ describe('shouldApplyColor', () => {
     expect(shouldApplyColor('foo', [])).toBe(false)
   })
 
-  it('should not apply color if data contain bgStyle or class prop is string', () => {
-    expect(shouldApplyColor('foo', { bgStyle: '' })).toBe(false)
+  it('should not apply color if data contain style or class prop is string', () => {
+    expect(shouldApplyColor('foo', { style: '' })).toBe(false)
     expect(shouldApplyColor('foo', { class: '' })).toBe(false)
   })
 
@@ -62,15 +62,15 @@ describe('isCssColor', () => {
 })
 
 describe('setBackgroundColor', () => {
-  describe('data object which has bgStyle or class property is string', () => {
-    it('should not modify data with bgStyle is string', () => {
-      expect(setBackgroundColor(undefined, { bgStyle: 'hello there' })).toEqual({ bgStyle: 'hello there' })
-      expect(setBackgroundColor('foo', { bgStyle: 'hello there' })).toEqual({ bgStyle: 'hello there' })
-      expect(setBackgroundColor('#fafafa', { bgStyle: 'hello there' })).toEqual({ bgStyle: 'hello there' })
-      expect(setBackgroundColor('rgb(1, 1, 1, 1)', { bgStyle: 'hello there' })).toEqual({ bgStyle: 'hello there' })
-      expect(setBackgroundColor('rgba(1, 1, 1, 1)', { bgStyle: 'hello there' })).toEqual({ bgStyle: 'hello there' })
-      expect(setBackgroundColor('hsl(100, 50%, 10%)', { bgStyle: 'hello there' })).toEqual({ bgStyle: 'hello there' })
-      expect(setBackgroundColor('hsla(100, 50%, 10%, 1)', { bgStyle: 'hello there' })).toEqual({ bgStyle: 'hello there' })
+  describe('data object which has style or class property is string', () => {
+    it('should not modify data with style is string', () => {
+      expect(setBackgroundColor(undefined, { style: 'hello there' })).toEqual({ style: 'hello there' })
+      expect(setBackgroundColor('foo', { style: 'hello there' })).toEqual({ style: 'hello there' })
+      expect(setBackgroundColor('#fafafa', { style: 'hello there' })).toEqual({ style: 'hello there' })
+      expect(setBackgroundColor('rgb(1, 1, 1, 1)', { style: 'hello there' })).toEqual({ style: 'hello there' })
+      expect(setBackgroundColor('rgba(1, 1, 1, 1)', { style: 'hello there' })).toEqual({ style: 'hello there' })
+      expect(setBackgroundColor('hsl(100, 50%, 10%)', { style: 'hello there' })).toEqual({ style: 'hello there' })
+      expect(setBackgroundColor('hsla(100, 50%, 10%, 1)', { style: 'hello there' })).toEqual({ style: 'hello there' })
     })
 
     it('should not modify data with class is string', () => {
@@ -108,7 +108,7 @@ describe('setBackgroundColor', () => {
       expect(setBackgroundColor('foo', {})).toEqual({ class: { foo: true } })
       expect(setBackgroundColor('foo', { staticClass: '0_0_0_0' })).toEqual({ staticClass: '0_0_0_0', class: { foo: true } })
       expect(setBackgroundColor('foo', { class: { 'g-': true } })).toEqual({ class: { 'g-': true, foo: true } })
-      expect(setBackgroundColor('foo', { bgStyle: { 'g-': true } })).toEqual({ bgStyle: { 'g-': true }, class: { foo: true } })
+      expect(setBackgroundColor('foo', { style: { 'g-': true } })).toEqual({ style: { 'g-': true }, class: { foo: true } })
     })
   })
 
@@ -116,16 +116,16 @@ describe('setBackgroundColor', () => {
   describe('set CSS color', () => {
     let faColor = '#fafafa'
 
-    it('should add background-color and border-color bgStyle for undefined, empty, non-empty object with background CSS color', () => {
+    it('should add background-color and border-color style for undefined, empty, non-empty object with background CSS color', () => {
       expect(setBackgroundColor(faColor, undefined)).toEqual({
-        bgStyle: {
+        style: {
           'background-color': faColor,
           'border-color': faColor
         }
       })
 
       expect(setBackgroundColor(faColor, {})).toEqual({
-        bgStyle: {
+        style: {
           'background-color': faColor,
           'border-color': faColor
         }
@@ -133,24 +133,24 @@ describe('setBackgroundColor', () => {
 
       expect(setBackgroundColor(faColor, { staticClass: '0_0_0' })).toEqual({
         staticClass: '0_0_0',
-        bgStyle: {
+        style: {
           'background-color': faColor,
           'border-color': faColor
         }
       })
 
-      expect(setBackgroundColor(faColor, { staticClass: '0_0_0', bgStyle: { foo: 'bar' } })).toEqual({
+      expect(setBackgroundColor(faColor, { staticClass: '0_0_0', style: { foo: 'bar' } })).toEqual({
         staticClass: '0_0_0',
-        bgStyle: {
+        style: {
           foo: 'bar',
           'background-color': faColor,
           'border-color': faColor
         }
       })
 
-      expect(setBackgroundColor(faColor, { staticClass: '0_0_0', bgStyle: { foo: 'bar' }, class: { baz: 'foo' } })).toEqual({
+      expect(setBackgroundColor(faColor, { staticClass: '0_0_0', style: { foo: 'bar' }, class: { baz: 'foo' } })).toEqual({
         staticClass: '0_0_0',
-        bgStyle: {
+        style: {
           foo: 'bar',
           'background-color': faColor,
           'border-color': faColor
@@ -164,10 +164,10 @@ describe('setBackgroundColor', () => {
 })
 
 describe('setTextColor', () => {
-  it('It should add \'color\' and \'caret-color\' bgStyle property if input color is CSS color', () => {
+  it('It should add \'color\' and \'caret-color\' style property if input color is CSS color', () => {
     const color = '#fa'
-    expect(setTextColor(color, {})).toEqual({ bgStyle: { color: color, 'caret-color': color } })
-    expect(setTextColor(color, { bgStyle: { isActive: true } })).toEqual({ bgStyle: { isActive: true, color: color, 'caret-color': color } })
+    expect(setTextColor(color, {})).toEqual({ style: { color: color, 'caret-color': color } })
+    expect(setTextColor(color, { style: { isActive: true } })).toEqual({ style: { isActive: true, color: color, 'caret-color': color } })
   })
 
   it('It should add \'<colorName>--text\' and \'text--<colorModifier>\' class property if input color is CSS color', () => {
