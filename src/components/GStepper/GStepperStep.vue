@@ -60,13 +60,13 @@
       }))
 
       function genIcon() {
-        if (props.complete && props.editable) {
-          return <g-icon>{props.editIcon}</g-icon>
-        } else if (props.complete && !props.editable) {
-          return <g-icon>{props.completeIcon}</g-icon>
-        } else if (props.error) {
+
+        if (props.error) {
           return <g-icon>{props.errorIcon}</g-icon>
+        } else if (props.complete) {
+          return <g-icon>{props.editable ? props.editIcon : props.completeIcon}</g-icon>
         }
+
         return <div style={iconBackground.value} class="g-stepper-step-icon">{props.index + 1}</div>
       }
 
