@@ -139,11 +139,6 @@
         console.log('activator changed')
       })
 
-      const abc = computed(() => {
-        console.log('tracking activator bounding client rect')
-        return props.activator.getBoundingClientRect()
-      })
-
       const { attachToRoot, detach } = detachable(props, context)
       const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
