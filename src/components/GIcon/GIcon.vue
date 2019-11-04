@@ -151,9 +151,9 @@
         role: context.listeners.click ? 'button' : null
       }))
 
-			let onClick = (event) => {
-				context.emit('click', event);
-			}
+      let onClick = (event) => {
+        context.emit('click', event);
+      }
 
       return {
         iconClass,
@@ -162,8 +162,8 @@
         activeTags,
         icon,
         materialIconName,
-				onClick,
-			}
+        onClick,
+      }
     }
   }
 

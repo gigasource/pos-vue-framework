@@ -17,6 +17,7 @@ import DndDialogDemo from '../view/DndDialogDemo';
 import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
+import Textarea from "../view/TextareaDemo";
 import FileInputDemo from "../view/FileInputDemo";
 
 const routes = [
@@ -35,6 +36,9 @@ const routes = [
   { path: '/list-demo', name: 'List', component: List2Demo},
   { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  {path: '/textarea', name: 'Textarea', component: Textarea}
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo}
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/file-input-demo', name: 'File Input', component: FileInputDemo}

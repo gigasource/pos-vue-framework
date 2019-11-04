@@ -47,7 +47,7 @@ export const MultipleSelectGroup = () => ({
         { id: 8, text: 'Global', prependIcon: '', appendIcon: '',  active: false, close: true, color: 'bg-blue', textColor: 'white' }])
     },
     multiple: { default: boolean('multiple', true) },
-    maxSelection: { default: number('maxSelection', 4) },
+    maxSelection: {type: Number, default: number('maxSelection', 4, {min: 1, max: 99}) },
   },
   data() {
     return {

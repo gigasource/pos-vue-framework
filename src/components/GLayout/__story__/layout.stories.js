@@ -267,21 +267,21 @@ export const layoutWithRowCol = () => ({
       <g-col :cols="col"
         :align-self="align1"
         :order="order1">
-        <div style="border: 1px solid black;">
+        <div style="height: 100%; border: 1px solid black;">
           Column 1 Col-{{col}}
         </div>
       </g-col>
       <g-col :cols="col"
         :align-self="align2"
         :order="order2">
-        <div style="border: 1px solid black;">
+        <div style="height: 100%; border: 1px solid black;">
           Column 2 Col-{{col}}
         </div>
       </g-col>
       <g-col :cols="col"
         :align-self="align3"
         :order="order3">
-        <div style="border: 1px solid black;">
+        <div style="height: 100%; border: 1px solid black;">
           Column 3 Col-{{col}}
         </div>  
       </g-col>

@@ -20,12 +20,12 @@
     setup(props) {
       let classes = computed(() => {
         return {
-          'g-card__title': true,
-          'g-card__text__top': props.top,
-          'g-card__text__left': props.left,
-          'g-card__text__bottom': props.bottom,
-          'g-card__text__right': props.right,
-          'g-card__text__absolute': props.absolute,
+          'g-card-title': true,
+          'g-card-title__top': props.top,
+          'g-card-title__left': props.left,
+          'g-card-title__bottom': props.bottom,
+          'g-card-title__right': props.right,
+          'g-card-title__absolute': props.absolute,
         }
       });
 
