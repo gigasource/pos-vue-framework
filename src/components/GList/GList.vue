@@ -2,7 +2,8 @@
   <div :class="classes"
        class="g-list"
        :style="styles"
-       @click="onClick">
+       @click="onClick"
+  >
 
     <template v-if="!multiSection">
       <slot name="subheader">
@@ -31,11 +32,9 @@
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
-            <!--fixme: append wait for VIcon-->
-
               <slot name="append" :item="item">
                 <div class="g-list-item-action">
-                  <g-icon>check</g-icon>
+                  <g-icon color="yellow">star</g-icon>
                 </div>
               </slot>
           </div>
@@ -58,7 +57,6 @@
         <slot :item="item" v-else>
           <div class="g-list-item"
                :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}"
-               @click="onSelect(item)"
                tabindex="0"
                @click="onSelect(item)"
                @keydown.enter="onSelect(item)"
@@ -78,11 +76,12 @@
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
+            <slot name="append" :item="item">
+              <div class="g-list-item-action">
+                <g-icon color="yellow">star</g-icon>
+              </div>
+            </slot>
 
-            <!--fixme: append wait for VIcon-->
-            <div class="g-list-item-action">
-              <slot name="append" :item="item"></slot>
-            </div>
           </div>
         </slot>
       </template>
