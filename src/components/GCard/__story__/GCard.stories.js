@@ -41,8 +41,8 @@ export const GCardDefault = () => ({
                       find a way to escape.</p>
                     </g-card-text>
             <g-card-actions>
-                <g-btn depressed text-color="#32CD32">CONFIRM</g-btn>
-                <g-btn depressed text-color="#FA8072">CANCEL</g-btn>
+                <g-btn text text-color="#32CD32">CONFIRM</g-btn>
+                <g-btn text text-color="#FA8072">CANCEL</g-btn>
             </g-card-actions>
             </g-card>`,
 });
@@ -70,8 +70,8 @@ export const GCardImage = () => ({
                       making you'll be doing.</p>
                     </g-card-text>
             <g-card-actions>
-                <g-btn depressed text-color="#32CD32">CONFIRM</g-btn>
-                <g-btn depressed text-color="#FA8072">CANCEL</g-btn>
+                <g-btn text text-color="#32CD32">CONFIRM</g-btn>
+                <g-btn text text-color="#FA8072">CANCEL</g-btn>
             </g-card-actions>
             </g-card>`
 });
@@ -108,7 +108,7 @@ export const GCardInformation = () => ({
                       <p>"a benevolent smile"</p>
                     </g-card-text>
             <g-card-actions>
-                <g-btn depressed text-color="#EE82EE">LEARN MORE</g-btn>
+                <g-btn text text-color="#EE82EE">LEARN MORE</g-btn>
             </g-card-actions>
             </g-card>`,
 });
