@@ -1,6 +1,7 @@
 import { onMounted, reactive, watch, computed } from '@vue/composition-api';
 import { fromHSVA } from '../GColorPickerUtil';
 import { clamp } from 'lodash/number';
+import { tabIndexes } from '../commonUI';
 
 function updateCanvas(canvas, hue) {
   const ctx = canvas.getContext('2d')
@@ -34,7 +35,7 @@ export function getRenderCanvasFn(props, context, state, tabState, updateColor) 
   }))
 
   watch(() => tabState.selectedTab, () => {
-    if (tabState.selectedTab === 2) {
+    if (tabState.selectedTab === tabIndexes.colorPicker) {
       updateCanvas(context.refs[canvasRef], state.color.hue)
     }
   })

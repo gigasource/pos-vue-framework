@@ -8,6 +8,7 @@
   import getSwatchesRenderFn from './swatches'
   import getGradientRenderFn from './gradientColors'
   import getColorPickerRenderFn from './colorPicker'
+  import { tabIndexes } from './commonUI';
 
   export default {
     name: 'GColorPicker',
@@ -23,7 +24,7 @@
       const emitColor = color => context.emit('input', color)
 
       // color picker require tabState to activate updateCanvas function
-      const tabState = reactive({ selectedTab: 0 })
+      const tabState = reactive({ selectedTab: tabIndexes.swatches })
       const renderColorPicker = getColorPickerRenderFn(props, context, tabState, emitColor)
       const renderSwatches = getSwatchesRenderFn(emitColor)
       const renderGradientColors = getGradientRenderFn(emitColor)
@@ -33,19 +34,19 @@
       const activeTabColor = '#42A5F5'
       const tabItems = {
         tabs: [{
-          id: 0,
+          id: tabIndexes.swatches,
           title: 'swatches',
           renderFn: renderSwatches,
           bgStyle: { background: deactiveTabColor, borderColor: deactiveTabColor },
           bgSelectedStyle: { background: activeTabColor, borderColor: activeTabColor }
         }, {
-          id: 1,
+          id: tabIndexes.gradient,
           title: 'gradient',
           renderFn: renderGradientColors,
           bgStyle: { background: 'linear-gradient(180deg, #fff, #b0bec5, #78909c)', borderColor: deactiveTabColor },
           bgSelectedStyle: { background: 'linear-gradient(180deg, #fff, #90CAF9, #42A5F5)', borderColor: activeTabColor }
         }, {
-          id: 2,
+          id: tabIndexes.colorPicker,
           title: 'color picker',
           renderFn: renderColorPicker,
           bgStyle: { background: '#fff', borderColor: deactiveTabColor },
@@ -73,9 +74,8 @@
                                 'g-color-picker__tab-header__item--selected': item.id === tabState.selectedTab
                               }}
                               style={item.id === tabState.selectedTab ? item.bgSelectedStyle : item.bgStyle}
-                              vOn:click={() => {
-                                tabState.selectedTab = item.id
-                              }}></span>)
+                              vOn:click={() => tabState.selectedTab = item.id}>
+                        </span>)
                   }
                 </div>
                 <div class='g-color-picker__tab-body'>
@@ -97,19 +97,15 @@
 </script>
 <style scoped lang="scss">
   @import 'swatches';
-  @import 'gradientColors';
   @import 'colorPicker';
 
-
   .g-color-picker {
-    $borderColor: #ccc;
-    $tabContentColor: #fff;
-
+    $tabContentBgColor: #fff;
 
     &__tab-header {
       display: flex;
       justify-content: center;
-      border-bottom: 1px solid $borderColor;
+      border-bottom: 1px solid #ccc;
       background-color: #cfd8dc;
       border-radius: 5px 5px 0 0;
 
@@ -137,28 +133,19 @@
             left: 50%;
             transform: translateX(-50%);
             border: 7px solid transparent;
-            border-bottom-color: $tabContentColor;
+            border-bottom-color: $tabContentBgColor;
           }
         }
       }
     }
 
     &__tab-body {
-      &__title {
-        padding: 10px;
-        color: #888;
-        font-weight: bold;
-        border-bottom: 1px solid $borderColor;
-      }
-
       &__content {
         padding: 0 10px;
         height: 280px;
         overflow: auto;
-        background-color: $tabContentColor;
+        background-color: $tabContentBgColor;
       }
     }
   }
-
-
 </style>

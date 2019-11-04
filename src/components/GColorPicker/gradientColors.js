@@ -1,5 +1,6 @@
-import { gradientColors } from '../../utils/colors'
 import _ from 'lodash'
+import { gradientColors } from '../../utils/colors'
+import { tooltipBackgroundColor, tooltipContentStyleObj } from './commonUI'
 
 // Create gradient model, add helper method
 function createGradientModel(name, angle, colorStop1, colorStop2) {
@@ -32,8 +33,9 @@ function createGradientModels() {
   function extractGradientInfo(gradientKey) {
     const [name, propName] = gradientKey.split('--')
 
-    if (propName !== colorStop1 && propName !== colorStop2 && propName !== angle)
+    if (propName !== colorStop1 && propName !== colorStop2 && propName !== angle) {
       console.warn(`Invalid gradient property name '${propName}'`)
+    }
 
     return { name, propName }
   }
@@ -49,7 +51,7 @@ function createGradientModels() {
       currentGradientName = name
 
       if (tempObj != null) {
-        output.push(createGradientModel(tempObj.name, tempObj[angle], tempObj[colorStop1], tempObj[colorStop2]) )
+        output.push(createGradientModel(tempObj.name, tempObj[angle], tempObj[colorStop1], tempObj[colorStop2]))
       }
 
       tempObj = { name, [propName]: gradientColors[key] }
@@ -61,6 +63,12 @@ function createGradientModels() {
   // append the last gradients
   output.push(createGradientModel(tempObj.name, tempObj[angle], tempObj[colorStop1], tempObj[colorStop2]))
   return output
+}
+
+function createLinearGradientBackground(gradient) {
+  return {
+    background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
+  }
 }
 
 /**
@@ -81,14 +89,6 @@ export default function getGradientRenderFn(onGradientSelected) {
     borderRadius: '35px',
   }
 
-  const tooltipStyleObj = {
-    boxShadow: '0 2px 8px 4px #0003',
-    margin: '10px',
-    borderRadius: '100%',
-    width: '50px',
-    height: '50px'
-  }
-
   return function renderGradientColors() {
     return (
         <div> {
@@ -96,30 +96,30 @@ export default function getGradientRenderFn(onGradientSelected) {
             const scopedSlot = {
               activator: (scope) => <span
                   key={gradient.name}
-                  style={{
-                    ...gradientItemStyleObj,
-                    background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
-                  }}
+                  style={{ ...gradientItemStyleObj, ...createLinearGradientBackground(gradient) }}
                   vOn:mouseleave={scope.on.mouseleave}
                   vOn:mouseenter={scope.on.mouseenter}
                   vOn:blur={scope.on.blur}
-                  key={gradient.name}
                   vOn:click={() => onGradientSelected(gradient)}></span>
             }
 
-            return <g-tool-tip key={gradient.name} top speech-bubble open-on-hover scopedSlots={scopedSlot} color="#333" transition='none'>
+            return <g-tool-tip
+                key={gradient.name}
+                top
+                speech-bubble
+                open-on-hover
+                color={tooltipBackgroundColor}
+                transition='none'
+                scopedSlots={scopedSlot}>
               <div style={'display: flex; align-items: center'}>
                 <div>
-                  <div style={{
-                    ...tooltipStyleObj,
-                    background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
-                  }}></div>
+                  <div style={{ ...tooltipContentStyleObj, ...createLinearGradientBackground(gradient) }}></div>
                 </div>
                 <div>
-                  <div>{`name: ${gradient.name}`}</div>
-                  <div>{`angle: ${gradient.angle}`}</div>
-                  <div>{`colorStop 1: ${gradient.colorStop1}`}</div>
-                  <div>{`colorStop 2: ${gradient.colorStop2}`}</div>
+                  {`Name: ${gradient.name}`}<br/>
+                  {`Angle: ${gradient.angle}`}<br/>
+                  {`Start Color: ${gradient.colorStop1}`}<br/>
+                  {`End Color: ${gradient.colorStop2}`}<br/>
                 </div>
               </div>
             </g-tool-tip>

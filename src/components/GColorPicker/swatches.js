@@ -1,5 +1,6 @@
 import { colors } from '../../utils/colors'
 import _ from 'lodash'
+import { tooltipBackgroundColor, tooltipContentStyleObj } from './commonUI';
 
 /**
  * Create swatches model from defined colors in @/styles/_colors.scss
@@ -67,14 +68,6 @@ export default function getSwatchesRenderFn(onColorSelected) {
     background: pallet.name === 'transparent' ? 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC) repeat': ''
   })
 
-  const tooltipContentStyleObj = {
-    boxShadow: '0 2px 8px 4px #0003',
-    margin: '10px',
-    borderRadius: '100%',
-    width: '50px',
-    height: '50px'
-  }
-
   // For some reason, styling scoped slot in CSS is not recognized by vue so
   // I wrote css for scoped slot in JS
   const palletItemStyleObj = {
@@ -94,14 +87,21 @@ export default function getSwatchesRenderFn(onColorSelected) {
                 const scopedSlots = {
                   activator: (scope) => <span key={pallet.name} class='g-color-picker__pallet__item'
                       style={{ ...getTransparentImageStyle(pallet), ...palletItemStyleObj, backgroundColor: pallet.value }}
-                      key={pallet.value}
                       vOn:mouseleave={scope.on.mouseleave}
                       vOn:mouseenter={scope.on.mouseenter}
                       vOn:blur={scope.on.blur}
                       vOn:click={() => onColorSelected(pallet)}></span>
                 }
                 return (
-                    <g-tool-tip key={pallet.name} top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333" transition='none'>
+                    <g-tool-tip
+                        key={pallet.name}
+                        top
+                        speech-bubble
+                        open-on-hover
+                        scopedSlots={scopedSlots}
+                        color={tooltipBackgroundColor}
+                        transition='none'
+                    >
                       <div style='display: flex; align-items: center;'>
                         <div style={{
                           ...tooltipContentStyleObj,
