@@ -1,16 +1,10 @@
 <template>
   <span class="g-tooltip" ref="el">
     <g-tool-tip-content
-        v-if="state.isActive || state.contentCreated"
-        :absolute="absolute"
-        :absoluteX="absoluteX"
-        :absoluteY="absoluteY"
-        :bottom="bottom"
-        :left="left"
-        :top="top"
-        :right="right"
+        v-if="state.tooltipWillBeRender"
         :show="state.isActive"
-        :activator="activator">
+        :activator="activator"
+        v-bind="props">
       <slot></slot>
     </g-tool-tip-content>
     <div class="g-tooltip__activator" ref="activator">
@@ -25,10 +19,6 @@
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
   import GToolTipContent from './GToolTipContent';
-
-  // constants
-  export const TRANSITION_DEFAULT_ACTIVE = 'scale-transition'
-  export const TRANSITION_DEFAULT_DEACTIVE = 'fade-transition'
 
   export default {
     name: 'GToolTip',
@@ -138,33 +128,41 @@
     },
     setup(props, context) {
       // tooltip state
-      const state = reactive({ isActive: false, contentCreated: false })
+      const state = reactive({
+        // Boolean value indicate that whether tooltip content will be shown or not
+        // NOTICE: Do not change this prop name because this props has been used a lot places
+        isActive: false,
+        // Boolean value indicate that whether tooltip content will be rendered or not
+        tooltipWillBeRender: false
+      })
       const { runDelay } = delayable(props, state)
       const { attachToParent } = detachable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
-
-
       //// ACTIVATOR
+      // This variable will be used by Tooltip content to calculate position
       const activator = ref(null)
       const activatorListeners = computed(() => {
         let listeners = {}
 
         if (props.openOnHover) {
-          listeners.mouseenter = (e/*: MouseEvent*/) => {
+          listeners.mouseenter = () => {
+            if (!state.tooltipWillBeRender)
+              state.tooltipWillBeRender = true
             runDelay('open')
           }
-          listeners.mouseleave = (e/*: MouseEvent*/) => {
+          listeners.mouseleave = () => {
             runDelay('close')
           }
         } else {
-          listeners.click = (e/*: MouseEvent*/) => {
+          listeners.click = () => {
+            if (!state.tooltipWillBeRender)
+              state.tooltipWillBeRender = true
             state.isActive = !state.isActive
-            state.contentCreated = true
           }
         }
 
-        //listeners.blur = () => runDelay('close')
+        listeners.blur = () => runDelay('close')
 
         return listeners
       })
@@ -174,16 +172,20 @@
         if (props.transition) {
           return props.transition
         }
-        return state.isActive ? TRANSITION_DEFAULT_ACTIVE : TRANSITION_DEFAULT_DEACTIVE
+        return state.isActive ? 'scale-transition' : 'fade-transition'
       })
 
       onMounted(() => {
-        activator.value = context.refs.activator
-        attachToParent()
+        context.root.$nextTick(() => {
+          attachToParent(context.refs.activator)
+          // store activator reference so that this value can be used by tool tip content
+          activator.value = context.refs.activator
+        })
       })
 
       // template data
       return {
+        props,
         state,
         activator,
         transitionName,

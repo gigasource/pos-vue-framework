@@ -1,8 +1,8 @@
 <template>
-  <div class="g-tooltip__content"
+  <div v-show="show"
+       class="g-tooltip__content"
        :class="tooltipContentClasses"
        :style="tooltipContentStyle"
-       v-show="show"
        ref="content">
     <div v-if="showSpeechBubble"
          :class="speechBubbleClass"
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import { computed, onMounted, onBeforeUnmount } from '@vue/composition-api'
+  import { computed, onMounted, onBeforeUnmount, watch } from '@vue/composition-api'
   import { setBackgroundColor } from '../../mixins/colorable';
   import { calcTop, calcLeft } from './TopLeftCalculate';
   import { convertToUnit } from '../../utils/helpers';
@@ -135,6 +135,15 @@
       show: Boolean,
     },
     setup(props, context) {
+      watch(() => props.activator, () => {
+        console.log('activator changed')
+      })
+
+      const abc = computed(() => {
+        console.log('tracking activator bounding client rect')
+        return props.activator.getBoundingClientRect()
+      })
+
       const { attachToRoot, detach } = detachable(props, context)
       const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
@@ -166,11 +175,14 @@
       })
 
       onMounted(() => {
-        updateDimensions(props.activator)
         attachToRoot()
+        updateDimensions(props.activator)
       })
 
-      onBeforeUnmount(() => detach())
+      onBeforeUnmount(() => {
+        console.log('detach')
+        detach()
+      })
 
       // template data
       return {
