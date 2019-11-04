@@ -1,38 +1,33 @@
 <template>
-  <span class="g-tooltip" ref="el">
-    <g-tool-tip-content
-        v-if="state.isActive || state.contentCreated"
-        :absolute="absolute"
-        :absoluteX="absoluteX"
-        :absoluteY="absoluteY"
-        :bottom="bottom"
-        :left="left"
-        :top="top"
-        :right="right"
-        :show="state.isActive"
-        :activator="activator">
+  <div class="g-tooltip__content"
+       :class="tooltipContentClasses"
+       :style="tooltipContentStyle"
+       v-show="show"
+       ref="content">
+    <div v-if="showSpeechBubble"
+         :class="speechBubbleClass"
+         :style="speechBubbleStyle">
       <slot></slot>
-    </g-tool-tip-content>
-    <div class="g-tooltip__activator" ref="activator">
-      <slot name="activator" v-bind:on="activatorListeners"></slot>
     </div>
-  </span>
+    <slot v-else></slot>
+  </div>
 </template>
 
 <script>
-  import { computed, onMounted, reactive, ref } from '@vue/composition-api'
-  import delayable from '../../mixins/delayable';
+  import { computed, onMounted, onBeforeUnmount } from '@vue/composition-api'
+  import { setBackgroundColor } from '../../mixins/colorable';
+  import { calcTop, calcLeft } from './TopLeftCalculate';
+  import { convertToUnit } from '../../utils/helpers';
+  import menuable from '../../mixins/menuable';
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
-  import GToolTipContent from './GToolTipContent';
 
   // constants
   export const TRANSITION_DEFAULT_ACTIVE = 'scale-transition'
   export const TRANSITION_DEFAULT_DEACTIVE = 'fade-transition'
 
   export default {
-    name: 'GToolTip',
-    components: { GToolTipContent },
+    name: 'GToolTipContent',
     props: {
       /*position w window*/
       ...{
@@ -135,38 +130,31 @@
           default: 999999
         }
       },
+      // a tooltip activator
+      activator: [Object, HTMLElement],
+      show: Boolean,
     },
     setup(props, context) {
-      // tooltip state
-      const state = reactive({ isActive: false, contentCreated: false })
-      const { runDelay } = delayable(props, state)
-      const { attachToParent } = detachable(props, context)
+      const { attachToRoot, detach } = detachable(props, context)
+      const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
-
-
-      //// ACTIVATOR
-      const activator = ref(null)
-      const activatorListeners = computed(() => {
-        let listeners = {}
-
-        if (props.openOnHover) {
-          listeners.mouseenter = (e/*: MouseEvent*/) => {
-            runDelay('open')
-          }
-          listeners.mouseleave = (e/*: MouseEvent*/) => {
-            runDelay('close')
-          }
-        } else {
-          listeners.click = (e/*: MouseEvent*/) => {
-            state.isActive = !state.isActive
-            state.contentCreated = true
-          }
+      //// TOOLTIP CONTENT ////
+      let colorOutput = computed(() => {
+        return setBackgroundColor(props.color, {})
+      })
+      const tooltipContentClasses = computed(() => {
+        return colorOutput.value.class
+      })
+      const tooltipContentStyle = computed(() => {
+        return {
+          ...colorOutput.value.style,
+          top: calcTop(props, dimensions, menuableState, calcYOverFlow),
+          left: calcLeft(props, dimensions, calcXOverflow),
+          maxWidth: convertToUnit(props.maxWidth),
+          minWidth: convertToUnit(props.minWidth),
+          zIndex: props.zIndex,
         }
-
-        //listeners.blur = () => runDelay('close')
-
-        return listeners
       })
 
       //// TRANSITION ////
@@ -178,16 +166,17 @@
       })
 
       onMounted(() => {
-        activator.value = context.refs.activator
-        attachToParent()
+        updateDimensions(props.activator)
+        attachToRoot()
       })
+
+      onBeforeUnmount(() => detach())
 
       // template data
       return {
-        state,
-        activator,
+        tooltipContentClasses,
+        tooltipContentStyle,
         transitionName,
-        activatorListeners,
         showSpeechBubble,
         speechBubbleClass,
         speechBubbleStyle
