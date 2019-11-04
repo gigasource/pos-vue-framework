@@ -1,16 +1,17 @@
 <script>
   import _ from 'lodash'
-  import { reactive, onMounted, computed } from '@vue/composition-api'
+  import { reactive } from '@vue/composition-api'
   // slider used in colorPicker/adjustPreview
   import GSlider from '../GInput/GSlider'
+  import GMenu from '../../components/GMenu/GMenu'
+  import GToolTip from '../../components/GToolTip/GToolTip'
   import getSwatchesRenderFn from './swatches'
   import getGradientRenderFn from './gradientColors'
   import getColorPickerRenderFn from './colorPicker'
-  import detachable from '../../mixins/detachable'
 
   export default {
     name: 'GColorPicker',
-    components: { GSlider },
+    components: { GSlider, GMenu, GToolTip },
     props: {
       disabled: Boolean,
       width: {
@@ -19,112 +20,73 @@
       }
     },
     setup(props, context) {
-      const emitColor = color => context.emit('updatecolor', color)
-      const renderColorPicker = getColorPickerRenderFn(props, context, emitColor)
+      const emitColor = color => context.emit('input', color)
+
+      // color picker require tabState to activate updateCanvas function
+      const tabState = reactive({ selectedTab: 0 })
+      const renderColorPicker = getColorPickerRenderFn(props, context, tabState, emitColor)
       const renderSwatches = getSwatchesRenderFn(emitColor)
       const renderGradientColors = getGradientRenderFn(emitColor)
 
       //
-      const colorPickerRef = 'content'
-      const { attachToRoot } = detachable(props, context)
-      onMounted(() => attachToRoot(context.refs[colorPickerRef]))
-
-      const activatorRef = 'activator'
-      const activatorScope = {
-        toggleColorPicker: () => {
-          state.show = !state.show
-          if (!state.show) return
-          const { bottom, left } = context.refs[activatorRef].getBoundingClientRect()
-          state.colorPickerLocation = { x: left, y: bottom + 10 }
-        }
-      }
-
-      //
       const deactiveTabColor = '#78909c'
       const activeTabColor = '#42A5F5'
-      const state = reactive({
-        show: false,
-        colorPickerLocation: {
-          x: 0,
-          y: 0
-        },
+      const tabItems = {
         tabs: [{
           id: 0,
           title: 'swatches',
-          bgStyle: {
-            background: deactiveTabColor,
-            borderColor: deactiveTabColor
-          },
-          bgSelectedStyle: {
-            background: activeTabColor,
-            borderColor: activeTabColor
-          },
-          renderFn: renderSwatches
+          renderFn: renderSwatches,
+          bgStyle: { background: deactiveTabColor, borderColor: deactiveTabColor },
+          bgSelectedStyle: { background: activeTabColor, borderColor: activeTabColor }
         }, {
           id: 1,
           title: 'gradient',
-          bgStyle: {
-            background: 'linear-gradient(180deg, #fff, #b0bec5, #78909c)',
-            borderColor: deactiveTabColor
-          },
-          bgSelectedStyle: {
-            background: 'linear-gradient(180deg, #fff, #90CAF9, #42A5F5)',
-            borderColor: activeTabColor
-          },
-          renderFn: renderGradientColors
+          renderFn: renderGradientColors,
+          bgStyle: { background: 'linear-gradient(180deg, #fff, #b0bec5, #78909c)', borderColor: deactiveTabColor },
+          bgSelectedStyle: { background: 'linear-gradient(180deg, #fff, #90CAF9, #42A5F5)', borderColor: activeTabColor }
         }, {
           id: 2,
           title: 'color picker',
-          bgStyle: {
-            background: '#fff',
-            borderColor: deactiveTabColor
-          },
-          bgSelectedStyle: {
-            background: '#fff',
-            borderColor: activeTabColor
-          },
-          renderFn: renderColorPicker
-        }],
-        selectedTab: 0
-      })
+          renderFn: renderColorPicker,
+          bgStyle: { background: '#fff', borderColor: deactiveTabColor },
+          bgSelectedStyle: { background: '#fff', borderColor: activeTabColor }
+        }]
+      }
 
-      const cptDialogPosition = computed(() => ({
-        left: `${state.colorPickerLocation.x}px`,
-        top: `${state.colorPickerLocation.y}px`
-      }))
-
+      //// Color picker dialog
+      const dialogState = reactive({ showMenu: false })
       return function renderFn() {
         return (
-            <div class='g-color-picker' style={{ width: `${props.width}px` }}>
-              <div ref={activatorRef}>
-                {context.slots.default(activatorScope)}
-              </div>
-
-              <div vShow={state.show}
-                   ref={colorPickerRef}
-                   class='g-color-picker__dialog'
-                   style={cptDialogPosition.value}>
-                <div class="g-color-picker__tab-header">
+            <g-menu vModel={dialogState.showMenu}
+                    scopedSlots={{ activator: gMenuScope => context.slots.default(gMenuScope) }}
+                    minWidth={320}
+                    maxWidth={320}
+                    contentFillWidth={false}
+                    closeOnClick
+                    nudgeBottom={10}>
+              <div class='g-color-picker__dialog'>
+                <div class='g-color-picker__tab-header'>
                   {
-                    _.map(state.tabs, item =>
+                    _.map(tabItems.tabs, item =>
                         <span class={{
-                                'g-color-picker__tab-header__item': true,
-                                'g-color-picker__tab-header__item--selected': item.id === state.selectedTab
-                              }}
-                              style={item.id === state.selectedTab ? item.bgSelectedStyle : item.bgStyle}
+                          'g-color-picker__tab-header__item': true,
+                          'g-color-picker__tab-header__item--selected': item.id === tabState.selectedTab
+                        }}
+                              style={item.id === tabState.selectedTab ? item.bgSelectedStyle : item.bgStyle}
                               vOn:click={() => {
-                                state.selectedTab = item.id
+                                tabState.selectedTab = item.id
                               }}></span>)
                   }
                 </div>
-                <div class='g-color-picker__tab-content'>
-                  {_.map(state.tabs, item => item.id === state.selectedTab && [
-                    <div class='g-color-picker__tab-content__title'>{item.title.toUpperCase()}</div>,
-                    item.renderFn()
+                <div class='g-color-picker__tab-body'>
+                  {_.map(tabItems.tabs, item => item.id === tabState.selectedTab && [
+                    <div class='g-color-picker__tab-body__content'>
+                      {item.renderFn()}
+                    </div>
                   ])}
                 </div>
               </div>
-            </div>
+            </g-menu>
         )
       }
     }
@@ -140,18 +102,13 @@
     $borderColor: #ccc;
     $tabContentColor: #fff;
 
-    &__dialog {
-      position: fixed;
-      width: 322px;
-      border-radius: 8px;
-      border: 1px solid $borderColor;
-    }
 
     &__tab-header {
       display: flex;
       justify-content: center;
       border-bottom: 1px solid $borderColor;
       background-color: #cfd8dc;
+      border-radius: 5px 5px 0 0;
 
       &__item {
         position: relative;
@@ -166,7 +123,6 @@
         &:hover {
           cursor: pointer;
         }
-
 
         &--selected {
           &:before {
@@ -184,15 +140,19 @@
       }
     }
 
-    &__tab-content {
-      padding: 10px;
-      width: 320px;
-      background-color: $tabContentColor;
-
+    &__tab-body {
       &__title {
-        padding: 10px 0;
+        padding: 10px;
         color: #888;
         font-weight: bold;
+        border-bottom: 1px solid $borderColor;
+      }
+
+      &__content {
+        padding: 0 10px;
+        height: 280px;
+        overflow: auto;
+        background-color: $tabContentColor;
       }
     }
   }

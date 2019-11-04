@@ -67,22 +67,57 @@ export default function getSwatchesRenderFn(onColorSelected) {
     background: pallet.name === 'transparent' ? 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC) repeat': ''
   })
 
+  const tooltipContentStyleObj = {
+    boxShadow: '0 2px 8px 4px #0003',
+    margin: '10px',
+    borderRadius: '100%',
+    width: '50px',
+    height: '50px'
+  }
+
+  // For some reason, styling scoped slot in CSS is not recognized by vue so
+  // I wrote css for scoped slot in JS
+  const palletItemStyleObj = {
+    border: '1px solid #0003',
+    margin: '0px',
+    width: '20px',
+    height: '20px',
+    display: 'inline-block',
+  }
+
   return function renderSwatches() {
     return <div> {
-      _.map(swatchesModel, colorPalletModel =>
+      _.map(swatchesModel, colorPalletModel => [
+          <div class='g-color-picker__pallet__name'> {colorPalletModel.name} </div>,
           <div class='g-color-picker__pallet'> {
-            _.map(colorPalletModel.pallet, pallet => {
-                  return (
-                      <span
-                          class='g-color-picker__pallet__item'
-                          style={{ ...getTransparentImageStyle(pallet), backgroundColor: pallet.value }}
-                          vOn:mouseleave={() => {}}
-                          vOn:mouseenter={() => {}}
-                          vOn:click={() => onColorSelected(pallet)}></span>)
+              _.map(colorPalletModel.pallet, pallet => {
+                const scopedSlots = {
+                  activator: (scope) => <span class='g-color-picker__pallet__item'
+                      style={{ ...getTransparentImageStyle(pallet), ...palletItemStyleObj, backgroundColor: pallet.value }}
+                      key={pallet.value}
+                      vOn:mouseleave={scope.on.mouseleave}
+                      vOn:mouseenter={scope.on.mouseenter}
+                      vOn:blur={scope.on.blur}
+                      vOn:click={() => onColorSelected(pallet)}></span>
+                }
+                return (
+                    <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlots} color="#333" transition='none'>
+                      <div style='display: flex; align-items: center;'>
+                        <div style={{
+                          ...tooltipContentStyleObj,
+                          ...getTransparentImageStyle(pallet),
+                          backgroundColor: pallet.value,
+                        }}></div>
+                        <div>
+                          <div>{colorPalletModel.name}</div>
+                          <div>{pallet.name}</div>
+                        </div>
+                      </div>
+                    </g-tool-tip>)
                 }
             )
           }
-          </div>)
+          </div>])
     }
     </div>
   }

@@ -71,17 +71,57 @@ function createGradientModels() {
  */
 export default function getGradientRenderFn(onGradientSelected) {
   const gradientModels = createGradientModels()
+
+  const gradientItemStyleObj = {
+    display: 'inline-block',
+    width: '75px',
+    height: '35px',
+    margin: '10px',
+    border: '1px solid #0003',
+    borderRadius: '35px',
+  }
+
+  const tooltipStyleObj = {
+    boxShadow: '0 2px 8px 4px #0003',
+    margin: '10px',
+    borderRadius: '100%',
+    width: '50px',
+    height: '50px'
+  }
+
   return function renderGradientColors() {
     return (
         <div> {
           _.map(gradientModels, gradient => {
-            return <span class='g-color-picker__gradient__item'
-                style={{
-                  background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
-                }}
-                vOn:mouseleave={() => {}}
-                vOn:mouseenter={() => {}}
-                vOn:click={() => onGradientSelected(gradient)}></span>
+            const scopedSlot = {
+              activator: (scope) => <span
+                  style={{
+                    ...gradientItemStyleObj,
+                    background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
+                  }}
+                  vOn:mouseleave={scope.on.mouseleave}
+                  vOn:mouseenter={scope.on.mouseenter}
+                  vOn:blur={scope.on.blur}
+                  key={gradient.name}
+                  vOn:click={() => onGradientSelected(gradient)}></span>
+            }
+
+            return <g-tool-tip top speech-bubble open-on-hover scopedSlots={scopedSlot} color="#333" transition='none'>
+              <div style={'display: flex; align-items: center'}>
+                <div>
+                  <div style={{
+                    ...tooltipStyleObj,
+                    background: `linear-gradient(${gradient.angle}, ${gradient.colorStop1}, ${gradient.colorStop2})`
+                  }}></div>
+                </div>
+                <div>
+                  <div>{`name: ${gradient.name}`}</div>
+                  <div>{`angle: ${gradient.angle}`}</div>
+                  <div>{`colorStop 1: ${gradient.colorStop1}`}</div>
+                  <div>{`colorStop 2: ${gradient.colorStop2}`}</div>
+                </div>
+              </div>
+            </g-tool-tip>
           })
         }
         </div>

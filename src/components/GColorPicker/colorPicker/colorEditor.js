@@ -36,12 +36,21 @@ export default function getRenderColorEditorFn(state, updateColor) {
     )
   }
 
+  function getRGBAElementMaxLength(element) {
+    // maximum rgb: 0 -> 255 => length 3
+    // consider alpha minimum unit: 1% or 0.01 -> max length 4 (3 digit and . char)
+    return element === 'a' ? 4 : 3
+  }
+  function getRGBAElementMaxValue(element) {
+    return element === 'a' ? 1 : 255
+  }
   function renderRGBEditor() {
-
     return ['r', 'g', 'b', 'a'].map(element => <span class='g-color-picker__editor__input-wrapper g-color-picker__editor__input-wrapper__rgba'>
-          <input type='text' value={state.color.rgba[element]}
+          <input type='text' value={ `${state.color.rgba[element]}`.substr(0, getRGBAElementMaxLength(element))}
                  class='g-color-picker__editor__input'
-                 min={0} max={ element === 'a' ? 1: 255} maxLength={ element === 'a' ? 4 /*limit 4 => minimum opacity 0.01*/ : 3}
+                 min={0}
+                 max={ getRGBAElementMaxValue(element) }
+                 maxLength={ getRGBAElementMaxLength(element) }
                  vOn:keypress={e => updateRGBA(e, element)}/>
           <small>{element.toUpperCase()}</small>
         </span>)

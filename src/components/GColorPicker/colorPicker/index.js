@@ -11,7 +11,7 @@ import getRenderAdjustPreview from './colorAdjustPreview';
 import { getRenderCanvasFn } from './colorCanvas';
 import { fromHexa } from '../GColorPickerUtil';
 
-export default function getColorPickerRenderFn(props, context, onColorSelected) {
+export default function getColorPickerRenderFn(props, context, tabState, onColorSelected) {
   const state = reactive({
     color: fromHexa('#FF0000FF')
   })
@@ -21,7 +21,7 @@ export default function getColorPickerRenderFn(props, context, onColorSelected) 
     onColorSelected(state.color.hexa)
   }
 
-  const renderCanvas = getRenderCanvasFn(props, context, state, updateColor)
+  const renderCanvas = getRenderCanvasFn(props, context, state, tabState, updateColor)
   const renderAdjustPreview = getRenderAdjustPreview(state, updateColor)
   const renderColorEditor = getRenderColorEditorFn(state, updateColor)
 

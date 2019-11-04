@@ -30,8 +30,10 @@ export const test2 = () => ({
       display: 'inline-flex',
       width: '30px',
       height: '15px',
-      marginLeft: '-37px',
-      marginRight: '7px'
+      marginLeft: '-35px',
+      marginRight: '7px',
+      border: '1px solid #0003'
+
     }
 
     const activatorStyle = {
@@ -42,23 +44,31 @@ export const test2 = () => ({
       height: '30px',
     }
 
-    const slotScoped = {
-      default: (scope) => (
-          <div style='display: flex; align-items: center;'>
-            <input type='text' value={state.currentColorName} style={inputStyle}/>
-            <span style={{...previewStyle, background: state.currentColor}}></span>
-            <button type='button' style={activatorStyle} vOn:click={() => scope.toggleColorPicker()}>...</button>
-          </div>
-      )
+    const handleInput = color => {
+      if (color.angle) {
+        state.currentColorName = color.name
+        state.currentColor = `linear-gradient(${color.angle}, ${color.colorStop1}, ${color.colorStop2})`
+      } else if (color.value) {
+        state.currentColorName = `${color.name} (${color.value})`
+        state.currentColor = color.value
+      } else {
+        state.currentColorName = color
+        state.currentColor = color
+      }
     }
 
     return () => (
-        <div data-app style='position: absolute; left: 200px; top: 200px'>
+        <div data-app style='left: 200px; top: 200px'>
           <g-color-picker
-              scopedSlots={slotScoped}
-              vOn:updatecolor={(color) => {
-                console.log(color)
-              }}
+              scopedSlots={{
+                default: (gMenuScope) =>
+                    <div style='display: flex; align-items: center;'>
+                      <input type='text' value={state.currentColorName} style={inputStyle}/>
+                      <span style={{...previewStyle, background: state.currentColor}}></span>
+                      <button type='button' style={activatorStyle} vOn:click={gMenuScope.toggleContent}>...</button>
+                    </div>
+                }}
+              vOn:input={handleInput}
           ></g-color-picker>
         </div>)
   }
