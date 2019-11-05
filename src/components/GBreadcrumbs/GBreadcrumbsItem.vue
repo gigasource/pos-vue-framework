@@ -13,12 +13,13 @@
       $route: 'onRouteChange',
     },
     mixins: [routable],
-    setup(props, context) {
-      const { breadcrumbsItemClasses } = GBreadrcumbsItemUtil(props, context);
-
-      return {
-        breadcrumbsItemClasses
-      }
+    computed: {
+      classes() {
+        return {
+          'g-breadcrumbs-item': true,
+          [this.activeClass]: this.disabled,
+        }
+      },
     },
     render(h) {
       const { tag, data } = this.generateRouteLink();

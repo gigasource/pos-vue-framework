@@ -51,9 +51,9 @@ export default Vue.extend({
 
       return classes
     },
-    computedRipple () {
-      return this.ripple != null ? this.ripple : !this.disabled && this.isClickable
-    },
+    // computedRipple () {
+    //   return this.ripple != null ? this.ripple : !this.disabled && this.isClickable
+    // },
     isClickable () {
       if (this.disabled) return false
 
@@ -89,10 +89,10 @@ export default Vue.extend({
         class: this.classes,
         style: this.styles,
         props: {},
-        directives: [{
-          name: 'ripple',
-          value: this.computedRipple,
-        }],
+        // directives: [{
+        //   name: 'ripple',
+        //   value: this.computedRipple,
+        // }],
         [this.to ? 'nativeOn' : 'on']: {
           ...this.$listeners,
           click: this.click,

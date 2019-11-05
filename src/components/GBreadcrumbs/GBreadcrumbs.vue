@@ -66,7 +66,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import './_variables';
 
   // Block
@@ -96,6 +96,7 @@
 
   // Element
   .g-breadcrumbs-item {
+    color: #1976d2;
     align-items: center;
     display: inline-flex;
     text-decoration: none;
@@ -103,7 +104,13 @@
 
     &__disabled {
       pointer-events: none;
+      color: rgba(0, 0, 0, 0.38);
+
     }
+  }
+
+  .g-breadcrumbs-divider {
+    color: rgba(0, 0, 0, 0.38);
   }
 
   // Modifier
