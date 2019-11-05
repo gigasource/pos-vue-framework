@@ -1,6 +1,6 @@
 <template>
 	<div class="g-tf--wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-		<div class="g-tf--prepend__outer" ref="prependRef" @click="onClickPrependOuter">
+		<div v-if="prependIcon" class="g-tf--prepend__outer" ref="prependRef" @click="onClickPrependOuter">
 			<slot name="prepend-outer" >
 				<g-icon :color="isLabelActive ? 'blue' : null">{{prependIcon}}</g-icon>
 			</slot>
@@ -8,7 +8,7 @@
 		<fieldset>
 			<legend :style="legendStyles">{{label}}</legend>
 			<div class='g-tf' :class="tfErrClasses">
-				<div class="g-tf--prepend__inner" @click="onClickPrependInner">
+				<div v-if="prependInnerIcon" class="g-tf--prepend__inner" @click="onClickPrependInner">
 					<slot name="prepend-inner">
 						<g-icon :color="isLabelActive ? 'blue' : null ">{{prependInnerIcon}}</g-icon>
 					</slot>
@@ -57,7 +57,7 @@
 
 <script>
   import { ref, computed } from '@vue/composition-api';
-  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputField';import VueTheMask from 'vue-the-mask'
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';import VueTheMask from 'vue-the-mask'
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -101,7 +101,7 @@
         readOnly: Boolean,
       },
       //rules and validation props
-      rules: Array,
+      ...{rules: Array,
       hint: String,
       errorCount: {
         type: Number,
@@ -110,15 +110,15 @@
       persistent: Boolean,
       counter: [Number, Boolean, String],
       validateOnBlur: Boolean,
-      error: Boolean,
+      error: Boolean},
 
       //styles
-      filled: Boolean,
+      ...{filled: Boolean,
       outlined: Boolean,
       solo: Boolean,
       shaped: Boolean,
       rounded: Boolean,
-      flat: Boolean,
+      flat: Boolean},
 
       // basic props
       value: [String, Number],
@@ -205,14 +205,16 @@
   }
 
   function getTfWrapperClasses(props) {
-    return computed(() => (props.disabled ? { 'g-tf--wrapper-disabled': true } : {
+    return computed(() => { return{
+      'g-tf--wrapper-disabled': props.disabled,
       'g-tf__filled': props.filled,
       'g-tf__outlined': props.outlined,
       'g-tf__solo': props.solo,
       'g-tf__rounded': props.rounded,
       'g-tf__shaped': props.shaped,
       'g-tf__flat': props.flat,
-    }))
+		}
+    })
   }
 
 </script>

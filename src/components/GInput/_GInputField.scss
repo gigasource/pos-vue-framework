@@ -231,19 +231,25 @@ input[type=text] {
   }
 
   .g-tf--label {
-    left: 7px;
+    left: 12px;
     top: 16px;
   }
 
   .g-tf--input:focus + .g-tf--label,
-  .g-tf--input:placeholder-shown + .g-tf--label {
+  .g-tf--input:placeholder-shown + .g-tf--label .g-tf--label__disabled, .g-tf--label__readOnly{
     transform: translateY(-16px) scale(0.75);
-    color: #1867c0;
+    color: rgba(0, 0, 0, 0.54);
+    &.g-tf--label__active{
+      color: #1867c0;
+    }
+
   }
+
 
   .g-tf--label__active {
     transform: translateY(-16px) scale(0.75);
     background-color: transparent;
+    color: #1867c0;
   }
 
   .g-tf--affix {
@@ -300,6 +306,8 @@ input[type=text] {
   &:focus-within legend {
     width: auto;
     padding: 1px;
+  }
+  .g-tf--input {
   }
   .g-tf--label__active {
     transform: translateY(-26px)  translateX(-3px) scale(0.75);

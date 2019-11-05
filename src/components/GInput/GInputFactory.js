@@ -18,8 +18,6 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   const prefixRef = ref(null)
   const prefixWidth = computed(() => prefixRef.value ? prefixRef.value.offsetWidth : 0)
   const labelStyles = computed(() =>
-    // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
-    // ...!isValidInput.value && inValidStyle}))
   {
 
     if(isLabelActive.value && prefixWidth.value){

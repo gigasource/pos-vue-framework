@@ -361,9 +361,7 @@ export const TextFieldIconEvent = () => ({
   components: { GTextField },
   props: {},
   data: () => ({
-    password: 'Password',
-    show: false,
-    message: 'Hey!',
+    message: "Click icon to fire icon's events",
     marker: true,
     iconIndex: 0,
     icons: [
@@ -405,7 +403,8 @@ export const TextFieldIconEvent = () => ({
         : this.iconIndex++
     },
   },
-  template: `<g-text-field  v-model="message"
+  template: `
+<g-text-field  v-model="message"
             :append-inner-icon="marker ? 'mdi-map-marker' : 'mdi-map-marker-off'"
             :append-icon="message ? 'mdi-send' : 'mdi-microphone'"
             :prepend-icon="icon"
