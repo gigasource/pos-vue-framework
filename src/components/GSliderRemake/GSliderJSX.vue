@@ -70,7 +70,6 @@
         noClick: false,
       })
       const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
-
       //const internalValue = getInternalValue(props, context)
       const internalValue = computed({
         get() {
@@ -151,7 +150,6 @@
         return <div class="g-slider--thumb" style={thumbStyle.value}/>
       }
 
-      //todo thumb label
       const showThumbLabel = computed(() => !props.disabled && !!(props.thumbLabel))
 
       function genThumbLabelContent(value) {
@@ -217,7 +215,7 @@
       //function genStep
       const showTicks = computed(() => props.tickLabels.length > 0 || !!(!props.disabled && step.value && props.ticks))
       const numTicks = computed(() => Math.ceil((maxValue.value - minValue.value) / step.value))
-
+        //todo check tick label
       function genSteps() {
         if (!props.step || !showTicks.value) return null
 
