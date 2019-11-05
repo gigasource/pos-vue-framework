@@ -567,6 +567,10 @@ input[type=text] {
   box-shadow: none;
 }
 
+.g-tf__outlined.g-tf__filled .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
+  left: -16px;
+}
+
 .g-tf__dense {
   .g-tf-affix {
     line-height: 20px;
