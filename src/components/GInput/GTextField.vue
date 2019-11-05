@@ -118,7 +118,8 @@
       solo: Boolean,
       shaped: Boolean,
       rounded: Boolean,
-      flat: Boolean},
+      flat: Boolean,
+			dense: Boolean},
 
       // basic props
       value: [String, Number],
@@ -135,7 +136,7 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef } = getLabel(props, internalValue, isValidInput, isFocused, 'g-tf-label__active');
+      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef } = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active');
 
       //Activate non persistent hint
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
@@ -214,6 +215,7 @@
       'g-tf__rounded': props.rounded,
       'g-tf__shaped': props.shaped,
       'g-tf__flat': props.flat,
+			'g-tf__dense': props.dense,
 		}
     })
   }

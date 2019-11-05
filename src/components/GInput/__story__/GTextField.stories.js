@@ -32,6 +32,7 @@ export const TextFieldPlayGround = () => ({
     solo: { default: boolean('solo', false) },
     outlined: { default: boolean('outlined', false) },
     flat: { default: boolean('flat', false) },
+    dense: { default: boolean('dense', false) },
     rounded: { default: boolean('rounded', false) },
     shaped: { default: boolean('shaped', false) },
     clearable: { default: boolean('clearable', false) },
@@ -52,6 +53,7 @@ export const TextFieldPlayGround = () => ({
                            :solo="solo"
                            :outlined="outlined"
                            :flat="flat"
+                           :dense="dense"
                            :rounded="rounded"
                            :shaped="shaped"
                            :hint="hint"
