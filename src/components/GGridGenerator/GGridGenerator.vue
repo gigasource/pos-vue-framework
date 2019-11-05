@@ -329,11 +329,13 @@
 
       // render grid generator
       const confirmDialogStyle = {
-        height: '200px',
+        display: 'flex',
+        'flex-direction': 'column',
+        height: '350px',
         borderRadius: '10px',
         boxShadow: '0 2px 8px 4px #0003',
         background: '#fff',
-        padding: '30px'
+        padding: '20px'
       }
       const gridItemNameStyle = {
         border: '1px solid #888',
@@ -368,6 +370,46 @@
         margin: '2px',
         border: '1px solid #999',
         borderRadius: '5px'
+      }
+
+      function renderConfirmDialog(grid) {
+        return <g-dialog vModel={state.showConfirmDialog} width="500px" persistent>
+          <div style={confirmDialogStyle}>
+            <h5>Create new grid item</h5>
+            <div>
+              Are you sure you want to create new grid item?<br/>
+              If Yes, please set name for the grid item and click to either 'Single' or 'Sub Grid' button?<br/>
+              <b>Single</b> create an atom item which can't be divided into smaller items<br/>
+              <b>Sub-grid</b> create a sub grid item which can be divided into smaller items.
+            </div>
+            <div>Item name: <input type="text" vModel={selectingArea.name} style={gridItemNameStyle}/></div>
+            <div style="flex: 1"></div>
+            <div style="display: flex; flex-direction: row-reverse">
+              <button type='button'
+                      vOn:click={() => {
+                        state.grids.push(createSubGridItem(grid))
+                        state.showConfirmDialog = false
+                        resetSelectingArea()
+                      }}>Sub Grid
+              </button>
+              &nbsp;
+              <button type='button'
+                      vOn:click={() => {
+                        state.grids.push(createSingleItem(grid))
+                        state.showConfirmDialog = false
+                        resetSelectingArea()
+                      }}>Single item
+              </button>
+              &nbsp;
+              <button type='button'
+                      vOn:click={() => {
+                        state.showConfirmDialog = false
+                        resetSelectingArea()
+                      }}>Cancel
+              </button>
+            </div>
+          </div>
+        </g-dialog>
       }
 
       function renderGridGenerator() {
@@ -412,34 +454,7 @@
                             {renderGridSettings(grid)}
                             {renderGenerateStyleBtn()}
                           </div>,
-                          <g-dialog vModel={state.showConfirmDialog} width="500px" persistent>
-                            <div style={confirmDialogStyle}>
-                              <div>New grid item will be a sub-grid or just single item?</div>
-                              <div>Grid item name: <input type="text" vModel={selectingArea.name} style={gridItemNameStyle}/></div>
-                              <button type='button'
-                                      vOn:click={() => {
-                                        state.grids.push(createSubGridItem(grid))
-                                        state.showConfirmDialog = false
-                                        resetSelectingArea()
-                                      }}>Sub Grid
-                              </button>
-                              &nbsp;
-                              <button type='button'
-                                      vOn:click={() => {
-                                        state.grids.push(createSingleItem(grid))
-                                        state.showConfirmDialog = false
-                                        resetSelectingArea()
-                                      }}>Single item
-                              </button>
-                              &nbsp;
-                              <button type='button'
-                                      vOn:click={() => {
-                                        state.showConfirmDialog = false
-                                        resetSelectingArea()
-                                      }}>Cancel
-                              </button>
-                            </div>
-                          </g-dialog>
+                          renderConfirmDialog(grid)
                         ]
                         : undefined
                 )}
