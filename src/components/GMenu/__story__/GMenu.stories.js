@@ -101,3 +101,33 @@ export const gMenuBehavior = () => ({
     </div>
   `
 })
+
+export const gMenuHover = () => ({
+  components: { GMenu, GBtn },
+  data: () => ({
+    showMenu: false
+    }),
+  props: {
+    openOnHover: {
+      type: Boolean,
+      default: boolean('open on hover', true)
+    },
+    openDelay: {
+      type: Number,
+      default: number('open delay (ms)', 500)
+    },
+    closeDelay: {
+      type: Number,
+      default: number('close delay (ms)', 500)
+    },
+  },
+  template: `
+    <div data-app style="min-height: 80vh">
+      <g-menu v-model="showMenu"
+              :open-on-hover="openOnHover" :open-delay="openDelay" :close-delay="closeDelay">
+        <template v-slot:activator="{toggleContent}"><g-btn @click="toggleContent">Activator</g-btn></template>
+        <div>Content</div>
+      </g-menu>
+    </div>
+  `
+})

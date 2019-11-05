@@ -59,6 +59,7 @@
 
 .g-divider {
   border-width: 0.5px;
+  align-self: center;
 
   &__inset {
     width: calc(100% - 16px);
@@ -75,14 +76,16 @@
   display: flex;
   flex: 1 1 auto;
   flex-wrap: wrap;
-  margin: 0 -12px;
+
+  > .g-col,
+  > [class*=col-] {
+    padding: 12px;
+  }
 
   &__dense {
-    margin: 0 -6px;
-
     > .g-col,
     > [class*=col-] {
-      padding: 6px;
+      padding: 4px;
     }
   }
 
@@ -94,11 +97,27 @@
       padding: 0;
     }
   }
+
+  @for $i from 1 through $grid-columns {
+    .offset-#{$i} {
+      margin-left: percentage($i/$grid-columns);
+    }
+  }
 }
 
 .g-col:not([class*=col-]) {
   flex-basis: 0;
   flex-grow: 1;
   width: 100%;
+}
+
+.g-container {
+  .g-row {
+    margin: 0 -12px;
+
+    &__dense{
+      margin: 0 -4px;
+    }
+  }
 }
 

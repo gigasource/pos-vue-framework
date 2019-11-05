@@ -37,11 +37,11 @@
 					'b-solid': solid && !dashed && !dotted
 				}
 			});
-			const dividerColorStyle = computed(() => {
-			  return {
-			    'border-color': color
-				}
-			});
+			const dividerColorStyle = computed(() => ({
+			    ... color && { 'border-color': color },
+				... !vertical && { height: '0 !important'},
+				... vertical && { width: '0 !important'},
+			}));
 			return {
 			  classes,
 				dividerColorStyle

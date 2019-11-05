@@ -1,0 +1,117 @@
+.g-sidebar {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 256px;
+  max-width: 256px;
+  z-index: 999;
+  overflow: hidden auto;
+  backface-visibility: hidden;
+  transition: 0.3s map_get($transition, 'fast-out-slow-in');
+  transition-property: transform, width, max-width;
+  @include elevation(2);
+
+  &-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: inherit;
+    text-overflow: ellipsis;
+
+    &:before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      margin: 16px;
+      content: '\F1D8';
+      font-size: 24px;
+      font-family: "Material Design Icons", sans-serif;
+      background: inherit;
+      visibility: hidden;
+    }
+  }
+
+  > .g-list {
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+
+  &__absolute {
+    position: absolute;
+  }
+
+  &__collapsed {
+    //width: 72px;
+    width: auto;
+    max-width: 72px;
+
+    .g-list-item-content,
+    .g-list-item-action {
+      display: none;
+    }
+
+    .g-sidebar-header {
+      visibility: hidden;
+      max-width: 24px;
+
+      &:before {
+        visibility: visible;
+      }
+    }
+
+    .g-list-header {
+      visibility: hidden;
+      position: relative;
+      max-width: 24px;
+
+      &:before {
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        margin: 16px;
+        content: '\F1D8';
+        font-size: 24px;
+        font-family: "Material Design Icons", sans-serif;
+        background: inherit;
+      }
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+      width: 256px;
+      max-width: 256px;
+
+      .g-list-item-content,
+      .g-list-item-action {
+        display: flex;
+      }
+
+      .g-sidebar-header {
+        visibility: visible;
+        max-width: 100%;
+
+        &:before {
+          visibility: hidden;
+        }
+      }
+
+      .g-list-header {
+        visibility: visible;
+        max-width: 100%;
+
+        &:before {
+          visibility: hidden;
+        }
+      }
+    }
+  }
+}

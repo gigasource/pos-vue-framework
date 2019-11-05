@@ -2,21 +2,19 @@
   <div v-resize="setWidths" :class="containerClasses">
     <div :class="slideGroupPrevClasses" @click="onAffixClick('prev')">
       <slot name="prev" @click="onAffixClick('prev')">
-      <!--TODO use g-icon-->
-        <i class="material-icons">{{prevIcon}}</i>
+        <g-icon>{{prevIcon}}</g-icon>
       </slot>
     </div>
 
     <div ref="wrapper" class="g-slide-group__wrapper">
       <div ref="content" class="g-slide-group__content">
-        <slot name="content" :toggle="toggleItem" :active="isActiveItem"></slot>
+        <slot :toggle="toggleItem" :isActive="isActiveItem"></slot>
       </div>
 
     </div>
     <div :class="slideGroupNextClasses" @click="onAffixClick('next')">
       <slot name="next" @click="onAffixClick('next')">
-        <!--TODO use g-icon-->
-        <i class="material-icons">{{nextIcon}}</i>
+        <g-icon>{{nextIcon}}</g-icon>
       </slot>
     </div>
   </div>
@@ -26,17 +24,19 @@
   import { computed, onBeforeUpdate, onUpdated, reactive, ref, watch } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
   import Resize from '../../directives/resize/resize';
+  import GIcon from '../GIcon/GIcon';
 
   //TODO add stories + tests
   export default {
     name: 'GSlideGroup',
-    components: {},
+    components: { GIcon },
     props: {
       items: null,
       mandatory: Boolean,
       max: Boolean,
       value: null,
       multiple: Boolean,
+      dense: Boolean,
       activeClass: String,
       centerActive: false,
       mobileBreakPoint: {
@@ -46,20 +46,22 @@
       },
       prevIcon: {
         type: String,
-        default: 'navigate_before',
+        default: 'mdi-chevron-left',
       },
       nextIcon: {
         type: String,
-        default: 'navigate_next',
+        default: 'mdi-chevron-right',
       },
-      showArrows: Boolean,
+      showArrows: {
+        type: Boolean,
+        default: true
+      },
     },
     directives: {
       Resize
     },
     setup(props, context) {
       const data = reactive({
-        items: [],
         widths: {
           content: 0,
           wrapper: 0
@@ -90,6 +92,7 @@
           'g-slide-group': true,
           'g-slide-group__has-affixes': hasAffixes.value,
           'g-slide-group__is-overflowing': isOverflowing.value,
+          'g-slide-group__dense': props.dense
         }
       });
 

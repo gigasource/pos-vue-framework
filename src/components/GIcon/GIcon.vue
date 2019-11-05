@@ -1,16 +1,16 @@
 <template>
 	<i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
 		 :aria-hidden="attributes.ariaHidden"
-		 :role="attributes.role">{{materialIconName}}</i>
+		 :role="attributes.role" @click="onClick">{{materialIconName}}</i>
 	<svg v-else-if="activeTags.svg" :class="iconClass" :style="iconStyle"
 			 :aria-hidden="attributes.ariaHidden"
 			 :role="attributes.role"
 			 xmlns="http://www.w3.org/2000/svg"
-			 viewBox="0 0 24 24">
+			 viewBox="0 0 24 24" @click="onClick">
 		<path :d="icon"></path>
 	</svg>
-	<img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle"/>
-	<span v-else-if="activeTags.slot">
+	<img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle" @click="onClick"/>
+	<span v-else-if="activeTags.slot" @click="onClick">
 		<slot></slot>
 	</span>
 </template>
@@ -18,7 +18,7 @@
 <script>
   import { computed, ref, onMounted, onUpdated } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
-  import { setBackgroundColor } from '../../mixins/colorable';
+  import { setTextColor } from '../../mixins/colorable';
   import { Fragment } from 'vue-fragment'
 
   export default {
@@ -48,7 +48,7 @@
       const icon = ref('')
 
       function getIcon() {
-        icon.value = context.slots.default()[0].text.trim()
+        icon.value = context.slots.default? context.slots.default()[0].text.trim() : ''
       }
 
       onMounted(() => getIcon())
@@ -127,7 +127,7 @@
         ...nodeData.value.tag
       }))
 
-      let iconColor = computed(() => setBackgroundColor(props.color, {}))
+      let iconColor = computed(() => setTextColor(props.color, {}))
 
       let iconClass = computed(() => ({
         ...nodeData.value.class,
@@ -151,6 +151,10 @@
         role: context.listeners.click ? 'button' : null
       }))
 
+      let onClick = (event) => {
+        context.emit('click', event);
+      }
+
       return {
         iconClass,
         iconStyle,
@@ -158,6 +162,7 @@
         activeTags,
         icon,
         materialIconName,
+        onClick,
       }
     }
   }
