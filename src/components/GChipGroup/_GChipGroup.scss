@@ -1,0 +1,25 @@
+// Block
+.g-chip-group {
+  .g-chip {
+    margin: 4px 8px 4px 0;
+  }
+
+  .g-chip__active {
+    color: #1867c0;
+    background-color: rgba(24,103,192, 0.1);
+  }
+}
+
+// Element
+.g-chip-group .g-chip-group__content {
+  padding: 4px 0;
+}
+
+// Modifiers
+.g-chip-group__column {
+  .g-chip-group__content {
+    white-space: normal;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+}

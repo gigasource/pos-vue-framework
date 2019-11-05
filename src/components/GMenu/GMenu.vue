@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed, createElement as h, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { computed, onBeforeUnmount, onMounted, onUpdated, reactive, ref } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import { convertToUnit } from '../../utils/helpers';
@@ -59,13 +59,14 @@
         closeOnClick: {
           type: Boolean,
           default: true
-        }
+        },
+        closeOnContentClick: Boolean
       },
       // sizing
       ...{
         maxWidth: {
           type: [Number, String],
-          default: '80%'
+          default: '100%'
         },
         minWidth: [Number, String],
         maxHeight: {
@@ -73,6 +74,10 @@
           default: 'auto'
         },
         minHeight: [Number, String],
+        contentFillWidth: {
+          type: Boolean,
+          default: true
+        }
       },
       // delay
       ...{
@@ -89,10 +94,9 @@
     setup(props, context) {
       const { model: isActive } = getVModel(props, context);
       const {
-        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow,
-        menuableState
+        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState
       } = menuable(props, context);
-      const { attachToRoot } = detachable(props, context);
+      const { attachToRoot, detach } = detachable(props, context);
       const { runDelay } = delayable(props)
 
       //template refs
@@ -112,10 +116,21 @@
         attachToRoot();
       }
 
+      let activatorResizeObserver
       onMounted(() => {
+        activatorResizeObserver = new ResizeObserver(() => {
+          updateDimensions()
+        })
+        context.refs.activator && activatorResizeObserver.observe(context.refs.activator)
         if (props.lazy) return
         initContent();
       });
+
+      onBeforeUnmount(() => {
+        context.refs.activator && activatorResizeObserver.unobserve(context.refs.activator)
+        if (content.value) detach(content.value)
+        if (el.value) detach(el.value)
+      })
 
       const calculatedLeft = computed(() => {
         const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
@@ -131,6 +146,7 @@
       })
 
       const calculatedMinWidth = computed(() => {
+        if (props.contentFillWidth) return convertToUnit(Math.max(dimensions.activator.width, dimensions.content.width))
         if (props.minWidth) return convertToUnit(props.minWidth) || '0'
 
         const minWidth = Math.min(dimensions.content.width, state.pageWidth);
@@ -158,10 +174,50 @@
           })
         }
         const activator = event.target || event.currentTarget;
-        if (!activator) return
+        if (!activator) {
+          return
+        }
 
         isActive.value = !isActive.value;
         updateDimensions();
+      }
+
+      const elListeners = {
+        ...(props.openOnHover && !props.disabled) && {
+          mouseenter(event) {
+            runDelay('open', () => {
+              if (state.hasJustFocused || isActive.value) {
+                return
+              }
+              toggleContent(event);
+              state.hasJustFocused = true;
+            })
+          },
+          mouseleave(event) {
+            runDelay('close', () => {
+              if (context.refs.content && context.refs.content.contains(event.relatedTarget)) {
+                return
+              }
+              isActive.value = false
+              state.hasJustFocused = false
+            })
+          }
+        }
+      }
+
+      const contentListeners = {
+        ...(props.closeOnContentClick) && {
+          click(event) {
+            if (isActive.value) isActive.value = false
+            state.hasJustFocused = false
+          }
+        },
+        ...(props.openOnHover) && {
+          mouseleave() {
+            if (isActive.value) isActive.value = false
+            state.hasJustFocused = false
+          }
+        }
       }
 
       const genDirectives = () => {
@@ -191,69 +247,17 @@
         return directives;
       }
 
-      const genContent = () => {
-        const defaultSlotContent = context.slots.default && context.slots.default() || 'fallback text';
-        const options = {
-          style: contentStyles.value,
-          staticClass: 'menu-content',
-          ref: 'content',
-          directives: genDirectives(),
-          on: {}
-        }
-        if (props.openOnHover && !props.disabled) {
-          options.on.mouseenter = mouseEnterHandler
-          options.on.mouseleave = mouseLeaveHandler
-        }
-        return h('div',
-          options,
-          [defaultSlotContent]
-        )
-      }
+      return () =>
+        <div {...{ on: elListeners }} ref="el" class="g-menu">
+          <div ref="activator" class="g-menu--activator">{context.slots.activator({ toggleContent })}</div>
+          <div style={contentStyles.value}
+               class="g-menu--content"
+               ref="content"
+               {...{ directives: genDirectives(), on: contentListeners }}>
+            {context.slots.default()}
+          </div>
+        </div>
 
-      const genActivator = () => {
-        return h('div',
-          { ref: 'activator' },
-          context.slots.activator({
-            toggleContent
-          }))
-      }
-
-      const mouseEnterHandler = (event) => {
-        runDelay('open', () => {
-          if (state.hasJustFocused || isActive.value) return
-          toggleContent(event);
-          state.hasJustFocused = true;
-        })
-      }
-      const mouseLeaveHandler = (event) => {
-        runDelay('close', () => {
-          if (context.refs.content && context.refs.content.contains(event.relatedTarget)) return
-          isActive.value = false
-          state.hasJustFocused = false
-        })
-      }
-
-      return () => {
-        const options = {
-          staticClass: 'menu',
-          ref: 'el',
-          on: {}
-        }
-        if (props.openOnHover && !props.disabled) {
-          options.on.mouseenter = mouseEnterHandler
-          options.on.mouseleave = mouseLeaveHandler
-        }
-
-        const children = state.isFirstRender && props.lazy
-          ? () => ([genActivator()])
-          : () => ([genActivator(), genContent()])
-
-        return h(
-          'div',
-          options,
-          children()
-        )
-      }
     }
   }
 </script>

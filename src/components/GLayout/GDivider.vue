@@ -6,7 +6,7 @@
   import { computed } from '@vue/composition-api';
 
   export default {
-    name: 'GDivider',
+     name: 'GDivider',
     props: {
       dashed: Boolean,
 			dotted: Boolean,
@@ -17,31 +17,31 @@
 			inset: Boolean,
 			color: {
         type: String,
-				default: '#000000'
+				default: 'rgba(0, 0, 0, 0.12)'
       },
 			vertical:  Boolean,
 		},
 		setup({ dashed, dotted, solid, inset, color, vertical}){
 			const classes = computed(() => {
 			  const defaultClass = {
-			    'divider': true
-				}
+			    'g-divider': true
+				};
 			  return {
 					...defaultClass,
 					'w-100': !inset && !vertical,
 					'h-100': !inset && vertical,
-					'divider__inset': inset && !vertical,
-					'divider__inset-vertical': inset && vertical,
+					'g-divider__inset': inset && !vertical,
+					'g-divider__inset-vertical': inset && vertical,
 					'b-dashed': dashed,
 					'b-dotted': dotted,
 					'b-solid': solid && !dashed && !dotted
 				}
 			});
-			const dividerColorStyle = computed(() => {
-			  return {
-			    'border-color': color
-				}
-			});
+			const dividerColorStyle = computed(() => ({
+			    ... color && { 'border-color': color },
+				... !vertical && { height: '0 !important'},
+				... vertical && { width: '0 !important'},
+			}));
 			return {
 			  classes,
 				dividerColorStyle

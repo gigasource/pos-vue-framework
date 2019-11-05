@@ -5,7 +5,7 @@
  * @returns {boolean} true if input color is CSS color. Otherwise, false
  */
 export /*public for test only*/ function isCssColor(color) {
-  return !!color && !!color.match(/^(#|(rgb|hsl)a?\()/)
+  return !!color && !!color.match(/^(#|(rgb|hsl)a?\()|transparent|currentColor/)
 }
 
 /**
@@ -49,7 +49,7 @@ export function setBackgroundColor(color, data) {
   } else if (color) {
     data.class = {
       ...data.class,
-      [color]: true,
+      ['bg-'+color.toString().trim().split(' ').join('-')]: true,
     }
   }
   return data
@@ -79,13 +79,9 @@ export function setTextColor(color, data) {
       'caret-color': `${color}`,
     }
   } else if (color) {
-    const [colorName, colorModifier] = color.toString().trim().split(' ', 2)
     data.class = {
       ...data.class,
-      [colorName + '--text']: true,
-    }
-    if (colorModifier) {
-      data.class['text--' + colorModifier] = true
+      [color.toString().trim().split(' ').join('-')]: true,
     }
   }
   return data

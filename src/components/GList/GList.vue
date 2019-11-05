@@ -1,45 +1,213 @@
 <template>
-	<div :class="classes" :style="listStyle">
-		<slot></slot>
-	</div>
+  <div :class="classes"
+       class="g-list"
+       :style="styles"
+       @click="onClick"
+  >
+
+    <template v-if="!multiSection">
+      <slot name="subheader">
+        <div v-if="subheader" class="g-list-header">{{subheader}}</div>
+      </slot>
+      <template v-for="(item, index) in renderList">
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)">
+          <!--            todo: add key move event-->
+          <div v-if="item[itemTitle]"
+               class="g-list-item"
+               :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
+               tabindex="0"
+               @click="onSelect(item)"
+               @keydown.enter="onSelect(item)"
+               @keydown.down="onArrowDown(item)"
+               @keydown.up="onArrowUp(item)"
+          >
+            <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+              <div :class="prependClasses" v-if="item.prepend"> <img :src="item.prepend"></div>
+            </slot>
+            <div class="g-list-item-content">
+              <div class="g-list-item-text">{{item[itemTitle]}}</div>
+              <div class="g-list-item-text__sub"
+                   v-if="lineNumber > 1">
+                {{item.subtitle|| '&nbsp;'}}
+              </div>
+              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
+            </div>
+              <slot name="append" :item="item">
+                <div class="g-list-item-action">
+                  <g-icon color="yellow">star</g-icon>
+                </div>
+              </slot>
+          </div>
+          <g-divider v-if="(divider && (index < renderList.length -1))"
+                     :inset="divider === 'inset'"/>
+        </slot>
+      </template>
+    </template>
+
+    <template v-else>
+      <template v-for="(item, index) in items">
+        <template v-if="item.type === 'subheader'">
+          <slot name="subheader">
+            <div class="g-list-header">{{item.subheader}}</div>
+          </slot>
+        </template>
+
+        <g-divider v-else-if="item.type === 'divider'"></g-divider>
+
+        <slot :item="item" v-else>
+          <div class="g-list-item"
+               :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}"
+               tabindex="0"
+               @click="onSelect(item)"
+               @keydown.enter="onSelect(item)"
+               @keydown.down="onArrowDown(item)"
+               @keydown.up="onArrowUp(item)">
+            <slot name="prepend" :item="item">
+              <div :class="prependClasses">
+                <img alt="" :src="item.prepend">
+              </div>
+            </slot>
+
+            <div class="g-list-item-content">
+              <div class="g-list-item-text">{{item[itemTitle]}}</div>
+              <div class="g-list-item-text__sub"
+                   v-if="lineNumber > 1">
+                {{item.subtitle || '&nbsp;'}}
+              </div>
+              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
+            </div>
+            <slot name="append" :item="item">
+              <div class="g-list-item-action">
+                <g-icon color="yellow">star</g-icon>
+              </div>
+            </slot>
+
+          </div>
+        </slot>
+      </template>
+    </template>
+  </div>
 </template>
 
 <script>
-  import { computed } from '@vue/composition-api';
+  import {computed} from '@vue/composition-api';
+  import GDivider from "../GLayout/GDivider";
+  import {makeSelectable} from "../../mixins/groupable";
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GList',
+    components: { GIcon, GDivider},
     props: {
-			height: String,
-			width: String,
-		},
-		setup({ height, width }) {
-      const classes = computed(() => {
-        const defaultClasses = {
-          'list': true,
-        };
-        return {
-          ...defaultClasses
+      height: String,
+      width: String,
+      disabled: Boolean,
+      rounded: Boolean,
+      shaped: Boolean,
+      elevation: {
+        type: [Number, String],
+        default: 2,
+      },
+      dense: Boolean,
+      nav: Boolean,
+      items: Array,
+      multiSection: Boolean,
+      subheader: String,
+      divider: {
+        type: [Boolean, String],
+        default: false,
+      },
+      prependType: {
+        type: String,
+        default: 'icon',
+      },
+      subtitleWrap: Boolean,
+      value: [String, Object, Number, Array],
+      selectable: Boolean,
+      multiple: Boolean,
+      mandatory: Boolean,
+      allowDuplicates: Boolean,
+      itemValue: String,
+      itemTitle: {
+        type: String,
+        default: 'title'
+      }
+    },
+    setup: function (props, context) {
+      //G list computed class
+      //Computed subtitle
+      const lineNumber = computed(() => {
+        if (!props.items.find(i => i.subtitle)) return 1;
+        if (props.items.find(i => i.subtitle2)) return 3;
+        return 2;
+      })
+
+      const classes = computed(() => ({
+        'g-list__disabled': props.disabled,
+        'g-list__two-line': (lineNumber.value === 2 && !props.subtitleWrap),
+        'g-list__three-line': (lineNumber.value === 2 && props.subtitleWrap) || lineNumber.value === 3,
+        'g-list__rounded': props.rounded,
+        'g-list__shaped': props.shaped,
+        ['elevation-' + props.elevation]: true,
+        'g-list__dense': props.dense,
+        'g-list__nav': props.nav,
+      }));
+
+      const styles = computed(() => ({
+        ...props.height && {'height': props.height},
+        ...props.width && {'width': props.width}
+      }));
+
+      const prependClasses = computed(() => {
+        if (!['icon', 'avatar', 'image'].includes(props.prependType)) {
+          return `g-list-item-icon`
         }
-      });
-      const listStyle = computed(() => {
-        let style = {};
-        if(height){
-          Object.assign(style, {'height': height});
-        }
-        if(width){
-          Object.assign(style, {'width': width});
-        }
-        return style;
-			});
-			return {
-			  classes,
-				listStyle
-			}
-		}
+        return `g-list-item-${props.prependType}`;
+      })
+
+      const renderList = computed(() => props.items.filter(item => item[props.itemTitle]))
+
+      //Select
+      function onClick(event) {
+        context.emit('click', event)
+      }
+      function onArrowDown(item){
+        let index = renderList.value.findIndex(i=> i.title === item.title && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index < (renderList.value.length -1) ? i += 1 : i=0
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:up')
+      }
+      function onArrowUp(item){
+        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index > 0 ? i -= 1 : i = props.items.length -1
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:down')
+      }
+
+      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
+      function onSelect(item) {
+        if (!props.selectable) return;
+        toggleItem(item)
+        context.emit('click:item')
+      }
+      return {
+        classes,
+        styles,
+        prependClasses,
+        renderList,
+        lineNumber,
+        onClick,
+        onArrowDown,
+        onArrowUp,
+        onSelect,
+        internalValue,
+        isActiveItem,
+      }
+    }
   }
 </script>
 
 <style scoped>
-
 </style>

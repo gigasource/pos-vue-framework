@@ -11,8 +11,8 @@
 </template>
 
 <script>
-  import GItem from '@/components/GItemGroup/GItem';
-  import GLayout from '@/components/GLayout/GLayout';
+  import GItem from '../GItemGroup/GItem';
+  import GLayout from '../GLayout/GLayout';
   import { computed } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
 
