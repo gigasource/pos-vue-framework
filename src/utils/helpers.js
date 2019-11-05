@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {computed, ref, watch} from "@vue/composition-api";
+import { computed, ref, watch } from '@vue/composition-api';
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -112,16 +112,17 @@ export default function colorHandler() {
   }
 };
 
-export function createSimpleFunctional (c, el = 'div', name) {
+export function createSimpleFunctional(c, el = 'div', name) {
   return Vue.extend({
     name: name || c.replace(/__/g, '-'),
     functional: true,
-    render (h, { data, children }) {
+    render(h, { data, children }) {
       data.staticClass = (`${c} ${data.staticClass || ''}`).trim();
       return h(el, data, children);
     },
   })
 }
+
 export function getInternalValue(props, context) {
   // text field internalValue
   const rawInternalValue = ref(props.value || '');
@@ -140,16 +141,49 @@ export function getInternalValue(props, context) {
 }
 
 
-export function createRange (length) {
+export function createRange(length) {
   return Array.from({ length }, (v, k) => k)
 }
 
-export function kebabCase (str) {
+export function kebabCase(str) {
   return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
 // Return transition duration of an element in millisecond
 export function getTransitionDuration(el) {
-  const duration =  window.getComputedStyle(el).getPropertyValue('transition-duration');
-  return Math.round(parseFloat(duration)*1000);
+  const duration = window.getComputedStyle(el).getPropertyValue('transition-duration');
+  return Math.round(parseFloat(duration) * 1000);
+}
+
+export function getObjectValueByPath(obj, path, fallback) {
+  if (obj == null || !path || typeof path !== 'string') {
+    return fallback
+  }
+  if (obj[path] !== undefined) {
+    return obj[path]
+  }
+  path = path.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
+  path = path.replace(/^\./, '') // strip a leading dot
+  return getNestedValue(obj, path.split('.'), fallback)
+}
+
+export function getNestedValue(obj, path, fallback) {
+  const last = path.length - 1;
+
+  if (last < 0) {
+    return obj === undefined ? fallback : obj;
+  }
+
+  for (let i = 0; i < last; i++) {
+    if (obj == null) {
+      return fallback
+    }
+    obj = obj[path[i]]
+  }
+
+  if (obj == null) {
+    return fallback;
+  }
+
+  return obj[path[last]] === undefined ? fallback : obj[path[last]]
 }

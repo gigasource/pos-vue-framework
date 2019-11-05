@@ -1,0 +1,120 @@
+<script>
+  import { computed, onMounted, reactive, ref, watch, provide } from '@vue/composition-api';
+  import { GBreadcrumbsDivider } from './GBreadcrumbsFunctionalComponent';
+  import GBreadcrumbsItem from './GBreadcrumbsItem';
+  import GBreadrcumbsItemUtil from './logic/GBreadrcumbsItemUtil';
+
+
+  export default {
+    name: 'GBreadcrumbs',
+    components: { GBreadcrumbsItem, GBreadcrumbsDivider },
+    props: {
+      divider: {
+        type: String,
+        default: '/',
+      },
+      items: {
+        type: Array,
+        default: () => ([]),
+      },
+      large: Boolean,
+    },
+    setup(props, context) {
+
+      const { breadcrumbClasses } = GBreadrcumbsItemUtil(props, context);
+
+      function genDivider() {
+        return <g-breadcrumbs-divider> {context.slots.divider ? context.slots.divider() : props.divider} </g-breadcrumbs-divider>
+      }
+
+      function genItems() {
+        const items = [];
+        const keys = [];
+
+        for (const item of props.items) {
+          keys.push(item.text);
+          if (!!context.slots.item) {
+            items.push(context.slots.item({ item }))
+          } else {
+            const nodeData = {
+              keys: keys.join('.'),
+              props: item,
+            };
+
+            items.push(<g-breadcrumbs-item {...nodeData}>{item.text}</g-breadcrumbs-item>)
+          }
+        }
+        return items
+      }
+
+
+      function genBreadcrumbs() {
+        return <ul class={breadcrumbClasses.value}>
+          {context.slots.default ? context.slots.default() : genItems().map((item, index) => ([
+            item,
+            index !== props.items.length - 1 ? genDivider() : null
+          ]))}
+        </ul>
+      }
+
+      return {
+        genBreadcrumbs
+      }
+    }, render(createElement, context) {
+      return this.genBreadcrumbs()
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+  @import './_variables';
+
+  // Block
+  .g-breadcrumbs {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex: $breadcrumbs-flex;
+    list-style-type: none;
+    margin: $breadcrumbs-margin;
+    padding: $breadcrumbs-padding;
+
+    li {
+      align-items: center;
+      display: inline-flex;
+      font-size: $breadcrumbs-item-font-size;
+
+      .g-icon {
+        font-size: $breadcrumbs-item-large-font-size;
+      }
+
+      &:nth-child(even) {
+        padding: $breadcrumbs-even-child-padding
+      }
+    }
+  }
+
+  // Element
+  .g-breadcrumbs-item {
+    align-items: center;
+    display: inline-flex;
+    text-decoration: none;
+    transition: 0.5s cubic-bezier(0.25, 0.8, 0.5, 1);
+
+    &__disabled {
+      pointer-events: none;
+    }
+  }
+
+  // Modifier
+  .g-breadcrumbs__large {
+    li {
+      font-size: $breadcrumbs-item-large-font-size;
+    }
+
+    .g-icon {
+      font-size: $breadcrumbs-item-large-font-size;
+    }
+  }
+
+</style>

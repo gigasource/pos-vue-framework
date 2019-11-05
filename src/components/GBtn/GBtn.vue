@@ -56,6 +56,8 @@
     setup(props, context) {
       const { classes, styles } = GBtnUtil(props, context);
 
+      console.log(context);
+
       function genBtnContent() {
         return <span class="g-btn__content">
           {context.slots.default()}
