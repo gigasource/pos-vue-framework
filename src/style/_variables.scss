@@ -77,6 +77,18 @@ $percentages: (
 //Grid
 $grid-columns:      12 !default;
 
+$grid-breakpoints: () !default;
+$grid-breakpoints: map-merge(
+                (
+                        'xs': 0,
+                        'sm': 600px,
+                        'md': 960px,
+                        'lg': 1280px - 16px,
+                        'xl': 1920px - 16px
+                ),
+                $grid-breakpoints
+);
+
 
 //Button
 $btn-border-radius: 0.5rem !default;
