@@ -1,16 +1,19 @@
 <template>
-  <div v-show="show"
-       class="g-tooltip__content"
-       :class="tooltipContentClasses"
-       :style="tooltipContentStyle"
-       ref="content">
-    <div v-if="showSpeechBubble"
-         :class="speechBubbleClass"
-         :style="speechBubbleStyle">
-      <slot></slot>
+  <transition :name="transitionName">
+    <div v-show="show"
+         class="g-tooltip__content"
+         :class="tooltipContentClasses"
+         :style="tooltipContentStyle"
+         ref="content"
+         :key="transitionName">
+      <div v-if="showSpeechBubble"
+           :class="speechBubbleClass"
+           :style="speechBubbleStyle">
+        <slot></slot>
+      </div>
+      <slot v-else></slot>
     </div>
-    <slot v-else></slot>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -21,10 +24,6 @@
   import menuable from '../../mixins/menuable';
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
-
-  // constants
-  export const TRANSITION_DEFAULT_ACTIVE = 'scale-transition'
-  export const TRANSITION_DEFAULT_DEACTIVE = 'fade-transition'
 
   export default {
     name: 'GToolTipContent',
@@ -135,21 +134,13 @@
       show: Boolean,
     },
     setup(props, context) {
-      watch(() => props.activator, () => {
-        console.log('activator changed')
-      })
-
       const { attachToRoot, detach } = detachable(props, context)
       const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
       //// TOOLTIP CONTENT ////
-      let colorOutput = computed(() => {
-        return setBackgroundColor(props.color, {})
-      })
-      const tooltipContentClasses = computed(() => {
-        return colorOutput.value.class
-      })
+      let colorOutput = computed(() => setBackgroundColor(props.color, {}))
+      const tooltipContentClasses = computed(() => colorOutput.value.class)
       const tooltipContentStyle = computed(() => {
         return {
           ...colorOutput.value.style,
@@ -166,7 +157,7 @@
         if (props.transition) {
           return props.transition
         }
-        return state.isActive ? TRANSITION_DEFAULT_ACTIVE : TRANSITION_DEFAULT_DEACTIVE
+        return props.show ? 'scale-transition' : 'fade-transition'
       })
 
       onMounted(() => {

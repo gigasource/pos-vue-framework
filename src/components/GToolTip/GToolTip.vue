@@ -167,14 +167,6 @@
         return listeners
       })
 
-      //// TRANSITION ////
-      const transitionName = computed(() => {
-        if (props.transition) {
-          return props.transition
-        }
-        return state.isActive ? 'scale-transition' : 'fade-transition'
-      })
-
       onMounted(() => {
         context.root.$nextTick(() => {
           attachToParent(context.refs.activator)
@@ -188,7 +180,6 @@
         props,
         state,
         activator,
-        transitionName,
         activatorListeners,
         showSpeechBubble,
         speechBubbleClass,
