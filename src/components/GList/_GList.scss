@@ -16,6 +16,9 @@
 
     &:hover {
       background-color: rgba(211, 211, 211, 0.41);
+      .g-divider{
+        display: none;
+      }
     }
     &:focus {
       background-color: rgba(211, 211, 211, 0.46);
@@ -24,8 +27,9 @@
     &__active{
       background-color: rgb(226, 236, 248);
       color: rgb(24, 103, 192);
-      &:hover{
+      &:hover, &:focus{
         background-color: rgb(226, 236, 248);
+        color: rgb(24, 103, 192);
       }
     }
     &-icon {
@@ -158,16 +162,20 @@
   }
 
   &__rounded {
-    .g-list-item {
+    .g-list-item{
       padding: 0 16px;
-      &:hover, &:focus{
+      &:hover, &:focus {
         border-radius: 9999px;
       }
       &__active{
         border-radius: 9999px;
-        background-color: rgba(60, 211, 255, 0.53);
+        background-color: rgb(226, 236, 248);
       }
     }
+    .g-divider{
+      margin: 0 30px 0;
+    }
+
   }
 
   &__dense {
@@ -267,4 +275,7 @@
       margin-right: 8px;
     }
   }
+}
+.border {
+  border: 2px dashed orange;
 }
