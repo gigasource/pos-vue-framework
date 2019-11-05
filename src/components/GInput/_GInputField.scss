@@ -358,12 +358,8 @@ input[type=text] {
     background-color: transparent;
   }
 
-  .g-tf-prepend__inner.g-tf-icon__active ~ .g-tf-label {
-    left: calc(4% + 8px);
-  }
-
-  .g-tf-prepend__inner.g-tf-icon__active ~ .g-tf-label__active {
-    left: 0;
+  &:not(.g-tf__rounded) .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
+    left: -28px;
   }
 
   &:focus-within .g-tf-prepend__inner.g-tf-icon__active ~ .g-tf-label {
@@ -454,6 +450,14 @@ input[type=text] {
     left: 12px;
   }
 
+  &.g-tf__outlined .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
+    left: -12px;
+  }
+
+  &.g-tf__outlined .g-tf-prepend__inner ~ .g-tf-affix ~ .inputGroup .g-tf-label__active {
+    left: -16px;
+  }
+
   &.g-tf__solo .g-tf-prepend__outer.g-tf-icon__active ~ .g-tf-hint,
   &.g-tf__outlined .g-tf-prepend__outer.g-tf-icon__active ~ .g-tf-hint,
   &.g-tf__filled .g-tf-prepend__outer.g-tf-icon__active ~ .g-tf-hint {
@@ -528,6 +532,14 @@ input[type=text] {
 
   &.g-tf__filled .g-tf-affix ~ .inputGroup .g-tf-label {
     left: 12px;
+  }
+
+  &.g-tf__outlined .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
+    left: -16px;
+  }
+
+  &.g-tf__outlined .g-tf-prepend__inner ~ .g-tf-affix ~ .inputGroup .g-tf-label__active {
+    left: -24px;
   }
 
   &.g-tf__solo .g-tf-prepend__outer.g-tf-icon__active ~ .g-tf-hint,
