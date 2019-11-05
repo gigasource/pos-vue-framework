@@ -140,8 +140,10 @@ export function getInternalValue(props, context) {
 }
 
 
-export function createRange (length) {
-  return Array.from({ length }, (v, k) => k)
+export function createRange (length, mapFn) {
+  const range = [...Array(length).key]
+  if (mapFn) return range.map(mapFn)
+  else return range
 }
 
 export function kebabCase (str) {
