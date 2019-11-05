@@ -56,6 +56,14 @@
             rowGap: 2,
           }
         }],
+        //
+        hovering: false,
+        hoveringArea: {
+          rowStart: -1,
+          columnStart: -1,
+          rowEnd: -1,
+          columnEnd: -1
+        },
         // a value hold the selecting grid/sub-grid
         selectedGrid: 'app',
         // a value indicate whether a confirm dialog will be shown or not
@@ -166,17 +174,35 @@
             gridItems.push(<div
                 class='g-grid-generator__editor__field__item'
                 style='border: 1px solid #666'
-                vOn:mousedown={() => selectingArea = { rowStart: i, columnStart: j }}
+                vOn:mousedown={() => {
+                  selectingArea = { rowStart: i, columnStart: j }
+                  state.hovering = true
+                  state.hoveringArea = { rowStart: i, columnStart: j, rowEnd: i, columnEnd: j }
+                }}
                 vOn:mouseup={() => {
                   selectingArea = { ...selectingArea, rowEnd: i, columnEnd: j }
+                  state.hovering = false
                   state.showConfirmDialog = true
-                }}></div>)
+                }}
+                vOn:mouseenter={() => {
+                  if (state.hovering) {
+                    const rowStart = Math.min(selectingArea.rowStart, i) + 1
+                    const rowEnd = Math.max(selectingArea.rowStart, i) + 2
+                    const columnStart = Math.min(selectingArea.columnStart, j) + 1
+                    const columnEnd = Math.max(selectingArea.columnStart, j) + 2
+                    state.hoveringArea = { rowStart, rowEnd, columnStart, columnEnd }
+                  }
+                }}
+            ></div>)
           }
         }
 
         return ([
           <div style={gridContainerStyles}>{gridItems}</div>,
-          <div style={selectedAreaContainerStyle}>{renderGridAreas(grid)}</div>
+          <div style={selectedAreaContainerStyle}>
+            {renderGridAreas(grid)}
+            {renderHoveringArea()}
+          </div>
         ])
       }
 
@@ -188,6 +214,15 @@
               'grid-area': getGridAreaCss(gridItem)
             }}></div>
         )
+      }
+
+      function renderHoveringArea() {
+        console.log(getGridAreaCss({ area: state.hoveringArea }))
+
+        return state.hovering ?  <div style={{
+          border: '3px dashed #000',
+          'grid-area': getGridAreaCss({ area: state.hoveringArea })
+        }}></div> : null
       }
 
       function renderGridField(grid) {
@@ -327,8 +362,6 @@
         let id = _.findIndex(state.grids, item => item.name === gridItem.name)
         state.grids.splice(id, 1)
       }
-
-
       const listItemStyle = {
         display: 'flex',
         padding: '5px',
