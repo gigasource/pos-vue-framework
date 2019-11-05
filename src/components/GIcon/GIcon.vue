@@ -48,7 +48,7 @@
       const icon = ref('')
 
       function getIcon() {
-        icon.value = context.slots.default()[0].text.trim()
+        icon.value = context.slots.default ? context.slots.default()[0].text.trim() : ''
       }
 
       onMounted(() => getIcon())
