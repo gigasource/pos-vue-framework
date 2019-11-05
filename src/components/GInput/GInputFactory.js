@@ -1,5 +1,5 @@
 export function getLabel(props, internalValue, isValidInput, isFocused,
-                         labelActiveClass = 'g-tf--label__active'){
+                         labelActiveClass = 'g-tf-label__active'){
   //Activate label
   const isDirty = computed(() => !!internalValue.value)
   const isLabelActive = computed(() => {
@@ -7,10 +7,10 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
   })
   const labelClasses = computed(() => {
     return{
-      'g-tf--label__disabled': props.disabled,
-      'g-tf--label__readOnly': props.readOnly,
-      'g-tf--label__active': isLabelActive.value,
-      'g-tf--label__error': !isValidInput.value
+      'g-tf-label__disabled': props.disabled,
+      'g-tf-label__readOnly': props.readOnly,
+      'g-tf-label__active': isLabelActive.value,
+      'g-tf-label__error': !isValidInput.value
     }
   }
   )
@@ -23,17 +23,17 @@ export function getLabel(props, internalValue, isValidInput, isFocused,
     if(isLabelActive.value && prefixWidth.value){
       if(props.outlined){
         if(props.filled){
-          return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }
+          return{ 'transform': `translateY(-30px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)` }
         }
         else{
-          return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` }
+          return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)` }
         }
       }
       else if(props.filled){
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)` }
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)` }
       }
       else{
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +7}px)  scale(0.75)` }
+        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)` }
       }
     }
   })
