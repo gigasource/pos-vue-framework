@@ -66,7 +66,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import './_variables';
 
   // Block
@@ -109,7 +109,7 @@
     }
   }
 
-  .g-breadcrumbs-divider {
+  ::v-deep.g-breadcrumbs-divider {
     color: rgba(0, 0, 0, 0.38);
   }
 

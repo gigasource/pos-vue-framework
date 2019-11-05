@@ -35,6 +35,18 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .g-breadcrumbs-item {
+    color: #1976d2;
+    align-items: center;
+    display: inline-flex;
+    text-decoration: none;
+    transition: 0.5s cubic-bezier(0.25, 0.8, 0.5, 1);
 
+  &__disabled {
+     pointer-events: none;
+     color: rgba(0, 0, 0, 0.38);
+
+   }
+  }
 </style>

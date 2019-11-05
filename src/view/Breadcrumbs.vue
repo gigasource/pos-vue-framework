@@ -9,6 +9,7 @@
 <!--        <g-breadcrumbs-item-->
 <!--            :class="[props.item.disabled && 'disabled']"-->
 <!--            :href="props.item.href"-->
+<!--            :disabled="props.item.disabled"-->
 <!--        >-->
 <!--          {{ props.item.text.toUpperCase() }}-->
 <!--        </g-breadcrumbs-item>-->
