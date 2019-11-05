@@ -81,33 +81,34 @@ export const listView = () => ({
 export const treeView = () => ({
   components: { GSideBarTreeView, GSidebar },
   setup(props, context) {
-    function getItemText(node) {
-      return node.subheader || node.title
-    }
-
-    function getItemChildren(node) {
-      return node.items
-    }
-
     const data = ref([
       {
-        title: 'Dashboard', icon: 'settings_input_svideo',
+        title: 'Dashboard', icon: 'settings_input_svideo', badge: '3', badgeColor: 'orange',
         items: [
-          { title: 'Modern', icon: 'radio_button_unchecked' },
-          { title: 'eCommerce', icon: 'radio_button_unchecked' },
-          { title: 'Analytics', icon: 'radio_button_unchecked' }
+          { title: 'Modern', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'eCommerce', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Analytics', icon: 'radio_button_unchecked', iconType: 'small' }
         ]
       },
       {
         title: 'Template', icon: 'dvr',
         items: [
-          { title: 'Vertical', icon: 'radio_button_unchecked' },
-          { title: 'Horizontal', icon: 'radio_button_unchecked' },
+          { title: 'Vertical', icon: 'radio_button_unchecked', iconType: 'small',
+            items: [
+              { title: 'Modern Menu', icon: 'radio_button_unchecked', iconType: 'small'},
+              { title: 'Navbar Dark', icon: 'radio_button_unchecked', iconType: 'small'},
+              { title: 'Gradient Menu', icon: 'radio_button_unchecked', iconType: 'small'},
+              { title: 'Dark Menu', icon: 'radio_button_unchecked', iconType: 'small'},
+            ]},
+          { title: 'Horizontal', icon: 'radio_button_unchecked', iconType: 'small',
+            items: [
+              { title: 'Horizontal Menu', icon: 'radio_button_unchecked', iconType: 'small'},
+            ]},
         ]
       },
       { type: 'divider' },
       { subheader: 'APPLICATIONS', type: 'subheader' },
-      { title: 'Mail', icon: 'mail_outline' },
+      { title: 'Mail', icon: 'mail_outline', badge: '5 new', badgeColor: 'pink accent 2' },
       { title: 'Chat', icon: 'chat_bubble_outline' },
       { title: 'ToDo', icon: 'check' },
       { title: 'Contacts', icon: 'import_contacts' },
@@ -115,9 +116,9 @@ export const treeView = () => ({
       {
         title: 'eCommerce', icon: 'add_shopping_cart',
         items: [
-          { title: 'Products Page', icon: 'radio_button_unchecked' },
-          { title: 'Pricing', icon: 'radio_button_unchecked' },
-          { title: 'Invoice', icon: 'radio_button_unchecked' },
+          { title: 'Products Page', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Pricing', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Invoice', icon: 'radio_button_unchecked', iconType: 'small' },
         ]
       },
       { type: 'divider' },
@@ -125,52 +126,39 @@ export const treeView = () => ({
       {
         title: 'Pages', icon: 'content_paste',
         items: [
-          { title: 'Contact', icon: 'radio_button_unchecked' },
-          { title: 'Blog', icon: 'radio_button_unchecked' },
-          { title: 'Search', icon: 'radio_button_unchecked' },
-          { title: 'Knowledge', icon: 'radio_button_unchecked' },
-          { title: 'FAQs', icon: 'radio_button_unchecked' },
-          { title: 'Page Blank', icon: 'radio_button_unchecked' },
+          { title: 'Contact', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Blog', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Search', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Knowledge', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'FAQs', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Page Blank', icon: 'radio_button_unchecked', iconType: 'small' },
         ]
       },
       {
         title: 'Medias', icon: 'crop_original',
         items: [
-          { title: 'Gallery Page', icon: 'radio_button_unchecked' },
-          { title: 'Media Hover Effects', icon: 'radio_button_unchecked' },
+          { title: 'Gallery Page', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Media Hover Effects', icon: 'radio_button_unchecked', iconType: 'small' },
         ]
       },
       {
-        title: 'User', icon: 'face',
+        title: 'User', icon: 'face', badge: '10', badgeColor: 'purple',
         items: [
-          { title: 'User Profile', icon: 'radio_button_unchecked' },
-          { title: 'Login', icon: 'radio_button_unchecked' },
-          { title: 'Register', icon: 'radio_button_unchecked' },
-          { title: 'Forgot Password', icon: 'radio_button_unchecked' },
-          { title: 'Lock Screen', icon: 'radio_button_unchecked' },
+          { title: 'User Profile', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Login', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Register', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Forgot Password', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Lock Screen', icon: 'radio_button_unchecked', iconType: 'small' },
         ]
       },
       {
         title: 'Misc', icon: 'filter_tilt_shift',
         items: [
-          { title: '404', icon: 'radio_button_unchecked' },
-          { title: 'Page Maintenance', icon: 'radio_button_unchecked' },
-          { title: '500', icon: 'radio_button_unchecked' },
+          { title: '404', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: 'Page Maintenance', icon: 'radio_button_unchecked', iconType: 'small' },
+          { title: '500', icon: 'radio_button_unchecked', iconType: 'small' },
         ]
       },
-      { type: 'divider' },
-      { subheader: 'Three Level', type: 'subheader' },
-      {
-        title: 'Level 1', icon: 'menu',
-        items: [
-          {
-            title: 'Level 2', icon: 'radio_button_unchecked',
-            items: [
-              { title: 'Level 3', icon: 'radio_button_unchecked' }
-            ]
-          }
-        ]
-      }
     ])
 
     let state = reactive({

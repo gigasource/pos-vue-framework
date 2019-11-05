@@ -32,6 +32,7 @@
       textColor: String,
       backgroundColor: String,
       gradient: String,
+      gradientAngle: String,
       activeClass: {
         type: String,
         default: 'g-chip__active'
@@ -90,11 +91,11 @@
 
       function genChip() {
         if (props.ripple) {
-          return <span v-ripple draggable={props.draggable} style={styles} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+          return <span v-ripple draggable={props.draggable} style={styles.value} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
             {genContent()}
           </span>
         }
-        return <span draggable={props.draggable} style={styles} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+        return <span draggable={props.draggable} style={styles.value} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
           {genContent()}
         </span>
       }
