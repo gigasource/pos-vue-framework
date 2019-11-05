@@ -20,8 +20,13 @@ export const DefaultChip = () => ({
     small: { default: boolean('small', false) },
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
+    closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
+    filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
+    backgroundColor: {type: String, default: text('backgroundColor', '') },
+    textColor: {type: String, default: text('textColor', 'white') },
+
   },
-  template: `<g-chip x-large :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">{{text}}</g-chip>`,
+  template: `<g-chip x-large :disabled="disabled" :x-small="xSmall" :small="small" :text-color="textColor" :background-color="backgroundColor" :filter-icon="filterIcon" :large="large" :closeIcon="closeIcon" :x-large="xLarge" :close="close">{{text}}</g-chip>`,
 });
 
 export const OutlinedChip = () => ({
@@ -36,8 +41,12 @@ export const OutlinedChip = () => ({
     small: { default: boolean('small', false) },
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
+    closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
+    filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
+    textColor: {type: String, default: text('textColor', '#faa530') },
+
   },
-  template: `<g-chip outlined :filter="filter" :active="active"  :disabled="disabled" :close="close" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-chip>`,
+  template: `<g-chip outlined :filter="filter" :active="active" :filter-icon="filterIcon" :text-color="textColor" :disabled="disabled" :closeIcon="closeIcon" :close="close" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-chip>`,
 });
 
 export const LabelChip = () => ({
@@ -53,8 +62,12 @@ export const LabelChip = () => ({
     small: { default: boolean('small', false) },
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
+    closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
+    filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
+    backgroundColor: {type: String, default: text('backgroundColor', 'bg-brown') },
+    textColor: {type: String, default: text('textColor', '#ffffff') },
   },
-  template: `<g-chip :label="label" :filter="filter" x-large :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">
+  template: `<g-chip :label="label" :filter="filter" x-large :disabled="disabled" :text-color="textColor" :background-color="backgroundColor" :filter-icon="filterIcon" :closeIcon="closeIcon" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">
                 <g-avatar class="g-avatar__left" v-if="showImg">
                  <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"> </g-img>
                 </g-avatar>   
@@ -80,8 +93,12 @@ export const PillChip = () => ({
     small: { type: Boolean, default: boolean('small', false) },
     large: { type: Boolean, default: boolean('large', false) },
     xLarge: { type: Boolean, default: boolean('xLarge', false) },
+    closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
+    filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
+    backgroundColor: {type: String, default: text('backgroundColor', 'bg-green') },
+    textColor: {type: String, default: text('textColor', '#ffffff') },
   },
-  template: `<g-chip x-large :ripple="ripple" :close="close" :pill="pill" :filter="filter" :active="active" :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
+  template: `<g-chip x-large :ripple="ripple" :close="close" :pill="pill" :background-color="backgroundColor" :text-color="textColor" :closeIcon="closeIcon" :filter-icon="filterIcon" :filter="filter" :active="active" :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
                 <g-avatar class="g-avatar__left" v-if="showImg">
                  <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"> </g-img>
                 </g-avatar>       
@@ -104,8 +121,14 @@ export const AvatarChip = () => ({
     small: { default: boolean('small', false) },
     large: { default: boolean('large', false) },
     xLarge: { default: boolean('xLarge', false) },
+    closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
+    filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
+    backgroundColor: {type: String, default: text('backgroundColor', '') },
+    textColor: {type: String, default: text('textColor', '#ffffff') },
+    gradient: {type: String, default: text('gradient', 'red, yellow, green, blue') },
+    gradientAngle: {type: String, default: text('gradientAngle', '45deg') },
   },
-  template: `<g-chip x-large :ripple="ripple" :close="close" :filter="filter" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
+  template: `<g-chip x-large :gradient="gradient" :gradientAngle="gradientAngle" :ripple="ripple" :close="close" :filter="filter" :text-color="textColor" :background-color="backgroundColor" :filterIcon="filterIcon" :closeIcon="closeIcon" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">
                <g-avatar class="g-avatar__left">
                  <g-img src="https://image.cnbcfm.com/api/v1/image/105778430-1551897565882microsoftfounderbillgatesspeaking.jpg?v=1571848897&w=1400&h=950"> </g-img>
                </g-avatar>    

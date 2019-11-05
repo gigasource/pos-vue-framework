@@ -18,7 +18,7 @@
         backgroundColor: String,
         flat: Boolean,
         hover: Boolean,
-        color: String,
+        textColor: String,
         tile: Boolean,
       },
       //styles
