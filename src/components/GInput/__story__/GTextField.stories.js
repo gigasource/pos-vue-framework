@@ -44,7 +44,7 @@ export const TextFieldPlayGround = () => ({
     type: { default: text('type', 'text') },
     prependIcon: { default: text('prepend Icon', 'person') },
     appendIcon: { default: text('append Icon', 'mdi-bike') },
-    prependInnerIcon: { default: text('prepend Inner Icon', '') },
+    prependInnerIcon: { default: text('prepend Inner Icon', 'mdi-glasses') },
     appendInnerIcon: { default: text('append Inner Icon', 'mdi-ninja') },
   },
   template: `<g-text-field :label="label"
@@ -125,25 +125,35 @@ export const TextFieldDense = () => ({
         <g-row
           class="bg-grey-lighten-5">
           <g-col>
-            <g-text-field label="label" placeholder="placeholder" dense/>
+            <g-text-field label="Normal" placeholder="placeholder" />
           </g-col>
           <g-col>
-            <g-text-field label="label" placeholder="placeholder" dense filled/>
+            <g-text-field label="Dense" placeholder="placeholder" dense/>
+          </g-col>
+        </g-row>
+        <g-row>
+          <g-col>
+            <g-text-field label="Normal" placeholder="placeholder" filled/>
           </g-col>
           <g-col>
-            <g-text-field label="label" placeholder="placeholder" dense filled rounded/>
+            <g-text-field label="Dense" placeholder="placeholder" dense filled/>
           </g-col>
         </g-row>
         <g-row
           class="bg-grey-lighten-5">
           <g-col>
-            <g-text-field label="label" placeholder="placeholder" dense solo/>
+            <g-text-field label="Normal" placeholder="placeholder"  solo/>
           </g-col>
           <g-col>
-            <g-text-field label="label" dense outlined/>
+            <g-text-field label="Dense" placeholder="placeholder" dense solo/>
+          </g-col>
+        </g-row>
+        <g-row>
+          <g-col>
+            <g-text-field label="Normal" outlined/>
           </g-col>
           <g-col>
-            <g-text-field label="label" placeholder="placeholder" dense outlined/>
+            <g-text-field label="Dense" placeholder="placeholder" dense outlined/>
           </g-col>
         </g-row>
       </g-container>
@@ -205,19 +215,19 @@ export const TextFieldClearable = () => ({
         <g-row
           class="bg-grey-lighten-5">
           <g-col>
-            <g-text-field label="prepend outer" clearable value="Blahblah"/>
+            <g-text-field label="Clearable" clearable value="Blahblah"/>
           </g-col>
           <g-col>
-            <g-text-field solo label="prepend outer" clearable value="Blahblah"/>
+            <g-text-field solo label="Clearable" clearable value="Blahblah"/>
           </g-col>
         </g-row>
         <g-row
           class="bg-grey-lighten-5">
           <g-col>
-            <g-text-field filled label="prepend outer" clearable value="Blahblah"/>
+            <g-text-field filled label="Clearable" clearable value="Blahblah"/>
           </g-col>
           <g-col>
-            <g-text-field outlined label="prepend outer" clearable value="Blahblah"/>
+            <g-text-field outlined label="Clearable" clearable value="Blahblah"/>
           </g-col>
         </g-row>
 
@@ -235,18 +245,26 @@ export const TextFieldStyles = () => ({
         <g-row
           class="bg-grey-lighten-5">
           <g-col>
-            Solo
-            <g-text-field label="Roses" solo value="Blahblah"/>
+            Regular
+            <g-text-field label="Regular"  value="Blahblah"/>
           </g-col>
           <g-col>
+            Solo
+            <g-text-field label="Solo" solo value="Blahblah"/>
+          </g-col>
+        </g-row>
+        <g-row>
+          <g-col>
             Filled
-            <g-text-field label="Roses" filled value="Blahblah"/>
+            <g-text-field label="Filled" filled value="Blahblah"/>
           </g-col>
           <g-col>
             Outlined
-            <g-text-field label="Roses" outlined value="Blahblah"/>
+            <g-text-field label="Outlined" outlined value="Blahblah"/>
           </g-col>
         </g-row>
+
+
       </g-container>
     )
   },
@@ -338,6 +356,7 @@ export const TextFieldHint = () => ({
 export const TextFieldPrefixAndSuffix = () => ({
   components: { GTextField, GIcon },
   props: {
+    label:{ default: text('label', 'Label') },
     filled: { default: boolean('filled', false) },
     solo: { default: boolean('solo', false) },
     outlined: { default: boolean('outlined', false) },
@@ -347,7 +366,7 @@ export const TextFieldPrefixAndSuffix = () => ({
     prefix: { default: text('prefix', '$') },
     suffix: { default: text('suffix', ':)') },
   },
-  template: `<g-text-field label="Hint"
+  template: `<g-text-field :label="label"
                            :filled="filled"
                            :solo="solo"
                            :outlined="outlined"
@@ -464,6 +483,7 @@ export const TextFieldValidate = () => ({
     clearable: { default: boolean('clearable', false) },
   },
   template: `<g-text-field :label="label"
+                            prependIcon="person"
                            :clearable="clearable"
                            :filled="filled"
                            :solo="solo"
@@ -471,7 +491,6 @@ export const TextFieldValidate = () => ({
                            :flat="flat"
                            :rounded="rounded"
                            :shaped="shaped"
-                           :append-inner-icon="appendInnerIcon"
                            counter="5"
                            v-model="text1"
                            :rules="[rules.required, rules.counter, rules.max]">

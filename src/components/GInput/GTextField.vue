@@ -2,7 +2,7 @@
 	<div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
 		<div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
 			<slot name="prepend-outer" >
-				<g-icon :color="isLabelActive ? 'blue' : null">{{prependIcon}}</g-icon>
+				<g-icon :color=iconColor>{{prependIcon}}</g-icon>
 			</slot>
 		</div>
 		<fieldset>
@@ -10,7 +10,7 @@
 			<div class='g-tf' :class="tfErrClasses">
 				<div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
 					<slot name="prepend-inner">
-						<g-icon :color="isLabelActive ? 'blue' : null ">{{prependInnerIcon}}</g-icon>
+						<g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
 					</slot>
 				</div>
 				<div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
@@ -35,10 +35,10 @@
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
 					<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
-						<g-icon>{{clearIcon}}</g-icon>
+						<g-icon :color=iconColor>{{clearIcon}}</g-icon>
 					</div>
 					<slot name="append-inner">
-						<g-icon :color="isLabelActive ? 'blue' : null ">{{appendInnerIcon}}</g-icon>
+						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
 				<div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
@@ -46,9 +46,9 @@
 				<div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
 			</div>
 		</fieldset>
-		<div class="g-tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
+		<div class="g-tf-append__outer" @click="onClickAppendOuter">
 			<slot name="append-outer">
-				<g-icon :color="isLabelActive ? 'blue' : null ">{{appendIcon}}</g-icon>
+				<g-icon :color=iconColor>{{appendIcon}}</g-icon>
 			</slot>
 		</div>
 
@@ -166,6 +166,12 @@
 				} else
 				  return {}
 			});
+			const iconColor = computed(() => {
+			  if(isLabelActive.value) {
+          if (!isValidInput.value) return 'red'
+			    return 'rgb(24, 103, 192)'
+			  }
+			})
 
 
       return {
@@ -202,6 +208,7 @@
 				prefixRef,
         tfErrWrapperClass,
         legendStyles,
+				iconColor,
       }
     }
   }
