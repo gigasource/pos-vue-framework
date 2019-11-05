@@ -1,12 +1,17 @@
 <script>
   import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
-  import {ref, computed} from '@vue/composition-api';
+  import {ref, computed, watch} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputField';
+  import {isEqual} from 'lodash';
 
   export default {
     name: "GFileInputJSX",
     components: {GChip, GIcon},
+    model: {
+      prop: 'value',
+      event: 'change',
+    },
     props: {
       //display props
       ...{
@@ -43,7 +48,12 @@
       validateOnBlur: Boolean,
       error: Boolean,
       //basic props
-      value: String,
+      value: {
+        default: () => [],
+        validator: val => {
+          return typeof val === 'object' || Array.isArray(val)
+        },
+      },
       type: {
         type: String,
         default: 'file',
@@ -93,14 +103,6 @@
         return Math.round(size * 1000) / 1000 + unit
       }
 
-      // function totalFileSize(files) {
-      //   if (!isDirty.value) return 0
-      //
-      //   let size = 0
-      //   for (let file of files)
-      //     size = size + file.size
-      //   return size
-      // }
       const totalFileSize = computed(() => {
         if (!isDirty.value) return convertFileSize(0)
         let size = 0
@@ -109,10 +111,23 @@
         return convertFileSize(size)
       })
 
+      function configFileName(fileName) {
+        return fileName.length > props.truncateLength
+            ? fileName.slice(0, Math.floor(props.truncateLength / 2 - 1)) + '...' + fileName.slice(-Math.floor((props.truncateLength - 1) / 2 - 1))
+            : fileName
+      }
+
       const fileName = computed(() => {
-        if (files.value.length === 0) return ''
-        if (files.value.length === 1) return files.value[0].name
-        if (files.value.length > 1) return files.value.length + ' files'
+        if (!(props.chips || props.smallChips)) {
+          if (files.value.length === 0) return ''
+          if (files.value.length === 1) return configFileName(files.value[0].name)
+          if (files.value.length > 1) return files.value.length + ' files'
+        } else {
+          let filesName = []
+          for (let file of files.value)
+            filesName.push(configFileName(file.name))
+          return filesName
+        }
       })
 
       const fileNumber = computed(() => {
@@ -126,21 +141,27 @@
       } = getLabel(props, internalValue, isValidInput, isFocused, 'g-tf--label__active', {'color': 'red'})
 
       function genFiles() {
-        return <slot name="selection">
-          {(props.chips || props.smallChips) ?
-              Array.from(files.value).map(file => (
-                  <g-chip small={props.smallChips}>
-                    {file.name}
-                    {props.showSize ? `(${convertFileSize(file.size)})` : ''}
-                  </g-chip>))
-              : (<div>{fileName.value}{props.showSize ? ` (${totalFileSize.value})` : ''}</div>)
-          }
-        </slot>
+        return (props.chips || props.smallChips) ?
+            Array.from(files.value).map((file, index) => (
+                <g-chip small={props.smallChips}>
+                  {fileName.value[index]}
+                  {props.showSize ? ` (${convertFileSize(file.size)})` : ''}
+                  <g-icon xSmall vOn:click={() => selfDelete()}>mdi-close</g-icon>
+                </g-chip>))
+            : (<div>{fileName.value}{props.showSize ? ` (${totalFileSize.value})` : ''}</div>)
+      }
+
+      function genSelection() {
+        // return Array.from(files.value).forEach()
+        return files.value.forEach((file, index) => {
+          return context.slots['selection'](fileName.value[index])
+        })
       }
 
       function genFileInput() {
         return <div class="g-file-input--text">
-          {isDirty.value ? genFiles() : (<slot>{props.placeholder}</slot>)}
+          {isDirty.value && genFiles()}
+          {!isDirty.value && (<slot>{props.placeholder}</slot>)}
         </div>
       }
 

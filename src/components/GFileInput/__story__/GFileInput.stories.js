@@ -1,4 +1,4 @@
-import {boolean, text, withKnobs} from '@storybook/addon-knobs';
+import {boolean, text, number, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
 import GFileInput from '../GFileInputJSX';
 import GIcon from '../../GIcon/GIcon';
@@ -23,6 +23,7 @@ export const mainFeatureFileInput = () => ({
     counter: {default: boolean('counter', false)},
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
+    truncateLength: {default: number('truncate length', 22)},
   },
   template: `<g-file-input :multiple="multiple"
                            :accept="accept"
@@ -30,7 +31,35 @@ export const mainFeatureFileInput = () => ({
                            :counter="counter"
                            :chips="chips"
                            :smallChips="smallChips"
+                           :truncate-length="truncateLength"
                            />`,
+});
+
+export const selectionSlot = () => ({
+  components: {GFileInput, GIcon, GChip},
+  data: () => ({
+    files: [],
+  }),
+  props: {
+    multiple: {default: boolean('multiple', false)},
+    accept: {default: text('accept', '')},
+    showSize: {default: boolean('show size', false)},
+    counter: {default: boolean('counter', false)},
+    chips: {default: boolean('chips', false)},
+    smallChips: {default: boolean('smallChips', false)},
+
+  },
+  template: `<g-file-input :multiple="multiple"
+                           :accept="accept"
+                           :show-size="showSize"
+                           :counter="counter"
+                           :chips="chips"
+                           :smallChips="smallChips"
+                           v-model="files">
+                           <template v-slot:selection="props">
+                           <g-chip>abc</g-chip>
+</template>   
+             </g-file-input>`,
 });
 
 export const fullFeatureFileInput = () => ({
