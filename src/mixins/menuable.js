@@ -113,13 +113,9 @@ export default function menuable(props, context) {
         offsetTop: activatorElement.offsetTop
       }
     }
-
-    console.log('menuable-update dimensions', dimensions)
-
     //measure content
     sneakPeek(() => {
       dimensions.content = measure(context.refs.content);
-      console.log('sneak peek:', dimensions)
     })
   }
 

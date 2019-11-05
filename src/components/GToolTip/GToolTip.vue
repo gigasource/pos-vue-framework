@@ -1,7 +1,7 @@
 <template>
   <span class="g-tooltip" ref="el">
     <g-tool-tip-content
-        v-if="state.tooltipWillBeRender"
+        v-if="state.lazy"
         :show="state.isActive"
         :activator="activator"
         v-bind="props">
@@ -133,7 +133,7 @@
         // NOTICE: Do not change this prop name because this props has been used a lot places
         isActive: false,
         // Boolean value indicate that whether tooltip content will be rendered or not
-        tooltipWillBeRender: false
+        lazy: false
       })
       const { runDelay } = delayable(props, state)
       const { attachToParent } = detachable(props, context)
@@ -147,8 +147,8 @@
 
         if (props.openOnHover) {
           listeners.mouseenter = () => {
-            if (!state.tooltipWillBeRender)
-              state.tooltipWillBeRender = true
+            if (!state.lazy)
+              state.lazy = true
             runDelay('open')
           }
           listeners.mouseleave = () => {
@@ -156,8 +156,8 @@
           }
         } else {
           listeners.click = () => {
-            if (!state.tooltipWillBeRender)
-              state.tooltipWillBeRender = true
+            if (!state.lazy)
+              state.lazy = true
             state.isActive = !state.isActive
           }
         }
