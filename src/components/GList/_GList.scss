@@ -322,10 +322,12 @@
 }
 
 .g-list__two-line.g-list__shaped ,
-.g-list__two-line.g-list__rounded {
+.g-list__two-line.g-list__rounded,
+.g-list__three-line.g-list__shaped ,
+.g-list__three-line.g-list__rounded {
   .g-divider__inset {
     margin-left: 72px;
-    width: calc(100% - 72px - 24px);
+    width: calc(100% - 72px - 30px);
   }
 }
 
