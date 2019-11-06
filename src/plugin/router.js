@@ -36,8 +36,7 @@ const routes = [
   { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
-  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
-  {path: '/textarea', name: 'Textarea', component: Textarea}
+  {path: '/textarea', name: 'Textarea', component: Textarea},
 ];
 
 const router = new VueRouter({
