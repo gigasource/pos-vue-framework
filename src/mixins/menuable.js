@@ -101,11 +101,11 @@ export default function menuable(props, context) {
     return top
   }
 
-  function updateDimensions() {
+  function updateDimensions(activator) {
     menuableState.pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
     menuableState.pageWidth = document.documentElement.clientWidth
     //measure activator
-    const activatorElement = context.refs.activator;
+    const activatorElement = context.refs.activator || activator;
     if (activatorElement) {
       dimensions.activator = {
         ...measure(activatorElement),

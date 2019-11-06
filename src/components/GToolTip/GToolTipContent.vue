@@ -1,28 +1,32 @@
 <template>
-  <span class="g-tooltip" ref="el">
-    <g-tool-tip-content
-        v-if="state.lazy"
-        :show="state.isActive"
-        :activator="activator"
-        v-bind="props">
-      <slot></slot>
-    </g-tool-tip-content>
-    <div class="g-tooltip__activator" ref="activator">
-      <slot name="activator" v-bind:on="activatorListeners"></slot>
+  <transition :name="transitionName">
+    <div v-show="show"
+         class="g-tooltip__content"
+         :class="tooltipContentClasses"
+         :style="tooltipContentStyle"
+         ref="content"
+         :key="transitionName">
+      <div v-if="showSpeechBubble"
+           :class="speechBubbleClass"
+           :style="speechBubbleStyle">
+        <slot></slot>
+      </div>
+      <slot v-else></slot>
     </div>
-  </span>
+  </transition>
 </template>
 
 <script>
-  import { computed, onMounted, reactive, ref } from '@vue/composition-api'
-  import delayable from '../../mixins/delayable';
+  import { computed, onMounted, onBeforeUnmount } from '@vue/composition-api'
+  import { setBackgroundColor } from '../../mixins/colorable';
+  import { calcTop, calcLeft } from './TopLeftCalculate';
+  import { convertToUnit } from '../../utils/helpers';
+  import menuable from '../../mixins/menuable';
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
-  import GToolTipContent from './GToolTipContent';
 
   export default {
-    name: 'GToolTip',
-    components: { GToolTipContent },
+    name: 'GToolTipContent',
     props: {
       /*position w window*/
       ...{
@@ -125,62 +129,51 @@
           default: 999999
         }
       },
+      // a tooltip activator
+      activator: [Object, HTMLElement],
+      show: Boolean,
     },
     setup(props, context) {
-      // tooltip state
-      const state = reactive({
-        // Boolean value indicate that whether tooltip content will be shown or not
-        // NOTICE: Do not change this prop name because this props has been used a lot places
-        isActive: false,
-        // Boolean value indicate that whether tooltip content will be rendered or not
-        lazy: false
-      })
-      const { runDelay } = delayable(props, state)
-      const { attachToParent } = detachable(props, context)
+      const { attachToRoot, detach } = detachable(props, context)
+      const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
       const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
-      //// ACTIVATOR
-      // This variable will be used by Tooltip content to calculate position
-      const activator = ref(null)
-      const activatorListeners = computed(() => {
-        let listeners = {}
-
-        if (props.openOnHover) {
-          listeners.mouseenter = () => {
-            if (!state.lazy)
-              state.lazy = true
-            runDelay('open')
-          }
-          listeners.mouseleave = () => {
-            runDelay('close')
-          }
-        } else {
-          listeners.click = () => {
-            if (!state.lazy)
-              state.lazy = true
-            state.isActive = !state.isActive
-          }
+      //// TOOLTIP CONTENT ////
+      let colorOutput = computed(() => setBackgroundColor(props.color, {}))
+      const tooltipContentClasses = computed(() => colorOutput.value.class)
+      const tooltipContentStyle = computed(() => {
+        return {
+          ...colorOutput.value.style,
+          top: calcTop(props, dimensions, menuableState, calcYOverFlow),
+          left: calcLeft(props, dimensions, calcXOverflow),
+          maxWidth: convertToUnit(props.maxWidth),
+          minWidth: convertToUnit(props.minWidth),
+          zIndex: props.zIndex,
         }
+      })
 
-        listeners.blur = () => runDelay('close')
-
-        return listeners
+      //// TRANSITION ////
+      const transitionName = computed(() => {
+        if (props.transition) {
+          return props.transition
+        }
+        return props.show ? 'scale-transition' : 'fade-transition'
       })
 
       onMounted(() => {
-        context.root.$nextTick(() => {
-          attachToParent(context.refs.activator)
-          // store activator reference so that this value can be used by tool tip content
-          activator.value = context.refs.activator
-        })
+        attachToRoot()
+        updateDimensions(props.activator)
+      })
+
+      onBeforeUnmount(() => {
+        detach()
       })
 
       // template data
       return {
-        props,
-        state,
-        activator,
-        activatorListeners,
+        tooltipContentClasses,
+        tooltipContentStyle,
+        transitionName,
         showSpeechBubble,
         speechBubbleClass,
         speechBubbleStyle

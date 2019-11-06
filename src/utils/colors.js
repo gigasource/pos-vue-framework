@@ -10,6 +10,10 @@ export function linearGradient(colorArr, angle = 45) {
     return
   }
 
+  if(typeof colorArr === 'string') {
+    colorArr = colorArr.split(',')
+  }
+
   if(!!Number(+angle)) {
     angle = `${Number(angle)}deg`
   }
