@@ -1,5 +1,4 @@
-import { reactive, onMounted, watch } from '@vue/composition-api';
-import { getObjectValueByPath } from '../utils/helpers';
+import { reactive } from '@vue/composition-api';
 
 
 export default function routable(props, context) {
