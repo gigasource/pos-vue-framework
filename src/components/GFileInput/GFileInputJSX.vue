@@ -1,9 +1,8 @@
 <script>
   import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
-  import {ref, computed, watch} from '@vue/composition-api';
+  import {ref, computed} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputField';
-  import {isEqual} from 'lodash';
 
   export default {
     name: "GFileInputJSX",
@@ -36,10 +35,11 @@
           default: true
         },
         hint: String,
+        placeholder: String,
         persistent: Boolean,
         counter: [Number, Boolean, String],
       },
-      //todo check rules and validation props
+      //validator
       rules: Array,
       errorCount: {
         type: Number,
@@ -117,19 +117,17 @@
             : fileName
       }
 
-      const fileName = computed(() => {
-        if (!(props.chips || props.smallChips)) {
-          if (files.value.length === 0) return ''
-          if (files.value.length === 1) return configFileName(files.value[0].name)
-          if (files.value.length > 1) return files.value.length + ' files'
-        } else {
-          let filesName = []
-          for (let file of files.value)
-            filesName.push(configFileName(file.name))
-          return filesName
-        }
+      const fileContent = computed(() => {
+        if (files.value.length === 0) return ''
+        if (files.value.length === 1) return configFileName(files.value[0].name)
+        if (files.value.length > 1) return files.value.length + ' files'
       })
-
+      const fileName = computed(() => {
+        let filesName = []
+        for (let file of files.value)
+          filesName.push(configFileName(file.name))
+        return filesName
+      })
       const fileNumber = computed(() => {
         if (files.value.length <= 1) return files.value.length + ' file'
         if (files.value.length > 1) return files.value.length + ' files'
@@ -143,25 +141,37 @@
       function genFiles() {
         return (props.chips || props.smallChips) ?
             Array.from(files.value).map((file, index) => (
-                <g-chip small={props.smallChips}>
+                <g-chip small={props.smallChips} ref={'chip' + index}>
                   {fileName.value[index]}
                   {props.showSize ? ` (${convertFileSize(file.size)})` : ''}
-                  <g-icon xSmall vOn:click={() => selfDelete()}>mdi-close</g-icon>
                 </g-chip>))
-            : (<div>{fileName.value}{props.showSize ? ` (${totalFileSize.value})` : ''}</div>)
+            : (<div>{fileContent.value}{props.showSize ? ` (${totalFileSize.value})` : ''}</div>)
       }
 
       function genSelection() {
-        // return Array.from(files.value).forEach()
-        return files.value.forEach((file, index) => {
-          return context.slots['selection'](fileName.value[index])
+        const children = []
+
+        files.value.forEach((file, index) => {
+          if (!context.slots.selection) return
+
+          let text = props.showSize ? fileName.value[index] + ` (${convertFileSize(file.size)})` : fileName.value[index]
+          children.push(
+              context.slots.selection({
+                text: text,
+                file,
+                index,
+              })
+          )
         })
+
+        return children
       }
 
       function genFileInput() {
         return <div class="g-file-input--text">
-          {isDirty.value && genFiles()}
-          {!isDirty.value && (<slot>{props.placeholder}</slot>)}
+          {isDirty.value && context.slots.selection && genSelection()}
+          {isDirty.value && !context.slots.selection && genFiles()}
+          {!isDirty.value && (<p style="opacity: 0.5">{props.placeholder}</p>)}
         </div>
       }
 
@@ -175,9 +185,8 @@
                  multiple={props.multiple}
                  accept={props.accept}
                  vModel={internalValue.value}
-                 vOn:focus={(e) => onFocus(e)}
-                 vOn:blur={(e) => onBlur(e)}
-          />
+                 vOn:focus={onFocus}
+                 vOn:blur={onBlur}/>
         </div>
       }
 
@@ -213,7 +222,7 @@
       function genAppendInner() {
         return <div class="g-tf--append__inner">
           {(isDirty.value && props.clearable) && (
-              <div vOn:click_stop={(e) => onClearIconClick(e)}>
+              <div vOn:click_stop={onClearIconClick}>
                 <g-icon style="cursor: pointer">mdi-close</g-icon>
               </div>
           )}
@@ -233,7 +242,7 @@
 
       function genCounter() {
         return <div class={['g-tf--counter', {'g-tf--counter__error': !isValidInput.value}]}
-                    style={!props.counter ? {'display': "none"} : null}>
+                    vShow={props.counter}>
           {`${fileNumber.value} (${totalFileSize.value} in total)`}
         </div>
       }
@@ -290,9 +299,9 @@
 
       function genFileInputComponent() {
         return <div class={wrapperClasses.value}
-                    vOn:click={(e) => onClickWrapper(e)}
-                    vOn:mouseup={(e) => onMouseUp(e)}
-                    vOn:mousedown={(e) => onMouseDown(e)}>
+                    vOn:click={onClickWrapper}
+                    vOn:mouseup={onMouseUp}
+                    vOn:mousedown={onMouseDown}>
           {genPrependOuter()}
           {genFileInputWrapper()}
           {genAppendOuter()}
