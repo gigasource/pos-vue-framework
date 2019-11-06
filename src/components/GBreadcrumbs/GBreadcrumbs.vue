@@ -1,8 +1,7 @@
 <script>
-  import { computed, onMounted, reactive, ref, watch, provide } from '@vue/composition-api';
   import { GBreadcrumbsDivider } from './GBreadcrumbsFunctionalComponent';
   import GBreadcrumbsItem from './GBreadcrumbsItem';
-  import GBreadrcumbsItemUtil from './logic/GBreadrcumbsItemUtil';
+  import GBreadcrumbItemUtil from './logic/GBreadrcumbsItemUtil';
 
 
   export default {
@@ -21,7 +20,7 @@
     },
     setup(props, context) {
 
-      const { breadcrumbClasses } = GBreadrcumbsItemUtil(props, context);
+      const { breadcrumbClasses } = GBreadcrumbItemUtil(props, context);
 
       function genDivider() {
         return <g-breadcrumbs-divider> {context.slots.divider ? context.slots.divider() : props.divider} </g-breadcrumbs-divider>

@@ -37,22 +37,22 @@
         {
           text: 'Selection Control',
           disabled: false,
-          href: 'selection-control',
+          href: '/selection-control',
         },
         {
           text: 'Date Picker',
           disabled: true,
-          href: 'date-picker-demo',
+          href: '/date-picker-demo',
         },
         {
           text: 'Text Area',
           disabled: true,
-          href: 'textarea',
+          href: '/textarea',
         },
         {
           text: 'Pulse',
           disabled: false,
-          href: 'pulse-demo',
+          href: '/pulse-demo',
         },
       ],
       divider: '/',
