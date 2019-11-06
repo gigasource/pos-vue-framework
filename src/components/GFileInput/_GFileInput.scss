@@ -3,25 +3,41 @@
     opacity: 0;
     max-width: 0;
     width: 0;
-    padding: 0  0 12px 0 !important;
-  }
-  label {
-    top: 6px;
+    padding: 0 0 12px 0 !important;
   }
 
-  .inputGroup{
+  label {
+    top: 4px;
+  }
+
+  .inputGroup {
     display: flex;
   }
 
-  .g-tf--append__inner,
-  .g-tf--prepend__inner,
-  .g-tf--append__outer,
-  .g-tf--prepend__outer{
-    align-self: baseline;
-    //padding-top: 8px;
+  .g-tf-append__inner,
+  .g-tf-prepend__inner,
+  .g-tf-append__outer,
+  .g-tf-prepend__outer {
+    align-self: flex-start;
   }
-
 }
+
+.g-tf__filled {
+  .g-tf-append__inner,
+  .g-tf-prepend__inner,
+  .g-tf-append__outer,
+  .g-tf-prepend__outer {
+    padding-top: 5px;
+  }
+}
+
+.g-tf__rounded {
+  .g-tf-append__inner,
+  .g-tf-prepend__inner {
+    align-self: center !important;
+  }
+}
+
 
 .g-file-input .g-file-input--text {
   align-items: center;
@@ -37,6 +53,36 @@
 
   .g-chip {
     margin: 4px;
+  }
+}
+
+.g-tf__filled {
+  .g-tf-label {
+    left: 10px;
+    top: 8px;
+  }
+
+  .g-tf-input:focus + .g-tf-label,
+  .g-tf-input:placeholder-shown + .g-tf-label .g-tf-label__disabled, .g-tf-label__readOnly {
+    transform: translateY(-12px) scale(0.75);
+    color: rgba(0, 0, 0, 0.54);
+
+    &.g-tf-label__active {
+      color: #1867c0;
+    }
+  }
+
+  .g-tf-label__active {
+    transform: translateY(-12px) scale(0.75);
+    background-color: transparent;
+    color: #1867c0;
+  }
+}
+
+.g-tf__outlined {
+  .g-tf-label__active {
+    transform: translateY(-20px) translateX(6px) scale(0.75);
+    background-color: transparent;
   }
 }
 

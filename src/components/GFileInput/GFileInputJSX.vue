@@ -2,7 +2,7 @@
   import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
   import {ref, computed} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputField';
+  import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputFactory';
 
   export default {
     name: "GFileInputJSX",
@@ -136,7 +136,7 @@
       //genFileInputGroup
       const {
         labelClasses, labelStyles, isLabelActive, prefixRef
-      } = getLabel(props, internalValue, isValidInput, isFocused, 'g-tf--label__active', {'color': 'red'})
+      } = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active', {'color': 'red'})
 
       function genFiles() {
         return (props.chips || props.smallChips) ?
@@ -177,10 +177,10 @@
 
       function genInputGroup() {
         return <div class="inputGroup">
-          <label class={['g-tf--label', labelClasses.value]} style={labelStyles.value} for="input">{props.label}</label>
+          <label vShow={!(props.chips||props.smallChips)} class={['g-tf-label', labelClasses.value]} style={labelStyles.value} for="input">{props.label}</label>
           {genFileInput()}
           <input id="input" ref="input"
-                 class="g-tf--input"
+                 class="g-tf-input"
                  type={props.type}
                  multiple={props.multiple}
                  accept={props.accept}
@@ -206,21 +206,21 @@
       }))
 
       function genPrependInner() {
-        return <div class="g-tf--prepend__inner">
+        return <div class="g-tf-prepend__inner">
           <g-icon>{props.prependInnerIcon}</g-icon>
         </div>
       }
 
       function genPrefix() {
-        return <div class="g-tf--affix" ref={prefixRef}>{props.prefix}</div>
+        return <div class="g-tf-affix" ref={prefixRef}>{props.prefix}</div>
       }
 
       function genSuffix() {
-        return <div class="g-tf--affix">{props.suffix}</div>
+        return <div class="g-tf-affix">{props.suffix}</div>
       }
 
       function genAppendInner() {
-        return <div class="g-tf--append__inner">
+        return <div class="g-tf-append__inner">
           {(isDirty.value && props.clearable) && (
               <div vOn:click_stop={onClearIconClick}>
                 <g-icon style="cursor: pointer">mdi-close</g-icon>
@@ -231,17 +231,17 @@
       } // todo remake icon div after g-icon is fixed
 
       function genErrorMessages() {
-        return <div class="g-tf__error">{errorMessages.value}</div>
+        return <div class="g-tf-error" style="">{errorMessages.value}</div>
       }
 
-      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf--hint__active': true} : {})
+      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
 
       function genHint() {
-        return <div class={['g-tf--hint', hintClasses.value]}>{props.hint}</div>
+        return <div class={['g-tf-hint', hintClasses.value]}>{props.hint}</div>
       }
 
       function genCounter() {
-        return <div class={['g-tf--counter', {'g-tf--counter__error': !isValidInput.value}]}
+        return <div class={['g-tf-counter', {'g-tf-counter__error': !isValidInput.value}]}
                     vShow={props.counter}>
           {`${fileNumber.value} (${totalFileSize.value} in total)`}
         </div>
@@ -264,7 +264,7 @@
 
       //genFileInputComponent
       const wrapperClasses = computed(() => {
-        const isDisabled = props.disabled ? {'g-tf--wrapper__disabled': true} : {
+        const isDisabled = props.disabled ? {'g-tf-wrapper__disabled': true} : {
           'g-tf__filled': props.filled,
           'g-tf__outlined': props.outlined,
           'g-tf__solo': props.solo,
@@ -273,21 +273,21 @@
           'g-tf__flat': props.flat,
         }
         return {
-          'g-tf--wrapper': true,
-          'g-tf--wrapper__error': !isValidInput.value,
+          'g-tf-wrapper': true,
+          'g-tf-wrapper__error': !isValidInput.value,
           'g-file-input': true,
           ...isDisabled,
         }
       })
 
       function genPrependOuter() {
-        return <div class="g-tf--prepend__outer" ref="prependRef">
+        return <div class="g-tf-prepend__outer" ref="prependRef">
           <g-icon>{props.prependIcon}</g-icon>
         </div>
       }
 
       function genAppendOuter() {
-        return <div class="g-tf--append__outer" ref="appendOuter">
+        return <div class="g-tf-append__outer" ref="appendOuter">
           <g-icon>{props.appendOuterIcon}</g-icon>
         </div>
       }
@@ -297,6 +297,7 @@
         context.refs.input.click()
       }
 
+      console.log(props.value)
       function genFileInputComponent() {
         return <div class={wrapperClasses.value}
                     vOn:click={onClickWrapper}
