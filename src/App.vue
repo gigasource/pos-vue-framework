@@ -18,7 +18,6 @@
 			<router-link to="/expansion-panel-demo">Expansion Panel</router-link>
 			<router-link to="/chip-group">Chip Group</router-link>
 			<router-link to="/textarea">Textarea</router-link>
-			<router-link to="/test-breadcrumbs">Breadcrumbs</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

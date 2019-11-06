@@ -1,17 +1,6 @@
 import { computed } from '@vue/composition-api';
 
 export default (props, context) => {
-  const breadcrumbsItemClasses = computed(() => {
-    return {
-      'g-breadcrumbs-item': true,
-      [props.activeClass]: props.disabled,
-    }
-  });
-
-  const breadcrumbsItemStyles = computed(() => {
-
-  });
-
   const breadcrumbClasses = computed(() => {
     return {
       'g-breadcrumbs': true,
@@ -24,8 +13,6 @@ export default (props, context) => {
 
 
   return {
-    breadcrumbsItemClasses,
-    breadcrumbsItemStyles,
     breadcrumbClasses,
     breadcrumbStyles
   }

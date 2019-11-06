@@ -2,9 +2,15 @@ import { reactive, onMounted, watch } from '@vue/composition-api';
 import { getObjectValueByPath } from '../utils/helpers';
 
 
-export default function routable(props, context, data) {
+export default function routable(props, context) {
   let exact = props.exact;
   let tag;
+
+  let data = reactive({
+    isActive: false,
+    proxyClass: '',
+    route: null
+  });
 
   let click = (e) => {
     context.emit('click', e);
@@ -57,5 +63,5 @@ export default function routable(props, context, data) {
     scopedData.attrs.target = props.target;
   }
 
-  return { tag, scopedData }
+  return { tag, scopedData, data }
 }

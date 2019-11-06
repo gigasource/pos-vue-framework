@@ -27,11 +27,7 @@
     },
     setup(props, context) {
 
-      let data = reactive({
-        isActive: false,
-        proxyClass: '',
-        route: null
-      });
+      const { tag, scopedData, data } = routable(props, context, classes, styles, data);
 
       onMounted(function () {
         data.route = this.$route;
@@ -45,19 +41,15 @@
         if (props.to) {
           return _classes;
         }
-        if (props.activeClass) {
-          _classes[props.activeClass] = data.isActive;
-        }
-        if (data.proxyClass) {
-          _classes[data.proxyClass] = data.isActive;
-        }
+
+        _classes[data.proxyClass] = data.isActive;
         _classes['g-breadcrumbs-item'] = true;
         _classes[props.activeClass] = props.disabled;
 
         return _classes
       });
 
-      const styles = computed(()=> {
+      const styles = computed(() => {
 
       });
 
@@ -80,8 +72,6 @@
       let toggle = () => {
 
       };
-
-      const { tag, scopedData } = routable(props, context, classes, styles, data);
 
       const isLink = computed(() => {
         return props.to || props.href || props.link
