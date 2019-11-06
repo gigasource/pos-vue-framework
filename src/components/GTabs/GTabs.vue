@@ -183,7 +183,7 @@
         </g-slide-group>
       }
 
-      return () => <div class="g-tabs-wrapper" vertical={!props.vertical}>
+      return () => <div class={["g-tabs-wrapper", props.vertical ? "row-flex" : "col-flex"]}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
           <div ref="itemsRef"
                class={{...barClasses.value, 'g-tabs-bar': true}}
