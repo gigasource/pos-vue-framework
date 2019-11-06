@@ -108,3 +108,7 @@
 .waves-effect .waves-ripple {
   z-index: -1;
 }
+
+.waves-auto .waves-ripple {
+  background-color: inherit !important;
+}
