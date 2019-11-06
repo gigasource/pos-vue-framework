@@ -1,32 +1,29 @@
-<template>
-	<transition :name="transition">
-		<div v-show="show" class="g-tab-item">
-			<slot></slot>
-		</div>
-	</transition>
-</template>
-
 <script>
-  import GLayout from '../GLayout/GLayout';
-  import { inject, computed, ref, watch } from '@vue/composition-api'
+  import { computed, inject, createElement as h } from '@vue/composition-api'
 
   export default {
     name: 'GTabItem',
-    components: { GLayout },
     props: {
       item: null
     },
     setup(props, context) {
       const model = inject('model');
-
       const show = computed(() => (model.value === props.item));
+      const transition = inject('transition');
 
-			const transition = inject('transition');
-
-      return {
-        show,
-				transition,
-      }
+      return () => h(
+        'transition',
+        {
+          props: {
+            name: transition.value
+          }
+        },
+        [
+          <div vShow={show.value} className="g-tab-item">
+            {context.slots.default()}
+          </div>
+        ]
+      )
     }
   }
 </script>
