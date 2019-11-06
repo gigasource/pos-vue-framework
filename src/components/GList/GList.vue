@@ -13,7 +13,7 @@
         <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :onSelect="onSelect">
           <div v-if="item[itemTitle]"
                class="g-list-item"
-               :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item),  'waves-effect': true, 'waves-auto': true}"
+               :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true}"
                tabindex="0"
                @click="onSelect(item)"
                @keydown.enter="onSelect(item)"
@@ -61,7 +61,7 @@
 
         <slot :item="item" v-else>
           <div class="g-list-item"
-               :class="{'g-list-item__active': isActiveItem(item) , activeClass: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
+               :class="{'g-list-item__active': isActiveItem(item) , activeClass: isActiveItem(item), 'waves-effect': true}"
                tabindex="0"
                @click="onSelect(item)"
                @keydown.enter="onSelect(item)"
