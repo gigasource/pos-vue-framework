@@ -26,7 +26,7 @@
     },
     setup(props, context) {
 
-      const { tag, scopedData, data } = routable(props, context, classes, styles, data);
+      const { tag, scopedData, data } = routable(props, context);
 
       onMounted(function () {
         data.route = this.$route;
