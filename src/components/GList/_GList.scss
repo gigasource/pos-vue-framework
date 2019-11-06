@@ -7,12 +7,24 @@
   overflow: auto;
 
   &-item {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
     padding-right: 16px;
     min-height: 48px;
     flex-shrink: 0;
+
+    &:before {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: currentColor;
+      opacity: 0;
+    }
 
     &:hover {
       background-color: rgba(211, 211, 211, 0.41);
@@ -26,8 +38,12 @@
       outline: none;
     }
     &__active{
-      background-color: rgb(226, 236, 248);
       color: rgb(24, 103, 192);
+
+      &.g-list-item:before {
+        opacity: 0.12;
+      }
+
       &:hover, &:focus{
         background-color: rgb(226, 236, 248);
         color: rgb(24, 103, 192);
