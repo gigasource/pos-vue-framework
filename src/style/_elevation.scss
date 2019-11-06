@@ -100,3 +100,41 @@ $shadow-key-ambient: (
     @include elevation($i)
   }
 }
+
+$material-key-umbra: (
+  1: (0 1px 5px 0 $shadow-key-umbra-opacity),
+  2: (0 2px 4px -1px $shadow-key-umbra-opacity),
+  3: (0 5px 5px -3px $shadow-key-umbra-opacity),
+  4: (0 8px 10px -7px $shadow-key-umbra-opacity),
+  5: (0 11px 15px -7px $shadow-key-umbra-opacity),
+) !default;
+
+$material-key-penumbra: (
+        1: (0 2px 2px 0 $shadow-key-penumbra-opacity),
+        2: (0 4px 5px 0 $shadow-key-penumbra-opacity),
+        3: (0 8px 17px 2px $shadow-key-penumbra-opacity),
+        4: (0 16px 24px 2px $shadow-key-penumbra-opacity),
+        5: (0 24px 38px 3px $shadow-key-penumbra-opacity),
+) !default;
+
+$material-key-ambient: (
+        1: (0 3px 1px -2px $shadow-key-ambient-opacity),
+        2: (0 1px 10px 0 $shadow-key-ambient-opacity),
+        3: (0 3px 14px 2px $shadow-key-ambient-opacity),
+        4: (0 6px 30px 5px $shadow-key-ambient-opacity),
+        5: (0 9px 46px 8px $shadow-key-ambient-opacity),
+) !default;
+
+@mixin material-elevation($z, $important: false) {
+  box-shadow: map-get($material-key-penumbra, $z), map-get($material-key-ambient, $z), map-get($material-key-umbra, $z) if($important, !important, null);
+}
+
+@for $i from 1 through 5 {
+  .m-elevation-#{$i} {
+    @include material-elevation($i)
+  }
+}
+
+.m-elevation-1-half {
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+}
