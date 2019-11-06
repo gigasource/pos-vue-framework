@@ -122,13 +122,13 @@
         if (files.value.length === 1) return configFileName(files.value[0].name)
         if (files.value.length > 1) return files.value.length + ' files'
       })
-      const fileName = computed(() => {
+      const filesName = computed(() => {
         let filesName = []
         for (let file of files.value)
           filesName.push(configFileName(file.name))
         return filesName
       })
-      const fileNumber = computed(() => {
+      const fileAmount = computed(() => {
         if (files.value.length <= 1) return files.value.length + ' file'
         if (files.value.length > 1) return files.value.length + ' files'
       })
@@ -142,7 +142,7 @@
         return (props.chips || props.smallChips) ?
             Array.from(files.value).map((file, index) => (
                 <g-chip small={props.smallChips} ref={'chip' + index}>
-                  {fileName.value[index]}
+                  {filesName.value[index]}
                   {props.showSize ? ` (${convertFileSize(file.size)})` : ''}
                 </g-chip>))
             : (<div>{fileContent.value}{props.showSize ? ` (${totalFileSize.value})` : ''}</div>)
@@ -151,15 +151,17 @@
       function genSelection() {
         const children = []
 
-        files.value.forEach((file, index) => {
+        files.value.forEach((file, index, files) => {
           if (!context.slots.selection) return
 
-          let text = props.showSize ? fileName.value[index] + ` (${convertFileSize(file.size)})` : fileName.value[index]
+          let text = props.showSize ? filesName.value[index] + ` (${convertFileSize(file.size)})` : filesName.value[index]
           children.push(
+
               context.slots.selection({
                 text: text,
                 file,
                 index,
+                amount: files.length
               })
           )
         })
@@ -243,7 +245,7 @@
       function genCounter() {
         return <div class={['g-tf-counter', {'g-tf-counter__error': !isValidInput.value}]}
                     vShow={props.counter}>
-          {`${fileNumber.value} (${totalFileSize.value} in total)`}
+          {`${fileAmount.value} (${totalFileSize.value} in total)`}
         </div>
       }
 
@@ -297,7 +299,6 @@
         context.refs.input.click()
       }
 
-      console.log(props.value)
       function genFileInputComponent() {
         return <div class={wrapperClasses.value}
                     vOn:click={onClickWrapper}
