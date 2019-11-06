@@ -8,13 +8,7 @@ export default (props, context) => {
     }
   });
 
-  const breadcrumbStyles = computed(() => {
-
-  });
-
-
   return {
-    breadcrumbClasses,
-    breadcrumbStyles
+    breadcrumbClasses
   }
 }
