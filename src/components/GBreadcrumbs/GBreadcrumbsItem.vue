@@ -1,7 +1,6 @@
 <script>
   import routable from '../../mixins/routable';
-  import { createElement as h, computed, reactive, onMounted, watch } from '@vue/composition-api';
-  import { getObjectValueByPath } from '../../utils/helpers';
+  import { createElement as h, computed, onMounted, watch } from '@vue/composition-api';
 
   export default {
     name: 'GBreadcrumbsItem',
@@ -33,8 +32,6 @@
         data.route = this.$route;
       });
 
-      watch(() => data.route, () => onRouteChange());
-
       const classes = computed(() => {
         let _classes = {};
 
@@ -49,36 +46,11 @@
         return _classes
       });
 
-      const styles = computed(() => {
-
-      });
-
-      function onRouteChange() {
-        if (!props.to || !context.refs.link || !data.route) {
-          return;
-        }
-        const activeClass = `${props.activeClass} ${data.proxyClass || ''}`.trim();
-
-        const path = `_vnode.data.class.${activeClass}`;
-
-        context.root.$nextTick(() => {
-          /* istanbul ignore else */
-          if (getObjectValueByPath(context.refs.link, path)) {
-            toggle()
-          }
-        })
-      }
-
-      let toggle = () => {
-
-      };
-
       const isLink = computed(() => {
         return props.to || props.href || props.link
       });
 
       scopedData['class'] = classes.value;
-      scopedData['style'] = styles.value;
 
       function renderItem() {
         let nodeData = {
@@ -99,7 +71,8 @@
       return {
         genBreadcrumbsItem
       }
-    }, render() {
+    },
+    render() {
       return this.genBreadcrumbsItem();
     }
   }

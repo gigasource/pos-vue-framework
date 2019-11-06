@@ -36,7 +36,7 @@
             items.push(context.slots.item({ item }))
           } else {
             const nodeData = {
-              keys: keys.join('.'),
+              key: keys.join('.'),
               props: item,
             };
 
