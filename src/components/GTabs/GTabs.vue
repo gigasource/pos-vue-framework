@@ -162,7 +162,7 @@
         ))
       }
 
-      const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles} dense></div>
+      const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles}></div>
 
       const genTabsBar = () => {
         if (!fullTitle) return
@@ -177,13 +177,13 @@
           },
           slot: 'tabs'
         }
-        return <g-slide-group {...slideGroupData} vModel={model.value}>
+        return <g-slide-group {...slideGroupData} vModel={model.value} dense>
           {genTabs()}
           {genTabSlider()}
         </g-slide-group>
       }
 
-      return () => <div class="g-tabs-wrapper" vertical={!props.vertical}>
+      return () => <div class={["g-tabs-wrapper", props.vertical ? "row-flex" : "col-flex"]}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
           <div ref="itemsRef"
                class={{...barClasses.value, 'g-tabs-bar': true}}
