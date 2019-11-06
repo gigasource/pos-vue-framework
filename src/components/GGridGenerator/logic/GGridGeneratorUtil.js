@@ -16,6 +16,12 @@ export function getGridAreaCss(gridItem) {
   return `${gridItem.area.rowStart} / ${gridItem.area.columnStart} / ${gridItem.area.rowEnd} / ${gridItem.area.columnEnd}`
 }
 
+/**
+ * Get sub area of target grid
+ * @param grids
+ * @param targetGrid
+ * @returns {Array}
+ */
 export function getSubItems(grids, targetGrid) {
   return _.filter(grids, grid => {
     // skip itself
@@ -27,6 +33,34 @@ export function getSubItems(grids, targetGrid) {
     const nameParts = remainNameWithoutTargetName.split('__')
     return nameParts[0] === '' && nameParts.length === 2
   })
+}
+
+/**
+ * Return an unique, valid area name
+ * - Check if area name already existed in grids. If yes, add counter number
+ * @param grids
+ * @param grid
+ * @param areaName
+ * @returns {string}
+ */
+export function getUniqueNewAreaFullName(grids, grid, areaName) {
+  const fullAreaName = `${grid.name}__${areaName}`
+  let newName = fullAreaName
+  let ctr = 0
+  while(isGridNameExisted(grids, newName)) {
+    ctr++
+    newName = `${fullAreaName}(${ctr})`
+  }
+  return newName
+}
+
+export function getAreaNameFromFullName(fullName) {
+  const nameParts = fullName.split('__')
+  return nameParts[nameParts.length - 1]
+}
+
+export function isGridNameExisted(grids, name) {
+  return _.findIndex(grids, grid =>  grid.name === name) >= 0
 }
 
 /**

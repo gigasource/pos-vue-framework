@@ -141,7 +141,7 @@ export function getInternalValue(props, context) {
 
 
 export function createRange (length, mapFn) {
-  const range = [...Array(length).key]
+  const range = [...Array(length).keys()]
   if (mapFn) return range.map(mapFn)
   else return range
 }
