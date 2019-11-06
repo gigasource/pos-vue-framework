@@ -33,7 +33,7 @@ $slider-tick-border-radius: 0 !default;
   &--track-container {
     position: absolute;
     border-radius: $slider-track-border-radius;
-    width: 100%; // abm
+    //width: 100%; // abm
     background-color: #cccccc; // abm
   }
 
@@ -225,7 +225,7 @@ $slider-tick-border-radius: 0 !default;
   }
 }
 
-.g-slider--vertical {
+.g-slider__vertical {
   min-height: 150px;
   margin-top: 12px;
   margin-bottom: 12px;

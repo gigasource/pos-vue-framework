@@ -215,7 +215,8 @@
       //function genStep
       const showTicks = computed(() => props.tickLabels.length > 0 || !!(!props.disabled && step.value && props.ticks))
       const numTicks = computed(() => Math.ceil((maxValue.value - minValue.value) / step.value))
-        //todo check tick label
+
+      //todo check tick label
       function genSteps() {
         if (!props.step || !showTicks.value) return null
 
@@ -231,18 +232,9 @@
 
         if (props.vertical) range.reverse()
 
-        function genTickLabel() {
+        function genTicks() {
           return range.map(i => {
             const index = i
-            const children = []
-
-            if (props.tickLabels[index]) {
-              children.push(() => {
-                return <div class="g-slider--tick-label">
-                  {props.tickLabels[index]}
-                </div>
-              })
-            }
 
             const width = i * (100 / numTicks.value)
             const filled = width < inputWidth.value
@@ -253,17 +245,17 @@
               [offsetDirection]: `calc(50% - ${tickSize / 2}px)`,
             }
 
-            return <span
-                class={["g-slider--tick", {'g-slider--tick__filled': filled}]}
-                style={tickStyle}>
-            {children}
+            return <span class={["g-slider--tick", {'g-slider--tick__filled': filled}]} style={tickStyle}>
+             {props.tickLabels[index] && (<div class="g-slider--tick-label">
+               {props.tickLabels[index]}
+             </div>)}
           </span>
           })
         }
 
         return <div
             class={['g-slider--ticks-container', {'g-slider--ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
-          {genTickLabel()}
+          {genTicks()}
         </div>
       }
 
