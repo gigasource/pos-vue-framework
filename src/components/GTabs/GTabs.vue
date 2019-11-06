@@ -41,6 +41,7 @@
         model.value = props.items.find(item => !item.disabled);
       }
       provide('model', model);
+      provide('items', props.items)
 
       const { getColorType, convertColorClass } = colorHandler();
 
@@ -138,24 +139,25 @@
       });
 
       const genWrapper = () => <g-layout className="g-tabs-wrapper" vertical={!props.vertical}>
-          <div className={tabsClasses.value} style={tabsStyles.value}>
-            <div ref="itemsRef"
-                 className={{ ...barClasses.value, 'g-tabs-bar': true }}
-                 style={barStyles.value}
-                 v-resize={calculateSliderStyle}>
-              {genTabsBar()}
-            </div>
+        <div className={tabsClasses.value} style={tabsStyles.value}>
+          <div ref="itemsRef"
+               className={{ ...barClasses.value, 'g-tabs-bar': true }}
+               style={barStyles.value}
+               v-resize={calculateSliderStyle}>
+            {genTabsBar()}
           </div>
-          {context.slots.default && context.slots.default()}
-        </g-layout>
+        </div>
+        {context.slots.default && context.slots.default()}
+      </g-layout>
 
       const genTabIcon = (item) => {
         if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
       }
 
       const genTabs = () => {
-        return props.items.map((item, i) => (
-          <g-tab item={item} key={i}>
+        return props.items.map((item, index) => (
+          (context.slots.tab && context.slots.tab({ item, index }))
+          || <g-tab item={item} key={index}>
             {genTabIcon(item)}
             {item.title}
           </g-tab>
@@ -183,16 +185,20 @@
         </g-slide-group>
       }
 
-      return () => <div class={["g-tabs-wrapper", props.vertical ? "row-flex" : "col-flex"]}>
+      return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
           <div ref="itemsRef"
-               class={{...barClasses.value, 'g-tabs-bar': true}}
+               class={{ ...barClasses.value, 'g-tabs-bar': true }}
                style={barStyles.value}
                v-resize={calculateSliderStyle}>
             {genTabsBar()}
           </div>
         </div>
-        {context.slots.default && context.slots.default()}
+        {context.slots.default && (
+          <g-tab-items>
+            {context.slots.default()}
+          </g-tab-items>
+        )}
       </div>
     }
   }

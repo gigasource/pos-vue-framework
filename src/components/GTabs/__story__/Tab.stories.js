@@ -88,11 +88,12 @@ export const tab = () => ({
           :icon="icon"
           :slider-size="sliderSize"
           :slider-color="sliderColor">
-      <g-tab-items :items="items" v-model="model">
-        <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
-          {{item.title}}
-        </g-tab-item>
-      </g-tab-items>
+      <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
+        {{item.title}}
+      </g-tab-item>
+      <template #tab="{item, index}">
+        <g-tab :item="item" :key="index">Slotted {{item.title}}</g-tab>
+      </template>
     </g-tabs>`
 });
 
