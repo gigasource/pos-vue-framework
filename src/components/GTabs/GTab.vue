@@ -14,10 +14,10 @@
         type: String,
         default: 'g-tab__active'
       },
-			ripple: {
-      	type: Boolean,
-				default: true
-			}
+      ripple: {
+        type: Boolean,
+        default: true
+      }
     },
     setup(props, context) {
       const model = inject('model', null);
