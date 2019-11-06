@@ -11,7 +11,7 @@
 			font-family: "Muli", sans-serif;
 		}
 
-		.tf-wrapper {
+		.g-tf--wrapper {
 			display: flex;
 			align-items: center;
 			cursor: text;
@@ -20,25 +20,25 @@
 			position: relative;
 		}
 
-		.tf-wrapper fieldset {
+		.g-tf--wrapper fieldset {
 			width: 100%;
 			border: 0;
 			padding: 0;
 			margin: 0;
 		}
 
-		.tf-wrapper legend {
+		.g-tf--wrapper legend {
 			display: none;
 		}
 
-		.tf {
+		.g-tf {
 			position: relative;
 			flex: 1 1 auto;
 			color: rgba(0, 0, 0, 0.54);
 			display: flex;
 		}
 
-		.tf::before {
+		.g-tf::before {
 			position: absolute;
 			content: '';
 			bottom: -1px;
@@ -47,7 +47,7 @@
 			background-color: rgba(0, 0, 0, 0.87);
 		}
 
-		.tf::after {
+		.g-tf::after {
 			position: absolute;
 			content: '';
 			bottom: -1px;
@@ -58,7 +58,7 @@
 			transition: 0.4s ease-out;
 		}
 
-		.tf-label {
+		.g-tf--label {
 			position: absolute;
 			top: 8px;
 			left: 0;
@@ -68,7 +68,7 @@
 			color: #3f51b5;
 		}
 
-		.tf-input {
+		.g-tf--input {
 			width: 100%;
 			padding: 5px 0;
 			line-height: 24px;
@@ -76,59 +76,59 @@
 			user-select: text;
 		}
 
-		.tf:focus-within::after {
+		.g-tf:focus-within::after {
 			height: 2px;
 			transform: scale(1);
 		}
 
-		.tf-input:focus + .tf-label,
-		.tf-input:placeholder-shown + .tf-label {
+		.g-tf--input:focus + .g-tf--label,
+		.g-tf--input:placeholder-shown + .g-tf--label {
 			transform: translateY(-16px) scale(0.75);
 		}
 
-		.tf-input:focus + .tf-label {
+		.g-tf--input:focus + .g-tf--label {
 			color: #1867c0;
 		}
 
-		.tf-label__active {
+		.g-tf--label__active {
 			transform: translateY(-16px) scale(0.75);
 		}
 
-		.tf-icon__active {
+		.g-tf--icon__active {
 			flex: 0 0 4%;
 		}
 
-		.tf-prepend__outer {
+		.g-tf--prepend__outer {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 
-		.tf-append__outer {
+		.g-tf--append__outer {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 
-		.tf-prepend__inner,
-		.tf-append__inner {
+		.g-tf--prepend__inner,
+		.g-tf--append__inner {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 
-		.tf-prepend__inner img,
-		.tf-prepend__outer img,
-		.tf-append__inner img,
-		.tf-append__outer img {
+		.g-tf--prepend__inner img,
+		.g-tf--prepend__outer img,
+		.g-tf--append__inner img,
+		.g-tf--append__outer img {
 			height: 24px;
 		}
 
-		.tf-prepend__inner.tf-icon__active ~ .tf-label {
+		.g-tf--prepend__inner.g-tf--icon__active ~ .g-tf--label {
 			left: 4%;
 		}
 
-		.tf-hint {
+		.g-tf--hint {
 			position: absolute;
 			bottom: -18px;
 			left: 0;
@@ -136,34 +136,34 @@
 			font-weight: 400;
 		}
 
-		.tf-wrapper.tf__solo .tf {
+		.g-tf--wrapper.g-tf__solo .g-tf {
 			border-radius: 4px;
 			/*elevation 2*/
 			box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 		}
 
-		.tf__solo .tf::before,
-		.tf__solo .tf::after,
-		.tf__solo .tf-label {
+		.g-tf__solo .g-tf::before,
+		.g-tf__solo .g-tf::after,
+		.g-tf__solo .g-tf--label {
 			display: none;
 		}
 
-		.tf__solo .tf-input {
+		.g-tf__solo .g-tf--input {
 			padding: 8px;
 			border-radius: 4px;
 		}
 
-		.tf__solo .tf-hint {
+		.g-tf__solo .g-tf--hint {
 			left: 4px;
 		}
 
-		.tf__filled .tf {
+		.g-tf__filled .g-tf {
 			background-color: rgba(0, 0, 0, 0.06);
 			border-top-left-radius: 4px;
 			border-top-right-radius: 4px;
 		}
 
-		.tf__filled .tf-input {
+		.g-tf__filled .g-tf--input {
 			background-color: transparent;
 			border: inherit;
 			padding: 12px 8px 4px;
@@ -171,29 +171,29 @@
 			vertical-align: bottom;
 		}
 
-		.tf__filled .tf-label {
+		.g-tf__filled .g-tf--label {
 			left: 4px;
 			top: 16px;
 		}
 
-		.tf__filled .tf-prepend__inner.tf-icon__active ~ .tf-label {
+		.g-tf__filled .g-tf--prepend__inner.g-tf--icon__active ~ .g-tf--label {
 			left: calc(4% + 4px);
 		}
 
-		.tf__filled .tf-input:focus + .tf-label,
-		.tf__filled .tf-input:placeholder-shown + .tf-label {
+		.g-tf__filled .g-tf--input:focus + .g-tf--label,
+		.g-tf__filled .g-tf--input:placeholder-shown + .g-tf--label {
 			transform: translateY(-12px) scale(0.75);
 		}
 
-		.tf__filled .tf-input:focus + .tf-label {
+		.g-tf__filled .g-tf--input:focus + .g-tf--label {
 			color: #1867c0;
 		}
 
-		.tf__filled .tf-label__active {
+		.g-tf__filled .g-tf--label__active {
 			transform: translateY(-12px) scale(0.75);
 		}
 
-		.tf-wrapper.tf__outlined fieldset {
+		.g-tf--wrapper.g-tf__outlined fieldset {
 			display: flex;
 			flex: 1 1 auto;
 			position: relative;
@@ -204,7 +204,7 @@
 			width: 100%;
 		}
 
-		.tf-wrapper.tf__outlined legend {
+		.g-tf--wrapper.g-tf__outlined legend {
 			display: block;
 			width: 0;
 			height: 0;
@@ -215,157 +215,157 @@
 			transition: 0.8s cubic-bezier(.44, .88, .37, .28);
 		}
 
-		.tf__outlined .tf::before,
-		.tf__outlined .tf::after {
+		.g-tf__outlined .g-tf::before,
+		.g-tf__outlined .g-tf::after {
 			display: none;
 		}
 
-		.tf__outlined:focus-within fieldset {
+		.g-tf__outlined:focus-within fieldset {
 			border: 2px solid #1867c0;
 		}
 
-		.tf__outlined:focus-within legend {
+		.g-tf__outlined:focus-within legend {
 			width: auto;
 		}
 
-		.tf__outlined .tf-input:placeholder-shown legend {
+		.g-tf__outlined .g-tf--input:placeholder-shown legend {
 			width: auto;
 		}
 
-		.tf__outlined .tf-label {
+		.g-tf__outlined .g-tf--label {
 			top: 4px;
 		}
 
-		.tf__outlined .tf-prepend__inner.tf-icon__active ~ .tf-label {
+		.g-tf__outlined .g-tf--prepend__inner.g-tf--icon__active ~ .g-tf--label {
 			left: calc(4% + 8px);
 		}
 
-		.tf__outlined .tf-prepend__inner.tf-icon__active ~ .tf-label__active {
+		.g-tf__outlined .g-tf--prepend__inner.g-tf--icon__active ~ .g-tf--label__active {
 			left: 0;
 		}
 
-		.tf__outlined:focus-within .tf-prepend__inner.tf-icon__active ~ .tf-label {
+		.g-tf__outlined:focus-within .g-tf--prepend__inner.g-tf--icon__active ~ .g-tf--label {
 			left: 0;
 		}
 
-		.tf__outlined .tf-input {
+		.g-tf__outlined .g-tf--input {
 			border-radius: inherit;
 		}
 
-		.tf__solo.tf__rounded .tf,
-		.tf__outlined.tf__rounded .tf,
-		.tf__filled.tf__rounded .tf {
+		.g-tf__solo.g-tf__rounded .g-tf,
+		.g-tf__outlined.g-tf__rounded .g-tf,
+		.g-tf__filled.g-tf__rounded .g-tf {
 			border-radius: 9999px;
 		}
 
-		.tf__solo.tf__rounded .tf-input {
+		.g-tf__solo.g-tf__rounded .tf-input {
 			margin: 0 16px;
 		}
 
-		.tf__filled.tf__rounded .tf::before,
-		.tf__filled.tf__rounded .tf::after {
+		.g-tf__filled.g-tf__rounded .tf::before,
+		.g-tf__filled.g-tf__rounded .tf::after {
 			display: none;
 		}
 
-		.tf__outlined.tf__rounded fieldset {
+		.g-tf__outlined.g-tf__rounded fieldset {
 			border-radius: 9999px;
 		}
 
-		.tf__outlined.tf__rounded legend {
+		.g-tf__outlined.g-tf__rounded legend {
 			margin-left: 8px;
 		}
 
-		.tf__filled.tf__rounded .tf-label {
+		.g-tf__filled.g-tf__rounded .tf-label {
 			left: 16px;
 		}
 
-		.tf__outlined.tf__rounded .tf-label {
+		.g-tf__outlined.g-tf__rounded .tf-label {
 			left: 8px;
 		}
 
-		.tf__outlined.tf__rounded:focus-within .tf-label {
+		.g-tf__outlined.g-tf__rounded:focus-within .tf-label {
 			left: 8px;
 		}
 
-		.tf__filled.tf__rounded .tf-input {
+		.g-tf__filled.g-tf__rounded .tf-input {
 			padding-left: 16px;
 		}
 
-		.tf__outlined.tf__rounded .tf-input {
+		.g-tf__outlined.g-tf__rounded .tf-input {
 			padding-left: 8px;
 		}
 
-		.tf__solo.tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint,
-		.tf__outlined.tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint,
-		.tf__filled.tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint {
+		.g-tf__solo.g-tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.g-tf__outlined.g-tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.g-tf__filled.g-tf__rounded .tf-prepend__outer.tf-icon__active ~ .tf-hint {
 			left: calc(4% + 16px);
 		}
 
-		.tf__solo.tf__shaped .tf,
-		.tf__outlined.tf__shaped .tf,
-		.tf__filled.tf__shaped .tf {
+		.g-tf__solo.g-tf__shaped .tf,
+		.g-tf__outlined.g-tf__shaped .tf,
+		.g-tf__filled.g-tf__shaped .tf {
 			border-top-left-radius: 16px;
 			border-top-right-radius: 16px;
 		}
 
-		.tf__solo.tf__shaped .tf-input {
+		.g-tf__solo.g-tf__shaped .tf-input {
 			margin: 0 16px;
 		}
 
-		.tf__filled.tf__shaped .tf::before,
-		.tf__filled.tf__shaped .tf::after {
+		.g-tf__filled.g-tf__shaped .tf::before,
+		.g-tf__filled.g-tf__shaped .tf::after {
 			display: none;
 		}
 
-		.tf__outlined.tf__shaped fieldset {
+		.g-tf__outlined.g-tf__shaped fieldset {
 			border-top-left-radius: 16px;
 			border-top-right-radius: 16px;
 		}
 
-		.tf__outlined.tf__shaped legend {
+		.g-tf__outlined.g-tf__shaped legend {
 			margin-left: 8px;
 		}
 
-		.tf__filled.tf__shaped .tf-label {
+		.g-tf__filled.g-tf__shaped .tf-label {
 			left: 16px;
 		}
 
-		.tf__outlined.tf__shaped .tf-label {
+		.g-tf__outlined.g-tf__shaped .tf-label {
 			left: 8px;
 		}
 
-		.tf__outlined.tf__shaped:focus-within .tf-label {
+		.g-tf__outlined.g-tf__shaped:focus-within .tf-label {
 			left: 8px;
 		}
 
-		.tf__filled.tf__shaped .tf-input {
+		.g-tf__filled.g-tf__shaped .tf-input {
 			padding-left: 16px;
 		}
 
-		.tf__outlined.tf__shaped .tf-input {
+		.g-tf__outlined.g-tf__shaped .tf-input {
 			padding-left: 8px;
 		}
 
-		.tf__solo.tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint,
-		.tf__outlined.tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint,
-		.tf__filled.tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint {
+		.g-tf__solo.g-tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.g-tf__outlined.g-tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint,
+		.g-tf__filled.g-tf__shaped .tf-prepend__outer.tf-icon__active ~ .tf-hint {
 			left: calc(4% + 16px);
 		}
 
-		.tf-wrapper.tf__solo.tf__outlined legend {
+		.tf-wrapper.g-tf__solo.g-tf__outlined legend {
 			width: 0 !important;
 		}
 
-		.tf-wrapper.tf__solo.tf__outlined .tf {
+		.tf-wrapper.g-tf__solo.g-tf__outlined .tf {
 			box-shadow: none;
 		}
 
-		.tf-wrapper.tf__solo.tf__outlined {
+		.tf-wrapper.g-tf__solo.g-tf__outlined {
 			border-radius: 4px;
 			box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 		}
 
-		.tf-wrapper.tf__solo.tf__flat .tf {
+		.tf-wrapper.g-tf__solo.g-tf__flat .tf {
 			border: none;
 			box-shadow: none;
 		}
@@ -458,7 +458,7 @@
       for (const input of inputs) {
         let legend = input.parentElement.previousElementSibling;
         const wrapper = legend.parentElement.parentElement;
-        if (wrapper.classList.contains('tf__outlined') && input.placeholder && legend.tagName.toLowerCase() === 'legend') {
+        if (wrapper.classList.contains('g-tf__outlined') && input.placeholder && legend.tagName.toLowerCase() === 'legend') {
           legend.style.width = 'auto';
         }
         input.addEventListener('change', function () {
@@ -599,7 +599,7 @@
 	<fieldset>
 		<legend>Solo</legend>
 
-		<div class="tf-wrapper tf__solo">
+		<div class="tf-wrapper g-tf__solo">
 			<div class="tf-prepend__outer"></div>
 			<fieldset>
 				<legend></legend>

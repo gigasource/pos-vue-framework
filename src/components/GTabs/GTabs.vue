@@ -1,29 +1,3 @@
-<template>
-  <g-layout class="g-tabs-wrapper" :vertical="!vertical">
-    <div :class="tabsClasses" :style="tabsStyles">
-      <!--			TODO: surround with slider group for handling overflow tabs -->
-      <div class="g-tabs-bar" ref="itemsRef" :class="barClasses" :style="barStyles" v-resize="calculateSliderStyle">
-        <template v-if="fullTitle">
-          <g-slide-group :center-active="centerActive"
-                         :items="items"
-                         v-model="model"
-                         @click:prev="calculateSliderStyle"
-                         @click:next="calculateSliderStyle">
-            <slot name="tabs">
-              <g-tab v-for="(item, i) in items" :item="item" :key="i">
-                <g-icon v-if="icon && item.icon">{{item.icon}}</g-icon>
-                {{item.title}}
-              </g-tab>
-            </slot>
-            <div class="g-tabs-slider" :style="sliderStyles"></div>
-          </g-slide-group>
-        </template>
-      </div>
-    </div>
-    <slot></slot>
-  </g-layout>
-</template>
-
 <script>
   import GLayout from '../GLayout/GLayout';
   import GTab from '../GTabs/GTab';
@@ -31,7 +5,7 @@
   import GTabItem from './GTabItem';
   import GIcon from '../GIcon/GIcon';
   import getVModel from '../../mixins/getVModel';
-  import { computed, onBeforeUnmount, onMounted, provide, reactive, ref, watch } from '@vue/composition-api'
+  import { computed, provide, reactive, ref, watch } from '@vue/composition-api'
   import { find } from 'lodash'
   import colorHandler, { convertToUnit } from '../../utils/helpers';
   import { colors } from '../../utils/colors';
@@ -66,7 +40,6 @@
       if (!model.value) {
         model.value = props.items.find(item => !item.disabled);
       }
-
       provide('model', model);
 
       const { getColorType, convertColorClass } = colorHandler();
@@ -160,20 +133,67 @@
 
       const fullTitle = computed(() => {
         const noTitle = find(props.items, item => item.title === undefined);
+        console.warn(`Required prop title for tab`)
         return !noTitle;
       });
 
-      return {
-        model,
-        tabsClasses,
-        tabsStyles,
-        barClasses,
-        barStyles,
-        sliderStyles,
-        fullTitle,
-        itemsRef,
-        calculateSliderStyle
-    }
+      const genWrapper = () => <g-layout className="g-tabs-wrapper" vertical={!props.vertical}>
+          <div className={tabsClasses.value} style={tabsStyles.value}>
+            <div ref="itemsRef"
+                 className={{ ...barClasses.value, 'g-tabs-bar': true }}
+                 style={barStyles.value}
+                 v-resize={calculateSliderStyle}>
+              {genTabsBar()}
+            </div>
+          </div>
+          {context.slots.default && context.slots.default()}
+        </g-layout>
+
+      const genTabIcon = (item) => {
+        if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
+      }
+
+      const genTabs = () => {
+        return props.items.map((item, i) => (
+          <g-tab item={item} key={i}>
+            {genTabIcon(item)}
+            {item.title}
+          </g-tab>
+        ))
+      }
+
+      const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles} dense></div>
+
+      const genTabsBar = () => {
+        if (!fullTitle) return
+        const slideGroupData = {
+          props: {
+            centerActive: props.centerActive,
+            items: props.items,
+          },
+          on: {
+            'click:prev': calculateSliderStyle,
+            'click:next': calculateSliderStyle
+          },
+          slot: 'tabs'
+        }
+        return <g-slide-group {...slideGroupData} vModel={model.value}>
+          {genTabs()}
+          {genTabSlider()}
+        </g-slide-group>
+      }
+
+      return () => <div class="g-tabs-wrapper" vertical={!props.vertical}>
+        <div class={tabsClasses.value} style={tabsStyles.value}>
+          <div ref="itemsRef"
+               class={{...barClasses.value, 'g-tabs-bar': true}}
+               style={barStyles.value}
+               v-resize={calculateSliderStyle}>
+            {genTabsBar()}
+          </div>
+        </div>
+        {context.slots.default && context.slots.default()}
+      </div>
     }
   }
 </script>

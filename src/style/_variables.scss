@@ -77,6 +77,18 @@ $percentages: (
 //Grid
 $grid-columns:      12 !default;
 
+$grid-breakpoints: () !default;
+$grid-breakpoints: map-merge(
+                (
+                        'xs': 0,
+                        'sm': 600px,
+                        'md': 960px,
+                        'lg': 1280px - 16px,
+                        'xl': 1920px - 16px
+                ),
+                $grid-breakpoints
+);
+
 
 //Button
 $btn-border-radius: 0.5rem !default;
@@ -123,7 +135,7 @@ $btn-font-sizes: (
 ) !default;
 $fab-sizes: (
         'x-small': 32,
-        'small':   40,
+        'small':   48,
         'default': 56,
         'large':   64,
         'x-large': 72

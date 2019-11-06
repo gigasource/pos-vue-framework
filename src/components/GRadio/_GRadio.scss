@@ -25,6 +25,7 @@
   font-family: "Muli", sans-serif;
   font-weight: 400;
   font-size: 16px;
+  line-height: 20px;
 
   &-wrapper {
     margin: 8px 4px;
@@ -71,7 +72,7 @@
 
   &-hover:before {
     position: absolute;
-    top: -8px;
+    //top: -8px;
     left: -8px;
     content: "\F12F";
     font-size: 36px;

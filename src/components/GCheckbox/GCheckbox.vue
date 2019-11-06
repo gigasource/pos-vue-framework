@@ -29,7 +29,7 @@
       disabled: Boolean,
       readonly: Boolean,
       indeterminate: Boolean,
-			//check box all
+      //check box all
       multiple: Boolean,
       //custom v-model
       inputValue: null,
@@ -68,7 +68,7 @@
             // partially selected
             isDeterminate.value = false;
             isActive.value = false;
-					}
+          }
         } else {
           if (newVal && isSelectedArray.value) {
             isActive.value = newVal.some(v => isEqual(v, trueValue));
@@ -76,7 +76,7 @@
             isActive.value = newVal === true || newVal === 'true' || isEqual(newVal, trueValue);
           }
         }
-      });
+      }, { lazy: true });
       //define props color is a class or a css style
       const { getColorType, convertColorClass } = colorHandler();
       const type = computed(() => getColorType(props.color));

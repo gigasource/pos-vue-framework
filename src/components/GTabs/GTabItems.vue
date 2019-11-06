@@ -1,9 +1,3 @@
-<template>
-	<div class="g-tab-items">
-		<slot></slot>
-	</div>
-</template>
-
 <script>
   import getVModel from '../../mixins/getVModel';
   import { provide, ref, watch } from '@vue/composition-api'
@@ -30,6 +24,11 @@
           transition.value = 'g-tab-transition';
         }
       }, { flush: 'pre' })
+
+      return () =>
+        <div class="g-tab-items">
+          {context.slots.default()}
+        </div>
     }
   }
 </script>
