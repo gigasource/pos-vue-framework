@@ -14,7 +14,7 @@
       },
       items: {
         type: Array,
-        default: () => ([]),
+        default: [],
       },
       large: Boolean,
     },
@@ -23,7 +23,7 @@
       const { breadcrumbClasses } = GBreadcrumbItemUtil(props, context);
 
       function genDivider() {
-        return <g-breadcrumbs-divider> {context.slots.divider ? context.slots.divider() : props.divider} </g-breadcrumbs-divider>
+        return <g-breadcrumbs-divider> {(context.slots.divider && context.slots.divider()) || props.divider} </g-breadcrumbs-divider>
       }
 
       function genItems() {
@@ -49,9 +49,9 @@
 
       function genBreadcrumbs() {
         return <ul class={breadcrumbClasses.value}>
-          {context.slots.default ? context.slots.default() : genItems().map((item, index) => ([
+          {(context.slots.default && context.slots.default()) || genItems().map((item, index) => ([
             item,
-            index !== props.items.length - 1 ? genDivider() : null
+            index !== props.items.length - 1 && genDivider()
           ]))}
         </ul>
       }

@@ -42,9 +42,10 @@ export const Default = () => ({
       ]
   }),
   props: {
-      divider: {type: String, default: text('divider', '/')}
+      divider: {type: String, default: text('divider', '/')},
+    large: { type: Boolean, default: boolean('large', false) }
   },
-  template: `<g-breadcrumbs :divider="divider" :items="items"> </g-breadcrumbs>`,
+  template: `<g-breadcrumbs :large="large" :divider="divider" :items="items"> </g-breadcrumbs>`,
 })
 
 export const SlotDivider = () => ({
@@ -80,9 +81,11 @@ export const SlotDivider = () => ({
   }),
   props: {
     divider: {type: String, default: text('divider', '/')},
-    icon: {type: String, default: text('icon', 'mdi-chevron-right')}
+    icon: {type: String, default: text('icon', 'mdi-chevron-right')},
+    large: { type: Boolean, default: boolean('large', false) }
+
   },
-  template: `<g-breadcrumbs :divider="divider" :items="items"> 
+  template: `<g-breadcrumbs :large="large" :divider="divider" :items="items"> 
         <template v-slot:divider>
         <g-icon>{{icon}}</g-icon>
       </template>
@@ -122,9 +125,11 @@ export const SlotDividerAndItem = () => ({
   }),
   props: {
     divider: {type: String, default: text('divider', '/')},
-    icon: {type: String, default: text('icon', 'mdi-chevron-right')}
+    icon: {type: String, default: text('icon', 'mdi-chevron-right')},
+    large: { type: Boolean, default: boolean('large', false) }
+
   },
-  template: `<g-breadcrumbs :divider="divider" :items="items"> 
+  template: `<g-breadcrumbs :large="large" :divider="divider" :items="items"> 
         <template v-slot:divider>
         <g-icon>{{icon}}</g-icon>
       </template>
