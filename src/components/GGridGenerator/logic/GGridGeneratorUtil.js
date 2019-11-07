@@ -1,5 +1,5 @@
 import _ from 'lodash'
-
+import { ref } from '@vue/composition-api'
 
 export function joinRefArrayValue(refArray, separator = ' ') {
   let output = ''
@@ -17,48 +17,28 @@ export function getGridAreaCss(gridItem) {
 }
 
 /**
- * Get sub area of target grid
- * @param grids
- * @param targetGrid
- * @returns {Array}
- */
-export function getSubItems(grids, targetGrid) {
-  return _.filter(grids, grid => {
-    // skip itself
-    if (grid === targetGrid) return false
-    // for example: targetGrid's name is 'main'
-    // an item which have name main__header should be consider as grid's area
-    // an item which have the name is main__header__logo should not be consider as grid's area
-    const remainNameWithoutTargetName = grid.name.substr(targetGrid.name.length)
-    const nameParts = remainNameWithoutTargetName.split('__')
-    return nameParts[0] === '' && nameParts.length === 2
-  })
-}
-
-/**
  * Return an unique, valid area name
  * - Check if area name already existed in grids. If yes, add counter number
  * @param grids
- * @param grid
  * @param areaName
  * @returns {string}
  */
-export function getUniqueNewAreaFullName(grids, grid, areaName) {
-  const fullAreaName = `${grid.name}__${areaName}`
-  let newName = fullAreaName
+export function getUniqueNewAreaName(grids, areaName) {
+  let newName = areaName
   let ctr = 0
   while(isGridNameExisted(grids, newName)) {
     ctr++
-    newName = `${fullAreaName}(${ctr})`
+    newName = `${areaName}(${ctr})`
   }
   return newName
 }
 
-export function getAreaNameFromFullName(fullName) {
-  const nameParts = fullName.split('__')
-  return nameParts[nameParts.length - 1]
-}
-
+/**
+ * Return true if input name existed in grids
+ * @param grids
+ * @param name
+ * @returns {boolean}
+ */
 export function isGridNameExisted(grids, name) {
   return _.findIndex(grids, grid =>  grid.name === name) >= 0
 }
@@ -95,4 +75,63 @@ ${css}
   })
 
   return output
+}
+
+function createSingleItem(grids, parentGrid, area) {
+  const rowStart = Math.min(area.rowStart, area.rowEnd) + 1
+  const rowEnd = Math.max(area.rowStart, area.rowEnd) + 2
+  const columnStart = Math.min(area.columnStart, area.columnEnd) + 1
+  const columnEnd = Math.max(area.columnStart, area.columnEnd) + 2
+
+  return {
+    name: getUniqueNewAreaName(grids, area.name),
+    parent: parentGrid,
+    hide: false,
+    area: {
+      rowStart,
+      columnStart,
+      rowEnd,
+      columnEnd
+    }
+  }
+}
+
+function createSubGridItem(grids, parentGrid, area) {
+  const singleItem = createSingleItem(grids, parentGrid, area)
+  return {
+    ...singleItem,
+    settings: {
+      columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+      rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+      columnGap: 0,
+      rowGap: 0,
+    },
+    subAreas: []
+  }
+}
+
+export function addSubGridArea(grids, targetGrid, area) {
+  const subGrid = createSubGridItem(grids, targetGrid, area)
+  grids.push(subGrid)
+  targetGrid.subAreas.push(subGrid)
+}
+
+export function addSubItemArea(grids, targetGrid, area) {
+  const subItem = createSingleItem(grids, targetGrid, area)
+  grids.push(subItem)
+  targetGrid.subAreas.push(subItem)
+}
+
+export function deleteGridItem(grids, gridItem) {
+  // delete its children
+  _.each(gridItem.subAreas || [], item => deleteGridItem(grids, item))
+
+  // delete it from grids
+  let id = _.findIndex(grids, item => item === gridItem)
+  grids.splice(id, 1)
+
+  // delete it from its parent
+  let parent = gridItem.parent
+  id = _.findIndex(parent.subAreas, subArea => subArea === gridItem)
+  parent.subAreas.splice(id, 1)
 }

@@ -4,21 +4,22 @@
     generateGridCSS,
     joinRefArrayValue,
     getGridAreaCss,
-    getSubItems,
-    getAreaNameFromFullName,
-    getUniqueNewAreaFullName
+    addSubGridArea,
+    addSubItemArea,
+    deleteGridItem
   } from './logic/GGridGeneratorUtil'
   import { reactive, ref, } from '@vue/composition-api';
   import GDialog from '../GDialog/GDialog';
   import GIcon from '../GIcon/GIcon'
-  import { enterPressed, enterNotPressed } from '../../utils/keyboardHelper';
+  import { enterPressed } from '../../utils/keyboardHelper';
   import { createRange } from '../../utils/helpers'
   import GToolTip from '../GToolTip/GToolTip';
   import GIncDecNumberInput from './GIncDecNumberInput';
+  import GEditViewInput from './GEditViewInput';
 
   export default {
     name: 'GGridGenerator',
-    components: { GIncDecNumberInput, GToolTip, GDialog, GIcon },
+    components: { GEditViewInput, GIncDecNumberInput, GToolTip, GDialog, GIcon },
     props: {},
     setup(props, context) {
       // Grid data convention:
@@ -32,93 +33,18 @@
       // |- hide     | indicate whether a grid-item should be shown or                |
       // |           | not                                                            |
       // +-----------+----------------------------------------------------------------+
-      const rootGrid = 'app'
       const state = reactive({
         grids: [{
-          name: rootGrid,
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          }
-        }, {
-          name: 'app__head',
-          hide: false,
+          name: 'app',
+          isRoot: true,
           settings: {
             columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
             rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
             columnGap: 0,
             rowGap: 0,
           },
-          area: {
-            rowStart: 1,
-            columnStart: 1,
-            rowEnd: 2,
-            columnEnd: 6
-          }
-        }, {
-          name: 'app__content',
-          hide: false,
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          },
-          area: {
-            rowStart: 2,
-            columnStart: 1,
-            rowEnd: 5,
-            columnEnd: 6
-          }
-        }, {
-          name: 'app__footer',
-          hide: false,
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          },
-          area: {
-            rowStart: 5,
-            columnStart: 1,
-            rowEnd: 6,
-            columnEnd: 6
-          }
-        }, {
-          name: 'app__content__sidebar',
-          hide: false,
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          },
-          area: {
-            rowStart: 1,
-            columnStart: 1,
-            rowEnd: 6,
-            columnEnd: 2
-          }
-        }, {
-          name: 'app__content__body',
-          hide: false,
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          },
-          area: {
-            rowStart: 1,
-            columnStart: 2,
-            rowEnd: 6,
-            columnEnd: 6
-          }
-        }
-        ],
+          subAreas: []
+        }],
 
         //// view settings
         // view size
@@ -137,7 +63,7 @@
         },
 
         // a value hold the selecting grid/sub-grid
-        selectedGrid: rootGrid,
+        selectedGrid: 'app',
         // a value indicate whether a confirm dialog will be shown or not
         // the confirm dialog should be show when user create new sub-grid/single item
         showConfirmDialog: false,
@@ -172,11 +98,18 @@
           <ul class="g-grid-generator__list__items">
             {_.map(state.grids, (grid) => !grid.settings ? null :
                 <li class="g-grid-generator__list__item"
-                    style={{ background: (state.selectedGrid === grid.name) ? '#aaa' : '#fff' }}>
-                  <span class="g-grid-generator__list__item__name g-grid-generator__list__item__name--explorable"
-                        vOn:click={() => state.selectedGrid = grid.name}>
-                    {getAreaNameFromFullName(grid.name)}
-                  </span>
+                    style={ {backgroundColor: grid.name === state.selectedGrid ? '#aaa' : '#fff'}}>
+                  <g-edit-view-input
+                      width="100%"
+                      value={grid.name}
+                      vOn:click={() => state.selectedGrid = grid.name}
+                      vOn:input={(val) => {
+                        if (state.selectedGrid === grid.name) {
+                          state.selectedGrid = val
+                        }
+                        grid.name = val
+                      }}
+                  />
                 </li>
             )}
           </ul>
@@ -188,24 +121,30 @@
           <div class="g-grid-generator__list__header">AREA</div>
           <ul class="g-grid-generator__list__items">
             {_.map(state.grids, grid => (state.selectedGrid !== grid.name) ? null :
-                _.map(getSubItems(state.grids, grid), subGrid =>
+                _.map(grid.subAreas || [], subGrid =>
                     <li class="g-grid-generator__list__item">
-                      <span class="g-grid-generator__list__item__name">
-                        {getAreaNameFromFullName(subGrid.name)}
-                      </span>
-                      <span vOn:click={() => subGrid.hide = !subGrid.hide}>{subGrid.hide ? <g-icon>visibility</g-icon> :
-                          <g-icon>visibility_off</g-icon>}</span>
+                      <g-edit-view-input
+                          width="100%"
+                          value={subGrid.name}
+                          vOn:click={() => subGrid.settings && (state.selectedGrid = subGrid.name)}
+                          vOn:input={(val) => {
+                            if (state.selectedGrid === subGrid.name) {
+                              state.selectedGrid = val
+                            }
+                            subGrid.name = val
+                          }}
+                      />
+                      <span style="line-height: 16px" vOn:click={() => subGrid.hide = !subGrid.hide}>
+                        {
+                          subGrid.hide
+                            ? <g-icon small>visibility</g-icon>
+                            : <g-icon small>visibility_off</g-icon>
+                        }</span>
                     </li>
                 )
             )}
           </ul>
         </div>
-      }
-
-      function deleteGridItem(gridItem) {
-        _.each(getSubItems(state.grids, gridItem), item => deleteGridItem(item))
-        let id = _.findIndex(state.grids, item => item.name === gridItem.name)
-        state.grids.splice(id, 1)
       }
 
       // 2) Editor
@@ -353,11 +292,11 @@
             class="g-grid-generator__editor__field__area"
             style={{ backgroundColor: `hsl(${index * 60 % 360}, 100%, 50%, 70%)`, gridArea: getGridAreaCss(gridItem) }}>
           <span class="g-grid-generator__editor__field__area__name">
-            {getAreaNameFromFullName(gridItem.name)}
+            {gridItem.name}
           </span>
           <span
               class="g-grid-generator__editor__field__area__delete"
-              vOn:click={() => deleteGridItem(gridItem)}>x</span>
+              vOn:click={() => deleteGridItem(state.grids, gridItem)}>x</span>
         </div>
       }
 
@@ -389,7 +328,7 @@
       }
 
       function renderGridAreas(targetGrid) {
-        return getSubItems(state.grids, targetGrid).map((gridItem, index) =>
+        return (targetGrid.subAreas || []).map((gridItem, index) =>
             gridItem.hide
                 ? null
                 : state.viewMode
@@ -420,8 +359,7 @@
             <div class="g-grid-generator__dialog__confirm__action-btn">
               <button type='button'
                       vOn:click={() => {
-                        console.log(selectingArea.name)
-                        state.grids.push(createSubGridItem(grid))
+                        addSubGridArea(state.grids, grid, selectingArea)
                         state.showConfirmDialog = false
                         resetSelectingArea()
                       }}>Sub Grid
@@ -429,8 +367,7 @@
               &nbsp;
               <button type='button'
                       vOn:click={() => {
-                        console.log(selectingArea.name)
-                        state.grids.push(createSingleItem(grid))
+                        addSubItemArea(state.grids, grid, selectingArea)
                         state.showConfirmDialog = false
                         resetSelectingArea()
                       }}>Single item
@@ -445,37 +382,6 @@
             </div>
           </div>
         </g-dialog>
-      }
-
-      function createSingleItem(grid) {
-        const rowStart = Math.min(selectingArea.rowStart, selectingArea.rowEnd) + 1
-        const rowEnd = Math.max(selectingArea.rowStart, selectingArea.rowEnd) + 2
-        const columnStart = Math.min(selectingArea.columnStart, selectingArea.columnEnd) + 1
-        const columnEnd = Math.max(selectingArea.columnStart, selectingArea.columnEnd) + 2
-
-        return {
-          name: getUniqueNewAreaFullName(state.grids, grid, selectingArea.name),
-          hide: false,
-          area: {
-            rowStart,
-            columnStart,
-            rowEnd,
-            columnEnd
-          }
-        }
-      }
-
-      function createSubGridItem(grid) {
-        const singleItem = createSingleItem(grid)
-        return {
-          ...singleItem,
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          }
-        }
       }
 
       // 3) Settings
