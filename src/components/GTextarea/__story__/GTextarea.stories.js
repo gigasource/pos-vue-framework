@@ -94,17 +94,6 @@ export const fullFeatureTextarea = () => ({
                            :rounded="rounded"
                            :shaped="shaped"
                              
-                           :rules="[rules.required, rules.counter]">
-
-<!--                          <template v-slot:prepend-outer>-->
-<!--                          <g-icon>mdi-glasses</g-icon>-->
-<!--                          </template>-->
-<!--                          <template v-slot:append-inner>-->
-<!--                          <g-icon>mdi-ninja</g-icon>-->
-<!--                          </template>-->
-<!--                          <template v-slot:append-outer>-->
-<!--                          <g-icon>mdi-coffee</g-icon>-->
-<!--                          </template>-->
-              </g-textarea></div>`,
+                           :rules="[rules.required, rules.counter]" /></div>`,
 })
 

@@ -66,7 +66,7 @@
     getLabel,
     getSlotEventListeners,
     getValidate,
-  } from '../GInput/GInputField';
+  } from '../GInput/GInputFactory';
   import GIcon from "../GIcon/GIcon";
 
   export default {
@@ -116,7 +116,7 @@
       // basic props
       value: [String, Number],
 
-      //todo textarea
+      //textarea
       autoGrow: Boolean,
       noResize: Boolean,
       rowHeight: {
