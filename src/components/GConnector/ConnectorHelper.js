@@ -7,14 +7,14 @@ export function getElementPosition(el) {
   return new Rectangle(rect.top + offsetY, rect.left + offsetX, rect.bottom + offsetY, rect.right + offsetX)
 }
 
-export function getConnectionPoint(el, position) {
+export function getConnectionPoint(el, originPoint ,position,) {
   const rect = getElementPosition(el);
   const offsetWidth = el.offsetWidth;
   const offsetHeight = el.offsetHeight;
-  const topPoint = new Point(rect.left + offsetWidth/2, rect.top, 'top')
-  const leftPoint = new Point(rect.left, rect.top + offsetHeight/2, 'left')
-  const bottomPoint = new Point(rect.left + offsetWidth/2, rect.top + offsetHeight, 'bottom')
-  const rightPoint = new Point (rect.left + offsetWidth, rect.top + offsetHeight/2, 'right')
+  const topPoint = new Point(rect.left + offsetWidth/2 - originPoint.x, rect.top - originPoint.y, 'top')
+  const leftPoint = new Point(rect.left - originPoint.x, rect.top + offsetHeight/2 - originPoint.y, 'left')
+  const bottomPoint = new Point(rect.left + offsetWidth/2 - originPoint.x, rect.top + offsetHeight - originPoint.y, 'bottom')
+  const rightPoint = new Point (rect.left + offsetWidth - originPoint.x, rect.top + offsetHeight/2 - originPoint.y, 'right')
 
   switch(position) {
     case 'top':

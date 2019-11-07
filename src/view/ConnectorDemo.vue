@@ -1,5 +1,5 @@
 <template>
-		<g-diagram>
+		<g-diagram width="500" height="500" position="absolute" top="100" left="300">
 			<g-connector2 v-model="dataA" point-radius="15" show-point point-position="x">
 				<div id="div1">
 					{{ dataA }}
@@ -36,7 +36,7 @@
 <style scoped>
 	#div1 {
 		position: absolute;
-		top: 500px;
+		top: 100px;
 		left: 100px;
 		width: 100px;
 		height: 100px;
@@ -49,8 +49,8 @@
 	}
 	#div2 {
 		position: absolute;
-		top: 200px;
-		left: 700px;
+		top: 300px;
+		left: 300px;
 		width: 100px;
 		height: 100px;
 		color: white;

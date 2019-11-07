@@ -1,7 +1,7 @@
 <script>
 	import getVModel from '../../mixins/getVModel';
-  import { ref, reactive ,onMounted, inject } from '@vue/composition-api';
-  import { Point } from './CoordinateSystem';
+  import { ref, reactive, computed, onMounted, inject } from '@vue/composition-api';
+  import { Point, Circle } from './CoordinateSystem';
   import { getConnectionPoint } from './ConnectorHelper';
 
   export default {
@@ -45,6 +45,10 @@
       const connectionPaths = ref([]);
       const localConnectionPoints = ref([]);
 
+      const connectionRegions = computed(() => {
+        return connectionPoints.value.map(connectionPoint => new Circle(connectionPoint, +props.pointRadius))
+      })
+
       function getConnectionPointValue(point) {
         for (let connectionPoint of connectionPoints.value) {
           if (point.x === connectionPoint.x && point.y === connectionPoint.y) {
@@ -55,7 +59,7 @@
 
       onMounted(function () {
         this.$nextTick(function () {
-          localConnectionPoints.value = getConnectionPoint(this.$slots.default["0"].elm, props.pointPosition)
+          localConnectionPoints.value = getConnectionPoint(this.$slots.default["0"].elm, originCoordinate, props.pointPosition)
 					for (let connectionPoint of localConnectionPoints.value) {
 					  connectionPoint.value = model.value
 					}
@@ -84,11 +88,11 @@
       }
 
       function draw(e) {
-        const target = e.target
         if (isDraw.value) {
           const tempPath = connectionPaths.value[connectionPaths.value.length-1]
 					const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
-          tempPath.endPoint = target.nodeName === 'circle' ? new Point(+target.getAttribute('cx'), +target.getAttribute('cy')) : mousePoint;
+          const targetRegion = mousePoint.isInside(connectionRegions.value)
+					tempPath.endPoint =  targetRegion ? targetRegion.center : mousePoint;
 					tempPath.endPoint.value = getConnectionPointValue(tempPath.endPoint)
           tempPath.startControlPoint = new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.startPoint.y)
           tempPath.endControlPoint = new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.endPoint.y)
@@ -98,8 +102,9 @@
       function drawEnd(e) {
         if (isDraw.value) {
           const tempPath = connectionPaths.value[connectionPaths.value.length-1]
-          const target = e.target
-          if (target.nodeName === 'circle') {
+          const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
+          const targetRegion = mousePoint.isInside(connectionRegions.value)
+          if (targetRegion) {
 						context.emit('connected', tempPath.endPoint.value)
             isDraw.value = false
           } else {
@@ -132,7 +137,7 @@
               <path d="M1,1 L4,3 L1,5" stroke={props.pathColor} stroke-width="1" stroke-linejoin="bevel" fill="none"/>
             </marker>
 					</portal>
-          <path class="g-connection-path-main" d={d} stroke={props.pathColor} stroke-width={props.pathWidth} fill="none" marker-end={`url(#arrow${model.value.toString()})`}/>
+          <path class="g-connection-path-main" d={d}  pathLength="50" stroke={props.pathColor} stroke-width={props.pathWidth} fill="none" marker-end={`url(#arrow${model.value.toString()})`}/>
           <path class="g-connection-path-outline" d={d} stroke="grey" stroke-width="20" stroke-opacity="0" fill="none" tabindex="0" vOn:keydown={(e) => removePath(e, index)}/>
         </g>
       }
