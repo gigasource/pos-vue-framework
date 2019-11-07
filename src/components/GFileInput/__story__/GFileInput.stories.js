@@ -98,10 +98,9 @@ export const slotSelection = () => ({
     rules: [
       value => value.length === 0 || value.slice(-3) === 'txt' || 'File type should be txt',
     ],
-    files: [],
   }),
   props: {
-    multiple: {default: boolean('multiple', false)},
+    multiple: {default: boolean('multiple', true)},
     accept: {default: text('accept', '')},
     showSize: {default: boolean('show size', false)},
     counter: {default: boolean('counter', false)},
@@ -124,7 +123,7 @@ export const slotSelection = () => ({
     shaped: {default: boolean('shaped', false)},
     flat: {default: boolean('flat', false)},
   },
-  template: `<g-file-input :multiple="multiple"
+  template: `<div><g-file-input :multiple="multiple"
                            :accept="accept"
                            :show-size="showSize"
                            :counter="counter"
@@ -147,8 +146,66 @@ export const slotSelection = () => ({
                            :shaped="shaped"
                            :flat="flat"
                            >
-                             <template v-slot:selection="{text}">
+                             <template v-slot:selection="{text,index}">
                                <g-chip small  gradient="red, yellow, green, blue" label>{{text}}</g-chip>
                              </template>
-                           </g-file-input>`,
+                           </g-file-input>
+                           <g-file-input :multiple="multiple"
+                           :accept="accept"
+                           :show-size="showSize"
+                           :counter="counter"
+                           :chips="chips"
+                           :smallChips="smallChips"
+                           
+                           :rules="rules"
+                           :prependIcon="prependIcon"
+                           :prependInnerIcon="prependInnerIcon"
+                           :appendIcon="appendIcon"
+                           :appendOuterIcon="appendOuterIcon"
+                           :label="label"
+                           :placeholder="placeholder"   
+                           :hint="hint"
+                           
+                           :filled="filled"
+                           :outlined="outlined"
+                           :solo="solo"
+                           :rounded="rounded"
+                           :shaped="shaped"
+                           :flat="flat"
+                           >
+                             <template v-slot:selection="{text,index}">
+                               <g-chip v-if="index%2===0" small  gradient="red, yellow, green, blue" label>{{text}}</g-chip>
+                               <p v-if="index%2===1">{{text}}</p>
+                             </template>
+                           </g-file-input>
+                           <g-file-input :multiple="multiple"
+                           :accept="accept"
+                           :show-size="showSize"
+                           :counter="counter"
+                           :chips="chips"
+                           :smallChips="smallChips"
+                           
+                           :rules="rules"
+                           :prependIcon="prependIcon"
+                           :prependInnerIcon="prependInnerIcon"
+                           :appendIcon="appendIcon"
+                           :appendOuterIcon="appendOuterIcon"
+                           :label="label"
+                           :placeholder="placeholder"   
+                           :hint="hint"
+                           
+                           :filled="filled"
+                           :outlined="outlined"
+                           :solo="solo"
+                           :rounded="rounded"
+                           :shaped="shaped"
+                           :flat="flat"
+                           
+                          
+                           >
+                             <template v-slot:selection="{text,index,amount}">
+                               <g-chip v-if="index<2" small  gradient="red, yellow, green, blue" label>{{text}}</g-chip>
+                               <span v-else-if="index === 2">+ {{amount - 2}} files</span>
+                             </template>
+                           </g-file-input></div>`,
 });
