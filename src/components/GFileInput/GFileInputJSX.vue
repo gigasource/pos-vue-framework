@@ -192,10 +192,11 @@
 
       //genFieldSet
       const legendStyle = computed(() => {
-        if (!props.solo && props.label && (isFocused.value || internalValue.value)) {
+        if (!props.solo && props.label && isLabelActive.value) {
           return {
             'width': 'auto',
             'padding': '1px',
+						'margin-left': props.rounded ? '16px' : '4px',
           }
         } else
           return {}
