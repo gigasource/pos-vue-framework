@@ -7,16 +7,31 @@ export function getElementPosition(el) {
   return new Rectangle(rect.top + offsetY, rect.left + offsetX, rect.bottom + offsetY, rect.right + offsetX)
 }
 
-export function getConnectionPoint(el) {
+export function getConnectionPoint(el, position) {
   const rect = getElementPosition(el);
   const offsetWidth = el.offsetWidth;
   const offsetHeight = el.offsetHeight;
-  return [
-    new Point(rect.left + offsetWidth/2, rect.top),
-    new Point(rect.left, rect.top + offsetHeight/2),
-    new Point(rect.left + offsetWidth/2, rect.top + offsetHeight),
-    new Point (rect.left + offsetWidth, rect.top + offsetHeight/2)
-  ]
+  const topPoint = new Point(rect.left + offsetWidth/2, rect.top, 'top')
+  const leftPoint = new Point(rect.left, rect.top + offsetHeight/2, 'left')
+  const bottomPoint = new Point(rect.left + offsetWidth/2, rect.top + offsetHeight, 'bottom')
+  const rightPoint = new Point (rect.left + offsetWidth, rect.top + offsetHeight/2, 'right')
+
+  switch(position) {
+    case 'top':
+      return [topPoint]
+    case 'left':
+      return [leftPoint]
+    case 'bottom':
+      return [bottomPoint]
+    case 'right':
+      return [rightPoint]
+    case 'x':
+      return [leftPoint, rightPoint]
+    case 'y':
+      return [topPoint, bottomPoint]
+    default:
+      return [topPoint, leftPoint, bottomPoint, rightPoint]
+  }
 }
 
 export function createCircle(cx, cy, r, stroke, strokeWidth, fill) {

@@ -1,130 +1,143 @@
 <script>
   import { ref, reactive, computed, provide } from '@vue/composition-api';
-  import { Point } from './CoordinateSystem';
+  import Vue from 'vue';
 
   export default {
     name: 'GDiagram',
-    props: {
-
-		},
-    setup (props, context) {
+    props: {},
+    setup(props, context) {
       const diagramId = reactive({
-				value: 'null'
-			});
+        value: 'null'
+      });
 
-      const connectionPoints = reactive({
-				value: []
+      const connectionPoints = ref([])
+
+      const eventEmitter = new Vue()
+
+      const zoomState = ref(1)
+
+			const scaleFactor = 0.05
+			const minScale = 0.1
+			const maxScale = 100
+
+			const originCoordinate = reactive({
+				x: 0,
+				y: 0
 			})
 
+      function zoom(e) {
+        if (!Number.isInteger(e.deltaY)) {
+          e.preventDefault()
+
+					const delta = e.deltaY > 0 ? -1 : 1
+					const scroll = {
+            top: context.refs.container.scrollTop,
+						left: context.refs.container.scrollLeft
+					}
+					const zoomPoint = {
+            x: (e.pageX + scroll.left)/zoomState.value,
+            y: (e.pageY + scroll.top)/zoomState.value
+					}
+
+					zoomState.value += delta * scaleFactor * zoomState.value
+					zoomState.value = Math.max(minScale, Math.min(maxScale, zoomState.value))
+					if (zoomState.value < 1) {
+					  originCoordinate.x = (1 - zoomState.value)/2*context.refs.content.offsetWidth
+            originCoordinate.y = (1 - zoomState.value)/2*context.refs.content.offsetHeight
+					} else {
+						const newZoomPoint = {
+						  x: zoomPoint.x * zoomState.value,
+							y: zoomPoint.y * zoomState.value
+						}
+
+						context.refs.container.scrollLeft = newZoomPoint.x - e.pageX
+            context.refs.container.scrollTop = newZoomPoint.y - e.pageY
+					}
+        }
+      }
+
+      function scroll(e) {
+        originCoordinate.x = -e.target.scrollLeft;
+        originCoordinate.y = -e.target.scrollTop;
+      }
+
+      const containerStyles = computed(() => ({
+        transform: `scale(${zoomState.value}, ${zoomState.value})`,
+				transformOrigin: zoomState.value > 1 ? `0 0` : undefined
+      }))
+
       provide('id', diagramId)
-			provide('connectionPoint', connectionPoints)
+      provide('zoomState', zoomState)
+			provide('originCoordinate', originCoordinate)
+      provide('connectionPoint', connectionPoints)
+      provide('eventEmitter', eventEmitter);
 
 
-			// Draw connect line
-			const isDraw = ref(false)
-      let path
-			let endCircle
+      document.body.addEventListener('mousemove', function (e) {
+        eventEmitter.$emit('draw', e)
+      })
 
-      let startPoint
-      let endPoint
-      let startControlPoint
-      let endControlPoint
+      document.body.addEventListener('mouseup', function (e) {
+        eventEmitter.$emit('drawEnd', e)
+      })
 
-			function drawStart(e) {
-        const target = e.target
-        if(target.nodeName === 'circle') {
-          const diagram = context.refs.diagram
-          const mousePoint = new Point(e.pageX, e.pageY)
-					startPoint = new Point(+target.getAttribute('cx'), +target.getAttribute('cy'))
+      function genDiagram() {
+        return <div class="g-diagram-container" vOn:wheel={zoom} vOn:scroll={scroll} scroll-top="500" ref="container">
+          <div class="g-diagram-content" style={containerStyles.value} ref="content">
+            <portal-target name={diagramId.value} tag="svg" multiple width="1000" height="1000" ref="svg">
 
-          path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          path.setAttribute('stroke', 'green')
-          path.setAttribute('stroke-width', '2')
-          path.setAttribute('fill', 'none')
-
-          endCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-          endCircle.setAttribute('r', "5")
-          endCircle.setAttribute('stroke', 'green')
-          endCircle.setAttribute('stroke-width', '2')
-          endCircle.setAttribute('fill', 'none')
-
-          diagram.appendChild(path)
-          diagram.appendChild(endCircle)
-
-					isDraw.value = true
-				}
-			}
-
-			function draw(e) {
-        const target = e.target
-        if (isDraw.value) {
-          endPoint = target.nodeName === 'circle' ? new Point(+target.getAttribute('cx'), +target.getAttribute('cy')) : new Point(e.pageX, e.pageY);
-          startControlPoint = new Point((startPoint.x + endPoint.x)/2, startPoint.y)
-          endControlPoint = new Point((startPoint.x + endPoint.x)/2, endPoint.y)
-
-          const d = `M${startPoint.x} ${startPoint.y} C${startControlPoint.x} ${startControlPoint.y}, ${endControlPoint.x} ${endControlPoint.y}, ${endPoint.x} ${endPoint.y}`
-          path.setAttribute('d', d)
-          endCircle.setAttribute('cx', endPoint.x)
-          endCircle.setAttribute('cy', endPoint.y)
-        }
-			}
-
-			function drawEnd(e) {
-        if (isDraw.value) {
-          const target = e.target
-          const diagram = context.refs.diagram
-          if (target.nodeName === 'circle') {
-            isDraw.value = false
-            path = undefined
-            endCircle = undefined
-          } else {
-            diagram.removeChild(path)
-            diagram.removeChild(endCircle)
-            isDraw.value = false
-            path = undefined
-            endCircle = undefined
-          }
-        }
-			}
-
-			document.body.addEventListener('mousedown', drawStart)
-      document.body.addEventListener('mousemove', draw)
-      document.body.addEventListener('mouseup', drawEnd)
-
-      function genSVG() {
-        return <div class="g-diagram-container" ref="diagram-container">
-					<svg width="1000" height="1000" ref="diagram">
+            </portal-target>
+            <portal to={diagramId.value}>
+                <marker id="arrow" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto" markerUnits="strokeWidth">
+                  <path d="M1,1 L4,3 L1,5" stroke="green" stroke-width="1" stroke-linejoin="bevel" fill="none"/>
+                </marker>
+            </portal>
             {context.slots.default ? context.slots.default() : undefined}
-        	</svg>
-					<portal-target name={diagramId.value} multiple>
-
-					</portal-target>
+          </div>
         </div>
-			}
+      }
 
-			return {
+      return {
         diagramId,
-				connectionPoints,
-        genSVG
-			}
-		},
-		render() {
-      return this.genSVG()
-		},
-		mounted () {
+        connectionPoints,
+        containerStyles,
+        zoomState,
+
+        genDiagram
+      }
+    },
+    render() {
+      return this.genDiagram()
+    },
+    mounted() {
       this.diagramId.value = `${this._uid}`
-      console.log(this._uid)
-		}
+    }
   }
 </script>
 <style scoped lang="scss">
-	.g-diagram-container {
-
-		svg {
-			position: absolute;
+	.g-diagram {
+		&-container {
+			border: 1px solid red;
 			width: 100%;
 			height: 100%;
-			z-index: 1000;
+			overflow: scroll;
+		}
+
+		&-content {
+			border: 1px solid green;
+			//position: relative;
+			width: 100%;
+			height: 100%;
+			//transform-origin: 0 0;
+
+			//will-change: transform;
+
+			svg {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				z-index: 1000;
+			}
 		}
 	}
 </style>
