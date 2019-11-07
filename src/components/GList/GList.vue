@@ -2,50 +2,50 @@
   <div :class="classes"
        class="g-list"
        :style="styles"
-       @click="onClick">
+       @click="onClick"
+  >
 
     <template v-if="!multiSection">
-      <div class="singleSectionList">
-        <slot name="subheader">
-          <div v-if="subheader" class="g-list-header">{{subheader}}</div>
-        </slot>
-        <div v-for="(item, index) in renderList" :key="index"
-             @click="onSelect(item)">
-          <slot :item="item" :isSelected="internalValue === item">
-            <!-- fixme: waves effect does not work  -->
-            <div v-if="item.title"
-                 class="g-list-item"
-                 :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}">
-              <slot name="prepend" :item="item">
-                <div :class="prependClasses">
-                  <img alt="" :src="item.prepend">
+      <slot name="subheader">
+        <div v-if="subheader" class="g-list-header">{{subheader}}</div>
+      </slot>
+      <template v-for="(item, index) in renderList">
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)">
+          <!--            todo: add key move event-->
+          <div v-if="item[itemTitle]"
+               class="g-list-item"
+               :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
+               tabindex="0"
+               @click="onSelect(item)"
+               @keydown.enter="onSelect(item)"
+               @keydown.down="onArrowDown(item)"
+               @keydown.up="onArrowUp(item)"
+          >
+            <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+              <div :class="prependClasses" v-if="item.prepend"> <img :src="item.prepend"></div>
+            </slot>
+            <div class="g-list-item-content">
+              <div class="g-list-item-text">{{item[itemTitle]}}</div>
+              <div class="g-list-item-text__sub"
+                   v-if="lineNumber > 1">
+                {{item.subtitle|| '&nbsp;'}}
+              </div>
+              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
+            </div>
+              <slot name="append" :item="item">
+                <div class="g-list-item-action">
+                  <g-icon color="yellow">star</g-icon>
                 </div>
               </slot>
-
-              <div class="g-list-item-content">
-                <div class="g-list-item-text">{{item.title}}</div>
-                <div class="g-list-item-text__sub"
-                     v-if="lineNumber > 1">
-                  {{item.subtitle|| '&nbsp;'}}
-                </div>
-                <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
-              </div>
-              <!--fixme: append wait for VIcon-->
-              <div class="g-list-item-action">
-                <slot name="append" :item="item">
-
-                </slot>
-              </div>
-            </div>
-            <g-divider v-if="(divider && (index < renderList.length -1))"
-                       :inset="divider === 'inset'"/>
-          </slot>
-        </div>
-      </div>
+          </div>
+          <g-divider v-if="(divider && (index < renderList.length -1))"
+                     :inset="divider === 'inset'"/>
+        </slot>
+      </template>
     </template>
 
     <template v-else>
-      <template v-for="(item) in items">
+      <template v-for="(item, index) in items">
         <template v-if="item.type === 'subheader'">
           <slot name="subheader">
             <div class="g-list-header">{{item.subheader}}</div>
@@ -57,7 +57,11 @@
         <slot :item="item" v-else>
           <div class="g-list-item"
                :class="{'g-list-item__active': internalValue === item, 'waves-effect': true}"
-               @click="onSelect(item)">
+               tabindex="0"
+               @click="onSelect(item)"
+               @keydown.enter="onSelect(item)"
+               @keydown.down="onArrowDown(item)"
+               @keydown.up="onArrowUp(item)">
             <slot name="prepend" :item="item">
               <div :class="prependClasses">
                 <img alt="" :src="item.prepend">
@@ -65,36 +69,35 @@
             </slot>
 
             <div class="g-list-item-content">
-              <div class="g-list-item-text">{{item.title}}</div>
+              <div class="g-list-item-text">{{item[itemTitle]}}</div>
               <div class="g-list-item-text__sub"
                    v-if="lineNumber > 1">
-                {{item.subtitle || '&nbsp;&nbsp;'}}
+                {{item.subtitle || '&nbsp;'}}
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
+            <slot name="append" :item="item">
+              <div class="g-list-item-action">
+                <g-icon color="yellow">star</g-icon>
+              </div>
+            </slot>
 
-            <!--fixme: append wait for VIcon-->
-            <div class="g-list-item-action">
-              <slot name="append" :item="item"></slot>
-            </div>
           </div>
         </slot>
-
       </template>
     </template>
-
-
   </div>
 </template>
 
 <script>
   import {computed} from '@vue/composition-api';
   import GDivider from "../GLayout/GDivider";
-  import {getInternalValue} from '../../utils/helpers';
+  import {makeSelectable} from "../../mixins/groupable";
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GList',
-    components: {GDivider},
+    components: { GIcon, GDivider},
     props: {
       height: String,
       width: String,
@@ -119,8 +122,16 @@
         default: 'icon',
       },
       subtitleWrap: Boolean,
-      value: [String, Object, Number],
+      value: [String, Object, Number, Array],
       selectable: Boolean,
+      multiple: Boolean,
+      mandatory: Boolean,
+      allowDuplicates: Boolean,
+      itemValue: String,
+      itemTitle: {
+        type: String,
+        default: 'title'
+      }
     },
     setup: function (props, context) {
       //G list computed class
@@ -154,21 +165,33 @@
         return `g-list-item-${props.prependType}`;
       })
 
-      const renderList = computed(() => props.items.filter(item => item.title))
+      const renderList = computed(() => props.items.filter(item => item[props.itemTitle]))
 
       //Select
       function onClick(event) {
         context.emit('click', event)
       }
-
-      const internalValue = getInternalValue(props, context);
-
-      function onSelect(item) {
-        if (!props.selectable) return;
-        internalValue.value = internalValue.value === item ? null : item;
-        context.emit('click:item', item)
+      function onArrowDown(item){
+        let index = renderList.value.findIndex(i=> i.title === item.title && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index < (renderList.value.length -1) ? i += 1 : i=0
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:up')
+      }
+      function onArrowUp(item){
+        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let i = index
+        index > 0 ? i -= 1 : i = props.items.length -1
+        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:down')
       }
 
+      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
+      function onSelect(item) {
+        if (!props.selectable) return;
+        toggleItem(item)
+        context.emit('click:item')
+      }
       return {
         classes,
         styles,
@@ -176,13 +199,15 @@
         renderList,
         lineNumber,
         onClick,
+        onArrowDown,
+        onArrowUp,
         onSelect,
         internalValue,
+        isActiveItem,
       }
     }
   }
 </script>
 
 <style scoped>
-
 </style>
