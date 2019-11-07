@@ -7,6 +7,16 @@ export function joinRefArrayValue(refArray, separator = ' ') {
   return output
 }
 
+export function createEmptyArea() {
+  return {
+    name: '',
+    rowStart: -1,
+    columnStart: -1,
+    rowEnd: -1,
+    columnEnd: -1
+  }
+}
+
 /**
  * return grid area css style value
  * @param gridItem
@@ -75,6 +85,20 @@ ${css}
   })
 
   return output
+}
+
+/**
+ * return all area of selected grid
+ * @param grids
+ * @param selectedGridName
+ * @returns {Array}
+ */
+export function getSelectedAreas(grids, selectedGridName) {
+  let selectedGrid = _.find(grids, grid => grid.name === selectedGridName)
+  if (selectedGrid)
+    return selectedGrid.subAreas
+  else
+    return []
 }
 
 function createSingleItem(grids, parentGrid, area) {
