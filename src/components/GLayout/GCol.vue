@@ -13,13 +13,21 @@
       alignSelf: String,
       justifySelf: String,
       cols: [Number, String],
+      sm: [Number, String],
+      md: [Number, String],
+      lg: [Number, String],
+      xl: [Number, String],
       offset: [Number, String],
-      order: [Number, String]
+      order: [Number, String],
     },
     setup(props) {
       const classes = computed(() => ({
         'g-col': true,
         ['col-' + props.cols]: props.cols,
+        ['col-sm-' + props.sm]: props.sm,
+        ['col-md-' + props.md]: props.md,
+        ['col-lg-' + props.lg]: props.lg,
+        ['col-xl-' + props.xl]: props.xl,
         ['offset-' + props.offset]: props.offset,
       }));
 

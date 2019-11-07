@@ -79,13 +79,13 @@ describe('GTextField', function () {
       components:{ GTextFieldFunctional}
     }).$mount() ;
     const input = vm.$el.querySelector('input');
-    expect(vm.$el.querySelector('.tf-hint')).toBeTruthy()
+    expect(vm.$el.querySelector('.g-tf--hint')).toBeTruthy()
     input.click();
     vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.tf-hint__active')).toBeTruthy();
+      expect(vm.$el.querySelector('.g-tf--hint__active')).toBeTruthy();
       input.blur();
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.tf-hint__active')).toBeFalsy()
+        expect(vm.$el.querySelector('.g-tf--hint__active')).toBeFalsy()
       })
     });
 
@@ -100,7 +100,7 @@ describe('GTextField', function () {
     }).$mount() ;
     const input = vm.$el.querySelector('input');
     expect(input.getAttribute('label')).toBe('Test label');
-    const label = vm.$el.querySelector('.tf-label');
+    const label = vm.$el.querySelector('.g-tf--label');
     expect(label).toBeTruthy();
     input.click();
     vm.$nextTick(() => {
@@ -116,14 +116,14 @@ describe('GTextField', function () {
       template:`<g-text-field label="Test label" prefix="Prefix"></g-text-field>`,
       components:{ GTextFieldFunctional}
     }).$mount();
-    const prefix = vm.$el.querySelector('.tf-affix');
+    const prefix = vm.$el.querySelector('.g-tf--affix');
     expect(prefix).toBeTruthy();
     expect(prefix.innerHTML).toBe('Prefix');
     expect(vm.$el.outerHTML).toMatchSnapshot();
     const label = vm.$el.querySelector('label');
     label.click();
     vm.$nextTick(() =>{
-      expect(vm.$el.querySelector('.tf-hint__active')).toBeTruthy()
+      expect(vm.$el.querySelector('.g-tf--hint__active')).toBeTruthy()
     })
 
   });

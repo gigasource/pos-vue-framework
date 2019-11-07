@@ -1,5 +1,5 @@
-import {text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions';
+import { boolean, text, withKnobs } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
 import GList from '../GList';
 import GListItem from '../GListItem';
 import GDivider from '../../GLayout/GDivider.vue';
@@ -66,20 +66,23 @@ export const gListNav = () => ({
 })
 
 export const gListTwoLine = () => ({
-  components: {GList},
+  components: { GList },
+  props: {
+    dense: { default: boolean('dense', false) },
+  },
   data() {
     return {
       items: [
-        {title: 'Jason Oner', subtitle: "Jason the ant, ants work together to gather food and care for the young, and their behavior is surprisingly coordinated and methodical for such seemingly simple insects.",prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        { title: 'Jason Oner', subtitle: 'Jason the ant, ants work together to gather food and care for the young, and their behavior is surprisingly coordinated and methodical for such seemingly simple insects.', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
       ]
     }
   },
   template:
     `
-      <g-list :items="items" rounded dense subheader="subheader" divider='inset' >
+      <g-list :items="items" rounded :dense="dense" subheader="subheader" divider='inset' >
       </g-list>
       `,
 })
@@ -253,7 +256,6 @@ export const gListSingleSectionSelect = () => ({
       </div>
       `,
 })
-
 export const gListMultiSectionSelect = () => ({
   components: {GList},
   data() {
@@ -356,7 +358,11 @@ export const gListSelectMandatory = () => ({
       `,
 })
 
+
 import Vue from 'vue/dist/vue.common.js'
+import GContainer from '../../GLayout/GContainer';
+import GRow from '../../GLayout/GRow';
+import GCol from '../../GLayout/GCol';
 
 describe('GList', function () {
   it('should render rounded dense', function () {

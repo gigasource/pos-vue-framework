@@ -148,7 +148,7 @@
 
   &__shaped {
     .g-list-item {
-      &:hover, &__active {
+      &:hover, &:focus, &__active {
         border-top-right-radius: 9999px;
         border-bottom-right-radius: 9999px;
       }
@@ -160,14 +160,13 @@
   &__rounded {
     .g-list-item {
       padding: 0 16px;
+      &:hover, &:focus{
+        border-radius: 9999px;
+      }
       &__active{
         border-radius: 9999px;
         background-color: rgba(60, 211, 255, 0.53);
       }
-    }
-
-    .g-list-item:hover {
-      border-radius: 9999px;
     }
   }
 

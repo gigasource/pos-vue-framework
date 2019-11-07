@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {computed, ref, watch} from "@vue/composition-api";
+import { computed, ref, watch } from '@vue/composition-api';
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -89,7 +89,7 @@ export function upperFirst(str) {
 export default function colorHandler() {
 
   function getColorType(color) {
-    if (color && (color.indexOf('rgb') === 0 || color.indexOf('hsl') === 0 || color.indexOf('#') === 0) || color === 'transparent') {
+    if (color && (color.indexOf('rgb') === 0 || color.indexOf('hsl') === 0 || color.indexOf('#') === 0) || color === 'transparent' || color === 'currentColor') {
       return 'style';
     } else if (color) {
       return 'class';
@@ -112,16 +112,17 @@ export default function colorHandler() {
   }
 };
 
-export function createSimpleFunctional (c, el = 'div', name) {
+export function createSimpleFunctional(c, el = 'div', name) {
   return Vue.extend({
     name: name || c.replace(/__/g, '-'),
     functional: true,
-    render (h, { data, children }) {
+    render(h, { data, children }) {
       data.staticClass = (`${c} ${data.staticClass || ''}`).trim();
       return h(el, data, children);
     },
   })
 }
+
 export function getInternalValue(props, context) {
   // text field internalValue
   const rawInternalValue = ref(props.value || '');
@@ -140,16 +141,16 @@ export function getInternalValue(props, context) {
 }
 
 
-export function createRange (length) {
+export function createRange(length) {
   return Array.from({ length }, (v, k) => k)
 }
 
-export function kebabCase (str) {
+export function kebabCase(str) {
   return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
 // Return transition duration of an element in millisecond
 export function getTransitionDuration(el) {
-  const duration =  window.getComputedStyle(el).getPropertyValue('transition-duration');
-  return Math.round(parseFloat(duration)*1000);
+  const duration = window.getComputedStyle(el).getPropertyValue('transition-duration');
+  return Math.round(parseFloat(duration) * 1000);
 }

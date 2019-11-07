@@ -44,15 +44,15 @@ function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vMode
     vModel.value = clonedValue;
   };
 
-  const isActiveItem = (item) => {
-    return multiple ? vModel.value.includes(item) : vModel.value === item;
-  };
+    const isActiveItem = (item) => {
+      return multiple ? vModel.value.includes(item) : vModel.value === item;
+    };
 
-  return {
-    toggleItem,
-    isActiveItem
+    return {
+      toggleItem,
+      isActiveItem
+    }
   }
-}
 
 export function makeSelectable(props, context) {
   // 1 -> {a: 1, b: 2}
