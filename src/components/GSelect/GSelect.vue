@@ -1,180 +1,85 @@
-<template>
-  <div class="g-select" :style="{'width': `${width}`}">
-    <g-menu v-model="showOptions"
-            :closeOnClick="closeOnClick"
-            :closeOnContentClick="closeOnContentClick"
-            :maxWidth="width"
-            :maxHeight="maxHeight"
-            :offsetY="offsetY"
-            :offsetOverflow="offsetOverflow"
-            :top="top"
-            :nudgeBottom="nudgeBottom">
-      <template v-slot:activator="{toggleContent}">
-        <!--          fixme: text field slot to customise text field display : slot prepend-->
-        <g-text-field :label="label"
-                      :clearable="clearable"
-                      :filled="filled"
-                      :solo="solo"
-                      :outlined="outlined"
-                      :flat="flat"
-                      :rounded="rounded"
-                      :shaped="shaped"
-                      :hint="hint"
-                      :persistent="persistent"
-                      :counter="counter"
-                      :placeholder="placeholder"
-                      :prefix="prefix"
-                      :suffix="suffix"
-                      :type="type"
-                      :rules="rules"
-                      @click="toggleContent"
-                      read-only
-                      @click:clearIcon="clearSelection"
-                      :value="textfieldValue"
-        >
-          <template v-slot:inputSlot="{inputErrStyles}" v-if="textfieldValue">
-            <div class="tf-input" style="{color: #1d1d1d}" :style="inputErrStyles">
-              <template v-if="multiple">
-                <template v-for="(value, index) in selections">
-                  <template v-if="chips||allowDuplicates">
-                    <g-chip close @click:close="onChipCloseClick(index)">{{value}}</g-chip>
-                  </template>
-                  <template v-else>
-                    <div v-if="index +1 ===selections.length ">{{value}}</div>
-                    <div v-else>{{value +',&nbsp;'}}</div>
-                  </template>
-                </template>
-              </template>
-              <template v-else-if="chips">
-                <g-chip close @click:close="onChipCloseClick(index)">{{selections}}</g-chip>
-              </template>
-              <template v-else>
-                <div>{{selections}}</div>
-              </template>
-            </div>
-          </template>
-          <template v-slot:append-inner="{isFocused, isValidInput }">
-            <div class="dropDown" :style="iconStyle">
-              <g-icon :color="showOptions||isFocused ? 'blue' : null">arrow_drop_down</g-icon>
-            </div>
-          </template>
-        </g-text-field>
-      </template>
-      <template v-slot:default="{toggleContent}">
-        <slot name="prependItems">
-        </slot>
-        <g-text-field v-if="searchable"
-                      placeholder="Search"
-                      v-model="searchText"
-                      clearable
-                      solo
-                      flat
-                      style="margin-bottom: 0; background-color: transparent"
-        ></g-text-field>
-        <g-list v-if="multiple||searchable" :item-title="itemText" :items="options" :mandatory="mandatory" :allow-duplicates="allowDuplicates" selectable
-                :multiple="multiple" v-model="selectedItem" @click:item="!multiple ? showOptions = false : ''" dense>
-          <template v-slot:listItem="{item, isSelected}">
-            <slot name="item" :item="item" :isSelected="isSelected"></slot>
-          </template>
-        </g-list>
-        <g-list v-else :items="items" :item-title="itemText" :item-value="itemValue" selectable mandatory v-model="selectedItem" @click:item="showOptions = false" dense>
-          <template v-slot:listItem="{item, isSelected}">
-            <slot name="item" :item="item" :isSelected="isSelected"></slot>
-          </template>
-        </g-list>
-      </template>
-    </g-menu>
-  </div>
-</template>
 <script>
-  import {reactive, ref, computed, toRefs} from '@vue/composition-api';
-  import GList from "../GList/GList";
-  import GMenu from "../GMenu/GMenu";
-  import _ from "lodash";
-  import GListItem from "../GList/GListItem";
-  import {makeSelectable} from "../../mixins/groupable";
   import GTextField from "../GInput/GTextField";
-  import {GListItemContent, GListItemSubText, GListItemText} from "../GList/GListFunctionalComponent";
-  import GIcon from "../GIcon/GIcon";
-  import {getLabel} from "../GInput/GInputField";
-  import {getList, getSelections} from "./GSelect";
+  import GMenu from "../GMenu/GMenu"
+  import {makeSelectable} from "../../mixins/groupable";
+  import {reactive, ref, computed, toRefs} from "@vue/composition-api";
+  import {getList, getSelections} from "./GSelectFactory";
   import GChip from "../GChip/GChip";
+  import GIcon from "../GIcon/GIcon";
+  import GList from "../GList/GList";
+  import _ from "lodash"
 
   export default {
     name: "GSelect",
-    components: {
-      GChip,
-      GIcon,
-      GListItem,
-      GTextField,
-      GMenu,
-      GList,
-      GListItemContent,
-      GListItemText,
-      GListItemSubText,
-
-    },
+    components: {GList, GIcon, GChip, GTextField, GMenu},
     props: {
       //select props
       width: [String, Number],
       //text field's props
       ...{
-        clearable:{
-        type: Boolean,
-        default: false
-      },
-      filled:{
-        type: Boolean,
-        default: false
-      },
-      solo:{
-        type: Boolean,
-        default: false
-      },
-      outlined:{
-        type: Boolean,
-        default: false
-      },
-      flat:{
-        type: Boolean,
-        default: false
-      },
-      rounded:{
-        type: Boolean,
-        default: false
-      },
-      shaped:{
-        type: Boolean,
-        default: false
-      },
-      hint:{
-        type: String,
-        default: ''
-      },
-      persistent:{
-        type: Boolean,
-        default: false
-      },
-      counter:{
-        type:  [Boolean, Number, String],
-        default: false
-      },
-      placeholder:{
-        type: String,
-        default: ''
-      },
-      label:{
-        type: String,
-        default: 'Label'
-      },
-      prefix:{
+
+        //textfield style
+        ...{
+          filled: {
+            type: Boolean,
+            default: false
+          },
+          solo: {
+            type: Boolean,
+            default: false
+          },
+          outlined: {
+            type: Boolean,
+            default: false
+          },
+          flat: {
+            type: Boolean,
+            default: false
+          },
+          rounded: {
+            type: Boolean,
+            default: false
+          },
+          shaped: {
+            type: Boolean,
+            default: false
+          }
+        },
+        //textfield parts
+        clearable: {
+          type: Boolean,
+          default: false
+        },
+        hint: {
           type: String,
-            default:''},
-        suffix:{
+          default: ''
+        },
+        persistent: {
+          type: Boolean,
+          default: false
+        },
+        counter: {
+          type: [Boolean, Number, String],
+          default: false
+        },
+        placeholder: {
           type: String,
-          default:''},
+          default: ''
+        },
+        label: {
+          type: String,
+          default: 'Label'
+        },
+        prefix: {
+          type: String,
+          default: ''
+        },
+        suffix: {
+          type: String,
+          default: ''
+        },
         rules: Array,
-        type:{
+        type: {
           type: String,
           default: 'text'
         }
@@ -199,7 +104,7 @@
         })
       },
       //item textfieldValue props
-      chips:{
+      chips: {
         type: Boolean,
         default: false
       },
@@ -213,103 +118,178 @@
         default: 'value'
       },
       value: null,
+      genTextField: Function,
+      genList: Function,
+      selectOnly: {
+        type: Boolean,
+        default: true
+      }
     },
     setup: function (props, context) {
-
       const state = reactive({
         searchText: '',
         fieldItem: null
       })
-      const showOptions = ref(false)
-
+      //list selections
       const {internalValue: selectedItem} = makeSelectable(props, context)
-
-      //list rendered computed
-      const options =  getList(props, selectedItem, state)
-      const {searchText} = toRefs(state)
-
-      //selections from list
       const fieldItem = getSelections(props, selectedItem)
-      //textfield value computed
       const selections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
             return item ? (item['text'] || item['value'] || item) : ''
           })
-        }else {
+        } else {
           return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
         }
 
       })
-      const textfieldValue = computed(() => {
-        if(props.multiple) return selections.value.join(', ')
-        return selections.value
-      })
-      function clearSelection() {
-        selectedItem.value = props.multiple ? [] : ''
-        state.searchText = ''
-      }
-        //menu props computed
-      const {
-        closeOnClick,
-        closeOnContentClick,
-        maxHeight,
-        offsetY,
-        offsetOverflow,
-        top
-      } = props.menuProps
-      const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
-      //dropdown icon
-      const iconStyle = computed(() => (showOptions.value) ? {'transform':'rotateZ(180deg)'} : {})
-      const iconColor = computed(() => (showOptions.value) ? 'blue' : null)
-      //chips click
-      function onChipCloseClick(index){
-        if (props.multiple) {
-          selectedItem.value.splice(index, 1);
-        } else {
-          selectedItem.value = ''
+
+      //gen SearchText
+      function genSearchTextField() {
+        if (props.searchable && props.selectOnly) {
+          return <GTextField placeholder="Search"
+                             vModel={state.searchText}
+                             clearable
+                             style="margin-bottom: 0; background-color: transparent"/>
         }
       }
+
+      //genList
+      const options = getList(props, selectedItem, state)
+
+      const genList = props.genList || function () {
+        return <GList
+            item-title={props.itemText}
+            items={options.value}
+            mandatory={props.mandatory}
+            allow-duplicates={props.allowDuplicates}
+            selectable
+            multiple={props.multiple}
+            vModel={selectedItem.value}
+            {...{on: {'click:item': () => !props.multiple ? showOptions.value = false : null}}}
+            dense>
+        </GList>
+      }
+
+      const showOptions = ref(false)
+
+      //gen Text field
+      const genTextField = props.genTextField || function (toggleContent) {
+
+        const iconStyle = computed(() => (showOptions.value) ? {'transform': 'rotateZ(180deg)'} : {})
+        const textfieldValue = computed(() => {
+          if (props.multiple) return selections.value.join(', ')
+          return selections.value
+        })
+
+        function onChipCloseClick(index = null) {
+          if (props.multiple) {
+            selectedItem.value.splice(index, 1);
+          } else {
+            selectedItem.value = null
+          }
+        }
+
+        const genMultiSelectionsSlot = () => {
+          if (props.chips || props.allowDuplicates) {
+            return selections.value.map((item, index) => <GChip
+                close {...{on: {'click:close': () => onChipCloseClick(index)}}}>{item}
+            </GChip>)
+          }
+          return selections.value.join(', ');
+        }
+        const genSingleSelectionSlot = () => {
+          if (props.chips && selections.value) {
+            return <GChip close {...{on: {'click:close': () => onChipCloseClick()}}}>{selections.value}</GChip>
+          }
+          return selections.value
+        }
+
+
+        const getTextFieldScopedSlots = {
+          appendInner: ({isFocused}) =>
+              <div class="dropDown" style={iconStyle.value}>
+                <GIcon color={showOptions.value || isFocused ? 'blue' : null}>arrow_drop_down</GIcon>
+              </div>,
+          inputSlot: ({inputErrStyles}) =>
+              <div class="tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
+                {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
+              </div>
+        }
+
+        function clearSelection() {
+          selectedItem.value = props.multiple ? [] : ''
+          state.searchText = ''
+        }
+
+        return (
+            <GTextField {...{
+              props: _.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
+                'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
+                'rules', 'type'])
+            }}
+                        {...{on: {'click:clearIcon': () => clearSelection()}}}
+                        vOn:click={toggleContent}
+                        value={textfieldValue.value}
+                        scopedSlots={getTextFieldScopedSlots}>
+            </GTextField>
+        )
+      }
+
+      function genMenu() {
+        const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
+        return <g-menu vModel={showOptions.value}
+                       {...{props: props.menuProps}}
+                       nudgeBottom={nudgeBottom.value}
+                       scopedSlots={{
+                         activator: ({toggleContent}) => genTextField(toggleContent)
+                       }}
+        >
+          <template slot="default">
+            <slot name="prependItem"></slot>
+            {genSearchTextField()}
+            {genList()}
+          </template>
+        </g-menu>
+      }
+
+      function genSelect() {
+        return <div class="g-select">
+          {genMenu()}
+        </div>
+      }
+
       return {
-        //
+        genSelect,
+        genSearchTextField,
+        options,
+        state,
         selectedItem,
         selections,
-        options,
-        fieldItem,
-        textfieldValue,
-        searchText,
-        clearSelection,
-        showOptions,
-        //menu props
-        ...{
-          closeOnClick,
-          closeOnContentClick,
-          maxHeight,
-          offsetY,
-          offsetOverflow,
-          top,
-        },
-        nudgeBottom,
-        iconStyle,
-        iconColor,
-        onChipCloseClick,
       }
+    },
+    render() {
+      return this.genSelect()
     }
   }
 </script>
 <style>
-  .g-checkbox-wrapper {
-    margin: 2px 4px;
-  }
-  .dropDown{
+  .dropDown {
     transition: transform 0.4s;
   }
-  .tf-input{
-    color: #1d1d1d;
+
+  .input {
     display: flex;
-    flex-wrap: wrap;
   }
-  input{
+
+  .g-tf-input {
+    color: #1d1d1d;
+    flex-wrap: wrap;
+    width: auto;
+    display: flex;
+  }
+
+  input {
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 0%;

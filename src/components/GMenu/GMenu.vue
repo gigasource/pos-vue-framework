@@ -180,6 +180,7 @@
 
         isActive.value = !isActive.value;
         updateDimensions();
+        context.emit('activate', event)
       }
 
       const elListeners = {

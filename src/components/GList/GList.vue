@@ -154,6 +154,8 @@
         ['elevation-' + props.elevation]: true,
         'g-list__dense': props.dense,
         'g-list__nav': props.nav,
+        'g-list__empty': !props.items.length
+
       }));
 
       const styles = computed(() => ({
@@ -191,8 +193,8 @@
       const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
         if (!props.selectable) return;
-        internalValue.value = internalValue.value === item ? null : item;
-        context.emit('click:item', item)
+        toggleItem(item)
+        context.emit('click:item')
       }
 
       return {
@@ -204,6 +206,7 @@
         onClick,
         onSelect,
         internalValue,
+        isActiveItem,
       }
     }
   }

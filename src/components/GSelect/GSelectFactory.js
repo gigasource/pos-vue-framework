@@ -1,24 +1,24 @@
 import {computed} from '@vue/composition-api';
 import _ from "lodash";
 
-export function getList(props, selectedItem, state){
-  return computed(() =>{
-    if(props.multiple) {
-
+export function getList(props, selectedItem, state) {
+  return computed(() => {
+    if (props.multiple) {
+      let _options
       if (props.allowDuplicates) {
-        return props.items;
-      }
-      if (!props.itemValue) {
-        return props.items.filter(item => !selectedItem.value.includes(item));
-      }
-      let _options = props.items.filter(item => {
-        if (item[props.itemText]) {
-          return !selectedItem.value.find(value => value === item);
+        _options = props.items;
+        if (!props.itemValue) {
+          _options = props.items.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
         }
-        return selectedItem.value.find(value => value === item);
-      });
-      return _options
-      if (state.searchText) {
+      } else {
+        _options = props.items.filter(item => {
+          if (item[props.itemText]) {
+            return !selectedItem.value.find(value => _.isEqual(value, item));
+          }
+          return selectedItem.value.find(value => _.isEqual(value, item));
+        });
+      }
+      if (props.searchable) {
         let items = _.cloneDeep(_options);
         if (!state.searchText) {
           return items;
@@ -32,15 +32,26 @@ export function getList(props, selectedItem, state){
           const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
           return text.startsWith(searchText);
         });
-        _searchedOptions  = _searchedOptions .concat(items.filter(item => {
+        _searchedOptions = _searchedOptions.concat(items.filter(item => {
           const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
           return !text.startsWith(searchText) && text.includes(searchText);
         }));
-        return _searchedOptions
-      }
+        if (props.allowDuplicates) {
+          return _searchedOptions
+        }
+        if (!props.itemValue) {
+          return _searchedOptions.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
+        }
+        return _searchedOptions.filter(item => {
+          if (item[props.itemText]) {
+            return !selectedItem.value.find(value => _.isEqual(value, item));
+          }
+          return selectedItem.value.find(value => _.isEqual(value, item));
+        });
+      } else return _options
     }
-    else{
-      if (props.searchable) {
+    else  if (props.searchable)  {
+     {
         let items = _.cloneDeep(props.items);
         if (!state.searchText) {
           return items;
@@ -61,16 +72,17 @@ export function getList(props, selectedItem, state){
         return _options
       }
     }
+    else return props.items
   })
 
 }
-//todo: check allowDuplicates
-export function getSelections(props, selectedItem){
+
+export function getSelections(props, selectedItem) {
   return computed(() => {
     if (!props.multiple) {
       let item = selectedItem.value;
       if (!item) {
-        return '';
+        return null;
       }
       if (typeof item === 'string' || typeof item === 'number') {
         return item;
@@ -78,7 +90,7 @@ export function getSelections(props, selectedItem){
       if (props.itemValue) {
         item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]);
       }
-      return {text: item[props.itemText], value: item[props.itemValue]}||'';
+      return {text: item[props.itemText], value: item[props.itemValue]} || '';
     } else {
       let list = selectedItem.value
       if (props.itemText && props.itemValue) {
