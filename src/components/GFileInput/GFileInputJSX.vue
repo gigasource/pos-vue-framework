@@ -1,15 +1,16 @@
 <script>
   import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
-  import {ref, computed} from '@vue/composition-api';
+  import {ref, computed, reactive, watch} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputFactory';
+  import {isEqual} from 'lodash'
 
   export default {
     name: "GFileInputJSX",
     components: {GChip, GIcon},
     model: {
-      prop: 'value',
-      event: 'change',
+        prop: 'value',
+        event: 'change',
     },
     props: {
       //display props
@@ -79,13 +80,52 @@
       }
     },
     setup(props, context) {
-      const internalValue = getInternalValue(props, context)
+      //const internalValue = getInternalValue(props, context)
+      // const state = reactive({
+      //   lazyValue: props.value
+      // })
+      const lazyValue = ref(props.value)
+      const internalValue = computed({
+        get: () => lazyValue.value,
+        set: (val) => {
+          lazyValue.value = val
+          console.log(lazyValue.value)
+          context.emit('input', Array.from(lazyValue.value))
+          context.emit('change',Array.from(lazyValue.value))
+        }
+      })
+      watch(() => props.value, (v) => {
+        lazyValue.value = v
+        if (!isEqual(v, context.refs.input.files)) {
+          context.refs.input.value = ''
+        }
+      }, {lazy: true})
+
+      // function wrapInArray(v) {
+      //   return v != null ? Array.isArray(v) ? v : [v] : []
+      // }
+      // const internalArrayValue = computed(() => {
+      //   return Array.isArray(internalValue.value)
+      //       ? internalValue.value
+      //       : wrapInArray(internalValue.value)
+      // })
+
       const isDirty = computed(() => internalValue.value.length > 0)
       const isFocused = ref(false)
       const isValidInput = ref(true)
       const {
-        onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp,
+        onClick, onFocus, onBlur, onMouseDown, onMouseUp,
       } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+      const onInput = function (e) {
+        const files = [...e.target.files || []]
+        internalValue.value = files
+        //context.emit('change',files)
+        //props.value = files
+      }
+      const onClearIconClick = function () {
+        internalValue.value = []
+        context.refs.input.value = ''
+      }
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
 
       //file input logic
@@ -156,7 +196,6 @@
 
           let text = props.showSize ? filesName.value[index] + ` (${convertFileSize(file.size)})` : filesName.value[index]
           children.push(
-
               context.slots.selection({
                 text: text,
                 file,
@@ -179,14 +218,16 @@
 
       function genInputGroup() {
         return <div class="inputGroup">
-          <label vShow={!(props.chips||props.smallChips)} class={['g-tf-label', labelClasses.value]} style={labelStyles.value} for="input">{props.label}</label>
+          <label vShow={!(props.chips || props.smallChips)} class={['g-tf-label', labelClasses.value]}
+                 style={labelStyles.value} for="input">{props.label}</label>
           {genFileInput()}
           <input id="input" ref="input"
                  class="g-tf-input"
                  type={props.type}
                  multiple={props.multiple}
                  accept={props.accept}
-                 vModel={internalValue.value}
+
+                 vOn:change={onInput}
                  vOn:focus={onFocus}
                  vOn:blur={onBlur}/>
         </div>
@@ -224,8 +265,8 @@
       function genAppendInner() {
         return <div class="g-tf-append__inner">
           {(isDirty.value && props.clearable) && (
-              <div vOn:click_stop={onClearIconClick}>
-                <g-icon style="cursor: pointer">mdi-close</g-icon>
+              <div>
+                <g-icon vOn:click_stop={onClearIconClick} style="cursor: pointer">mdi-close</g-icon>
               </div>
           )}
           <g-icon>{props.appendIcon}</g-icon>
@@ -266,7 +307,8 @@
 
       //genFileInputComponent
       const wrapperClasses = computed(() => {
-        const isDisabled = props.disabled ? {'g-tf-wrapper__disabled': true} : {
+        const isDisabled = {
+          'g-tf-wrapper__disabled': props.disabled,
           'g-tf__filled': props.filled,
           'g-tf__outlined': props.outlined,
           'g-tf__solo': props.solo,

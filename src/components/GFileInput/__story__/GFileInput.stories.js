@@ -16,6 +16,7 @@ export const basicFileInput = () => ({
 
 export const mainFeatureFileInput = () => ({
   components: {GFileInput, GIcon, GChip},
+  data:() =>({test: []}),
   props: {
     multiple: {default: boolean('multiple', false)},
     accept: {default: text('accept', 'image/*')},
@@ -32,6 +33,7 @@ export const mainFeatureFileInput = () => ({
                            :chips="chips"
                            :smallChips="smallChips"
                            :truncate-length="truncateLength"
+                        
                            />`,
 });
 
