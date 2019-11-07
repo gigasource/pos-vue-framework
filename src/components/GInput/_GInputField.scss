@@ -93,7 +93,7 @@ input[type=text] {
 
   &-input {
     width: 100%;
-    padding: 12px 0;
+    padding: 4px 0;
     line-height: 24px;
     font-size: 16px;
     outline: none;
@@ -113,7 +113,7 @@ input[type=text] {
 
   &-label {
     position: absolute;
-    top: 12px;
+    top: 4px;
     left: 0;
     transform-origin: top left;
     transition: 0.4s ease-out;
@@ -191,6 +191,17 @@ input[type=text] {
   img {
     max-width: 48px;
     max-height: 48px;
+  }
+}
+
+.g-tf-wrapper:not(.g-tf__filled):not(.g-tf__outlined) {
+
+  .g-tf-prepend__inner ~ .inputGroup {
+    padding-left: 4px;
+  }
+
+  .g-tf-prepend__inner ~ .inputGroup .g-tf-label {
+    left: 4px;
   }
 }
 
@@ -346,7 +357,11 @@ input[type=text] {
   }
 
   .g-tf-input {
-    padding-left: 6px;
+    padding: 12px 0 12px 6px;
+  }
+
+  .g-tf-label {
+    top: 12px;
   }
 
   .g-tf-label:not(.g-tf-label__active) {
@@ -577,8 +592,11 @@ input[type=text] {
   }
 
   .g-tf-input {
-    padding: 8px 0;
     line-height: 20px;
+  }
+
+  .g-tf-label {
+    top: 4px;
   }
 
   &.g-tf__solo {
