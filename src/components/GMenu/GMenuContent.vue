@@ -5,11 +5,13 @@
   import { convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
+  import Resize from '../../directives/resize/resize';
 
   export default {
     name: 'GMenuContent',
     directives: {
-      ClickOutside
+      ClickOutside,
+      Resize
     },
     props: {
       activator: null, //ref HTMLElement
@@ -123,15 +125,19 @@
       }
 
       const resizeObserver = getResizeObserver(props)
-      onMounted(() => {
-        attachToRoot()
+
+      // init resize observer when activator is mounted to parent
+      watch(props.activator, () => {
+        if (!resizeObserver.observer) resizeObserver.init()
       })
 
-      watch(props.activator, () => {
-        context.root.$nextTick(() => {
-          if (!resizeObserver.observer) resizeObserver.init()
-          updateDimensions(props.activator.value)
-        })
+      // update dimensions when toggled on
+      watch(() => props.value, newVal => {
+        if (newVal) updateDimensions(props.activator.value)
+      })
+
+      onMounted(() => {
+        attachToRoot()
       })
 
       onBeforeUnmount(() => {
@@ -203,8 +209,12 @@
           name: 'show',
           value: props.value
         }
+        const resizeDirective = {
+          name: 'resize',
+          value: () => updateDimensions(props.activator.value)
+        }
 
-        const directives = [vShowDirective]
+        const directives = [vShowDirective, resizeDirective]
         if (!props.openOnHover && props.closeOnClick) directives.push(clickOutsideDirective)
         return directives;
       }

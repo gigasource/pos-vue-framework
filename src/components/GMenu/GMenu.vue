@@ -94,7 +94,6 @@
     },
     setup(props, context) {
       const { model: isActive } = getVModel(props, context);
-      const { menuableState } = menuable(props, context);
       const { detach, attachToParent } = detachable(props, context);
       const { runDelay } = delayable(props)
 
@@ -106,7 +105,6 @@
         top: 0,
         hasJustFocused: false,
         isFirstRender: true,
-        ...menuableState
       });
 
       onMounted(() => {
@@ -126,7 +124,6 @@
         if (!activator) {
           return
         }
-
         isActive.value = !isActive.value;
       }
 
@@ -183,7 +180,6 @@
           <div {...activatorData}>{context.slots.activator({ toggleContent })}</div>
           {props.lazy ? (!state.isFirstRender && genContent()) : genContent()}
         </div>
-
     }
   }
 </script>
