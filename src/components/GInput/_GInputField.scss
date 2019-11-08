@@ -407,6 +407,10 @@ input[type=text] {
     }
   }
 
+  &.g-tf__filled.g-tf__outlined .g-tf-label {
+    transform: translateY(-30px) translateX(6px) scale(0.75);
+  }
+
   &.g-tf__filled .g-tf {
     border-radius: 9999px;
   }
@@ -500,6 +504,10 @@ input[type=text] {
         background-color: transparent;
       }
     }
+  }
+
+  &.g-tf__filled.g-tf__outlined .g-tf-label {
+    transform: translateY(-29px) translateX(-2px) scale(0.75);
   }
 
   &.g-tf__filled .g-tf {
