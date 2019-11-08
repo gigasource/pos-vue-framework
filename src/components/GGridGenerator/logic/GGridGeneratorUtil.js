@@ -1,15 +1,26 @@
 import _ from 'lodash'
 import { ref } from '@vue/composition-api'
+import { createRange } from '../../../utils/helpers';
 
+/**
+ * Join ref string
+ * @param refArray
+ * @param separator
+ * @returns {string}
+ */
 export function joinRefArrayValue(refArray, separator = ' ') {
   let output = ''
   refArray.forEach(refVar => output += separator + refVar.value)
   return output
 }
 
+/**
+ * Return empty area object
+ * @returns {{columnEnd: number, name: string, columnStart: number, rowStart: number, rowEnd: number}}
+ */
 export function createEmptyArea() {
   return {
-    name: '',
+    name: 'div',
     rowStart: -1,
     columnStart: -1,
     rowEnd: -1,
@@ -38,9 +49,18 @@ export function getUniqueNewAreaName(grids, areaName) {
   let ctr = 0
   while(isGridNameExisted(grids, newName)) {
     ctr++
-    newName = `${areaName}(${ctr})`
+    newName = `${areaName}${ctr}`
   }
   return newName
+}
+
+/**
+ * Validate area name
+ * @param areaName
+ * @returns {boolean} true if area name contain only a-z, A-Z, 0-9, -, _. Otherwise, false.
+ */
+export function isGridAreaNameValid(areaName) {
+  return /^(\w|-)+$/i.test(areaName)
 }
 
 /**
@@ -111,6 +131,7 @@ function createSingleItem(grids, parentGrid, area) {
     name: getUniqueNewAreaName(grids, area.name),
     parent: parentGrid,
     hide: false,
+    bgColor: `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, 50%)`,
     area: {
       rowStart,
       columnStart,
@@ -125,8 +146,8 @@ function createSubGridItem(grids, parentGrid, area) {
   return {
     ...singleItem,
     settings: {
-      columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-      rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+      columns: createRange(5, () => ref('1fr')),
+      rows: createRange(5, () => ref('1fr')),
       columnGap: 0,
       rowGap: 0,
     },

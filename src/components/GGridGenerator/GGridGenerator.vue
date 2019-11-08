@@ -7,7 +7,7 @@
     addSubGridArea,
     addSubItemArea,
     deleteGridItem, createEmptyArea,
-    getSelectedAreas
+    getSelectedAreas, isGridAreaNameValid
   } from './logic/GGridGeneratorUtil'
   import { reactive, ref, computed } from '@vue/composition-api';
   import GDialog from '../GDialog/GDialog';
@@ -76,6 +76,7 @@
       let selectingArea = createEmptyArea()
 
       // 1) List
+      // TODO: Validate new itemName
       function changeItemName(item, newName) {
         if (state.selectedGrid === item.name)
           state.selectedGrid = newName
@@ -215,7 +216,7 @@
                   }
 
                   // start select an area
-                  selectingArea = { rowStart: i, columnStart: j }
+                  selectingArea = { ...selectingArea, rowStart: i, columnStart: j }
                   state.hoveringArea = { rowStart: i + 1, columnStart: j + 1, rowEnd: i + 2, columnEnd: j + 2 }
                   state.hovering = true
                 }}
@@ -271,7 +272,7 @@
       function renderGridAreaInEditMode(gridItem, index) {
         return <div
             class="g-grid-generator__editor__field__area"
-            style={{ backgroundColor: `hsl(${index * 60 % 360}, 100%, 50%, 70%)`, gridArea: getGridAreaCss(gridItem) }}>
+            style={{ backgroundColor: gridItem.bgColor, gridArea: getGridAreaCss(gridItem) }}>
           <span class="g-grid-generator__editor__field__area__name">
             {gridItem.name}
           </span>
@@ -287,7 +288,7 @@
               class="g-grid-generator__editor__field__area"
               style={{
                 border: '1px dashed #0008',
-                backgroundColor: `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, 100%)`,
+                backgroundColor: gridItem.bgColor,
                 gridArea: getGridAreaCss(gridItem),
                 display: 'grid',
                 'grid-template-columns': joinRefArrayValue(gridItem.settings.columns),
@@ -301,7 +302,7 @@
               class="g-grid-generator__editor__field__area"
               style={{
                 border: '1px dashed #0008',
-                backgroundColor: `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, 100%)`,
+                backgroundColor: gridItem.bgColor,
                 gridArea: getGridAreaCss(gridItem)
               }}>
             {gridItem.name}
@@ -326,6 +327,7 @@
         }}></div> : null
       }
 
+      const newItemNameInputRefStr = 'newItemNameInput'
       function renderConfirmDialog(grid) {
         return <g-dialog vModel={state.showConfirmDialog} width="500px" persistent>
           <div class="g-grid-generator__dialog__confirm">
@@ -336,24 +338,33 @@
               <b>Single</b> create an atom item which can't be divided into smaller items<br/>
               <b>Sub-grid</b> create a sub grid item which can be divided into smaller items.
             </div>
-            <div>Item name:
-              <input class="g-grid-generator__dialog__confirm__item-name" type="text" vModel={selectingArea.name}/>
+            <div>Item name:&nbsp;
+              <input class="g-grid-generator__dialog__confirm__item-name"
+                     type="text"
+                     ref={newItemNameInputRefStr}
+                     vModel={selectingArea.name}/>
             </div>
-            <div class="g-grid-generator__dialog__confirm__extra-space"></div>
+            <div class="g-grid-generator__dialog__confirm__error-message">
+              (*) Item name can contain only a-z, A-Z, -, _ characters
+            </div>
             <div class="g-grid-generator__dialog__confirm__action-btn">
               <button type='button'
                       vOn:click={() => {
-                        addSubGridArea(state.grids, grid, selectingArea)
-                        state.showConfirmDialog = false
-                        selectingArea = createEmptyArea()
+                        if (isGridAreaNameValid(selectingArea.name)) {
+                          addSubGridArea(state.grids, grid, selectingArea)
+                          state.showConfirmDialog = false
+                          selectingArea = createEmptyArea()
+                        }
                       }}>Sub Grid
               </button>
               &nbsp;
               <button type='button'
                       vOn:click={() => {
-                        addSubItemArea(state.grids, grid, selectingArea)
-                        state.showConfirmDialog = false
-                        selectingArea = createEmptyArea()
+                        if (isGridAreaNameValid(selectingArea.name)) {
+                          addSubItemArea(state.grids, grid, selectingArea)
+                          state.showConfirmDialog = false
+                          selectingArea = createEmptyArea()
+                        }
                       }}>Single item
               </button>
               &nbsp;
@@ -576,6 +587,11 @@
 
         &__area {
           position: relative;
+          font-size: x-small;
+          /* prevent overflow*/
+          min-height: 3px;
+          min-width: 3px;
+          overflow: hidden;
 
           &__name {
             padding: 5px;
@@ -624,8 +640,10 @@
           padding: 5px;
         }
 
-        &__extra-space {
+        &__error-message {
           flex: 1;
+          color: red;
+          font-size: small;
         }
 
         &__action-btn {
