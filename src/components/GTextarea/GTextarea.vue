@@ -66,7 +66,7 @@
     getLabel,
     getSlotEventListeners,
     getValidate,
-  } from '../GInput/GInputField';
+  } from '../GInput/GInputFactory';
   import GIcon from "../GIcon/GIcon";
 
   export default {
@@ -142,7 +142,7 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(props, internalValue, isValidInput, isFocused, 'g-tf--label__active', {'color': 'red'});
+      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf--label__active', {'color': 'red'});
 
       //Activate non persistent hint
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf--hint__active': true} : {})
