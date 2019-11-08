@@ -50,6 +50,19 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	.g-divider {
+		border-width: 0.5px;
+		align-self: center;
 
+	&__inset {
+		 width: calc(100% - 16px);
+		 margin: 0 0.5rem;
+	 }
+
+	&__inset-vertical {
+		 height: calc(100% - 16px);
+		 margin: 0.5rem 0;
+	 }
+	}
 </style>

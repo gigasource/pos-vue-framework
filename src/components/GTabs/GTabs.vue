@@ -204,6 +204,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GTabs";
 </style>

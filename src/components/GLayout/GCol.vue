@@ -45,6 +45,10 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	.g-col:not([class*=col-]) {
+		flex-basis: 0;
+		flex-grow: 1;
+		width: 100%;
+	}
 </style>

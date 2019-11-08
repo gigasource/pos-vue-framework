@@ -188,3 +188,7 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+  @import "GToolTip";
+</style>

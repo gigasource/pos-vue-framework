@@ -110,6 +110,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GChip";
 </style>
