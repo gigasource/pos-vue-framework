@@ -1,14 +1,12 @@
 <template>
 	<g-layout class="align-items-center justify-center">
-		<g-menu v-model="showMenu2" close-on-content-click>
+		<g-menu v-model="showMenu2" close-on-content-click open-on-hover :open-delay="500" :close-delay="500">
 			<template v-slot:activator="{toggleContent}">
 				<g-button @click="toggleContent" width="100px" height="50px">Activator</g-button>
 			</template>
-			<g-list>
-				<g-list-item v-for="i in 5" :key="i">
-					<g-button>button {{i}}</g-button>
-				</g-list-item>
-			</g-list>
+			<div style="background-color: yellow">
+				Content
+			</div>
 		</g-menu>
 	</g-layout>
 </template>
