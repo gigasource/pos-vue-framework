@@ -93,7 +93,7 @@
       }
     },
     setup(props, context) {
-      const { model: isActive } = getVModel(props, context);
+      const isActive = getVModel(props, context);
       const { detach, attachToParent } = detachable(props, context);
       const { runDelay } = delayable(props)
 

@@ -9,7 +9,7 @@
       value: null
     },
     setup(props, context) {
-      const model = inject('model', getVModel(props, context).model)
+      const model = inject('model', getVModel(props, context))
       const items = inject('items', props.items)
       provide('model', model);
 

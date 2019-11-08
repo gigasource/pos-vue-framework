@@ -11,7 +11,7 @@
     },
     components: { GLayout },
     setup(props, context) {
-      const { model } = getVModel(props, context);
+      const model = getVModel(props, context);
       provide('model', model);
 
       function genStepperContents() {

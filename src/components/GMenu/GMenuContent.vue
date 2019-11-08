@@ -94,7 +94,7 @@
       }
     },
     setup(props, context) {
-      const { model: isActive } = getVModel(props, context);
+      const isActive = getVModel(props, context);
       const { attachToRoot, detach } = detachable(props, context);
       const {
         updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow
