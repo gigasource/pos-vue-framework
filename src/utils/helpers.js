@@ -101,6 +101,8 @@ export default function colorHandler() {
     if (color) {
       if (option === 'background') {
         color = 'bg ' + color;
+      } else {
+        color = 'text ' + color;
       }
       return color.split(' ').join('-');
     }
