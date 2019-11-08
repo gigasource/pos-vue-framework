@@ -176,11 +176,11 @@ export const insideToolbar = () => ({
       </template>
     </g-toolbar>
     <g-tab-items :items="items" v-model="model">
-        <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
-          {{item.title}}
-          <p :style="[{'height': '100px', 'background-color': item.color}]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        </g-tab-item>
-      </g-tab-items>
+      <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
+        {{item.title}}
+        <p :style="[{'height': '100px', 'background-color': item.color}]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </g-tab-item>
+    </g-tab-items>
   </div>`
 });
 
