@@ -153,3 +153,16 @@ export function getTransitionDuration(el) {
   const duration =  window.getComputedStyle(el).getPropertyValue('transition-duration');
   return Math.round(parseFloat(duration)*1000);
 }
+
+// Return rendered element position
+export function getElementPosition(el) {
+  const rect = el.getBoundingClientRect(),
+    offsetX = window.scrollX || document.documentElement.scrollLeft,
+    offsetY = window.scrollY || document.documentElement.scrollTop;
+  return {
+    top: rect.top + offsetY,
+    left: rect.left + offsetX,
+    bottom: rect.bottom + offsetY,
+    right: rect.right + offsetX
+  }
+}

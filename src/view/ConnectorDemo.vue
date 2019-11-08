@@ -1,26 +1,26 @@
 <template>
 		<g-diagram width="500" height="500" position="absolute" top="100" left="300">
-			<g-connector2 v-model="dataA" point-radius="15" show-point point-position="x">
+			<g-connector v-model="dataA" point-radius="15" show-point point-position="x">
 				<div id="div1">
 					{{ dataA }}
 				</div>
-			</g-connector2>
-			<g-connector2 v-model="dataB" point-color="red" path-color="red" point-radius="15" show-point point-position="y">
+			</g-connector>
+			<g-connector v-model="dataB" point-color="red" path-color="red" point-radius="15" show-point point-position="y">
 			<div id="div2">
 				{{ dataB }}
 			</div>
-		</g-connector2>
+		</g-connector>
 		</g-diagram>
 </template>
 <script>
   import { ref, reactive, computed, onMounted } from '@vue/composition-api'
-  import GConnector2 from '../components/GConnector/GConnector2';
+  import GConnector from '../components/GConnector/GConnector';
   import GDiagram from '../components/GConnector/GDiagram';
   import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'ConnectorDemo',
-    components: { GDiagram, GConnector2, Fragment },
+    components: { GDiagram, GConnector, Fragment },
     props: {},
     setup(props, context) {
 			const dataA = ref('A')

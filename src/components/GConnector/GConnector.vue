@@ -1,150 +1,117 @@
-<template>
-	<svg width="1000" height="1000" ref="svg">
-	</svg>
-</template>
 <script>
-  import { Point , Rectangle } from "./CoordinateSystem"
-	import { createCircle } from './ConnectorHelper';
-  import { computed, ref, reactive, watch, onMounted, onBeforeUnmount, onUpdated } from '@vue/composition-api';
+	import getVModel from '../../mixins/getVModel';
+  import { inject } from '@vue/composition-api';
+  import GConnectorFactory from './GConnectorFactory';
 
   export default {
     name: 'GConnector',
     props: {
-			connectionPoints: Array,
-			connectionPointRadius: {
-			  type: Number,
-				default: 5
+			value: [Number, String, Object],
+
+			showPoint: {
+			  type: Boolean,
+				default: false
+			},
+
+			pointColor: {
+        type: String,
+        default: 'green'
+			},
+			pointRadius: {
+			  type: [Number, String],
+				default: 10
+			},
+			pointPosition: {
+			  type: [String],
+				default: 'all'
+			},
+			pathColor: {
+			  type: String,
+				default: 'green'
+			},
+			pathWidth: {
+			  type: [Number, String],
+				default: 3
 			}
-		},
-		setup (props, context) {
+    },
+    setup(props, context) {
+      const { model } = getVModel(props, context)
+      const diagramId = inject('diagramId');
+      const connectionPoints = inject('connectionPoint');
+      const zoomState = inject('zoomState')
+			const originCoordinate = inject('originCoordinate')
+			const eventEmitter = inject('eventEmitter');
 
-			const connectionRegions = computed(() => {
-			  return props.connectionPoints.map(connectionPoint => new Rectangle(
-			    connectionPoint.y - props.connectionPointRadius,
-					connectionPoint.x - props.connectionPointRadius,
-          connectionPoint.y + props.connectionPointRadius,
-          connectionPoint.x + props.connectionPointRadius,
-				))
-			})
+			const { connectionPaths,
+        localConnectionPoints,
+        drawStart,
+        draw,
+        drawEnd,
+        removePath
+			} = GConnectorFactory(props, context, model, connectionPoints, zoomState, originCoordinate)
 
-      let startPoint
-			let endPoint
-			let startControlPoint
-			let endControlPoint
+      eventEmitter.$on('draw', draw)
+      eventEmitter.$on('drawEnd', drawEnd)
 
-      const isDrag = ref(false)
+			// Render functions
+      function genCircle(connectionPoint, r, stroke, strokeWidth, fill) {
+        return <circle vOn:mousedown={drawStart} class="g-connection-point" cx={connectionPoint.x} cy={connectionPoint.y} r={r} stroke={stroke} stroke-width={strokeWidth} fill={fill}/>
+      }
 
-      let path
-			let endCircle
+      function genConnector(path, index) {
+        const d = `M${path.startPoint.x} ${path.startPoint.y} C${path.startControlPoint.x} ${path.startControlPoint.y}, ${path.endControlPoint.x} ${path.endControlPoint.y}, ${path.endPoint.x} ${path.endPoint.y}`
+        return <g class="g-connection-path" key={index}>
+          <path class="g-connection-path-main" d={d}  pathLength="50" stroke={props.pathColor} stroke-width={props.pathWidth} fill="none" marker-end={`url(#arrow${model.value.toString()})`}/>
+          <path class="g-connection-path-outline" d={d} stroke="grey" stroke-width="20" stroke-opacity="0" fill="none" tabindex="0" vOn:keydown={(e) => removePath(e, index)}/>
+        </g>
+      }
 
-      function drawStart(e) {
-        e.preventDefault();
+      function genGroup() {
+        return <div>
+          <portal to={diagramId.value}>
+						<marker id={`arrow${model.value.toString()}`} markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto" markerUnits="strokeWidth">
+							<path d="M1,1 L4,3 L1,5" stroke={props.pathColor} stroke-width="1" stroke-linejoin="bevel" fill="none"/>
+						</marker>
+						<g ref="group">
+							{
+								localConnectionPoints.value.map(connectionPoint => props.showPoint
+									? genCircle( connectionPoint, props.pointRadius, props.pointColor, props.pathWidth, 'transparent')
+                  : genCircle( connectionPoint, props.pointRadius, undefined, undefined, 'transparent')
+								)
+							}
+							{
+								connectionPaths.value.map((connectionPath, index) => genConnector(connectionPath, index))
+							}
+            </g>
+          </portal>
+          {context.slots.default ? context.slots.default() : undefined}
+        </div>
+      }
 
-        // const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-				// svg.setAttribute('width', '1000')
-        // svg.setAttribute('height', '1000')
-				// svg.style.position = 'fixed'
-				// svg.style.top = 0
-				// svg.style.left = 0
-				const svg = context.refs.svg
-
-				const mousePoint = new Point(e.pageX, e.pageY)
-
-				for (let connectionRegion of connectionRegions.value) {
-				  if (mousePoint.isInside(connectionRegion)) {
-            startPoint = props.connectionPoints[connectionRegions.value.indexOf(connectionRegion)]
-            const circle = createCircle(startPoint.x, startPoint.y, 5, 'green', 2, 'none')
-
-            path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute('stroke', 'green')
-            path.setAttribute('stroke-width', '2')
-            path.setAttribute('fill', 'none')
-
-            endCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            endCircle.setAttribute('r', "5")
-            endCircle.setAttribute('stroke', 'green')
-            endCircle.setAttribute('stroke-width', '2')
-            endCircle.setAttribute('fill', 'none')
-
-            svg.appendChild(circle)
-            svg.appendChild(path)
-            svg.appendChild(endCircle)
-            //document.body.appendChild(svg)
-            isDrag.value = true;
-          }
-				}
-			}
-
-      function draw(e) {
-        if (isDrag.value) {
-          endPoint = new Point(e.pageX, e.pageY);
-					startControlPoint = new Point((startPoint.x + endPoint.x)/2, startPoint.y)
-					endControlPoint = new Point((startPoint.x + endPoint.x)/2, endPoint.y)
-
-          const d = `M${startPoint.x} ${startPoint.y} C${startControlPoint.x} ${startControlPoint.y}, ${endControlPoint.x} ${endControlPoint.y}, ${endPoint.x} ${endPoint.y}`
-          path.setAttribute('d', d)
-          endCircle.setAttribute('cx', endPoint.x)
-					endCircle.setAttribute('cy', endPoint.y)
-				}
-			}
-
-			function drawEnd(e) {
-        const svg = context.refs.svg
-        const mousePoint = new Point(e.pageX, e.pageY)
-
-        for (let connectionRegion of connectionRegions.value) {
-          if (mousePoint.isInside(connectionRegion)) {
-            endPoint = props.connectionPoints[connectionRegions.value.indexOf(connectionRegion)]
-            startControlPoint = new Point((startPoint.x + endPoint.x)/2, startPoint.y)
-            endControlPoint = new Point((startPoint.x + endPoint.x)/2, endPoint.y)
-            const d = `M${startPoint.x} ${startPoint.y} C${startControlPoint.x} ${startControlPoint.y}, ${endControlPoint.x} ${endControlPoint.y}, ${endPoint.x} ${endPoint.y}`
-            path.setAttribute('d', d)
-            endCircle.setAttribute('cx', endPoint.x)
-            endCircle.setAttribute('cy', endPoint.y)
-            isDrag.value = false
-            path = undefined
-            endCircle = undefined
-						return
-					}
-        }
-
-        svg.removeChild(path)
-				svg.removeChild(endCircle)
-        isDrag.value = false
-				path = undefined
-				endCircle = undefined
-			}
-
-      document.addEventListener('mousedown', drawStart)
-      document.addEventListener('mousemove', draw)
-			document.addEventListener('mouseup', drawEnd)
-
-			// onMounted(() => {
-      //   const svg = context.refs.svg
-      //   svg.addEventListener('mousedown', drawStart)
-      //   svg.addEventListener('mousemove', draw)
-      //   svg.addEventListener('mouseup', drawEnd)
-      // })
-
-			watch(() => props.connectionPoints, () => {
-        const svg = context.refs.svg
-			  for (let connectionPoint of props.connectionPoints) {
-			    svg.appendChild(createCircle(connectionPoint.x, connectionPoint.y, props.connectionPointRadius, 'green', 2, 'none'));
-				}
-			}, {lazy: true, deep: true})
-
-			return {
-			  connectionRegions
-			}
-		}
-
+      return {
+        genGroup,
+      }
+    },
+    render() {
+      return this.genGroup()
+    }
   }
 </script>
-<style scoped>
-	svg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 1000;
+<style scoped lang="scss">
+	.g-connection-point:hover {
+		fill: grey;
+		fill-opacity: 0.5;
+	}
+
+	.g-connection-path {
+		&-outline:hover {
+			stroke-opacity: 0.15;
+			cursor: all-scroll;
+		}
+
+		&-outline:focus {
+			outline: none;
+			stroke-opacity: 0.3;
+		}
 	}
 </style>
