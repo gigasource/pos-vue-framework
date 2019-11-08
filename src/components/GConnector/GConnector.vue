@@ -2,9 +2,11 @@
 	import getVModel from '../../mixins/getVModel';
   import { inject } from '@vue/composition-api';
   import GConnectorFactory from './GConnectorFactory';
+  import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'GConnector',
+		components: { Fragment },
     props: {
 			value: [Number, String, Object],
 
@@ -67,8 +69,8 @@
       }
 
       function genGroup() {
-        return <div>
-          <portal to={diagramId.value}>
+        return <fragment>
+          <portal to={diagramId.value} slim>
 						<marker id={`arrow${model.value.toString()}`} markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto" markerUnits="strokeWidth">
 							<path d="M1,1 L4,3 L1,5" stroke={props.pathColor} stroke-width="1" stroke-linejoin="bevel" fill="none"/>
 						</marker>
@@ -85,7 +87,7 @@
             </g>
           </portal>
           {context.slots.default ? context.slots.default() : undefined}
-        </div>
+        </fragment>
       }
 
       return {
