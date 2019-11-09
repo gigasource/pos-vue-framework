@@ -50,7 +50,7 @@
           }
         }
         return <div {...nodeData}>
-          {context.slots.default()}
+          {context.slots.default && context.slots.default()}
         </div>
       }
 
