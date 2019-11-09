@@ -68,8 +68,8 @@
         isActive: false,
         noClick: false,
       })
-      const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
-      //const internalValue = getInternalValue(props, context)
+      //todo add transition later
+      //const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
       const internalValue = computed({
         get() {
           return state.lazyValue;
@@ -201,12 +201,12 @@
         return <div class={thumbContainerClasses.value} ref="thumb"
                     style={thumbContainerStyle.value}
                     tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
-                    vOn:focus={(event) => onFocus(event)}
-                    vOn:blur={(event) => onBlur(event)}
-                    vOn:keyup={() => onKeyUp()}
-                    vOn:keydown={(event) => onKeyDown(event)}
-                    vOn:mousedown={(event) => onThumbMouseDown(event)}
-                    vOn:touchstart={(event) => onThumbMouseDown(event)}>
+                    vOn:focus={onFocus}
+                    vOn:blur={onBlur}
+                    vOn:keyup={onKeyUp}
+                    vOn:keydown={onKeyDown}
+                    vOn:mousedown={onThumbMouseDown}
+                    vOn:touchstart={onThumbMouseDown}>
           {genThumb()}
           {showThumbLabel.value && genThumbLabel(content)}
         </div>
@@ -298,5 +298,6 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import "_GSlider.scss";
 </style>

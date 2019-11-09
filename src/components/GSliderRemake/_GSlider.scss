@@ -83,7 +83,7 @@ $slider-tick-border-radius: 0 !default;
     background-color: #cccccc;
 
     &:before {
-      transition: $primary-transition;
+      //transition: $primary-transition;
       content: '';
       color: #0D47A1; //color: inherit;
       width: #{$slider-thumb-size + $slider-thumb-focused-size-increase};
@@ -162,7 +162,7 @@ $slider-tick-border-radius: 0 !default;
     left: 0;
     bottom: 100%;
     user-select: none;
-    transition: .3s map-get($transition, 'fast-in-fast-out');
+    //transition: .3s map-get($transition, 'fast-in-fast-out');
   }
 }
 
