@@ -17,13 +17,13 @@
     },
     setup(props, context) {
 
-      let register = inject('register');
-      let unregister = inject('unregister');
-      let internalValue = inject('internalValue');
-      let windowData = inject('windowData');
-      let internalReverse = inject('internalReverse');
-      let windowComputedTransition = inject('windowComputedTransition');
-      let window = ref({});
+      const register = inject('register');
+      const unregister = inject('unregister');
+      const internalValue = inject('internalValue');
+      const windowData = inject('windowData');
+      const internalReverse = inject('internalReverse');
+      const windowComputedTransition = inject('windowComputedTransition');
+      const window = ref({});
       onMounted(function () {
         register(this);
         window.value = this.$parent;

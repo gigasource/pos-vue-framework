@@ -42,7 +42,6 @@
     setup(props, context) {
       const data = reactive({
         changedByDelimiters: false,
-        internalHeight: undefined, // This can be fixed by child class.
         transitionHeight: undefined, // Intermediate height during transition.
         transitionCount: 0, // Number of windows in transition state.
         isBooted: false,
@@ -83,11 +82,11 @@
       });
 
       const hasNext = computed(() => {
-        return props.continuous || internalIndex.value < data.items.length - 1
+        return props.continuous || internalValue.value < data.items.length - 1
       });
 
       const hasPrev = computed(() => {
-        return props.continuous || internalIndex.value > 0
+        return props.continuous || internalValue.value > 0
       });
 
       const internalReverse = computed(() => {
@@ -96,7 +95,7 @@
 
       provide('internalReverse', internalReverse);
 
-      watch(() => internalIndex, (val, oldVal) => {
+      watch(() => internalValue, (val, oldVal) => {
         if (data.changedByDelimiters) {
           data.changedByDelimiters = false;
           return
@@ -105,20 +104,10 @@
         data.isReverse = val < oldVal
       });
 
-      // watch(() => props.value, ()=>{
-      //   internalValue.value = props.value
-      // });
-
       const hasActiveItems = computed(() => {
         return Boolean(
           data.items.find(item => !item.disabled)
         )
-      });
-
-      const internalIndex = computed(() => {
-        return data.items.findIndex((item, i) => {
-          return internalValue.value === i
-        })
       });
 
       const computedTransition = computed(() => {
@@ -162,7 +151,7 @@
           return;
         }
 
-        internalValue.value = getNextIndex(internalIndex.value);
+        internalValue.value = getNextIndex(internalValue.value);
       }
 
       function prev() {
@@ -171,7 +160,7 @@
           return;
         }
 
-        internalValue.value = getPrevIndex(internalIndex.value);
+        internalValue.value = getPrevIndex(internalValue.value);
       }
 
       function genIcon(direction, icon, fn) {
@@ -222,7 +211,7 @@
             'g-window__container__is-active': isActive.value,
           },
           style: {
-            height: data.internalHeight || data.transitionHeight,
+            height: data.transitionHeight,
           },
         };
 
@@ -240,7 +229,6 @@
 
       return {
         internalValue,
-        internalIndex,
         genWindow,
         data,
         hasPrev,
