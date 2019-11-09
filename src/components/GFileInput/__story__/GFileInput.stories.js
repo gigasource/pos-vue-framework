@@ -14,9 +14,30 @@ export const basicFileInput = () => ({
   template: `<g-file-input></g-file-input>`,
 });
 
+export const validateFileInput = () => ({
+  components: {GFileInput, GIcon, GChip},
+  data: () => ({
+    rules: [
+      value => !value || value.name.slice(-3) === 'txt' || 'File type should be txt!',
+    ],
+    test: '',
+    rules2: [
+      value => value.length === 0 || value.reduce((totalSize, file) => totalSize + file.size, 0) < 200000 || 'Total file size must be smaller than 200KB!',
+    ],
+    test2: [],
+  }),
+  props: {
+    showSize: {default: boolean('show size', true)},
+    counter: {default: boolean('counter', true)},
+  },
+  template: `<div>
+               <g-file-input :rules="rules" v-model="test" :show-size="showSize" :counter="counter"/>
+               <g-file-input :rules="rules2" v-model="test2" :show-size="showSize" :counter="counter" multiple />
+             </div>`,
+})
+
 export const mainFeatureFileInput = () => ({
   components: {GFileInput, GIcon, GChip},
-  data:() =>({test: []}),
   props: {
     multiple: {default: boolean('multiple', false)},
     accept: {default: text('accept', 'image/*')},
@@ -33,17 +54,16 @@ export const mainFeatureFileInput = () => ({
                            :chips="chips"
                            :smallChips="smallChips"
                            :truncate-length="truncateLength"
-                        
                            />`,
 });
 
 export const fullFeatureFileInput = () => ({
   components: {GFileInput, GIcon, GChip},
-  data: () => ({
-    rules: [
-      value => value.length === 0 || value.slice(-3) === 'txt' || 'File type should be txt!',
-    ],
-  }),
+  data(props) {
+    return {
+      test: props.multiple ? [] : '',
+    }
+  },
   props: {
     multiple: {default: boolean('multiple', false)},
     accept: {default: text('accept', '')},
@@ -75,7 +95,7 @@ export const fullFeatureFileInput = () => ({
                            :chips="chips"
                            :smallChips="smallChips"
                            
-                           :rules="rules"
+                           v-model="test"
                            :prependIcon="prependIcon"
                            :prependInnerIcon="prependInnerIcon"
                            :appendIcon="appendIcon"
@@ -132,7 +152,7 @@ export const slotSelection = () => ({
                            :chips="chips"
                            :smallChips="smallChips"
                            
-                           :rules="rules"
+                           
                            :prependIcon="prependIcon"
                            :prependInnerIcon="prependInnerIcon"
                            :appendIcon="appendIcon"
@@ -159,7 +179,7 @@ export const slotSelection = () => ({
                            :chips="chips"
                            :smallChips="smallChips"
                            
-                           :rules="rules"
+                           
                            :prependIcon="prependIcon"
                            :prependInnerIcon="prependInnerIcon"
                            :appendIcon="appendIcon"
@@ -187,7 +207,7 @@ export const slotSelection = () => ({
                            :chips="chips"
                            :smallChips="smallChips"
                            
-                           :rules="rules"
+                           
                            :prependIcon="prependIcon"
                            :prependInnerIcon="prependInnerIcon"
                            :appendIcon="appendIcon"
@@ -202,8 +222,6 @@ export const slotSelection = () => ({
                            :rounded="rounded"
                            :shaped="shaped"
                            :flat="flat"
-                           
-                          
                            >
                              <template v-slot:selection="{text,index,amount}">
                                <g-chip v-if="index<2" small  gradient="red, yellow, green, blue" label>{{text}}</g-chip>

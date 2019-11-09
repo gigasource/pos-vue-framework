@@ -1,16 +1,15 @@
 <script>
   import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
-  import {ref, computed, reactive, watch} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputFactory';
-  import {isEqual} from 'lodash'
+  import {ref, computed, watch} from '@vue/composition-api';
+  import {getEvents, getLabel, getValidate} from '../GInput/GInputFactory';
 
   export default {
     name: "GFileInputJSX",
     components: {GChip, GIcon},
     model: {
-        prop: 'value',
-        event: 'change',
+      prop: 'value',
+      event: 'change',
     },
     props: {
       //display props
@@ -48,17 +47,6 @@
       },
       validateOnBlur: Boolean,
       error: Boolean,
-      //basic props
-      value: {
-        default: () => [],
-        validator: val => {
-          return typeof val === 'object' || Array.isArray(val)
-        },
-      },
-      type: {
-        type: String,
-        default: 'file',
-      },
       disabled: Boolean,
       readonly: Boolean,
       //style
@@ -77,40 +65,33 @@
       truncateLength: {
         type: [String, Number],
         default: 22,
-      }
+      },
+      value: {
+        default: () => [],
+        validator: val => {
+          return typeof val === 'object' || Array.isArray(val) || typeof val === 'string'
+        },
+      },
+      type: {
+        type: String,
+        default: 'file',
+      },
     },
     setup(props, context) {
-      //const internalValue = getInternalValue(props, context)
-      // const state = reactive({
-      //   lazyValue: props.value
-      // })
       const lazyValue = ref(props.value)
       const internalValue = computed({
         get: () => lazyValue.value,
         set: (val) => {
           lazyValue.value = val
-          console.log(lazyValue.value)
-          context.emit('input', Array.from(lazyValue.value))
-          context.emit('change',Array.from(lazyValue.value))
+          context.emit('change', lazyValue.value)
         }
       })
+
       watch(() => props.value, (v) => {
         lazyValue.value = v
-        if (!isEqual(v, context.refs.input.files)) {
-          context.refs.input.value = ''
-        }
       }, {lazy: true})
 
-      // function wrapInArray(v) {
-      //   return v != null ? Array.isArray(v) ? v : [v] : []
-      // }
-      // const internalArrayValue = computed(() => {
-      //   return Array.isArray(internalValue.value)
-      //       ? internalValue.value
-      //       : wrapInArray(internalValue.value)
-      // })
-
-      const isDirty = computed(() => internalValue.value.length > 0)
+      const isDirty = computed(() => Array.isArray(internalValue.value) ? internalValue.value.length > 0 : !!internalValue.value)
       const isFocused = ref(false)
       const isValidInput = ref(true)
       const {
@@ -118,18 +99,18 @@
       } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
       const onInput = function (e) {
         const files = [...e.target.files || []]
-        internalValue.value = files
-        //context.emit('change',files)
-        //props.value = files
+        internalValue.value = props.multiple ? files : files[0]
       }
       const onClearIconClick = function () {
-        internalValue.value = []
+        internalValue.value = props.multiple ? [] : null
         context.refs.input.value = ''
       }
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
 
       //file input logic
-      const files = computed(() => isDirty.value ? context.refs.input.files : [])
+      const files = computed(() => {
+        return isDirty.value ? context.refs.input.files : []
+      })
 
       function convertFileSize(fileSize) {
         let size = fileSize
@@ -178,7 +159,7 @@
         labelClasses, labelStyles, isLabelActive, prefixRef
       } = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active', {'color': 'red'})
 
-      function genFiles() {
+      function genFilesOrText() {
         return (props.chips || props.smallChips) ?
             Array.from(files.value).map((file, index) => (
                 <g-chip small={props.smallChips} ref={'chip' + index}>
@@ -188,7 +169,7 @@
             : (<div>{fileContent.value}{props.showSize ? ` (${totalFileSize.value})` : ''}</div>)
       }
 
-      function genSelection() {
+      function genSelectionSlot() {
         const children = []
 
         files.value.forEach((file, index, files) => {
@@ -210,8 +191,8 @@
 
       function genFileInput() {
         return <div class="g-file-input--text">
-          {isDirty.value && context.slots.selection && genSelection()}
-          {isDirty.value && !context.slots.selection && genFiles()}
+          {isDirty.value && context.slots.selection && genSelectionSlot()}
+          {isDirty.value && !context.slots.selection && genFilesOrText()}
           {!isDirty.value && (<p style="opacity: 0.5">{props.placeholder}</p>)}
         </div>
       }
@@ -226,7 +207,6 @@
                  type={props.type}
                  multiple={props.multiple}
                  accept={props.accept}
-
                  vOn:change={onInput}
                  vOn:focus={onFocus}
                  vOn:blur={onBlur}/>
@@ -239,7 +219,7 @@
           return {
             'width': 'auto',
             'padding': '1px',
-						'margin-left': props.rounded ? '18px' : '4px',
+            'margin-left': props.rounded ? '18px' : '4px',
           }
         } else
           return {}
