@@ -196,3 +196,7 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+  @import "GImg";
+</style>

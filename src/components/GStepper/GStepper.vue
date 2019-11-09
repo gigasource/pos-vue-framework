@@ -124,6 +124,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GStepper";
 </style>
