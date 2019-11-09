@@ -1,7 +1,7 @@
 <template>
-  <div class="g-tf--wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]"
+  <div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]"
        @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-    <div class="g-tf--prepend__outer" ref="prependRef" @click="onClickPrependOuter">
+    <div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
       <slot name="prepend-outer">
         <g-icon>{{prependIcon}}</g-icon>
       </slot>
@@ -9,33 +9,33 @@
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
       <div class='g-tf' :class="tfErrClasses">
-        <div class="g-tf--prepend__inner" @click="onClickPrependInner">
+        <div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
           <slot name="prepend-inner">
             <g-icon>{{prependInnerIcon}}</g-icon>
           </slot>
         </div>
-        <div v-if="prefix" class="g-tf--affix" ref="prefixRef">{{prefix}}</div>
+        <div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
           <textarea id="tear" ref="input"
-                    class="g-tf--input"
+                    class="g-tf-input"
                     :style="tearStyles"
                     :label="label"
                     v-model="internalValue"
                     :placeholder="placeholder"
                     :rows="rows"
                     :cols="cols"
-                    @input="onInput"
                     @change="onChange"
+                    @input="onInput"
                     @focus="onFocus"
                     @blur="onBlur"
                     @keydown="onKeyDown">
           </textarea>
-          <label for="tear" class="g-tf--label" :class="labelClasses" :style="labelStyles">
+          <label for="tear" class="g-tf-label" :class="labelClasses" :style="labelStyles">
             <slot name="label">{{label}}</slot>
           </label>
         </div>
-        <div v-if="suffix" class="g-tf--affix">{{suffix}}</div>
-        <div class="g-tf--append__inner" @click="onClickAppendInner">
+        <div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
+        <div class="g-tf-append__inner" @click="onClickAppendInner">
           <div v-if="isDirty && clearable" @click="onClearIconClick">
             <g-icon class="g-icon__link">mdi-close</g-icon>
           </div>
@@ -43,14 +43,15 @@
             <g-icon>{{appendIcon}}</g-icon>
           </slot>
         </div>
-        <div class="g-tf--error" v-if="!isValidInput">{{errorMessages}}</div>
-        <div class="g-tf--hint" v-else :class="hintClasses">{{hint}}</div>
-        <div v-show="counter" :class="{'g-tf--counter': true, 'g-tf--counter__error': !isValidInput}">{{internalValue.length}}
+        <div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
+        <div class="g-tf-hint" v-else :class="hintClasses">{{hint}}</div>
+        <div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
+          {{internalValue.length}}
           / {{counter}}
         </div>
       </div>
     </fieldset>
-    <div class="g-tf--append__outer" @click="onClickAppendOuter" ref="appendOuter">
+    <div v-if="appendOuterIcon" class="g-tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
       <slot name="append-outer">
         <g-icon>{{appendOuterIcon}}</g-icon>
       </slot>
@@ -142,10 +143,10 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf--label__active', {'color': 'red'});
+      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active', {'color': 'red'});
 
       //Activate non persistent hint
-      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf--hint__active': true} : {})
+      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
 
       //event handler function
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput);
@@ -158,9 +159,9 @@
         }
       })
       //change input border color
-      const tfErrClasses = computed(() => isValidInput.value ? {} : {'tf__error': true})
+      const tfErrClasses = computed(() => isValidInput.value ? {} : {'g-tf__error': true})
 
-      const tfErrWrapperClass = computed(() => ({'g-tf--wrapper__error': !isValidInput.value}));
+      const tfErrWrapperClass = computed(() => ({'g-tf-wrapper__error': !isValidInput.value}));
 
       const {onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner,} = getSlotEventListeners(context);
 
@@ -179,11 +180,7 @@
           return {}
       });
 
-      //todo add textarea logic
-      function onInput() {
-        props.autoGrow && calculateInputHeight()
-      }
-
+      //textarea logic
       function calculateInputHeight() {
         const input = context.refs.input
         if (!input) return
@@ -194,23 +191,23 @@
         input.style.height = Math.max(minHeight, height) - 10 + 'px'
       }
 
+      watch(() => props.rows, () => calculateInputHeight())
+      watch(() => props.rowHeight, () => calculateInputHeight())
+
+      function onInput() {
+        props.autoGrow && calculateInputHeight()
+      }
+
+      watch(() => internalValue, newVal => {
+        !newVal && calculateInputHeight()
+        props.autoGrow && calculateInputHeight()
+      })
+
       onMounted(() => {
         setTimeout(() => {
           //props.autoGrow && calculateInputHeight(props,context)
           calculateInputHeight()
         }, 0)
-      })
-
-      onUpdated(() => {
-        setTimeout(() => {
-          props.autoGrow && calculateInputHeight()
-          //calculateInputHeight(props, context)
-        }, 0)
-      })
-
-      watch(internalValue, newVal => {
-        !newVal && calculateInputHeight()
-        props.autoGrow && calculateInputHeight()
       })
 
       return {
@@ -221,6 +218,7 @@
         tfWrapperClasses,
         hintClasses,
         tearStyles,
+
         //value
         internalValue,
 
@@ -257,7 +255,8 @@
   }
 
   function getTfWrapperClasses(props) {
-    return computed(() => (props.disabled ? {'g-tf--wrapper-disabled': true} : {
+    return computed(() => ({
+      'g-tf-wrapper__disabled': props.disabled,
       'g-tf__filled': props.filled,
       'g-tf__outlined': props.outlined,
       'g-tf__solo': props.solo,
@@ -272,7 +271,3 @@
   }
 
 </script>
-
-
-
-

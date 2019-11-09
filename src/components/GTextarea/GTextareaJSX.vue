@@ -72,9 +72,59 @@
 
     setup(props,context) {
 
+
+
+
+      //gen textarea component
+      const wrapperClasses = computed(() => {
+        const isDisabled = {
+          'g-tf-wrapper__disabled': props.disabled,
+          'g-tf__filled': props.filled,
+          'g-tf__outlined': props.outlined,
+          'g-tf__solo': props.solo,
+          'g-tf__rounded': props.rounded,
+          'g-tf__shaped': props.shaped,
+          'g-tf__flat': props.flat,
+        }
+        return {
+          'g-textarea': true,
+          'g-textarea__auto-grow': props.autoGrow,
+          'g-textarea__no-resize': props.noResize || props.autoGrow,
+          ...isDisabled,
+        }
+      })
+
+        //todo add slot
+      function genPrependOuter() {
+        return <div class="g-tf-prepend__outer" ref="prependRef">
+          <g-icon>{props.prependIcon}</g-icon>
+        </div>
+      }
+
+      function genAppendOuter() {
+        return <div class="g-tf-append__outer" ref="appendOuter">
+          <g-icon>{props.appendOuterIcon}</g-icon>
+        </div>
+      }
+
+      function genTextareaComponent() {
+        return <div class={wrapperClasses.value}
+                    vOn:click={onClick}
+                    vOn:mouseup={onMouseUp}
+                    vOn:mousedown={onMouseDown}>
+          {genPrependOuter()}
+          {genTextareaWrapper()}
+          {genAppendOuter()}
+        </div>
+      }
+
+      return {
+        genTextareaComponent
+      }
     },
 
     render() {
+      return this.genTextareaComponent()
     }
   }
 </script>
