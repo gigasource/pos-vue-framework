@@ -36,6 +36,30 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	.g-stepper-transition {
+	&-enter {
+		 transform: translateX(100%);
+	 }
 
+	&-enter-active {
+		 transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		 transition-duration: 0.3s;
+	 }
+
+	&-leave {
+		 opacity: 1;
+	 }
+
+	&-leave-to {
+		 opacity: 0;
+		 transform: translateX(-100%);
+	 }
+
+	&-leave-active {
+		 transition-timing-function: ease-in;
+		 transition-duration: 0.3s;
+		 position: absolute;
+	 }
+	}
 </style>

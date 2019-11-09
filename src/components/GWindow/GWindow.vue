@@ -22,7 +22,7 @@
       value: null
     },
 		setup(props, context) {
-      const { model } = getVModel(props, context);
+      const model = getVModel(props, context);
       const isActiveWindow = (window) => model.value === window;
 
       return {

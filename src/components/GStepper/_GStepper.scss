@@ -1,14 +1,16 @@
+@import "../../style/elevation";
+
 .g-stepper {
   display: flex;
   flex-direction: column;
   @include elevation(2);
 
-  &-header {
+  ::v-deep &-header {
     display: flex;
     @include elevation(2);
   }
 
-  &-step {
+  ::v-deep &-step {
     white-space: nowrap;
     padding: 16px;
     display: flex;
@@ -32,19 +34,19 @@
     }
   }
 
-  &-contents {
+  ::v-deep &-contents {
     contain: layout;
     padding: 16px;
     overflow: hidden;
     transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
   }
 
-  &-content {
+  ::v-deep &-content {
     margin: 16px;
   }
 
   &__editable {
-    .g-stepper-step {
+    ::v-deep .g-stepper-step {
       pointer-events: initial;
       cursor: pointer;
 
@@ -57,46 +59,20 @@
   &__vertical {
     flex-direction: row;
 
-    .g-stepper-header {
+    ::v-deep .g-stepper-header {
       flex-direction: column;
       flex: 0 1 0;
     }
 
-    .g-stepper-contents {
+    ::v-deep .g-stepper-contents {
       padding: 0;
     }
   }
 
   &__alt-labels {
-    .g-stepper-step {
+    ::v-deep .g-stepper-step {
       flex-direction: column;
       align-items: center;
     }
-  }
-}
-
-.g-stepper-transition {
-  &-enter {
-    transform: translateX(100%);
-  }
-
-  &-enter-active {
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 0.3s;
-  }
-
-  &-leave {
-    opacity: 1;
-  }
-
-  &-leave-to {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-
-  &-leave-active {
-    transition-timing-function: ease-in;
-    transition-duration: 0.3s;
-    position: absolute;
   }
 }

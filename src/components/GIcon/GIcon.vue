@@ -189,3 +189,7 @@
     return '24px'
   }
 </script>
+
+<style scoped lang="scss">
+	@import "GIcon";
+</style>
