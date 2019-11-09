@@ -10,7 +10,7 @@ function getVModel(props, context) {
 }
 
 export function getInternalValue(prop, context, event = 'input') {
-  const rawInternalValue = ref(prop.value || null);
+  const rawInternalValue = ref(prop.value);
 
   watch(() => prop.value, () => rawInternalValue.value = prop.value, { lazy: true });
 

@@ -14,6 +14,7 @@ import GTextField from '../../GInput/GTextField';
 import GChip from '../../GChip/GChip';
 import GChipGroup from '../../GChipGroup/GChipGroup';
 import GDivider from '../../GLayout/GDivider';
+import GAvatar from '../../GAvatar/GAvatar';
 
 export default {
   title: 'GWindow',
@@ -75,7 +76,7 @@ export const GWindowDefault = () => ({
 });
 
 export const GWindowWithCards = () => ({
-  components: { GCard, GCardActions, GCardTitle, GDivider, GCardText, GBtn, GSpacer, GCardSubtitle, GWindowItem, GWindow, GImg, GTextField, GIcon, GChip, GChipGroup },
+  components: { GCard, GCardActions, GCardTitle, GDivider, GCardText, GBtn, GSpacer, GAvatar, GCardSubtitle, GWindowItem, GWindow, GImg, GTextField, GIcon, GChip, GChipGroup },
   data: () => ({
     selectedItem: 0,
     activeItems: null,
@@ -114,8 +115,8 @@ export const GWindowWithCards = () => ({
   template: `<g-window :continuous="continuous" :elevation="elevation" :vertical="vertical" :show-arrows-on-hover="showArrowsOnHover" :prev-icon="prevIcon" :next-icon="nextIcon" :reverse="reverse" :show-arrows="showArrows" v-model="selectedItem">
               <g-window-item>
                 <g-card>
-                  <g-card-title>TASK 01: WELCOME TO CAR DEALER</g-card-title>
-                  <div style="background-image: url(https://image.shutterstock.com/image-vector/colorful-circle-logo-design-vector-600w-1502627027.jpg); background-position: center center; background-repeat: no-repeat; width: 100%; height: 300px;">
+                  <g-card-title>TASK 01: WELCOME TO CAR DEALER<g-spacer/><g-avatar background-color="blue" text-color="white">1</g-avatar></g-card-title>
+                  <div style="background-image: url('https://cdn.vuetifyjs.com/images/logos/v.svg'); background-position: center center; background-repeat: no-repeat; width: 100%; height: 300px;">
                     
                   </div>
                   <g-card-actions>
@@ -127,14 +128,15 @@ export const GWindowWithCards = () => ({
               </g-window-item>
               <g-window-item>
                <g-card>
-                  <g-card-title>TASK 02: NAME & PASSWORD</g-card-title>
+                  <g-card-title>TASK 02: LOGIN FORM<g-spacer/><g-avatar background-color="blue" text-color="white">2</g-avatar></g-card-title>
                   <g-card-text>
-                     <g-text-field v-model="username"> 
+                     <p>Please fill in the blank your name & password</p>
+                     <g-text-field v-model="username" label="Name"> 
                         <template v-slot:prepend-outer>
                            <g-icon>mdi-account</g-icon>
                         </template>
                       </g-text-field>
-                     <g-text-field v-model="password"> 
+                     <g-text-field v-model="password" label="Password"> 
                         <template v-slot:prepend-outer>
                            <g-icon>mdi-textbox-password</g-icon>
                         </template>
@@ -152,7 +154,7 @@ export const GWindowWithCards = () => ({
               </g-window-item>
               <g-window-item>
                <g-card>
-                  <g-card-title>TASK 03: CHOOSE YOUR FAVOURITE CARS</g-card-title>
+                  <g-card-title>TASK 03: CHOOSE YOUR FAVOURITE CARS<g-spacer/><g-avatar background-color="blue" text-color="white">3</g-avatar></g-card-title>
                   <g-card-text>
                     <g-chip-group :items="items" v-model="activeItems" multiple>
                         <template v-slot:item="{value, click, active, close}">{{value.text}}</template>
@@ -173,7 +175,7 @@ export const GWindowWithCards = () => ({
               </g-window-item>
               <g-window-item>
                <g-card>
-                  <g-card-title>TASK 04: CONFIRM YOUR CHOICES</g-card-title>
+                  <g-card-title>TASK 04: CONFIRM YOUR CHOICES<g-spacer/><g-avatar background-color="blue" text-color="white">4</g-avatar></g-card-title>
                   <g-card-text>
                    <p>Please read through your choices:</p>
                    <p>- Your username: {{username}}</p>
