@@ -132,7 +132,7 @@
         return convertFileSize(size)
       })
 
-      function configFileName(fileName) {
+      function formattedFileName(fileName) {
         return fileName.length > props.truncateLength
             ? fileName.slice(0, Math.floor(props.truncateLength / 2 - 1)) + '...' + fileName.slice(-Math.floor((props.truncateLength - 1) / 2 - 1))
             : fileName
@@ -140,13 +140,13 @@
 
       const fileContent = computed(() => {
         if (files.value.length === 0) return ''
-        if (files.value.length === 1) return configFileName(files.value[0].name)
+        if (files.value.length === 1) return formattedFileName(files.value[0].name)
         if (files.value.length > 1) return files.value.length + ' files'
       })
       const filesName = computed(() => {
         let filesName = []
         for (let file of files.value)
-          filesName.push(configFileName(file.name))
+          filesName.push(formattedFileName(file.name))
         return filesName
       })
       const fileAmount = computed(() => {
@@ -170,23 +170,17 @@
       }
 
       function genSelectionSlot() {
-        const children = []
-
-        files.value.forEach((file, index, files) => {
+        return Array.from(files.value).map((file, index, files) => {
           if (!context.slots.selection) return
 
           let text = props.showSize ? filesName.value[index] + ` (${convertFileSize(file.size)})` : filesName.value[index]
-          children.push(
-              context.slots.selection({
-                text: text,
-                file,
-                index,
-                amount: files.length
-              })
-          )
+          return context.slots.selection({
+            text: text,
+            file,
+            index,
+            amount: files.length
+          })
         })
-
-        return children
       }
 
       function genFileInput() {
