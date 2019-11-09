@@ -1,38 +1,65 @@
 <template>
-	<g-diagram width="80%" height="80%" position="absolute" top="10%" left="10%">
-		<div id="props">
-			<p>props</p>
-			<g-connector v-for="prop in Props" v-model="prop.value" point-radius="10" point-position="right" path-color="#118f41">
-				<div>
-					{{ prop.value }}
-				</div>
-			</g-connector>
-		</div>
-		<div id="event">
-			<p>event</p>
-			<g-connector v-for="event in Events" v-model="event.value" point-radius="10" path-color="#0e5bad" point-position="right">
-				<div>
-					{{ event.value }}
-				</div>
-			</g-connector>
-		</div>
-		<div id="context">
-			<p>context</p>
-			<g-connector v-for="context in Contexts" v-model="context.value" point-radius="10" path-color="#d97d14" point-position="left">
-				<div>
-					{{ context.value }}
-				</div>
-			</g-connector>
-		</div>
-		<div id="data">
-			<p>data</p>
-			<g-connector v-for="data in Datas" v-model="data.value" point-radius="10" path-color="#7d0f85" point-position="left">
-				<div>
-					{{ data.value }}
-				</div>
-			</g-connector>
-		</div>
-	</g-diagram>
+	<div>
+		<p>Connection: {{connections}}</p>
+		<g-diagram width="80%" height="80%" position="absolute" top="10%" left="10%">
+			<div id="props">
+				<p>props</p>
+				<g-connector v-for="prop in Props"
+										 v-model="prop.value"
+										 point-radius="10"
+										 point-position="right"
+										 path-color="#118f41"
+										 @connected="y => connect(prop.value, y)"
+										 @disconnected="y => disconnect(prop.value, y)">
+					<div>
+						{{ prop.value }}
+					</div>
+				</g-connector>
+			</div>
+			<div id="event">
+				<p>event</p>
+				<g-connector v-for="event in Events"
+										 v-model="event.value"
+										 point-radius="10"
+										 path-color="#0e5bad"
+										 point-position="right"
+										 @connected="y => connect(event.value, y)"
+										 @disconnected="y => disconnect(event.value, y)">
+					<div>
+						{{ event.value }}
+					</div>
+				</g-connector>
+			</div>
+			<div id="context">
+				<p>context</p>
+				<g-connector v-for="context in Contexts"
+										 v-model="context.value"
+										 point-radius="10"
+										 path-color="#d97d14"
+										 point-position="left"
+										 @connected="y => connect(context.value, y)"
+										 @disconnected="y => disconnect(context.value, y)">
+					<div>
+						{{ context.value }}
+					</div>
+				</g-connector>
+			</div>
+			<div id="data">
+				<p>data</p>
+				<g-connector v-for="data in Datas"
+										 v-model="data.value"
+										 point-radius="10"
+										 path-color="#7d0f85"
+										 point-position="left"
+										 @connected="y => connect(data.value, y)"
+										 @disconnected="y => disconnect(data.value, y)">
+					<div>
+						{{ data.value }}
+					</div>
+				</g-connector>
+			</div>
+		</g-diagram>
+	</div>
 </template>
 <script>
   import { ref, reactive, computed, onMounted } from '@vue/composition-api'
@@ -92,11 +119,24 @@
         }
       ])
 
+			const connections = ref([])
+
+			function connect(x, y) {
+				connections.value.push([x, y])
+			}
+
+			function disconnect(x, y) {
+			  connections.value.splice(connections.value.findIndex(connection => connection[0] === x && connection[1] === y), 1)
+			}
+
 			return {
 				Props,
 				Contexts,
 				Events,
-				Datas
+				Datas,
+				connections,
+				connect,
+				disconnect
 			}
 		}
   }
