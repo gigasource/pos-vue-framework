@@ -148,7 +148,7 @@ export const GWindowWithCards = () => ({
                   <g-card-actions>
                    <g-btn depressed @click="prev">BACK</g-btn>
                    <g-spacer/>
-                   <g-btn depressed @click="next" background-color="blue" text-color="white">CONTINUE</g-btn>
+                   <g-btn depressed @click="next" background-color="blue" text-color="white" :disabled="!username || !password">CONTINUE</g-btn>
                   </g-card-actions>
                 </g-card>
               </g-window-item>
@@ -160,7 +160,7 @@ export const GWindowWithCards = () => ({
                         <template v-slot:item="{value, click, active, close}">{{value.text}}</template>
                     </g-chip-group>
                     <p>
-                      Please choose some of your favourite car brands so we know your preferences to serve your better.
+                      Please choose some of your favourite car brands so we know your preferences.
                     </p>
                   </g-card-text>
                   
@@ -169,7 +169,7 @@ export const GWindowWithCards = () => ({
                   <g-card-actions>
                    <g-btn depressed @click="prev">BACK</g-btn>
                     <g-spacer/>                   
-                   <g-btn depressed @click="next" background-color="blue"  text-color="white">CONTINUE</g-btn>
+                   <g-btn depressed @click="next" background-color="blue"  text-color="white" :disabled="!activeItems">CONTINUE</g-btn>
                   </g-card-actions>
                 </g-card>
               </g-window-item>
