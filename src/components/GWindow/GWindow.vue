@@ -129,8 +129,8 @@
         if (item.disabled) {
           return getNextIndex(nextIndex);
         }
-        return nextIndex;
 
+        return nextIndex;
       }
 
       function getPrevIndex(index) {
@@ -141,8 +141,8 @@
           return getPrevIndex(prevIndex);
 
         }
-        return prevIndex
 
+        return prevIndex
       }
 
       function next() {
@@ -222,7 +222,6 @@
         const windowData = {
           staticClass: 'g-window',
           class: classes.value,
-          directives: [],
         }
         return <div ref="window" {...windowData}>{genContainer()}</div>
       }
@@ -243,12 +242,11 @@
 <style lang="scss" scoped>
   .g-window {
     &__container {
-      overflow: hidden;
       height: inherit;
       position: relative;
       transition: .3s cubic-bezier(.25, .8, .50, 1);
 
-      &--is-active {
+      &__is-active {
         overflow: hidden;
       }
     }
