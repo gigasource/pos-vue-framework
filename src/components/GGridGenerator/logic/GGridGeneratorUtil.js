@@ -47,7 +47,7 @@ export function getGridAreaCss(gridItem) {
 export function getUniqueNewAreaName(grids, areaName) {
   let newName = areaName
   let ctr = 0
-  while(isGridNameExisted(grids, newName)) {
+  while (isGridNameExisted(grids, newName)) {
     ctr++
     newName = `${areaName}${ctr}`
   }
@@ -70,7 +70,17 @@ export function isGridAreaNameValid(areaName) {
  * @returns {boolean}
  */
 export function isGridNameExisted(grids, name) {
-  return _.findIndex(grids, grid =>  grid.name === name) >= 0
+  return _.findIndex(grids, grid => grid.name === name) >= 0
+}
+
+
+function getFullCssModelName(model, uid) {
+  // root
+  if (model.parent == null) {
+    return `.${model.name}[${uid}]`
+  } else {
+    return `${getFullCssModelName(model.parent, uid)}>.${model.name}`
+  }
 }
 
 /**
@@ -82,8 +92,10 @@ export function generateGridCSS(model, uid) {
   let output = ''
 
   let css = ''
-  if (model.area)
-    css += `  grid-area: ${getGridAreaCss(model)};`
+  if (model.area) {
+    css += `  grid-area: ${getGridAreaCss(model)};
+  background: ${model.bgColor};`
+  }
 
   if (model.settings) {
     css += model.area ? `
@@ -93,18 +105,32 @@ export function generateGridCSS(model, uid) {
   grid-template-columns: ${joinRefArrayValue(model.settings.columns)};
   grid-template-rows: ${joinRefArrayValue(model.settings.rows)};
   grid-column-gap: ${model.settings.columnGap}px;
-  grid-row-gap: ${model.settings.rowGap}px;
-  background: ${model.bgColor};
-  `
-  }
+  grid-row-gap: ${model.settings.rowGap}px;`}
 
-  output += `.${model.name}${uid !== ''? `[${uid}]`: ''} {
+  output += `${getFullCssModelName(model, uid)} {
 ${css}
 }
 `
   _.each(model.subAreas, subArea => output += generateGridCSS(subArea, uid))
 
   return output
+}
+
+/**
+ * Return all grid/subgrid item
+ * skip single item
+ * @param gridItem
+ * @returns {null}
+ */
+export function getGridList(gridItem) {
+  let gridList = null
+  if (gridItem.settings) {
+    gridList = [gridItem]
+    _.each(gridItem.subAreas, area => {
+      gridList.push(...(getGridList(area) || []).filter(i => i != null))
+    })
+  }
+  return gridList
 }
 
 /**
@@ -115,20 +141,21 @@ ${css}
  */
 export function getSelectedAreas(grids, selectedGridName) {
   let selectedGrid = _.find(grids, grid => grid.name === selectedGridName)
-  if (selectedGrid)
+  if (selectedGrid) {
     return selectedGrid.subAreas
-  else
+  } else {
     return []
+  }
 }
 
-function createSingleItem(grids, parentGrid, area) {
+function createSingleItem(parentGrid, area) {
   const rowStart = Math.min(area.rowStart, area.rowEnd) + 1
   const rowEnd = Math.max(area.rowStart, area.rowEnd) + 2
   const columnStart = Math.min(area.columnStart, area.columnEnd) + 1
   const columnEnd = Math.max(area.columnStart, area.columnEnd) + 2
 
   return {
-    name: getUniqueNewAreaName(grids, area.name),
+    name: area.name,
     parent: parentGrid,
     hide: false,
     bgColor: `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, 50%)`,
@@ -141,8 +168,8 @@ function createSingleItem(grids, parentGrid, area) {
   }
 }
 
-function createSubGridItem(grids, parentGrid, area) {
-  const singleItem = createSingleItem(grids, parentGrid, area)
+function createSubGridItem(parentGrid, area) {
+  const singleItem = createSingleItem(parentGrid, area)
   return {
     ...singleItem,
     settings: {
@@ -155,28 +182,19 @@ function createSubGridItem(grids, parentGrid, area) {
   }
 }
 
-export function addSubGridArea(grids, targetGrid, area) {
-  const subGrid = createSubGridItem(grids, targetGrid, area)
-  grids.push(subGrid)
+export function addSubGridArea(targetGrid, area) {
+  const subGrid = createSubGridItem(targetGrid, area)
   targetGrid.subAreas.push(subGrid)
 }
 
-export function addSubItemArea(grids, targetGrid, area) {
-  const subItem = createSingleItem(grids, targetGrid, area)
-  grids.push(subItem)
+export function addSubItemArea(targetGrid, area) {
+  const subItem = createSingleItem(targetGrid, area)
   targetGrid.subAreas.push(subItem)
 }
 
-export function deleteGridItem(grids, gridItem) {
-  // delete its children
-  _.each(gridItem.subAreas || [], item => deleteGridItem(grids, item))
-
-  // delete it from grids
-  let id = _.findIndex(grids, item => item === gridItem)
-  grids.splice(id, 1)
-
+export function deleteGridItem(gridItem) {
   // delete it from its parent
   let parent = gridItem.parent
-  id = _.findIndex(parent.subAreas, subArea => subArea === gridItem)
+  let id = _.findIndex(parent.subAreas, subArea => subArea === gridItem)
   parent.subAreas.splice(id, 1)
 }

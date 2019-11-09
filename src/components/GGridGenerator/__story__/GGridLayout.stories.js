@@ -14,7 +14,7 @@ export const input = () => ({
   components: { GGridLayout, GGridGenerator },
   data() {
     return {
-      gridModel: {
+      app: {
         name: 'app',
         isRoot: true,
         settings: {
@@ -25,7 +25,7 @@ export const input = () => ({
         },
         bgColor: 'transparent',
         subAreas: []
-      }
+      },
     }
   },
   methods: {
@@ -36,12 +36,13 @@ export const input = () => ({
   },
   template: `
 <div>
-  <g-grid-generator :layout="gridModel" v-on:export="updateModel"/>      
-  <g-grid-layout :layout="gridModel">
-  <div area="logo">lorem ispum</div>
-  <div area="footer">Footer: Lorem ispum</div>
+  <g-grid-generator :layout="app" v-on:export="updateModel"/>      
+  <g-grid-layout :layout="app">
+  <div area="headerLogo">Header logo</div>
+  <div area="headerTitle">header title</div>
   <div area="bodySidebar">Body sidebar</div>
   <div area="bodyContent">Body content</div>
+  <div area="footer">Footer</div>
   </g-grid-layout>
 </div>
 `

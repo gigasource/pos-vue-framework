@@ -25,7 +25,7 @@
       // a unique uid for scoped stylesheet of grid layout instance
       const uid = 'data-g-grid-layout-' + (gridLayoutInstanceCounter++)
 
-      onUpdated(() => {
+      const updateSlot = () => {
         // move style out
         context.refs.el.parentNode.appendChild(context.refs.gridLayoutStyle)
 
@@ -39,7 +39,10 @@
           areaNode.classList.add(areaNode.getAttribute(identityAttr))
 
         })
-      })
+      }
+
+      onMounted(() => updateSlot())
+      onUpdated(() => updateSlot())
 
       function generatedCss() {
         return generateGridCSS(props.layout, uid)
@@ -55,14 +58,13 @@
       function processLayout(model) {
         // find a pre-defined Vnode in default slot, if default slot doesn't include current name
         // then add new div wrapper
-        const vNode = _findVnodeInSlot(model.name) || h('div', {
-          attrs: {
-            [uid]: '',
-            class: model.name
-          }
-        }, [])
-
-        model.subAreas && _.each(model.subAreas, area => vNode.children.push(processLayout(area)))
+        let vNode = _findVnodeInSlot(model.name)
+        if (!vNode) {
+          vNode = h('div',
+              { attrs: { [uid]: '', class: model.name } },
+              _.map(model.subAreas, processLayout)
+          )
+        }
 
         return vNode
       }

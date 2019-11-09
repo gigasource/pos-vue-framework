@@ -7,7 +7,7 @@
     addSubGridArea,
     addSubItemArea,
     deleteGridItem, createEmptyArea,
-    getSelectedAreas, isGridAreaNameValid
+    getSelectedAreas, isGridAreaNameValid, getGridList
   } from './logic/GGridGeneratorUtil'
   import { reactive, ref, computed } from '@vue/composition-api';
   import GDialog from '../GDialog/GDialog';
@@ -37,7 +37,8 @@
       // |- hide     | indicate whether a grid-item should be shown or                |
       // |           | not                                                            |
       // +-----------+----------------------------------------------------------------+
-      let initialLayout = props.layout || {
+
+      const initLayout = props.layout || {
         name: 'app',
         isRoot: true,
         settings: {
@@ -48,9 +49,8 @@
         },
         subAreas: []
       }
-
       const state = reactive({
-        grids: [initialLayout],
+        layout: initLayout,
 
         //// view settings
         // view size
@@ -69,7 +69,7 @@
         },
 
         // a value hold the selecting grid/sub-grid
-        selectedGrid: 'app',
+        selectedGrid: initLayout,
         // a value indicate whether a confirm dialog will be shown or not
         // the confirm dialog should be show when user create new sub-grid/single item
         showConfirmDialog: false,
@@ -102,12 +102,12 @@
         return <div class="g-grid-generator__list">
           <div class="g-grid-generator__list__header">GRID</div>
           <ul class="g-grid-generator__list__items">
-            {_.map(state.grids, grid => !grid.settings ? null :
+            {  _.map(getGridList(state.layout), grid =>
                 <li class={getGridListItemClass(grid)}>
                   <g-edit-view-input
                       width="100%"
                       value={grid.name}
-                      vOn:click={() => state.selectedGrid = grid.name}
+                      vOn:click={() => state.selectedGrid = grid}
                       vOn:input={newName => changeItemName(grid, newName)}
                   />
                 </li>
@@ -121,12 +121,12 @@
         return <div class="g-grid-generator__list">
           <div class="g-grid-generator__list__header">AREA</div>
           <ul class="g-grid-generator__list__items">
-            {_.map(getSelectedAreas(state.grids, state.selectedGrid), area =>
+            {_.map(state.selectedGrid.subAreas, area =>
                 <li class="g-grid-generator__list__item">
                   <g-edit-view-input
                       width="100%"
                       value={area.name}
-                      vOn:click={() => area.settings && (state.selectedGrid = area.name)}
+                      vOn:click={() => area.settings && (state.selectedGrid = area)}
                       vOn:input={newName => changeItemName(area, newName)}
                   />
                   <span style="line-height: 16px" vOn:click={() => area.hide = !area.hide}>
@@ -276,7 +276,7 @@
         ])
       }
 
-      function renderGridAreaInEditMode(gridItem, index) {
+      function renderGridAreaInEditMode(gridItem) {
         return <div
             class="g-grid-generator__editor__field__area"
             style={{ backgroundColor: gridItem.bgColor, gridArea: getGridAreaCss(gridItem) }}>
@@ -285,7 +285,7 @@
           </span>
           <span
               class="g-grid-generator__editor__field__area__delete"
-              vOn:click={() => deleteGridItem(state.grids, gridItem)}>x</span>
+              vOn:click={() => deleteGridItem(gridItem)}>x</span>
         </div>
       }
 
@@ -358,7 +358,7 @@
               <button type='button'
                       vOn:click={() => {
                         if (isGridAreaNameValid(selectingArea.name)) {
-                          addSubGridArea(state.grids, grid, selectingArea)
+                          addSubGridArea(grid, selectingArea)
                           state.showConfirmDialog = false
                           selectingArea = createEmptyArea()
                         }
@@ -368,7 +368,7 @@
               <button type='button'
                       vOn:click={() => {
                         if (isGridAreaNameValid(selectingArea.name)) {
-                          addSubItemArea(state.grids, grid, selectingArea)
+                          addSubItemArea(grid, selectingArea)
                           state.showConfirmDialog = false
                           selectingArea = createEmptyArea()
                         }
@@ -438,7 +438,7 @@
             type='button'
             vOn:click_stop_prevent={() => {
               state.showOutputDialog = true
-              state.generatedCss = generateGridCSS(state.grids[0], props.uid)
+              state.generatedCss = generateGridCSS(state.layout, props.uid)
               context.emit('cssgenerated', state.generatedCss)
             }}>Generate Css</button>
       }
@@ -447,7 +447,7 @@
         return <button
             type="button"
             vOn:click_stop_prevent={() => {
-              context.emit('exportlayout', state.grids[0])
+              context.emit('exportlayout', state.layout)
             }}>Export layout</button>
       }
 
@@ -470,28 +470,22 @@
               </div>
 
               <div class="g-grid-generator__editor">
-                {_.map(state.grids, grid =>
-                    grid.settings && grid.name === state.selectedGrid
-                        ? [
-                          <div style={{
-                            display: 'inline-block',
-                            position: 'relative',
-                            width: `${state.fieldWidth}px`,
-                            height: `${state.fieldHeight}px`
-                          }}>
-                            {renderGridColumnWidthSetting(grid)}
-                            {renderGridRowHeightSetting(grid)}
-                            {renderGridContainer(grid)}
-                          </div>,
-                          <div class="g-grid-generator__editor__settings">
-                            {renderGridSettings(grid)}
-                            {renderGenerateStyleBtn()}
-                            {renderExportLayoutBtn()}
-                          </div>,
-                          renderConfirmDialog(grid)
-                        ]
-                        : undefined
-                )}
+                <div style={{
+                  display: 'inline-block',
+                  position: 'relative',
+                  width: `${state.fieldWidth}px`,
+                  height: `${state.fieldHeight}px`
+                }}>
+                  {renderGridColumnWidthSetting(state.selectedGrid)}
+                  {renderGridRowHeightSetting(state.selectedGrid)}
+                  {renderGridContainer(state.selectedGrid)}
+                </div>
+                <div class="g-grid-generator__editor__settings">
+                  {renderGridSettings(state.selectedGrid)}
+                  {renderGenerateStyleBtn()}
+                  {renderExportLayoutBtn()}
+                </div>
+                {renderConfirmDialog(state.selectedGrid)}
               </div>
 
               {renderOutputDialog()}
