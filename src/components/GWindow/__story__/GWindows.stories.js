@@ -169,7 +169,7 @@ export const GWindowWithCards = () => ({
                   <g-card-actions>
                    <g-btn depressed @click="prev">BACK</g-btn>
                     <g-spacer/>                   
-                   <g-btn depressed @click="next" background-color="blue"  text-color="white" :disabled="!activeItems">CONTINUE</g-btn>
+                   <g-btn depressed @click="next" background-color="blue"  text-color="white" :disabled="!activeItems || (activeItems && activeItems.length <= 0)">CONTINUE</g-btn>
                   </g-card-actions>
                 </g-card>
               </g-window-item>
