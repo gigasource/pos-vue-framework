@@ -1,14 +1,19 @@
+@import "../../style/variables";
+@import "../../style/elevation";
+
 .g-card {
   //New
   background-color: #FFFFFF;
   color: rgba(0, 0, 0, 0.87);
 
-  > .g-card__text, .g-card__subtitle {
+  > .g-card-text, .g-card-subtitle {
     color: rgba(0, 0, 0, 0.54);
   }
 
   &.g-card__outlined {
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: none;
+    //border: 0.5px solid currentColor;
+    border: 1px solid #00000042;
   }
 
   display: block;
@@ -49,26 +54,18 @@
     pointer-events: none;
     user-select: none;
 
-    > *:not(.v-card__progress) {
+    > *:not(.g-card__progress) {
       opacity: 0.6;
       transition: inherit;
     }
   }
 
-  &__loading {
-    overflow: hidden
-  }
-
-
-  &__outlined {
-    box-shadow: none;
-    border: 1px solid map_get($grey, 'lighten-1')
-  }
-
   &__shaped {
     border-radius: 24px 4px;
+
     .g-image {
       border-top-left-radius: inherit;
+
       .g-image-content {
         border-top-left-radius: inherit;
       }
@@ -79,100 +76,91 @@
     @include elevation(8);
   }
 
-  //Generate elevation classes
-  $elevationMin: 1;
-  $elevationMax: 24;
-  @for $i from $elevationMin through $elevationMax {
-    &__elevation-#{$i} {
-      @include elevation($i)
+  //New refactor
+  .g-card-subtitle {
+    padding: 16px;
+
+    & + .g-card-text {
+      padding-top: 0
     }
   }
-}
 
-//New refactor
-.g-card__subtitle {
-  padding: 16px;
-
-  & + .g-card__text {
-    padding-top: 0
-  }
-}
-
-.g-card__subtitle,
-.g-card__text {
-  font-size: .875rem;
-  font-weight: 400 !important;
-  line-height: 1.375rem;
-  letter-spacing: .0071428571em;
-}
-
-.g-card__text,
-.g-card__title {
-  padding: 16px
-}
-
-.g-card__title {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 1.25rem;
-  font-weight: 500;
-  letter-spacing: .0125em;
-  line-height: 2rem;
-  word-break: break-all;
-
-  & + .g-card__subtitle, & + .g-card__text {
-    padding-top: 0;
+  .g-card-subtitle,
+  .g-card-text {
+    font-size: .875rem;
+    font-weight: 400 !important;
+    line-height: 1.375rem;
+    letter-spacing: .0071428571em;
   }
 
-  & + .v-card__subtitle {
-    margin-top: -16px;
+  .g-card-text,
+  .g-card-title {
+    padding: 16px
   }
-}
 
-.g-card__text {
-  width: 100%;
-}
+  ::v-deep .g-card-title {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: .0125em;
+    line-height: 2rem;
+    word-break: break-all;
 
-.g-card__actions {
-  align-items: center;
-  display: flex;
-  padding: 8px;
-
-  .g-btn.g-btn {
-    padding: 0 8px;
-
-    & + .g-btn {
-      margin-left: 8px
+    & + .g-card-subtitle, & + .g-card-text {
+      padding-top: 0;
     }
 
-    .g-icon__left {
-      margin-left: 4px;
+    & + .g-card-subtitle {
+      margin-top: -16px;
     }
 
-    .g-icon__right {
-      margin-right: 4px;
+    &__top {
+      top: map-get($grid-gutters, 'xs');
+    }
+
+    &__left {
+      left: map-get($grid-gutters, 'xs');
+    }
+
+    &__bottom {
+      bottom: map-get($grid-gutters, 'xs');
+    }
+
+    &__right {
+      right: map-get($grid-gutters, 'xs');
+    }
+
+    &__absolute {
+      position: absolute;
     }
   }
-}
 
-.g-card__text__top {
-  top: map-get($grid-gutters, 'xs');
-}
+  .g-card-text {
+    width: 100%;
+  }
 
-.g-card__text__left {
-  left: map-get($grid-gutters, 'xs');
-}
+  .g-card-actions {
+    align-items: center;
+    display: flex;
+    padding: 8px;
 
-.g-card__text__bottom {
-  bottom: map-get($grid-gutters, 'xs');
-}
+    ::v-deep .g-btn.g-btn {
+      padding: 0 8px;
 
-.g-card__text__right {
-  right: map-get($grid-gutters, 'xs');
-}
+      & + .g-btn {
+        margin-left: 8px
+      }
 
-.g-card__text__absolute {
-  position: absolute;
+      .g-icon__left {
+        margin-left: 4px;
+      }
+
+      .g-icon__right {
+        margin-right: 4px;
+      }
+    }
+  }
 }
 

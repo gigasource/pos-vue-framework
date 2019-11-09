@@ -1,43 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`GTextField should render prefix, transform label align to prefix 1`] = `
-<div class="tf-wrapper">
-  <div class="tf-prepend__outer">
+<div class="g-tf--wrapper">
+  <div class="g-tf--prepend__outer">
   </div>
   <fieldset>
     <legend>
       Test label
     </legend>
-    <div class="tf">
-      <div class="tf-prepend__inner">
+    <div class="g-tf">
+      <div class="g-tf--prepend__inner">
       </div>
-      <div class="tf-affix">
+      <div class="g-tf--affix">
         Prefix
       </div>
       <div class="inputGroup">
         <input id="input"
                type="text"
                label="Test label"
-               class="tf-input"
+               class="g-tf--input"
         >
         <label for="input"
-               class="tf-label"
+               class="g-tf--label"
         >
           Test label
         </label>
       </div>
-      <div class="tf-append__inner">
+      <div class="g-tf--append__inner">
       </div>
-      <div class="tf-hint">
+      <div class="g-tf--hint">
       </div>
-      <div class="tf-counter"
+      <div class="g-tf--counter"
            style="display: none;"
       >
         0 / false
       </div>
     </div>
   </fieldset>
-  <div class="tf-append__outer">
+  <div class="g-tf--append__outer">
   </div>
 </div>
 `;

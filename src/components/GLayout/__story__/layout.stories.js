@@ -267,21 +267,21 @@ export const layoutWithRowCol = () => ({
       <g-col :cols="col"
         :align-self="align1"
         :order="order1">
-        <div style="border: 1px solid black;">
+        <div style="height: 100%; border: 1px solid black;">
           Column 1 Col-{{col}}
         </div>
       </g-col>
       <g-col :cols="col"
         :align-self="align2"
         :order="order2">
-        <div style="border: 1px solid black;">
+        <div style="height: 100%; border: 1px solid black;">
           Column 2 Col-{{col}}
         </div>
       </g-col>
       <g-col :cols="col"
         :align-self="align3"
         :order="order3">
-        <div style="border: 1px solid black;">
+        <div style="height: 100%; border: 1px solid black;">
           Column 3 Col-{{col}}
         </div>  
       </g-col>
@@ -319,3 +319,45 @@ export const offsetColumn = () => ({
     </g-row>
   `
 });
+
+export const layoutWithBreakpoint = () => ({
+  components: { GContainer, GCol, GRow },
+  props: {
+    sm1: {
+      default: number('Col 1 sm', 12)
+    },
+    md1: {
+      default: number('Col 1 md', 8)
+    },
+    lg1: {
+      default: number('Col 1 lg', 6)
+    },
+    xl1: {
+      default: number('Col 1 xl', 4)
+    },
+    sm2: {
+      default: number('Col 2 sm', 12)
+    },
+    md2: {
+      default: number('Col 2 md', 4)
+    },
+    lg2: {
+      default: number('Col 2 lg', 6)
+    },
+    xl2: {
+      default: number('Col 2 xl', 8)
+    }
+  },
+  template: `<g-row no-gutters>
+      <g-col :cols="12" :sm="sm1" :md="md1" :lg="lg1" :xl="xl1">
+        <div style="border: 1px solid black; padding: 8px">
+          Col-sm-{{sm1}} Col-md-{{md1}} Col-lg-{{lg1}} Col-xl-{{xl1}}
+        </div>
+      </g-col>
+      <g-col :cols="12" :sm="sm2" :md="md2" :lg="lg2" :xl="xl2">
+        <div style="border: 1px solid black; padding: 8px">
+          Col-sm-{{sm2}} Col-md-{{md2}} Col-lg-{{lg2}} Col-xl-{{xl2}}
+        </div>
+      </g-col>
+    </g-row>`
+})

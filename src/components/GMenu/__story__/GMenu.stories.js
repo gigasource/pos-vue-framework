@@ -11,12 +11,10 @@ export const gMenuLookAndFeel = () => ({
   components: { GMenu, GBtn },
   data: () => ({
     activatorHeight: 40,
-    activatorWidth: 120
+    activatorWidth: 120,
+    showMenu: true
   }),
   props: {
-    showMenu: {
-      default: boolean('show menu', true)
-    },
     top: {
       default: boolean('align top', false)
     },
@@ -47,6 +45,10 @@ export const gMenuLookAndFeel = () => ({
     setTimeout(() => {
       this.activatorHeight = 100;
       this.activatorWidth = 300
+      setTimeout(() => {
+        this.activatorHeight = 150;
+        this.activatorWidth = 450
+      }, 2000)
     }, 2000)
   },
   template: `
@@ -65,11 +67,9 @@ export const gMenuLookAndFeel = () => ({
 export const gMenuBehavior = () => ({
   components: { GMenu, GBtn },
   data: () => ({
+    showMenu: false
   }),
   props: {
-    showMenu: {
-      default: boolean('show menu', false)
-    },
     closeOnContentClick: {
       type: Boolean,
       default: boolean('close on content click', true)
@@ -124,7 +124,7 @@ export const gMenuHover = () => ({
   template: `
     <div data-app style="min-height: 80vh">
       <g-menu v-model="showMenu"
-              :open-on-hover="openOnHover" :open-delay="openDelay" :close-delay="closeDelay">
+              :open-on-hover="openOnHover" :open-delay="openDelay" :close-delay="closeDelay" style="display: inline-flex" lazy>
         <template v-slot:activator="{toggleContent}"><g-btn @click="toggleContent">Activator</g-btn></template>
         <div>Content</div>
       </g-menu>

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<slot name="label">
-			<label class="g-radio-group-label">{{label}}</label>
+			<label v-if="label" class="g-radio-group-label">{{label}}</label>
 		</slot>
 		<div class="radio-group" :class="classes">
 			<slot></slot>
@@ -46,6 +46,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GRadio";
 </style>

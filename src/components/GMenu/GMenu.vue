@@ -1,14 +1,15 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed, onBeforeUnmount, onMounted, onUpdated, reactive, ref } from '@vue/composition-api';
+  import { onBeforeUnmount, onMounted, reactive, ref } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
-  import { convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import delayable from '../../mixins/delayable';
+  import GMenuContent from './GMenuContent';
 
   export default {
     name: 'GMenu',
+    components: { GMenuContent },
     directives: {
       ClickOutside
     },
@@ -92,15 +93,11 @@
       }
     },
     setup(props, context) {
-      const { model: isActive } = getVModel(props, context);
-      const {
-        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState
-      } = menuable(props, context);
-      const { attachToRoot, detach } = detachable(props, context);
+      const isActive = getVModel(props, context);
+      const { detach, attachToParent } = detachable(props, context);
       const { runDelay } = delayable(props)
 
       //template refs
-      const content = ref(null);
       const el = ref(null);
       const activator = ref(null);
 
@@ -108,160 +105,85 @@
         top: 0,
         hasJustFocused: false,
         isFirstRender: true,
-        ...menuableState
       });
 
-      function initContent() {
-        updateDimensions();
-        attachToRoot();
-      }
-
-      let activatorResizeObserver
       onMounted(() => {
-        activatorResizeObserver = new ResizeObserver(() => {
-          updateDimensions()
+        context.root.$nextTick(() => {
+          attachToParent(context.refs.activator)
+          activator.value = context.refs.activator
         })
-        context.refs.activator && activatorResizeObserver.observe(context.refs.activator)
-        if (props.lazy) return
-        initContent();
-      });
+      })
 
       onBeforeUnmount(() => {
-        context.refs.activator && activatorResizeObserver.unobserve(context.refs.activator)
-        if (content.value) detach(content.value)
         if (el.value) detach(el.value)
       })
 
-      const calculatedLeft = computed(() => {
-        const menuWidth = Math.max(dimensions.content.width, parseFloat(calculatedMinWidth.value))
-        return convertToUnit(calcXOverflow(computedLeft.value, menuWidth)) || '0'
-      })
-
-      const calculatedTop = computed(() => {
-        return convertToUnit(calcYOverFlow(computedTop.value)) || '0'
-      })
-
-      const calculatedMaxWidth = computed(() => {
-        return convertToUnit(props.maxWidth) || '0'
-      })
-
-      const calculatedMinWidth = computed(() => {
-        if (props.contentFillWidth) return convertToUnit(Math.max(dimensions.activator.width, dimensions.content.width))
-        if (props.minWidth) return convertToUnit(props.minWidth) || '0'
-
-        const minWidth = Math.min(dimensions.content.width, state.pageWidth);
-        const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
-        return convertToUnit(Math.min(_calculatedMaxWidth, minWidth)) || 0;
-      })
-
-      const calculatedMaxHeight = computed(() => {
-        return convertToUnit(props.maxHeight) || '0';
-      })
-
-      const contentStyles = computed(() => ({
-        top: calculatedTop.value,
-        left: calculatedLeft.value,
-        maxHeight: calculatedMaxHeight.value,
-        minWidth: calculatedMinWidth.value,
-        maxWidth: calculatedMaxWidth.value,
-      }))
-
       function toggleContent(event) {
-        if (props.lazy) {
-          state.isFirstRender = false
-          context.root.$nextTick(() => {
-            initContent()
-          })
-        }
+        if (props.lazy && state.isFirstRender) state.isFirstRender = false
         const activator = event.target || event.currentTarget;
         if (!activator) {
           return
         }
-
         isActive.value = !isActive.value;
-        updateDimensions();
       }
 
-      const elListeners = {
-        ...(props.openOnHover && !props.disabled) && {
-          mouseenter(event) {
-            runDelay('open', () => {
-              if (state.hasJustFocused || isActive.value) {
-                return
-              }
-              toggleContent(event);
-              state.hasJustFocused = true;
-            })
+      const genContent = () => {
+        const contentOptions = {
+          props: {
+            ...props,
+            activator,
+            hasJustFocused: state.hasJustFocused,
           },
-          mouseleave(event) {
-            runDelay('close', () => {
-              if (context.refs.content && context.refs.content.contains(event.relatedTarget)) {
-                return
-              }
-              isActive.value = false
+          on: {
+            input: (e) => {
+              isActive.value = e
               state.hasJustFocused = false
-            })
-          }
+            }
+          },
+          ref: 'content'
         }
+        return <g-menu-content {...contentOptions} ref="content">
+          {context.slots.default()}
+        </g-menu-content>
       }
 
-      const contentListeners = {
-        ...(props.closeOnContentClick) && {
-          click(event) {
-            if (isActive.value) isActive.value = false
-            state.hasJustFocused = false
+      const activatorData = {
+        on: {
+          ...(props.openOnHover && !props.disabled) && {
+            mouseenter(event) {
+              runDelay('open', () => {
+                if (state.hasJustFocused || isActive.value) {
+                  return
+                }
+                toggleContent(event);
+                state.hasJustFocused = true;
+              })
+            },
+            mouseleave(event) {
+              runDelay('close', () => {
+                const content = context.refs.content
+                if (content && content.$el.contains(event.relatedTarget)) {
+                  return
+                }
+                isActive.value = false
+                state.hasJustFocused = false
+              })
+            }
           }
         },
-        ...(props.openOnHover) && {
-          mouseleave() {
-            if (isActive.value) isActive.value = false
-            state.hasJustFocused = false
-          }
-        }
-      }
-
-      const genDirectives = () => {
-        //callback to close menu when clicked outside
-        const closeConditional = (e) => {
-          const target = e.target;
-          return isActive.value && context.refs.content && !context.refs.content.contains(target)
-        }
-        const clickOutsideDirective = {
-          name: 'click-outside',
-          value: () => {
-            isActive.value = false
-          },
-          arg: {
-            closeConditional: closeConditional,
-            include: () => [context.refs.el]
-          },
-        }
-        //equates to v-show="value" in template
-        const vShowDirective = {
-          name: 'show',
-          value: props.value
-        }
-
-        const directives = [vShowDirective]
-        if (!props.openOnHover && props.closeOnClick) directives.push(clickOutsideDirective)
-        return directives;
+        staticClass: 'g-menu--activator',
+        ref: 'activator'
       }
 
       return () =>
-        <div {...{ on: elListeners }} ref="el" class="g-menu">
-          <div ref="activator" class="g-menu--activator">{context.slots.activator({ toggleContent })}</div>
-          <div style={contentStyles.value}
-               class="g-menu--content"
-               ref="content"
-               {...{ directives: genDirectives(), on: contentListeners }}>
-            {context.slots.default()}
-          </div>
+        <div ref="el" class="g-menu">
+          <div {...activatorData}>{context.slots.activator({ toggleContent })}</div>
+          {props.lazy ? (!state.isFirstRender && genContent()) : genContent()}
         </div>
-
     }
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GMenu";
 </style>

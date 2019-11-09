@@ -18,7 +18,7 @@
         backgroundColor: String,
         flat: Boolean,
         hover: Boolean,
-        color: String,
+        textColor: String,
         tile: Boolean,
       },
       //styles
@@ -64,6 +64,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GCard";
 </style>
