@@ -33,11 +33,7 @@
         const defaultSlot = context.refs.el
         const areaNodes = defaultSlot.querySelectorAll(`[${identityAttr}]`)
         _.each(areaNodes, areaNode => {
-          // attach attr
-          areaNode.setAttribute(uid, '')
-          // add class
           areaNode.classList.add(areaNode.getAttribute(identityAttr))
-
         })
       }
 
@@ -60,10 +56,14 @@
         // then add new div wrapper
         let vNode = _findVnodeInSlot(model.name)
         if (!vNode) {
-          vNode = h('div',
-              { attrs: { [uid]: '', class: model.name } },
-              _.map(model.subAreas, processLayout)
-          )
+          // assign model class to vnode
+          const attrs = { class: model.name }
+
+          // assign uid if model is root node
+          if (!model.parent)
+            attrs[uid] = ''
+
+          vNode = h('div', {attrs}, _.map(model.subAreas, processLayout))
         }
 
         return vNode
