@@ -33,7 +33,7 @@
       }
     },
 		setup(props, context) {
-			const { model: isActive } = getVModel(props, context);
+			const isActive = getVModel(props, context);
 
       const computedOpacity = computed(() => isActive.value ? props.opacity : 0);
 
