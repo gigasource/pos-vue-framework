@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Muli:200,400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-@import url('https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css');
+@import "~@mdi/font/css/materialdesignicons.css";
+@import "~material-design-icons-iconfont/dist/material-design-icons.css";
+@import "~@fortawesome/fontawesome-free/css/all.css";
+// TODO resolve relative modules for local fonts
+@import "font";
 
 //Typography
 //Font
@@ -10,7 +14,7 @@ $font-family-muli:       'Muli', sans-serif;
 $font-family-roboto:     'Roboto', sans-serif;
 $font-family-base:       $font-family-muli;
 $font-size-base:         1rem !default;
-$font-weight-base:       600 !default;
+$font-weight-base:       400 !default;
 $font-weight-1:          100;
 $font-weight-2:          200;
 $font-weight-3:          300;
@@ -73,6 +77,18 @@ $percentages: (
 //Grid
 $grid-columns:      12 !default;
 
+$grid-breakpoints: () !default;
+$grid-breakpoints: map-merge(
+                (
+                        'xs': 0,
+                        'sm': 600px,
+                        'md': 960px,
+                        'lg': 1280px - 16px,
+                        'xl': 1920px - 16px
+                ),
+                $grid-breakpoints
+);
+
 
 //Button
 $btn-border-radius: 0.5rem !default;
@@ -119,7 +135,7 @@ $btn-font-sizes: (
 ) !default;
 $fab-sizes: (
         'x-small': 32,
-        'small':   40,
+        'small':   48,
         'default': 56,
         'large':   64,
         'x-large': 72
@@ -151,3 +167,43 @@ $grid-gutters: (
 //Z index
 $z-index-menu:    10;
 $z-index-dialog:  100;
+
+//Chip
+$chip-avatar-size: 24px !default;
+$chip-close-size: 18px !default;
+$chip-icon-margin-after: 8px !default;
+$chip-icon-margin-before: -4px !default;
+$chip-icon-right-margin-after: -4px !default;
+$chip-icon-right-margin-before: 8px !default;
+$chip-icon-size: 24px !default;
+$chip-label-border-radius: 4px !default;
+$chip-link-focus-opacity: 0.32 !default;
+$chip-pill-avatar-margin-after: 8px !default;
+$chip-pill-avatar-margin-before: -6px !important;
+$chip-pill-avatar-size: 32px !default;
+$chip-pill-filter-margin: 0 16px 0 0 !default;
+$chip-transition-duration: 0.28s !default;
+$chip-transition-fn: map-get($transition, 'fast-out-slow-in') !default;
+$chip-icon-outlined-border-width: thin !default;
+$chip-icon-sizes: (
+        'x-small': (
+                'font-size': 10,
+                'height': 16
+        ),
+        'small': (
+                'font-size': 12,
+                'height': 24
+        ),
+        'default': (
+                'font-size': 14,
+                'height': 32
+        ),
+        'large': (
+                'font-size': 16,
+                'height': 54
+        ),
+        'x-large': (
+                'font-size': 18,
+                'height': 66
+        )
+) !default;

@@ -87,7 +87,7 @@
   }
 </script>
 <style scoped lang="scss">
-  @import "../../style/main";
+  @import "../../style/variables";
 
   $border-radius-root: 4px !default;
   $picker-border-radius: $border-radius-root !default;
@@ -142,15 +142,6 @@
         &--active {
           opacity: $picker-active-btn-opacity;
           cursor: pointer;
-        }
-
-        $currentSelector: &;
-        &:not(#{$currentSelector}--active) {
-          opacity: $picker-inactive-btn-opacity;
-
-          &:hover:not(:focus) {
-            opacity: 1
-          }
         }
       }
     }

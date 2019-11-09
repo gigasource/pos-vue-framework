@@ -1,14 +1,17 @@
-.menu {
+@import "../../style/variables";
+@import "../../style/elevation";
+
+.g-menu {
   display: inline;
   position: relative;
+}
 
-  &-content {
-    z-index: $z-index-menu;
-    position: absolute;
-    display: inline-block;
-    max-width: 80%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    contain: content;
-  }
+.g-menu--content {
+  z-index: $z-index-menu;
+  position: absolute;
+  display: inline-block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  contain: content;
+  @include elevation(2);
 }

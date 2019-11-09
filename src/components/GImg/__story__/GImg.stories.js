@@ -9,7 +9,12 @@ export default {
 
 export const imgBasic = () => ({
   components: {GImg},
-  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"></g-img>`
+  prop:{
+    contain:{default: boolean('contain',false)}
+  },
+  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"
+               gradient="to top right, rgba(100,115,201,.33), rgba(255,32,72,.7)"
+               height="400" aspect-ratio="1" :contain="contain"></g-img>`,
 })
 
 export const withHeightContain = () => ({

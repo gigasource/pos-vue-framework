@@ -1,15 +1,14 @@
 .g-layout {
   display: flex;
   flex-wrap: nowrap;
+  margin: 0;
 
   &__vertical {
     flex-direction: column;
-    margin: 0 -12px;
   }
 
   &__horizontal {
     flex-direction: row;
-    margin: -12px 0;
   }
 
   .g-layout {
@@ -30,49 +29,5 @@
   }
 }
 
-.g-spacer {
-  flex-grow: 1;
-  visibility: hidden;
-}
 
-.g-container {
-  width: 100%;
-  margin: 0 auto;
-  padding: 12px;
 
-  &__fluid {
-    max-width: 100%;
-    max-height: 100%;
-  }
-}
-
-.side-bar {
-  position: absolute;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  background: url("../../assets/order/bg_right.svg");
-}
-
-.tool-bar {
-  position: absolute;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  padding: 0.5rem;
-}
-
-.g-divider {
-  border-width: 0.5px;
-
-  &__inset {
-    width: calc(100% - 16px);
-    margin: 0 0.5rem;
-  }
-
-  &__inset-vertical {
-    height: calc(100% - 16px);
-    margin: 0.5rem 0;
-  }
-}

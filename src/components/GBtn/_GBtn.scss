@@ -1,10 +1,10 @@
+@import "../../style/variables";
+@import "../../style/elevation";
+
 button {
   outline: none;
   font-family: $font-family-base;
   font-weight: $font-weight-base;
-  //font-size: 0.875rem;
-  //background: #eeeeee;
-  height: 36px;
   cursor: pointer;
   color: rgba(0, 0, 0, .87);
   -webkit-tap-highlight-color: transparent;
@@ -12,13 +12,13 @@ button {
 
 //Vuetify
 .g-btn {
-  //background-clip: padding-box;
   align-items: center;
   border: none;
   border-radius: 4px;
   display: inline-flex;
-  //flex: 1 0 auto;
+  flex: 0 0 auto;
   font-weight: $btn-font-weight;
+  letter-spacing: $btn-letter-spacing;
   justify-content: center;
   max-width: 100%;
   outline: 0;
@@ -32,13 +32,66 @@ button {
   user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-  @include elevation(2);
 
+  &:hover::before {
+    opacity: 0.04;
+  }
 
-  //min-width: #{round(36 * 1.777777777777778)}px; // default ratio
-  padding: 0 #{round(36 / 2.25)}px;
+  &:focus::before {
+    opacity: 0.12;
+  }
+
+  &__active {
+    &:hover::before,
+    &::before {
+      opacity: 0.12;
+    }
+
+    &:focus::before {
+      opacity: 0.16;
+    }
+  }
+
+  color: rgba(0, 0, 0, 0.87);
+
+  &.g-btn__disabled {
+    color: rgba(0, 0, 0, 0.26) !important;
+
+    .g-icon {
+      color: rgba(0, 0, 0, 0.26) !important;
+    }
+
+    &:not(.g-btn__flat):not(.g-btn__text):not(.g-btn__outlined) {
+      background-color: rgba(0, 0, 0, 0.12) !important;
+    }
+  }
+
+  &:not(.g-btn__flat):not(.g-btn__text):not(.g-btn__outlined) {
+    background-color: #f5f5f5;
+  }
+
+  &.g-btn__icon {
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  @each $name, $size in $btn-font-sizes {
+    &.g-size__#{$name} {
+      font-size: $size;
+    }
+  }
 
   &:before {
+    border-radius: inherit;
+    bottom: 0;
+    color: inherit;
+    content: '';
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: $btn-transition;
     background-color: currentColor;
   }
 
@@ -46,135 +99,222 @@ button {
     will-change: box-shadow;
   }
 
-  &:active,
-  &:hover {
-    opacity: 0.82;
-  }
-
-  //Generate elevation
-  $elevationMin: 1;
-  $elevationMax: 24;
-  @for $i from $elevationMin through $elevationMax {
-    &__elevation-#{$i} {
-      @include elevation($i)
-    }
-  }
-
-  &__fixed {
-    position: fixed;
-  }
-
-  &__absolute {
-    position: absolute;
-  }
-
-  &__right {
-    right: map-get($grid-gutters, 'lg');
-  }
-
-  &__left {
-    left: map-get($grid-gutters, 'lg');
-  }
-
-  &__top {
-    top: map-get($grid-gutters, 'lg');
-  }
-
-  &__bottom {
-    bottom: map-get($grid-gutters, 'lg');
-  }
-
-  &__disabled,
-  &:disabled {
-    pointer-events: none;
-    box-shadow: none;
-    background-color: rgba(0, 0, 0, 0.12) !important;
-    color: rgba(0, 0, 0, 0.26) !important;
-    opacity: 0.5;
-  }
-
-  &__outlined.g-btn__disabled {
-    border-color: rgba(0, 0, 0, 0.26) !important;
-  }
-
-
-  &__outlined,
-  &__flat {
-    @include elevation(0);
-  }
-
-  &__raised {
-    &:active {
-      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-      0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    }
-  }
-
-  &__depressed {
-    box-shadow: none;
-  }
-
-  &-fab {
-    padding: 0;
-    border-radius: 100px;
-    //Set fab size
-    @each $name, $size in $fab-sizes {
+  &:not(.g-btn__round):not(.g-btn__fab):not(.g-btn__icon) {
+    @each $name, $size in $btn-sizes {
       &.g-size__#{$name} {
         height: #{$size}px;
-        width: #{$size}px;
-      }
-    }
-
-    //Fab icon size
-    //@each $name, $size in $fab-icon-sizes {
-    //  &.g-icon-size__#{$name} {
-    //    height: #{$size}px;
-    //    width: #{$size}px;
-    //  }
-    //}
-
-    //Fab icon size
-    @each $name, $size in $fab-icon-sizes {
-      &.g-icon-size__#{$name} > *{
-        font-size: #{$size}px;
-        width: #{$size}px;
-        height: #{$size}px;
+        min-width: #{round($size * 1.777777777777778)}px; // default ratio;
+        padding: 0 #{$size / 2.25}px;
       }
     }
   }
 
+  > .g-btn__content .g-icon {
+    color: inherit;
+  }
+}
 
-  &__block {
-    display: flex;
-    flex: 1 0 auto;
-    min-width: 100% !important;
-    max-width: 100%;
+.g-btn__content {
+  align-items: center;
+  color: inherit;
+  display: flex;
+  flex: 1 0 auto;
+  justify-content: inherit;
+  line-height: normal;
+  position: relative;
+
+  .g-icon__left,
+  .g-icon__right {
+    font-size: $btn-icon-font-size;
+    height: $btn-icon-font-size;
+    width: $btn-icon-font-size;
   }
 
-  &__rounded {
-    border-radius: $btn-rounded-border-radius;
+  .g-icon__left {
+    margin-left: -4px;
+    margin-right: 8px;
   }
 
-  &-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 1.5rem;
-    padding: 0;
+  .g-icon__right {
+    margin-left: 8px;
+    margin-right: -4px;
+  }
+}
+
+// Modifiers
+.g-btn:not(.g-btn__text):not(.g-btn__outlined) {
+  &.g-btn__active:before {
+    opacity: $btn-active-opacity;
   }
 
-  //Generate font-size
-  @each $name, $size in $btn-font-sizes {
+  &:hover:before {
+    opacity: $btn-hover-opacity;
+  }
+
+  &:focus:before {
+    opacity: $btn-focus-opacity;
+  }
+}
+
+
+.g-btn__absolute,
+.g-btn__fixed {
+  position: absolute;
+
+  &.g-btn__right {
+    right: map-get($grid-gutters, 'sm');
+  }
+
+  &.g-btn__left {
+    left: map-get($grid-gutters, 'sm');
+  }
+
+  &.g-btn__top {
+    top: map-get($grid-gutters, 'sm');
+  }
+
+  &.g-btn__bottom {
+    bottom: map-get($grid-gutters, 'sm');
+  }
+}
+
+.g-btn__block {
+  display: flex;
+  flex: 1 0 auto;
+  min-width: 100% !important;
+}
+
+
+.g-btn__contained {
+  @include elevation(2);
+
+  &:active {
+    @include elevation(8);
+  }
+}
+
+.g-btn__depressed {
+  box-shadow: none !important;
+}
+
+.g-btn__disabled {
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+.g-btn__icon,
+.g-btn__fab {
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+
+  @each $name, $size in $fab-icon-sizes {
     &.g-size__#{$name} {
-      font-size: $size;
-    }
-  }
-
-  @each $name, $size in $btn-sizes {
-    &:not(.g-btn-fab):not(.g-btn-rounded).g-size__#{$name} {
-      height: #{$size}px;
-      min-width: #{round($size * 1.777777777777778)}px; // default ratio
-      padding: 0 #{$size / 2.25}px;
+      .g-icon {
+        height: #{$size}px !important;
+        font-size: #{$size}px !important;
+        width: #{$size}px !important;
+      }
     }
   }
 }
+
+.g-btn__icon {
+  @each $name, $size in $btn-sizes {
+    &.g-size__#{$name} {
+      height: #{$size}px !important;
+      width: #{$size}px !important;
+    }
+  }
+}
+
+.g-btn__fab {
+  &.g-btn__contained {
+    @include elevation(6);
+
+    &:after {
+      @include elevation(8);
+    }
+
+    &:active {
+      @include elevation(12)
+    }
+  }
+
+  &.g-btn__fixed,
+  &.g-btn__absolute {
+    z-index: 4;
+  }
+
+  @each $name, $size in $fab-sizes {
+    &.g-size__#{$name} {
+      height: #{$size}px;
+      width: #{$size}px;
+    }
+
+    &.g-btn__absolute {
+      &.g-btn__bottom {
+        bottom: -#{$size / 2}px;
+      }
+
+      &.g-btn__top {
+        top: -#{$size / 2}px;
+      }
+    }
+  }
+}
+
+.g-btn__fixed {
+  position: fixed;
+}
+
+.g-btn__outlined {
+  border: $btn-outline-border-width solid currentColor;
+
+  &:before {
+    border-radius: 0
+  }
+}
+
+.g-btn__outlined,
+.g-btn__round {
+  .g-btn__content {
+    .g-icon {
+      color: currentColor;
+    }
+  }
+}
+
+.g-btn__outlined,
+.g-btn__flat,
+.g-btn__text {
+  background-color: transparent;
+}
+
+.g-btn__round,
+.g-btn__rounded {
+  &:before {
+    border-radius: inherit;
+  }
+}
+
+.g-btn__round {
+  border-radius: 50%
+}
+
+.g-btn__rounded {
+  border-radius: $btn-rounded-border-radius
+}
+
+.g-btn__tile {
+  border-radius: 0
+}
+
+$elevationMin: 1;
+$elevationMax: 24;
+@for $i from $elevationMin through $elevationMax {
+  .g-btn__elevation-#{$i} {
+    @include elevation($i);
+  }
+}
+
