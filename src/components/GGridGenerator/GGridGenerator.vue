@@ -20,7 +20,11 @@
   export default {
     name: 'GGridGenerator',
     components: { GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
-    props: {},
+    props: {
+      layout: {
+        type: Object,
+      }
+    },
     setup(props, context) {
       // Grid data convention:
       // +-----------+----------------------------------------------------------------+
@@ -33,17 +37,20 @@
       // |- hide     | indicate whether a grid-item should be shown or                |
       // |           | not                                                            |
       // +-----------+----------------------------------------------------------------+
+      let initialLayout = props.layout || {
+        name: 'app',
+        isRoot: true,
+        settings: {
+          columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+          rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+          columnGap: 0,
+          rowGap: 0,
+        },
+        subAreas: []
+      }
+
       const state = reactive({
-        grids: [{
-          name: 'app',
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          },
-          subAreas: []
-        }],
+        grids: [initialLayout],
 
         //// view settings
         // view size
@@ -431,8 +438,17 @@
             type='button'
             vOn:click_stop_prevent={() => {
               state.showOutputDialog = true
-              state.generatedCss = generateGridCSS(state.grids)
+              state.generatedCss = generateGridCSS(state.grids[0], props.uid)
+              context.emit('cssgenerated', state.generatedCss)
             }}>Generate Css</button>
+      }
+
+      function renderExportLayoutBtn() {
+        return <button
+            type="button"
+            vOn:click_stop_prevent={() => {
+              context.emit('exportlayout', state.grids[0])
+            }}>Export layout</button>
       }
 
       function renderOutputDialog() {
@@ -470,6 +486,7 @@
                           <div class="g-grid-generator__editor__settings">
                             {renderGridSettings(grid)}
                             {renderGenerateStyleBtn()}
+                            {renderExportLayoutBtn()}
                           </div>,
                           renderConfirmDialog(grid)
                         ]

@@ -75,34 +75,34 @@ export function isGridNameExisted(grids, name) {
 
 /**
  * Generate css grid from grid data model
- * @param models
+ * @param model
+ * @param uid
  */
-export function generateGridCSS(models) {
+export function generateGridCSS(model, uid) {
   let output = ''
-  if (!Array.isArray(models))
-    models = [models]
 
-  _.each(models, model => {
-    let css = ''
-    if (model.area)
-      css += `  grid-area: ${getGridAreaCss(model)};`
+  let css = ''
+  if (model.area)
+    css += `  grid-area: ${getGridAreaCss(model)};`
 
-    if (model.settings) {
-      css += model.area ? `
+  if (model.settings) {
+    css += model.area ? `
 ` : ''
-      css +=
-`  display: grid;
+    css +=
+        `  display: grid;
   grid-template-columns: ${joinRefArrayValue(model.settings.columns)};
   grid-template-rows: ${joinRefArrayValue(model.settings.rows)};
   grid-column-gap: ${model.settings.columnGap}px;
-  grid-row-gap: ${model.settings.rowGap}px;`
-    }
+  grid-row-gap: ${model.settings.rowGap}px;
+  background: ${model.bgColor};
+  `
+  }
 
-    output += `.${model.name} {
+  output += `.${model.name}${uid !== ''? `[${uid}]`: ''} {
 ${css}
 }
 `
-  })
+  _.each(model.subAreas, subArea => output += generateGridCSS(subArea, uid))
 
   return output
 }
