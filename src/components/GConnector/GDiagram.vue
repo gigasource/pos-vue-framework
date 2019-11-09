@@ -1,6 +1,6 @@
 <script>
 	import { convertToUnit } from '../../utils/helpers';
-  import { ref, computed, provide, onMounted } from '@vue/composition-api';
+  import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GDiagramFactory from './GDiagramFactory';
   import Vue from 'vue';
 
@@ -42,13 +42,20 @@
       provide('zoomState', zoomState)
 			provide('originCoordinate', originCoordinate)
 
-      document.body.addEventListener('mousemove', function (e) {
+			const mouseMove = function (e) {
         eventEmitter.$emit('draw', e)
-      })
-
-      document.body.addEventListener('mouseup', function (e) {
+      }
+      const mouseUp = function (e) {
         eventEmitter.$emit('drawEnd', e)
-      })
+      }
+
+      document.body.addEventListener('mousemove', mouseMove)
+      document.body.addEventListener('mouseup', mouseUp)
+
+			onBeforeUnmount(() => {
+        document.body.removeEventListener('mousemove', mouseMove)
+        document.body.removeEventListener('mouseup', mouseUp)
+			})
 
 			// Dynamic styles
       const containerStyles = computed(() => ({
