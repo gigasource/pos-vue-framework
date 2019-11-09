@@ -60,7 +60,7 @@
 </template>
 
 <script>
-  import {ref, computed, watch, onMounted, onUpdated} from '@vue/composition-api';
+  import {ref, computed, watch, onMounted} from '@vue/composition-api';
   import {
     getEvents,
     getInternalValue,
@@ -205,7 +205,6 @@
 
       onMounted(() => {
         setTimeout(() => {
-          //props.autoGrow && calculateInputHeight(props,context)
           calculateInputHeight()
         }, 0)
       })
