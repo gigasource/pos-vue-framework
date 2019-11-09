@@ -15,9 +15,10 @@
         type: [Number, String],
         default: 100,
       },
-      vertical: Boolean, //todo fix css
+      vertical: Boolean,
       readonly: Boolean,
       disabled: Boolean,
+      inverseLabel: Boolean,
       //step
       step: {
         type: [Number, String],
@@ -32,6 +33,10 @@
         type: [Number, String],
         default: 2,
       },
+      tickLabels: {
+        type: Array,
+        default: () => ([]),
+      },
       //track
       trackFillColor: String,
       trackBgrColor: String,
@@ -45,12 +50,6 @@
         type: [Boolean, String],
         default: null,
         validator: v => typeof v === 'boolean' || v === 'always',
-      },
-      // todo label
-      inverseLabel: Boolean,
-      tickLabels: {
-        type: Array,
-        default: () => ([]),
       },
     },
 
@@ -97,7 +96,7 @@
 
       //function genInput
       function genInput() {
-        return <input ref="input" type="range" VModel:value={internalValue.value} readOnly disabled={props.disabled}/>
+        return <input ref="input" type="range" readOnly disabled={props.disabled}/>
       }
 
       //function genTrack
@@ -201,6 +200,7 @@
         const content = genThumbLabelContent(internalValue.value)
         return <div class={thumbContainerClasses.value} ref="thumb"
                     style={thumbContainerStyle.value}
+                    tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
                     vOn:focus={(event) => onFocus(event)}
                     vOn:blur={(event) => onBlur(event)}
                     vOn:keyup={() => onKeyUp()}
@@ -216,7 +216,6 @@
       const showTicks = computed(() => props.tickLabels.length > 0 || !!(!props.disabled && step.value && props.ticks))
       const numTicks = computed(() => Math.ceil((maxValue.value - minValue.value) / step.value))
 
-      //todo check tick label
       function genSteps() {
         if (!props.step || !showTicks.value) return null
 
@@ -279,7 +278,7 @@
 
       function genSlider() {
         return <div class="g-input">
-          <div class={sliderClasses.value} vOn:click={(event) => onSliderClick(event)}>
+          <div class={sliderClasses.value} vOn:click={onSliderClick}>
             {genInput()}
             {genTrack()}
             {genSteps()}

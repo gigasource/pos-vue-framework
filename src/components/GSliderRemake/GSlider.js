@@ -92,8 +92,7 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
   function onKeyDown(e) {
     if (props.disabled || props.readonly) return
 
-    const value = parseKeyDown(e, props.internalValue)
-
+    const value = parseKeyDown(e, internalValue.value)
     if (value == null) return
 
     internalValue.value = value

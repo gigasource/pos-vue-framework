@@ -49,6 +49,37 @@ export const thumbLabelSlider = () => ({
              </div>`,
 })
 
+export const ticksLabelSlider = () => ({
+  components: {GSlider, GIcon},
+  data() {
+    return {
+      seasons: [
+        'Winter',
+        'Spring',
+        'Summer',
+        'Fall',
+      ],
+      icons: [
+        'mdi-snowflake',
+        'mdi-leaf',
+        'mdi-fire',
+        'mdi-water',
+      ],
+    }
+  },
+  props: {
+    icon: {default: text('icon', 'mdi-snowflake')},
+  },
+  template: `<div style="height: 500px; padding-top: 100px">
+               <g-slider 
+               max="30"
+               step="10" 
+               ticks
+               :tick-labels="seasons" 
+               />
+             </div>`,
+})
+
 export const mainFeatureSlider = () => ({
   components: {GSlider, GIcon},
   data() {
