@@ -1,5 +1,5 @@
 <script>
-  import {computed, reactive, watch, onBeforeMount, onMounted, onUpdated} from '@vue/composition-api';
+  import {computed, reactive, watch} from '@vue/composition-api';
   import {helperFunctions} from "../GSliderRemake/GSlider";
   import {getEventHandlerRange} from "./GRange";
   import {convertToUnit} from "../../utils/helpers";
@@ -95,10 +95,10 @@
       })
 
       watch(() => minValue.value, () => {
-        minValue.value > internalValue.value && context.emit('input', minValue.value) //todo fix
+        minValue.value > Math.min(internalValue.value) && context.emit('input', minValue.value)
       })
       watch(() => maxValue.value, () => {
-        maxValue.value < internalValue.value && context.emit('input', maxValue.value) //todo fix
+        maxValue.value < Math.max(internalValue.value) && context.emit('input', maxValue.value)
       })
       watch(() => props.value, (val) => internalValue.value = val)
 
@@ -149,9 +149,9 @@
       })
 
       function genTrack() {
-        return <div class="g-slider--track-container" ref="track">
-          <div class="g-slider--track-background" style={trackBgrStyle.value}/>
-          <div class="g-slider--track-fill" style={trackFillStyle.value}/>
+        return <div class="g-slider-track-container" ref="track">
+          <div class="g-slider-track-background" style={trackBgrStyle.value}/>
+          <div class="g-slider-track-fill" style={trackFillStyle.value}/>
         </div>
       }
 
@@ -187,8 +187,8 @@
               [offsetDirection]: `calc(50% - ${tickSize / 2}px)`,
             }
 
-            return <span class={["g-slider--tick", {'g-slider--tick__filled': filled}]} style={tickStyle}>
-             {props.tickLabels[index] && (<div class="g-slider--tick-label">
+            return <span class={["g-slider-tick", {'g-slider-tick__filled': filled}]} style={tickStyle}>
+             {props.tickLabels[index] && (<div class="g-slider-tick-label">
                {props.tickLabels[index]}
              </div>)}
           </span>
@@ -196,7 +196,7 @@
         }
 
         return <div
-            class={['g-slider--ticks-container', {'g-slider--ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
+            class={['g-slider-ticks-container', {'g-slider-ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
           {genTicks()}
         </div>
       }
@@ -242,10 +242,10 @@
       function genThumbContainer(index) {
         const thumbContainerClasses = computed(() => {
           return {
-            'g-slider--thumb-container': true,
-            'g-slider--thumb-container__active': state.isActive,
-            'g-slider--thumb-container__focused': state.isFocused,
-            'g-slider--thumb-container__show-label': showThumbLabel.value,
+            'g-slider-thumb-container': true,
+            'g-slider-thumb-container__active': state.isActive,
+            'g-slider-thumb-container__focused': state.isFocused,
+            'g-slider-thumb-container__show-label': showThumbLabel.value,
           }
         })
         const thumbContainerStyle = computed(() => {
@@ -290,7 +290,7 @@
         </div>
       }
 
-      //todo genRange
+      //genRange
       const sliderClasses = computed(() => {
         return {
           'g-slider': true,
