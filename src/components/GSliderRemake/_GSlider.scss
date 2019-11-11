@@ -4,6 +4,9 @@ $slider-thumb-size: 12px !default;
 $slider-thumb-border-radius: 50% !default;
 $slider-thumb-focused-size-increase: 24px !default;
 $slider-tick-border-radius: 0 !default;
+$transition: () !default;
+$primary-transition: 0.3s map-get($transition, 'swing') !default;
+$secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
 .g-input {
   align-items: flex-start;
@@ -40,7 +43,7 @@ $slider-tick-border-radius: 0 !default;
   &--track {
     &-background, &-fill {
       position: absolute;
-      //transition: .3s map-get($transition, 'swing');
+      transition: .3s map-get($transition, 'swing');
     }
   }
 
@@ -49,7 +52,7 @@ $slider-tick-border-radius: 0 !default;
     position: absolute;
     top: 50%;
     transform: scale(1);
-    //transition: .3s map-get($transition, 'swing');
+    transition: .3s map-get($transition, 'swing');
 
     &:hover {
       .g-slider--thumb:before {
@@ -79,11 +82,11 @@ $slider-tick-border-radius: 0 !default;
     border-radius: $slider-thumb-border-radius;
     user-select: none;
     transform: translateY(-50%);
-    //transition: .3s map-get($transition, 'swing');
+    transition: .3s map-get($transition, 'swing');
     background-color: #cccccc;
 
     &:before {
-      //transition: $primary-transition;
+      transition: $primary-transition;
       content: '';
       color: #0D47A1; //color: inherit;
       width: #{$slider-thumb-size + $slider-thumb-focused-size-increase};
@@ -114,7 +117,7 @@ $slider-tick-border-radius: 0 !default;
     opacity: 0;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: $slider-tick-border-radius;
-    //transition: .3s map-get($transition, 'swing');
+    transition: .3s map-get($transition, 'swing');
     &__filled {
       background-color: rgba(255, 255, 255, 0.5);
     }
@@ -146,7 +149,7 @@ $slider-tick-border-radius: 0 !default;
     position: absolute;
     left: 0;
     top: 0;
-    //transition: .3s map-get($transition, 'fast-in-fast-out');
+    transition: .3s map-get($transition, 'fast-in-fast-out');
   }
 
   &--thumb-label {
@@ -162,7 +165,7 @@ $slider-tick-border-radius: 0 !default;
     left: 0;
     bottom: 100%;
     user-select: none;
-    //transition: .3s map-get($transition, 'fast-in-fast-out');
+    transition: .3s map-get($transition, 'fast-in-fast-out');
   }
 }
 

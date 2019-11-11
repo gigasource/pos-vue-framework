@@ -69,7 +69,7 @@
         noClick: false,
       })
       //todo add transition later
-      //const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
+      const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
       const internalValue = computed({
         get() {
           return state.lazyValue;
@@ -112,6 +112,7 @@
           [startDir]: start,
           [endDir]: end,
           [bg]: color,
+          transition: trackTransition.value,
         }
       })
       const trackFillStyle = computed(() => {
@@ -130,6 +131,7 @@
           [endDir]: end,
           [valueDir]: value,
           [bg]: color,
+          transition: trackTransition.value,
         }
       })
 
@@ -193,6 +195,7 @@
 
         return {
           [direction]: `${value}%`,
+          transition: trackTransition.value,
         }
       })
 
