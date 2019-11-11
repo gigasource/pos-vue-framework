@@ -26,8 +26,6 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
   &-track-container {
     position: absolute;
     border-radius: $slider-track-border-radius;
-    //width: 100%; // abm
-    background-color: #cccccc; // abm
   }
 
   &-track {
@@ -181,19 +179,19 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
   .g-slider-tick:not(:first-child):not(:last-child) {
     .g-slider-tick-label {
-      transform: translateX(-50%) translateY(6px);
+      transform: translateX(-50%) translateY(8px);
     }
   }
 
   .g-slider-tick:first-child {
     .g-slider-tick-label {
-      transform: translateX(-8px) translateY(6px);
+      transform: translateX(-8px) translateY(8px);
     }
   }
 
   .g-slider-tick:last-child {
     .g-slider-tick-label {
-      transform: translateX(calc(-100% + 8px)) translateY(6px);
+      transform: translateX(calc(-100% + 8px)) translateY(8px);
     }
   }
 
