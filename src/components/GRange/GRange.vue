@@ -1,6 +1,6 @@
 <script>
   import {computed, reactive, watch, onBeforeMount, onMounted, onUpdated} from '@vue/composition-api';
-  import {getEventHandler, helperFunctions} from "../GSliderRemake/GSlider";
+  import {helperFunctions} from "../GSliderRemake/GSlider";
   import {getEventHandlerRange} from "./GRange";
   import {convertToUnit} from "../../utils/helpers";
   import {isEqual} from "lodash";
@@ -61,7 +61,7 @@
       const minValue = computed(() => parseFloat(props.min))
       const maxValue = computed(() => parseFloat(props.max))
       const step = computed(() => props.step > 0 ? parseFloat(props.step) : 0)
-      const {roundValue, setLazyValue} = helperFunctions(props, minValue, maxValue)
+      const {roundValue} = helperFunctions(props, minValue, maxValue)
 
       const state = reactive({
         app: null,
@@ -104,18 +104,19 @@
 
       const inputWidth = computed(() => internalValue.value.map((v) => (roundValue(v) - minValue.value) / (maxValue.value - minValue.value) * 100))
       //event handler
-      const {onKeyUp,parseMouseDown, } = getEventHandler(props, context, state, internalValue, minValue, maxValue)
+      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getEventHandlerRange(props, context, state, internalValue, minValue, maxValue)
 
-      //todo genInput
+      //genInput
       function genInput(index) {
         return <input ref={`input_${index}`} type="range" value={internalValue.value[index]} readOnly
                       disabled={props.disabled}/>
       }
 
-      //todo function genTrack
+      //function genTrack
       const trackBgrStyle = computed(() => {
         const startDir = props.vertical ? 'bottom' : 'left'
         const endDir = props.vertical ? 'height' : 'width'
+        const bg = 'background-color'
 
         //todo add disabled logic
         const startLength = 0
@@ -124,10 +125,12 @@
         const endPadding = 0
         const start = `calc(${startLength}% + ${startPadding}px)`
         const end = `calc(${endLength}% + ${endPadding}px)`
+        const color = props.disabled ? props.trackFillColor : props.trackBgrColor
 
         return {
           [startDir]: start,
           [endDir]: end,
+          [bg]: color,
         }
       })
       const trackFillStyle = computed(() => {
@@ -152,12 +155,53 @@
         </div>
       }
 
-      //todo genStep
-      function genStep() {
+      //genStep
+      const showTicks = computed(() => props.tickLabels.length > 0 || !!(!props.disabled && step.value && props.ticks))
+      const numTicks = computed(() => Math.ceil((maxValue.value - minValue.value) / step.value))
 
+      function genSteps() {
+        if (!props.step || !showTicks.value) return null
+
+        const tickSize = parseFloat(props.tickSize)
+        const range = createRange(numTicks.value + 1)
+
+        function createRange(length) {
+          return Array.from({length}, (v, k) => k)
+        }
+
+        const direction = props.vertical ? 'bottom' : 'left'
+        const offsetDirection = props.vertical ? 'right' : 'top'
+
+        if (props.vertical) range.reverse()
+
+        function genTicks() {
+          return range.map(i => {
+            const index = i
+
+            const width = i * (100 / numTicks.value)
+            const filled = width < inputWidth.value
+            const tickStyle = {
+              width: `${tickSize}px`,
+              height: `${tickSize}px`,
+              [direction]: `calc(${width}% - ${tickSize / 2}px)`,
+              [offsetDirection]: `calc(50% - ${tickSize / 2}px)`,
+            }
+
+            return <span class={["g-slider--tick", {'g-slider--tick__filled': filled}]} style={tickStyle}>
+             {props.tickLabels[index] && (<div class="g-slider--tick-label">
+               {props.tickLabels[index]}
+             </div>)}
+          </span>
+          })
+        }
+
+        return <div
+            class={['g-slider--ticks-container', {'g-slider--ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
+          {genTicks()}
+        </div>
       }
 
-      //todo genThumb
+      //genThumb
       const thumbStyle = computed(() => {
         return {'background-color': props.thumbColor}
       })
@@ -166,12 +210,11 @@
         return <div class="g-slider--thumb" style={thumbStyle.value}/>
       }
 
-      //todo thumbLabel
       const showThumbLabel = computed(() => !props.disabled && !!(props.thumbLabel))
 
       function genThumbLabelContent(value) {
         return context.slots['thumb-label'] ?
-            context.slots['thumb-label'](value) :
+            context.slots['thumb-label']({value}) :
             <span>{[String(value)]}</span>
       }
 
@@ -232,13 +275,14 @@
 
           context.emit('blur', e)
         }
+        const content = genThumbLabelContent(internalValue.value[index])
         return <div class={thumbContainerClasses.value} ref={`thumb_${index}`}
                     style={thumbContainerStyle.value}
                     tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
                     vOn:focus={onFocus}
                     vOn:blur={onBlur}
                     vOn:keyup={onKeyUp}
-          //vOn:keydown={onKeyDown}
+                    vOn:keydown={onKeyDown}
                     vOn:mousedown={onDrag}
                     vOn:touchstart={onDrag}>
           {genThumb()}
@@ -247,15 +291,27 @@
       }
 
       //todo genRange
+      const sliderClasses = computed(() => {
+        return {
+          'g-slider': true,
+          'g-slider__horizontal': !props.vertical,
+          'g-slider__vertical': props.vertical,
+          'g-slider__focused': state.isFocused,
+          'g-slider__active': state.isActive,
+          'g-slider__disabled': props.disabled,
+          'g-slider__readonly': props.readonly,
+        }
+      })
+
       function genRange() {
         return <div class="g-input">
-          <div>
+          <div class={sliderClasses.value} vOn:click={onSliderClick}>
+            {genInput(0)}
             {genInput(1)}
-            {genInput(2)}
             {genTrack()}
-            {genStep()}
-            {genThumbContainer()}
-            {genThumbContainer()}
+            {genSteps()}
+            {genThumbContainer(0)}
+            {genThumbContainer(1)}
           </div>
         </div>
       }
