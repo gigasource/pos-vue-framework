@@ -38,23 +38,6 @@ export function getGridAreaCss(gridItem) {
 }
 
 /**
- * Return an unique, valid area name
- * - Check if area name already existed in grids. If yes, add counter number
- * @param grids
- * @param areaName
- * @returns {string}
- */
-export function getUniqueNewAreaName(grids, areaName) {
-  let newName = areaName
-  let ctr = 0
-  while (isGridNameExisted(grids, newName)) {
-    ctr++
-    newName = `${areaName}${ctr}`
-  }
-  return newName
-}
-
-/**
  * Validate area name
  * @param areaName
  * @returns {boolean} true if area name contain only a-z, A-Z, 0-9, -, _. Otherwise, false.
@@ -63,18 +46,7 @@ export function isGridAreaNameValid(areaName) {
   return /^(\w|-)+$/i.test(areaName)
 }
 
-/**
- * Return true if input name existed in grids
- * @param grids
- * @param name
- * @returns {boolean}
- */
-export function isGridNameExisted(grids, name) {
-  return _.findIndex(grids, grid => grid.name === name) >= 0
-}
-
-
-function getFullCssModelName(model, uid) {
+export function getFullCssModelName(model, uid) {
   // root
   if (model.parent == null) {
     return `.${model.name}[${uid}]`
@@ -87,13 +59,18 @@ function getFullCssModelName(model, uid) {
  * Generate css grid from grid data model
  * @param model
  * @param uid
+ * @param genOptions
  */
-export function generateGridCSS(model, uid) {
+export function generateGridCSS(model, uid, genOptions) {
   let output = ''
 
   let css = ''
   if (model.area) {
-    css += `  grid-area: ${getGridAreaCss(model)};
+    css += `  grid-area: ${getGridAreaCss(model)};`
+  }
+
+  if (genOptions && genOptions.showBackgroundColor) {
+    css += `
   background: ${model.bgColor};`
   }
 
@@ -124,7 +101,7 @@ ${css}
  */
 export function getGridList(gridItem) {
   let gridList = null
-  if (gridItem.settings) {
+  if (gridItem.subAreas) {
     gridList = [gridItem]
     _.each(gridItem.subAreas, area => {
       gridList.push(...(getGridList(area) || []).filter(i => i != null))
@@ -134,42 +111,49 @@ export function getGridList(gridItem) {
 }
 
 /**
- * return all area of selected grid
- * @param grids
- * @param selectedGridName
- * @returns {Array}
+ * Convert undetermined points area to (top-left bottom-right) area
+ *
+ * @param undeterminedPointsArea
+ * an area created by selecting 2 point which can be (top-left  bottom-right) pair or
+ * (top-right bottom-left) pair
+ * @returns {{columnEnd: number, columnStart: number, rowStart: number, rowEnd: number}}
+ * an area which have determined points: (top-left bottom-right)
+ * @private
  */
-export function getSelectedAreas(grids, selectedGridName) {
-  let selectedGrid = _.find(grids, grid => grid.name === selectedGridName)
-  if (selectedGrid) {
-    return selectedGrid.subAreas
-  } else {
-    return []
+export function _createGridArea(undeterminedPointsArea) {
+  const rowStart = Math.min(undeterminedPointsArea.rowStart, undeterminedPointsArea.rowEnd) + 1
+  const rowEnd = Math.max(undeterminedPointsArea.rowStart, undeterminedPointsArea.rowEnd) + 2
+  const columnStart = Math.min(undeterminedPointsArea.columnStart, undeterminedPointsArea.columnEnd) + 1
+  const columnEnd = Math.max(undeterminedPointsArea.columnStart, undeterminedPointsArea.columnEnd) + 2
+  return {
+    rowStart,
+    columnStart,
+    rowEnd,
+    columnEnd
   }
 }
 
-function createSingleItem(parentGrid, area) {
-  const rowStart = Math.min(area.rowStart, area.rowEnd) + 1
-  const rowEnd = Math.max(area.rowStart, area.rowEnd) + 2
-  const columnStart = Math.min(area.columnStart, area.columnEnd) + 1
-  const columnEnd = Math.max(area.columnStart, area.columnEnd) + 2
+/**
+ * Create random color
+ * @returns {string}
+ * @private
+ */
+export function createColor() {
+  return `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, 50%)`
+}
 
+export function _createSingleItem(parentGrid, area) {
   return {
     name: area.name,
     parent: parentGrid,
     hide: false,
-    bgColor: `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, 50%)`,
-    area: {
-      rowStart,
-      columnStart,
-      rowEnd,
-      columnEnd
-    }
+    bgColor: createColor(),
+    area: _createGridArea(area)
   }
 }
 
-function createSubGridItem(parentGrid, area) {
-  const singleItem = createSingleItem(parentGrid, area)
+export function _createSubGridItem(parentGrid, area) {
+  const singleItem = _createSingleItem(parentGrid, area)
   return {
     ...singleItem,
     settings: {
@@ -183,12 +167,12 @@ function createSubGridItem(parentGrid, area) {
 }
 
 export function addSubGridArea(targetGrid, area) {
-  const subGrid = createSubGridItem(targetGrid, area)
+  const subGrid = _createSubGridItem(targetGrid, area)
   targetGrid.subAreas.push(subGrid)
 }
 
 export function addSubItemArea(targetGrid, area) {
-  const subItem = createSingleItem(targetGrid, area)
+  const subItem = _createSingleItem(targetGrid, area)
   targetGrid.subAreas.push(subItem)
 }
 
@@ -197,4 +181,140 @@ export function deleteGridItem(gridItem) {
   let parent = gridItem.parent
   let id = _.findIndex(parent.subAreas, subArea => subArea === gridItem)
   parent.subAreas.splice(id, 1)
+}
+
+//
+export function isAreaOverflowed(gridItem) {
+  return (
+    // value <= 0 is consider as overflowed even though grid index allow negative index
+       gridItem.area.rowStart <= 0
+    || gridItem.area.columnStart <= 0
+    // positive index value start from 0
+    || gridItem.area.rowEnd > gridItem.parent.settings.rows.length + 1
+    || gridItem.area.columnEnd > gridItem.parent.settings.columns.length + 1
+  )
+}
+
+
+//// Insert & delete
+/**
+ *
+ * @param grid
+ * @param index start from 0
+ */
+export function insertAbove(grid, index) {
+  // add one new row from index
+  grid.settings.rows.splice(index, 0, ref('1fr'))
+  // adjust position of affected sub area
+  _.each(grid.subAreas, subArea => {
+    // affected sub area are an area which have:
+    //    rowStart >= index start from 1
+    // or rowStart >= index start from 0 + 1
+    // or rowStart >  index start from 0
+    // area.rowStart is starting from 1
+    if (subArea.area.rowStart > index) {
+      subArea.area = {
+        ...subArea.area,
+        rowStart: subArea.area.rowStart + 1,
+        rowEnd: subArea.area.rowEnd + 1
+      }
+    }
+  })
+}
+
+export function insertBelow(grid, index) {
+  insertAbove(grid, index + 1)
+}
+
+export function insertLeft(grid, index) {
+  grid.settings.columns.splice(index, 0, ref('1fr'))
+
+  _.each(grid.subAreas, subArea => {
+    if (subArea.area.columnStart > index) {
+      subArea.area = {
+        ...subArea.area,
+        columnStart: subArea.area.columnStart + 1,
+        columnEnd: subArea.area.columnEnd + 1
+      }
+    }
+  })
+}
+
+export function insertRight(grid, index) {
+  insertLeft(grid, index + 1)
+}
+
+/**
+ * delete grid row, change area
+ * +--------------------------------------+
+ * |   +---+   +---+  +---+               |
+ * |   | 1 |   | 4 |  | 5 |               |
+ * |   +---+   |---|  |---|               |
+ * |///////////|///|//|///|/+---+/////////|
+ * |///////////|///|//|///|/| 3 |/////////|
+ * |           +---+  |---| |---|  +---+  |
+ * |                  |   | |   |  | 2 |  |
+ * |                  +---+ +---+  +---+  |
+ * +--------------------------------------+
+ * @param grid
+ * @param index
+ */
+
+export function deleteRow(grid, index) {
+  grid.settings.rows.splice(index, 1)
+  _.each(grid.subAreas, subArea => {
+    if (subArea.area.rowEnd <= index + 1) {
+      // case 1: area above deleted row -> ignore
+    } else if (subArea.area.rowStart > index + 1) {
+      // case 2: area below deleted row -> move above by reduce both rowStart, rowEnd 1 unit
+      subArea.area = {
+        ...subArea.area,
+        rowStart: subArea.area.rowStart - 1,
+        rowEnd: subArea.area.rowEnd - 1
+      }
+    } else {
+      // case 3, 4, 5:
+      // area part lie on deleted row
+      // with these case, rowStart will be keep as it is, but the area height is reduced by 1
+      // -> reduce rowEnd
+      subArea.area = {
+        ...subArea.area,
+        rowEnd: subArea.area.rowEnd - 1
+      }
+    }
+  })
+}
+
+/**
+ * Delete column, logic similar to delete row
+ * @param grid
+ * @param index
+ */
+export function deleteColumn(grid, index) {
+  grid.settings.columns.splice(index, 1)
+  _.each(grid.subAreas, subArea => {
+    if (subArea.area.columnEnd <= index + 1) {
+      // ignore
+    } else if (subArea.area.columnStart > index + 1) {
+      subArea.area = {
+        ...subArea.area,
+        columnStart: subArea.area.columnStart - 1,
+        columnEnd: subArea.area.columnEnd - 1
+      }
+    } else {
+      subArea.area = {
+        ...subArea.area,
+        columnEnd: subArea.area.columnEnd - 1
+      }
+    }
+  })
+}
+
+/**
+ * Update grid item area
+ * @param gridItem
+ * @param area
+ */
+export function updateGridItemArea(gridItem, area) {
+   gridItem.area = _createGridArea(area)
 }

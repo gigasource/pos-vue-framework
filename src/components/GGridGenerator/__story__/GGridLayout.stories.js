@@ -36,13 +36,13 @@ export const input = () => ({
   },
   template: `
 <div>
-  <g-grid-generator :layout="app" v-on:export="updateModel"/>      
-  <g-grid-layout :layout="app">
-  <div area="headerLogo">Header logo</div>
-  <div area="headerTitle">header title</div>
-  <div area="bodySidebar">Body sidebar</div>
-  <div area="bodyContent">Body content</div>
-  <div area="footer">Footer</div>
+  <g-grid-generator :layout="app"/>      
+  <g-grid-layout :layout="app" style="height: 700px">
+    <div area="headerLogo">Header logo</div>
+    <div area="headerTitle">header title</div>
+    <div area="bodySidebar">Body sidebar</div>
+    <div area="bodyContent">Body content</div>
+    <div area="footer">Footer</div>
   </g-grid-layout>
 </div>
 `

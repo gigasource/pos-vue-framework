@@ -1,12 +1,9 @@
 <script>
   import _ from 'lodash'
   import { generateGridCSS } from './logic/GGridGeneratorUtil'
-  import detachable from '../../mixins/detachable'
-  import { onMounted, onUpdated, ref, computed, watch, createElement as h } from '@vue/composition-api'
+  import { onMounted, onUpdated, createElement as h } from '@vue/composition-api'
 
   let gridLayoutInstanceCounter = 0
-
-  let slotDefault = null
 
   export default {
     name: 'GGridLayout',
@@ -15,8 +12,9 @@
       layout: Object
     },
     setup(props, context) {
-
-      const { attachToParent } = detachable(props, context)
+      // vue template ref id
+      const gridLayoutStyleId = 'gridLayoutStyleId'
+      const elRefId = 'el'
 
       // attribute will be used to identify whether an element in slot
       // is a target of grid layout
@@ -27,10 +25,10 @@
 
       const updateSlot = () => {
         // move style out
-        context.refs.el.parentNode.appendChild(context.refs.gridLayoutStyle)
+        context.refs[elRefId].parentNode.appendChild(context.refs[gridLayoutStyleId])
 
         //
-        const defaultSlot = context.refs.el
+        const defaultSlot = context.refs[elRefId]
         const areaNodes = defaultSlot.querySelectorAll(`[${identityAttr}]`)
         _.each(areaNodes, areaNode => {
           areaNode.classList.add(areaNode.getAttribute(identityAttr))
@@ -70,6 +68,9 @@
       }
 
       return {
+        elRefId,
+        gridLayoutStyleId,
+
         uid,
         processLayout,
         generatedCss
@@ -87,8 +88,8 @@
       //   }
       // }
 
-      return <div ref="el" class="g-grid-layout">
-        <style ref="gridLayoutStyle" type="text/css">
+      return <div ref={this.elRefId} class="g-grid-layout">
+        <style ref={this.gridLayoutStyleId} type="text/css">
           {generateGridCSS(this.layout, this.uid)}
         </style>
         {this.processLayout(this.layout)}

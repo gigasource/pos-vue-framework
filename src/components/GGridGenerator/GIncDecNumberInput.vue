@@ -9,15 +9,15 @@
     props: {
       value: {
         type: Number,
-        default: 0
+        default: Number.MIN_SAFE_INTEGER
       },
       max: {
         type: [Number, String],
-        default: Number.MAX_VALUE
+        default: Number.MAX_SAFE_INTEGER
       },
       min: {
         type: [Number, String],
-        default: 0
+        default: Number.MIN_SAFE_INTEGER
       }
     },
     setup(props, context) {
