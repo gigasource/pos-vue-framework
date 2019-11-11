@@ -96,7 +96,7 @@
 
       //function genInput
       function genInput() {
-        return <input ref="input" type="range" readOnly disabled={props.disabled}/>
+        return <input ref="input" type="range" value={internalValue.value} tabIndex="-1" readOnly disabled={props.disabled}/>
       }
 
       //function genTrack
