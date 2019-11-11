@@ -1,5 +1,5 @@
 import {addOnceEventListener, keyCodes, passiveSupported} from '../../utils/helpers';
-import isEqual from 'lodash';
+import {isEqual} from 'lodash';
 
 
 export function getEventHandler(props, context, state, internalValue, minValue, maxValue) {
