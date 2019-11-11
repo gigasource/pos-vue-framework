@@ -236,14 +236,10 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     transform: translateX(-50%);
   }
 
-  .g-slider-tick:not(:first-child):not(:last-child) {
+  .g-slider-tick {
     .g-slider-tick-label {
-      transform:translateX(calc(-100% - 5px))  translateY(-50%) ;
+      transform:translateX(calc(-100% - 5px)) translateY(-50%) ;
     }
-  }
-
-  .g-slider-tick:first-child .g-slider-tick-label {
-    transform: translateX(calc(-100% - 5px)) translateY(-100%);
   }
 
   .g-slider-thumb-label {
