@@ -59,9 +59,6 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     }
 
     state.isActive = false
-    if (state.isFocused) {
-      state.isFocused = false
-    }
   }
 
   function onSliderClick(e) {
