@@ -2,6 +2,7 @@
   import {computed, reactive, watch, onBeforeMount, onMounted, onUpdated} from '@vue/composition-api';
   import {getEventHandler, helperFunctions} from "./GSlider";
   import {convertToUnit} from "../../utils/helpers";
+  import { getCssColor } from '../../utils/colors';
 
   export default {
     name: "GSliderJSX",
@@ -107,7 +108,8 @@
 
         const start = '0'
         const end = props.disabled ? `calc(${100 - inputWidth.value}% - 0.5rem)` : `calc(${100 - inputWidth.value}%)`
-        const color = props.disabled ? props.trackFillColor : props.trackBgrColor
+        const color = props.disabled ? '#d2d2d2' : (props.trackBgrColor ? getCssColor(props.trackBgrColor) : '#d2d2d2')
+
         return {
           [startDir]: start,
           [endDir]: end,
@@ -123,7 +125,7 @@
         const start = '0'
         const end = 'auto'
         const value = props.disabled ? `calc(${inputWidth.value}% - 0.5rem)` : `${inputWidth.value}%`
-        const color = props.trackFillColor
+        const color = props.disabled ? '#8d8d8d' : (props.trackFillColor ? getCssColor(props.trackFillColor) : '#8d8d8d')
 
         return {
           [startDir]: start,
@@ -134,19 +136,19 @@
       })
 
       function genTrack() {
-        return <div class="g-slider--track-container" ref="track">
-          <div class="g-slider--track-background" style={trackBgrStyle.value}/>
-          <div class="g-slider--track-fill" style={trackFillStyle.value}/>
+        return <div class="g-slider-track-container" ref="track">
+          <div class="g-slider-track-background" style={trackBgrStyle.value}/>
+          <div class="g-slider-track-fill" style={trackFillStyle.value}/>
         </div>
       }
 
       //function genThumbContainer
       const thumbStyle = computed(() => {
-        return {'background-color': props.thumbColor}
+        return {'color': props.thumbColor ? getCssColor(props.thumbColor) : '#8d8d8d'}
       })
 
       function genThumb() {
-        return <div class="g-slider--thumb" style={thumbStyle.value}/>
+        return <div class="g-slider-thumb" style={thumbStyle.value}/>
       }
 
       const showThumbLabel = computed(() => !props.disabled && !!(props.thumbLabel))
@@ -163,16 +165,16 @@
             ? `translateY(20%) translateY(${(Number(props.thumbSize) / 3) - 1}px) translateX(55%) rotate(135deg)`
             : `translateY(-20%) translateY(-12px) translateX(-50%) rotate(45deg)`
         const style = {
-          backgroundColor: props.thumbColor || '#cccc',
+          backgroundColor: getCssColor(props.thumbColor) || '#8d8d8d',
           height: size,
           width: size,
           transform
         }
         const show = state.isFocused || state.isActive || props.thumbLabel === 'always' ? '' : 'none'
 
-        return <div class="g-slider--thumb-label-container"
+        return <div class="g-slider-thumb-label-container"
                     style={{'display': show}}>
-          <div class="g-slider--thumb-label" style={style}>
+          <div class="g-slider-thumb-label" style={style}>
             <div>{content}</div>
           </div>
         </div>
@@ -180,10 +182,10 @@
 
       const thumbContainerClasses = computed(() => {
         return {
-          'g-slider--thumb-container': true,
-          'g-slider--thumb-container__active': state.isActive,
-          'g-slider--thumb-container__focused': state.isFocused,
-          'g-slider--thumb-container__show-label': showThumbLabel.value,
+          'g-slider-thumb-container': true,
+          'g-slider-thumb-container__active': state.isActive,
+          'g-slider-thumb-container__focused': state.isFocused,
+          'g-slider-thumb-container__show-label': showThumbLabel.value,
         }
       })
       const thumbContainerStyle = computed(() => {
@@ -244,8 +246,8 @@
               [offsetDirection]: `calc(50% - ${tickSize / 2}px)`,
             }
 
-            return <span class={["g-slider--tick", {'g-slider--tick__filled': filled}]} style={tickStyle}>
-             {props.tickLabels[index] && (<div class="g-slider--tick-label">
+            return <span class={["g-slider-tick", {'g-slider-tick__filled': filled}]} style={tickStyle}>
+             {props.tickLabels[index] && (<div class="g-slider-tick-label">
                {props.tickLabels[index]}
              </div>)}
           </span>
@@ -253,7 +255,7 @@
         }
 
         return <div
-            class={['g-slider--ticks-container', {'g-slider--ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
+            class={['g-slider-ticks-container', {'g-slider-ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
           {genTicks()}
         </div>
       }
@@ -273,14 +275,12 @@
       })
 
       function genSlider() {
-        return <div class="g-input">
-          <div class={sliderClasses.value} vOn:click={onSliderClick}>
+        return <div class={sliderClasses.value} vOn:click={onSliderClick}>
             {genInput()}
             {genTrack()}
             {genSteps()}
             {genThumbContainer()}
           </div>
-        </div>
       }
 
       return {
