@@ -22,7 +22,7 @@ export const test = () => ({
   },
   template:
     `<div data-app>
-    <g-btn color="red" width="100" height="50" @click="dnddialog = true">Open Dialog</g-btn>
+    <g-btn color="red" height="50" @click="dnddialog = true">Open Dialog</g-btn>
     
     <g-dnd-dialog v-model="dnddialog" :width="width" :height="height" :min-width="200" :min-height="100" lazy>
       <template v-slot:title>
