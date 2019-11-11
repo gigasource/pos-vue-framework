@@ -175,15 +175,16 @@ export const layoutWithBreakpoint = () => ({
     </g-row>`
 })
 
-export const layoutWithAttributeBreakpoint = () => ({
+export const layoutWithAttributeAndOffsetBreakpoint = () => ({
   components: { GRow, GCol },
   template: `<g-row no-gutters>
-     <g-col xs10 sm8 md6 lg4 xl2>
+     <g-col xs10 sm7 md4 lg1 xl2>
       <div style="border: 1px solid black; padding: 8px; height: 100%">
           xs10 sm8 md6 lg4 xl2
       </div>
       </g-col>  
-      <g-col offset="1" xs1 sm3 md5 lg7 xl9>
+      <g-col xs1 sm3 md5 lg7 xl5
+            offset-xs="1" offset-sm="2" offset-md="3" offset-lg="4" offset-xl="5" >
         <div style="border: 1px solid black; padding: 8px; height: 100%">
             xs1 sm3 md5 lg7 xl9
         </div>

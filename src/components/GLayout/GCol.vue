@@ -19,6 +19,11 @@
       lg: [Number, String],
       xl: [Number, String],
       offset: [Number, String],
+      offsetXs: [Number, String],
+      offsetSm: [Number, String],
+      offsetMd: [Number, String],
+      offsetLg: [Number, String],
+      offsetXl: [Number, String],
       order: [Number, String],
     },
     setup(props, context) {
@@ -56,6 +61,11 @@
         ['col-lg-' + breakpoints.lg]: breakpoints.lg,
         ['col-xl-' + breakpoints.xl]: breakpoints.xl,
         ['offset-' + props.offset]: props.offset,
+        ['offset-xs-' + props.offsetXs]: props.offsetXs,
+        ['offset-sm-' + props.offsetSm]: props.offsetSm,
+        ['offset-md-' + props.offsetMd]: props.offsetMd,
+        ['offset-lg-' + props.offsetLg]: props.offsetLg,
+        ['offset-xl-' + props.offsetXl]: props.offsetXl,
       }));
 
       const styles = computed(() => ({

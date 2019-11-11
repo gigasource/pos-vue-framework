@@ -68,6 +68,33 @@
   }
 }
 
+
+@for $i from 1 through $grid-columns {
+  .offset-#{$i} {
+    margin-left: percentage($i/$grid-columns);
+  }
+}
+
+@each $size, $width in $grid-breakpoints {
+  @if $width != 0 {
+    @media (min-width: $width) {
+      @for $i from 1 through $grid-columns {
+        .offset-#{$size}-#{$i} {
+          margin-left: percentage($i/$grid-columns);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  @for $i from 1 through $grid-columns {
+    .offset-xs-#{$i} {
+      margin-left: percentage($i/$grid-columns);
+    }
+  }
+}
+
 @for $i from 1 through $grid-columns {
   .row-#{$i} {
     flex: 0 0 percentage($i/$grid-columns);
