@@ -106,6 +106,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: $slider-tick-border-radius;
     transition: .3s map-get($transition, 'swing');
+
     &__filled {
       background-color: rgba(255, 255, 255, 0.5);
     }
@@ -236,7 +237,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
   .g-slider-tick {
     .g-slider-tick-label {
-      transform:translateX(calc(-100% - 6px)) translateY(-50%);
+      transform: translateX(calc(-100% - 6px)) translateY(-50%);
     }
   }
 
@@ -251,6 +252,10 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
   .g-slider-tick {
     opacity: 1;
   }
+}
+
+.g-slider__focused {
+  outline: none;
 }
 
 .g-slider__disabled {

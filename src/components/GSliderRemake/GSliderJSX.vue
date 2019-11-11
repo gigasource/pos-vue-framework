@@ -61,7 +61,6 @@
       const {roundValue, setLazyValue} = helperFunctions(props, minValue, maxValue)
 
       const state = reactive({
-        app: null,
         lazyValue: setLazyValue(),
         oldValue: 0,
         keyPressed: 0,
@@ -69,8 +68,9 @@
         isActive: false,
         noClick: false,
       })
-      //todo add transition later
+
       const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
+
       const internalValue = computed({
         get() {
           return state.lazyValue;
@@ -205,11 +205,9 @@
         const content = genThumbLabelContent(internalValue.value)
         return <div class={thumbContainerClasses.value} ref="thumb"
                     style={thumbContainerStyle.value}
-                    tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
-                    vOn:focus={onFocus}
-                    vOn:blur={onBlur}
-                    vOn:keyup={onKeyUp}
-                    vOn:keydown={onKeyDown}
+                    // tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
+                    // vOn:keyup={onKeyUp}
+                    // vOn:keydown={onKeyDown}
                     vOn:mousedown={onThumbMouseDown}
                     vOn:touchstart={onThumbMouseDown}>
           {genThumb()}
@@ -278,7 +276,13 @@
       })
 
       function genSlider() {
-        return <div class={sliderClasses.value} vOn:click={onSliderClick}>
+        return <div class={sliderClasses.value}
+                    tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
+                    vOn:focus={onFocus}
+                    vOn:blur={onBlur}
+                    vOn:keyup={onKeyUp}
+                    vOn:keydown={onKeyDown}
+                    vOn:click={onSliderClick}>
             {genInput()}
             {genTrack()}
             {genSteps()}
