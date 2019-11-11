@@ -11,6 +11,6 @@ export default {
 export const basicRange = () => ({
   components: {GRange},
   template: `<div style="height: 500px;">
-               <g-range></g-range>
+               <g-range />
              </div>`,
 })
