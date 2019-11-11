@@ -28,3 +28,10 @@ export function linearGradient(colorArr, angle = 45) {
     return `${acc}, ${curVal}`;
   }, `linear-gradient(${angle}`);
 }
+
+export function getCssColor(color) {
+  if(!color || isCssColor(color)) {
+    return color
+  }
+  return colors[color.trim().split(' ').join('-')]
+}
