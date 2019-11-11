@@ -238,7 +238,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
   .g-slider-tick {
     .g-slider-tick-label {
-      transform:translateX(calc(-100% - 5px)) translateY(-50%) ;
+      transform:translateX(calc(-100% - 6px)) translateY(-50%);
     }
   }
 
