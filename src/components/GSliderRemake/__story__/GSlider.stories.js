@@ -37,6 +37,7 @@ export const thumbLabelSlider = () => ({
                :thumb-label="thumbLabel"/>
                <div style="padding-left: 335px"><input v-model="value" style="border-style: none;"></div>
                <g-slider
+               inverseLabel
                :thumbColor="thumbColor"
                trackFillColor="#00b0ff"
                trackBgrColor="lightBlue"

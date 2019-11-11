@@ -96,7 +96,7 @@
 
       //function genInput
       function genInput() {
-        return <input ref="input" type="range" readOnly disabled={props.disabled}/>
+        return <input ref="input" type="range" value={internalValue.value} tabIndex="-1" readOnly disabled={props.disabled}/>
       }
 
       //function genTrack
@@ -153,7 +153,7 @@
 
       function genThumbLabelContent(value) {
         return context.slots['thumb-label'] ?
-            context.slots['thumb-label'](value) :
+            context.slots['thumb-label']({value}) :
             <span>{[String(value)]}</span>
       }
 
@@ -259,10 +259,6 @@
       }
 
       // todo add computed color ?
-      onBeforeMount(() => internalValue.value = props.value)
-      onMounted(() => state.app = document.querySelector('[data-app]') || console.log('Missing v-app'))
-      onUpdated(() => {
-      })
 
       const sliderClasses = computed(() => {
         return {

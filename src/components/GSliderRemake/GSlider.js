@@ -1,5 +1,5 @@
 import {addOnceEventListener, keyCodes, passiveSupported} from '../../utils/helpers';
-import isEqual from 'lodash';
+import {isEqual} from 'lodash';
 
 
 export function getEventHandler(props, context, state, internalValue, minValue, maxValue) {
@@ -129,7 +129,7 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     return value
   }
 
-  return {onThumbMouseDown, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp}
+  return {onThumbMouseDown, parseMouseMove, onSliderMouseUp, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp}
 }
 
 
