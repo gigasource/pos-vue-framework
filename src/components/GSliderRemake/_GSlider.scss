@@ -8,18 +8,8 @@ $transition: () !default;
 $primary-transition: 0.3s map-get($transition, 'swing') !default;
 $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
-.g-input {
-  align-items: flex-start;
-  display: flex;
-  flex: 1 1 auto;
-  font-size: 16px;
-  letter-spacing: normal;
-  max-width: 100%;
-  text-align: left;
-}
-
 .g-slider {
-  //cursor: default;
+  cursor: pointer;
   display: flex;
   align-items: center;
   position: relative;
@@ -33,47 +23,47 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     display: none;
   }
 
-  &--track-container {
+  &-track-container {
     position: absolute;
     border-radius: $slider-track-border-radius;
     //width: 100%; // abm
     background-color: #cccccc; // abm
   }
 
-  &--track {
+  &-track {
     &-background, &-fill {
       position: absolute;
       transition: .3s map-get($transition, 'swing');
     }
   }
 
-  &--thumb-container {
+  &-thumb-container {
     outline: none;
     position: absolute;
     top: 50%;
     transform: scale(1);
-    transition: .3s map-get($transition, 'swing');
+    //transition: .3s map-get($transition, 'swing');
 
     &:hover {
-      .g-slider--thumb:before {
+      .g-slider-thumb:before {
         transform: scale(1);
       }
     }
 
     &__focused {
-      .g-slider--thumb:before {
+      .g-slider-thumb:before {
         transform: scale(1);
       }
     }
 
     &__active {
-      .g-slider--tick {
+      .g-slider-tick {
         opacity: 1;
       }
     }
   }
 
-  &--thumb {
+  &-thumb {
     position: absolute;
     width: $slider-thumb-size;
     height: $slider-thumb-size;
@@ -83,12 +73,12 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     user-select: none;
     transform: translateY(-50%);
     transition: .3s map-get($transition, 'swing');
-    background-color: #cccccc;
+    background-color: currentColor;
 
     &:before {
       transition: $primary-transition;
       content: '';
-      color: #0D47A1; //color: inherit;
+      color: inherit;
       width: #{$slider-thumb-size + $slider-thumb-focused-size-increase};
       height: #{$slider-thumb-size + $slider-thumb-focused-size-increase};
       border-radius: $slider-thumb-border-radius;
@@ -97,22 +87,22 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
       position: absolute;
       left: -#{$slider-thumb-focused-size-increase / 2};
       top: -#{$slider-thumb-focused-size-increase / 2};
-      transform: scale(0.1);
+      transform: scale(0);
       pointer-events: none;
     }
   }
 
-  &--ticks-container {
+  &-ticks-container {
     position: absolute;
 
     &__always-show {
-      .g-slider--tick {
+      .g-slider-tick {
         opacity: 1;
       }
     }
   }
 
-  &--tick {
+  &-tick {
     position: absolute;
     opacity: 0;
     background-color: rgba(0, 0, 0, 0.5);
@@ -122,37 +112,31 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
       background-color: rgba(255, 255, 255, 0.5);
     }
 
-    &:first-child .g-slider--tick-label {
+    &:first-child .g-slider-tick-label {
       transform: none;
     }
 
-    &:last-child .g-slider--tick-label {
+    &:last-child .g-slider-tick-label {
       transform: translateX(-100%);
     }
-
-    //+rtl()
-    //&:first-child .v-slider__tick-label
-    //transform: translateX(100%)
-    //
-    //+rtl()
-    //&:last-child .v-slider__tick-label
-    //transform: none
   }
 
-  &--tick-label {
+  &-tick-label {
     position: absolute;
     user-select: none;
     white-space: nowrap;
+    line-height: 1;
+    font-size: 14px;
   }
 
-  &--thumb-label-container {
+  &-thumb-label-container {
     position: absolute;
     left: 0;
     top: 0;
     transition: .3s map-get($transition, 'fast-in-fast-out');
   }
 
-  &--thumb-label {
+  &-thumb-label {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -171,11 +155,11 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 
 //g-slider modifier class
 .g-slider__horizontal {
-  min-height: 32px;
+  min-height: 40px;
   margin-left: 8px;
   margin-right: 8px;
 
-  .g-slider--track {
+  .g-slider-track {
     &-container {
       width: 100%;
       height: $slider-track-width;
@@ -189,39 +173,31 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     }
   }
 
-  .g-slider--ticks-container {
+  .g-slider-ticks-container {
     left: 0;
     height: $slider-track-width;
     width: 100%;
   }
 
-  .g-slider--tick {
-    //  &:first-child .v-slider__tick-label
-    //  transform: translateX(0%)
-    //
-    //+rtl()
-    //&:first-child .v-slider__tick-label
-    //transform: translate(100%)
-    //
-    //&:last-child .v-slider__tick-label
-    //transform: translateX(-100%)
-    //
-    //+rtl()
-    //&:last-child .v-slider__tick-label
-    //transform: translateX(0%)
-    //
-    //.v-slider__tick-label
-    //top: 8px
-    //transform: translateX(-50%)
-    //
-    //+rtl()
-    //.v-slider__tick-label
-    //transform: translateX(50%)
+  .g-slider-tick:not(:first-child):not(:last-child) {
+    .g-slider-tick-label {
+      transform: translateX(-50%) translateY(6px);
+    }
   }
 
-  .g-slider--thumb-label {
-    transform: translateY(-20%) translateY(-12px) translateX(-50%) rotate(45deg);
+  .g-slider-tick:first-child {
+    .g-slider-tick-label {
+      transform: translateX(-8px) translateY(6px);
+    }
+  }
 
+  .g-slider-tick:last-child {
+    .g-slider-tick-label {
+      transform: translateX(calc(-100% + 8px)) translateY(6px);
+    }
+  }
+
+  .g-slider-thumb-label {
     > * {
       transform: rotate(-45deg);
     }
@@ -229,11 +205,12 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 }
 
 .g-slider__vertical {
-  min-height: 150px;
+  min-width: 32px;
   margin-top: 12px;
   margin-bottom: 12px;
+  height: 100%;
 
-  .g-slider--track {
+  .g-slider-track {
     &-container {
       height: 100%;
       width: $slider-track-width;
@@ -247,11 +224,11 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     }
   }
 
-  .g-slider--thumb-container {
+  .g-slider-thumb-container {
     left: 50%;
   }
 
-  .g-slider--ticks-container {
+  .g-slider-ticks-container {
     top: 0;
     width: $slider-track-width;
     height: 100%;
@@ -259,32 +236,17 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     transform: translateX(-50%);
   }
 
-  .g-slider--tick {
-    //  &:first-child .v-slider__tick-label
-    //  transform: translateY(-50%)
-    //
-    //+rtl()
-    //&:first-child .v-slider__tick-label
-    //right: 12px
-    //
-    //&:last-child .v-slider__tick-label
-    //transform: translateY(-50%)
-    //
-    //+rtl()
-    //&:last-child .v-slider__tick-label
-    //transform: translateY(-50%)
-    //
-    //.v-slider__tick-label
-    //left: 12px
-    //transform: translateY(-50%)
-    //
-    //+rtl()
-    //.v-slider__tick-label
-    //left: auto
-    //right: 12px
+  .g-slider-tick:not(:first-child):not(:last-child) {
+    .g-slider-tick-label {
+      transform:translateX(calc(-100% - 5px))  translateY(-50%) ;
+    }
   }
 
-  .g-slider--thumb-label {
+  .g-slider-tick:first-child .g-slider-tick-label {
+    transform: translateX(calc(-100% - 5px)) translateY(-100%);
+  }
+
+  .g-slider-thumb-label {
     > * {
       transform: rotate(-135deg);
     }
@@ -292,7 +254,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 }
 
 .g-slider__active {
-  .g-slider--tick {
+  .g-slider-tick {
     opacity: 1;
   }
 }
@@ -300,7 +262,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
 .g-slider__disabled {
   pointer-events: none;
 
-  .g-slider--thumb {
+  .g-slider-thumb {
     width: #{$slider-thumb-size - 4};
     height: #{$slider-thumb-size - 4};
     left: -#{($slider-thumb-size - 4) / 2};
@@ -311,12 +273,12 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
   }
 }
 
-.g-slider--readonly {
+.g-slider-readonly {
   pointer-events: none;
 }
 
 //todo add input slider css
-.g-input--slider {
+.g-input-slider {
 
 }
 
