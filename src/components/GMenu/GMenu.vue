@@ -137,7 +137,7 @@
           on: {
             input: (e) => {
               isActive.value = e
-              state.hasJustFocused = false
+              state.hasJustFocused = e
             }
           },
           ref: 'content'

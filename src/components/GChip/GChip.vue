@@ -84,7 +84,7 @@
       function genContent() {
         return <span class={'g-chip__content'}>
           {genPrepend()}
-          {context.slots.default()}
+          {context.slots.default && context.slots.default()}
           {genAppend()}
         </span>
       }

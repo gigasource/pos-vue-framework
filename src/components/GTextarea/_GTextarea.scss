@@ -27,21 +27,21 @@
     }
   }
 
-  .g-tf--append__inner,
-  .g-tf--prepend__inner,
-  .g-tf--append__outer,
-  .g-tf--prepend__outer{
+  .g-tf-append__inner,
+  .g-tf-prepend__inner,
+  .g-tf-append__outer,
+  .g-tf-prepend__outer{
     align-self: baseline;
     padding-top: 4px;
   }
 
-  .g-tf--input:focus + .g-tf--label,
-  .g-tf--input:placeholder-shown + .g-tf--label {
+  .g-tf-input:focus + .g-tf-label,
+  .g-tf-input:placeholder-shown + .g-tf-label {
     transform: translateY(-20px) translateX(0px) scale(0.75);
     color: #1867c0;
   }
 
-  .g-tf--label__active {
+  .g-tf-label__active {
     transform: translateY(-20px) scale(0.75);
     background-color: transparent;
   }

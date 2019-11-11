@@ -1,5 +1,5 @@
 <script>
-  import { computed, inject, createElement as h } from '@vue/composition-api'
+  import { computed, inject } from '@vue/composition-api'
 
   export default {
     name: 'GTabItem',
@@ -9,21 +9,14 @@
     setup(props, context) {
       const model = inject('model');
       const show = computed(() => (model.value === props.item));
-      const transition = inject('transition');
+      const _transition = inject('transition');
 
-      return () => h(
-        'transition',
-        {
-          props: {
-            name: transition.value
-          }
-        },
-        [
-          <div vShow={show.value} className="g-tab-item">
-            {context.slots.default()}
-          </div>
-        ]
-      )
+      return () =>
+          <transition name={_transition.value}>
+            <div vShow={show.value} className="g-tab-item">
+              {context.slots.default()}
+            </div>
+          </transition>
     }
   }
 </script>

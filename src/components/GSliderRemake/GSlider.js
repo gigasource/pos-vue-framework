@@ -59,9 +59,6 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     }
 
     state.isActive = false
-    if (state.isFocused) {
-      state.isFocused = false
-    }
   }
 
   function onSliderClick(e) {
@@ -69,10 +66,7 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
       state.noClick = false
       return
     }
-    const thumb = context.refs.thumb
-    thumb.focus()
     onMouseMove(e)
-    context.emit('change', internalValue)
   }
 
   function onFocus(e) {
@@ -96,7 +90,6 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     if (value == null) return
 
     internalValue.value = value
-    context.emit('change', value)
   }
 
   function parseKeyDown(e, value) {
