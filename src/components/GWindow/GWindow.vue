@@ -41,7 +41,6 @@
     },
     setup(props, context) {
       const data = reactive({
-        changedByDelimiters: false,
         transitionHeight: undefined, // Intermediate height during transition.
         transitionCount: 0, // Number of windows in transition state.
         isBooted: false,
@@ -99,11 +98,6 @@
       provide('internalReverse', internalReverse);
 
       watch(internalValue, (val, oldVal) => {
-        if (data.changedByDelimiters) {
-          data.changedByDelimiters = false;
-          return
-        }
-
         data.isReverse = val < oldVal
       });
 
@@ -177,7 +171,6 @@
           },
           on: {
             click: () => {
-              data.changedByDelimiters = true;
               fn();
             }
           }
