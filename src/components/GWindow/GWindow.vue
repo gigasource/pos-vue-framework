@@ -90,12 +90,15 @@
       });
 
       const internalReverse = computed(() => {
-        return props.reverse ? props.reverse : data.isReverse;
+        if(props.reverse !== undefined) {
+          return props.reverse;
+        }
+        return data.isReverse;
       });
 
       provide('internalReverse', internalReverse);
 
-      watch(() => internalValue, (val, oldVal) => {
+      watch(internalValue, (val, oldVal) => {
         if (data.changedByDelimiters) {
           data.changedByDelimiters = false;
           return
@@ -146,6 +149,8 @@
       }
 
       function next() {
+        data.isReverse = false;
+
         /* istanbul ignore if */
         if (!hasActiveItems.value || !hasNext.value) {
           return;
@@ -155,6 +160,8 @@
       }
 
       function prev() {
+        data.isReverse = true;
+
         /* istanbul ignore if */
         if (!hasActiveItems.value || !hasPrev.value) {
           return;
@@ -227,6 +234,8 @@
       }
 
       return {
+        computedTransition,
+        internalReverse,
         internalValue,
         genWindow,
         data,

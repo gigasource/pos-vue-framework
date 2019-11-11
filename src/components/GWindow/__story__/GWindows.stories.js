@@ -28,7 +28,7 @@ export const GWindowDefault = () => ({
   }),
   props: {
     continuous: { type: Boolean, default: boolean('continuous', false) },
-    reverse: { type: Boolean, default: boolean('reverse', false) },
+    reverse: { type: Boolean, default: boolean('reverse', undefined) },
     vertical: { type: Boolean, default: boolean('vertical', false) },
     showArrows: { type: Boolean, default: boolean('showArrows', true) },
     prevIcon: { type: String, default: text('prevIcon', 'mdi-chevron-left') },
@@ -85,7 +85,7 @@ export const GWindowWithCards = () => ({
   }),
   props: {
     continuous: { type: Boolean, default: boolean('continuous', false) },
-    reverse: { type: Boolean, default: boolean('reverse', false) },
+    reverse: { type: Boolean, default: boolean('reverse', undefined) },
     vertical: { type: Boolean, default: boolean('vertical', false) },
     showArrows: { type: Boolean, default: boolean('showArrows', false) },
     prevIcon: { type: String, default: text('prevIcon', 'mdi-chevron-left') },
