@@ -42,7 +42,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     position: absolute;
     top: 50%;
     transform: scale(1);
-    //transition: .3s map-get($transition, 'swing');
+    transition: .3s map-get($transition, 'swing');
 
     &:hover {
       .g-slider-thumb:before {
