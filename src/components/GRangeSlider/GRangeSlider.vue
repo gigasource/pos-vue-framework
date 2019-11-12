@@ -7,7 +7,7 @@
   import {getEventHandlerRangeSlider} from './GRangeSlider';
 
   export default {
-    name: "GRange",
+    name: "GRangeSlider",
     props: {
       value: {
         type: Array,
