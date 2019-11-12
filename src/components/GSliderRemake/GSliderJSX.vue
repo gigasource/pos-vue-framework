@@ -1,8 +1,8 @@
 <script>
   import {computed, reactive, watch, onBeforeMount, onMounted, onUpdated} from '@vue/composition-api';
-  import {getEventHandler, helperFunctions} from "./GSlider";
+  import {getEventHandler,helperFunctions} from "./GSlider";
   import {convertToUnit} from "../../utils/helpers";
-  import { getCssColor } from '../../utils/colors';
+  import {getCssColor} from '../../utils/colors';
 
   export default {
     name: "GSliderJSX",
@@ -91,13 +91,13 @@
       })
       watch(() => props.value, (val) => internalValue.value = val)
 
-      const inputWidth = computed(() => (roundValue(internalValue.value) - minValue.value) / (maxValue.value - minValue.value) * 100
-      )
+      const inputWidth = computed(() => (roundValue(internalValue.value) - minValue.value) / (maxValue.value - minValue.value) * 100)
       const {onThumbMouseDown, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp} = getEventHandler(props, context, state, internalValue, minValue, maxValue)
 
       //function genInput
       function genInput() {
-        return <input ref="input" type="range" value={internalValue.value} tabIndex="-1" readOnly disabled={props.disabled}/>
+        return <input ref="input" type="range" value={internalValue.value} tabIndex="-1" readOnly
+                      disabled={props.disabled}/>
       }
 
       //function genTrack
@@ -280,11 +280,11 @@
                     vOn:keyup={onKeyUp}
                     vOn:keydown={onKeyDown}
                     vOn:click={onSliderClick}>
-            {genInput()}
-            {genTrack()}
-            {genSteps()}
-            {genThumbContainer()}
-          </div>
+          {genInput()}
+          {genTrack()}
+          {genSteps()}
+          {genThumbContainer()}
+        </div>
       }
 
       return {

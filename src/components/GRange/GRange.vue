@@ -1,7 +1,7 @@
 <script>
   import {computed, reactive, watch} from '@vue/composition-api';
   import {helperFunctions} from "../GSliderRemake/GSlider";
-  import {getEventHandlerRange} from "./GRange";
+  import {getEventHandlerRange} from "../GSliderRemake/GSlider";
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
@@ -278,7 +278,7 @@
 
         const onBlur = (e) => {
           state.isFocused = false
-          state.isActive = false
+
           state.activeThumb = null
 
           context.emit('blur', e)
