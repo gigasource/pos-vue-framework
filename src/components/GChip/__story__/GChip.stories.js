@@ -23,8 +23,7 @@ export const DefaultChip = () => ({
     closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
     filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
     backgroundColor: {type: String, default: text('backgroundColor', '') },
-    textColor: {type: String, default: text('textColor', 'white') },
-
+    textColor: {type: String, default: text('textColor', '') },
   },
   template: `<g-chip x-large :disabled="disabled" :x-small="xSmall" :small="small" :text-color="textColor" :background-color="backgroundColor" :filter-icon="filterIcon" :large="large" :closeIcon="closeIcon" :x-large="xLarge" :close="close">{{text}}</g-chip>`,
 });
@@ -64,7 +63,7 @@ export const LabelChip = () => ({
     xLarge: { default: boolean('xLarge', false) },
     closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
     filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
-    backgroundColor: {type: String, default: text('backgroundColor', 'bg-brown') },
+    backgroundColor: {type: String, default: text('backgroundColor', 'brown') },
     textColor: {type: String, default: text('textColor', '#ffffff') },
   },
   template: `<g-chip :label="label" :filter="filter" x-large :disabled="disabled" :text-color="textColor" :background-color="backgroundColor" :filter-icon="filterIcon" :closeIcon="closeIcon" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :close="close">
@@ -95,7 +94,7 @@ export const PillChip = () => ({
     xLarge: { type: Boolean, default: boolean('xLarge', false) },
     closeIcon: {type: String, default: text('closeIcon', 'mdi-close-circle') },
     filterIcon: {type: String, default: text('filterIcon', 'mdi-check') },
-    backgroundColor: {type: String, default: text('backgroundColor', 'bg-green') },
+    backgroundColor: {type: String, default: text('backgroundColor', 'green') },
     textColor: {type: String, default: text('textColor', '#ffffff') },
   },
   template: `<g-chip x-large :ripple="ripple" :close="close" :pill="pill" :background-color="backgroundColor" :text-color="textColor" :closeIcon="closeIcon" :filter-icon="filterIcon" :filter="filter" :active="active" :disabled="disabled" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">

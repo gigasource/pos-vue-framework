@@ -74,7 +74,7 @@
       overlayOpacity: [Number, String]
     },
     setup(props, context) {
-      const { model: isActive } = getVModel(props, context);
+      const isActive = getVModel(props, context);
       const { attachToRoot, attachToParent, detach } = detachable(props, context);
       const { getMaxZIndex } = stackable(props, context);
 
@@ -211,6 +211,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+ @import "GDialog";
 </style>

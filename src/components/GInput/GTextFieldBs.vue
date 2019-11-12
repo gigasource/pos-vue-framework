@@ -37,7 +37,7 @@
 
 <script>
   import {ref, computed, onMounted} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputField';
+  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
 
   export default {
     name: 'GTextFieldBs',

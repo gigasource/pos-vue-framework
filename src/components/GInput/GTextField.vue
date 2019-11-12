@@ -1,22 +1,22 @@
 <template>
-	<div class="g-tf--wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-		<div class="g-tf--prepend__outer" ref="prependRef" @click="onClickPrependOuter">
+	<div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
+		<div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
 			<slot name="prepend-outer" >
-				<g-icon :color="isLabelActive ? 'blue' : null">{{prependIcon}}</g-icon>
+				<g-icon :color=iconColor>{{prependIcon}}</g-icon>
 			</slot>
 		</div>
 		<fieldset>
 			<legend :style="legendStyles">{{label}}</legend>
 			<div class='g-tf' :class="tfErrClasses">
-				<div class="g-tf--prepend__inner" @click="onClickPrependInner">
+				<div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
 					<slot name="prepend-inner">
-						<g-icon :color="isLabelActive ? 'blue' : null ">{{prependInnerIcon}}</g-icon>
+						<g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
 					</slot>
 				</div>
-				<div v-if="prefix" class="g-tf--affix" ref="prefixRef">{{prefix}}</div>
+				<div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
 					<input id="input" type="text"
-								 class="g-tf--input"
+								 class="g-tf-input"
 								 :style="inputErrStyles"
 								 :type="type"
 								 :label="label"
@@ -28,27 +28,27 @@
 								 @focus="onFocus"
 								 @blur="onBlur"
 								 @keydown="onKeyDown">
-					<label for="input" class="g-tf--label" :class="labelClasses" :style="labelStyles">
+					<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">
 						<slot name="label">{{label}}</slot>
 					</label>
 				</div>
-				<div v-if="suffix" class="g-tf--affix">{{suffix}}</div>
-				<div class="g-tf--append__inner" @click="onClickAppendInner">
+				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
+				<div class="g-tf-append__inner" @click="onClickAppendInner">
 					<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
-						<g-icon>{{clearIcon}}</g-icon>
+						<g-icon :color=iconColor>{{clearIcon}}</g-icon>
 					</div>
 					<slot name="append-inner">
-						<g-icon :color="isLabelActive ? 'blue' : null ">{{appendInnerIcon}}</g-icon>
+						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
-				<div class="g-tf--error" v-if="!isValidInput">{{errorMessages}}</div>
-				<div class="g-tf--hint" v-else :class="hintClasses" >{{hint}}</div>
-				<div v-show="counter" :class="{'g-tf--counter': true, 'g-tf--counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
+				<div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
+				<div class="g-tf-hint" v-else :class="hintClasses" >{{hint}}</div>
+				<div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
 			</div>
 		</fieldset>
-		<div class="g-tf--append__outer" @click="onClickAppendOuter" ref="appendOuter">
+		<div class="g-tf-append__outer" @click="onClickAppendOuter">
 			<slot name="append-outer">
-				<g-icon :color="isLabelActive ? 'blue' : null ">{{appendIcon}}</g-icon>
+				<g-icon :color=iconColor>{{appendIcon}}</g-icon>
 			</slot>
 		</div>
 
@@ -57,7 +57,7 @@
 
 <script>
   import { ref, computed } from '@vue/composition-api';
-  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputField';import VueTheMask from 'vue-the-mask'
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';import VueTheMask from 'vue-the-mask'
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -101,7 +101,7 @@
         readOnly: Boolean,
       },
       //rules and validation props
-      rules: Array,
+      ...{rules: Array,
       hint: String,
       errorCount: {
         type: Number,
@@ -110,15 +110,16 @@
       persistent: Boolean,
       counter: [Number, Boolean, String],
       validateOnBlur: Boolean,
-      error: Boolean,
+      error: Boolean},
 
       //styles
-      filled: Boolean,
+      ...{filled: Boolean,
       outlined: Boolean,
       solo: Boolean,
       shaped: Boolean,
       rounded: Boolean,
       flat: Boolean,
+			dense: Boolean},
 
       // basic props
       value: [String, Number],
@@ -135,10 +136,10 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef } = getLabel(props, internalValue, isValidInput, isFocused, 'g-tf--label__active');
+      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef } = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active');
 
       //Activate non persistent hint
-      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf--hint__active': true } : {})
+      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
 
       //event handler function
       const { errorMessages, validate } = getValidate(props, isFocused, internalValue, isValidInput);
@@ -147,7 +148,7 @@
       //change input border color
       const tfErrClasses = computed(() => isValidInput.value ? {} : { 'g-tf__error': true })
 
-      const tfErrWrapperClass = computed(() => ({ 'g-tf--wrapper__error': !isValidInput.value }));
+      const tfErrWrapperClass = computed(() => ({ 'g-tf-wrapper__error': !isValidInput.value }));
 
       const { onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner, } = getSlotEventListeners(context);
 
@@ -156,14 +157,21 @@
 			//set legend width for label in outlined textfield
 			const legendStyles = computed(() => {
 			  if( !props.solo && props.label && (isFocused.value || internalValue.value||props.placeholder)) {
-
+					const margin = props.rounded ? '16px' : '5px';
 			    return {
 			      'width': 'auto',
 						'padding': '1px',
+						'margin-left': margin,
 					}
 				} else
 				  return {}
 			});
+			const iconColor = computed(() => {
+			  if(isLabelActive.value) {
+          if (!isValidInput.value) return 'red'
+			    return 'rgb(24, 103, 192)'
+			  }
+			})
 
 
       return {
@@ -200,19 +208,23 @@
 				prefixRef,
         tfErrWrapperClass,
         legendStyles,
+				iconColor,
       }
     }
   }
 
   function getTfWrapperClasses(props) {
-    return computed(() => (props.disabled ? { 'g-tf--wrapper-disabled': true } : {
+    return computed(() => { return{
+      'g-tf-wrapper__disabled': props.disabled,
       'g-tf__filled': props.filled,
       'g-tf__outlined': props.outlined,
       'g-tf__solo': props.solo,
       'g-tf__rounded': props.rounded,
       'g-tf__shaped': props.shaped,
       'g-tf__flat': props.flat,
-    }))
+			'g-tf__dense': props.dense,
+		}
+    })
   }
 
 </script>

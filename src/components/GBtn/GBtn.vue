@@ -58,7 +58,7 @@
 
       function genBtnContent() {
         return <span class="g-btn__content">
-          {context.slots.default()}
+          {context.slots.default && context.slots.default()}
         </span>
       }
 
@@ -81,6 +81,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "_GBtn.scss";
 </style>

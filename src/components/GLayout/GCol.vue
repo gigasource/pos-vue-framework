@@ -5,7 +5,7 @@
 </template>
 
 <script>
-	import { computed } from '@vue/composition-api'
+  import { computed, reactive, watch } from '@vue/composition-api'
 
   export default {
     name: 'GCol',
@@ -13,22 +13,59 @@
       alignSelf: String,
       justifySelf: String,
       cols: [Number, String],
+      xs: [Number, String],
       sm: [Number, String],
       md: [Number, String],
       lg: [Number, String],
       xl: [Number, String],
       offset: [Number, String],
+      offsetXs: [Number, String],
+      offsetSm: [Number, String],
+      offsetMd: [Number, String],
+      offsetLg: [Number, String],
+      offsetXl: [Number, String],
       order: [Number, String],
     },
-    setup(props) {
+    setup(props, context) {
+      const attrs = Object.keys(context.attrs);
+      const breakpoints = reactive({
+        xs: 0,
+        sm: 0,
+        md: 0,
+        lg: 0,
+        xl: 0,
+      });
+
+      for (const attr of attrs) {
+        if (!attr || attr.length < 3 || attr.length > 4) {
+          continue
+        }
+        const bp = attr.substr(0, 2);
+        breakpoints[bp] = attr.length === 3 ? attr.substr(2, 1) : attr.substr(2, 2);
+      }
+
+      watch(() => [props.xs, props.sm, props.md, props.lg, props.xl], () => {
+        if (props.xs) breakpoints.xs = props.xs;
+        if (props.sm) breakpoints.sm = props.sm;
+        if (props.md) breakpoints.md = props.md;
+        if (props.lg) breakpoints.lg = props.lg;
+        if (props.xl) breakpoints.xl = props.xl;
+      })
+
       const classes = computed(() => ({
         'g-col': true,
         ['col-' + props.cols]: props.cols,
-        ['col-sm-' + props.sm]: props.sm,
-        ['col-md-' + props.md]: props.md,
-        ['col-lg-' + props.lg]: props.lg,
-        ['col-xl-' + props.xl]: props.xl,
+        ['col-xs-' + breakpoints.xs]: breakpoints.xs,
+        ['col-sm-' + breakpoints.sm]: breakpoints.sm,
+        ['col-md-' + breakpoints.md]: breakpoints.md,
+        ['col-lg-' + breakpoints.lg]: breakpoints.lg,
+        ['col-xl-' + breakpoints.xl]: breakpoints.xl,
         ['offset-' + props.offset]: props.offset,
+        ['offset-xs-' + props.offsetXs]: props.offsetXs,
+        ['offset-sm-' + props.offsetSm]: props.offsetSm,
+        ['offset-md-' + props.offsetMd]: props.offsetMd,
+        ['offset-lg-' + props.offsetLg]: props.offsetLg,
+        ['offset-xl-' + props.offsetXl]: props.offsetXl,
       }));
 
       const styles = computed(() => ({
@@ -45,6 +82,10 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	.g-col:not([class*=col-]) {
+		flex-basis: 0;
+		flex-grow: 1;
+		width: 100%;
+	}
 </style>

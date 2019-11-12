@@ -81,7 +81,7 @@ export function setTextColor(color, data) {
   } else if (color) {
     data.class = {
       ...data.class,
-      [color.toString().trim().split(' ').join('-')]: true,
+      ['text-' + color.toString().trim().split(' ').join('-')]: true,
     }
   }
   return data
