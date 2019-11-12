@@ -36,9 +36,8 @@ export const editViewInput = () => ({
         <div>
           <div>
             1) Hover mouse over edit view input, pen icon will be shown on the left side of text<br/>
-            2) Click to Pen icon, now the caret will be shown on the right hand side of text<br/>
-            3) Now you can edit the text, press Enter to apply new change <br/>
-              <br/>or move mouse out of this control to cancel change
+            2) Click Pen icon, now the caret will be shown on the right hand side of text<br/>
+            3) Now you can edit the text, press Enter to apply new change or move mouse out of this control to cancel
           </div>
           <g-edit-view-input
               vModel={data.value}
@@ -49,8 +48,7 @@ export const editViewInput = () => ({
   }
 })
 
-
-export const gridLayout = () => ({
+export const layoutDefaultIdentity = () => ({
   components: { GGridLayout, GGridGenerator },
   props: {
     displayPreviewColor: {
@@ -228,4 +226,42 @@ export const gridLayout = () => ({
   </g-grid-layout>
 </div>
 `
+})
+
+export const layoutCustomIdentity = () => ({
+  components: { GGridLayout, GGridGenerator },
+  props: {
+    displayPreviewColor: {
+      default: boolean('displayPreviewColor', true)
+      }
+  },
+  data () {
+    return {
+      app : {
+        name: 'app',
+        hide: false,
+        settings: {
+          columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+          rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+          columnGap: 0,
+          rowGap: 0,
+        },
+        bgColor: 'transparent',
+        subAreas: []
+      }
+    }
+  },
+  template: `
+  <div class="storybook-gridlayout">
+    <p>This example using x-zone as a identity attribute</p><br/>
+    <g-grid-generator :layout="app"/>      
+    <g-grid-layout style="height: 700px" 
+      :layout="app"   
+      :displayPreviewColor="displayPreviewColor"
+      identity-attr="x-zone">
+      <div x-zone="header">Header</div>
+      <div x-zone="body">Body</div>
+      <div x-zone="footer">Footer</div>
+    </g-grid-layout>
+  </div>`
 })

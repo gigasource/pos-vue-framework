@@ -22,67 +22,66 @@
         showEditMode: false
       })
 
-      const editStyle = {
-        display: 'inline-block',
-        'box-sizing': 'border-box',
-        'user-select': 'none',
-        border: '2px solid transparent',
-        backgroundColor: 'transparent',
-        flex: 1
-      }
-
-      const viewStyle = {
-        ...editStyle,
-        padding: '1px',
-        'pointer-events': 'none'
-      }
-
-      const cptEditViewInputStyle = computed(() => ({
+      const cptEditViewInputWidth = computed(() => ({
         width: props.width
       }))
 
+      const refIdComponentWrapper = 'wrapper'
+      const refIdInput = 'input'
+
+      function onComponentClicked(e) {
+        if (e.target === context.refs[refIdComponentWrapper])
+          context.emit('click')
+      }
+      function onSwitchStateClicked() {
+        context.refs[refIdInput].focus()
+        state.showEditMode = true
+      }
+      function showSwitch() {
+        state.showSwitch = true
+      }
+      function hideSwitch() {
+        state.showSwitch = false
+        state.showEditMode = false
+        context.refs[refIdInput].blur()
+      }
+      function onInputKeyPress(e) {
+        context.emit('input', e.target.value)
+        state.showEditMode = false
+
+        if (enterPressed(e)) {
+          context.refs[refIdInput].blur()
+          state.showSwitch = false
+        }
+      }
+
+      const cptViewStyle = computed(() => {
+        return state.showEditMode ? null : {
+          'pointer-events': 'none'
+        }
+      })
+
       return function () {
         return <div
+            ref={refIdComponentWrapper}
             class="g-edit-view-input"
-            style={ cptEditViewInputStyle.value }
-            ref="el"
-            vOn:click={(e) => {
-              if (e.target === context.refs.el)
-                context.emit('click')
-            }}
-            vOn:mouseenter={() => {
-              state.showSwitch = true
-            }}
-            vOn:mouseleave={() => {
-              state.showSwitch = false
-              state.showEditMode = false
-              context.refs.input.blur()
-            }}>
+            style={cptEditViewInputWidth.value}
+            vOn:click={onComponentClicked}
+            vOn:mouseenter={showSwitch}
+            vOn:mouseleave={hideSwitch}>
           <div style="width: 16px; line-height: 16px">
-            {
-              <span vShow={state.showSwitch}
-                    vOn:click={() => {
-                      context.refs.input.focus()
-                      state.showEditMode = true
-                    }}>
-                <g-icon small>edit</g-icon>
-              </span>
-            }
+            <span
+                vShow={state.showSwitch}
+                vOn:click={onSwitchStateClicked}>
+              <g-icon small>edit</g-icon>
+            </span>
           </div>
 
-          <input style={state.showEditMode ? editStyle : viewStyle}
-                 value={props.value}
-                 ref="input"
-                 vOn:keypress={e => {
-                   context.emit('input', e.target.value)
-                   state.showEditMode = false
-
-                   if (enterPressed(e)) {
-                     context.refs.input.blur()
-                     state.showSwitch = false
-                   }
-                 }}/>
-
+          <input
+              ref={refIdInput}
+              style={cptViewStyle.value}
+              value={props.value}
+              vOn:keypress={onInputKeyPress}/>
         </div>
       }
     }
@@ -100,6 +99,10 @@
 
     & > input {
       flex: 1;
+      display: inline-block;
+      user-select: none;
+      border: 2px solid transparent;
+      background-color: transparent;
 
       &:focus {
         outline: none;

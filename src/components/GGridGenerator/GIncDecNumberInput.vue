@@ -39,7 +39,7 @@
       return function() {
         return (
             <div class='g-inc-dec-number'>
-              <span class={{disabled: props.value === props.min}} vOn:click={decrease}>
+              <span class={{ disabled: props.value === props.min }} vOn:click={decrease}>
                 <g-icon small>remove</g-icon>
               </span>
               <input type="text" value={props.value}
