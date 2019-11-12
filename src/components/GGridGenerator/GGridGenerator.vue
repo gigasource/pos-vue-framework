@@ -768,7 +768,7 @@
     &__editor {
       flex: 1;
       overflow: auto;
-      padding: 20px;
+      border: 1px solid #0003;
       background-color: #ddd;
 
       &__field {
