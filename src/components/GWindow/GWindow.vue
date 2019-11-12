@@ -236,7 +236,7 @@
           }
         };
         return <div {...nodeData}>
-          {genItems()}
+          {genDelimiterItems()}
         </div>
       }
 
@@ -248,7 +248,7 @@
         return internalValue.value === index;
       }
 
-      function genItems() {
+      function genDelimiterItems() {
         const children = [];
         const iconData = {
           props: {
