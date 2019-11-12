@@ -82,56 +82,42 @@
         return internalValue.value === returnItem;
       }
 
-      const genItem = (item, index) => {
-        const data = {
-          on: {
-            click: (e) => {
-              e.stopPropagation()
-              toggleSelect(item)
-            }
-          }
+      const genItem = (item, index) => <g-col cols={props.cols}>
+        {context.slots.default
+          ? context.slots.default({
+            toggleSelect, item, index
+          })
+          : //fallback
+          <g-card vOn:click={(e) => {
+            e.stopPropagation()
+            toggleSelect(item)
+          }}>
+            <g-card-actions>
+              <g-spacer/>
+              <span>{item[props.itemText] || item}</span>
+            </g-card-actions>
+          </g-card>
         }
-        return <g-col cols={props.cols}>
-          {context.slots.default
-            ? context.slots.default({
-              toggleSelect, item, index
-            })
-            : //fallback
-            <g-card {...data}>
-              <g-card-actions>
-                <g-spacer/>
-                <span>{item[props.itemText] || item}</span>
-              </g-card-actions>
-            </g-card>
-          }
-        </g-col>
-      }
+      </g-col>
 
-      const genSelectedItem = (item, index) => {
-        const data = {
-          on: {
-            click: (e) => {
-              e.stopPropagation()
-              toggleSelect(item)
-            }
-          }
+      const genSelectedItem = (item, index) => <g-col cols={props.cols}>
+        {context.slots.selected
+          ? context.slots.selected({
+            toggleSelect, item, index
+          })
+          : //fallback
+          <g-card vOn:click={(e) => {
+            e.stopPropagation()
+            toggleSelect(item)
+          }}>
+            <g-card-actions>
+              <g-spacer/>
+              <span>{item[props.itemText] || item}</span>
+            </g-card-actions>
+          </g-card>
         }
+      </g-col>
 
-        return <g-col cols={props.cols}>
-          {context.slots.selected
-            ? context.slots.selected({
-              toggleSelect, item, index
-            })
-            : //fallback
-            <g-card {...data}>
-              <g-card-actions>
-                <g-spacer/>
-                <span>{item[props.itemText] || item}</span>
-              </g-card-actions>
-            </g-card>
-          }
-        </g-col>
-      }
 
       const genWrapper = () => <g-row align-items="start">
         {options.value.map((item, index) =>

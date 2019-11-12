@@ -175,11 +175,20 @@
         ref: 'activator'
       }
 
-      return () =>
+      const genWrapper = () =>
         <div ref="el" class="g-menu">
           <div {...activatorData}>{context.slots.activator({ toggleContent })}</div>
           {props.lazy ? (!state.isFirstRender && genContent()) : genContent()}
         </div>
+
+      return {
+        state,
+        isActive,
+        genWrapper
+      }
+    },
+    render() {
+      return this.genWrapper()
     }
   }
 </script>
