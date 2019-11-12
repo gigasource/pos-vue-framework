@@ -77,11 +77,6 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
   return {onThumbMouseDown, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp}
 }
 
-const getIndexOfClosestValue = function (arr, v) {
-  if (Math.abs(arr[0] - v) < Math.abs(arr[1] - v)) return 0
-  else return 1
-}
-
 //shared function
 export const parseMouseMove = function (e, props, context, minValue, maxValue) {
   const start = props.vertical ? 'top' : 'left'

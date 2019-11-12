@@ -1,6 +1,6 @@
-import { getEventHandler, parseKeyDown, parseMouseMove } from '../GSliderRemake/GSlider';
+import {getEventHandler, parseKeyDown, parseMouseMove} from '../GSliderRemake/GSlider';
 
-export function gRangeSlider(props, context, state, internalValue, minValue, maxValue) {
+export function getEventHandlerRange(props, context, state, internalValue, minValue, maxValue) {
 
   function getIndexOfClosestValue(arr, v) {
     if (Math.abs(arr[0] - v) < Math.abs(arr[1] - v)) return 0
@@ -8,7 +8,7 @@ export function gRangeSlider(props, context, state, internalValue, minValue, max
   }
 
   function onMouseMove(e) {
-    const { value, isInsideTrack } = parseMouseMove(e, props, context, minValue, maxValue)
+    const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue)
 
     if (isInsideTrack && state.activeThumb === null) {
       state.activeThumb = getIndexOfClosestValue(internalValue.value, value)
@@ -32,7 +32,7 @@ export function gRangeSlider(props, context, state, internalValue, minValue, max
         return
       }
 
-      const { value, isInsideTrack } = parseMouseMove(e, props, context, minValue, maxValue)
+      const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue)
 
       if (isInsideTrack) {
         state.activeThumb = getIndexOfClosestValue(internalValue.value, value)
