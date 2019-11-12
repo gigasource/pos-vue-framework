@@ -22,6 +22,7 @@
 			<router-link to="/expansion-panel-demo">Expansion Panel</router-link>
 			<router-link to="/chip-group">Chip Group</router-link>
 			<router-link to="/connector-demo">Connector</router-link>
+			<router-link to="/zoom-directive-demo">Zoom Directive</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
