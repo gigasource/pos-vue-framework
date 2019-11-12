@@ -212,7 +212,7 @@ button {
     &.g-size__#{$name} {
       .g-icon {
         height: #{$size}px !important;
-        font-size: #{$size}px !important;
+        font-size: #{$size}px;
         width: #{$size}px !important;
       }
     }

@@ -127,7 +127,7 @@ export function createSimpleFunctional(c, el = 'div', name) {
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref(props.value || '');
+  const rawInternalValue = ref(props.value);
 
   watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
 

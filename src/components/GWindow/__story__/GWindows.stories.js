@@ -1,12 +1,10 @@
 import { text, withKnobs, boolean, number, array } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
 import GCard from '../../GCard/GCard';
 import GBtn from '../../GBtn/GBtn';
 import GImg from '../../GImg/GImg';
 import GCardTitle from '../../GCard/GCardTitle';
 import GIcon from '../../GIcon/GIcon';
 import GSpacer from '../../GLayout/GSpacer';
-import { GExpandTransition } from '../../transition/transition';
 import { GCardText, GCardActions, GCardSubtitle } from '../../GCard/GCardFunctionalComponent'
 import GWindow from '../GWindow';
 import GWindowItem from '../GWindowItem';
@@ -189,7 +187,7 @@ export const GWindowWithCards = () => ({
                   <g-card-actions>
                     <g-btn depressed @click="prev">BACK</g-btn>
                     <g-spacer/>                    
-                    <g-btn depressed @click="next" background-color="blue" text-color="white">CONTINUE</g-btn>
+                    <g-btn depressed background-color="blue" text-color="white">CONFIRM</g-btn>
                   </g-card-actions>
                 </g-card>
               </g-window-item>
