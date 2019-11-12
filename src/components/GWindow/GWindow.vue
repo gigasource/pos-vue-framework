@@ -294,30 +294,31 @@
       }
 
       function genWindow() {
+
+
         const windowData = {
           staticClass: 'g-window',
           class: classes.value,
           directives: []
         };
 
-        if (!props.touchless) {
-          const value = props.touch || {
-            left: () => {
-              next();
-            },
-            right: () => {
-              prev();
-            },
-            end: (e) => {
-              e.stopPropagation()
-            },
-            start: (e) => {
-              e.stopPropagation()
-            },
-          };
+        const directiveValue = props.touch || {
+          left: () => {
+            next();
+          },
+          right: () => {
+            prev();
+          },
+          end: (e) => {
+            e.stopPropagation()
+          },
+          start: (e) => {
+            e.stopPropagation()
+          },
+        };
 
-          windowData.directives.push({ name: 'touch', value });
-        }
+        !props.touchless && windowData.directives.push({ name: 'touch', value: directiveValue });
+
 
         return <div ref="window" {...windowData}>{genContainer()} {!props.hideDelimiters && genDelimiters()}</div>
       }
