@@ -14,13 +14,14 @@ import GChipGroup from '../../GChipGroup/GChipGroup';
 import GDivider from '../../GLayout/GDivider';
 import GAvatar from '../../GAvatar/GAvatar';
 
+
 export default {
   title: 'GWindow',
   decorators: [withKnobs],
 };
 
 export const GWindowDefault = () => ({
-  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GWindowItem, GWindow, GImg },
+  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GWindowItem, GWindow, GImg, GIcon },
   data: () => ({
     selectedItem: 0,
   }),
@@ -33,8 +34,10 @@ export const GWindowDefault = () => ({
     nextIcon: { type: String, default: text('nextIcon', 'mdi-chevron-right') },
     showArrowsOnHover: { type: Boolean, default: boolean('showArrowsOnHover', false) },
     elevation: { type: Number, default: number('elevation', 2) },
+    hideDelimiters: { type: Boolean, default: boolean('hideDelimiters', true) },
+
   },
-  template: `<g-window :continuous="continuous" :elevation="elevation" :vertical="vertical" :show-arrows-on-hover="showArrowsOnHover" :prev-icon="prevIcon" :next-icon="nextIcon" :reverse="reverse" :show-arrows="showArrows" v-model="selectedItem">
+  template: `<g-window :continuous="continuous" :hide-delimiters="hideDelimiters" :elevation="elevation" :vertical="vertical" :show-arrows-on-hover="showArrowsOnHover" :prev-icon="prevIcon" :next-icon="nextIcon" :reverse="reverse" :show-arrows="showArrows" v-model="selectedItem">
                <g-window-item>
                   <g-img height="300" src="https://image.shutterstock.com/image-photo/plitvice-lakes-croatia-beautiful-place-260nw-1050138794.jpg" width="100%">
                     <g-card-title absolute bottom left textColor="white">

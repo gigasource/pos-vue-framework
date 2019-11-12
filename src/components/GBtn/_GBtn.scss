@@ -25,7 +25,6 @@ button {
   position: relative;
   text-decoration: none;
   text-indent: $btn-letter-spacing;
-  text-transform: uppercase;
   transition-duration: $btn-transition-duration;
   transition-property: box-shadow, transform, opacity;
   transition-timing-function: $btn-transition-fn;

@@ -4,6 +4,7 @@
   import { getInternalValue } from '../../mixins/getVModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
+  import Touch from '../../directives/touch/touch';
 
   export default {
     name: 'GWindow',
@@ -42,8 +43,11 @@
       elevation: {
         type: [String, Number],
         default: 2
-      }
+      },
+      touch: Object,
+      touchless: Boolean,
     },
+    directives: { Touch },
     setup(props, context) {
       const data = reactive({
         changedByDelimiters: undefined,
@@ -112,7 +116,7 @@
       provide('internalReverse', internalReverse);
 
       watch(internalValue, (val, oldVal) => {
-        if (data.changedByDelimiters) {
+        if (data.changedByDelimiters || props.continuous) {
           data.changedByDelimiters = false;
           return
         }
@@ -236,6 +240,14 @@
         </div>
       }
 
+      function onDelimiterClick(index) {
+        internalValue.value = index;
+      }
+
+      function toggleDelimiterIndex(index) {
+        return internalValue.value === index;
+      }
+
       function genItems() {
         const children = [];
         const iconData = {
@@ -248,14 +260,13 @@
           const btnData = {
             props: {
               icon: true,
-              value: index,
-              active: internalValue.value === index,
+              active: toggleDelimiterIndex(index),
               textColor: '#FFFFFF8A',
               small: true
             },
             on: {
               click() {
-                internalValue.value = index
+                onDelimiterClick(index);
               }
             }
           };
@@ -286,7 +297,28 @@
         const windowData = {
           staticClass: 'g-window',
           class: classes.value,
+          directives: []
+        };
+
+        if (!props.touchless) {
+          const value = props.touch || {
+            left: () => {
+              next();
+            },
+            right: () => {
+              prev();
+            },
+            end: (e) => {
+              e.stopPropagation()
+            },
+            start: (e) => {
+              e.stopPropagation()
+            },
+          };
+
+          windowData.directives.push({ name: 'touch', value });
         }
+
         return <div ref="window" {...windowData}>{genContainer()} {!props.hideDelimiters && genDelimiters()}</div>
       }
 
@@ -300,7 +332,10 @@
         hasPrev,
         hasNext
       }
-    }, render() {
+    }
+
+    ,
+    render() {
       return this.genWindow();
     }
   }
@@ -329,6 +364,8 @@
   }
 
   .g-window {
+    position: relative;
+
     &__container {
       height: inherit;
       position: relative;
