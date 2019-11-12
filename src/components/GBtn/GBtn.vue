@@ -9,7 +9,6 @@
     props: {
       //classes
       ...{
-        value: null,
         raised: Boolean,
         depressed: Boolean,
         disabled: Boolean,
