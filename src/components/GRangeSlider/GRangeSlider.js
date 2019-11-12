@@ -1,6 +1,6 @@
 import {getEventHandler, parseKeyDown, parseMouseMove} from '../GSliderRemake/GSlider';
 
-export function getEventHandlerRangeSlider(props, context, state, internalValue, minValue, maxValue) {
+export function getRangeSliderEventHandler(props, context, state, internalValue, minValue, maxValue) {
 
   function getIndexOfClosestValue(arr, v) {
     if (Math.abs(arr[0] - v) < Math.abs(arr[1] - v)) return 0

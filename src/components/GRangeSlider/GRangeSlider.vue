@@ -4,7 +4,7 @@
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
-  import {getEventHandlerRangeSlider} from './GRangeSlider';
+  import {getRangeSliderEventHandler} from './GRangeSlider';
 
   export default {
     name: "GRangeSlider",
@@ -107,7 +107,7 @@
       const inputWidth = computed(() => internalValue.value.map((v) => (roundValue(v) - minValue.value) / (maxValue.value - minValue.value) * 100))
       const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
       //event handler
-      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getEventHandlerRangeSlider(props, context, state, internalValue, minValue, maxValue)
+      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getRangeSliderEventHandler(props, context, state, internalValue, minValue, maxValue)
 
       //genInput
       function genInput(index) {
