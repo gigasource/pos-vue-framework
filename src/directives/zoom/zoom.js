@@ -15,7 +15,7 @@ function getElementPosition(el) {
   }
 }
 
-function zoom(e, el, binding, vnode) {
+function zoom(e, el, vnode) {
   if(!Number.isInteger(e.deltaY)){
     e.preventDefault()
     const delta = e.deltaY > 0 ? -1 : 1
@@ -35,17 +35,16 @@ function zoom(e, el, binding, vnode) {
       y: (mousePoint.pageY + scrollState.top)/vnode.context[zoomState]
     }
 
-    let tempZoom = vnode.context[zoomState] + delta * scaleFactor * vnode.context[zoomState]
-    tempZoom = Math.max(minScale, Math.min(maxScale, tempZoom))
-    vnode.context[zoomState] = tempZoom
+    vnode.context[zoomState] += delta * scaleFactor * vnode.context[zoomState]
+    vnode.context[zoomState] = Math.max(minScale, Math.min(maxScale, vnode.context[zoomState]))
 
-    el.childNodes[0].style.transform = `scale(${tempZoom}, ${tempZoom})`
-    el.childNodes[0].style.transformOrigin = tempZoom > 1 ? `0 0` : ""
+    el.childNodes[0].style.transform = `scale(${vnode.context[zoomState]}, ${vnode.context[zoomState]})`
+    el.childNodes[0].style.transformOrigin = vnode.context[zoomState] > 1 ? `0 0` : ""
 
-    if (tempZoom > 1) {
+    if (vnode.context[zoomState] > 1) {
       const newZoomPoint = {
-        x: zoomPoint.x * tempZoom,
-        y: zoomPoint.y * tempZoom
+        x: zoomPoint.x * vnode.context[zoomState],
+        y: zoomPoint.y * vnode.context[zoomState]
       }
 
       el.scrollLeft = newZoomPoint.x - mousePoint.pageX
@@ -55,9 +54,21 @@ function zoom(e, el, binding, vnode) {
 }
 
 const Zoom = {
-  inserted(el, binding, vnode) {
+  inserted (el, binding, vnode) {
     vnode.context[zoomState] = 1;
-    el.addEventListener('wheel', e => zoom(e, el, binding, vnode))
+
+    const onWheel = (e) => zoom(e, el, vnode)
+    el.addEventListener('wheel', onWheel)
+
+    el._zoomHandler = onWheel
+  },
+
+  unbind (el) {
+    if (!el._zoomHandler) return
+
+    el.removeEventListener('wheel', el._zoomHandler)
+
+    delete el._zoomHandler
   }
 }
 
