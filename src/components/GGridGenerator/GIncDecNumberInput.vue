@@ -39,16 +39,16 @@
       return function() {
         return (
             <div class='g-inc-dec-number'>
-              <span class='g-inc-dec-number__dec' vOn:click={decrease}>
-                <g-icon small color="#718792">remove</g-icon>
+              <span class={{disabled: props.value === props.min}} vOn:click={decrease}>
+                <g-icon small>remove</g-icon>
               </span>
               <input type="text" value={props.value}
                   vOn:keypress= {e => {
                     if (enterPressed(e))
                       context.emit('input', _.clamp(parseInt(e.target.value), props.min, props.max))
                   }}/>
-              <span class='g-inc-dec-number__inc' vOn:click={increase}>
-                <g-icon small color="#718792">add</g-icon>
+              <span class={{ disabled:props.value === props.max }} vOn:click={increase}>
+                <g-icon small>add</g-icon>
               </span>
             </div>
         )
@@ -58,30 +58,29 @@
 </script>
 <style scoped lang="scss">
   .g-inc-dec-number {
-    border: 1px solid #0003;
-    border-radius: 3px;
+    border: 1px solid #757575;
     display: inline-flex;
     justify-content: stretch;
 
-
     &>span {
       width: 20px;
-      background-color: #c1d5e0;
+      background-color: #bdbdbd;
+      color: #616161;
       text-align: center;
       height: 20px;
       line-height: 16px;
 
       &:hover {
-        background-color: #e2f1f8;
+        background-color: #757575;
+        color: #fff;
         cursor: pointer;
       }
     }
 
-    &> input {
+    &>input {
       padding: 0 5px;
       width: 40px;
       height: 20px;
     }
-
   }
 </style>

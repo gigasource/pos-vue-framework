@@ -1,20 +1,22 @@
 <script>
   import _ from 'lodash'
+  import Fragment from 'vue-fragment'
   import { generateGridCSS } from './logic/GGridGeneratorUtil'
-  import { onMounted, onUpdated, createElement as h } from '@vue/composition-api'
+  import { onMounted, onUpdated} from '@vue/composition-api'
 
   let gridLayoutInstanceCounter = 0
 
   export default {
     name: 'GGridLayout',
-    components: {},
+    components: { Fragment },
     props: {
-      layout: Object
+      layout: Object,
+      displayPreviewColor: Boolean
     },
     setup(props, context) {
       // vue template ref id
-      const gridLayoutStyleId = 'gridLayoutStyleId'
-      const elRefId = 'el'
+      const refIdGridLayoutStyle = 'refIdGridLayoutStyle'
+      const refIdWrapperElement = 'el'
 
       // attribute will be used to identify whether an element in slot
       // is a target of grid layout
@@ -25,10 +27,10 @@
 
       const updateSlot = () => {
         // move style out
-        context.refs[elRefId].parentNode.appendChild(context.refs[gridLayoutStyleId])
+        context.refs[refIdWrapperElement].parentNode.appendChild(context.refs[refIdGridLayoutStyle])
 
-        //
-        const defaultSlot = context.refs[elRefId]
+
+        const defaultSlot = context.refs[refIdWrapperElement]
         const areaNodes = defaultSlot.querySelectorAll(`[${identityAttr}]`)
         _.each(areaNodes, areaNode => {
           areaNode.classList.add(areaNode.getAttribute(identityAttr))
@@ -60,37 +62,28 @@
           // assign uid if model is root node
           if (!model.parent)
             attrs[uid] = ''
-
-          vNode = h('div', {attrs}, _.map(model.subAreas, processLayout))
+          vNode = <div {...{attrs}}>{_.map(model.subAreas, processLayout)}</div>
+          //vNode = h('div', {attrs}, _.map(model.subAreas, processLayout))
         }
 
         return vNode
       }
 
       return {
-        elRefId,
-        gridLayoutStyleId,
+        refIdWrapperElement,
+        refIdGridLayoutStyle,
 
         uid,
         processLayout,
         generatedCss
       }
     },
-    render(h, context) {
-      // Vue re-use Vnode slot object
-      // if (slotDefault == null) {
-      //   slotDefault = this.$slots.default
-      // } else {
-      //   for(let i =0; i < slotDefault.length; ++i) {
-      //     if (slotDefault[i] == this.$slots.default[i]) {
-      //       console.log('equal')
-      //     }
-      //   }
-      // }
-
-      return <div ref={this.elRefId} class="g-grid-layout">
-        <style ref={this.gridLayoutStyleId} type="text/css">
-          {generateGridCSS(this.layout, this.uid)}
+    render(h) { // DON'T delete h param in render method, it's will break the code
+      return <div ref={this.refIdWrapperElement}>
+        <style ref={this.refIdGridLayoutStyle} type="text/css">
+          {generateGridCSS(this.layout, this.uid, {
+            showBackgroundColor: this.displayPreviewColor
+          })}
         </style>
         {this.processLayout(this.layout)}
       </div>

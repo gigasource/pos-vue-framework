@@ -38,8 +38,7 @@
       }
 
       const cptEditViewInputStyle = computed(() => ({
-        // border: '1px solid ' + (state.showSwitch ? '#aaa' : 'transparent' ),
-        width: props.width,
+        width: props.width
       }))
 
       return function () {
@@ -48,9 +47,8 @@
             style={ cptEditViewInputStyle.value }
             ref="el"
             vOn:click={(e) => {
-              if (e.target === context.refs.el) {
+              if (e.target === context.refs.el)
                 context.emit('click')
-              }
             }}
             vOn:mouseenter={() => {
               state.showSwitch = true

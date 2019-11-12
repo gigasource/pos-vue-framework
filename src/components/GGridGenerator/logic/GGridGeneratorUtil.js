@@ -88,7 +88,7 @@ export function generateGridCSS(model, uid, genOptions) {
 ${css}
 }
 `
-  _.each(model.subAreas, subArea => output += generateGridCSS(subArea, uid))
+  _.each(model.subAreas, subArea => output += generateGridCSS(subArea, uid, genOptions))
 
   return output
 }
@@ -120,7 +120,7 @@ export function getGridList(gridItem) {
  * an area which have determined points: (top-left bottom-right)
  * @private
  */
-export function _createGridArea(undeterminedPointsArea) {
+export function createGridArea(undeterminedPointsArea) {
   const rowStart = Math.min(undeterminedPointsArea.rowStart, undeterminedPointsArea.rowEnd) + 1
   const rowEnd = Math.max(undeterminedPointsArea.rowStart, undeterminedPointsArea.rowEnd) + 2
   const columnStart = Math.min(undeterminedPointsArea.columnStart, undeterminedPointsArea.columnEnd) + 1
@@ -138,17 +138,28 @@ export function _createGridArea(undeterminedPointsArea) {
  * @returns {string}
  * @private
  */
-export function createColor() {
+export function generateRandomColor() {
   return `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, 50%)`
+}
+
+export function _getUniqueAreaName(parentGrid, name) {
+  const subItemNames = _.map(parentGrid.subAreas, subArea => subArea.name)
+  let counter = 0
+  let uniqueAreaName = name
+  while(subItemNames.indexOf(uniqueAreaName) > -1) {
+    counter++
+    uniqueAreaName = `${name}${counter}`
+  }
+  return uniqueAreaName
 }
 
 export function _createSingleItem(parentGrid, area) {
   return {
-    name: area.name,
+    name: _getUniqueAreaName(parentGrid, area.name),
     parent: parentGrid,
     hide: false,
-    bgColor: createColor(),
-    area: _createGridArea(area)
+    bgColor: generateRandomColor(),
+    area: createGridArea(area)
   }
 }
 
@@ -183,7 +194,6 @@ export function deleteGridItem(gridItem) {
   parent.subAreas.splice(id, 1)
 }
 
-//
 export function isAreaOverflowed(gridItem) {
   return (
     // value <= 0 is consider as overflowed even though grid index allow negative index
@@ -195,6 +205,15 @@ export function isAreaOverflowed(gridItem) {
   )
 }
 
+export function adjustRowColNumbers(targetArr, newLen) {
+  const oldLen = targetArr.length
+  if (oldLen < newLen) {
+    const newCols = createRange(newLen - oldLen, () => ref('1fr'))
+    targetArr.push.apply(targetArr, newCols)
+  } else if (oldLen > newLen) {
+    targetArr.splice(newLen, oldLen - newLen)
+  }
+}
 
 //// Insert & delete
 /**
@@ -202,7 +221,7 @@ export function isAreaOverflowed(gridItem) {
  * @param grid
  * @param index start from 0
  */
-export function insertAbove(grid, index) {
+export function insertRowAbove(grid, index) {
   // add one new row from index
   grid.settings.rows.splice(index, 0, ref('1fr'))
   // adjust position of affected sub area
@@ -222,11 +241,11 @@ export function insertAbove(grid, index) {
   })
 }
 
-export function insertBelow(grid, index) {
-  insertAbove(grid, index + 1)
+export function insertRowBelow(grid, index) {
+  insertRowAbove(grid, index + 1)
 }
 
-export function insertLeft(grid, index) {
+export function insertColumnLeft(grid, index) {
   grid.settings.columns.splice(index, 0, ref('1fr'))
 
   _.each(grid.subAreas, subArea => {
@@ -240,8 +259,8 @@ export function insertLeft(grid, index) {
   })
 }
 
-export function insertRight(grid, index) {
-  insertLeft(grid, index + 1)
+export function insertColumnRight(grid, index) {
+  insertColumnLeft(grid, index + 1)
 }
 
 /**
@@ -308,13 +327,4 @@ export function deleteColumn(grid, index) {
       }
     }
   })
-}
-
-/**
- * Update grid item area
- * @param gridItem
- * @param area
- */
-export function updateGridItemArea(gridItem, area) {
-   gridItem.area = _createGridArea(area)
 }

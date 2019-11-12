@@ -1,23 +1,22 @@
 <script>
   import _ from 'lodash'
+  import { reactive, ref, computed, onUpdated } from '@vue/composition-api'
+  import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import {
     generateGridCSS,
     joinRefArrayValue,
     getGridAreaCss,
     addSubGridArea,
     addSubItemArea,
-    deleteGridItem, createEmptyArea,
+    deleteGridItem, createEmptyArea, createGridArea,
     isGridAreaNameValid, getGridList, isAreaOverflowed,
-    insertAbove, insertBelow, insertLeft, insertRight, deleteColumn, deleteRow,
-    updateGridItemArea, createColor
+    insertRowAbove, insertRowBelow, insertColumnLeft, insertColumnRight, deleteColumn, deleteRow,
+    generateRandomColor, adjustRowColNumbers
   } from './logic/GGridGeneratorUtil'
-  import { reactive, ref, computed } from '@vue/composition-api';
-  import GDialog from '../GDialog/GDialog';
+  import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
-  import { enterPressed } from '../../utils/keyboardHelper';
-  import { createRange } from '../../utils/helpers'
-  import GIncDecNumberInput from './GIncDecNumberInput';
-  import GEditViewInput from './GEditViewInput';
+  import GIncDecNumberInput from './GIncDecNumberInput'
+  import GEditViewInput from './GEditViewInput'
 
   export default {
     name: 'GGridGenerator',
@@ -39,10 +38,8 @@
       // |- hide     | indicate whether a grid-item should be shown or                |
       // |           | not                                                            |
       // +-----------+----------------------------------------------------------------+
-
       const initLayout = props.layout || {
         name: 'app',
-        isRoot: true,
         settings: {
           columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
           rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
@@ -51,9 +48,9 @@
         },
         subAreas: []
       }
+
       const state = reactive({
         layout: initLayout,
-
         //// view settings
         // view size
         fieldWidth: 946,
@@ -95,37 +92,36 @@
       })
 
       // store selecting area temporary information
-      // TODO: Change algorithm to sse hovering instead
+      // similar to state.hoveringArea but store raw grid index base 0
+      // state.hoveringArea contain modified area and only used for display hovering area
       let _selectingArea = createEmptyArea()
 
       // 1) List
-      // TODO: Validate new itemName
       function changeItemName(item, newName) {
-        if (state.selectedGrid === item.name) {
-          state.selectedGrid = newName
-        }
         item.name = newName
       }
 
       // list all grid item is grid or sub-grid (not for single item)
       function getGridListItemClass(grid) {
         return {
-          'g-grid-generator__sub-list__item': true,
-          'g-grid-generator__sub-list__item--selected': grid === state.selectedGrid
+          'grid-gen__sub-list__item': true,
+          'grid-gen__sub-list__item--selected': grid === state.selectedGrid
         }
       }
+      function setSelectedGrid(grid) {
+        state.selectedGrid = grid
+      }
       function renderGridList() {
-        return <div class="g-grid-generator__sub-list">
-          <div class="g-grid-generator__sub-list__section">GRID</div>
-          <ul class="g-grid-generator__sub-list__items">
+        return <div class="grid-gen__sub-list">
+          <div class="grid-gen__sub-list__section">GRID</div>
+          <ul class="grid-gen__sub-list__items">
             {_.map(getGridList(state.layout), grid =>
                 <li class={getGridListItemClass(grid)}>
                   <g-edit-view-input
                       width="100%"
                       value={grid.name}
-                      vOn:click={() => state.selectedGrid = grid}
-                      vOn:input={newName => changeItemName(grid, newName)}
-                  />
+                      vOn:click={() => setSelectedGrid(grid)}
+                      vOn:input={newName => changeItemName(grid, newName)}/>
                 </li>
             )}
           </ul>
@@ -135,24 +131,29 @@
       // show all area
       function getAreaListItemClass(area) {
         return {
-          'g-grid-generator__sub-list__item': true,
-          'g-grid-generator__sub-list__item--selected': area === state.selectedArea,
-          'g-grid-generator__sub-list__item--overflowed': isAreaOverflowed(area)
+          'grid-gen__sub-list__item': true,
+          'grid-gen__sub-list__item--selected': area === state.selectedArea,
+          'grid-gen__sub-list__item--overflowed': isAreaOverflowed(area)
         }
       }
+      function setSelectedArea(area) {
+        state.selectedArea = area
+      }
+      function toggleAreaHideShow(area) {
+        area.hide = !area.hide
+      }
       function renderAreaList() {
-        return <div class="g-grid-generator__sub-list">
-          <div class="g-grid-generator__sub-list__section">AREA</div>
-          <ul class="g-grid-generator__sub-list__items">
+        return <div class="grid-gen__sub-list">
+          <div class="grid-gen__sub-list__section">AREA</div>
+          <ul class="grid-gen__sub-list__items">
             {_.map(state.selectedGrid.subAreas, area =>
                 <li class={getAreaListItemClass(area)}>
                   <g-edit-view-input
                       width="100%"
                       value={area.name}
-                      vOn:click={() => state.selectedArea = area}
-                      vOn:input={newName => changeItemName(area, newName)}
-                  />
-                  <span style="line-height: 16px" vOn:click={() => area.hide = !area.hide}>
+                      vOn:click={() => setSelectedArea(area)}
+                      vOn:input={newName => changeItemName(area, newName)}/>
+                  <span style="line-height: 16px" vOn:click={() => toggleAreaHideShow(area)}>
                     <g-icon small>{area.hide ? 'visibility' : 'visibility_off'}</g-icon>
                   </span>
                 </li>
@@ -167,10 +168,11 @@
       const widthUnitSettingColumnHeight = '30px' // define the height of column width setting section
       function getColumnUnitClass(id) {
         return {
-          'g-grid-generator__column-unit': true,
-          'g-grid-generator__column-unit--selected': id === state.selectedColumnUnitIndex,
+          'grid-gen__column-unit': true,
+          'grid-gen__column-unit--selected': id === state.selectedColumnUnitIndex,
         }
       }
+
       function renderGridColumnWidthSetting(grid) {
         const colStyle = {
           display: 'grid',
@@ -200,11 +202,11 @@
 
       function getRowUnitClass(id) {
         return {
-          'g-grid-generator__row-unit': true,
-          'g-grid-generator__row-unit--selected': id === state.selectedRowUnitIndex
+          'grid-gen__row-unit': true,
+          'grid-gen__row-unit--selected': id === state.selectedRowUnitIndex
         }
-
       }
+
       function renderGridRowHeightSetting(grid) {
         const rowUnitStyles = {
           display: 'grid',
@@ -234,9 +236,10 @@
 
       // render grid editor
       const cptGridContainerClass = computed(() => ({
-        'g-grid-generator__editor__field__item': true,
-        'g-grid-generator__editor__field__item--view-only': state.viewMode,
+        'grid-gen__editor__field__item': true,
+        'grid-gen__editor__field__item--view-only': state.viewMode,
       }))
+
       function renderGridContainer(grid) {
         const gridItems = []
         for (let i = 0, rowLen = grid.settings.rows.length; i < rowLen; ++i) {
@@ -244,82 +247,46 @@
             gridItems.push(<div
                 class={cptGridContainerClass.value}
                 vOn:mousedown={(e) => {
-                  //// VIEW MODE
+                  // view mode
                   if (state.viewMode) return
 
-                  //// TODO: Refactor
-                  //// DELETE AREA
-                  const deleteAreaElements = context.refs.el.getElementsByClassName('g-grid-generator__editor__field__area__delete')
-                  for (let i = 0; i < deleteAreaElements.length; ++i) {
-                    const el = deleteAreaElements[i]
-                    const { top, left, width, height } = el.getBoundingClientRect()
-                    const pageTop = top + window.scrollY
-                    const pageLeft = left + window.scrollX
-                    const pageBottom = pageTop + height
-                    const pageRight = pageLeft + width
-                    if ((pageLeft <= e.pageX && e.pageX <= pageRight) && (pageTop <= e.pageY && e.pageY <= pageBottom)) {
-                      el.click()
-                      return
-                    }
+                  // execute action
+                  const actionExecuted = tryToExecuteActionIfHit(e)
+                  if (actionExecuted) {
+                    return
                   }
 
-                  //// RESIZE, REPOSITION AREA
-                  const editAreaElements = context.refs.el.getElementsByClassName('g-grid-generator__editor__field__area__edit')
-                  for (let i = 0; i < editAreaElements.length; ++i) {
-                    const el = editAreaElements[i]
-                    const { top, left, width, height } = el.getBoundingClientRect()
-                    const pageTop = top + window.scrollY
-                    const pageLeft = left + window.scrollX
-                    const pageBottom = pageTop + height
-                    const pageRight = pageLeft + width
-                    if ((pageLeft <= e.pageX && e.pageX <= pageRight) && (pageTop <= e.pageY && e.pageY <= pageBottom)) {
-                      el.click() // call click action which will mark grid item as a editing item
-                      return
-                    }
+                  // create or modify existing item
+                  _selectingArea = {
+                    name: _selectingArea.name,
+                    rowStart: i,
+                    columnStart: j,
+                    rowEnd: i,
+                    columnEnd: j
                   }
-
-                  //// CHANGE COLOR
-                  const changeColorAreaElements = context.refs.el.getElementsByClassName('g-grid-generator__editor__field__area__changeColor')
-                  for (let i = 0; i < changeColorAreaElements.length; ++i) {
-                    const el = changeColorAreaElements[i]
-                    const { top, left, width, height } = el.getBoundingClientRect()
-                    const pageTop = top + window.scrollY
-                    const pageLeft = left + window.scrollX
-                    const pageBottom = pageTop + height
-                    const pageRight = pageLeft + width
-                    if ((pageLeft <= e.pageX && e.pageX <= pageRight) && (pageTop <= e.pageY && e.pageY <= pageBottom)) {
-                      el.click() // call click action which will mark grid item as a editing item
-                      return
-                    }
-                  }
-
-                  //// CREATE NEW
-                  _selectingArea = { ..._selectingArea, rowStart: i, columnStart: j }
-                  state.hoveringArea = { rowStart: i + 1, columnStart: j + 1, rowEnd: i + 2, columnEnd: j + 2 }
+                  state.hoveringArea = createGridArea(_selectingArea)
                   state.hovering = true
-                }}
-                vOn:mouseup={() => {
-                  if (state.viewMode) return
-                  if (state.hovering) {
-                    _selectingArea = { ..._selectingArea, rowEnd: i, columnEnd: j }
-                    state.hovering = false
-
-                    if (state.editingArea) {
-                      updateGridItemArea(state.editingArea, _selectingArea)
-                      state.editingArea = null
-                    } else {
-                      state.showConfirmDialog = true
-                    }
-                  }
                 }}
                 vOn:mouseenter={() => {
                   if (state.viewMode) return
                   if (state.hovering) {
-                    const rowStart = Math.min(_selectingArea.rowStart, i) + 1
-                    const rowEnd = Math.max(_selectingArea.rowStart, i) + 2
-                    const columnStart = Math.min(_selectingArea.columnStart, j) + 1
-                    const columnEnd = Math.max(_selectingArea.columnStart, j) + 2
-                    state.hoveringArea = { rowStart, rowEnd, columnStart, columnEnd }
+                    _selectingArea = { ..._selectingArea, rowEnd: i, columnEnd: j }
+                    state.hoveringArea = createGridArea(_selectingArea)
+                  }
+                }}
+                vOn:mouseup={() => {
+                  if (state.viewMode) return
+
+                  // checking hovering in mouseup to prevent action mouse up
+                  if (state.hovering) {
+                    state.hovering = false
+                    if (state.editingArea) {
+                      state.editingArea.area = state.hoveringArea
+                      state.hoveringArea = null
+                      state.editingArea = null
+                    } else {
+                      state.showConfirmDialog = true
+                    }
                   }
                 }}
             ></div>)
@@ -345,7 +312,7 @@
         }
 
         return ([
-          <div style={gridStyles} class="g-grid-generator__editor__field">{gridItems}</div>,
+          <div style={gridStyles} class="grid-gen__editor__field">{gridItems}</div>,
           <div style={selectedAreaContainerStyle}>
             {renderGridAreas(grid)}
             {renderHoveringArea()}
@@ -356,42 +323,60 @@
       // render area in edit mode
       function getAreaClass(area) {
         return {
-          'g-grid-generator__editor__field__area': true,
-          'g-grid-generator__editor__field__area--selected': area == state.selectedArea,
-          'g-grid-generator__editor__field__area--editing': area == state.editingArea,
+          'grid-gen__editor__field__area': true,
+          'grid-gen__editor__field__area--selected': area == state.selectedArea,
+          'grid-gen__editor__field__area--editing': area == state.editingArea,
         }
       }
+
+      const actionWrapperClass = 'grid-gen__editor__field__area__actions'
+      const actionClass = 'area-action'
+
+      function tryToExecuteActionIfHit(e) {
+        let actionExecuted = false
+        _.each(context.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
+          _.each(actionWrapperElement.getElementsByClassName(actionClass), areaActionElement => {
+            const { top, left, width, height } = areaActionElement.getBoundingClientRect()
+            const pageTop = top + window.scrollY
+            const pageLeft = left + window.scrollX
+            const pageBottom = pageTop + height
+            const pageRight = pageLeft + width
+            if ((pageLeft <= e.pageX && e.pageX <= pageRight) && (pageTop <= e.pageY && e.pageY <= pageBottom)) {
+              areaActionElement.click()
+              actionExecuted = true
+            }
+          })
+        })
+        return actionExecuted
+      }
+
       function renderGridAreaInEditMode(gridItem) {
-        return <div
-            class={getAreaClass(gridItem)}
-            style={{ backgroundColor: gridItem.bgColor, gridArea: getGridAreaCss(gridItem) }}>
-          <span class="g-grid-generator__editor__field__area__name">
-            {gridItem.name}
-          </span>
-          <span class="g-grid-generator__editor__field__area__actions">
-            <span class="g-grid-generator__editor__field__area__changeColor"
-                vOn:click={() => gridItem.bgColor = createColor()}>
+        return <div class={getAreaClass(gridItem)}
+                    style={{ backgroundColor: gridItem.bgColor, gridArea: getGridAreaCss(gridItem) }}>
+          <span>{gridItem.name}</span>
+          <span class={actionWrapperClass}>
+            <span class={actionClass} vOn:click={() => gridItem.bgColor = generateRandomColor()}>
               <g-icon small>autorenew</g-icon>
             </span>
-            <span class="g-grid-generator__editor__field__area__edit"
-                vOn:click={() => {
-                  state.selectedArea = gridItem
-                  state.editingArea = gridItem
-                }}>
+            <span class={actionClass}
+                  vOn:click={() => {
+                    state.selectedArea = gridItem
+                    state.editingArea = gridItem
+                  }}>
               <g-icon small>edit</g-icon>
             </span>
-            <span class="g-grid-generator__editor__field__area__delete"
-                vOn:click={() => deleteGridItem(gridItem)}>
+            <span class={actionClass} vOn:click={() => deleteGridItem(gridItem)}>
               <g-icon small>delete</g-icon>
             </span>
           </span>
         </div>
       }
+
       // render area in view mode
       function renderGridAreaInViewMode(gridItem) {
         if (gridItem.settings) {
           return <div
-              class="g-grid-generator__editor__field__area"
+              class="grid-gen__editor__field__area"
               style={{
                 border: '1px dashed #0008',
                 backgroundColor: gridItem.bgColor,
@@ -405,7 +390,7 @@
           </div>
         } else {
           return <div
-              class="g-grid-generator__editor__field__area"
+              class="grid-gen__editor__field__area"
               style={{
                 border: '1px dashed #0008',
                 backgroundColor: gridItem.bgColor,
@@ -415,6 +400,7 @@
           </div>
         }
       }
+
       // render area
       function renderGridAreas(targetGrid) {
         return (targetGrid.subAreas || []).map((gridItem, index) =>
@@ -435,53 +421,74 @@
       }
 
       // render confirm dialog
-      const newItemNameInputRefStr = 'newItemNameInput'
+      const refIdNewItemNameInput = 'txtItemName'
+      const refIdBtnCreateSubItem = 'btnCreateSubItem'
+      const refIdBtnCreateSubGrid = 'btnCreateSubGrid'
+      const refIdBtnCancel = 'btnCancel'
+      function onOnConfirmDialogKeyDown(e) {
+        if (enterPressed(e)) {
+          if (shiftPressed(e) || ctrlPressed(e) || metaPressed(e)) {
+            context.refs[refIdBtnCreateSubGrid].click()
+          } else {
+            context.refs[refIdBtnCreateSubItem].click()
+          }
+        } else if (escapePressed(e)) {
+          context.refs[refIdBtnCancel].click()
+        }
+      }
+      function onSubGridBtnClicked(grid) {
+        if (isGridAreaNameValid(_selectingArea.name)) {
+          // can use state.hoveringArea directly instead of _selectingArea
+          addSubGridArea(grid, _selectingArea)
+          state.showConfirmDialog = false
+          _selectingArea = createEmptyArea()
+        }
+      }
+      function onSubItemBtnClicked(grid){
+        if (isGridAreaNameValid(_selectingArea.name)) {
+          addSubItemArea(grid, _selectingArea)
+          state.showConfirmDialog = false
+          _selectingArea = createEmptyArea()
+        }
+      }
+      function onCancelBtnClick() {
+        state.showConfirmDialog = false
+        _selectingArea = createEmptyArea()
+      }
       function renderConfirmDialog(grid) {
-        return <g-dialog vModel={state.showConfirmDialog} width="500px" persistent>
-          <div class="g-grid-generator__dialog__confirm">
-            <h5>Create new grid item</h5>
-            <div>
-              Are you sure you want to create new grid item?<br/>
-              If Yes, please set name for the grid item and click to either 'Single' or 'Sub Grid' button?<br/>
-              <b>Single</b> create an atom item which can't be divided into smaller items<br/>
-              <b>Sub-grid</b> create a sub grid item which can be divided into smaller items.
+        return <g-dialog vModel={state.showConfirmDialog} width="600px" persistent>
+          <div class="grid-gen__dialog__confirm" vOn:keydown={onOnConfirmDialogKeyDown}>
+            <span class="grid-gen__dialog__confirm__header">Create new area</span>
+            <div class="grid-gen__dialog__confirm__content">
+              <div>
+                Are you sure you want to create new area? If Yes, please set area name and click to either 'Single' or 'Sub Grid' button.<br/>
+                <small>
+                  <b>Single</b> create an atom item which can't be divided into smaller items<br/>
+                  <b>Sub-grid</b> create a sub grid item which can be divided into smaller items.
+                </small>
+              </div>
+              <br/>
+              <div>
+                Area name:&nbsp;
+                <input class="grid-gen__dialog__confirm__item-name"
+                       type="text"
+                       ref={refIdNewItemNameInput}
+                       vModel={_selectingArea.name}/>
+              </div>
+              <div>
+                <small>
+                  (*) Item name can contain only a-z, A-Z, -, _ characters<br/>
+                  (*) Shortcuts: <br/>
+                  - ESC: Cancel<br/>
+                  - Enter: Sub Item<br/>
+                  - Enter + (Shift | Ctrl | Meta): Sub Grid<br/>
+                </small>
+              </div>
             </div>
-            <div>Item name:&nbsp;
-              <input class="g-grid-generator__dialog__confirm__item-name"
-                     type="text"
-                     ref={newItemNameInputRefStr}
-                     vModel={_selectingArea.name}/>
-            </div>
-            <div class="g-grid-generator__dialog__confirm__error-message">
-              (*) Item name can contain only a-z, A-Z, -, _ characters
-            </div>
-            <div class="g-grid-generator__dialog__confirm__action-btn">
-              <button type='button'
-                      vOn:click={() => {
-                        if (isGridAreaNameValid(_selectingArea.name)) {
-                          addSubGridArea(grid, _selectingArea)
-                          state.showConfirmDialog = false
-                          _selectingArea = createEmptyArea()
-                        }
-                      }}>Sub Grid
-              </button>
-              &nbsp;
-              <button type='button'
-                      vOn:click={() => {
-                        if (isGridAreaNameValid(_selectingArea.name)) {
-                          addSubItemArea(grid, _selectingArea)
-                          state.showConfirmDialog = false
-                          _selectingArea = createEmptyArea()
-                        }
-                      }}>Single item
-              </button>
-              &nbsp;
-              <button type='button'
-                      vOn:click={() => {
-                        state.showConfirmDialog = false
-                        _selectingArea = createEmptyArea()
-                      }}>Cancel
-              </button>
+            <div class="grid-gen__dialog__confirm__action-btn">
+              <button ref={refIdBtnCreateSubGrid} vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>&nbsp;
+              <button ref={refIdBtnCreateSubItem} vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>&nbsp;
+              <button ref={refIdBtnCancel} vOn:click={onCancelBtnClick}>Cancel</button>
             </div>
           </div>
         </g-dialog>
@@ -489,68 +496,58 @@
 
       // 3) Settings
       // a helper method adjust row, col number
-      function adjustRowColNumbers(targetArr, newLen) {
-        const oldLen = targetArr.length
-        if (oldLen < newLen) {
-          const newCols = createRange(newLen - oldLen, () => ref('1fr'))
-          targetArr.push.apply(targetArr, newCols)
-        } else if (oldLen > newLen) {
-          targetArr.splice(newLen, oldLen - newLen)
-        }
-      }
-
       function renderGridSettings(grid) {
         return [
-          <div class="g-grid-generator__settings-section">Grid Settings</div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-section">Grid Settings</div>,
+          <div class="grid-gen__settings-prop">
             <label>Field width(px): </label>
             <g-inc-dec-number-input min={600} value={state.fieldWidth} vOn:input={v => state.fieldWidth = v}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Field height(px): </label>
             <g-inc-dec-number-input min={400} value={state.fieldHeight} vOn:input={v => state.fieldHeight = v}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Columns: </label>
             <g-inc-dec-number-input min={1} value={grid.settings.columns.length} vOn:input={v => adjustRowColNumbers(grid.settings.columns, v)}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Rows: </label>
             <g-inc-dec-number-input min={1} value={grid.settings.rows.length} vOn:input={v => adjustRowColNumbers(grid.settings.rows, v)}
             />
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Column Gap(px): </label>
             <g-inc-dec-number-input min={0} value={grid.settings.columnGap} vOn:input={v => grid.settings.columnGap = v}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Row Gap(px): </label>
             <g-inc-dec-number-input min={0} value={grid.settings.rowGap} vOn:input={v => grid.settings.rowGap = v}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>View mode: </label>
             <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}>Overview</input>
           </div>,
-          <div class="g-grid-generator__settings-section">Insert/Delete</div>,
+          <div class="grid-gen__settings-section">Insert/Delete</div>,
           <div>
             <div>Rows:</div>
-            <button vOn:click={() => insertAbove(state.selectedGrid, state.selectedRowUnitIndex)}>Above</button>
-            <button vOn:click={() => insertBelow(state.selectedGrid, state.selectedRowUnitIndex)}>Below</button>
-            <button vOn:click={() => deleteRow(state.selectedGrid, state.selectedRowUnitIndex)}>Delete</button>
+            <button vOn:click={() => insertRowAbove(grid, state.selectedRowUnitIndex)}>Above</button>
+            <button vOn:click={() => insertRowBelow(grid, state.selectedRowUnitIndex)}>Below</button>
+            <button vOn:click={() => deleteRow(grid, state.selectedRowUnitIndex)}>Delete</button>
           </div>,
           <div>
             <div>Columns:</div>
-            <button vOn:click={() => insertLeft(state.selectedGrid, state.selectedColumnUnitIndex)}>Left</button>
-            <button vOn:click={() => insertRight(state.selectedGrid, state.selectedColumnUnitIndex)}>Right</button>
-            <button vOn:click={() => deleteColumn(state.selectedGrid, state.selectedColumnUnitIndex)}>Delete</button>
+            <button vOn:click={() => insertColumnLeft(grid, state.selectedColumnUnitIndex)}>Left</button>
+            <button vOn:click={() => insertColumnRight(grid, state.selectedColumnUnitIndex)}>Right</button>
+            <button vOn:click={() => deleteColumn(grid, state.selectedColumnUnitIndex)}>Delete</button>
           </div>
         ]
       }
 
       function renderAreaSettings(gridItem) {
         return gridItem != null && gridItem.parent === state.selectedGrid ? [
-          <div class="g-grid-generator__settings-section">Area Settings</div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-section">Area Settings</div>,
+          <div class="grid-gen__settings-prop">
             <label>Top: </label>
             <g-inc-dec-number-input
                 min={1}
@@ -561,7 +558,7 @@
                   gridItem.area.rowEnd += topChanged
                 }}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Left: </label>
             <g-inc-dec-number-input
                 min={1}
@@ -572,14 +569,14 @@
                   gridItem.area.columnEnd += leftChanged
                 }}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Width: </label>
             <g-inc-dec-number-input
                 min={1}
                 value={gridItem.area.columnEnd - gridItem.area.columnStart}
                 vOn:input={v => gridItem.area.columnEnd = gridItem.area.columnStart + v}/>
           </div>,
-          <div class="g-grid-generator__settings-prop">
+          <div class="grid-gen__settings-prop">
             <label>Height: </label>
             <g-inc-dec-number-input
                 min={1}
@@ -590,9 +587,15 @@
       }
 
       // 4) Generate output
+      function renderGridGeneratorOutput() {
+        return [
+          <div class="grid-gen__settings-section">Output</div>,
+          renderGenerateStyleBtn(),
+          renderExportLayoutBtn()
+        ]
+      }
       function renderGenerateStyleBtn() {
         return <button
-            type='button'
             vOn:click_stop_prevent={() => {
               state.showOutputDialog = true
               state.generatedCss = generateGridCSS(state.layout, props.uid)
@@ -601,32 +604,39 @@
       }
 
       function renderExportLayoutBtn() {
-        return <button
-            type="button"
-            vOn:click_stop_prevent={() => {
-              context.emit('exportlayout', state.layout)
-            }}>Export layout</button>
+        return <button vOn:click_stop_prevent={() => context.emit('exportlayout', state.layout)}>Export layout</button>
       }
 
       function renderOutputDialog() {
         return <g-dialog vModel={state.showOutputDialog} width="500px" persistent>
-          <div class="g-grid-generator__dialog__output">
+          <div class="grid-gen__dialog__output">
             <textarea>{state.generatedCss}</textarea>
-            <button type="button" vOn:click_stop_prevent={() => state.showOutputDialog = false}>Close</button>
+            <button vOn:click_stop_prevent={() => state.showOutputDialog = false}>Close</button>
           </div>
         </g-dialog>
       }
 
+
+      // do stuff after vue rendered
+      onUpdated(() => {
+        // if confirm showed, select all text of new item name input
+        // then focus on it
+        if (state.showConfirmDialog) {
+          context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
+          context.refs[refIdNewItemNameInput].focus()
+        }
+      })
+
       // 0) Entire render
       function renderGridGenerator() {
         return (
-            <div class="g-grid-generator" ref="el">
-              <div class="g-grid-generator__list">
+            <div class="grid-gen" ref="el">
+              <div class="grid-gen__list">
                 {renderGridList()}
                 {renderAreaList()}
               </div>
 
-              <div class="g-grid-generator__editor">
+              <div class="grid-gen__editor">
                 <div style={{
                   position: 'relative',
                   width: `${state.fieldWidth}px`,
@@ -639,17 +649,12 @@
                   {renderGridContainer(state.selectedGrid)}
                 </div>
               </div>
-
-              <div class="g-grid-generator__settings">
+              <div class="grid-gen__settings">
                 {renderGridSettings(state.selectedGrid)}
                 {renderAreaSettings(state.selectedArea)}
-                <div class="g-grid-generator__settings-section">Output</div>
-                {renderGenerateStyleBtn()}
-                {renderExportLayoutBtn()}
+                {renderGridGeneratorOutput()}
               </div>
-
               {renderConfirmDialog(state.selectedGrid)}
-
               {renderOutputDialog()}
             </div>
         )
@@ -667,22 +672,27 @@
 
 </script>
 <style scoped lang="scss">
-  .g-grid-generator {
+  .grid-gen {
     display: flex;
     flex-direction: row;
     align-items: stretch;
 
+    button {
+      border-radius: 0;
+    }
+
     &__list {
       background-color: #fff;
       border-right: 2px solid #888;
-      padding: 20px;
+      padding: 0 20px;
     }
 
     &__sub-list {
+      margin-bottom: 20px;
+
       &__section {
         font-size: larger;
         border-top: 2px solid #888;
-        margin-top: 20px;
         color: #888;
       }
 
@@ -795,10 +805,6 @@
             opacity: 0.5;
           }
 
-          &__name {
-            padding: 5px;
-          }
-
           &__actions {
             display: inline-block;
             position: absolute;
@@ -814,7 +820,7 @@
     }
 
     &__settings {
-      padding: 20px;
+      padding: 0 20px;
       background-color: #fff;
       border-left: 2px solid #888;
       min-width: 240px;
@@ -824,8 +830,11 @@
       &-section {
         font-size: larger;
         border-top: 2px solid #888;
-        margin-top: 20px;
         color: #888;
+
+        &:nth-of-type(n+2) {
+          margin-top: 20px;
+        }
       }
 
       &-prop {
@@ -845,24 +854,29 @@
       &__confirm {
         display: flex;
         flex-direction: column;
-        height: 350px;
-        border-radius: 10px;
+        height: 450px;
         box-shadow: 0 2px 8px 4px #0003;
         background: #fff;
-        padding: 20px;
+
+        &__header {
+          background-color: #000;
+          color: #fff;
+          font-size: 30px;
+          padding: 10px;
+        }
+
+        &__content {
+          padding: 20px;
+          flex: 1;
+        }
 
         &__item-name {
           border: 1px solid #888;
           padding: 5px;
         }
 
-        &__error-message {
-          flex: 1;
-          color: red;
-          font-size: small;
-        }
-
         &__action-btn {
+          padding: 20px;
           display: flex;
           flex-direction: row-reverse;
         }
@@ -887,6 +901,4 @@
       }
     }
   }
-
-
 </style>

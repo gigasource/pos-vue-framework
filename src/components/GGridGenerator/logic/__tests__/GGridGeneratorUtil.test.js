@@ -1,16 +1,16 @@
 // Created at 2019-11-11 09:35 by Thinh Vu
 import { createLocalVue } from '@vue/test-utils'
-import plugin, { ref } from '@vue/composition-api'
+import plugin, { ref, isRef } from '@vue/composition-api'
+import _ from 'lodash'
 import {
-  _createSingleItem, _createSubGridItem, addSubGridArea, addSubItemArea,
-  createEmptyArea, deleteGridItem,
+  _createSingleItem, _createSubGridItem, addSubGridArea, addSubItemArea, adjustRowColNumbers,
+  createEmptyArea, deleteColumn, deleteGridItem, deleteRow,
   getFullCssModelName,
-  getGridAreaCss, getGridList,
+  getGridAreaCss, getGridList, insertColumnLeft, insertColumnRight, insertRowAbove, insertRowBelow, isAreaOverflowed,
   isGridAreaNameValid,
   joinRefArrayValue
 } from '../GGridGeneratorUtil'
 import { createRange } from '../../../../utils/helpers';
-
 
 describe('/GGridGeneratorUtil', () => {
   createLocalVue().use(plugin)
@@ -177,7 +177,7 @@ describe('/GGridGeneratorUtil', () => {
   it('addSubGridArea', () => {
     // suppose parent contain 2 subAreas, now we'll check whether
     // new area will be added to the end or not
-    const parent = { name: 'root', subAreas: [null, null] }
+    const parent = { name: 'root', subAreas: [] }
     // An area rowStart, rowEnd, columnStart, columnEnd: index of row (not index of line)
     // So this value
     const area = { name: 'head', rowStart: 1, rowEnd: 1, columnStart: 3, columnEnd: 2 }
@@ -185,7 +185,7 @@ describe('/GGridGeneratorUtil', () => {
     Math.random = jest.fn(() => 0.5)
     addSubGridArea(parent, area)
 
-    expect(parent.subAreas[2]).toEqual({
+    expect(parent.subAreas[0]).toEqual({
       name: 'head',
       parent: parent,
       hide: false,
@@ -211,7 +211,7 @@ describe('/GGridGeneratorUtil', () => {
   it('addSubItemArea', () => {
     // suppose parent contain 2 subAreas, now we'll check whether
     // new area will be added to the end or not
-    const parent = { name: 'root', subAreas: [null, null] }
+    const parent = { name: 'root', subAreas: [] }
     // An area rowStart, rowEnd, columnStart, columnEnd: index of row (not index of line)
     // So this value
     const area = { name: 'head', rowStart: 1, rowEnd: 1, columnStart: 3, columnEnd: 2 }
@@ -219,7 +219,7 @@ describe('/GGridGeneratorUtil', () => {
     Math.random = jest.fn(() => 0.5)
     addSubItemArea(parent, area)
 
-    expect(parent.subAreas[2]).toEqual({
+    expect(parent.subAreas[0]).toEqual({
       name: 'head',
       parent: parent,
       hide: false,
@@ -252,8 +252,256 @@ describe('/GGridGeneratorUtil', () => {
 
     deleteGridItem(child)
 
-    for(let i =0; i<parent.subAreas.length; ++i) {
+    for (let i = 0; i < parent.subAreas.length; ++i) {
       expect(parent.subAreas[i] != child).toBe(true)
     }
+  })
+
+  it('isAreaOverflowed', () => {
+    const child = {
+      name: 'head',
+      hide: false,
+      bgColor: 'hsl(180, 100%, 50%, 50%)',
+      area: {
+        rowStart: 1,
+        columnStart: 3,
+        rowEnd: 3,
+        columnEnd: 3
+      }
+    }
+    const child1 = {
+      area: {
+        rowStart: 1,
+        columnStart: 0,
+        rowEnd: 3,
+        columnEnd: 5
+      }
+    }
+    const child2 = {
+      area: {
+        rowStart: 1,
+        columnStart: 3,
+        rowEnd: 5,
+        columnEnd: 5
+      }
+    }
+    const child3 = {
+      area: {
+        rowStart: 1,
+        columnStart: 3,
+        rowEnd: 3,
+        columnEnd: 5
+      }
+    }
+    const child4 = {
+      area: {
+        rowStart: 1,
+        columnStart: 3,
+        rowEnd: 3,
+        columnEnd: 5
+      }
+    }
+    const parent = {
+      subAreas: [child, child1, child2, child3, child4], settings: {
+        columns: ['50px', '50px', '50px'],
+        rows: ['50px', '50px', '50px'],
+        columnGap: 0,
+        rowGap: 0
+      }
+    }
+    child.parent = parent
+    child1.parent = parent
+    child2.parent = parent
+    child3.parent = parent
+    child4.parent = parent
+
+    expect(isAreaOverflowed(child)).toBe(false)
+    expect(isAreaOverflowed(child1)).toBe(true)
+    expect(isAreaOverflowed(child2)).toBe(true)
+    expect(isAreaOverflowed(child3)).toBe(true)
+    expect(isAreaOverflowed(child4)).toBe(true)
+
+
+  })
+
+  describe('adjustRowColNumbers', () => {
+    it('Add extra ref 1fr to an array', () => {
+      const newLen = 3
+      const output = [ref('1fr')]
+      adjustRowColNumbers(output, newLen)
+      for (let i = 0; i < newLen; ++i) {
+        expect(isRef(output[i])).toBe(true)
+        expect(output[i].value).toBe('1fr')
+      }
+    })
+
+    it('Cut end part of array', () => {
+      const newLen = 3
+      const output = [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')]
+      adjustRowColNumbers(output, newLen)
+      expect(output.length).toBe(newLen)
+
+      for (let i = 0; i < newLen; ++i) {
+        expect(isRef(output[i])).toBe(true)
+        expect(output[i].value).toBe('1fr')
+      }
+    })
+  })
+
+  it('insertRowAbove', () => {
+    const model = {
+      settings: {
+        rows: [ref('10px'), ref('20px'), ref('1fr')]
+      },
+      subAreas: [
+        { area: { rowStart: 1, rowEnd: 2 } }, // case 1
+        { area: { rowStart: 2, rowEnd: 3 } }, // case 2
+        { area: { rowStart: 3, rowEnd: 4 } }, // case 3
+      ]
+    }
+
+    insertRowAbove(model, 1)
+
+    // new row unit added to settings.rows
+    expect(_.map(model.settings.rows, rowRef => rowRef.value)).toEqual(['10px', '1fr', '20px', '1fr'])
+    // adjust area location for any area which have rowStart > index
+    // case 1: doesn't affected
+    expect(model.subAreas[0].area.rowStart).toBe(1)
+    expect(model.subAreas[0].area.rowEnd).toBe(2)
+    // case 2: equal with inserted line
+    expect(model.subAreas[1].area.rowStart).toBe(3)
+    expect(model.subAreas[1].area.rowEnd).toBe(4)
+    // case 3: lie below inserted line
+    expect(model.subAreas[2].area.rowStart).toBe(4)
+    expect(model.subAreas[2].area.rowEnd).toBe(5)
+  })
+
+  it('insertRowBelow', () => {
+    const model = {
+      settings: {
+        rows: [ref('10px'), ref('20px'), ref('1fr')]
+      },
+      subAreas: [
+        { area: { rowStart: 1, rowEnd: 2 } }, // case 1
+        { area: { rowStart: 2, rowEnd: 3 } }, // case 2
+        { area: { rowStart: 3, rowEnd: 4 } }, // case 3
+      ]
+    }
+
+    insertRowBelow(model, 1)
+
+    // new row unit added to settings.rows
+    expect(_.map(model.settings.rows, rowRef => rowRef.value)).toEqual(['10px', '20px', '1fr', '1fr'])
+    // adjust area location for any area which have rowStart > index
+    // case 1: doesn't affected
+    expect(model.subAreas[0].area.rowStart).toBe(1)
+    expect(model.subAreas[0].area.rowEnd).toBe(2)
+    // case 2: equal with inserted line
+    expect(model.subAreas[1].area.rowStart).toBe(2)
+    expect(model.subAreas[1].area.rowEnd).toBe(3)
+    // case 3: lie below inserted line
+    expect(model.subAreas[2].area.rowStart).toBe(4)
+    expect(model.subAreas[2].area.rowEnd).toBe(5)
+  })
+
+  it('insertColumnLeft', () => {
+    const model = {
+      settings: {
+        columns: [ref('10px'), ref('20px'), ref('1fr')]
+      },
+      subAreas: [
+        { area: { columnStart: 1, columnEnd: 2 } }, // case 1
+        { area: { columnStart: 2, columnEnd: 3 } }, // case 2
+        { area: { columnStart: 3, columnEnd: 4 } }, // case 3
+      ]
+    }
+
+    insertColumnLeft(model, 1)
+
+    // new row unit added to settings.rows
+    expect(_.map(model.settings.columns, colRef => colRef.value)).toEqual(['10px', '1fr', '20px', '1fr'])
+    // case 1: column before inserted column
+    expect(model.subAreas[0].area.columnStart).toBe(1)
+    expect(model.subAreas[0].area.columnEnd).toBe(2)
+    // case 2: equal with inserted column
+    expect(model.subAreas[1].area.columnStart).toBe(3)
+    expect(model.subAreas[1].area.columnEnd).toBe(4)
+    // case 3: column after inserted column
+    expect(model.subAreas[2].area.columnStart).toBe(4)
+    expect(model.subAreas[2].area.columnEnd).toBe(5)
+  })
+
+  it('insertColumnRight', () => {
+    const model = {
+      settings: {
+        columns: [ref('10px'), ref('20px'), ref('1fr')]
+      },
+      subAreas: [
+        { area: { columnStart: 1, columnEnd: 2 } }, // case 1
+        { area: { columnStart: 2, columnEnd: 3 } }, // case 2
+        { area: { columnStart: 3, columnEnd: 4 } }, // case 3
+      ]
+    }
+
+    insertColumnRight(model, 1)
+
+    // new row unit added to settings.rows
+    expect(_.map(model.settings.columns, colRef => colRef.value)).toEqual(['10px', '20px', '1fr', '1fr'])
+    expect(model.subAreas[0].area.columnStart).toBe(1)
+    expect(model.subAreas[0].area.columnEnd).toBe(2)
+    expect(model.subAreas[1].area.columnStart).toBe(2)
+    expect(model.subAreas[1].area.columnEnd).toBe(3)
+    expect(model.subAreas[2].area.columnStart).toBe(4)
+    expect(model.subAreas[2].area.columnEnd).toBe(5)
+  })
+
+  it('deleteRow', () => {
+    const model = {
+      settings: {
+        rows: [ref('10px'), ref('20px'), ref('1fr')]
+      },
+      subAreas: [
+        { area: { rowStart: 1, rowEnd: 2 } }, // case 1
+        { area: { rowStart: 2, rowEnd: 3 } }, // case 2
+        { area: { rowStart: 3, rowEnd: 4 } }, // case 3
+      ]
+    }
+    deleteRow(model, 1)
+    expect(_.map(model.settings.rows, rowRef => rowRef.value)).toEqual(['10px', '1fr'])
+    // adjust area location for any area which have rowStart > index
+    // case 1: doesn't affected
+    expect(model.subAreas[0].area.rowStart).toBe(1)
+    expect(model.subAreas[0].area.rowEnd).toBe(2)
+    // case 2: technically removed
+    expect(model.subAreas[1].area.rowStart).toBe(2)
+    expect(model.subAreas[1].area.rowEnd).toBe(2)
+    // case 3: jump to above line
+    expect(model.subAreas[2].area.rowStart).toBe(2)
+    expect(model.subAreas[2].area.rowEnd).toBe(3)
+  })
+
+  it('deleteColumn', () => {
+    const model = {
+      settings: {
+        columns: [ref('10px'), ref('20px'), ref('1fr')]
+      },
+      subAreas: [
+        { area: { columnStart: 1, columnEnd: 2 } }, // case 1
+        { area: { columnStart: 2, columnEnd: 3 } }, // case 2
+        { area: { columnStart: 3, columnEnd: 4 } }, // case 3
+      ]
+    }
+    deleteColumn(model, 1)
+    expect(_.map(model.settings.columns, colRef => colRef.value)).toEqual(['10px', '1fr'])
+    // adjust area location for any area which have rowStart > index
+    // case 1: doesn't affected
+    expect(model.subAreas[0].area.columnStart).toBe(1)
+    expect(model.subAreas[0].area.columnEnd).toBe(2)
+    // case 2: technically removed
+    expect(model.subAreas[1].area.columnStart).toBe(2)
+    expect(model.subAreas[1].area.columnEnd).toBe(2)
+    // case 3: jump to above line
+    expect(model.subAreas[2].area.columnStart).toBe(2)
+    expect(model.subAreas[2].area.columnEnd).toBe(3)
   })
 })
