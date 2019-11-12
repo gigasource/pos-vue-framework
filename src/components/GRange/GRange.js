@@ -62,10 +62,6 @@ export function getEventHandlerRange(props, context, state, internalValue, minVa
       state.noClick = true
     }
 
-    state.isActive = false
-    if (state.isFocused) {
-      state.isFocused = false
-    }
   }
 
   function onSliderClick(e) {
@@ -86,7 +82,6 @@ export function getEventHandlerRange(props, context, state, internalValue, minVa
 
       setInternalValue(value)
 
-      context.emit('change', internalValue.value)
     }
   }
 
@@ -97,13 +92,11 @@ export function getEventHandlerRange(props, context, state, internalValue, minVa
   function onKeyDown(e) {
     if (state.activeThumb === null) return
 
-    console.log(internalValue.value[state.activeThumb])
     const value = parseKeyDown(e, internalValue.value[state.activeThumb])
 
     if (value == null) return
 
     setInternalValue(value)
-    context.emit('change', internalValue.value)
   }
 
   function parseKeyDown(e, value) {
@@ -142,8 +135,6 @@ export function getEventHandlerRange(props, context, state, internalValue, minVa
       else return Number(v)
     })
   }
-
-
 
   return {onThumbMouseDown, parseMouseMove, onSliderMouseUp, onSliderClick, onKeyDown, onKeyUp}
 }

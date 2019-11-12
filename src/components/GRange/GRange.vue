@@ -3,6 +3,7 @@
   import {helperFunctions} from "../GSliderRemake/GSlider";
   import {getEventHandlerRange} from "./GRange";
   import {convertToUnit} from "../../utils/helpers";
+  import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
 
   export default {
@@ -103,6 +104,7 @@
       watch(() => props.value, (val) => internalValue.value = val)
 
       const inputWidth = computed(() => internalValue.value.map((v) => (roundValue(v) - minValue.value) / (maxValue.value - minValue.value) * 100))
+      const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
       //event handler
       const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getEventHandlerRange(props, context, state, internalValue, minValue, maxValue)
 
@@ -125,12 +127,13 @@
         const endPadding = 0
         const start = `calc(${startLength}% + ${startPadding}px)`
         const end = `calc(${endLength}% + ${endPadding}px)`
-        const color = props.disabled ? props.trackFillColor : props.trackBgrColor
+        const color = props.disabled ? '#d2d2d2' : (props.trackBgrColor ? getCssColor(props.trackBgrColor) : '#d2d2d2')
 
         return {
           [startDir]: start,
           [endDir]: end,
           [bg]: color,
+          transition: trackTransition.value,
         }
       })
       const trackFillStyle = computed(() => {
@@ -139,12 +142,13 @@
         const bg = 'background-color'
 
         const fillPercent = Math.abs(inputWidth.value[0] - inputWidth.value[1])
-        const color = props.trackFillColor
+        const color = props.disabled ? '#8d8d8d' : (props.trackFillColor ? getCssColor(props.trackFillColor) : '#8d8d8d')
 
         return {
           [bg]: color,
           [dir]: `${fillPercent}%`,
           [start]: `${inputWidth.value[0]}%`,
+          transition: trackTransition.value,
         }
       })
 
@@ -203,11 +207,11 @@
 
       //genThumb
       const thumbStyle = computed(() => {
-        return {'background-color': props.thumbColor}
+        return {'color': props.thumbColor ? getCssColor(props.thumbColor) : '#8d8d8d'}
       })
 
       function genThumb() {
-        return <div class="g-slider--thumb" style={thumbStyle.value}/>
+        return <div class="g-slider-thumb" style={thumbStyle.value}/>
       }
 
       const showThumbLabel = computed(() => !props.disabled && !!(props.thumbLabel))
@@ -231,9 +235,9 @@
         }
         const show = state.isFocused || state.isActive || props.thumbLabel === 'always' ? '' : 'none'
 
-        return <div class="g-slider--thumb-label-container"
+        return <div class="g-slider-thumb-label-container"
                     style={{'display': show}}>
-          <div class="g-slider--thumb-label" style={style}>
+          <div class="g-slider-thumb-label" style={style}>
             <div>{content}</div>
           </div>
         </div>
@@ -244,7 +248,7 @@
           return {
             'g-slider-thumb-container': true,
             'g-slider-thumb-container__active': state.isActive,
-            'g-slider-thumb-container__focused': state.isFocused,
+            'g-slider-thumb-container__focused': state.isFocused && state.activeThumb === index,
             'g-slider-thumb-container__show-label': showThumbLabel.value,
           }
         })
@@ -255,11 +259,13 @@
 
           return {
             [direction]: `${value}%`,
+            transition: trackTransition.value,
           }
         })
         const onDrag = (e) => {
           state.isActive = true
           state.activeThumb = index
+
           onThumbMouseDown(e)
         }
         const onFocus = (e) => {
@@ -271,6 +277,7 @@
 
         const onBlur = (e) => {
           state.isFocused = false
+          state.isActive = false
           state.activeThumb = null
 
           context.emit('blur', e)
@@ -305,7 +312,8 @@
 
       function genRange() {
         return <div class="g-input">
-          <div class={sliderClasses.value} vOn:click={onSliderClick}>
+          <div class={sliderClasses.value}
+               vOn:click={onSliderClick}>
             {genInput(0)}
             {genInput(1)}
             {genTrack()}

@@ -205,9 +205,6 @@
         const content = genThumbLabelContent(internalValue.value)
         return <div class={thumbContainerClasses.value} ref="thumb"
                     style={thumbContainerStyle.value}
-                    // tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
-                    // vOn:keyup={onKeyUp}
-                    // vOn:keydown={onKeyDown}
                     vOn:mousedown={onThumbMouseDown}
                     vOn:touchstart={onThumbMouseDown}>
           {genThumb()}
