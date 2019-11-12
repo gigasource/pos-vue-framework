@@ -1,7 +1,14 @@
 import {addOnceEventListener, keyCodes, passiveSupported} from '../../utils/helpers';
 import {isEqual} from 'lodash';
 
-export function getEventHandler(props, context, state, internalValue, minValue, maxValue) {
+export function getEventHandler(props, context, state, internalValue, minValue, maxValue, onMouseMove) {
+  function _onMouseMove(e) {
+    const {value} = parseMouseMove(e, props, context, minValue, maxValue)
+    internalValue.value = value
+  }
+
+  onMouseMove = onMouseMove && typeof onMouseMove === 'function' ? onMouseMove : _onMouseMove
+
   function onThumbMouseDown(e) {
     state.oldValue = internalValue.value;
     state.keyPressed = 2
@@ -18,11 +25,6 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     }
 
     context.emit('start', internalValue.value)
-  }
-
-  function onMouseMove(e) {
-    const {value} = parseMouseMove(e, props, context, minValue, maxValue)
-    internalValue.value = value
   }
 
   const onSliderMouseUp = function (e) {
@@ -75,103 +77,13 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
   return {onThumbMouseDown, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp}
 }
 
-export function getEventHandlerRange(props, context, state, internalValue, minValue, maxValue) {
-  function onThumbMouseDown(e) {
-    state.oldValue = internalValue.value;
-    state.keyPressed = 2
-    state.isActive = true
-
-    const mouseUpOptions = passiveSupported ? {passive: true, capture: true} : true
-    const mouseMoveOptions = passiveSupported ? {passive: true} : false
-    if ('touches' in e) {
-      context.root.$el.addEventListener('touchmove', onMouseMove, mouseMoveOptions)
-      addOnceEventListener(context.root.$el, 'touchend', onSliderMouseUp, mouseUpOptions)
-    } else {
-      context.root.$el.addEventListener('mousemove', onMouseMove, mouseMoveOptions)
-      addOnceEventListener(context.root.$el, 'mouseup', onSliderMouseUp, mouseUpOptions)
-    }
-
-    context.emit('start', internalValue.value)
-  }
-
-  function onMouseMove(e) {
-    const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue)
-
-    if (isInsideTrack && state.activeThumb === null) {
-      state.activeThumb = getIndexOfClosestValue(internalValue.value, value)
-    }
-
-    setInternalValue(value)
-  }
-
-  const onSliderMouseUp = function (e) {
-    e.stopPropagation()
-    state.keyPressed = 0
-    const mouseMoveOptions = passiveSupported ? {passive: true} : false
-    context.root.$el.removeEventListener('touchmove', onMouseMove, mouseMoveOptions)
-    context.root.$el.removeEventListener('mousemove', onMouseMove, mouseMoveOptions)
-
-    context.emit('end', internalValue.value)
-    if (!isEqual(state.oldValue, internalValue.value)) {
-      context.emit('change', internalValue.value)
-      state.noClick = true
-    }
-
-    state.isActive = false
-  }
-
-  function onSliderClick(e) {
-    if (!state.isActive) {
-      if (state.noClick) {
-        state.noClick = false
-        return
-      }
-
-      const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue)
-
-      if (isInsideTrack) {
-        state.activeThumb = getIndexOfClosestValue(internalValue.value, value)
-        const refName = `thumb_${state.activeThumb}`
-        const thumbRef = context.refs[refName]
-        thumbRef.focus()
-      }
-
-      setInternalValue(value)
-
-    }
-  }
-
-  function onKeyUp() {
-    state.keyPressed = 0
-  }
-
-  function onKeyDown(e) {
-    if (state.activeThumb === null) return
-
-    const value = parseKeyDown(e, internalValue.value[state.activeThumb], props, state, minValue, maxValue)
-
-    if (value == null) return
-
-    setInternalValue(value)
-  }
-
-  function setInternalValue(value) {
-    internalValue.value = internalValue.value.map((v, i) => {
-      if (i === state.activeThumb) return value
-      else return Number(v)
-    })
-  }
-
-  return {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp}
-}
-
 const getIndexOfClosestValue = function (arr, v) {
   if (Math.abs(arr[0] - v) < Math.abs(arr[1] - v)) return 0
   else return 1
 }
 
 //shared function
-const parseMouseMove = function (e, props, context, minValue, maxValue) {
+export const parseMouseMove = function (e, props, context, minValue, maxValue) {
   const start = props.vertical ? 'top' : 'left'
   const length = props.vertical ? 'height' : 'width'
   const click = props.vertical ? 'clientY' : 'clientX'
@@ -190,7 +102,7 @@ const parseMouseMove = function (e, props, context, minValue, maxValue) {
   return {value, isInsideTrack}
 }
 
-const parseKeyDown = function (e, value, props, state, minValue, maxValue) {
+export const parseKeyDown = function (e, value, props, state, minValue, maxValue) {
   if (props.disabled) return
 
   const {pageup, pagedown, end, home, left, right, down, up} = keyCodes

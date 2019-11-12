@@ -1,10 +1,10 @@
 <script>
   import {computed, reactive, watch} from '@vue/composition-api';
   import {helperFunctions} from "../GSliderRemake/GSlider";
-  import {getEventHandlerRange} from "../GSliderRemake/GSlider";
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
+  import { gRangeSlider } from './GRange';
 
   export default {
     name: "GRange",
@@ -107,7 +107,7 @@
       const inputWidth = computed(() => internalValue.value.map((v) => (roundValue(v) - minValue.value) / (maxValue.value - minValue.value) * 100))
       const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
       //event handler
-      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getEventHandlerRange(props, context, state, internalValue, minValue, maxValue)
+      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = gRangeSlider(props, context, state, internalValue, minValue, maxValue)
 
       //genInput
       function genInput(index) {
