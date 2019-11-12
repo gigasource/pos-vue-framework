@@ -91,15 +91,16 @@
 
           state.lazyValue = value
           if (!isEqual(value, props.value)) context.emit('input', value)
-          //todo validate
         }
       })
 
       watch(() => minValue.value, () => {
-        minValue.value > Math.min(internalValue.value) && context.emit('input', minValue.value)
+        minValue.value > Math.min(internalValue.value[0]) && context.emit('input', [minValue.value, internalValue.value[1]])
+        minValue.value > Math.min(internalValue.value[1]) && context.emit('input', [internalValue.value[0], minValue.value])
       })
       watch(() => maxValue.value, () => {
-        maxValue.value < Math.max(internalValue.value) && context.emit('input', maxValue.value)
+        maxValue.value < Math.max(internalValue.value[0]) && context.emit('input', [maxValue.value, internalValue.value[1]])
+        maxValue.value < Math.max(internalValue.value[1]) && context.emit('input', [internalValue.value[0], maxValue.value])
       })
       watch(() => props.value, (val) => internalValue.value = val)
 
@@ -120,7 +121,7 @@
         const endDir = props.vertical ? 'height' : 'width'
         const bg = 'background-color'
 
-        //todo add disabled logic
+        //todo add disabled style ?
         const startLength = 0
         const startPadding = 0
         const endLength = 100
