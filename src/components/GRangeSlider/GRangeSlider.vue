@@ -4,7 +4,7 @@
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
-  import {getEventHandlerRange} from './GRange';
+  import {getEventHandlerRangeSlider} from './GRangeSlider';
 
   export default {
     name: "GRange",
@@ -107,7 +107,7 @@
       const inputWidth = computed(() => internalValue.value.map((v) => (roundValue(v) - minValue.value) / (maxValue.value - minValue.value) * 100))
       const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
       //event handler
-      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getEventHandlerRange(props, context, state, internalValue, minValue, maxValue)
+      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getEventHandlerRangeSlider(props, context, state, internalValue, minValue, maxValue)
 
       //genInput
       function genInput(index) {
@@ -312,16 +312,13 @@
       })
 
       function genRange() {
-        return <div class="g-input">
-          <div class={sliderClasses.value}
-               vOn:click={onSliderClick}>
-            {genInput(0)}
-            {genInput(1)}
-            {genTrack()}
-            {genSteps()}
-            {genThumbContainer(0)}
-            {genThumbContainer(1)}
-          </div>
+        return <div class={sliderClasses.value} vOn:click={onSliderClick}>
+          {genInput(0)}
+          {genInput(1)}
+          {genTrack()}
+          {genSteps()}
+          {genThumbContainer(0)}
+          {genThumbContainer(1)}
         </div>
       }
 
@@ -336,6 +333,6 @@
 </script>
 
 <style scoped lang="scss">
-  @import "_GRange.scss";
+  @import "GRangeSlider";
   @import "../GSliderRemake/_GSlider.scss";
 </style>

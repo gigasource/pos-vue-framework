@@ -1,11 +1,11 @@
 <script>
-  import {computed, reactive, watch, onBeforeMount, onMounted, onUpdated} from '@vue/composition-api';
-  import {getEventHandler,helperFunctions} from "./GSlider";
+  import {computed, reactive, watch} from '@vue/composition-api';
+  import {getEventHandler, helperFunctions} from "./GSlider";
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';
 
   export default {
-    name: "GSliderJSX",
+    name: "GSlider",
     props: {
       value: [Number, String],
       min: {

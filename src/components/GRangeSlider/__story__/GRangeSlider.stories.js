@@ -1,6 +1,6 @@
 import {number, boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
-import GRange from "../GRange.vue";
+import GRange from "../GRangeSlider.vue";
 import GIcon from "../../GIcon/GIcon";
 
 export default {
@@ -42,7 +42,7 @@ export const thumbLabel = () => ({
                :trackBgrColor="trackBgrColor"
                :thumb-size="thumbSize"
                :thumb-label="thumbLabel"/>
-               <div style="padding-left: 335px"><input v-model="value" style="border-style: none;" placeholder="0"></div>
+               <div style="padding-left: 335px"><input v-model="value[0]" style="border-style: none;" placeholder="0"></div>
                <g-range
                inverseLabel
                :thumbColor="thumbColor"

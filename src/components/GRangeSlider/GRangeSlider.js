@@ -1,6 +1,6 @@
 import {getEventHandler, parseKeyDown, parseMouseMove} from '../GSliderRemake/GSlider';
 
-export function getEventHandlerRange(props, context, state, internalValue, minValue, maxValue) {
+export function getEventHandlerRangeSlider(props, context, state, internalValue, minValue, maxValue) {
 
   function getIndexOfClosestValue(arr, v) {
     if (Math.abs(arr[0] - v) < Math.abs(arr[1] - v)) return 0
@@ -13,6 +13,8 @@ export function getEventHandlerRange(props, context, state, internalValue, minVa
     if (isInsideTrack && state.activeThumb === null) {
       state.activeThumb = getIndexOfClosestValue(internalValue.value, value)
     }
+
+    setInternalValue(value)
   }
 
   function setInternalValue(value) {
