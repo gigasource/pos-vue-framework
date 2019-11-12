@@ -184,7 +184,7 @@ export const gridLayout = () => ({
     }
   },
   template: `
-<div>
+<div class="storybook-gridlayout">
   <g-grid-generator :layout="app"/>      
   <g-grid-layout :layout="app" style="height: 700px" :displayPreviewColor="displayPreviewColor">
     <div area="headerLogo">Gigaorder logo</div>

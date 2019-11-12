@@ -2,7 +2,7 @@
   import _ from 'lodash'
   import Fragment from 'vue-fragment'
   import { generateGridCSS } from './logic/GGridGeneratorUtil'
-  import { onMounted, onUpdated} from '@vue/composition-api'
+  import { onMounted, onUpdated } from '@vue/composition-api'
 
   let gridLayoutInstanceCounter = 0
 
@@ -27,7 +27,7 @@
 
       const updateSlot = () => {
         // move style out
-        context.refs[refIdWrapperElement].parentNode.appendChild(context.refs[refIdGridLayoutStyle])
+        // context.refs[refIdWrapperElement].parentNode.appendChild(context.refs[refIdGridLayoutStyle])
 
 
         const defaultSlot = context.refs[refIdWrapperElement]
@@ -58,12 +58,23 @@
         if (!vNode) {
           // assign model class to vnode
           const attrs = { class: model.name }
-
+          let refWrapper = {}
+          let styleEl = null
           // assign uid if model is root node
-          if (!model.parent)
+          if (!model.parent) {
             attrs[uid] = ''
-          vNode = <div {...{attrs}}>{_.map(model.subAreas, processLayout)}</div>
-          //vNode = h('div', {attrs}, _.map(model.subAreas, processLayout))
+            refWrapper = { ref : refIdWrapperElement}
+            styleEl = <style ref={this.refIdGridLayoutStyle} type="text/css">
+              {generateGridCSS(this.layout, this.uid, {
+                showBackgroundColor: this.displayPreviewColor
+              })}
+            </style>
+          }
+
+          vNode = <div {...{ attrs }} {...refWrapper}>
+            {styleEl}
+            {_.map(model.subAreas, processLayout)}
+          </div>
         }
 
         return vNode
@@ -79,14 +90,7 @@
       }
     },
     render(h) { // DON'T delete h param in render method, it's will break the code
-      return <div ref={this.refIdWrapperElement}>
-        <style ref={this.refIdGridLayoutStyle} type="text/css">
-          {generateGridCSS(this.layout, this.uid, {
-            showBackgroundColor: this.displayPreviewColor
-          })}
-        </style>
-        {this.processLayout(this.layout)}
-      </div>
+      return this.processLayout(this.layout)
     }
   }
 </script>
