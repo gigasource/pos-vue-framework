@@ -133,9 +133,21 @@
         </g-col>
       }
 
-      return () => <g-row align-items="start">
-        {options.value.map((item, index) => isSelected(item) ? genSelectedItem(item, index) : genItem(item, index))}
+      const genWrapper = () => <g-row align-items="start">
+        {options.value.map((item, index) =>
+          isSelected(item)
+            ? genSelectedItem(item, index)
+            : genItem(item, index))}
       </g-row>
+
+      return {
+        genWrapper,
+        internalValue,
+        options
+      }
+    },
+    render() {
+      return this.genWrapper()
     }
   }
 </script>
