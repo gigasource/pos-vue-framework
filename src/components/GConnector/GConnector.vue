@@ -1,6 +1,6 @@
 <script>
 	import getVModel from '../../mixins/getVModel';
-  import { inject } from '@vue/composition-api';
+  import { ref, inject, onMounted } from '@vue/composition-api';
   import GConnectorFactory from './GConnectorFactory';
   import { Fragment } from 'vue-fragment'
 
@@ -37,23 +37,41 @@
 			}
     },
     setup(props, context) {
+      // Connector Id handling
+      const id = ref('null')
+
+      onMounted(function() {
+        id.value = `${this._uid}`
+
+				// Add connector id to the content inside the slot
+				this.$nextTick(() => {
+          context.slots.default()["0"].elm.classList.add('g-connector')
+          context.slots.default()["0"].elm.id = id.value
+				})
+      })
+
       const { model } = getVModel(props, context)
-      const diagramId = inject('diagramId');
-      const connectionPoints = inject('connectionPoint');
+      const diagramId = inject('diagramId')
+      const connectionPoints = inject('connectionPoint')
       const zoomState = inject('zoomState')
 			const originCoordinate = inject('originCoordinate')
-			const eventEmitter = inject('eventEmitter');
+			const eventEmitter = inject('eventEmitter')
+			const activeDrawId = inject('activeDrawId')
 
 			const { connectionPaths,
         localConnectionPoints,
         drawStart,
         draw,
         drawEnd,
-        removePath
-			} = GConnectorFactory(props, context, model, connectionPoints, zoomState, originCoordinate)
+        removePath,
+				updateConnectionPoints
+			} = GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId)
 
-      eventEmitter.$on('draw', draw)
-      eventEmitter.$on('drawEnd', drawEnd)
+      onMounted(() => {
+        eventEmitter.$on(`draw${id.value}`, draw)
+        eventEmitter.$on(`drawEnd${id.value}`, drawEnd)
+        eventEmitter.$on(`drag${id.value}`, updateConnectionPoints)
+      })
 
 			// Render functions
       function genCircle(connectionPoint, r, stroke, strokeWidth, fill) {
@@ -63,7 +81,7 @@
       function genConnector(path, index) {
         const d = `M${path.startPoint.x} ${path.startPoint.y} C${path.startControlPoint.x} ${path.startControlPoint.y}, ${path.endControlPoint.x} ${path.endControlPoint.y}, ${path.endPoint.x} ${path.endPoint.y}`
         return <g class="g-connection-path" key={index}>
-          <path class="g-connection-path-main" d={d}  pathLength="50" stroke={props.pathColor} stroke-width={props.pathWidth} fill="none" marker-end={`url(#arrow${model.value.toString()})`}/>
+          <path class="g-connection-path-main" d={d}  pathLength="50" stroke={props.pathColor} stroke-width={props.pathWidth} fill="none" marker-end={`url(#arrow${id.value})`}/>
           <path class="g-connection-path-outline" d={d} stroke="grey" stroke-width="20" stroke-opacity="0" fill="none" tabindex="0" vOn:keydown={(e) => removePath(e, index)}/>
         </g>
       }
@@ -71,7 +89,7 @@
       function genGroup() {
         return <fragment>
           <portal to={diagramId.value} slim>
-						<marker id={`arrow${model.value.toString()}`} markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto" markerUnits="strokeWidth">
+						<marker id={`arrow${id.value}`} markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto" markerUnits="strokeWidth">
 							<path d="M1,1 L4,3 L1,5" stroke={props.pathColor} stroke-width="1" stroke-linejoin="bevel" fill="none"/>
 						</marker>
 						<g ref="group">
@@ -87,11 +105,12 @@
             </g>
           </portal>
           {context.slots.default ? context.slots.default() : undefined}
-        </fragment>
+				</fragment>
       }
 
       return {
         genGroup,
+				localConnectionPoints
       }
     },
     render() {

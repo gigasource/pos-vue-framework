@@ -2,14 +2,14 @@ import { ref, reactive, computed, onMounted} from '@vue/composition-api';
 import { Point, Circle } from './CoordinateSystem';
 import { getElementPosition } from '../../utils/helpers';
 
-export function getConnectionPoint(el, originPoint, position) {
+export function getConnectionPoint(el, originPoint, zoomState, position) {
   const rect = getElementPosition(el);
   const offsetWidth = el.offsetWidth;
   const offsetHeight = el.offsetHeight;
-  const topPoint = new Point(rect.left + offsetWidth/2 - originPoint.x, rect.top - originPoint.y, 'top')
-  const leftPoint = new Point(rect.left - originPoint.x, rect.top + offsetHeight/2 - originPoint.y, 'left')
-  const bottomPoint = new Point(rect.left + offsetWidth/2 - originPoint.x, rect.top + offsetHeight - originPoint.y, 'bottom')
-  const rightPoint = new Point (rect.left + offsetWidth - originPoint.x, rect.top + offsetHeight/2 - originPoint.y, 'right')
+  const topPoint = new Point((rect.left + offsetWidth / 2 - originPoint.x)/zoomState, (rect.top - originPoint.y)/zoomState, 'top')
+  const leftPoint = new Point((rect.left - originPoint.x)/zoomState, (rect.top + offsetHeight / 2 - originPoint.y)/zoomState, 'left')
+  const bottomPoint = new Point((rect.left + offsetWidth / 2 - originPoint.x)/zoomState, (rect.top + offsetHeight - originPoint.y)/zoomState, 'bottom')
+  const rightPoint = new Point ((rect.left + offsetWidth - originPoint.x)/zoomState, (rect.top + offsetHeight / 2 - originPoint.y)/zoomState, 'right')
 
   switch(position) {
     case 'top':
@@ -29,14 +29,22 @@ export function getConnectionPoint(el, originPoint, position) {
   }
 }
 
-export default function GConnectorFactory(props, context, model, connectionPoints, zoomState, originCoordinate) {
+export default function GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId) {
   const localConnectionPoints = ref([]);
   const connectionPaths = ref([]);
+
+  function updateConnectionPoints() {
+    localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
+    for (let connectionPoint of localConnectionPoints.value) {
+      connectionPoint.value = model.value
+    }
+
+  }
 
   // Calculate local connection points when mounted
   onMounted(function () {
     this.$nextTick(function () {
-      localConnectionPoints.value = getConnectionPoint(this.$slots.default["0"].elm, originCoordinate, props.pointPosition)
+      localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
       for (let connectionPoint of localConnectionPoints.value) {
         connectionPoint.value = model.value
       }
@@ -51,7 +59,6 @@ export default function GConnectorFactory(props, context, model, connectionPoint
 
 
   // Draw new connect path
-  const isDraw = ref(false)
 
   function drawStart(e) {
     const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
@@ -63,30 +70,26 @@ export default function GConnectorFactory(props, context, model, connectionPoint
       endControlPoint: targetRegion.center
     })
     connectionPaths.value.push(tempPath)
-    isDraw.value = true
+    activeDrawId.value = id.value
   }
 
   function draw(e) {
-    if (isDraw.value) {
-      const tempPath = connectionPaths.value[connectionPaths.value.length-1]
-      const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
-      const targetRegion = mousePoint.isInside(connectionRegions.value)
-      tempPath.endPoint =  targetRegion ? targetRegion.center : mousePoint;
-      tempPath.startControlPoint = new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.startPoint.y)
-      tempPath.endControlPoint = new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.endPoint.y)
-    }
+    const tempPath = connectionPaths.value[connectionPaths.value.length-1]
+    const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
+    const targetRegion = mousePoint.isInside(connectionRegions.value)
+    tempPath.endPoint =  targetRegion ? targetRegion.center : mousePoint;
+    tempPath.startControlPoint = new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.startPoint.y)
+    tempPath.endControlPoint = new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.endPoint.y)
   }
 
   function drawEnd() {
-    if (isDraw.value) {
-      const tempPath = connectionPaths.value[connectionPaths.value.length-1]
-      if (connectionPoints.value.includes(tempPath.endPoint) && tempPath.endPoint !== tempPath.startPoint) {
-        context.emit('connected', tempPath.endPoint.value)
-        isDraw.value = false
-      } else {
-        connectionPaths.value.splice(connectionPaths.value.indexOf(tempPath), 1)
-        isDraw.value = false
-      }
+    const tempPath = connectionPaths.value[connectionPaths.value.length-1]
+    if (connectionPoints.value.includes(tempPath.endPoint) && tempPath.endPoint !== tempPath.startPoint) {
+      context.emit('connected', tempPath.endPoint.value)
+      activeDrawId.value = null
+    } else {
+      connectionPaths.value.splice(connectionPaths.value.indexOf(tempPath), 1)
+      activeDrawId.value = null
     }
   }
 
@@ -105,6 +108,7 @@ export default function GConnectorFactory(props, context, model, connectionPoint
     drawStart,
     draw,
     drawEnd,
-    removePath
+    removePath,
+    updateConnectionPoints
   }
 }

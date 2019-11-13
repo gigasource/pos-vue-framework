@@ -2,62 +2,68 @@
 	<div>
 		<p>Connection: {{connections}}</p>
 		<g-diagram width="80%" height="80%" position="absolute" top="10%" left="10%">
-			<div id="props">
-				<p>props</p>
-				<g-connector v-for="prop in Props"
-										 v-model="prop.value"
-										 point-radius="10"
-										 point-position="right"
-										 path-color="#118f41"
-										 @connected="y => connect(prop.value, y)"
-										 @disconnected="y => disconnect(prop.value, y)">
-					<div>
-						{{ prop.value }}
-					</div>
-				</g-connector>
-			</div>
-			<div id="event">
-				<p>event</p>
-				<g-connector v-for="event in Events"
-										 v-model="event.value"
-										 point-radius="10"
-										 path-color="#0e5bad"
-										 point-position="right"
-										 @connected="y => connect(event.value, y)"
-										 @disconnected="y => disconnect(event.value, y)">
-					<div>
-						{{ event.value }}
-					</div>
-				</g-connector>
-			</div>
-			<div id="context">
-				<p>context</p>
-				<g-connector v-for="context in Contexts"
-										 v-model="context.value"
-										 point-radius="10"
-										 path-color="#d97d14"
-										 point-position="left"
-										 @connected="y => connect(context.value, y)"
-										 @disconnected="y => disconnect(context.value, y)">
-					<div>
-						{{ context.value }}
-					</div>
-				</g-connector>
-			</div>
-			<div id="data">
-				<p>data</p>
-				<g-connector v-for="data in Datas"
-										 v-model="data.value"
-										 point-radius="10"
-										 path-color="#7d0f85"
-										 point-position="left"
-										 @connected="y => connect(data.value, y)"
-										 @disconnected="y => disconnect(data.value, y)">
-					<div>
-						{{ data.value }}
-					</div>
-				</g-connector>
-			</div>
+			<template v-slot:default="{ dragStart }">
+				<div id="props" @mousedown="dragStart">
+					<p>props</p>
+					<g-connector v-for="prop in Props"
+											 v-model="prop.value"
+											 point-radius="10"
+											 point-position="right"
+											 path-color="#118f41"
+											 show-point
+											 @connected="y => connect(prop.value, y)"
+											 @disconnected="y => disconnect(prop.value, y)" :key="prop.value">
+						<div>
+							{{ prop.value }}
+						</div>
+					</g-connector>
+				</div>
+				<div id="event" @mousedown="dragStart">
+					<p>event</p>
+					<g-connector v-for="event in Events"
+											 v-model="event.value"
+											 point-radius="10"
+											 path-color="#0e5bad"
+											 point-position="right"
+											 show-point
+											 @connected="y => connect(event.value, y)"
+											 @disconnected="y => disconnect(event.value, y)" :key="event.value">
+						<div>
+							{{ event.value }}
+						</div>
+					</g-connector>
+				</div>
+				<div id="context" @mousedown="dragStart">
+					<p>context</p>
+					<g-connector v-for="context in Contexts"
+											 v-model="context.value"
+											 point-radius="10"
+											 path-color="#d97d14"
+											 point-position="left"
+											 show-point
+											 @connected="y => connect(context.value, y)"
+											 @disconnected="y => disconnect(context.value, y)" :key="context.value">
+						<div>
+							{{ context.value }}
+						</div>
+					</g-connector>
+				</div>
+				<div id="data" @mousedown="dragStart">
+					<p>data</p>
+					<g-connector v-for="data in Datas"
+											 v-model="data.value"
+											 point-radius="10"
+											 path-color="#7d0f85"
+											 point-position="left"
+											 show-point
+											 @connected="y => connect(data.value, y)"
+											 @disconnected="y => disconnect(data.value, y)" :key="data.value">
+						<div>
+							{{ data.value }}
+						</div>
+					</g-connector>
+				</div>
+			</template>
 		</g-diagram>
 	</div>
 </template>
@@ -65,6 +71,7 @@
   import { ref, reactive, computed, onMounted } from '@vue/composition-api'
   import GConnector from '../components/GConnector/GConnector';
   import GDiagram from '../components/GConnector/GDiagram';
+  import { getElementPosition } from '../utils/helpers';
 
   export default {
     name: 'ConnectorDemo',
@@ -120,6 +127,10 @@
       ])
 
 			const connections = ref([])
+
+			function test() {
+			  console.log('ok')
+			}
 
 			function connect(x, y) {
 				connections.value.push([x, y])
