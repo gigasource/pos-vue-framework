@@ -1,6 +1,6 @@
 import {boolean, text, number, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
-import GFileInput from '../GFileInputJSX';
+import GFileInput from '../GFileInput';
 import GIcon from '../../GIcon/GIcon';
 import GChip from "../../GChip/GChip";
 
