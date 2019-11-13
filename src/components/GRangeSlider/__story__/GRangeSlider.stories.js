@@ -1,30 +1,30 @@
 import {number, boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
-import GSlider from '../GSlider.vue'
+import GRangeSlider from "../GRangeSlider.vue";
 import GIcon from "../../GIcon/GIcon";
 
 export default {
-  title: 'GSlider',
+  title: 'GRangeSlider',
   decorators: [withKnobs],
 };
 
-export const basicSlider = () => ({
-  components: {GSlider},
+export const basicRange = () => ({
+  components: {GRangeSlider},
   props: {
     disabled: {
       default: boolean('Disabled', false)
     }
   },
   template: `<div style="height: 500px;">
-               <g-slider :disabled="disabled"/>
+               <g-range-slider :disabled="disabled"/>
              </div>`,
 })
 
-export const thumbLabelSlider = () => ({
-  components: {GSlider, GIcon},
+export const thumbLabel = () => ({
+  components: {GRangeSlider, GIcon},
   data() {
     return {
-      value: 0,
+      value: [0, 0],
     }
   },
   props: {
@@ -36,14 +36,14 @@ export const thumbLabelSlider = () => ({
     icon: {default: text('icon', 'mdi-leaf')}
   },
   template: `<div style="height: 500px; padding-top: 100px">
-               <g-slider v-model="value"
+               <g-range-slider v-model="value"
                :thumbColor="thumbColor"
                :trackFillColor="trackFillColor"
                :trackBgrColor="trackBgrColor"
                :thumb-size="thumbSize"
                :thumb-label="thumbLabel"/>
-               <div style="padding-left: 335px"><input v-model="value" style="border-style: none;"></div>
-               <g-slider
+               <div style="padding-left: 335px"><input v-model="value[0]" style="border-style: none;" placeholder="0"></div>
+               <g-range-slider
                inverseLabel
                :thumbColor="thumbColor"
                :trackFillColor="trackFillColor"
@@ -53,12 +53,12 @@ export const thumbLabelSlider = () => ({
                  <template v-slot:thumb-label="props"> 
                    <g-icon>{{icon}}</g-icon>
                  </template>
-               </g-slider>
+               </g-range-slider>
              </div>`,
 })
 
-export const ticksLabelSlider = () => ({
-  components: {GSlider, GIcon},
+export const ticksLabel = () => ({
+  components: {GRangeSlider, GIcon},
   data() {
     return {
       seasons: [
@@ -73,17 +73,19 @@ export const ticksLabelSlider = () => ({
         'mdi-fire',
         'mdi-water',
       ],
-      value: 0
+      value: [0, 1]
     }
   },
   props: {
     vertical: {default: boolean('Vertical', false)}
   },
   template: `<div style="height: 500px; padding-top: 50px">
-               <g-slider v-model="value"
+               <g-range-slider v-model="value"
                max="30"
                step="10" 
                ticks
+               track-fill-color="orange"
+               thumb-color="pink"
                :tick-labels="seasons" 
                thumb-label="always"
                :vertical="vertical">
@@ -92,15 +94,15 @@ export const ticksLabelSlider = () => ({
                       {{ icons[props.value/10] }}
                     </g-icon>
                  </template>
-               </g-slider>
+               </g-range-slider>
              </div>`,
 })
 
-export const mainFeatureSlider = () => ({
-  components: {GSlider, GIcon},
+export const mainFeature = () => ({
+  components: {GRangeSlider, GIcon},
   data() {
     return {
-      value: 0,
+      value: [0, 1],
     }
   },
   props: {
@@ -115,7 +117,7 @@ export const mainFeatureSlider = () => ({
     icon: {default: text('icon', 'mdi-snowflake')},
   },
   template: `<div style="height: 700px; padding-top: 100px">
-               <g-slider v-model="value"                         
+               <g-range-slider v-model="value"                         
                          :min="min"
                          :max="max"
                          :step="step"
@@ -128,13 +130,13 @@ export const mainFeatureSlider = () => ({
                          <template v-slot:thumb-label="props"> 
                            <g-icon>{{icon}}</g-icon>
                          </template>
-               </g-slider>
+               </g-range-slider>
                <div style="padding-left: 335px"><input v-model="value" style="border-style: none;"></div>
              </div>`,
 })
 
-export const testSlider = () => ({
-  components: {GSlider, GIcon},
+export const testRange = () => ({
+  components: {GRangeSlider, GIcon},
   data() {
     return {
       seasons: [
@@ -155,7 +157,7 @@ export const testSlider = () => ({
     icon: {default: text('icon', 'mdi-snowflake')},
   },
   template: `<div style="height: 500px; padding-top: 100px">
-               <g-slider 
+               <g-range-slider 
                max="30"
                step="10" 
                ticks
