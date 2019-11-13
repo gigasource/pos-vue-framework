@@ -64,6 +64,26 @@ export const GComboboxMultiSelectNoChips = () => ({
   <g-combobox :items="items" label="Label" v-model="selected" searchable multiple clearable></g-combobox>
 </div>`,
 })
+export const GComboboxMultiSelectAllowDuplicates = () => ({
+  components: {GCombobox},
+  props: {},
+  data() {
+    return{
+      items: [
+        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+      ],
+      selected: null
+    }
+  },
+  template: `
+  <div data-app>
+  <div>{{selected}}</div>
+  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple clearable allow-duplicates></g-combobox>
+</div>`,
+})
 export const GComboboxMultiSelectChips = () => ({
   components: {GCombobox},
   props: {},

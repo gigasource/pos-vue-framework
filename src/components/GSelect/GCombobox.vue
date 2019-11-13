@@ -10,10 +10,12 @@
   import _ from "lodash"
   import {getLabel, getValidate} from "../GInput/GInputFactory";
   import GSelect from "./GSelect";
+  import GListItem from "../GList/GListItem";
+  import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
 
   export default {
     name: "GCombobox",
-    components: {GSelect, GList, GIcon, GChip, GTextField, GMenu},
+    components: {GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText},
     props: {
       //select props
       width: [String, Number],
@@ -122,235 +124,22 @@
       value: null,
       genTextField: Function
     },
-    // setup: function (props, context) {
-    //   const state = reactive({
-    //     searchText: '',
-    //     fieldItem: null
-    //   })
-    //   //list selections
-    //   const {internalValue: selectedItem, toggleItem} = makeSelectable(props, context)
-    //   const fieldItem = getSelections(props, selectedItem)
-    //   const selections = computed(() => {
-    //     if (props.multiple) {
-    //       return fieldItem.value.map(item => {
-    //         return item ? (item['text'] || item['value'] || item) : ''
-    //       })
-    //     } else {
-    //       return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
-    //     }
-    //
-    //   })
-    //
-    //   //gen SearchText
-    //   function genSearchTextField() {
-    //     if (props.searchable) {
-    //       return <GTextField placeholder="Search"
-    //                          vModel={state.searchText}
-    //                          clearable
-    //                          style="margin-bottom: 0; background-color: transparent"/>
-    //     }
-    //   }
-    //
-    //   //genList
-    //   const options = getList(props, selectedItem, state)
-    //   const setSearch = () => {
-    //     context.root.$nextTick(() => {
-    //       if (props.multiple || props.chips) {
-    //         state.searchText = ''
-    //       } else {
-    //         state.searchText = selections.value
-    //       }
-    //     })
-    //   }
-    //   const onClickItem = () => {
-    //     setSearch()
-    //     !props.multiple ? showOptions.value = false : null
-    //   }
-    //
-    //   const genList = () => {
-    //     return <GList
-    //         item-title={props.itemText}
-    //         items={options.value}
-    //         mandatory={props.mandatory}
-    //         allow-duplicates={props.allowDuplicates}
-    //         selectable
-    //         multiple={props.multiple}
-    //         vModel={selectedItem.value}
-    //         {...{on: {'click:item': onClickItem}}}
-    //         dense>
-    //     </GList>
-    //   }
-    //
-    //
-    //   //gen textfield
-    //   const showOptions = ref(false)
-    //
-    //   const iconStyle = computed(() => (showOptions.value) ? {'transform': 'rotateZ(180deg)'} : {})
-    //
-    //   function onChipCloseClick(index = null) {
-    //     if (props.multiple) {
-    //       selectedItem.value.splice(index, 1);
-    //     } else {
-    //       selectedItem.value = null
-    //     }
-    //   }
-    //
-    //   const genMultiSelectionsSlot = () => {
-    //     if (props.chips || props.allowDuplicates) {
-    //       return selections.value.map((item, index) => <GChip
-    //           close vOn:close={() => onChipCloseClick(index)}>{item}
-    //       </GChip>)
-    //     }
-    //     return selections.value.map(function (item, index) {
-    //           if (index === selections.value.length - 1) return <div style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
-    //           return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
-    //         }
-    //     )
-    //   }
-    //   const genSingleSelectionSlot = () => {
-    //     if (props.chips && selections.value) {
-    //       return <GChip small close vOn:close={() => onChipCloseClick()}>{selections.value}</GChip>
-    //     }
-    //     return null
-    //   }
-    //
-    //   function clearSelection() {
-    //     selectedItem.value = props.multiple ? [] : ''
-    //     state.searchText = ''
-    //   }
-    //
-    //   const textfieldValue = computed(() => {
-    //     return props.multiple ? selections.value.join('') : selections.value
-    //   })
-    //   const isValidInput = ref(true)
-    //   const isFocused = ref(false);
-    //   const validateText = computed(() => state.searchText || textfieldValue.value)
-    //   const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
-    //   const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
-    //   const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
-    //
-    //   const addSelection = () => {
-    //     toggleItem(state.searchText)
-    //     props.chips || props.multiple ? state.searchText = '' : null
-    //
-    //   }
-    //
-    //   let pressTime = 0
-    //   const deleteItemColor = ref('#1d1d1d')
-    //   function onDelete() {
-    //     if (!props.multiple || props.chips) return
-    //     if (state.searchText) return pressTime = 0
-    //     else {
-    //       if (pressTime === 0) {
-    //         pressTime++
-    //         deleteItemColor.value = '#1867c0 '
-    //       }
-    //       if (pressTime === 1) {
-    //         return pressTime++
-    //       }
-    //       if (pressTime === 2) {
-    //         selectedItem.value.pop()
-    //         return pressTime
-    //       }
-    //     }
-    //   }
-    //   //gen Text field
-    //   const genTextField = props.genTextField || function (toggleContent) {
-    //     function onInputClick() {
-    //       isFocused.value = true
-    //     }
-    //
-    //     function onInputBlur() {
-    //       isFocused.value = false
-    //       pressTime = 0
-    //       deleteItemColor.value = '#1d1d1d'
-    //     }
-    //
-    //     const getTextFieldScopedSlots = {
-    //       appendInner: ({isFocused}) =>
-    //           <div class="dropDown" style={iconStyle.value}>
-    //             <GIcon color={showOptions.value || isFocused ? 'blue' : null}>arrow_drop_down</GIcon>
-    //           </div>,
-    //       inputSlot: ({inputErrStyles}) =>
-    //           <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-    //             {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-    //           </div>,
-    //       label: () => <label htmlFor="input" class={["g-tf-label", labelClasses.value]}
-    //                           style={labelStyles}>{props.label}</label>,
-    //       inputMessage: () => [<div v-show={props.counter} class={{
-    //         'g-tf-counter': true,
-    //         'g-tf-counter__error': !isValidInput.value
-    //       }}>{validateText.value.length}/{props.counter}</div>,
-    //         isValidInput.value ? <div class={["g-tf-hint", hintClasses.value]}>{props.hint}</div>
-    //             : <div class="g-tf-error">{errorMessages.value}</div>
-    //       ]
-    //     }
-    //
-    //     return (
-    //         <GTextField {...{
-    //           props: _.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
-    //             'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-    //             'rules', 'type'])
-    //         }}
-    //                     {...{on: {'click:clearIcon': () => clearSelection()}}}
-    //                     vOn:focus={onInputClick}
-    //                     vOn:blur={onInputBlur}
-    //                     vOn:click={toggleContent}
-    //                     vOn:change={addSelection}
-    //                     vOn:delete={onDelete}
-    //                     vModel={state.searchText}
-    //                     scopedSlots={getTextFieldScopedSlots}>
-    //         </GTextField>
-    //     )
-    //   }
-    //
-    //   function genMenu() {
-    //     const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
-    //     return <g-menu vModel={showOptions.value}
-    //                    {...{props: props.menuProps}}
-    //                    nudgeBottom={nudgeBottom.value}
-    //                    scopedSlots={{
-    //                      activator: ({toggleContent}) => genTextField(toggleContent)
-    //                    }}
-    //     >
-    //       <template slot="default">
-    //         <slot name="prependItem"></slot>
-    //         {genList()}
-    //       </template>
-    //     </g-menu>
-    //   }
-    //
-    //   function genCombobox() {
-    //     return <div class="g-combobox">
-    //       {genMenu()}
-    //     </div>
-    //   }
-    //
-    //   return {
-    //     genCombobox,
-    //     genSearchTextField,
-    //     options,
-    //     state,
-    //     selectedItem,
-    //     selections,
-    //     showOptions,
-    //   }
-    // },
     setup: function (props, context) {
       const state = reactive({
         searchText: '',
         fieldItem: null
       })
+      const internalSearch = ref('')
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeSelectable(props, context)
       const fieldItem = getSelections(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return item ? (item['text'] || item['value'] || item) : ''
+            return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         } else {
-          return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
+          return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
         }
 
       })
@@ -397,7 +186,7 @@
       })
       const isValidInput = ref(true)
       const isFocused = ref(false);
-      const validateText = computed(() => state.searchText || textfieldValue.value)
+      const validateText = computed(() => internalSearch.value || textfieldValue.value)
       const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
@@ -429,10 +218,16 @@
         }
       }
 
+      function onArrowDown() {
+        console.log(context.root.$el.getElementsByClassName('g-list'))
+      }
+
       //gen Text field
-      const genTextFieldProps =function (toggleContent) {
+      const genTextFieldProps = function (toggleContent) {
         function onInputClick() {
           isFocused.value = true
+          showOptions.value = true
+          state.searchText = ''
         }
 
         function onInputBlur() {
@@ -463,7 +258,7 @@
 
         return (
             <GTextField {...{
-              props: _.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
+              props: _.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                 'rules', 'type'])
             }}
@@ -471,39 +266,61 @@
                         vOn:focus={onInputClick}
                         vOn:blur={onInputBlur}
                         vOn:click={toggleContent}
-                        vOn:change={addSelection}
+                        vOn:enter={addSelection}
                         vOn:delete={onDelete}
-                        vModel={state.searchText}
+                        vOn:arrowdown={onArrowDown}
+                        vOn:input={(e) => {
+                          state.searchText = e
+                        }}
+                        value={internalSearch.value}
                         scopedSlots={getTextFieldScopedSlots}>
             </GTextField>
         )
       }
+
+      const genListScopedSlots = {
+        listItem: ({item, isSelected, onSelect, onArrowDown, onArrowUp}) =>
+            <GListItem tabindex="0" style={{'min-height': '48px'}} item={item} isSelected={isSelected}
+                       vOn:singleItemClick={() => onSelect(item)}
+            >
+              <GListItemContent>
+                <GListItemText>{item[props.itemText]}</GListItemText>
+              </GListItemContent>
+            </GListItem>
+
+      }
       const setSearch = () => {
+
         context.root.$nextTick(() => {
-          if (props.multiple || props.chips) {
-            state.searchText = ''
+          if (!props.multiple && !props.chips) {
+            internalSearch.value = selections.value
           } else {
-            state.searchText = selections.value
+            internalSearch.value = ''
           }
+
         })
       }
-      const onClickItem = () => {
-        setSearch()
-        !props.multiple ? showOptions.value = false : null
-      }
-      const genListProps = () => {
+
+
+      const genListProps = (showOptions) => {
+        const onClickItem = () => {
+          setSearch()
+          !props.multiple ? showOptions.value = false : null
+        }
         return <GList
             item-title={props.itemText}
             items={options.value}
-            mandatory={props.mandatory}
+            mandatory
             allow-duplicates={props.allowDuplicates}
             selectable
             multiple={props.multiple}
             vModel={selectedItem.value}
+            scopedSlots={genListScopedSlots}
             {...{on: {'click:item': onClickItem}}}
             dense>
         </GList>
       }
+
       function genCombobox() {
         return <div class="g-combobox">
           <g-select
@@ -511,7 +328,7 @@
                 props: _.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
                   'shaped', 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label',
                   'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
-                  'allowDuplicates', 'menuProps', 'chips','items', 'itemText', 'itemValue', 'value',]
+                  'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
                 )
               }}
               selectOnly={false}
@@ -523,32 +340,64 @@
         </div>
       }
 
-      return {genCombobox}
+      return {
+        genCombobox,
+        state,
+        options,
+        showOptions,
+        selectedItem,
+        selections,
+        internalSearch,
+      }
     },
     render() {
       return this.genCombobox()
     }
   }
 </script>
-<style>
-  .dropDown {
-    transition: transform 0.4s;
-  }
+<style lang="scss" scoped>
+  .g-combobox {
+    & {
+      .g-select ::v-deep {
+        &.g-menu {
+          .g-menu--activator {
+            & {
+              .input {
+                display: flex;
+              }
 
-  .input {
-    display: flex;
-  }
+              .g-tf-input {
+                flex-wrap: wrap;
+                width: auto;
+                display: flex;
+              }
 
-  .g-tf-input {
-    color: #1d1d1d;
-    flex-wrap: wrap;
-    width: auto;
-    display: flex;
-  }
+              input {
+              }
 
-  input {
-    flex-shrink: 0;
-    flex-basis: auto;
-    cursor: text;
+              flex-shrink: 0;
+              flex-basis: auto;
+              cursor: text;
+            }
+          }
+        }
+      }
+
+      &__active {
+        .g-menu ::v-deep .g-menu--activator {
+          & {
+            .g-tf-append__inner {
+              transition: transform 0.4s;
+
+              & {
+                .g-icon {
+                  transform: rotateZ(180deg);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 </style>

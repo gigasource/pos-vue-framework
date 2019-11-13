@@ -8,10 +8,13 @@
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
   import _ from "lodash"
+  import {isSelected} from "../GDatePicker/logic/TableUtil";
+  import GListItem from "../GList/GListItem";
+  import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
 
   export default {
     name: "GSelect",
-    components: {GList, GIcon, GChip, GTextField, GMenu},
+    components: {GListItem, GList, GIcon, GChip, GTextField, GMenu, GListItemContent, GListItemText},
     props: {
       //select props
       width: [String, Number],
@@ -108,6 +111,11 @@
         type: Boolean,
         default: false
       },
+      smallChips: {
+        type: Boolean,
+        default: false
+      }
+      ,
       items: Array,
       itemText: {
         type: String,
@@ -156,8 +164,24 @@
 
       //genList
       const options = getList(props, selectedItem, state)
+      const showOptions = ref(false)
 
-      const genList = props.genList || function () {
+      function onKeyDown() {
+        console.log('down')
+      }
+
+      const genListScopedSlots = {
+        listItem: ({item, isSelected, onSelect, onArrowDown, onArrowUp}) =>
+            <GListItem  style={{'min-height': '48px'}} item={item} isSelected={isSelected}
+                       vOn:singleItemClick={() => onSelect(item)}
+            >
+              <GListItemContent>
+                <GListItemText>{item[props.itemText]}</GListItemText>
+              </GListItemContent>
+            </GListItem>
+
+      }
+      const genList = props.genList || function (showOptions) {
         return <GList
             item-title={props.itemText}
             items={options.value}
@@ -166,17 +190,17 @@
             selectable
             multiple={props.multiple}
             vModel={selectedItem.value}
+            scopedSlots={genListScopedSlots}
             {...{on: {'click:item': () => !props.multiple ? showOptions.value = false : null}}}
             dense>
+
         </GList>
       }
 
-      const showOptions = ref(false)
 
       //gen Text field
-      const genTextField = props.genTextField || function (toggleContent) {
+      const genTextField = props.genTextField || function (toggleContent, showOptions) {
 
-        const iconStyle = computed(() => (showOptions.value) ? {'transform': 'rotateZ(180deg)'} : {})
         const textfieldValue = computed(() => {
           if (props.multiple) return selections.value.join(', ')
           return selections.value
@@ -192,27 +216,29 @@
 
         const genMultiSelectionsSlot = () => {
           if (props.chips || props.allowDuplicates) {
-            return selections.value.map((item, index) => <GChip
-                close {...{on: {'click:close': () => onChipCloseClick(index)}}}>{item}
+            return selections.value.map((item, index) => <GChip small={props.smallChips}
+                                                                close {...{on: {'close': () => onChipCloseClick(index)}}}>{item}
             </GChip>)
           }
           return selections.value.join(', ');
         }
+
+        function onInputArrowDown() {
+          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
+        }
+
         const genSingleSelectionSlot = () => {
           if (props.chips && selections.value) {
-            return <GChip close {...{on: {'click:close': () => onChipCloseClick()}}}>{selections.value}</GChip>
+            return <GChip small={props.smallChips}
+                          close {...{on: {'close': () => onChipCloseClick()}}}>{selections.value}</GChip>
           }
           return selections.value
         }
-
-
         const getTextFieldScopedSlots = {
-          appendInner: ({isFocused}) =>
-              <div class="dropDown" style={iconStyle.value}>
-                <GIcon color={showOptions.value || isFocused ? 'blue' : null}>arrow_drop_down</GIcon>
-              </div>,
+          appendInner: ({iconColor}) =>
+              <GIcon color={iconColor}>arrow_drop_down</GIcon>,
           inputSlot: ({inputErrStyles}) =>
-              <div class="tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
+              <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
                 {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
               </div>
         }
@@ -226,42 +252,42 @@
             <GTextField {...{
               props: _.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                'rules', 'type'])
+                'rules', 'type', 'disabled', 'readOnly'])
             }}
                         {...{on: {'click:clearIcon': () => clearSelection()}}}
                         vOn:click={toggleContent}
+                        vOn:arrowdown={onInputArrowDown}
                         value={textfieldValue.value}
                         scopedSlots={getTextFieldScopedSlots}>
             </GTextField>
         )
       }
 
-      function genMenu() {
+      function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
         return <g-menu vModel={showOptions.value}
                        {...{props: props.menuProps}}
                        nudgeBottom={nudgeBottom.value}
                        scopedSlots={{
-                         activator: ({toggleContent}) => genTextField(toggleContent)
+                         activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
                        }}
         >
           <template slot="default">
-            <slot name="prependItem"></slot>
             {genSearchTextField()}
-            {genList()}
+            {context.root.$slots['prepend-item']}
+            {genList(showOptions)}
           </template>
         </g-menu>
       }
 
       function genSelect() {
-        return <div class="g-select">
-          {genMenu()}
+        return <div class={{"g-select ": true, 'g-select__active': showOptions.value}}>
+          {genMenu(showOptions)}
         </div>
       }
 
       return {
         genSelect,
-        genSearchTextField,
         options,
         state,
         selectedItem,
@@ -273,26 +299,52 @@
     }
   }
 </script>
-<style>
-  .dropDown {
-    transition: transform 0.4s;
-  }
+<style scoped lang="scss">
+  .g-select {
+    & {
+      .g-menu ::v-deep .g-menu--activator {
+        & {
+          .g-tf-append__inner {
+            transition: transform 0.4s;
+          }
 
-  .input {
-    display: flex;
-  }
+          .input {
+            display: flex;
+          }
 
-  .g-tf-input {
-    color: #1d1d1d;
-    flex-wrap: wrap;
-    width: auto;
-    display: flex;
-  }
+          input {
+            flex-shrink: 1;
+            flex-grow: 1;
+            flex-basis: 0%;
+          }
 
-  input {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 0%;
-    cursor: pointer;
+          .g-tf-input {
+            cursor: pointer;
+
+            &.seletions {
+              flex-wrap: wrap;
+              width: auto;
+            }
+          }
+        }
+      }
+
+    }
+
+    &__active {
+      .g-menu ::v-deep .g-menu--activator {
+        & {
+          .g-tf-append__inner {
+            transition: transform 0.4s;
+
+            & {
+              .g-icon {
+                transform: rotateZ(180deg);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 </style>

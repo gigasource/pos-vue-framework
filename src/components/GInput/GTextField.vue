@@ -32,7 +32,7 @@
 									 @keydown="onKeyDown">
 					</div>
 					<slot name="label">
-						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles"></label>
+						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
 					</slot>
 
 				</div>
@@ -41,7 +41,7 @@
 					<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
 						<g-icon :color=iconColor>{{clearIcon}}</g-icon>
 					</div>
-					<slot name="appendInner">
+					<slot name="appendInner" :iconColor="iconColor">
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
@@ -136,13 +136,13 @@
 
     },
     setup(props, context) {
-      const tfWrapperClasses = computed(() => (props.disabled ? {'tf-wrapper-disabled': true} : {
-        'tf__filled': props.filled,
-        'tf__outlined': props.outlined,
-        'tf__solo': props.solo,
-        'tf__rounded': props.rounded,
-        'tf__shaped': props.shaped,
-        'tf__flat': props.flat,
+      const tfWrapperClasses = computed(() => (props.disabled ? {'g-tf-wrapper-disabled': true} : {
+        'g-tf__filled': props.filled,
+        'g-tf__outlined': props.outlined,
+        'g-tf__solo': props.solo,
+        'g-tf__rounded': props.rounded,
+        'g-tf__shaped': props.shaped,
+        'g-tf__flat': props.flat,
       }));
 
       const internalValue = getInternalValue(props, context);
@@ -180,7 +180,7 @@
 				  return {}
 			});
 			const iconColor = computed(() => {
-			  if(isLabelActive.value) {
+			  if(isFocused.value) {
           if (!isValidInput.value) return 'red'
 			    return 'rgb(24, 103, 192)'
 			  }

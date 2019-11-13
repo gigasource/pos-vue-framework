@@ -41,7 +41,7 @@
 				}
 			});
       const onSelectItem = () => {
-        context.emit('click:singleItem')
+        context.emit('singleItemClick')
 			}
 
       return {

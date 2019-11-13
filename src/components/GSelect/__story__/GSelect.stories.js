@@ -25,6 +25,7 @@ export const GSelectSingle = () => ({
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
     chips: { default: boolean('chips', false) },
+    smallChips: { default: boolean('smallChips', false) },
     mandatory:{ default: boolean('mandatory', false) },
   },
   data() {
@@ -58,6 +59,7 @@ export const GSelectSingle = () => ({
  :counter="counter"
  :placeholder="placeholder"
  :chips="chips"
+ :smallChips="smallChips"
  v-model="selected" 
   >
    </g-select>
@@ -177,6 +179,7 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
     placeholder:{ default: text('Input placeholder', '') },
     allowDuplicates:{type: Boolean,default: boolean('allow duplicates', false) } ,
     chips:{default: boolean('chips', true) },
+    smallChips:{default: boolean('smallChips', true) },
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
     clearable:{ default: boolean('clearable', false) },
@@ -199,6 +202,7 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
       :item-text="itemText" 
       :item-value="itemValue" 
       :chips="chips"
+      :smallChips="smallChips"
       :label="label" 
       :placeholder="placeholder" 
       :clearable="clearable"
@@ -217,6 +221,7 @@ export const GSelectSearchableSingleSelect = () => ({
     itemValue:{ default: text('itemText', 'value') },
     mandatory:{ default: boolean('mandatory', false) },
     chips:{default: boolean('chips', false) },
+    smallChips:{default: boolean('smallChips', false) },
     clearable: { default: boolean('clearable', false) },
   },
   data() {
@@ -237,6 +242,7 @@ export const GSelectSearchableSingleSelect = () => ({
    :item-value="itemValue" 
    :label="label" 
    :chips="chips"
+   :smallChips="smallChips"
    :mandatory="mandatory"
    :clearable="clearable"
    v-model="selected" 
@@ -251,6 +257,8 @@ export const GSelectSearchableMultipleSelect = () => ({
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
     clearable: { default: boolean('clearable', false) },
+    chips:{default: boolean('chips', false) },
+    smallChips:{default: boolean('smallChips', false) },
   },
   data() {
     return{
@@ -270,6 +278,8 @@ export const GSelectSearchableMultipleSelect = () => ({
    :item-value="itemValue" 
    :label="label" 
    :clearable="clearable"
+   :chips="chips"
+   :smallChips="smallChips"
    v-model="selected" 
    multiple
    searchable>
@@ -283,6 +293,7 @@ export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
     itemText:{ default: text('itemText', 'text') },
     itemValue:{ default: text('itemText', 'value') },
     clearable: { default: boolean('clearable', false) },
+    smallChips:{default: boolean('smallChips', false) },
   },
   data() {
     return{
@@ -302,6 +313,7 @@ export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
    :item-value="itemValue" 
    :label="label" 
    :clearable="clearable"
+   :smallChips="smallChips"
    allow-duplicates
    v-model="selected" 
    multiple
@@ -323,7 +335,7 @@ export const GSelectPrependItem = () => ({
   },
   template: `
    <div data-app><g-select :items="items" item-text="title" item-value="title" label="Display list" return-object v-model="selected">
-   <template v-slot:prependItems>
+   <template v-slot:prepend-item>
     <div style="font-size: 30px">Prepend Item</div>
    </template>
  

@@ -535,7 +535,7 @@ export const gListItemSlotRenderArray = () => ({
       selectedItem: {{testValue}}
       <g-list :items="items" selectable v-model="testValue">
               <template v-slot:listItem="{item, isSelected, onSelect}">
-                <g-list-item :item="item" :isSelected="isSelected" @click:singleItem="onSelect(item)" >
+                <g-list-item :item="item" :isSelected="isSelected" @singleItemClick="onSelect(item)" >
                   <g-list-item-content>
                       <g-list-item-text >{{item.title}}</g-list-item-text>
                   </g-list-item-content>

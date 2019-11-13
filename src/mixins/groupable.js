@@ -45,7 +45,7 @@ function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vMode
   };
 
     const isActiveItem = (item) => {
-      return multiple ? vModel.value.includes(item) : vModel.value === item;
+      return multiple ? vModel.value.some(element => _.isEqual(element, item) ) : _.isEqual(vModel.value, item);
     };
 
     return {

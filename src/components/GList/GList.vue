@@ -4,13 +4,14 @@
        :style="styles"
        @click="onClick"
   >
-
+    <slot name="prependItem"></slot>
     <template v-if="!multiSection">
       <slot name="subheader">
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
       </slot>
       <template v-for="(item, index) in renderList">
-        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :onSelect="onSelect">
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :onSelect="onSelect"
+              :onArrowDown="onArrowDown" :onArrowUp="onArrowUp">
           <div v-if="item[itemTitle]"
                class="g-list-item"
                :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
@@ -37,11 +38,11 @@
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
-              <slot name="append" :item="item">
-                <div class="g-list-item-action">
-                  <g-icon color="yellow">star</g-icon>
-                </div>
-              </slot>
+            <slot name="append" :item="item">
+              <div class="g-list-item-action">
+                <g-icon color="yellow">star</g-icon>
+              </div>
+            </slot>
           </div>
           <g-divider v-if="(divider && (index < renderList.length -1) )"
                      :inset="divider === 'inset'"/>
@@ -103,7 +104,7 @@
 
   export default {
     name: 'GList',
-    components: { GImg, GAvatar, GIcon, GDivider},
+    components: {GImg, GAvatar, GIcon, GDivider},
     props: {
       height: String,
       width: String,
@@ -138,7 +139,7 @@
         type: String,
         default: 'title'
       },
-      activeClass:{
+      activeClass: {
         type: String,
         default: ''
       }
@@ -183,27 +184,33 @@
       function onClick(event) {
         context.emit('click', event)
       }
-      function onArrowDown(item){
-        let index = renderList.value.findIndex(i=> i.title === item.title && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+
+      function onArrowDown(item) {
+        let index = renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
         let i = index
-        index < (renderList.value.length -1) ? i += 1 : i=0
+        index < (renderList.value.length - 1) ? i += 1 : i = 0
         context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        console.log('down' + index)
         context.emit('keydown:up')
       }
-      function onArrowUp(item){
-        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+
+      function onArrowUp(item) {
+        let index = renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
         let i = index
-        index > 0 ? i -= 1 : i = props.items.length -1
+        index > 0 ? i -= 1 : i = props.items.length - 1
         context.root.$el.getElementsByClassName('g-list-item')[i].focus()
+        console.log('up' + index)
         context.emit('keydown:down')
       }
 
       const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
+
       function onSelect(item) {
         if (!props.selectable) return;
         toggleItem(item)
         context.emit('click:item')
       }
+
       return {
         classes,
         styles,
