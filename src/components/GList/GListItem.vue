@@ -1,5 +1,5 @@
 <template>
-	<div :class="classes" :style="styles" @click="$emit('click', $event)">
+	<div :class="classes" :style="styles" @click="onSelectItem">
 		<slot></slot>
 	</div>
 </template>
@@ -40,10 +40,14 @@
 					}
 				}
 			});
+      const onSelectItem = () => {
+        context.emit('click:singleItem')
+			}
 
       return {
         classes,
 				styles,
+				onSelectItem,
 			}
 		}
   }

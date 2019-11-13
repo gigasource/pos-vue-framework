@@ -10,11 +10,10 @@
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
       </slot>
       <template v-for="(item, index) in renderList">
-        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)">
-          <!--            todo: add key move event-->
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :onSelect="onSelect">
           <div v-if="item[itemTitle]"
                class="g-list-item"
-               :class="{'g-list-item__active': isActiveItem(item), 'waves-effect': true}"
+               :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
                tabindex="0"
                @click="onSelect(item)"
                @keydown.enter="onSelect(item)"
@@ -22,7 +21,13 @@
                @keydown.up="onArrowUp(item)"
           >
             <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
-              <div :class="prependClasses" v-if="item.prepend"> <img :src="item.prepend"></div>
+              <div :class="prependClasses" v-if="item.prepend">
+                <g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
+                <g-avatar v-else-if="prependType==='avatar'">
+                  <g-img :src="item.prepend"/>
+                </g-avatar>
+                <g-img v-else-if="prependType==='image'" :src="item.prepend"/>
+              </div>
             </slot>
             <div class="g-list-item-content">
               <div class="g-list-item-text">{{item[itemTitle]}}</div>
@@ -38,7 +43,7 @@
                 </div>
               </slot>
           </div>
-          <g-divider v-if="(divider && (index < renderList.length -1))"
+          <g-divider v-if="(divider && (index < renderList.length -1) )"
                      :inset="divider === 'inset'"/>
         </slot>
       </template>
@@ -56,15 +61,17 @@
 
         <slot :item="item" v-else>
           <div class="g-list-item"
-               :class="{'g-list-item__active': isActiveItem(item)}"
+               :class="{'g-list-item__active': isActiveItem(item) , activeClass: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
                tabindex="0"
                @click="onSelect(item)"
                @keydown.enter="onSelect(item)"
                @keydown.down="onArrowDown(item)"
                @keydown.up="onArrowUp(item)">
-            <slot name="prepend" :item="item">
-              <div :class="prependClasses" >
-                <img alt="" :src="item.prepend">
+            <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+              <div :class="prependClasses" v-if="item.prepend">
+                <g-avatar>
+                  <g-img :src="item.prepend"></g-img>
+                </g-avatar>
               </div>
             </slot>
 
@@ -77,18 +84,12 @@
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
             <slot name="append" :item="item">
-              <div class="g-list-item-action">
-                <g-icon color="yellow">star</g-icon>
-              </div>
             </slot>
 
           </div>
         </slot>
-
       </template>
     </template>
-
-
   </div>
 </template>
 
@@ -97,10 +98,12 @@
   import GDivider from "../GLayout/GDivider";
   import {makeSelectable} from "../../mixins/groupable";
   import GIcon from '../GIcon/GIcon';
+  import GAvatar from '../GAvatar/GAvatar';
+  import GImg from '../GImg/GImg';
 
   export default {
     name: 'GList',
-    components: { GIcon, GDivider},
+    components: { GImg, GAvatar, GIcon, GDivider},
     props: {
       height: String,
       width: String,
@@ -122,7 +125,7 @@
       },
       prependType: {
         type: String,
-        default: 'icon',
+        default: 'avatar',
       },
       subtitleWrap: Boolean,
       value: [String, Object, Number, Array],
@@ -134,6 +137,10 @@
       itemTitle: {
         type: String,
         default: 'title'
+      },
+      activeClass:{
+        type: String,
+        default: ''
       }
     },
     setup: function (props, context) {
@@ -162,7 +169,7 @@
         ...props.height && {'height': props.height},
         ...props.width && {'width': props.width}
       }));
-
+      let _activeClass = props.activeClass
       const prependClasses = computed(() => {
         if (!['icon', 'avatar', 'image'].includes(props.prependType)) {
           return `g-list-item-icon`
@@ -190,13 +197,13 @@
         context.root.$el.getElementsByClassName('g-list-item')[i].focus()
         context.emit('keydown:down')
       }
+
       const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
         if (!props.selectable) return;
         toggleItem(item)
         context.emit('click:item')
       }
-
       return {
         classes,
         styles,
@@ -204,6 +211,8 @@
         renderList,
         lineNumber,
         onClick,
+        onArrowDown,
+        onArrowUp,
         onSelect,
         internalValue,
         isActiveItem,
@@ -213,5 +222,4 @@
 </script>
 
 <style scoped>
-
 </style>
