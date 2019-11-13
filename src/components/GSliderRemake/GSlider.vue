@@ -1,182 +1,303 @@
-<template>
-  <div class="g-input">
-    <div class="g-slider" @click="onSliderClick">
-      <input ref="input" :value="internalValue" type="range" :readonly="readonly">
-      <div class="g-slider--track-container" ref="track">
-        <div class="g-slider--track-background" :style="trackBgrStyle"></div>
-        <div class="g-slider--track-fill" :style="trackFillStyle"></div>
-      </div>
-      <div class="g-slider--thumb-container" ref="thumb"
-           :style="thumbContainerStyle"
-           @focus="onFocus"
-           @blur="onBlur"
-           @keyup="onKeyUp"
-           @keydown="onKeyDown"
-           @mousedown="onThumbMouseDown"
-           @touchstart="onThumbMouseDown">
-        <div class="g-slider--thumb"></div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
-  import {ref, computed, reactive, onMounted, onUpdated} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from '../GInput/GInputField';
-  import {addOnceEventListener, keyCodes, passiveSupported} from '../../utils/helpers';
-  import isEqual from 'lodash';
+  import {computed, reactive, watch} from '@vue/composition-api';
+  import {getEventHandler, helperFunctions} from "./GSlider";
+  import {convertToUnit} from "../../utils/helpers";
+  import {getCssColor} from '../../utils/colors';
 
   export default {
     name: "GSlider",
     props: {
-      value: {
-        type: [String, Number],
-        default: 50
-      },
+      value: [Number, String],
       min: {
-        type: [String, Number],
-        default: 0
+        type: [Number, String],
+        default: 0,
       },
       max: {
-        type: [String, Number],
-        default: 100
+        type: [Number, String],
+        default: 100,
       },
+      vertical: Boolean,
       readonly: Boolean,
+      disabled: Boolean,
+      inverseLabel: Boolean,
+      //step
+      step: {
+        type: [Number, String],
+        default: 1,
+      },
+      ticks: {
+        type: [Boolean, String],
+        default: false,
+        validator: v => typeof v === 'boolean' || v === 'always',
+      },
+      tickSize: {
+        type: [Number, String],
+        default: 2,
+      },
+      tickLabels: {
+        type: Array,
+        default: () => ([]),
+      },
+      //track
+      trackFillColor: String,
+      trackBgrColor: String,
+      //thumb
+      thumbColor: String,
+      thumbSize: {
+        type: [Number, String],
+        default: 32,
+      },
+      thumbLabel: {
+        type: [Boolean, String],
+        default: null,
+        validator: v => typeof v === 'boolean' || v === 'always',
+      },
     },
+
     setup(props, context) {
+      const minValue = computed(() => parseFloat(props.min))
+      const maxValue = computed(() => parseFloat(props.max))
+      const step = computed(() => props.step > 0 ? parseFloat(props.step) : 0)
+      const {roundValue, setLazyValue} = helperFunctions(props, minValue, maxValue)
+
       const state = reactive({
-        lazyValue: 0,
+        lazyValue: setLazyValue(),
+        oldValue: 0,
         keyPressed: 0,
         isFocused: false,
         isActive: false,
         noClick: false,
       })
-      const internalValue = getInternalValue(props, context)
-      const minValue = computed(() => parseFloat(props.min))
-      const maxValue = computed(() => parseFloat(props.max))
-      const inputWidth = computed(() => (internalValue.value - minValue.value) / (maxValue.value - minValue.value) * 100)
 
+      const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
+
+      const internalValue = computed({
+        get() {
+          return state.lazyValue;
+        },
+        set(val) {
+          val = isNaN(val) ? minValue.value : val;
+          const value = roundValue(Math.min(Math.max(val, minValue.value), maxValue.value))
+          if (value === state.lazyValue) return;
+          state.lazyValue = value;
+          context.emit('input', value);
+        }
+      })
+      watch(() => minValue.value, () => {
+        minValue.value > internalValue.value && context.emit('input', minValue.value)
+      })
+      watch(() => maxValue.value, () => {
+        maxValue.value < internalValue.value && context.emit('input', maxValue.value)
+      })
+      watch(() => props.value, (val) => internalValue.value = val)
+
+      const inputWidth = computed(() => (roundValue(internalValue.value) - minValue.value) / (maxValue.value - minValue.value) * 100)
+      const {onThumbMouseDown, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp} = getEventHandler(props, context, state, internalValue, minValue, maxValue)
+
+      //function genInput
+      function genInput() {
+        return <input ref="input" type="range" value={internalValue.value} tabIndex="-1" readOnly
+                      disabled={props.disabled}/>
+      }
+
+      //function genTrack
       const trackBgrStyle = computed(() => {
-      })
+        const startDir = props.vertical ? 'top' : 'right'
+        const endDir = props.vertical ? 'height' : 'width'
+        const bg = 'background-color'
 
-      const trackFillStyle = computed(() => {
-      })
+        const start = '0'
+        const end = props.disabled ? `calc(${100 - inputWidth.value}% - 0.5rem)` : `calc(${100 - inputWidth.value}%)`
+        const color = props.disabled ? '#d2d2d2' : (props.trackBgrColor ? getCssColor(props.trackBgrColor) : '#d2d2d2')
 
-      const thumbContainerStyle = computed(() => {
         return {
-          'left': inputWidth.value + '%',
+          [startDir]: start,
+          [endDir]: end,
+          [bg]: color,
+          transition: trackTransition.value,
+        }
+      })
+      const trackFillStyle = computed(() => {
+        const startDir = props.vertical ? 'bottom' : 'left'
+        const endDir = props.vertical ? 'top' : 'right'
+        const valueDir = props.vertical ? 'height' : 'width'
+        const bg = 'background-color'
+
+        const start = '0'
+        const end = 'auto'
+        const value = props.disabled ? `calc(${inputWidth.value}% - 0.5rem)` : `${inputWidth.value}%`
+        const color = props.disabled ? '#8d8d8d' : (props.trackFillColor ? getCssColor(props.trackFillColor) : '#8d8d8d')
+
+        return {
+          [startDir]: start,
+          [endDir]: end,
+          [valueDir]: value,
+          [bg]: color,
+          transition: trackTransition.value,
         }
       })
 
-      function onThumbMouseDown(e) {
-        //console.log('thumb mouse down')
-        //this.oldValue = internalValue.value;
-        state.keyPressed = 2
-        state.isActive = true
+      function genTrack() {
+        return <div class="g-slider-track-container" ref="track">
+          <div class="g-slider-track-background" style={trackBgrStyle.value}/>
+          <div class="g-slider-track-fill" style={trackFillStyle.value}/>
+        </div>
+      }
 
-        const mouseUpOptions = passiveSupported ? {passive: true, capture: true} : true
-        const mouseMoveOptions = passiveSupported ? {passive: true} : false
-        if ('touches' in e) {
-          context.root.$el.addEventListener('touchmove', onMouseMove, mouseMoveOptions)
-          console.log(context)
-          addOnceEventListener(context.root.$el, 'touchend', onSliderMouseUp, mouseUpOptions)
-        } else {
-          context.root.$el.addEventListener('mousemove', onMouseMove, mouseMoveOptions)
-          console.log(context)
-          addOnceEventListener(context.root.$el, 'mouseup', onSliderMouseUp, mouseUpOptions)
+      //function genThumbContainer
+      const thumbStyle = computed(() => {
+        return {'color': props.thumbColor ? getCssColor(props.thumbColor) : '#8d8d8d'}
+      })
+
+      function genThumb() {
+        return <div class="g-slider-thumb" style={thumbStyle.value}/>
+      }
+
+      const showThumbLabel = computed(() => !props.disabled && !!(props.thumbLabel))
+
+      function genThumbLabelContent(value) {
+        return context.slots['thumb-label'] ?
+            context.slots['thumb-label']({value}) :
+            <span>{[String(value)]}</span>
+      }
+
+      function genThumbLabel(content) {
+        const size = convertToUnit(props.thumbSize)
+        const transform = props.vertical
+            ? `translateY(20%) translateY(${(Number(props.thumbSize) / 3) - 1}px) translateX(55%) rotate(135deg)`
+            : `translateY(-20%) translateY(-12px) translateX(-50%) rotate(45deg)`
+        const style = {
+          backgroundColor: getCssColor(props.thumbColor) || '#8d8d8d',
+          height: size,
+          width: size,
+          transform
+        }
+        const show = state.isFocused || state.isActive || props.thumbLabel === 'always' ? '' : 'none'
+
+        return <div class="g-slider-thumb-label-container"
+                    style={{'display': show}}>
+          <div class="g-slider-thumb-label" style={style}>
+            <div>{content}</div>
+          </div>
+        </div>
+      }
+
+      const thumbContainerClasses = computed(() => {
+        return {
+          'g-slider-thumb-container': true,
+          'g-slider-thumb-container__active': state.isActive,
+          'g-slider-thumb-container__focused': state.isFocused,
+          'g-slider-thumb-container__show-label': showThumbLabel.value,
+        }
+      })
+      const thumbContainerStyle = computed(() => {
+        const direction = props.vertical ? 'top' : 'left';
+        let value = inputWidth.value;
+        value = props.vertical ? 100 - value : value;
+
+        return {
+          [direction]: `${value}%`,
+          transition: trackTransition.value,
+        }
+      })
+
+      function genThumbContainer() {
+        const content = genThumbLabelContent(internalValue.value)
+        return <div class={thumbContainerClasses.value} ref="thumb"
+                    style={thumbContainerStyle.value}
+                    vOn:mousedown={onThumbMouseDown}
+                    vOn:touchstart={onThumbMouseDown}>
+          {genThumb()}
+          {showThumbLabel.value && genThumbLabel(content)}
+        </div>
+      }
+
+      //function genStep
+      const showTicks = computed(() => props.tickLabels.length > 0 || !!(!props.disabled && step.value && props.ticks))
+      const numTicks = computed(() => Math.ceil((maxValue.value - minValue.value) / step.value))
+
+      function genSteps() {
+        if (!props.step || !showTicks.value) return null
+
+        const tickSize = parseFloat(props.tickSize)
+        const range = createRange(numTicks.value + 1)
+
+        function createRange(length) {
+          return Array.from({length}, (v, k) => k)
         }
 
-        context.emit('start', internalValue.value)
-      }
+        const direction = props.vertical ? 'bottom' : 'left'
+        const offsetDirection = props.vertical ? 'right' : 'top'
 
-      function onMouseMove(e) {
-        console.log('mouse move')
-        const {value} = parseMouseMove(e)
-        internalValue.value = value
-      }
+        if (props.vertical) range.reverse()
 
-      function parseMouseMove(e) {
-        console.log('parse mouse move')
-        const start = props.vertical ? 'top' : 'left'
-        const length = props.vertical ? 'height' : 'width'
-        const click = props.vertical ? 'clientY' : 'clientX'
+        function genTicks() {
+          return range.map(i => {
+            const index = i
 
-        const {
-          [start]: trackStart,
-          [length]: trackLength,
-        } = context.refs.track.getBoundingClientRect()
-        const clickOffset = 'touches' in e ? e.touches[0][click] : e[click]
-        let clickPos = Math.min(Math.max((clickOffset - trackStart) / trackLength, 0), 1) || 0
-        if (props.vertical) clickPos = 1 - clickPos
+            const width = i * (100 / numTicks.value)
+            const filled = width < inputWidth.value
+            const tickStyle = {
+              width: `${tickSize}px`,
+              height: `${tickSize}px`,
+              [direction]: `calc(${width}% - ${tickSize / 2}px)`,
+              [offsetDirection]: `calc(50% - ${tickSize / 2}px)`,
+            }
 
-        const isInsideTrack = clickOffset >= trackStart && clickOffset <= trackStart + trackLength
-        const value = parseFloat(props.min) + clickPos * (maxValue.value - minValue.value)
-
-        return {value, isInsideTrack}
-      }
-
-      function onSliderMouseUp(e) {
-        //console.log('slider mouse up')
-        e.stopPropagation()
-        state.keyPressed = 0
-        const mouseMoveOptions = passiveSupported ? {passive: true} : false
-        context.root.$el.removeEventListener('touchmove', onMouseMove, mouseMoveOptions)
-        context.root.$el.removeEventListener('mousemove', onMouseMove, mouseMoveOptions)
-
-        context.emit('end', internalValue.value)
-        // if (!isEqual(context.refs.thumb.oldValue, internalValue.value)) {
-        //   context.emit('change', internalValue.value)
-        //   state.noClick = true
-        // }
-
-        state.isActive = false
-        if (state.isFocused) {
-          state.isFocused = false
+            return <span class={["g-slider-tick", {'g-slider-tick__filled': filled}]} style={tickStyle}>
+             {props.tickLabels[index] && (<div class="g-slider-tick-label">
+               {props.tickLabels[index]}
+             </div>)}
+          </span>
+          })
         }
+
+        return <div
+            class={['g-slider-ticks-container', {'g-slider-ticks-container__always-show': props.ticks === 'always' || props.tickLabels.length > 0}]}>
+          {genTicks()}
+        </div>
       }
 
-      function onSliderClick(e) {
-        if (props.noClick) {
-          props.noClick = false
-          return
+      // todo add computed color ?
+
+      const sliderClasses = computed(() => {
+        return {
+          'g-slider': true,
+          'g-slider__horizontal': !props.vertical,
+          'g-slider__vertical': props.vertical,
+          'g-slider__focused': state.isFocused,
+          'g-slider__active': state.isActive,
+          'g-slider__disabled': props.disabled,
+          'g-slider__readonly': props.readonly,
         }
-        const thumb = context.refs.thumb
-        thumb.focus()
-        onMouseMove(e)
-        context.emit('change', internalValue)
+      })
+
+      function genSlider() {
+        return <div class={sliderClasses.value}
+                    tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
+                    vOn:focus={onFocus}
+                    vOn:blur={onBlur}
+                    vOn:keyup={onKeyUp}
+                    vOn:keydown={onKeyDown}
+                    vOn:click={onSliderClick}>
+          {genInput()}
+          {genTrack()}
+          {genSteps()}
+          {genThumbContainer()}
+        </div>
       }
-
-      function onFocus() {
-
-      }
-
-      function onBlur() {
-
-      }
-
-      function onKeyUp() {
-
-      }
-
-      function onKeyDown() {
-
-      }
-
-      //onUpdated(() => console.log(internalValue.value))
 
       return {
-        internalValue,
-        trackBgrStyle,
-        trackFillStyle,
-        thumbContainerStyle,
-        //
-        onThumbMouseDown,
-        onSliderClick,
-        onFocus,
-        onBlur,
-        onKeyUp,
-        onKeyDown,
+        genSlider
       }
+    },
+
+    render() {
+      return this.genSlider()
     }
   }
 </script>
+
+<style scoped lang="scss">
+  @import "_GSlider.scss";
+</style>
