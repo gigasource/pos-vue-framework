@@ -51,15 +51,12 @@ export const editViewInput = () => ({
 })
 
 // grid-layout example
-function createTemplate(areaIdentity = 'area'){
-  // add identity-attr if areaIdentity is not default 'area'
-  let identityAttr = (areaIdentity !== 'area') ? `identity-attr="${areaIdentity}"` : ''
-
+function createTemplate(){
   return `<div class="storybook-gridlayout"> 
-  <g-grid-layout :layout="layout" style="height: 700px" :displayPreviewColor="displayPreviewColor" ${identityAttr}>
-    <div ${areaIdentity}="headerLogo">Gigaorder logo</div>
-    <div ${areaIdentity}="headerTitle">Gigaorder GmbH</div>
-    <div ${areaIdentity}="bodySidebar">
+  <g-grid-layout :layout="layout" style="height: 700px" :displayPreviewColor="displayPreviewColor">
+    <div area="headerLogo">Gigaorder logo</div>
+    <div area="headerTitle">Gigaorder GmbH</div>
+    <div area="bodySidebar">
       <ul style="list-style-type: none;">
         <li>Home</li>
         <li>Products</li>
@@ -67,7 +64,7 @@ function createTemplate(areaIdentity = 'area'){
         <li>About us</li>
       </ul>
     </div>
-    <div ${areaIdentity}="bodyContent">
+    <div area="bodyContent">
       <div style="display: flex">
         <div style="border: 1px solid black; margin: 5px; padding: 5px;">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
@@ -89,7 +86,7 @@ function createTemplate(areaIdentity = 'area'){
         </div>
       </div>
     </div>
-    <div ${areaIdentity}="footer">
+    <div area="footer">
       <div style="width: 100%; text-align: center">
         Addr: 3 Duy Tan street, Dich Vong Hau, Cau Giay district, Ha Noi, Viet Nam<br/>
         Phone: (+84) xxx xxx xxx
@@ -114,18 +111,6 @@ export const layoutDefaultIdentity = () => ({
   template: createTemplate()
 })
 
-export const layoutCustomIdentity = () => ({
-  components: { GGridLayout, GGridGenerator },
-  props: { displayPreviewColor: { default: boolean('displayPreviewColor', true) } },
-  data () {
-    return {
-      layout: createLayoutObject()
-    }
-  },
-  template: createTemplate('x-zone')
-})
-
-
 export const layoutStr = () => ({
   components: { GGridLayout, GGridGenerator },
   props: {
@@ -138,8 +123,8 @@ export const layoutStr = () => ({
     //   default: text('layout', '{"name":"app","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"bgColor":"transparent","subAreas":[{"name":"header","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"area":{"columnStart":1,"columnEnd":6,"rowStart":1,"rowEnd":2},"bgColor":"hsl(68, 100%, 50%, 50%)","align-items":"","align-content":"","justify-items":"","justify-content":"","justify-self":"","align-self":"","subAreas":[{"name":"headerLogo","hide":false,"area":{"columnStart":2,"columnEnd":3,"rowStart":2,"rowEnd":3},"bgColor":"hsl(280, 100%, 50%, 50%)","justify-self":"","align-self":""},{"name":"headerTitle","hide":false,"area":{"columnStart":4,"columnEnd":8,"rowStart":3,"rowEnd":2},"bgColor":"hsl(262, 100%, 50%, 50%)","justify-self":"","align-self":""}]},{"name":"body","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"area":{"columnEnd":6,"columnStart":1,"rowEnd":5,"rowStart":2},"bgColor":"hsl(275, 100%, 50%, 50%)","align-items":"","align-content":"","justify-items":"","justify-content":"","justify-self":"","align-self":"","subAreas":[{"name":"bodySidebar","hide":false,"area":{"columnEnd":2,"columnStart":1,"rowEnd":6,"rowStart":1},"bgColor":"hsl(298, 100%, 50%, 50%)","justify-self":"","align-self":""},{"name":"bodyContent","hide":false,"area":{"columnEnd":6,"columnStart":2,"rowEnd":6,"rowStart":1},"bgColor":"hsl(8, 100%, 50%, 50%)","justify-self":"","align-self":""}]},{"name":"footer","hide":false,"area":{"columnEnd":6,"columnStart":1,"rowEnd":6,"rowStart":5},"bgColor":"hsl(204, 100%, 50%, 50%)","justify-self":"","align-self":""}],"align-items":"start","align-content":"end","justify-items":"center","justify-content":"space-around"}')
     // }
     layout: {
-      default: createLayoutStr()
+      default: '{"name":"app","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"bgColor":"transparent","subAreas":[{"name":"header","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"area":{"columnStart":1,"columnEnd":6,"rowStart":1,"rowEnd":2},"bgColor":"hsl(68, 100%, 50%, 50%)","align-items":"","align-content":"","justify-items":"","justify-content":"","justify-self":"","align-self":"","subAreas":[{"name":"headerLogo","hide":false,"area":{"columnStart":2,"columnEnd":3,"rowStart":2,"rowEnd":3},"bgColor":"hsl(280, 100%, 50%, 50%)","justify-self":"","align-self":""},{"name":"headerTitle","hide":false,"area":{"columnStart":4,"columnEnd":8,"rowStart":3,"rowEnd":2},"bgColor":"hsl(262, 100%, 50%, 50%)","justify-self":"","align-self":""}]},{"name":"body","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"area":{"columnEnd":6,"columnStart":1,"rowEnd":5,"rowStart":2},"bgColor":"hsl(275, 100%, 50%, 50%)","align-items":"","align-content":"","justify-items":"","justify-content":"","justify-self":"","align-self":"","subAreas":[{"name":"bodySidebar","hide":false,"area":{"columnEnd":2,"columnStart":1,"rowEnd":6,"rowStart":1},"bgColor":"hsl(298, 100%, 50%, 50%)","justify-self":"","align-self":""},{"name":"bodyContent","hide":false,"area":{"columnEnd":6,"columnStart":2,"rowEnd":6,"rowStart":1},"bgColor":"hsl(8, 100%, 50%, 50%)","justify-self":"","align-self":""}]},{"name":"footer","hide":false,"area":{"columnEnd":6,"columnStart":1,"rowEnd":6,"rowStart":5},"bgColor":"hsl(204, 100%, 50%, 50%)","justify-self":"","align-self":""}],"align-items":"start","align-content":"end","justify-items":"center","justify-content":"space-around"}'
     }
   },
-  template: createTemplate('area')
+  template: createTemplate()
 })
