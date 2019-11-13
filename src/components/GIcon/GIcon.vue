@@ -48,7 +48,7 @@
       const icon = ref('')
 
       function getIcon() {
-        icon.value = context.slots.default()[0].text.trim()
+        icon.value = context.slots.default ? context.slots.default()[0].text.trim() : ''
       }
 
       onMounted(() => getIcon())
@@ -151,9 +151,9 @@
         role: context.listeners.click ? 'button' : null
       }))
 
-			let onClick = (event) => {
-				context.emit('click', event);
-			}
+      let onClick = (event) => {
+        context.emit('click', event);
+      }
 
       return {
         iconClass,
@@ -162,8 +162,8 @@
         activeTags,
         icon,
         materialIconName,
-				onClick,
-			}
+        onClick,
+      }
     }
   }
 
@@ -189,3 +189,7 @@
     return '24px'
   }
 </script>
+
+<style scoped lang="scss">
+	@import "GIcon";
+</style>

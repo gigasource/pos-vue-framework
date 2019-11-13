@@ -96,6 +96,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+ @import "GRadio";
 </style>

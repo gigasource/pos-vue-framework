@@ -15,9 +15,19 @@ export const basic = () => ({
     },
     label: {
       default: text('Label', 'Check Box')
+    },
+    disabled: {
+      default: boolean('Disabled', false)
+    },
+    readonly: {
+      default: boolean('Readonly', false)
     }
   },
-  template: `<g-checkbox :color="color" :label="label"></g-checkbox>`
+  template: `<g-checkbox :color="color" 
+                      :label="label"
+                      :disabled="disabled"
+                      :readonly="readonly"
+                      />`
 });
 
 export const indeterminate = () => ({
@@ -30,39 +40,7 @@ export const indeterminate = () => ({
       default: text('Label', 'Check Box' )
     }
   },
-  template: `<g-checkbox indeterminate :color="color" :label="label"></g-checkbox>`
-});
-
-export const disabled = () => ({
-  components: { GCheckbox },
-  props: {
-    state: {
-      default: boolean('State', true)
-    },
-    color: {
-      default: color('Color', '#1271ff')
-    },
-    label: {
-      default: text('Label', 'Check Box' )
-    }
-  },
-  template: `<g-checkbox disabled :color="color" :label="label" v-model="state"></g-checkbox>`
-});
-
-export const readonly = () => ({
-  components: { GCheckbox },
-  props: {
-    state: {
-      default: boolean('State', true)
-    },
-    color: {
-      default: color('Color', '#1271ff')
-    },
-    label: {
-      default: text('Label', 'Check Box' )
-    }
-  },
-  template: `<g-checkbox readonly :color="color" :label="label" v-model="state"></g-checkbox>`
+  template: `<g-checkbox indeterminate :color="color" :label="label"/>`
 });
 
 export const checkboxAll = () => ({
@@ -93,10 +71,10 @@ export const checkboxAll = () => ({
       default: text('Label 3', 'Check Box 2')
     }
   },
-  template: `<g-layout column>
-  <g-checkbox :color="color1" :label="label1" v-model="model" :value="val"></g-checkbox>
-  <g-checkbox :color="color2" :label="label2" v-model="model" value="1"></g-checkbox>
-  <g-checkbox :color="color3" :label="label3" v-model="model" value="2"></g-checkbox>
+  template: `<g-layout vertical>
+    <g-checkbox :color="color1" :label="label1" v-model="model" :value="val" multiple/>
+    <g-checkbox :color="color2" :label="label2" v-model="model" value="1"/>
+    <g-checkbox :color="color3" :label="label3" v-model="model" value="2"/>
   </g-layout>`
 });
 
@@ -127,9 +105,9 @@ export const multipleCheckbox = () => ({
       default: text('Label 3', 'Check Box 3')
     }
   },
-  template: `<g-layout column>{{model}}
-  <g-checkbox :color="color1" :label="label1" v-model="model" value="CB1"></g-checkbox>
-  <g-checkbox :color="color2" :label="label2" v-model="model" value="CB2"></g-checkbox>
-  <g-checkbox :color="color3" :label="label3" v-model="model" value="CB3"></g-checkbox>
+  template: `<g-layout vertical>{{model}}
+    <g-checkbox :color="color1" :label="label1" v-model="model" value="CB1"/>
+    <g-checkbox :color="color2" :label="label2" v-model="model" value="CB2"/>
+    <g-checkbox :color="color3" :label="label3" v-model="model" value="CB3"/>
   </g-layout>`
 });
