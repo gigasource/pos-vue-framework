@@ -95,12 +95,12 @@
       })
 
       watch(() => minValue.value, () => {
-        minValue.value > Math.min(internalValue.value[0]) && context.emit('input', [minValue.value, internalValue.value[1]])
-        minValue.value > Math.min(internalValue.value[1]) && context.emit('input', [internalValue.value[0], minValue.value])
+        minValue.value > internalValue.value[0] && context.emit('input', [minValue.value, internalValue.value[1]])
+        minValue.value > internalValue.value[1] && context.emit('input', [internalValue.value[0], minValue.value])
       })
       watch(() => maxValue.value, () => {
-        maxValue.value < Math.max(internalValue.value[0]) && context.emit('input', [maxValue.value, internalValue.value[1]])
-        maxValue.value < Math.max(internalValue.value[1]) && context.emit('input', [internalValue.value[0], maxValue.value])
+        maxValue.value < internalValue.value[0] && context.emit('input', [maxValue.value, internalValue.value[1]])
+        maxValue.value < internalValue.value[1] && context.emit('input', [internalValue.value[0], maxValue.value])
       })
       watch(() => props.value, (val) => internalValue.value = val)
 
