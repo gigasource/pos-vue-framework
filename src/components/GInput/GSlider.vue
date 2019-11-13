@@ -181,6 +181,7 @@
     },
 		methods: {
       onThumbMouseDown (e) {
+      	console.log(this)
         this.oldValue = this.internalValue;
         this.keyPressed = 2;
         this.isActive = true;

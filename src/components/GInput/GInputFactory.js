@@ -20,31 +20,25 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
     value: 0
   })
 
-  // watch(() => props.prefix, () => {
-  //   context.root.$nextTick(() => {
-  //     prefixWidth.value = prefixRef.value && prefixRef.value.offsetWidth
-  //   })
-  // })
+  watch(() => props.prefix, () => {
+    context.root.$nextTick(() => {
+      prefixWidth.value = prefixRef.value && prefixRef.value.offsetWidth
+    })
+  })
 
-  const labelStyles = computed(() =>
-  // ({...isLabelActive.value && { 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` },
-  // ...!isValidInput.value && inValidStyle}))
-  {
-
-    if(isLabelActive.value && prefixWidth.value){
-      if(props.outlined){
-        if(props.filled){
-          return{ 'transform': `translateY(-32px) translateX(${-prefixWidth.value -11}px)  scale(0.75)` }
+  const labelStyles = computed(() => {
+    if (isLabelActive.value && prefixWidth.value) {
+      if (props.outlined) {
+        if (props.filled) {
+          if (props.rounded) return {'transform': `translateY(-${props.dense ? 30 : 38}px) translateX(${-prefixWidth.value}px)  scale(0.75)`}
+          return {'transform': `translateY(-${props.dense ? 30 : 38}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
+        } else {
+          return {'transform': `translateY(-${props.dense ? 22 : 26}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)`}
         }
-        else{
-          return{ 'transform': `translateY(-26px) translateX(${-prefixWidth.value -4}px)  scale(0.75)` }
-        }
-      }
-      else if(props.filled){
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value}px)  scale(0.75)` }
-      }
-      else{
-        return{ 'transform': `translateY(-16px) translateX(${-prefixWidth.value +7}px)  scale(0.75)` }
+      } else if (props.filled) {
+        return {'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
+      } else {
+        return {'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)`}
       }
     }
   })
@@ -52,10 +46,10 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   return {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef}
 }
 
-import { computed, reactive, ref, watch } from '@vue/composition-api';
+import {computed, reactive, ref, watch} from '@vue/composition-api';
 
 
-import { convertToUnit, keyCodes } from '../../utils/helpers';
+import {convertToUnit, keyCodes} from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
@@ -75,9 +69,11 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
       errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
       errorBucket.length ? isValid.value = false : isValid.value = true
       return isValid
+    } else {
+      isValid.value = true
     }
-    else { isValid.value = true}
   }
+
   const errorMessages = ref('')
   const isValid = ref(false)
   watch(internalValue, () => {
@@ -111,7 +107,7 @@ export function getSlotBsEventListeners(context) {
   }
 }
 
-export function getEvents(props, context, internalValue, isFocused, isValidInput, isDirty, validate) {
+export function getEvents(props, context, internalValue, isFocused, isValidInput, validate) {
   function onClick(event) {
     if (props.disabled) return;
     if (!isFocused.value) context.refs.input.focus();

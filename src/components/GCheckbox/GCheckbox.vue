@@ -136,6 +136,6 @@
   }
 </script>
 
-<style>
-
+<style scoped lang="scss">
+ @import "GCheckbox";
 </style>

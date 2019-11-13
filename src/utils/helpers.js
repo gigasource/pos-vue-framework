@@ -101,6 +101,8 @@ export default function colorHandler() {
     if (color) {
       if (option === 'background') {
         color = 'bg ' + color;
+      } else {
+        color = 'text ' + color;
       }
       return color.split(' ').join('-');
     }
@@ -125,7 +127,7 @@ export function createSimpleFunctional(c, el = 'div', name) {
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref(props.value || '');
+  const rawInternalValue = ref(props.value);
 
   watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
 
