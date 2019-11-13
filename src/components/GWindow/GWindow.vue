@@ -1,6 +1,6 @@
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import { computed, onMounted, watch, reactive, provide, inject } from '@vue/composition-api';
+  import { computed, inject, onMounted, provide, reactive, watch } from '@vue/composition-api';
   import { getInternalValue } from '../../mixins/getVModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
@@ -30,14 +30,8 @@
         type: [Boolean, String],
         default: 'mdi-chevron-left',
       },
-      reverse: {
-        type: Boolean,
-        default: undefined,
-      },
-      showArrows: {
-        type: Boolean,
-        default: true
-      },
+      reverse: Boolean,
+      showArrows: Boolean,
       showArrowsOnHover: Boolean,
       vertical: Boolean,
       elevation: {
@@ -79,7 +73,7 @@
       const registerWindow = inject('registerWindow', null);
 
       onMounted(function () {
-        window.requestAnimationFrame(() => (data.isBooted = true));
+        window.requestAnimationFrame(() => data.isBooted = true);
         registerWindow && registerWindow(this);
       });
 
@@ -90,29 +84,15 @@
         [props.activeClass]: props.active
       }));
 
-      const isVertical = computed(() => {
-        return props.verticalDelimiters != null;
-      });
+      const isVertical = computed(() => props.verticalDelimiters != null);
 
-      const isActive = computed(() => {
-        return data.transitionCount > 0;
-      });
+      const isActive = computed(() => data.transitionCount > 0);
 
-      const hasNext = computed(() => {
-        return props.continuous || internalValue.value < data.items.length - 1
-      });
+      const hasNext = computed(() => props.continuous || internalValue.value < data.items.length - 1);
 
-      const hasPrev = computed(() => {
-        return props.continuous || internalValue.value > 0
-      });
+      const hasPrev = computed(() => props.continuous || internalValue.value > 0)
 
-      const internalReverse = computed(() => {
-        if (props.reverse !== undefined) {
-          return props.reverse;
-        }
-        return data.isReverse;
-      });
-
+      const internalReverse = computed(() => props.reverse ? props.reverse : data.isReverse)
       provide('internalReverse', internalReverse);
 
       watch(internalValue, (val, oldVal) => {
@@ -120,15 +100,10 @@
           data.changedByDelimiters = false;
           return
         }
-
         data.isReverse = val < oldVal
       }, { flush: 'pre' });
 
-      const hasActiveItems = computed(() => {
-        return Boolean(
-          data.items.find(item => !item.disabled)
-        )
-      });
+      const hasActiveItems = computed(() => !!data.items.find(item => !item.disabled));
 
       const computedTransition = computed(() => {
         if (!data.isBooted) {
@@ -167,7 +142,6 @@
       function next() {
         data.isReverse = false;
 
-        /* istanbul ignore if */
         if (!hasActiveItems.value || !hasNext.value) {
           return;
         }
@@ -178,7 +152,6 @@
       function prev() {
         data.isReverse = true;
 
-        /* istanbul ignore if */
         if (!hasActiveItems.value || !hasPrev.value) {
           return;
         }
@@ -187,27 +160,12 @@
       }
 
       function genIcon(direction, icon, fn) {
-        const btnData = {
-          props: {
-            icon: true,
-          },
-          on: {
-            click: () => {
-              data.changedByDelimiters = true;
-              fn();
-            }
-          }
-        };
-
-        const iconData = {
-          props: {
-            large: true
-          }
-        };
-
         return <div class={`g-window__${direction}`}>
-          <g-btn {...btnData}>
-            <g-icon {...iconData}>{icon}</g-icon>
+          <g-btn icon vOn:click={() => {
+            data.changedByDelimiters = true;
+            fn();
+          }}>
+            <g-icon large>{icon}</g-icon>
           </g-btn>
         </div>
       }
@@ -244,39 +202,19 @@
         internalValue.value = index;
       }
 
-      function toggleDelimiterIndex(index) {
+      function isActiveIndex(index) {
         return internalValue.value === index;
       }
 
       function genDelimiterItems() {
-        const children = [];
-        const iconData = {
-          props: {
-            small: true
-          }
-        };
-
-        data.items.map((item, index) => {
-          const btnData = {
-            props: {
-              icon: true,
-              active: toggleDelimiterIndex(index),
-              textColor: '#FFFFFF8A',
-              small: true
-            },
-            on: {
-              click() {
-                onDelimiterClick(index);
-              }
-            }
-          };
-
-          children.push(<g-btn {...btnData}>
-            <g-icon {...iconData}>{props.delimiterIcon}</g-icon>
-          </g-btn>);
-        });
-
-        return children;
+        return data.items.map((item, index) => <g-btn icon small
+                                                      active={isActiveIndex(index)}
+                                                      textColor="#FFFFFF8A"
+                                                      vOn:click={() => onDelimiterClick(index)}
+          >
+            <g-icon small>{props.delimiterIcon}</g-icon>
+          </g-btn>
+        )
       }
 
       function genContainer() {
@@ -290,35 +228,27 @@
           },
         };
 
-        return <div {...containerData}> {[context.slots.default && context.slots.default(), props.showArrows && genControlIcons()]}</div>
+        return <div {...containerData}>
+          {[context.slots.default && context.slots.default(), props.showArrows && genControlIcons()]}
+        </div>
       }
 
       function genWindow() {
-
-
         const windowData = {
           staticClass: 'g-window',
           class: classes.value,
           directives: []
         };
 
-        const directiveValue = props.touch || {
-          left: () => {
-            next();
-          },
-          right: () => {
-            prev();
-          },
-          end: (e) => {
-            e.stopPropagation()
-          },
-          start: (e) => {
-            e.stopPropagation()
-          },
-        };
-
-        !props.touchless && windowData.directives.push({ name: 'touch', value: directiveValue });
-
+        !props.touchless && windowData.directives.push({
+          name: 'touch',
+          value: props.touch || {
+            left: next,
+            right: prev,
+            end: e => e.stopPropagation(),
+            start: e => e.stopPropagation(),
+          }
+        })
 
         return <div ref="window" {...windowData}>{genContainer()} {!props.hideDelimiters && genDelimiters()}</div>
       }
@@ -333,9 +263,7 @@
         hasPrev,
         hasNext
       }
-    }
-
-    ,
+    },
     render() {
       return this.genWindow();
     }
