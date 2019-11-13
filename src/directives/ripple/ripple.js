@@ -6,7 +6,9 @@ function bind(el, binding) {
   el.classList.add(...classList)
 }
 
-function update(el) {
+function update(el, binding) {
+  classList = ['waves-effect']
+  if (binding.value) classList.push(`waves-${binding.value}`)
   if (!el.classList.contains('waves-effect')) el.classList.add(...classList)
 }
 

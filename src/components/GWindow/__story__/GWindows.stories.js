@@ -13,6 +13,8 @@ import GChip from '../../GChip/GChip';
 import GChipGroup from '../../GChipGroup/GChipGroup';
 import GDivider from '../../GLayout/GDivider';
 import GAvatar from '../../GAvatar/GAvatar';
+import GScrollWindow from '../GScrollWindow';
+import GScrollWindowItem from '../GScrollWindowItem';
 
 
 export default {
@@ -221,3 +223,65 @@ export const GWindowWithCards = () => ({
             </g-window>`,
 });
 
+export const GWindowInfiniteScrollTest = () => ({
+  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GWindowItem, GWindow, GImg, GIcon, GScrollWindow, GScrollWindowItem },
+  data: () => ({
+    selectedItem: 0,
+  }),
+  props: {
+    continuous: { type: Boolean, default: boolean('continuous', false) },
+    reverse: { type: Boolean, default: boolean('reverse', false) },
+    vertical: { type: Boolean, default: boolean('vertical', false) },
+    showArrows: { type: Boolean, default: boolean('showArrows', true) },
+    prevIcon: { type: String, default: text('prevIcon', 'mdi-chevron-left') },
+    nextIcon: { type: String, default: text('nextIcon', 'mdi-chevron-right') },
+    showArrowsOnHover: { type: Boolean, default: boolean('showArrowsOnHover', false) },
+    elevation: { type: Number, default: number('elevation', 2) },
+    hideDelimiters: { type: Boolean, default: boolean('hideDelimiters', false) },
+
+  },
+  template: `<g-scroll-window :continuous="continuous"
+                       :hide-delimiters="hideDelimiters"
+                       :elevation="elevation" :vertical="vertical"
+                       :show-arrows-on-hover="showArrowsOnHover"
+                       :prev-icon="prevIcon" :next-icon="nextIcon"
+                       :reverse="reverse" :show-arrows="showArrows"
+                       v-model="selectedItem"
+             >
+               <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/plitvice-lakes-croatia-beautiful-place-260nw-1050138794.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>DISCOVER</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/scenic-view-vernazza-cinque-terre-260nw-1252453072.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>A</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/z/stock-photo-the-istrian-streets-in-croatia-1461805289.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>WHOLE</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/view-over-colorful-buildings-riomaggiore-600w-1532937503.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>NEW</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/lake-bled-autumn-600w-1463231747.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>WORLD</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+            </g-scroll-window>`,
+});
