@@ -1,6 +1,6 @@
 <template>
 	<div class="outerdiv">
-		<g-dialog v-model="dialog" width="500px">
+		<g-dialog v-model="dialog" width="500px" lazy>
 			<template v-slot:activator="{ toggleDialog }">
 				<g-button width="100px" height="50px" @click="toggleDialog">Dialog</g-button>
 			</template>
