@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<slot :active="isActive" :disabled="disabled" :toggle="toggle" :item="item" :class="itemClass"></slot>
+	<div class="g-item" :class="itemClass">
+		<slot :active="isActive" :disabled="disabled" :toggle="toggle" :item="item" ></slot>
 	</div>
 </template>
 
@@ -13,6 +13,10 @@
       disabled: Boolean,
 			item: null,
       isActive: Boolean,
+      activeClass: {
+        type: String,
+				default: 'g-item__active'
+			}
     },
 		setup(props, {emit}) {
       const {disabled, activeClass, isActive, item} = props;

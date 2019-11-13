@@ -18,6 +18,7 @@ import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
+import Order from '../POSView/Order';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -37,6 +38,7 @@ const routes = [
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
   {path: '/textarea', name: 'Textarea', component: Textarea},
+  { path: '/order', name: 'Order', component: Order},
 ];
 
 const router = new VueRouter({
