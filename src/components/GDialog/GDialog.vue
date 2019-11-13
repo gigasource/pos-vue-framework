@@ -116,9 +116,10 @@
             isBooted.value = true;
             context.root.$nextTick(() => {
               initComponent();
+              context.refs.wrapper.focus();
             })
           }
-          context.refs.wrapper.focus();
+          context.refs.wrapper && context.refs.wrapper.focus();
         }
       })
 
