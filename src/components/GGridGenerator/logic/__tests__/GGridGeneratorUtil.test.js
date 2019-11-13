@@ -5,7 +5,7 @@ import _ from 'lodash'
 import {
   _createSingleItem, _createSubGridItem, addSubGridArea, addSubItemArea, adjustRowColNumbers,
   createEmptyArea, deleteColumn, deleteGridItem, deleteRow,
-  getFullCssModelName,
+  _getFullCssModelName,
   getGridAreaCss, getGridList, insertColumnLeft, insertColumnRight, insertRowAbove, insertRowBelow, isAreaOverflowed,
   isGridAreaNameValid,
   joinRefArrayValue
@@ -64,16 +64,16 @@ describe('/GGridGeneratorUtil', () => {
     })
   })
 
-  describe('getFullCssModelName', () => {
+  describe('_getFullCssModelName', () => {
     it('Should return full Css mode name as expected', () => {
       const root = { name: 'root' }
       const header = { name: 'header' }
       root.subAreas = [header]
       header.parent = root
 
-      expect(getFullCssModelName(root)).toBe('.root[undefined]')
-      expect(getFullCssModelName(root, 'g-layout-0')).toBe('.root[g-layout-0]')
-      expect(getFullCssModelName(header, 'g-layout-1')).toBe('.root[g-layout-1]>.header')
+      expect(_getFullCssModelName(root)).toBe('.root[undefined]')
+      expect(_getFullCssModelName(root, 'g-layout-0')).toBe('.root[g-layout-0]')
+      expect(_getFullCssModelName(header, 'g-layout-1')).toBe('.root[g-layout-1]>.header')
     })
   })
 

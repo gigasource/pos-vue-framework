@@ -11,7 +11,7 @@
     deleteGridItem, createEmptyArea, createGridArea,
     isGridAreaNameValid, getGridList, isAreaOverflowed,
     insertRowAbove, insertRowBelow, insertColumnLeft, insertColumnRight, deleteColumn, deleteRow,
-    generateRandomColor, adjustRowColNumbers
+    generateRandomColor, adjustRowColNumbers, generateLayoutJson, parseLayoutJson
   } from './logic/GGridGeneratorUtil'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
@@ -23,30 +23,25 @@
     components: { GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
       layout: {
-        type: Object,
+        type: [String, Object]
       }
     },
     setup(props, context) {
-      // Grid data convention:
-      // +-----------+----------------------------------------------------------------+
-      // | Grid prop | Desc                                                           |
-      // +-----------+----------------------------------------------------------------+
-      // |- name     | a path to this grid item, separated by __                      |
-      // |- area     | an area of grid item in it's parent grid                       |
-      // |- settings | an object contain grid setting if this grid                    |
-      // |           | item is "grid or sub grid" (only available for sub-grid items) |
-      // |- hide     | indicate whether a grid-item should be shown or                |
-      // |           | not                                                            |
-      // +-----------+----------------------------------------------------------------+
-      const initLayout = props.layout || {
-        name: 'app',
-        settings: {
-          columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-          rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-          columnGap: 0,
-          rowGap: 0,
-        },
-        subAreas: []
+      // initialize layout
+      let initLayout = null
+      if (typeof(props.layout) === 'string') {
+        initLayout = parseLayoutJson(props.layout)
+      } else {
+        initLayout = props.layout || {
+          name: 'app',
+          settings: {
+            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+            columnGap: 0,
+            rowGap: 0,
+          },
+          subAreas: []
+        }
       }
 
       const state = reactive({
@@ -582,6 +577,14 @@
                 min={1}
                 value={gridItem.area.rowEnd - gridItem.area.rowStart}
                 vOn:input={v => gridItem.area.rowEnd = gridItem.area.rowStart + v}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Justify content: </label>
+            <select></select>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Align items: </label>
+            <select></select>
           </div>
         ] : null
       }
@@ -589,33 +592,25 @@
       // 4) Generate output
       function renderGridGeneratorOutput() {
         return [
-          <div class="grid-gen__settings-section">Output</div>,
-          renderGenerateStyleBtn(),
-          renderExportLayoutBtn()
+          <div class="grid-gen__settings-section">Files</div>,
+          renderImportJSONBtn(),
+          renderExportJSONBtn(),
         ]
       }
-      function renderGenerateStyleBtn() {
+
+      function renderImportJSONBtn() {
         return <button
-            vOn:click_stop_prevent={() => {
-              state.showOutputDialog = true
-              state.generatedCss = generateGridCSS(state.layout, props.uid)
-              context.emit('cssgenerated', state.generatedCss)
-            }}>Generate Css</button>
+          vOn:click_stop_prevent={() => {
+
+          }}>Import Layout</button>
       }
 
-      function renderExportLayoutBtn() {
-        return <button vOn:click_stop_prevent={() => context.emit('exportlayout', state.layout)}>Export layout</button>
+      function renderExportJSONBtn() {
+        return <button
+          vOn:click_stop_prevent={() => {
+            context.emit('export_layout_json', generateLayoutJson(state.layout))
+          }}>Export Layout</button>
       }
-
-      function renderOutputDialog() {
-        return <g-dialog vModel={state.showOutputDialog} width="500px" persistent>
-          <div class="grid-gen__dialog__output">
-            <textarea>{state.generatedCss}</textarea>
-            <button vOn:click_stop_prevent={() => state.showOutputDialog = false}>Close</button>
-          </div>
-        </g-dialog>
-      }
-
 
       // do stuff after vue rendered
       onUpdated(() => {
@@ -655,7 +650,7 @@
                 {renderGridGeneratorOutput()}
               </div>
               {renderConfirmDialog(state.selectedGrid)}
-              {renderOutputDialog()}
+
             </div>
         )
       }

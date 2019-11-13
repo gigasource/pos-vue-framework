@@ -5,6 +5,8 @@ import GGridLayout from '../GGridLayout'
 import GGridGenerator from '../GGridGenerator';
 import GEditViewInput from '../GEditViewInput'
 import GIncDecNumberInput from '../GIncDecNumberInput'
+import { parseLayoutJson } from '../logic/GGridGeneratorUtil';
+import { createLayoutObject } from './storyHelper';
 
 //
 export default {
@@ -12,6 +14,7 @@ export default {
   decorators: [withKnobs],
 }
 
+// inc/dec number input
 export const incDecNumberInput = () => ({
   components: {GIncDecNumberInput},
   setup() {
@@ -25,6 +28,7 @@ export const incDecNumberInput = () => ({
   }
 })
 
+// edit view input
 export const editViewInput = () => ({
   components: { GEditViewInput },
   setup() {
@@ -48,146 +52,17 @@ export const editViewInput = () => ({
   }
 })
 
-export const layoutDefaultIdentity = () => ({
-  components: { GGridLayout, GGridGenerator },
-  props: {
-    displayPreviewColor: {
-      default: boolean('displayPreviewColor', true)
-    }
-  },
-  data() {
-    // app
-    const app = {
-      name: 'app',
-      hide: false,
-      settings: {
-        columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-        rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-        columnGap: 0,
-        rowGap: 0,
-      },
-      bgColor: 'transparent',
-      subAreas: []
-    }
-    // header
-    const header = {
-      name: 'header',
-      hide: false,
-      parent: app,
-      settings: {
-        columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-        rows: [ref('1fr'), ref('1fr'), ref('1fr')],
-        columnGap: 0,
-        rowGap: 0,
-      },
-      area: {
-        columnStart: 1,
-        columnEnd: 6,
-        rowStart: 1,
-        rowEnd: 2
-      },
-      bgColor: 'hsl(68, 100%, 50%, 50%)',
-    }
-    const headerLogo = {
-      name: 'headerLogo',
-      hide: false,
-      area: {
-        columnStart: 2,
-        columnEnd: 3,
-        rowStart: 2,
-        rowEnd: 3
-      },
-      bgColor: 'hsl(280, 100%, 50%, 50%)',
-      parent: header
-    }
-    const headerTitle = {
-      name: 'headerTitle',
-      hide: false,
-      area: {
-        columnStart: 4,
-        columnEnd: 8,
-        rowStart: 3,
-        rowEnd: 2
-      },
-      bgColor: 'hsl(262, 100%, 50%, 50%)',
-      parent: header
-    }
-    header.subAreas = [headerLogo, headerTitle]
+// grid-layout example
+function createTemplate(areaIdentity = 'area'){
+  // add identity-attr if areaIdentity is not default 'area'
+  let identityAttr = (areaIdentity !== 'area') ? `identity-attr="${areaIdentity}"` : ''
 
-    // body
-    const body = {
-      name: 'body',
-      hide: false,
-      settings: {
-        columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-        rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-        columnGap: 0,
-        rowGap: 0,
-      },
-      area: {
-        columnEnd: 6,
-        columnStart: 1,
-        rowEnd: 5,
-        rowStart: 2
-      },
-      bgColor: 'hsl(275, 100%, 50%, 50%)',
-      parent: app
-    }
-    const bodySidebar = {
-      name: 'bodySidebar',
-      hide: false,
-      area: {
-        columnEnd: 2,
-        columnStart: 1,
-        rowEnd: 6,
-        rowStart: 1
-      },
-      bgColor: 'hsl(298, 100%, 50%, 50%)',
-      parent: body
-    }
-    const bodyContent = {
-      name: 'bodyContent',
-      hide: false,
-      area: {
-        columnEnd: 6,
-        columnStart: 2,
-        rowEnd: 6,
-        rowStart: 1
-      },
-      bgColor: 'hsl(8, 100%, 50%, 50%)',
-      parent: body
-    }
-
-    body.subAreas = [bodySidebar, bodyContent]
-
-    // footer
-    const footer = {
-      name: 'footer',
-      hide: false,
-      area: {
-        columnEnd: 6,
-        columnStart: 1,
-        rowEnd: 6,
-        rowStart: 5
-      },
-      bgColor: 'hsl(204, 100%, 50%, 50%)',
-      parent: app
-    }
-
-    app.subAreas = [header, body, footer]
-
-
-    return {
-      app: app,
-    }
-  },
-  template: `
-<div class="storybook-gridlayout">
+  return `<div class="storybook-gridlayout">
   <g-grid-generator :layout="app"/>      
-  <g-grid-layout :layout="app" style="height: 700px" :displayPreviewColor="displayPreviewColor">
-    <div area="headerLogo">Gigaorder logo</div>
-    <div area="headerTitle">Gigaorder GmbH</div>
-    <div area="bodySidebar">
+  <g-grid-layout :layout="app" style="height: 700px" :displayPreviewColor="displayPreviewColor" ${identityAttr}>
+    <div ${areaIdentity}="headerLogo">Gigaorder logo</div>
+    <div ${areaIdentity}="headerTitle">Gigaorder GmbH</div>
+    <div ${areaIdentity}="bodySidebar">
       <ul style="list-style-type: none;">
         <li>Home</li>
         <li>Products</li>
@@ -195,7 +70,7 @@ export const layoutDefaultIdentity = () => ({
         <li>About us</li>
       </ul>
     </div>
-    <div area="bodyContent">
+    <div ${areaIdentity}="bodyContent">
       <div style="display: flex">
         <div style="border: 1px solid black; margin: 5px; padding: 5px;">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
@@ -217,51 +92,36 @@ export const layoutDefaultIdentity = () => ({
         </div>
       </div>
     </div>
-    <div area="footer">
+    <div ${areaIdentity}="footer">
       <div style="width: 100%; text-align: center">
         Addr: 3 Duy Tan street, Dich Vong Hau, Cau Giay district, Ha Noi, Viet Nam<br/>
         Phone: (+84) xxx xxx xxx
       </div>
     </div>
   </g-grid-layout>
-</div>
-`
-})
+</div>`
+}
 
-export const layoutCustomIdentity = () => ({
+export const layoutDefaultIdentity = () => ({
   components: { GGridLayout, GGridGenerator },
   props: {
     displayPreviewColor: {
       default: boolean('displayPreviewColor', true)
-      }
-  },
-  data () {
-    return {
-      app : {
-        name: 'app',
-        hide: false,
-        settings: {
-          columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-          rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-          columnGap: 0,
-          rowGap: 0,
-        },
-        bgColor: 'transparent',
-        subAreas: []
-      }
     }
   },
-  template: `
-  <div class="storybook-gridlayout">
-    <p>This example using x-zone as a identity attribute</p><br/>
-    <g-grid-generator :layout="app"/>      
-    <g-grid-layout style="height: 700px" 
-      :layout="app"   
-      :displayPreviewColor="displayPreviewColor"
-      identity-attr="x-zone">
-      <div x-zone="header">Header</div>
-      <div x-zone="body">Body</div>
-      <div x-zone="footer">Footer</div>
-    </g-grid-layout>
-  </div>`
+  data() {
+    return { app: createLayoutObject() }
+  },
+  template: createTemplate()
+})
+
+export const layoutCustomIdentity = () => ({
+  components: { GGridLayout, GGridGenerator },
+  props: { displayPreviewColor: { default: boolean('displayPreviewColor', true) } },
+  data () {
+    return {
+      app: createLayoutObject()
+    }
+  },
+  template: createTemplate('x-zone')
 })

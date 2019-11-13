@@ -46,52 +46,7 @@ export function isGridAreaNameValid(areaName) {
   return /^(\w|-)+$/i.test(areaName)
 }
 
-export function getFullCssModelName(model, uid) {
-  // root
-  if (model.parent == null) {
-    return `.${model.name}[${uid}]`
-  } else {
-    return `${getFullCssModelName(model.parent, uid)}>.${model.name}`
-  }
-}
 
-/**
- * Generate css grid from grid data model
- * @param model
- * @param uid
- * @param genOptions
- */
-export function generateGridCSS(model, uid, genOptions) {
-  let output = ''
-
-  let css = ''
-  if (model.area) {
-    css += `  grid-area: ${getGridAreaCss(model)};`
-  }
-
-  if (genOptions && genOptions.showBackgroundColor) {
-    css += `
-  background: ${model.bgColor};`
-  }
-
-  if (model.settings) {
-    css += model.area ? `
-` : ''
-    css +=
-        `  display: grid;
-  grid-template-columns: ${joinRefArrayValue(model.settings.columns)};
-  grid-template-rows: ${joinRefArrayValue(model.settings.rows)};
-  grid-column-gap: ${model.settings.columnGap}px;
-  grid-row-gap: ${model.settings.rowGap}px;`}
-
-  output += `${getFullCssModelName(model, uid)} {
-${css}
-}
-`
-  _.each(model.subAreas, subArea => output += generateGridCSS(subArea, uid, genOptions))
-
-  return output
-}
 
 /**
  * Return all grid/subgrid item
@@ -326,5 +281,99 @@ export function deleteColumn(grid, index) {
         columnEnd: subArea.area.columnEnd - 1
       }
     }
+  })
+}
+
+
+//// generate output/export json
+/**
+ * Generate css grid from grid data model
+ * @param model
+ * @param uid
+ * @param genOptions
+ */
+export function generateGridCSS(layout, uid, genOptions) {
+  let output = ''
+
+  let css = ''
+  if (layout.area) {
+    css += `  grid-area: ${getGridAreaCss(layout)};`
+  }
+
+  if (genOptions && genOptions.showBackgroundColor) {
+    css += `
+  background: ${layout.bgColor};`
+  }
+
+  if (layout.settings) {
+    css += layout.area ? `
+` : ''
+    css +=
+        `  display: grid;
+  grid-template-columns: ${joinRefArrayValue(layout.settings.columns)};
+  grid-template-rows: ${joinRefArrayValue(layout.settings.rows)};
+  grid-column-gap: ${layout.settings.columnGap}px;
+  grid-row-gap: ${layout.settings.rowGap}px;`}
+
+  output += `${_getFullCssModelName(layout, uid)} {
+${css}
+}
+`
+  _.each(layout.subAreas, subArea => output += generateGridCSS(subArea, uid, genOptions))
+
+  return output
+}
+
+export function _getFullCssModelName(layout, uid) {
+  if (layout.parent == null) {
+    return `.${layout.name}[${uid}]`
+  } else {
+    return `${_getFullCssModelName(layout.parent, uid)}>.${layout.name}`
+  }
+}
+
+//// import/export layout as json
+// add parent for layout
+function _attachParent(layout, parentLayout) {
+  if (parentLayout)
+    layout.parent = parentLayout
+  _.each(layout.subAreas, subArea => _attachParent(subArea, layout))
+}
+
+/**
+ * Create Layout object from json
+ * @param jsonLayout
+ * @returns {any}
+ */
+export function parseLayoutJson(jsonLayout) {
+  const jsonParseReviver = (k, v) => {
+    // wrap ref
+    if (k === 'rows' || k === 'columns')
+      return _.map(v, vItem => ref(vItem))
+    else
+      return v
+  }
+  const layout = JSON.parse(jsonLayout, jsonParseReviver)
+  _attachParent(layout, null)
+  return layout
+}
+
+/**
+ * Generate JSON from layout object
+ * @param layout
+ * @returns {string}
+ */
+export function generateLayoutJson(layout) {
+  return JSON.stringify(layout, (k, v) => {
+    // ignore circular references
+    if (k === 'parent')
+      return
+
+    // unwrap ref
+    if (k === 'rows' || k === 'columns')
+      return _.map(v, vItem => vItem.value)
+
+    // normal data, return directly
+    return v
   })
 }
