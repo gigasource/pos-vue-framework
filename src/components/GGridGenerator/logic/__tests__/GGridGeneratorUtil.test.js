@@ -129,6 +129,8 @@ describe('/GGridGeneratorUtil', () => {
         parent: parent,
         hide: false,
         bgColor: 'hsl(360, 100%, 50%, 50%)',
+        'align-self': '',
+        'justify-self': '',
         area: {
           rowStart: 2,
           columnStart: 3,
@@ -155,18 +157,22 @@ describe('/GGridGeneratorUtil', () => {
         parent: parent,
         hide: false,
         bgColor: 'hsl(180, 100%, 50%, 50%)',
+        'align-content': '',
+        'align-items': '',
+        'align-self': '',
+        'justify-content': '',
+        'justify-items': '',
+        'justify-self': '',
         area: {
           rowStart: 2,
           columnStart: 3,
           rowEnd: 3,
           columnEnd: 5
         },
-        settings: {
-          columns: createRange(5, () => ref('1fr')),
-          rows: createRange(5, () => ref('1fr')),
-          columnGap: 0,
-          rowGap: 0,
-        },
+        columns: createRange(5, () => ref('1fr')),
+        rows: createRange(5, () => ref('1fr')),
+        columnGap: 0,
+        rowGap: 0,
         subAreas: []
       })
 
@@ -190,18 +196,22 @@ describe('/GGridGeneratorUtil', () => {
       parent: parent,
       hide: false,
       bgColor: 'hsl(180, 100%, 50%, 50%)',
+      'align-self': '',
+      'justify-self': '',
+      'align-items': '',
+      'align-content': '',
+      'justify-items': '',
+      'justify-content': '',
       area: {
         rowStart: 2,
         columnStart: 3,
         rowEnd: 3,
         columnEnd: 5
       },
-      settings: {
-        columns: createRange(5, () => ref('1fr')),
-        rows: createRange(5, () => ref('1fr')),
-        columnGap: 0,
-        rowGap: 0,
-      },
+      columns: createRange(5, () => ref('1fr')),
+      rows: createRange(5, () => ref('1fr')),
+      columnGap: 0,
+      rowGap: 0,
       subAreas: []
     })
 
@@ -224,6 +234,8 @@ describe('/GGridGeneratorUtil', () => {
       parent: parent,
       hide: false,
       bgColor: 'hsl(180, 100%, 50%, 50%)',
+      'align-self': '',
+      'justify-self': '',
       area: {
         rowStart: 2,
         columnStart: 3,
@@ -302,12 +314,11 @@ describe('/GGridGeneratorUtil', () => {
       }
     }
     const parent = {
-      subAreas: [child, child1, child2, child3, child4], settings: {
-        columns: ['50px', '50px', '50px'],
-        rows: ['50px', '50px', '50px'],
-        columnGap: 0,
-        rowGap: 0
-      }
+      subAreas: [child, child1, child2, child3, child4],
+      columns: ['50px', '50px', '50px'],
+      rows: ['50px', '50px', '50px'],
+      columnGap: 0,
+      rowGap: 0
     }
     child.parent = parent
     child1.parent = parent
@@ -350,9 +361,7 @@ describe('/GGridGeneratorUtil', () => {
 
   it('insertRowAbove', () => {
     const model = {
-      settings: {
-        rows: [ref('10px'), ref('20px'), ref('1fr')]
-      },
+      rows: [ref('10px'), ref('20px'), ref('1fr')],
       subAreas: [
         { area: { rowStart: 1, rowEnd: 2 } }, // case 1
         { area: { rowStart: 2, rowEnd: 3 } }, // case 2
@@ -362,8 +371,8 @@ describe('/GGridGeneratorUtil', () => {
 
     insertRowAbove(model, 1)
 
-    // new row unit added to settings.rows
-    expect(_.map(model.settings.rows, rowRef => rowRef.value)).toEqual(['10px', '1fr', '20px', '1fr'])
+    // new row unit added to rows
+    expect(_.map(model.rows, rowRef => rowRef.value)).toEqual(['10px', '1fr', '20px', '1fr'])
     // adjust area location for any area which have rowStart > index
     // case 1: doesn't affected
     expect(model.subAreas[0].area.rowStart).toBe(1)
@@ -378,9 +387,7 @@ describe('/GGridGeneratorUtil', () => {
 
   it('insertRowBelow', () => {
     const model = {
-      settings: {
-        rows: [ref('10px'), ref('20px'), ref('1fr')]
-      },
+      rows: [ref('10px'), ref('20px'), ref('1fr')],
       subAreas: [
         { area: { rowStart: 1, rowEnd: 2 } }, // case 1
         { area: { rowStart: 2, rowEnd: 3 } }, // case 2
@@ -390,8 +397,8 @@ describe('/GGridGeneratorUtil', () => {
 
     insertRowBelow(model, 1)
 
-    // new row unit added to settings.rows
-    expect(_.map(model.settings.rows, rowRef => rowRef.value)).toEqual(['10px', '20px', '1fr', '1fr'])
+    // new row unit added to rows
+    expect(_.map(model.rows, rowRef => rowRef.value)).toEqual(['10px', '20px', '1fr', '1fr'])
     // adjust area location for any area which have rowStart > index
     // case 1: doesn't affected
     expect(model.subAreas[0].area.rowStart).toBe(1)
@@ -406,9 +413,7 @@ describe('/GGridGeneratorUtil', () => {
 
   it('insertColumnLeft', () => {
     const model = {
-      settings: {
-        columns: [ref('10px'), ref('20px'), ref('1fr')]
-      },
+      columns: [ref('10px'), ref('20px'), ref('1fr')],
       subAreas: [
         { area: { columnStart: 1, columnEnd: 2 } }, // case 1
         { area: { columnStart: 2, columnEnd: 3 } }, // case 2
@@ -418,8 +423,8 @@ describe('/GGridGeneratorUtil', () => {
 
     insertColumnLeft(model, 1)
 
-    // new row unit added to settings.rows
-    expect(_.map(model.settings.columns, colRef => colRef.value)).toEqual(['10px', '1fr', '20px', '1fr'])
+    // new row unit added to rows
+    expect(_.map(model.columns, colRef => colRef.value)).toEqual(['10px', '1fr', '20px', '1fr'])
     // case 1: column before inserted column
     expect(model.subAreas[0].area.columnStart).toBe(1)
     expect(model.subAreas[0].area.columnEnd).toBe(2)
@@ -433,9 +438,7 @@ describe('/GGridGeneratorUtil', () => {
 
   it('insertColumnRight', () => {
     const model = {
-      settings: {
-        columns: [ref('10px'), ref('20px'), ref('1fr')]
-      },
+      columns: [ref('10px'), ref('20px'), ref('1fr')],
       subAreas: [
         { area: { columnStart: 1, columnEnd: 2 } }, // case 1
         { area: { columnStart: 2, columnEnd: 3 } }, // case 2
@@ -445,8 +448,8 @@ describe('/GGridGeneratorUtil', () => {
 
     insertColumnRight(model, 1)
 
-    // new row unit added to settings.rows
-    expect(_.map(model.settings.columns, colRef => colRef.value)).toEqual(['10px', '20px', '1fr', '1fr'])
+    // new row unit added to rows
+    expect(_.map(model.columns, colRef => colRef.value)).toEqual(['10px', '20px', '1fr', '1fr'])
     expect(model.subAreas[0].area.columnStart).toBe(1)
     expect(model.subAreas[0].area.columnEnd).toBe(2)
     expect(model.subAreas[1].area.columnStart).toBe(2)
@@ -457,9 +460,7 @@ describe('/GGridGeneratorUtil', () => {
 
   it('deleteRow', () => {
     const model = {
-      settings: {
-        rows: [ref('10px'), ref('20px'), ref('1fr')]
-      },
+      rows: [ref('10px'), ref('20px'), ref('1fr')],
       subAreas: [
         { area: { rowStart: 1, rowEnd: 2 } }, // case 1
         { area: { rowStart: 2, rowEnd: 3 } }, // case 2
@@ -467,7 +468,7 @@ describe('/GGridGeneratorUtil', () => {
       ]
     }
     deleteRow(model, 1)
-    expect(_.map(model.settings.rows, rowRef => rowRef.value)).toEqual(['10px', '1fr'])
+    expect(_.map(model.rows, rowRef => rowRef.value)).toEqual(['10px', '1fr'])
     // adjust area location for any area which have rowStart > index
     // case 1: doesn't affected
     expect(model.subAreas[0].area.rowStart).toBe(1)
@@ -482,9 +483,7 @@ describe('/GGridGeneratorUtil', () => {
 
   it('deleteColumn', () => {
     const model = {
-      settings: {
-        columns: [ref('10px'), ref('20px'), ref('1fr')]
-      },
+      columns: [ref('10px'), ref('20px'), ref('1fr')],
       subAreas: [
         { area: { columnStart: 1, columnEnd: 2 } }, // case 1
         { area: { columnStart: 2, columnEnd: 3 } }, // case 2
@@ -492,7 +491,7 @@ describe('/GGridGeneratorUtil', () => {
       ]
     }
     deleteColumn(model, 1)
-    expect(_.map(model.settings.columns, colRef => colRef.value)).toEqual(['10px', '1fr'])
+    expect(_.map(model.columns, colRef => colRef.value)).toEqual(['10px', '1fr'])
     // adjust area location for any area which have rowStart > index
     // case 1: doesn't affected
     expect(model.subAreas[0].area.columnStart).toBe(1)

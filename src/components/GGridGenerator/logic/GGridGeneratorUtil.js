@@ -2,6 +2,25 @@ import _ from 'lodash'
 import { ref } from '@vue/composition-api'
 import { createRange } from '../../../utils/helpers';
 
+// References: https://css-tricks.com/snippets/css/complete-guide-grid/
+export const _gridItemOptions = ['', 'start', 'end', 'center', 'stretch']
+export const _gridContentOptions = ['', 'start', 'end', 'center', 'stretch', 'space-around', 'space-between', 'space-evenly']
+
+// update
+export const changeAlignSelf = (grid, value) => { grid['align-self'] = value; console.log('set align self', value) }
+export const changeAlignItems = (grid, value) => { grid['align-items'] = value; console.log('set align items', value) }
+export const changeAlignContent = (grid, value) => { grid['align-content'] = value; console.log('set align content', value) }
+export const changeJustifySelf = (grid, value) => { grid['justify-self'] = value; console.log('justify self', value) }
+export const changeJustifyItems = (grid, value) => { grid['justify-items'] = value; console.log('justify-items', value) }
+export const changeJustifyContent = (grid, value) => { grid['justify-content'] = value; }
+// check
+export const isActiveAlignSelf = (grid, value) => grid['align-self'] === value
+export const isActiveAlignItems = (grid, value) => grid['align-items'] === value
+export const isActiveAlignContent = (grid, value) => grid['align-content'] === value
+export const isActiveJustifySelf = (grid, value)  => grid['justify-self'] === value
+export const isActiveJustifyItems = (grid, value) => grid['justify-items'] === value
+export const isActiveJustifyContent = (grid, value) => grid['justify-content'] === value
+
 /**
  * Join ref string
  * @param refArray
@@ -114,7 +133,10 @@ export function _createSingleItem(parentGrid, area) {
     parent: parentGrid,
     hide: false,
     bgColor: generateRandomColor(),
-    area: createGridArea(area)
+    area: createGridArea(area),
+    // hard code
+    'justify-self': '',
+    'align-self': ''
   }
 }
 
@@ -122,12 +144,14 @@ export function _createSubGridItem(parentGrid, area) {
   const singleItem = _createSingleItem(parentGrid, area)
   return {
     ...singleItem,
-    settings: {
-      columns: createRange(5, () => ref('1fr')),
-      rows: createRange(5, () => ref('1fr')),
-      columnGap: 0,
-      rowGap: 0,
-    },
+    columns: createRange(5, () => ref('1fr')),
+    rows: createRange(5, () => ref('1fr')),
+    columnGap: 0,
+    rowGap: 0,
+    'align-items': '',
+    'align-content': '',
+    'justify-items': '',
+    'justify-content': '',
     subAreas: []
   }
 }
@@ -155,8 +179,8 @@ export function isAreaOverflowed(gridItem) {
        gridItem.area.rowStart <= 0
     || gridItem.area.columnStart <= 0
     // positive index value start from 0
-    || gridItem.area.rowEnd > gridItem.parent.settings.rows.length + 1
-    || gridItem.area.columnEnd > gridItem.parent.settings.columns.length + 1
+    || gridItem.area.rowEnd > gridItem.parent.rows.length + 1
+    || gridItem.area.columnEnd > gridItem.parent.columns.length + 1
   )
 }
 
@@ -178,7 +202,7 @@ export function adjustRowColNumbers(targetArr, newLen) {
  */
 export function insertRowAbove(grid, index) {
   // add one new row from index
-  grid.settings.rows.splice(index, 0, ref('1fr'))
+  grid.rows.splice(index, 0, ref('1fr'))
   // adjust position of affected sub area
   _.each(grid.subAreas, subArea => {
     // affected sub area are an area which have:
@@ -201,7 +225,7 @@ export function insertRowBelow(grid, index) {
 }
 
 export function insertColumnLeft(grid, index) {
-  grid.settings.columns.splice(index, 0, ref('1fr'))
+  grid.columns.splice(index, 0, ref('1fr'))
 
   _.each(grid.subAreas, subArea => {
     if (subArea.area.columnStart > index) {
@@ -235,7 +259,7 @@ export function insertColumnRight(grid, index) {
  */
 
 export function deleteRow(grid, index) {
-  grid.settings.rows.splice(index, 1)
+  grid.rows.splice(index, 1)
   _.each(grid.subAreas, subArea => {
     if (subArea.area.rowEnd <= index + 1) {
       // case 1: area above deleted row -> ignore
@@ -265,7 +289,7 @@ export function deleteRow(grid, index) {
  * @param index
  */
 export function deleteColumn(grid, index) {
-  grid.settings.columns.splice(index, 1)
+  grid.columns.splice(index, 1)
   _.each(grid.subAreas, subArea => {
     if (subArea.area.columnEnd <= index + 1) {
       // ignore
@@ -288,7 +312,7 @@ export function deleteColumn(grid, index) {
 //// generate output/export json
 /**
  * Generate css grid from grid data model
- * @param model
+ * @param layout
  * @param uid
  * @param genOptions
  */
@@ -296,31 +320,21 @@ export function generateGridCSS(layout, uid, genOptions) {
   let output = ''
 
   let css = ''
-  if (layout.area) {
-    css += `  grid-area: ${getGridAreaCss(layout)};`
+  if (layout.area) css += `grid-area: ${getGridAreaCss(layout)}; `
+  if (layout['justify-self']) css += `justify-self: ${layout['justify-self']}; `
+  if (layout['align-self']) css += `align-self: ${layout['align-self']}; `
+  if (genOptions && genOptions.showBackgroundColor) css += `background: ${layout.bgColor}; `
+
+  if (layout.subAreas) {
+    css += `display: grid; grid-template-columns: ${joinRefArrayValue(layout.columns)}; grid-template-rows: ${joinRefArrayValue(layout.rows)}; grid-gap: ${layout.rowGap}px ${layout.columnGap}px; `
+    if (layout['align-items']) css += `align-items: ${layout['align-items']}; `
+    if (layout['align-content']) css += `align-content: ${layout['align-content']}; `
+    if (layout['justify-items']) css += `justify-items: ${layout['justify-items']}; `
+    if (layout['justify-content']) css += `justify-content: ${layout['justify-content']}; `
   }
 
-  if (genOptions && genOptions.showBackgroundColor) {
-    css += `
-  background: ${layout.bgColor};`
-  }
-
-  if (layout.settings) {
-    css += layout.area ? `
-` : ''
-    css +=
-        `  display: grid;
-  grid-template-columns: ${joinRefArrayValue(layout.settings.columns)};
-  grid-template-rows: ${joinRefArrayValue(layout.settings.rows)};
-  grid-column-gap: ${layout.settings.columnGap}px;
-  grid-row-gap: ${layout.settings.rowGap}px;`}
-
-  output += `${_getFullCssModelName(layout, uid)} {
-${css}
-}
-`
-  _.each(layout.subAreas, subArea => output += generateGridCSS(subArea, uid, genOptions))
-
+  output += `${_getFullCssModelName(layout, uid)} { ${css} }`
+  _.each(layout.subAreas, subArea => output = output + '\r\n' + generateGridCSS(subArea, uid, genOptions))
   return output
 }
 

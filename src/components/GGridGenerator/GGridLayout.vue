@@ -22,6 +22,8 @@
       }
     },
     setup(props, context) {
+      const layout = (typeof(props.layout) === 'string') ? parseLayoutJson(props.layout) : props.layout
+
       // vue template ref id
       const refIdWrapperElement = 'el'
 
@@ -59,7 +61,7 @@
             attrs[uid] = ''
             refWrapper = { ref : refIdWrapperElement }
             styleEl = <style type="text/css">
-              {generateGridCSS(props.layout, uid, { showBackgroundColor: props.displayPreviewColor })}
+              {generateGridCSS(layout, uid, { showBackgroundColor: props.displayPreviewColor })}
             </style>
           }
           vNode = <div {...{ attrs }} {...refWrapper}>
@@ -70,8 +72,6 @@
 
         return vNode
       }
-
-      const layout = (typeof(props.layout) === 'string') ? parseLayoutJson(props.layout) : props.layout
 
       return function() {
         return processLayout(layout)

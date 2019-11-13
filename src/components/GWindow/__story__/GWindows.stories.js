@@ -27,7 +27,7 @@ export const GWindowDefault = () => ({
   }),
   props: {
     continuous: { type: Boolean, default: boolean('continuous', false) },
-    reverse: { type: Boolean, default: boolean('reverse', undefined) },
+    reverse: { type: Boolean, default: boolean('reverse', false) },
     vertical: { type: Boolean, default: boolean('vertical', false) },
     showArrows: { type: Boolean, default: boolean('showArrows', true) },
     prevIcon: { type: String, default: text('prevIcon', 'mdi-chevron-left') },
@@ -37,7 +37,14 @@ export const GWindowDefault = () => ({
     hideDelimiters: { type: Boolean, default: boolean('hideDelimiters', true) },
 
   },
-  template: `<g-window :continuous="continuous" :hide-delimiters="hideDelimiters" :elevation="elevation" :vertical="vertical" :show-arrows-on-hover="showArrowsOnHover" :prev-icon="prevIcon" :next-icon="nextIcon" :reverse="reverse" :show-arrows="showArrows" v-model="selectedItem">
+  template: `<g-window :continuous="continuous"
+                       :hide-delimiters="hideDelimiters"
+                       :elevation="elevation" :vertical="vertical"
+                       :show-arrows-on-hover="showArrowsOnHover"
+                       :prev-icon="prevIcon" :next-icon="nextIcon"
+                       :reverse="reverse" :show-arrows="showArrows"
+                       v-model="selectedItem"
+             >
                <g-window-item>
                   <g-img height="300" src="https://image.shutterstock.com/image-photo/plitvice-lakes-croatia-beautiful-place-260nw-1050138794.jpg" width="100%">
                     <g-card-title absolute bottom left textColor="white">
@@ -77,7 +84,24 @@ export const GWindowDefault = () => ({
 });
 
 export const GWindowWithCards = () => ({
-  components: { GCard, GCardActions, GCardTitle, GDivider, GCardText, GBtn, GSpacer, GAvatar, GCardSubtitle, GWindowItem, GWindow, GImg, GTextField, GIcon, GChip, GChipGroup },
+  components: {
+    GCard,
+    GCardActions,
+    GCardTitle,
+    GDivider,
+    GCardText,
+    GBtn,
+    GSpacer,
+    GAvatar,
+    GCardSubtitle,
+    GWindowItem,
+    GWindow,
+    GImg,
+    GTextField,
+    GIcon,
+    GChip,
+    GChipGroup
+  },
   data: () => ({
     selectedItem: 0,
     activeItems: null,

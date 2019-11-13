@@ -1,9 +1,12 @@
 <script>
   import _ from 'lodash'
   import { reactive, ref, computed, onUpdated } from '@vue/composition-api'
+  import { saveFile, openFile } from '../../utils/helpers';
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import {
-    generateGridCSS,
+    _gridItemOptions, _gridContentOptions,
+    changeAlignSelf, changeAlignItems, changeAlignContent, changeJustifySelf, changeJustifyItems, changeJustifyContent,
+    isActiveAlignSelf, isActiveAlignItems, isActiveAlignContent, isActiveJustifySelf, isActiveJustifyItems, isActiveJustifyContent,
     joinRefArrayValue,
     getGridAreaCss,
     addSubGridArea,
@@ -17,10 +20,11 @@
   import GIcon from '../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
   import GEditViewInput from './GEditViewInput'
+  import GFileInputJSX from '../GFileInput/GFileInputJSX'
 
   export default {
     name: 'GGridGenerator',
-    components: { GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
+    components: { GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
       layout: {
         type: [String, Object]
@@ -29,19 +33,22 @@
     setup(props, context) {
       // initialize layout
       let initLayout = null
-      if (typeof(props.layout) === 'string') {
+      if (typeof (props.layout) === 'string') {
         initLayout = parseLayoutJson(props.layout)
       } else {
         initLayout = props.layout || {
           name: 'app',
-          settings: {
-            columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-            columnGap: 0,
-            rowGap: 0,
-          },
+          columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+          rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+          columnGap: 0,
+          rowGap: 0,
           subAreas: []
         }
+      }
+
+      const selectedSetting = {
+        grid: 0,
+        area: 1
       }
 
       const state = reactive({
@@ -62,6 +69,8 @@
           columnEnd: -1
         },
 
+        //
+        selectedSetting: selectedSetting.grid,
         // a value hold the selected grid/sub-grid
         selectedGrid: initLayout,
         // a value hold the selected area
@@ -103,9 +112,12 @@
           'grid-gen__sub-list__item--selected': grid === state.selectedGrid
         }
       }
+
       function setSelectedGrid(grid) {
         state.selectedGrid = grid
+        state.selectedSetting = selectedSetting.grid
       }
+
       function renderGridList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">GRID</div>
@@ -131,12 +143,16 @@
           'grid-gen__sub-list__item--overflowed': isAreaOverflowed(area)
         }
       }
+
       function setSelectedArea(area) {
         state.selectedArea = area
+        state.selectedSetting = selectedSetting.area
       }
+
       function toggleAreaHideShow(area) {
         area.hide = !area.hide
       }
+
       function renderAreaList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">AREA</div>
@@ -172,8 +188,8 @@
         const colStyle = {
           display: 'grid',
           'grid-template-rows': widthUnitSettingColumnHeight,
-          'grid-template-columns': joinRefArrayValue(grid.settings.columns),
-          'gap': `${grid.settings.rowGap}px ${grid.settings.columnGap}px`,
+          'grid-template-columns': joinRefArrayValue(grid.columns),
+          'gap': `${grid.rowGap}px ${grid.columnGap}px`,
           // align column in top, margin left = row width
           position: 'absolute',
           top: 0,
@@ -183,11 +199,11 @@
           height: widthUnitSettingColumnHeight
         }
         return <div style={colStyle}> {
-          _.map(grid.settings.columns, (col, id) =>
+          _.map(grid.columns, (col, id) =>
               <div class={getColumnUnitClass(id)}>
                 <input
                     value={col.value}
-                    vOn:keypress={e => enterPressed(e) && (grid.settings.columns[id].value = e.target.value)}
+                    vOn:keypress={e => enterPressed(e) && (grid.columns[id].value = e.target.value)}
                     vOn:focus_stop={() => state.selectedColumnUnitIndex = id}/>
               </div>
           )
@@ -206,8 +222,8 @@
         const rowUnitStyles = {
           display: 'grid',
           'grid-template-columns': heightUnitSettingRowWidth,
-          'grid-template-rows': joinRefArrayValue(grid.settings.rows),
-          'gap': `${grid.settings.rowGap}px ${grid.settings.columnGap}px`,
+          'grid-template-rows': joinRefArrayValue(grid.rows),
+          'gap': `${grid.rowGap}px ${grid.columnGap}px`,
           // align rows settings on the left, margin top = column height
           position: 'absolute',
           top: widthUnitSettingColumnHeight,
@@ -216,11 +232,11 @@
           width: heightUnitSettingRowWidth
         }
         return <div style={rowUnitStyles}> {
-          _.map(grid.settings.rows, (row, id) =>
+          _.map(grid.rows, (row, id) =>
               <div class={getRowUnitClass(id)}>
                 <input
                     value={row.value}
-                    vOn:keypress={e => enterPressed(e) && (grid.settings.rows[id].value = e.target.value)}
+                    vOn:keypress={e => enterPressed(e) && (grid.rows[id].value = e.target.value)}
                     vOn:focus_stop={() => state.selectedRowUnitIndex = id}
                 />
               </div>
@@ -237,8 +253,8 @@
 
       function renderGridContainer(grid) {
         const gridItems = []
-        for (let i = 0, rowLen = grid.settings.rows.length; i < rowLen; ++i) {
-          for (let j = 0, colLen = grid.settings.columns.length; j < colLen; ++j) {
+        for (let i = 0, rowLen = grid.rows.length; i < rowLen; ++i) {
+          for (let j = 0, colLen = grid.columns.length; j < colLen; ++j) {
             gridItems.push(<div
                 class={cptGridContainerClass.value}
                 vOn:mousedown={(e) => {
@@ -290,9 +306,9 @@
 
         const gridStyles = {
           display: 'grid',
-          'grid-template-columns': joinRefArrayValue(grid.settings.columns),
-          'grid-template-rows': joinRefArrayValue(grid.settings.rows),
-          'gap': `${grid.settings.rowGap}px ${grid.settings.columnGap}px`,
+          'grid-template-columns': joinRefArrayValue(grid.columns),
+          'grid-template-rows': joinRefArrayValue(grid.rows),
+          'gap': `${grid.rowGap}px ${grid.columnGap}px`,
           //
           position: 'absolute',
           top: widthUnitSettingColumnHeight,
@@ -369,7 +385,7 @@
 
       // render area in view mode
       function renderGridAreaInViewMode(gridItem) {
-        if (gridItem.settings) {
+        if (gridItem.subAreas) {
           return <div
               class="grid-gen__editor__field__area"
               style={{
@@ -377,9 +393,9 @@
                 backgroundColor: gridItem.bgColor,
                 gridArea: getGridAreaCss(gridItem),
                 display: 'grid',
-                'grid-template-columns': joinRefArrayValue(gridItem.settings.columns),
-                'grid-template-rows': joinRefArrayValue(gridItem.settings.rows),
-                'gap': `${gridItem.settings.rowGap}px ${gridItem.settings.columnGap}px`,
+                'grid-template-columns': joinRefArrayValue(gridItem.columns),
+                'grid-template-rows': joinRefArrayValue(gridItem.rows),
+                'gap': `${gridItem.rowGap}px ${gridItem.columnGap}px`,
               }}>
             {renderGridAreas(gridItem)}
           </div>
@@ -420,6 +436,7 @@
       const refIdBtnCreateSubItem = 'btnCreateSubItem'
       const refIdBtnCreateSubGrid = 'btnCreateSubGrid'
       const refIdBtnCancel = 'btnCancel'
+
       function onOnConfirmDialogKeyDown(e) {
         if (enterPressed(e)) {
           if (shiftPressed(e) || ctrlPressed(e) || metaPressed(e)) {
@@ -431,6 +448,7 @@
           context.refs[refIdBtnCancel].click()
         }
       }
+
       function onSubGridBtnClicked(grid) {
         if (isGridAreaNameValid(_selectingArea.name)) {
           // can use state.hoveringArea directly instead of _selectingArea
@@ -439,17 +457,20 @@
           _selectingArea = createEmptyArea()
         }
       }
-      function onSubItemBtnClicked(grid){
+
+      function onSubItemBtnClicked(grid) {
         if (isGridAreaNameValid(_selectingArea.name)) {
           addSubItemArea(grid, _selectingArea)
           state.showConfirmDialog = false
           _selectingArea = createEmptyArea()
         }
       }
+
       function onCancelBtnClick() {
         state.showConfirmDialog = false
         _selectingArea = createEmptyArea()
       }
+
       function renderConfirmDialog(grid) {
         return <g-dialog vModel={state.showConfirmDialog} width="600px" persistent>
           <div class="grid-gen__dialog__confirm" vOn:keydown={onOnConfirmDialogKeyDown}>
@@ -481,8 +502,10 @@
               </div>
             </div>
             <div class="grid-gen__dialog__confirm__action-btn">
-              <button ref={refIdBtnCreateSubGrid} vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>&nbsp;
-              <button ref={refIdBtnCreateSubItem} vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>&nbsp;
+              <button ref={refIdBtnCreateSubGrid} vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
+              &nbsp;
+              <button ref={refIdBtnCreateSubItem} vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
+              &nbsp;
               <button ref={refIdBtnCancel} vOn:click={onCancelBtnClick}>Cancel</button>
             </div>
           </div>
@@ -490,57 +513,99 @@
       }
 
       // 3) Settings
-      // a helper method adjust row, col number
-      function renderGridSettings(grid) {
+      function renderViewportSetting() {
         return [
-          <div class="grid-gen__settings-section">Grid Settings</div>,
+          <div class="grid-gen__settings-section">Preview</div>,
           <div class="grid-gen__settings-prop">
-            <label>Field width(px): </label>
+            <label>Width(px): </label>
             <g-inc-dec-number-input min={600} value={state.fieldWidth} vOn:input={v => state.fieldWidth = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
-            <label>Field height(px): </label>
+            <label>Height(px): </label>
             <g-inc-dec-number-input min={400} value={state.fieldHeight} vOn:input={v => state.fieldHeight = v}/>
-          </div>,
-          <div class="grid-gen__settings-prop">
-            <label>Columns: </label>
-            <g-inc-dec-number-input min={1} value={grid.settings.columns.length} vOn:input={v => adjustRowColNumbers(grid.settings.columns, v)}/>
-          </div>,
-          <div class="grid-gen__settings-prop">
-            <label>Rows: </label>
-            <g-inc-dec-number-input min={1} value={grid.settings.rows.length} vOn:input={v => adjustRowColNumbers(grid.settings.rows, v)}
-            />
-          </div>,
-          <div class="grid-gen__settings-prop">
-            <label>Column Gap(px): </label>
-            <g-inc-dec-number-input min={0} value={grid.settings.columnGap} vOn:input={v => grid.settings.columnGap = v}/>
-          </div>,
-          <div class="grid-gen__settings-prop">
-            <label>Row Gap(px): </label>
-            <g-inc-dec-number-input min={0} value={grid.settings.rowGap} vOn:input={v => grid.settings.rowGap = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>View mode: </label>
             <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}>Overview</input>
           </div>,
-          <div class="grid-gen__settings-section">Insert/Delete</div>,
-          <div>
-            <div>Rows:</div>
-            <button vOn:click={() => insertRowAbove(grid, state.selectedRowUnitIndex)}>Above</button>
-            <button vOn:click={() => insertRowBelow(grid, state.selectedRowUnitIndex)}>Below</button>
-            <button vOn:click={() => deleteRow(grid, state.selectedRowUnitIndex)}>Delete</button>
-          </div>,
-          <div>
-            <div>Columns:</div>
-            <button vOn:click={() => insertColumnLeft(grid, state.selectedColumnUnitIndex)}>Left</button>
-            <button vOn:click={() => insertColumnRight(grid, state.selectedColumnUnitIndex)}>Right</button>
-            <button vOn:click={() => deleteColumn(grid, state.selectedColumnUnitIndex)}>Delete</button>
-          </div>
         ]
       }
 
+      // a helper method adjust row, col number
+
+
+      function renderGridSettings(grid) {
+        return state.selectedSetting === selectedSetting.grid ? [
+          // columns number, rows number, gap pixel setting
+          <div class="grid-gen__settings-section">Grid Settings</div>,
+          <div class="grid-gen__settings-prop">
+            <label>Columns: </label>
+            <g-inc-dec-number-input min={1} value={grid.columns.length} vOn:input={v => adjustRowColNumbers(grid.columns, v)}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Rows: </label>
+            <g-inc-dec-number-input min={1} value={grid.rows.length} vOn:input={v => adjustRowColNumbers(grid.rows, v)}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Column Gap(px): </label>
+            <g-inc-dec-number-input min={0} value={grid.columnGap} vOn:input={v => grid.columnGap = v}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Row Gap(px): </label>
+            <g-inc-dec-number-input min={0} value={grid.rowGap} vOn:input={v => grid.rowGap = v}/>
+          </div>,
+
+          // justify/align items
+          <div class="grid-gen__settings-prop">
+            <label>Align Items:</label>
+            <select vOn:change={e => changeAlignItems(grid, e.target.value)}>
+              { _.map(_gridItemOptions, value => <option selected={isActiveAlignItems(grid, value)} value={value}>{value}</option>) }
+            </select>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Align content:</label>
+            <select vOn:change={e => changeAlignContent(grid, e.target.value)}>
+              { _.map(_gridContentOptions, value => <option selected={isActiveAlignContent(grid, value)} value={value}>{value}</option>) }
+            </select>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Justify Items:</label>
+            <select vOn:change={e => changeJustifyItems(grid, e.target.value)}>
+              { _.map(_gridItemOptions, value => <option selected={isActiveJustifyItems(grid, value)} value={value}>{value}</option>) }
+            </select>
+          </div>,
+
+          // justify/alignment contents
+          <div class="grid-gen__settings-prop">
+            <label>Justify content:</label>
+            <select vOn:change={e => changeJustifyContent(grid, e.target.value)}>
+              { _.map(_gridContentOptions, value => <option selected={isActiveJustifyContent(grid, value)} value={value}>{value}</option>) }
+            </select>
+          </div>,
+
+            // Insert/delete row/column
+          <div class="grid-gen__settings-section">Insert/Delete</div>,
+          <div class="grid-gen__settings-prop">
+            <label>Rows:</label>
+            <span>
+              <button vOn:click={() => insertRowAbove(grid, state.selectedRowUnitIndex)}>Above</button>
+              <button vOn:click={() => insertRowBelow(grid, state.selectedRowUnitIndex)}>Below</button>
+              <button vOn:click={() => deleteRow(grid, state.selectedRowUnitIndex)}>Delete</button>
+            </span>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Columns:</label>
+            <span>
+              <button vOn:click={() => insertColumnLeft(grid, state.selectedColumnUnitIndex)}>Left</button>
+              <button vOn:click={() => insertColumnRight(grid, state.selectedColumnUnitIndex)}>Right</button>
+              <button vOn:click={() => deleteColumn(grid, state.selectedColumnUnitIndex)}>Delete</button>
+            </span>
+          </div>,
+        ] : null
+      }
+
       function renderAreaSettings(gridItem) {
-        return gridItem != null && gridItem.parent === state.selectedGrid ? [
+        return gridItem != null && (gridItem.parent === state.selectedGrid) && state.selectedSetting === selectedSetting.area ? [
           <div class="grid-gen__settings-section">Area Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Top: </label>
@@ -579,37 +644,40 @@
                 vOn:input={v => gridItem.area.rowEnd = gridItem.area.rowStart + v}/>
           </div>,
           <div class="grid-gen__settings-prop">
-            <label>Justify content: </label>
-            <select></select>
+            <label>Align self:</label>
+            <select vOn:change_stop={e => changeAlignSelf(gridItem, e.target.value)}>
+              { _.map(_gridItemOptions, value => <option selected={isActiveAlignSelf(gridItem, value)} value={value}>{value}</option>) }
+            </select>
           </div>,
           <div class="grid-gen__settings-prop">
-            <label>Align items: </label>
-            <select></select>
-          </div>
+            <label>Justify self:</label>
+            <select vOn:change_stop={e => changeJustifySelf(gridItem, e.target.value)}>
+              { _.map(_gridItemOptions, value => <option selected={isActiveJustifySelf(gridItem, value)} value={value}>{value}</option>) }
+            </select>
+          </div>,
         ] : null
       }
 
       // 4) Generate output
+      function loadLayoutFile() {
+        openFile({ multiple: false, mimeType: 'application/json' }, files => {
+          files[0].text().then(content => {
+            state.layout = parseLayoutJson(content)
+            state.selectedGrid = state.layout
+          })
+        })
+      }
+
+      function saveLayoutFile() {
+        saveFile('layout.json', generateLayoutJson(state.layout), 'application/json')
+      }
+
       function renderGridGeneratorOutput() {
         return [
           <div class="grid-gen__settings-section">Files</div>,
-          renderImportJSONBtn(),
-          renderExportJSONBtn(),
+          <button vOn:click_stop_prevent={loadLayoutFile}>Import</button>,
+          <button vOn:click_stop_prevent={saveLayoutFile}>Export</button>,
         ]
-      }
-
-      function renderImportJSONBtn() {
-        return <button
-          vOn:click_stop_prevent={() => {
-
-          }}>Import Layout</button>
-      }
-
-      function renderExportJSONBtn() {
-        return <button
-          vOn:click_stop_prevent={() => {
-            context.emit('export_layout_json', generateLayoutJson(state.layout))
-          }}>Export Layout</button>
       }
 
       // do stuff after vue rendered
@@ -645,9 +713,10 @@
                 </div>
               </div>
               <div class="grid-gen__settings">
+                {renderGridGeneratorOutput()}
+                {renderViewportSetting()}
                 {renderGridSettings(state.selectedGrid)}
                 {renderAreaSettings(state.selectedArea)}
-                {renderGridGeneratorOutput()}
               </div>
               {renderConfirmDialog(state.selectedGrid)}
 
@@ -818,7 +887,7 @@
       padding: 0 20px;
       background-color: #fff;
       border-left: 2px solid #888;
-      min-width: 240px;
+      min-width: 265px;
       top: 0;
       right: 0;
 

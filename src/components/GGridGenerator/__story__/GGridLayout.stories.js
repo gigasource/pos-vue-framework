@@ -1,12 +1,10 @@
 import { text, withKnobs, boolean } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions'
 import { reactive, ref } from '@vue/composition-api'
 import GGridLayout from '../GGridLayout'
 import GGridGenerator from '../GGridGenerator';
 import GEditViewInput from '../GEditViewInput'
 import GIncDecNumberInput from '../GIncDecNumberInput'
-import { parseLayoutJson } from '../logic/GGridGeneratorUtil';
-import { createLayoutObject } from './storyHelper';
+import { createLayoutObject, createLayoutStr } from './storyHelper';
 
 //
 export default {
@@ -57,9 +55,8 @@ function createTemplate(areaIdentity = 'area'){
   // add identity-attr if areaIdentity is not default 'area'
   let identityAttr = (areaIdentity !== 'area') ? `identity-attr="${areaIdentity}"` : ''
 
-  return `<div class="storybook-gridlayout">
-  <g-grid-generator :layout="app"/>      
-  <g-grid-layout :layout="app" style="height: 700px" :displayPreviewColor="displayPreviewColor" ${identityAttr}>
+  return `<div class="storybook-gridlayout"> 
+  <g-grid-layout :layout="layout" style="height: 700px" :displayPreviewColor="displayPreviewColor" ${identityAttr}>
     <div ${areaIdentity}="headerLogo">Gigaorder logo</div>
     <div ${areaIdentity}="headerTitle">Gigaorder GmbH</div>
     <div ${areaIdentity}="bodySidebar">
@@ -110,7 +107,9 @@ export const layoutDefaultIdentity = () => ({
     }
   },
   data() {
-    return { app: createLayoutObject() }
+    return {
+      layout: createLayoutObject()
+    }
   },
   template: createTemplate()
 })
@@ -120,8 +119,27 @@ export const layoutCustomIdentity = () => ({
   props: { displayPreviewColor: { default: boolean('displayPreviewColor', true) } },
   data () {
     return {
-      app: createLayoutObject()
+      layout: createLayoutObject()
     }
   },
   template: createTemplate('x-zone')
+})
+
+
+export const layoutStr = () => ({
+  components: { GGridLayout, GGridGenerator },
+  props: {
+    displayPreviewColor: {
+      default: boolean('displayPreviewColor', true)
+    },
+    // for some reason, unexpred error thrown with JSON parse when using storybook property
+    // layout: {
+    //   type: [String, Object],
+    //   default: text('layout', '{"name":"app","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"bgColor":"transparent","subAreas":[{"name":"header","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"area":{"columnStart":1,"columnEnd":6,"rowStart":1,"rowEnd":2},"bgColor":"hsl(68, 100%, 50%, 50%)","align-items":"","align-content":"","justify-items":"","justify-content":"","justify-self":"","align-self":"","subAreas":[{"name":"headerLogo","hide":false,"area":{"columnStart":2,"columnEnd":3,"rowStart":2,"rowEnd":3},"bgColor":"hsl(280, 100%, 50%, 50%)","justify-self":"","align-self":""},{"name":"headerTitle","hide":false,"area":{"columnStart":4,"columnEnd":8,"rowStart":3,"rowEnd":2},"bgColor":"hsl(262, 100%, 50%, 50%)","justify-self":"","align-self":""}]},{"name":"body","hide":false,"columns":["1fr","1fr","1fr","1fr","1fr"],"rows":["1fr","1fr","1fr","1fr","1fr"],"columnGap":0,"rowGap":0,"area":{"columnEnd":6,"columnStart":1,"rowEnd":5,"rowStart":2},"bgColor":"hsl(275, 100%, 50%, 50%)","align-items":"","align-content":"","justify-items":"","justify-content":"","justify-self":"","align-self":"","subAreas":[{"name":"bodySidebar","hide":false,"area":{"columnEnd":2,"columnStart":1,"rowEnd":6,"rowStart":1},"bgColor":"hsl(298, 100%, 50%, 50%)","justify-self":"","align-self":""},{"name":"bodyContent","hide":false,"area":{"columnEnd":6,"columnStart":2,"rowEnd":6,"rowStart":1},"bgColor":"hsl(8, 100%, 50%, 50%)","justify-self":"","align-self":""}]},{"name":"footer","hide":false,"area":{"columnEnd":6,"columnStart":1,"rowEnd":6,"rowStart":5},"bgColor":"hsl(204, 100%, 50%, 50%)","justify-self":"","align-self":""}],"align-items":"start","align-content":"end","justify-items":"center","justify-content":"space-around"}')
+    // }
+    layout: {
+      default: createLayoutStr()
+    }
+  },
+  template: createTemplate('area')
 })
