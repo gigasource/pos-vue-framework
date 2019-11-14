@@ -71,7 +71,10 @@
 
       // Overlay styling
       overlayColor: String,
-      overlayOpacity: [Number, String]
+      overlayOpacity: [Number, String],
+
+			//positioning
+			bottom: Boolean,
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
@@ -140,7 +143,8 @@
       }));
 
       const wrapperClasses = computed(() => ({
-        'dialog-wrapper__active': isActive.value
+        'dialog-wrapper__active': isActive.value,
+				'dialog-wrapper__bottom': props.bottom,
       }));
 
       const wrapperStyles = computed(() => ({

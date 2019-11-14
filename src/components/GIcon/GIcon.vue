@@ -18,7 +18,7 @@
 <script>
   import { computed, ref, onMounted, onUpdated } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
-  import { setBackgroundColor } from '../../mixins/colorable';
+  import { setTextColor } from '../../mixins/colorable';
   import { Fragment } from 'vue-fragment'
 
   export default {
@@ -127,7 +127,7 @@
         ...nodeData.value.tag
       }))
 
-      let iconColor = computed(() => setBackgroundColor(props.color, {}))
+      let iconColor = computed(() => setTextColor(props.color, {}))
 
       let iconClass = computed(() => ({
         ...nodeData.value.class,

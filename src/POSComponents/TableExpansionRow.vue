@@ -81,7 +81,7 @@
 							</div>
 						</div>
             <div style="flex-grow: 1"></div>
-            <g-btn text small text-color="#f44336" style="margin: 12px 0">
+            <g-btn text small text-color="#f44336" style="margin: 12px 0; letter-spacing: 0; font-size 14px">
               <g-icon small class="mr-2">remove_circle</g-icon>Remove item
             </g-btn>
           </div>

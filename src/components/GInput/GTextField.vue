@@ -156,12 +156,13 @@
 				onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
 			//set legend width for label in outlined textfield
 			const legendStyles = computed(() => {
-			  if( !props.solo && props.label && (isFocused.value || internalValue.value||props.placeholder)) {
+			  if( !props.solo  && (isFocused.value || internalValue.value||props.placeholder)) {
 					const margin = props.rounded ? '16px' : '5px';
 			    return {
 			      'width': 'auto',
 						'padding': '1px',
 						'margin-left': margin,
+						'display' : props.label && props.outlined ? 'block' : 'none',
 					}
 				} else
 				  return {}
