@@ -226,7 +226,7 @@
 		pointer-events: auto;
 		overflow-y: hidden;
 		display: inline;
-		//position: relative;
+		position: relative;
 
 		&-wrapper {
 			display: flex;
