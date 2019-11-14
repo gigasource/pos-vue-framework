@@ -1,17 +1,6 @@
 $icon-size: 24px !default;
 $icon-size-dense: 20px !default;
 
-//Theme
-//+theme(v-icon) using ($material){
-//  color: map-deep-get($material, 'icons', 'active');
-//
-//  &--disabled {
-//    color: map-deep-get($material, 'icons', 'inactive') !important;
-//  }
-//}
-
-//Increased specificity to overwrite
-//iconfont css interference
 .g-icon.g-icon {
   align-items: center;
   display: inline-flex;
@@ -56,7 +45,7 @@ $icon-size-dense: 20px !default;
   }
 
   &__dense {
-    font-size: $icon-size-dense;
+    font-size: $icon-size-dense !important;
 
     &__is-component {
       height: $icon-size-dense;

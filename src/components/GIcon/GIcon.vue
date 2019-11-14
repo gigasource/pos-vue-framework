@@ -55,9 +55,9 @@
       onUpdated(() => getIcon())
 
       function renderFontAwesomeIcon(nodeData) {
-        nodeData.class[icon.value] = true
-        nodeData.style['fontSize'] = getSize(props)
-      }
+				nodeData.class[icon.value] = true
+				nodeData.style['fontSize'] = getSize(props)
+			}
 
       function renderMaterialIcon(nodeData) {
         let iconType = 'material-icons'
@@ -80,9 +80,9 @@
         nodeData.tag.i = false
 
         nodeData.class['g-icon__svg'] = true
-        nodeData.style['fontSize'] = getSize(props)
-        nodeData.style['width'] = getSize(props)
-        nodeData.style['height'] = getSize(props)
+				nodeData.style['fontSize'] = getSize(props)
+				nodeData.style['width'] = getSize(props)
+				nodeData.style['height'] = getSize(props)
       }
 
       function renderCustomSvgIcon(nodeData) {
