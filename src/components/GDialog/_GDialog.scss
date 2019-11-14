@@ -72,6 +72,7 @@
     overflow-y: auto;
     top: 0;
     left: 0;
+    right: 0;
 
     > .g-card {
       min-height: 100%;
@@ -79,5 +80,9 @@
       margin: 0 !important;
       padding: 0 !important;
     }
+  }
+
+  &-wrapper__bottom {
+    align-items: flex-end;
   }
 }

@@ -1,5 +1,5 @@
 <template>
-	<g-layout>
+	<g-layout class="g-item-group">
 		<slot :toggle="toggleItem" :active="isActiveItem">
 			<template v-for="(item, index) in items">
 				<g-item :item="item" :is-active="isActiveItem(item)" @toggle="toggleItem" :key="index">

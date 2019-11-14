@@ -7,7 +7,7 @@
   import Touch from '../../directives/touch/touch';
 
   export default {
-    name: 'GWindow',
+    name: 'GScrollWindow',
     components: { GIcon, GBtn, GWindowItem },
     props: {
       value: null,
@@ -44,7 +44,6 @@
     directives: { Touch },
     setup(props, context) {
       const data = reactive({
-        changedByDelimiters: undefined,
         transitionHeight: undefined, // Intermediate height during transition.
         transitionCount: 0, // Number of windows in transition state.
         isBooted: false,
@@ -55,7 +54,9 @@
       const internalValue = getInternalValue(props, context);
 
       function register(item) {
-        item.data.value = data.items.push(item) - 1;
+        const index = data.items.push(item) - 1;
+        item.data.value = index;
+        item.$el.id = `g-window-item-${index}`;
       }
 
       function unregister(item) {
@@ -78,7 +79,6 @@
       });
 
       const classes = computed(() => ({
-        'g-window__show-arrows-on-hover': props.showArrowsOnHover,
         'g-window__vertical-delimiters': isVertical.value,
         ['elevation-' + props.elevation]: true,
         [props.activeClass]: props.active
@@ -96,12 +96,11 @@
       provide('internalReverse', internalReverse);
 
       watch(internalValue, (val, oldVal) => {
-        if (data.changedByDelimiters || props.continuous) {
-          data.changedByDelimiters = false;
-          return
-        }
+        const currentElement = document.querySelector(`#${data.items[internalValue.value].$el.id}`);
+        currentElement.scrollIntoView({behavior: 'smooth'});
+
         data.isReverse = val < oldVal
-      }, { flush: 'pre' });
+      }, { flush: 'pre', lazy: true });
 
       const hasActiveItems = computed(() => !!data.items.find(item => !item.disabled));
 
@@ -159,32 +158,6 @@
         internalValue.value = getPrevIndex(internalValue.value);
       }
 
-      function genIcon(direction, icon, fn) {
-        return <div class={`g-window__${direction}`}>
-          <g-btn icon vOn:click={() => {
-            data.changedByDelimiters = true;
-            fn();
-          }}>
-            <g-icon large>{icon}</g-icon>
-          </g-btn>
-        </div>
-      }
-
-      function genControlIcons() {
-        const icons = [];
-        if (hasPrev.value && props.prevIcon) {
-          const icon = genIcon('prev', props.prevIcon, prev);
-          icon && icons.push(icon);
-        }
-
-        if (hasNext.value && props.nextIcon) {
-          const icon = genIcon('next', props.nextIcon, next);
-          icon && icons.push(icon);
-        }
-
-        return icons;
-      }
-
       function genDelimiters() {
         const nodeData = {
           staticClass: 'g-window-controls',
@@ -223,13 +196,14 @@
           class: {
             'g-window__container__is-active': isActive.value,
           },
+          id: 'window-container',
           style: {
             height: data.transitionHeight,
           },
         };
 
         return <div {...containerData}>
-          {[context.slots.default && context.slots.default(), props.showArrows && genControlIcons()]}
+          {context.slots.default && context.slots.default()}
         </div>
       }
 
@@ -248,7 +222,7 @@
             end: e => e.stopPropagation(),
             start: e => e.stopPropagation(),
           }
-        })
+        });
 
         return <div ref="window" {...windowData}>{genContainer()} {!props.hideDelimiters && genDelimiters()}</div>
       }
@@ -282,6 +256,20 @@
     position: absolute;
     width: 100%;
     z-index: 1;
+  }
+
+  .g-window__container {
+    display: flex;
+    box-sizing: content-box;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+  }
+
+  .g-window__container::-webkit-scrollbar {
+    display: none;
   }
 
   .g-window__vertical-delimiters {
@@ -412,5 +400,4 @@
       }
     }
   }
-
 </style>
