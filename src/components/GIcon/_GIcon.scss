@@ -45,7 +45,7 @@ $icon-size-dense: 20px !default;
   }
 
   &__dense {
-    font-size: $icon-size-dense !important;
+    font-size: $icon-size-dense;
 
     &__is-component {
       height: $icon-size-dense;

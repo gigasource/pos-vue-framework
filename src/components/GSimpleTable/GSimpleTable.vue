@@ -63,6 +63,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GSimpleTable";
 </style>

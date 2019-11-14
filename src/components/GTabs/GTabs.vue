@@ -35,7 +35,7 @@
       alignWithTitle: Boolean,
     },
     setup(props, context) {
-      const { model } = getVModel(props, context);
+      const model = getVModel(props, context);
 
       if (!model.value) {
         model.value = props.items.find(item => !item.disabled);
@@ -204,6 +204,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GTabs";
 </style>

@@ -18,7 +18,7 @@
 <script>
   import { computed, ref, onMounted, onUpdated } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
-  import { setTextColor } from '../../mixins/colorable';
+	import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import { Fragment } from 'vue-fragment'
 
   export default {
@@ -48,7 +48,7 @@
       const icon = ref('')
 
       function getIcon() {
-        icon.value = context.slots.default? context.slots.default()[0].text.trim() : ''
+        icon.value = context.slots.default ? context.slots.default()[0].text.trim() : ''
       }
 
       onMounted(() => getIcon())
@@ -189,3 +189,7 @@
     return '24px'
   }
 </script>
+
+<style scoped lang="scss">
+	@import "GIcon";
+</style>

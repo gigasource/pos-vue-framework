@@ -56,7 +56,7 @@
       height: [Number, String]
     },
     setup(props, context) {
-      const { model: isActive } = getVModel(props, context)
+      const isActive = getVModel(props, context)
       const { attachToRoot, detach } = detachable(props, context);
 
       // Render Options Handling
@@ -393,5 +393,7 @@
     }
   }
 </script>
-<style scoped>
+
+<style scoped lang="scss">
+ @import "GDndDialog";
 </style>

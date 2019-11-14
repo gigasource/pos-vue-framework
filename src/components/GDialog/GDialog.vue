@@ -74,7 +74,7 @@
       overlayOpacity: [Number, String]
     },
     setup(props, context) {
-      const { model: isActive } = getVModel(props, context);
+      const isActive = getVModel(props, context);
       const { attachToRoot, attachToParent, detach } = detachable(props, context);
       const { getMaxZIndex } = stackable(props, context);
 
@@ -116,9 +116,10 @@
             isBooted.value = true;
             context.root.$nextTick(() => {
               initComponent();
+              context.refs.wrapper.focus();
             })
           }
-          context.refs.wrapper.focus();
+          context.refs.wrapper && context.refs.wrapper.focus();
         }
       })
 
@@ -188,8 +189,8 @@
       // Clean-up when destroy
       onBeforeUnmount(() => {
         unwatch();
-        detach(context.refs.wrapper);
-        detach(context.refs.overlay.$el);
+        context.refs.wrapper && detach(context.refs.wrapper);
+        context.refs.overlay && detach(context.refs.overlay.$el);
         detach();
       });
 
@@ -211,6 +212,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+ @import "GDialog";
 </style>

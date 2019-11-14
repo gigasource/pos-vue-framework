@@ -25,6 +25,24 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	.g-container {
+		width: 100%;
+		margin: 0 auto;
+		padding: 12px;
 
+		&__fluid {
+			max-width: 100%;
+			max-height: 100%;
+		}
+
+		::v-deep .g-row {
+			flex: 1 1 100%;
+			margin: 0 -12px;
+
+			&__dense{
+				margin: 0 -4px;
+			}
+		}
+	}
 </style>

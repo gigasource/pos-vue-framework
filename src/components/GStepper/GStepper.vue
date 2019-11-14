@@ -45,7 +45,7 @@
         completes.value.push(false);
       }
 
-      const { model } = getVModel(props, context);
+      const model = getVModel(props, context);
       const { toggleItem, isActiveItem } = groupable({ mandatory: true, multiple: false }, model);
 
       watch(() => model.value, (newVal, oldVal) => {
@@ -124,6 +124,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GStepper";
 </style>
