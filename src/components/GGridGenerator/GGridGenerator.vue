@@ -20,7 +20,7 @@
   import GIcon from '../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
   import GEditViewInput from './GEditViewInput'
-  import GFileInputJSX from '../GFileInput/GFileInputJSX'
+  import GFileInputJSX from '../GFileInput/GFileInput'
 
   export default {
     name: 'GGridGenerator',
