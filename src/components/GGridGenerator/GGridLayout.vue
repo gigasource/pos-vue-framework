@@ -16,7 +16,6 @@
     },
     setup(props, context) {
       const layout = (typeof(props.layout) === 'string') ? parseLayoutStr(props.layout) : parseLayoutJsonObject(props.layout)
-      console.log(layout)
 
       // vue template ref id
       const refIdWrapperElement = 'el'

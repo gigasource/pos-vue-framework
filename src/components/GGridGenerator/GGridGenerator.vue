@@ -50,8 +50,6 @@
         })
       }
 
-      console.log(initLayout)
-
       const selectedSetting = {
         grid: 0,
         area: 1
