@@ -274,9 +274,9 @@
         >
           <template slot="default">
             {genSearchTextField()}
-            {context.slots.prependItem}
+            {context.slots['prepend-item']&&context.slots['prepend-item']()}
             {genList(showOptions)}
-            {context.slots.appendItem}
+            {context.slots['append-item']&&context.slots['append-item']()}
           </template>
         </g-menu>
       }

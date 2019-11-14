@@ -11,7 +11,7 @@ export const GComboboxSingleSelectNoChips = () => ({
   components: {GCombobox},
   props: {},
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -30,7 +30,7 @@ export const GComboboxSingleSelectChips = () => ({
   components: {GCombobox},
   props: {},
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -49,7 +49,7 @@ export const GComboboxMultiSelectNoChips = () => ({
   components: {GCombobox},
   props: {},
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -68,7 +68,7 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
   components: {GCombobox},
   props: {},
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -88,7 +88,7 @@ export const GComboboxMultiSelectChips = () => ({
   components: {GCombobox},
   props: {},
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -104,10 +104,10 @@ export const GComboboxMultiSelectChips = () => ({
 </div>`,
 })
 export const GComboboxNoDataSlot = () => ({
-  components: {GCombobox},
+  components: {GCombobox, GListItem, GListItemContent, GListItemText},
   props: {},
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -119,31 +119,41 @@ export const GComboboxNoDataSlot = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple chips clearable></g-combobox>
+  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
+    <template v-slot:no-data>
+      <g-list-item>
+        <g-list-item-content>
+          <g-list-item-text>
+              No data match, Enter to add this value to selections.
+          </g-list-item-text>
+        </g-list-item-content>
+      </g-list-item>
+    </template>
+  </g-combobox>
 </div>`,
 })
 export const GComboboxSingleWithValidate = () => ({
   components: {GCombobox},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    clearable: { default: boolean('clearable', false) },
-    hint: { default: text('hint', 'Test hint') },
-    persistent: { default: boolean('persistent', true) },
-    counter: {type:[String, Number], default: Number('counter', 25) },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    chips: { default: boolean('chips', false) },
-    mandatory:{ default: boolean('mandatory', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
+    hint: {default: text('hint', 'Test hint')},
+    persistent: {default: boolean('persistent', true)},
+    counter: {type: [String, Number], default: Number('counter', 25)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    chips: {default: boolean('chips', false)},
+    mandatory: {default: boolean('mandatory', false)},
   },
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -193,6 +203,8 @@ export const test2 = () => ({
 // testing
 import Vue from 'vue/dist/vue.common.js'
 import GCombobox from "../GCombobox";
+import GListItem from "../../GList/GListItem";
+import {GListItemContent, GListItemText} from "../../GList/GListFunctionalComponent";
 
 describe('test', function () {
   it('should', function () {

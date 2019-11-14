@@ -319,6 +319,15 @@
         </GList>
       }
 
+      const genSelectSlots = computed(() => {
+        return {
+          'prepend-item': () =>
+              <div vShow={options.value.length === 0}>
+                {context.slots['no-data'] && context.slots['no-data']()}
+              </div>
+        }
+      })
+
       function genCombobox() {
         return <div class="g-combobox">
           <g-select
@@ -330,10 +339,10 @@
                 )
               }}
               selectOnly={false}
+              scopedSlots={genSelectSlots.value}
               genTextField={genTextFieldProps}
               genList={genListProps}
           >
-
           </g-select>
         </div>
       }
@@ -346,6 +355,7 @@
         selectedItem,
         selections,
         lazySearch,
+        genSelectSlots,
       }
     },
     render() {
@@ -356,31 +366,36 @@
 <style lang="scss" scoped>
   .g-combobox {
     .g-select ::v-deep {
-        .g-menu--activator {
-          & {
-            .g-tf-append__inner {
-              transition: transform 0.4s;
-            }
-            .input {
-              display: flex;
-            }
-            .g-tf-input {
-              flex-wrap: wrap;
-              width: auto;
-              display: flex;
-            }
-            input {
-              flex-shrink: 0;
-              flex-basis: auto;
-              cursor: text;
-            }
+      .g-menu--activator {
+        & {
+          .g-tf-append__inner {
+            transition: transform 0.4s;
+          }
+
+          .input {
+            display: flex;
+          }
+
+          .g-tf-input {
+            flex-wrap: wrap;
+            width: auto;
+            display: flex;
+          }
+
+          input {
+            flex-shrink: 0;
+            flex-basis: auto;
+            cursor: text;
           }
         }
-
       }
+
+    }
+
     .g-select__active ::v-deep {
       .g-tf-append__inner {
         transition: transform 0.4s;
+
         & {
           .g-icon {
             transform: rotateZ(180deg);
@@ -388,5 +403,5 @@
         }
       }
     }
-    }
+  }
 </style>

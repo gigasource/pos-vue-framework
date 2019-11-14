@@ -9,27 +9,27 @@ export default {
 
 export const GSelectSingle = () => ({
   components: {GSelect},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    clearable: { default: boolean('clearable', false) },
-    hint: { default: text('hint', 'Hint') },
-    persistent: { default: boolean('persistent', false) },
-    counter: {type:[String, Number], default: number('counter', 25) },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    chips: { default: boolean('chips', false) },
-    smallChips: { default: boolean('smallChips', false) },
-    mandatory:{ default: boolean('mandatory', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
+    hint: {default: text('hint', 'Hint')},
+    persistent: {default: boolean('persistent', false)},
+    counter: {type: [String, Number], default: number('counter', 25)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    chips: {default: boolean('chips', false)},
+    smallChips: {default: boolean('smallChips', false)},
+    mandatory: {default: boolean('mandatory', false)},
   },
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -68,26 +68,26 @@ export const GSelectSingle = () => ({
 })
 export const GSelectSingleWithValidate = () => ({
   components: {GSelect},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    clearable: { default: boolean('clearable', false) },
-    hint: { default: text('hint', 'Hint') },
-    persistent: { default: boolean('persistent', false) },
-    counter: {type:[String, Number], default: Number('counter', 25) },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    chips: { default: boolean('chips', false) },
-    mandatory:{ default: boolean('mandatory', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
+    hint: {default: text('hint', 'Hint')},
+    persistent: {default: boolean('persistent', false)},
+    counter: {type: [String, Number], default: Number('counter', 25)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    chips: {default: boolean('chips', false)},
+    mandatory: {default: boolean('mandatory', false)},
   },
   data() {
-    return{
+    return {
       items: [
         {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -136,19 +136,19 @@ export const GSelectSingleWithValidate = () => ({
 
 export const GSelectMultiple = () => ({
   components: {GSelect},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    allowDuplicates:{type: Boolean,default: boolean('allow duplicates', true) } ,
-    chips:{default: boolean('chips', false) },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    clearable:{ default: boolean('clearable', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    allowDuplicates: {type: Boolean, default: boolean('allow duplicates', true)},
+    chips: {default: boolean('chips', false)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    clearable: {default: boolean('clearable', false)},
   },
   data() {
-    return{
+    return {
       items: [
-        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -174,20 +174,20 @@ export const GSelectMultiple = () => ({
 })
 export const GSelectMultipleNotAllowDuplicates = () => ({
   components: {GSelect},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    allowDuplicates:{type: Boolean,default: boolean('allow duplicates', false) } ,
-    chips:{default: boolean('chips', true) },
-    smallChips:{default: boolean('smallChips', true) },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    clearable:{ default: boolean('clearable', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    allowDuplicates: {type: Boolean, default: boolean('allow duplicates', false)},
+    chips: {default: boolean('chips', true)},
+    smallChips: {default: boolean('smallChips', true)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    clearable: {default: boolean('clearable', false)},
   },
   data() {
-    return{
+    return {
       items: [
-        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -214,20 +214,20 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
 })
 export const GSelectSearchableSingleSelect = () => ({
   components: {GSelect},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    mandatory:{ default: boolean('mandatory', false) },
-    chips:{default: boolean('chips', false) },
-    smallChips:{default: boolean('smallChips', false) },
-    clearable: { default: boolean('clearable', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    mandatory: {default: boolean('mandatory', false)},
+    chips: {default: boolean('chips', false)},
+    smallChips: {default: boolean('smallChips', false)},
+    clearable: {default: boolean('clearable', false)},
   },
   data() {
-    return{
+    return {
       items: [
-        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -251,19 +251,19 @@ export const GSelectSearchableSingleSelect = () => ({
 })
 export const GSelectSearchableMultipleSelect = () => ({
   components: {GSelect},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    clearable: { default: boolean('clearable', false) },
-    chips:{default: boolean('chips', false) },
-    smallChips:{default: boolean('smallChips', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    clearable: {default: boolean('clearable', false)},
+    chips: {default: boolean('chips', false)},
+    smallChips: {default: boolean('smallChips', false)},
   },
   data() {
-    return{
+    return {
       items: [
-        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -287,18 +287,18 @@ export const GSelectSearchableMultipleSelect = () => ({
 })
 export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
   components: {GSelect},
-  props:{
-    label:{ default: text('Input label', 'Label') },
-    placeholder:{ default: text('Input placeholder', '') },
-    itemText:{ default: text('itemText', 'text') },
-    itemValue:{ default: text('itemText', 'value') },
-    clearable: { default: boolean('clearable', false) },
-    smallChips:{default: boolean('smallChips', false) },
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemText', 'value')},
+    clearable: {default: boolean('clearable', false)},
+    smallChips: {default: boolean('smallChips', false)},
   },
   data() {
-    return{
+    return {
       items: [
-        {text: 'Jason Oner',  value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -320,10 +320,10 @@ export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
    searchable>
    </g-select></div>`,
 })
-export const GSelectPrependItem = () => ({
-  components: {GSelect},
+export const GSelectPrependAndAppendItem = () => ({
+  components: {GSelect, GListItem, GListItemContent, GListItemText},
   data() {
-    return{
+    return {
       items: [
         {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
@@ -336,7 +336,18 @@ export const GSelectPrependItem = () => ({
   template: `
    <div data-app><g-select :items="items" item-text="title" item-value="title" label="Display list" return-object v-model="selected">
    <template v-slot:prepend-item>
-    <div>sdfsdgd</div>
+    <g-list-item>
+      <g-list-item-content>
+        <g-list-item-text>Prepend Item</g-list-item-text>
+      </g-list-item-content>
+    </g-list-item>
+   </template>
+   <template v-slot:append-item>
+    <g-list-item>
+      <g-list-item-content>
+        <g-list-item-text>Append Item</g-list-item-text>
+      </g-list-item-content>
+    </g-list-item>
    </template>
  
    </g-select></div>`
@@ -344,9 +355,9 @@ export const GSelectPrependItem = () => ({
 export const GSelectItemSlot = () => ({
   components: {GSelect},
   data() {
-    return{
+    return {
       items: [
-        {name: 'Jason Oner',  prepend: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {name: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {name: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {name: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {name: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},

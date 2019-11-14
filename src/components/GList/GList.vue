@@ -4,7 +4,6 @@
        :style="styles"
        @click="onClick"
   >
-    <slot name="prependItem"></slot>
     <template v-if="!multiSection">
       <slot name="subheader">
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
