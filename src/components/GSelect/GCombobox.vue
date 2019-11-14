@@ -129,7 +129,7 @@
         searchText: '',
         fieldItem: null
       })
-      const internalSearch = ref('')
+      const lazySearch = ref('')
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeSelectable(props, context)
       const fieldItem = getSelections(props, selectedItem)
@@ -186,7 +186,7 @@
       })
       const isValidInput = ref(true)
       const isFocused = ref(false);
-      const validateText = computed(() => internalSearch.value || textfieldValue.value)
+      const validateText = computed(() => lazySearch.value || textfieldValue.value)
       const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
@@ -237,10 +237,8 @@
         }
 
         const getTextFieldScopedSlots = {
-          appendInner: ({isFocused}) =>
-              <div class="dropDown" style={iconStyle.value}>
-                <GIcon color={showOptions.value || isFocused ? 'blue' : null}>arrow_drop_down</GIcon>
-              </div>,
+          appendInner: ({iconColor}) =>
+              <GIcon color={iconColor}>arrow_drop_down</GIcon>,
           inputSlot: ({inputErrStyles}) =>
               <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
                 {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
@@ -272,7 +270,7 @@
                         vOn:input={(e) => {
                           state.searchText = e
                         }}
-                        value={internalSearch.value}
+                        value={lazySearch.value}
                         scopedSlots={getTextFieldScopedSlots}>
             </GTextField>
         )
@@ -293,9 +291,9 @@
 
         context.root.$nextTick(() => {
           if (!props.multiple && !props.chips) {
-            internalSearch.value = selections.value
+            lazySearch.value = selections.value
           } else {
-            internalSearch.value = ''
+            lazySearch.value = ''
           }
 
         })
@@ -347,7 +345,7 @@
         showOptions,
         selectedItem,
         selections,
-        internalSearch,
+        lazySearch,
       }
     },
     render() {
@@ -357,47 +355,38 @@
 </script>
 <style lang="scss" scoped>
   .g-combobox {
-    & {
-      .g-select ::v-deep {
-        &.g-menu {
-          .g-menu--activator {
-            & {
-              .input {
-                display: flex;
-              }
-
-              .g-tf-input {
-                flex-wrap: wrap;
-                width: auto;
-                display: flex;
-              }
-
-              input {
-              }
-
+    .g-select ::v-deep {
+        .g-menu--activator {
+          & {
+            .g-tf-append__inner {
+              transition: transform 0.4s;
+            }
+            .input {
+              display: flex;
+            }
+            .g-tf-input {
+              flex-wrap: wrap;
+              width: auto;
+              display: flex;
+            }
+            input {
               flex-shrink: 0;
               flex-basis: auto;
               cursor: text;
             }
           }
         }
+
       }
-
-      &__active {
-        .g-menu ::v-deep .g-menu--activator {
-          & {
-            .g-tf-append__inner {
-              transition: transform 0.4s;
-
-              & {
-                .g-icon {
-                  transform: rotateZ(180deg);
-                }
-              }
-            }
+    .g-select__active ::v-deep {
+      .g-tf-append__inner {
+        transition: transform 0.4s;
+        & {
+          .g-icon {
+            transform: rotateZ(180deg);
           }
         }
       }
     }
-  }
+    }
 </style>

@@ -336,7 +336,7 @@ export const GSelectPrependItem = () => ({
   template: `
    <div data-app><g-select :items="items" item-text="title" item-value="title" label="Display list" return-object v-model="selected">
    <template v-slot:prepend-item>
-    <div style="font-size: 30px">Prepend Item</div>
+    <div>sdfsdgd</div>
    </template>
  
    </g-select></div>`

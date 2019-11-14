@@ -274,8 +274,9 @@
         >
           <template slot="default">
             {genSearchTextField()}
-            {context.root.$slots['prepend-item']}
+            {context.slots.prependItem}
             {genList(showOptions)}
+            {context.slots.appendItem}
           </template>
         </g-menu>
       }
