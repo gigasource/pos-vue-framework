@@ -127,8 +127,8 @@
         default: 'value'
       },
       value: null,
-      genTextField: Function,
-      genList: Function,
+      genTextFieldFn: Function,
+      genListFn: Function,
       selectOnly: {
         type: Boolean,
         default: true
@@ -195,29 +195,38 @@
 
       }
 
-      const genList = props.genList || function (showOptions) {
+      const genList = props.genListFn || function (showOptions) {
         return <GList
-            item-title={props.itemText}
-            items={options.value}
-            mandatory={props.mandatory}
-            allow-duplicates={props.allowDuplicates}
-            selectable
-            multiple={props.multiple}
+            {...{
+              props:{
+                items: options.value,
+                'item-title': props.itemText,
+                mandatory: props.mandatory,
+                'allow-duplicates': props.allowDuplicates,
+                multiple: props.multiple,
+                dense: true,
+                selectable: true,
+              },
+              on:{
+                'click:item': () => !props.multiple ? showOptions.value = false : null
+              },
+              scopedSlots: {
+                ...genListScopedSlots
+              }
+            }}
             vModel={selectedItem.value}
-            scopedSlots={genListScopedSlots}
-            {...{on: {'click:item': () => !props.multiple ? showOptions.value = false : null}}}
-            dense>
+        />
 
-        </GList>
       }
 
 
       //gen Text field
       function onInputKeyDown(e) {
-        if(e.keyCode === keyCodes.down){
+        if (e.keyCode === keyCodes.down) {
           context.root.$el.getElementsByClassName('g-list-item')[0].focus()
         }
       }
+
       function onChipCloseClick(index = null) {
         if (props.multiple) {
           selectedItem.value.splice(index, 1);
@@ -225,6 +234,7 @@
           selectedItem.value = null
         }
       }
+
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.allowDuplicates) {
           return selections.value.map((item, index) => <GChip small={props.smallChips}
@@ -249,27 +259,34 @@
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
       }
+      function clearSelection() {
+        selectedItem.value = props.multiple ? [] : ''
+        state.searchText = ''
+      }
 
       const textfieldValue = computed(() => {
         if (props.multiple) return selections.value.join(', ')
         return selections.value
       })
-      const genTextField = props.genTextField || function (toggleContent) {
-        function clearSelection() {
-          selectedItem.value = props.multiple ? [] : ''
-          state.searchText = ''
-        }
+      const genTextField = props.genTextFieldFn || function (toggleContent) {
+
         return (
-            <GTextField {...{
-              props: _.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
-                'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                'rules', 'type', 'disabled', 'readOnly'])
-            }}
-                        {...{on: {'click:clearIcon': () => clearSelection()}}}
-                        vOn:click={toggleContent}
-                        vOn:keydown={(e) => onInputKeyDown(e)}
-                        value={textfieldValue.value}
-                        scopedSlots={getTextFieldScopedSlots}
+            <GTextField
+                {...{
+                  props: {
+                    ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
+                      'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
+                      'rules', 'type', 'disabled', 'readOnly']),
+                    value: textfieldValue.value
+                  },
+                  on: {
+                    click: toggleContent,
+                    keydown: (e) => {
+                      onInputKeyDown(e)
+                    },
+                  },
+                  scopedSlots: {...getTextFieldScopedSlots}
+                }}
             />
         )
       }
@@ -277,10 +294,14 @@
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
         return <g-menu vModel={showOptions.value}
-                       {...{props: props.menuProps}}
-                       nudgeBottom={nudgeBottom.value}
-                       scopedSlots={{
-                         activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+                       {...{
+                         props: {
+                           ... props.menuProps,
+                           nudgeBottom: nudgeBottom.value
+                         },
+                         scopedSlots: {
+                           activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+                         }
                        }}
         >
           <template slot="default">
