@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { ref } from '@vue/composition-api'
+import { ref, isRef } from '@vue/composition-api'
 import { createRange } from '../../../utils/helpers';
 
 // References: https://css-tricks.com/snippets/css/complete-guide-grid/
@@ -354,16 +354,39 @@ function _attachParent(layout, parentLayout) {
   _.each(layout.subAreas, subArea => _attachParent(subArea, layout))
 }
 
+export function parseLayoutJsonObject(jsonObject, parent) {
+  console.log(jsonObject)
+  // wrap ref
+  _.each(Object.keys(jsonObject), key => {
+    if (key === 'rows' || key === 'columns') {
+      // if rows item, column item is not ref then it's json object
+      // not layoutObject
+      // => convert to ref
+      if (!isRef(jsonObject[key][0])) {
+        jsonObject[key] = _.map(jsonObject[key], item => ref(item))
+      }
+    }
+  })
+  _.each(jsonObject.subAreas, subArea => parseLayoutJsonObject(subArea, jsonObject))
+
+  // attach parent
+  if (parent && !jsonObject.parent) jsonObject.parent = parent
+  return jsonObject
+}
+
 /**
  * Create Layout object from json
  * @param jsonLayout
  * @returns {any}
  */
-export function parseLayoutJson(jsonLayout) {
+export function parseLayoutStr(jsonLayout) {
   const jsonParseReviver = (k, v) => {
     // wrap ref
-    if (k === 'rows' || k === 'columns')
-      return _.map(v, vItem => ref(vItem))
+    if (k === 'rows' || k === 'columns') {
+      const ro = _.map(v, vItem => ref(vItem))
+      console.log('ro', ro)
+      return ro
+    }
     else
       return v
   }
