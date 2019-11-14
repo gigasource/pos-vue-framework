@@ -172,7 +172,7 @@
 
       const genListScopedSlots = {
         listItem: ({item, isSelected, onSelect, onArrowDown, onArrowUp}) =>
-            <GListItem  style={{'min-height': '48px'}} item={item} isSelected={isSelected}
+            <GListItem style={{'min-height': '48px'}} item={item} isSelected={isSelected}
                        vOn:singleItemClick={() => onSelect(item)}
             >
               <GListItemContent>
@@ -274,9 +274,9 @@
         >
           <template slot="default">
             {genSearchTextField()}
-            {context.slots['prepend-item']&&context.slots['prepend-item']()}
+            {context.slots['prepend-item'] && context.slots['prepend-item']()}
             {genList(showOptions)}
-            {context.slots['append-item']&&context.slots['append-item']()}
+            {context.slots['append-item'] && context.slots['append-item']()}
           </template>
         </g-menu>
       }
@@ -301,51 +301,31 @@
   }
 </script>
 <style scoped lang="scss">
-  .g-select {
-    & {
-      .g-menu ::v-deep .g-menu--activator {
-        & {
-          .g-tf-append__inner {
-            transition: transform 0.4s;
-          }
-
-          .input {
-            display: flex;
-          }
-
-          input {
-            flex-shrink: 1;
-            flex-grow: 1;
-            flex-basis: 0%;
-          }
-
-          .g-tf-input {
-            cursor: pointer;
-
-            &.seletions {
-              flex-wrap: wrap;
-              width: auto;
-            }
-          }
+  .g-select::v-deep {
+    .g-menu--activator {
+      & {
+        .g-tf-append__inner {
+          transition: transform 0.4s
         }
-      }
 
-    }
-
-    &__active {
-      .g-menu ::v-deep .g-menu--activator {
-        & {
-          .g-tf-append__inner {
-            transition: transform 0.4s;
-
-            & {
-              .g-icon {
-                transform: rotateZ(180deg);
-              }
-            }
-          }
+        .input {
+          display: flex;
         }
+
+        input {
+          flex-shrink: 1;
+          flex-grow: 1;
+          flex-basis: 0%;
+        }
+
+
       }
     }
   }
+  .g-select__active::v-deep{
+    .g-icon{
+      transform: rotateZ(180deg);
+    }
+  }
+
 </style>

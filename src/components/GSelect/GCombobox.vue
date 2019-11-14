@@ -193,7 +193,7 @@
 
       const addSelection = () => {
         toggleItem(state.searchText)
-        props.chips || props.multiple ? state.searchText = '' : null
+        props.chips || props.multiple ? lazySearch.value = '' : null
 
       }
 
@@ -201,7 +201,6 @@
       const deleteItemColor = ref('#1d1d1d')
 
       function onDelete() {
-        if (!props.multiple || props.chips) return
         if (state.searchText) return pressTime = 0
         else {
           if (pressTime === 0) {
