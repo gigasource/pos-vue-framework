@@ -229,7 +229,7 @@
     padding-right: 2.25%;
 
     display: grid;
-    grid-template: [row1-start] "welcome welcome . ." 10% [row1-end] [row2-start] "btn1 btn2 btn3 ." 25% [row2-end] [row3-start] "line line line line" 12.5% [row3-end] [row4-start] "btn4 btn5 btn6 btn7" 25% [row4-end]
+    grid-template: [row1-start] "welcome welcome . ." 12% [row1-end] [row2-start] "btn1 btn2 btn3 ." 25% [row2-end] [row3-start] "line line line line" 12.5% [row3-end] [row4-start] "btn4 btn5 btn6 btn7" 25% [row4-end]
       /23.875% 23.875% 23.875% 23.875%;
     grid-column-gap: 1.5%;
 
@@ -278,9 +278,6 @@
     letter-spacing: 0;
     color: #424242;
     margin-top: 20px;
-    //line-height: 20px;
-    //text-align: center;
-    //font-weight: bold;
   }
 
   .welcome {
