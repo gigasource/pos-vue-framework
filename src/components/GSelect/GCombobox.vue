@@ -228,10 +228,9 @@
           }
         }
       }
-      function onKeyDown(e) {
+      function onInputKeyDown(e) {
         if(e.keyCode === keyCodes.down){
           context.root.$el.getElementsByClassName('g-list-item')[0].focus()
-          console.log('key down on input')
         }
       }
 
@@ -281,7 +280,7 @@
                         vOn:click={toggleContent}
                         vOn:enter={addSelection}
                         vOn:delete={onDelete}
-                        vOn:keydown={(e) => onKeyDown(e)}
+                        vOn:keydown={(e) => onInputKeyDown(e)}
                         vOn:input={(e) => {
                           state.searchText = e
                         }}
@@ -291,17 +290,27 @@
         )
       }
       //gen list
-      //todo: list event
-      function onListKeyDown(e){
-        console.log(e.keyCode)
-        console.log('key down on list')
+      function onListKeyDown(e, onArrowDown, onArrowUp, item, onSelect){
+        switch (e.keyCode) {
+          case keyCodes.down:
+            onArrowDown(item)
+            break
+          case keyCodes.up:
+            onArrowUp(item)
+            break
+          case keyCodes.enter:
+            onSelect(item)
+            break
+
+        }
+
       }
       const showOptions = ref(false)
       const genListScopedSlots = {
-        listItem: ({item, isSelected, onSelect}) =>
+        listItem: ({item, isSelected, onSelect, onArrowDown, onArrowUp}) =>
             <GListItem tabindex="0" style={{'min-height': '48px'}} item={item} isSelected={isSelected}
                        vOn:singleItemClick={() => onSelect(item)}
-                       vOn:keydown={(e) => onListKeyDown(e)}
+                       vOn:keydown_native={(e) => onListKeyDown(e, onArrowDown, onArrowUp, item, onSelect)}
             >
               <GListItemContent>
                 <GListItemText>{item[props.itemText]}</GListItemText>
@@ -334,7 +343,6 @@
             vModel={selectedItem.value}
             scopedSlots={genListScopedSlots}
             {...{on: {'click:item': onClickItem}}}
-            vOn:keydown={(e) => onListKeyDown(e)}
             dense>
         </GList>
       }

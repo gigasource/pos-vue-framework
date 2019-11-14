@@ -167,10 +167,26 @@
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
 
+      function onListKeyDown(e, onArrowDown, onArrowUp, item, onSelect) {
+        switch (e.keyCode) {
+          case keyCodes.down:
+            onArrowDown(item)
+            break
+          case keyCodes.up:
+            onArrowUp(item)
+            break
+          case keyCodes.enter:
+            onSelect(item)
+            break
+
+        }
+      }
+
       const genListScopedSlots = {
         listItem: ({item, isSelected, onSelect, onArrowDown, onArrowUp}) =>
             <GListItem tabindex="0" style={{'min-height': '48px'}} item={item} isSelected={isSelected}
                        vOn:singleItemClick={() => onSelect(item)}
+                       vOn:keydown_native={(e) => onListKeyDown(e, onArrowDown, onArrowUp, item, onSelect)}
             >
               <GListItemContent>
                 <GListItemText>{item[props.itemText]}</GListItemText>
@@ -181,7 +197,6 @@
 
       const genList = props.genList || function (showOptions) {
         return <GList
-            tabindex="0"
             item-title={props.itemText}
             items={options.value}
             mandatory={props.mandatory}
@@ -198,52 +213,52 @@
 
 
       //gen Text field
-      const genTextField = props.genTextField || function (toggleContent, showOptions) {
-
-        const textfieldValue = computed(() => {
-          if (props.multiple) return selections.value.join(', ')
-          return selections.value
-        })
-
-        function onChipCloseClick(index = null) {
-          if (props.multiple) {
-            selectedItem.value.splice(index, 1);
-          } else {
-            selectedItem.value = null
-          }
+      function onInputKeyDown(e) {
+        if(e.keyCode === keyCodes.down){
+          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
         }
-
-        const genMultiSelectionsSlot = () => {
-          if (props.chips || props.allowDuplicates) {
-            return selections.value.map((item, index) => <GChip small={props.smallChips}
-                                                                close {...{on: {'close': () => onChipCloseClick(index)}}}>{item}
-            </GChip>)
-          }
-          return selections.value.join(', ');
+      }
+      function onChipCloseClick(index = null) {
+        if (props.multiple) {
+          selectedItem.value.splice(index, 1);
+        } else {
+          selectedItem.value = null
         }
-
-        const genSingleSelectionSlot = () => {
-          if (props.chips && selections.value) {
-            return <GChip small={props.smallChips}
-                          close {...{on: {'close': () => onChipCloseClick()}}}>{selections.value}</GChip>
-          }
-          return selections.value
+      }
+      const genMultiSelectionsSlot = () => {
+        if (props.chips || props.allowDuplicates) {
+          return selections.value.map((item, index) => <GChip small={props.smallChips}
+                                                              close {...{on: {'close': () => onChipCloseClick(index)}}}>{item}
+          </GChip>)
         }
+        return selections.value.join(', ');
+      }
 
-        const getTextFieldScopedSlots = {
-          appendInner: ({iconColor}) =>
-              <GIcon color={iconColor}>arrow_drop_down</GIcon>,
-          inputSlot: ({inputErrStyles}) =>
-              <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-                {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-              </div>
+      const genSingleSelectionSlot = () => {
+        if (props.chips && selections.value) {
+          return <GChip small={props.smallChips}
+                        close {...{on: {'close': () => onChipCloseClick()}}}>{selections.value}</GChip>
         }
+        return selections.value
+      }
+      const getTextFieldScopedSlots = {
+        appendInner: ({iconColor}) =>
+            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+        inputSlot: ({inputErrStyles}) =>
+            <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
+              {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
+            </div>
+      }
 
+      const textfieldValue = computed(() => {
+        if (props.multiple) return selections.value.join(', ')
+        return selections.value
+      })
+      const genTextField = props.genTextField || function (toggleContent) {
         function clearSelection() {
           selectedItem.value = props.multiple ? [] : ''
           state.searchText = ''
         }
-
         return (
             <GTextField {...{
               props: _.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
@@ -252,9 +267,10 @@
             }}
                         {...{on: {'click:clearIcon': () => clearSelection()}}}
                         vOn:click={toggleContent}
+                        vOn:keydown={(e) => onInputKeyDown(e)}
                         value={textfieldValue.value}
-                        scopedSlots={getTextFieldScopedSlots}>
-            </GTextField>
+                        scopedSlots={getTextFieldScopedSlots}
+            />
         )
       }
 
@@ -317,8 +333,9 @@
       }
     }
   }
-  .g-select__active::v-deep{
-    .g-icon{
+
+  .g-select__active::v-deep {
+    .g-icon {
       transform: rotateZ(180deg);
     }
   }
