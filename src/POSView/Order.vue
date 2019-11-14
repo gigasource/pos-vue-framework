@@ -29,9 +29,9 @@
 					</th>
 				</tr>
 				</thead>
-				<table-expansion-row v-model="product" :items="products"/>
-				<template v-if="products.length < 12 && products.length > 0">
-					<tr v-for="i in (10 - products.length)" class="empty-row">
+				<table-expansion-row v-model="product" :items="orderDetail"/>
+				<template v-if="orderDetail.length < 12 && orderDetail.length > 0">
+					<tr v-for="i in (10 - orderDetail.length)" class="empty-row">
 						<td></td>
 					</tr>
 				</template>
@@ -85,11 +85,11 @@
 				</g-btn>
 			</div>
 			<div class="main">
-				<g-window :show-arrows="false" v-model="window">
-					<g-window-item v-for="(items, i) in listItems" :key="i">
+				<g-scroll-window :show-arrows="false" v-model="window">
+					<g-scroll-window-item v-for="(items, i) in listItems" :key="i">
 						<g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color">{{item.title}}</g-btn>
-					</g-window-item>
-				</g-window>
+					</g-scroll-window-item>
+				</g-scroll-window>
 				<g-item-group :items="delimeters" v-model="window">
 					<template v-slot:default="{ toggle, active }">
 						<template v-for="(item, index) in delimeters">
@@ -114,7 +114,7 @@
 					<g-btn outlined disabled>Disabled Button</g-btn>
 					<g-btn outlined></g-btn>
 					<g-btn text background-color="green lighten 1" text-color="white" class="big" @click="quickCash">Quick Cash</g-btn>
-					<g-btn outlined>Change Price</g-btn>
+					<g-btn outlined @click="dialogChangePrice = true">Change Price</g-btn>
 					<g-btn outlined @click="dialogProductLookup = true">Product Lookup</g-btn>
 					<g-btn outlined>Discount</g-btn>
 					<g-btn outlined>Plastic Refund</g-btn>
@@ -183,15 +183,82 @@
 		<g-dialog v-model="dialogProductLookup" fullscreen>
 			<div class="dialog-lookup">
 				<g-toolbar class="header" color="grey lighten 3" elevation="0">
-					<g-text-field outlined clearable class="w-50" style="color: #1d1d26" clear-icon="cancel" v-model="productLookup"></g-text-field>
+					<g-text-field outlined clearable class="w-50" style="color: #1d1d26" clear-icon="cancel" v-model="productLookup" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
 					<g-spacer/>
 					<g-btn icon style="box-shadow: none; border-radius: 50%" @click="dialogProductLookup = false"><g-icon>clear</g-icon></g-btn>
 				</g-toolbar>
-				<g-simple-table class="flex-grow-1">
-
+				<g-simple-table fixed-header :class="tbLookup">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Barcode</th>
+							<th>Unit</th>
+							<th>Attribute</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(product, i) in products" :key="i">
+							<td>{{product.name}}</td>
+							<td>{{product.barcode ? product.barcode : '-'}}</td>
+							<td>{{product.unit ? product.unit : '-s'}}</td>
+							<td>
+								<div v-if="product.attribute">
+									<span v-for="(val, attr) in product.attribute" class="td-attr">
+										{{attr}}: {{val}}
+									</span>
+								</div>
+								<div v-else>-</div>
+							</td>
+						</tr>
+					</tbody>
 				</g-simple-table>
-				<div class="keyboard-wrapper">
+				<div v-show="showKeyboard" class="keyboard-wrapper">
 					<g-keyboard class="h-100" v-model="productLookup" :items="keyboardFull" :template="templateFull"></g-keyboard>
+				</div>
+			</div>
+		</g-dialog>
+		<g-dialog v-model="dialogChangePrice" overlay-color="#6b6f82" overlay-opacity="0.95" width="65%">
+			<div class="dialog-change" :style="[{background: showKeyboard ? 'white' : 'transparent'}]">
+			<div class="dialog-change-content">
+				<div class="header">
+					<div class="col-5 ml-5">
+						<p>Original Price</p>
+						<g-text-field read-only outlined value="€ 50"/>
+					</div>
+					<div class="col-5">
+						<p>Effective Price</p>
+						<g-text-field read-only outlined class="tf__effective" value="€ 30.50"/>
+					</div>
+				</div>
+				<g-radio-group name="basic" v-model="changeType">
+					<g-radio color="#1271ff" value="percentage" label="Discount by %"></g-radio>
+					<div class="row-flex ml-5 col-10 pr-2">
+						<g-btn outlined :disabled="disabledPercent">- 5%</g-btn>
+						<g-btn outlined :disabled="disabledPercent">- 10%</g-btn>
+						<g-btn outlined :disabled="disabledPercent">- 15%</g-btn>
+						<g-btn outlined :disabled="disabledPercent">- 20%</g-btn>
+						<g-text-field outlined :disabled="disabledPercent" v-model="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
+					</div>
+					<g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
+					<div class="row-flex ml-5 col-10 pr-2">
+						<g-btn outlined :disabled="disabledAmount">- € 5</g-btn>
+						<g-btn outlined :disabled="disabledAmount">- € 10</g-btn>
+						<g-btn outlined :disabled="disabledAmount">- € 15</g-btn>
+						<g-btn outlined :disabled="disabledAmount">- € 20</g-btn>
+						<g-text-field outlined :disabled="disabledAmount" v-model="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" ></g-text-field>
+					</div>
+					<g-radio color="#1271ff" value="new" label="New Price"></g-radio>
+					<div class="ml-5 col-10">
+						<g-text-field outlined placeholder="New Price" v-model="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
+					</div>
+				</g-radio-group>
+				<div class="action">
+					<g-btn flat background-color="#efefef" text-color="grey darken 1" @click="dialogChangePrice = false">Cancel</g-btn>
+					<g-btn flat background-color="blue accent 3" text-color="white" @click="changePrice()">OK</g-btn>
+				</div>
+			</div>
+				<div :style="[{visibility: showKeyboard ? 'visible' : 'hidden'}]" class="keyboard-wrapper">
+					<g-keyboard :template="templateNp2" :items="numpad_2"/>
 				</div>
 			</div>
 		</g-dialog>
@@ -223,10 +290,12 @@
   import GTextField from '../components/GInput/GTextField';
   import GSpacer from '../components/GLayout/GSpacer';
   import GKeyboard from '../components/GKeyboard/GKeyboard';
+  import GRadioGroup from '../components/GRadio/GRadioGroup';
+  import GRadio from '../components/GRadio/GRadio';
 
   export default {
     name: 'Order',
-    components: { GKeyboard, GSpacer, GTextField, GScrollWindowItem, GScrollWindow, GCardText, GCardActions, GCardTitle, GCard, GDialog, GIcon, GBadge, GToolbar, GDivider, TableExpansionRow, GSimpleTable, GImg, GAvatar, GItem, GItemGroup, GWindowItem, GWindow, GNumberKeyboard, GRow, GBtn },
+    components: { GRadio, GRadioGroup, GKeyboard, GSpacer, GTextField, GScrollWindowItem, GScrollWindow, GCardText, GCardActions, GCardTitle, GCard, GDialog, GIcon, GBadge, GToolbar, GDivider, TableExpansionRow, GSimpleTable, GImg, GAvatar, GItem, GItemGroup, GWindowItem, GWindow, GNumberKeyboard, GRow, GBtn },
     data() {
       return {
         number: 0,
@@ -351,38 +420,44 @@
           ],
         ],
         delimeters: null,
-        products: [
+        orderDetail: [
           {
+            id: 1,
             name: 'Product item 1',
             unit: 'piece',
             quantity: 1,
             price: '5.52',
           },
           {
+            id: 2,
             name: 'Product item 1',
             unit: 'piece',
             quantity: 1,
             price: '5.52',
           },
           {
+            id: 3,
             name: 'Product item 1',
             unit: 'piece',
             quantity: 1,
             price: '5.52',
           },
           {
+            id: 4,
             name: 'Product item 1',
             unit: 'piece',
             quantity: 1,
             price: '5.52',
           },
           {
+            id: 5,
             name: 'Product item 1',
             unit: 'piece',
             quantity: 1,
             price: '5.52',
           },
           {
+            id: 6,
             name: 'Product item 1',
             unit: 'piece',
             quantity: 1,
@@ -405,7 +480,8 @@
 				total: 40.50,
 				lastPayment: 0,
 				dialogProductLookup: false,
-				productLookup: null,
+				productLookup: 'Pro',
+				showKeyboard: false,
 				keyboardFull: [
           { content: ['Tab'], img: '', style: 'grid-area: tab; background-color: #e0e0e0; font-size: 14px', action: (value) => (value + '  ')},
           { content: ['q', 'Q'], img: '', style: 'grid-area: q', action: (value, append) => (value + append) },
@@ -468,10 +544,57 @@
 					'"shift1 shift1 shift1 shift1 z z x x c c v v b b n n m m comma comma dot dot splash splash shift2 shift2 key1 key1 key2 key2 key3 key3" ' +
 					'"sym sym amp amp pct pct pnd pnd space space space space space space space space space space at at lang lang larr larr rarr rarr key0 key0 key0 key0 keyDot keyDot";' +
 					'grid-auto-columns: 1fr; grid-gap: 10px',
+				products: [
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', unit: 'Box' },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+					{ name: 'Product Name 01', barcode: '89748173401744339', unit: 'Box', attribute: { Color: 'Black, White', Age: '1-2yrs, 0-6mths'} },
+				],
+				dialogChangePrice: false,
+				numpad_2: [
+          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key7' },
+          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key8' },
+          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key9' },
+          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key4' },
+          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key5' },
+          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key6' },
+          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key1' },
+          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key2' },
+          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key3' },
+          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key0' },
+          { content: ['.'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: keyDot' },
+          { content: [''], img: 'delivery/key_delete', classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1), style: 'grid-area: keyX' },
+        ],
+				templateNp2: 'grid-template: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 keyDot keyX"/ 1fr 1fr 1fr',
+				changeType: null,
+				newPrice: 0,
+				newPercent: 0,
+				newAmount: 0,
+        rulePercent: {
+          percent: value => (value < 100 && value > 0) || 'Input: 0 - 100',
+        },
       }
     },
     computed: {
-      currentDateTime: () => ({})
+      currentDateTime: () => ({}),
+      tbLookup() {
+        return this.showKeyboard ? 'tbLookup' : 'tbLookup__full'
+      },
+			disabledPercent() {
+        return this.changeType !== 'percentage'
+			},
+			disabledAmount() {
+        return this.changeType !== 'amount'
+			},
+			disabledNew() {
+        return this.changeType !== 'new'
+			},
     },
     methods: {
       selectMenu(item) {
@@ -483,7 +606,7 @@
 				this.tax = 0;
 				this.discount = 0;
 				this.subTotal = 0;
-				this.products = [];
+				this.orderDetail = [];
 				this.product = null;
 			},
 			convertMoney (val) {
@@ -491,6 +614,16 @@
           return val.toFixed(2)
 				else
 				  return 0
+			},
+			changePrice () {
+				if(!this.product) {
+          this.dialogChangePrice = false;
+          return;
+				}
+        const i = this.orderDetail.findIndex(p => p.id === this.product.id);
+        this.product.edited = true;
+        this.orderDetail.splice(i, 1, this.product);
+        this.dialogChangePrice = false;
 			}
     },
     created() {
@@ -639,16 +772,19 @@
 			padding: 0 6px;
 			display: flex;
 			flex-direction: column;
+			overflow: hidden;
 
 			::v-deep .g-window {
 				box-shadow: none;
 				flex-basis: calc(100% - 12px);
+				width: 100%;
 
 				.g-window__container {
 					height: 100%;
 				}
 
-				.g-window-item {
+				.g-window-item ,
+				.g-scroll-window-item {
 					height: 100%;
 					display: grid;
 					grid-template-rows: repeat(7, 1fr);
@@ -830,6 +966,39 @@
 			flex: 0;
 		}
 
+		.g-table {
+			&.tbLookup {
+				height: calc(65% - 64px) !important;
+				flex-basis: calc(65% - 64px);
+				flex-grow: 0;
+				flex-shrink: 0;
+
+				&__full {
+					flex-basis: calc(100% - 64px);
+				}
+			}
+
+			thead tr th {
+				font-size: 13px;
+				line-height: 16px;
+				color: rgba(29, 29, 38, 0.5);
+				text-align: left;
+			}
+
+			tbody tr td {
+				height: 60px;
+			}
+
+			.td-attr:not(:last-child) {
+				border-right: 1px solid #979797;
+				padding-right: 16px;
+			}
+
+			.td-attr:not(:first-child) {
+				padding-left: 8px;
+			}
+		}
+
 		.keyboard-wrapper {
 			flex-basis: 35%;
 			height: 35%;
@@ -841,5 +1010,97 @@
 				font-size: 24px;
 			}
 		}
+	}
+
+	.dialog-change {
+		border-radius: 6px;
+		display: flex;
+		flex-direction: column;
+
+		.dialog-change-content {
+			display: flex;
+			flex-direction: column;
+			background: white;
+			border-radius: inherit;
+			padding: 32px;
+
+			.header {
+				display: flex;
+				margin-bottom: 16px;
+				font-size: 13px;
+				font-weight: 700;
+
+				.g-tf-wrapper {
+					&.tf__effective input {
+						color: #4CAF50;
+						font-size: 24px;
+					}
+
+					input {
+						font-size: 20px;
+						line-height: 32px;
+						font-weight: 700;
+					}
+				}
+			}
+
+			.g-tf-wrapper {
+				margin: 0;
+
+				&.g-tf-wrapper__disabled fieldset {
+					opacity: 0.42;
+				}
+
+				input::placeholder {
+					text-align: center;
+					font-size: 18px;
+				}
+
+				input {
+					text-align: center;
+				}
+			}
+
+			.g-btn {
+				height: 50px !important;
+			}
+
+			.g-btn:not(:last-child) {
+				margin-right: 8px;
+			}
+
+			.g-radio-wrapper {
+				line-height: 12px;
+
+				.g-radio {
+					display: inline-flex;
+				}
+			}
+
+			.action {
+				display: flex;
+				justify-content: flex-end;
+				padding-top: 16px;
+
+				.g-btn {
+					min-width: 120px !important;
+				}
+			}
+		}
+
+		.keyboard-wrapper {
+			background-color: #bdbdbd;
+			padding: 16px 200px;
+			border-bottom-left-radius: 6px;
+			border-bottom-right-radius: 6px;
+
+			.key-number {
+				padding: 12px 8px;
+			}
+		}
+	}
+
+	.dialog-content {
+		max-height: 100% !important;
 	}
 </style>
