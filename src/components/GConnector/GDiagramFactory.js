@@ -1,4 +1,4 @@
-import { ref, reactive, onMounted} from '@vue/composition-api';
+import { ref, reactive, computed, onMounted} from '@vue/composition-api';
 import { getElementPosition } from '../../utils/helpers';
 
 export default function GDiagramFactory(props, context) {

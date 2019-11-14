@@ -61,6 +61,11 @@
         if (activeDrawId.value) {
           eventEmitter.$emit(`drawEnd${activeDrawId.value}`, e)
         }
+        if (isDrag.value) {
+          for (let id of activeDragIds.value) {
+            eventEmitter.$emit(`dragEnd${id}`)
+          }
+        }
       }
 
       document.body.addEventListener('mousemove', mouseMove)
@@ -148,6 +153,7 @@
         e.preventDefault()
 
         if(isDrag.value) {
+          activeDragIds.value = []
           isDrag.value = false
           target.style.cursor = ''
         }

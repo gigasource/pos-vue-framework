@@ -60,6 +60,7 @@
 
 			const { connectionPaths,
         localConnectionPoints,
+				connectionRegions,
         drawStart,
         draw,
         drawEnd,
@@ -71,6 +72,7 @@
         eventEmitter.$on(`draw${id.value}`, draw)
         eventEmitter.$on(`drawEnd${id.value}`, drawEnd)
         eventEmitter.$on(`drag${id.value}`, updateConnectionPoints)
+        eventEmitter.$on(`dragEnd${id.value}`, updateConnectionPoints)
       })
 
 			// Render functions
@@ -110,7 +112,8 @@
 
       return {
         genGroup,
-				localConnectionPoints
+				localConnectionPoints,
+				connectionRegions
       }
     },
     render() {

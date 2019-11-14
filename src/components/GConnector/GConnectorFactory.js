@@ -6,10 +6,10 @@ export function getConnectionPoint(el, originPoint, zoomState, position) {
   const rect = getElementPosition(el);
   const offsetWidth = el.offsetWidth;
   const offsetHeight = el.offsetHeight;
-  const topPoint = new Point((rect.left + offsetWidth / 2 - originPoint.x)/zoomState, (rect.top - originPoint.y)/zoomState, 'top')
-  const leftPoint = new Point((rect.left - originPoint.x)/zoomState, (rect.top + offsetHeight / 2 - originPoint.y)/zoomState, 'left')
-  const bottomPoint = new Point((rect.left + offsetWidth / 2 - originPoint.x)/zoomState, (rect.top + offsetHeight - originPoint.y)/zoomState, 'bottom')
-  const rightPoint = new Point ((rect.left + offsetWidth - originPoint.x)/zoomState, (rect.top + offsetHeight / 2 - originPoint.y)/zoomState, 'right')
+  const topPoint = new Point((rect.left - originPoint.x)/zoomState + offsetWidth / 2, (rect.top - originPoint.y)/zoomState, 'top')
+  const leftPoint = new Point((rect.left - originPoint.x)/zoomState, (rect.top - originPoint.y)/zoomState + offsetHeight / 2, 'left')
+  const bottomPoint = new Point((rect.left - originPoint.x)/zoomState + offsetWidth / 2, (rect.top - originPoint.y)/zoomState + offsetHeight, 'bottom')
+  const rightPoint = new Point ((rect.left - originPoint.x)/zoomState + offsetWidth, (rect.top - originPoint.y)/zoomState + offsetHeight / 2, 'right')
 
   switch(position) {
     case 'top':
@@ -35,10 +35,15 @@ export default function GConnectorFactory(props, context, model, id, connectionP
 
   function updateConnectionPoints() {
     localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
-    for (let connectionPoint of localConnectionPoints.value) {
-      connectionPoint.value = model.value
+    for (let localConnectionPoint of localConnectionPoints.value) {
+      for (let connectionPoint of connectionPoints.value) {
+        if (id.value === connectionPoint.id && localConnectionPoint.position === connectionPoint.position) {
+          connectionPoint.x = localConnectionPoint.x
+          connectionPoint.y = localConnectionPoint.y
+          break
+        }
+      }
     }
-
   }
 
   // Calculate local connection points when mounted
@@ -47,6 +52,7 @@ export default function GConnectorFactory(props, context, model, id, connectionP
       localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
       for (let connectionPoint of localConnectionPoints.value) {
         connectionPoint.value = model.value
+        connectionPoint.id = id.value
       }
       connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
     })
@@ -105,6 +111,7 @@ export default function GConnectorFactory(props, context, model, id, connectionP
   return {
     connectionPaths,
     localConnectionPoints,
+    connectionRegions,
     drawStart,
     draw,
     drawEnd,
