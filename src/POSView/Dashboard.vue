@@ -41,20 +41,22 @@
         </g-toolbar>
       }
 
+      const state = reactive({
+        data: [{
+          title: 'Dashboard', icon: 'mdi-cart-outline',
+          items: [
+            {title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small'},
+            {title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small'},
+            {title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small'}
+          ]
+        }, {
+          title: 'Inventory', icon: 'mdi-cart-outline',
+        },],
+        value: null,
+      })
+
       function genSidebar() {
-        const state = reactive({
-          data: [{
-            title: 'Dashboard', icon: 'mdi-cart-outline',
-            items: [
-              {title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small'},
-              {title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small'},
-              {title: 'Retail', icon: 'radio_button_unchecked', iconType: 'small'}
-            ]
-          }, {
-            title: 'Inventory', icon: 'mdi-cart-outline',
-          },],
-          value: null,
-        })
+
         return <g-sidebar class="sidebar" width="243px">
           <g-side-bar-tree-view data={state.data} vModel={state.value}/>
           <g-spacer/>
@@ -67,6 +69,7 @@
       function genContent() {
         return <div class="content">
           <p class="welcome">Welcome !</p>
+          <div class="line"/>
           <g-btn class="btn1" height="177.5px" backgroundColor="#FFFFFF">
             <div>
               <g-icon>{CashRegister}</g-icon>
@@ -167,20 +170,21 @@
   .sidebar {
     grid-area: sidebar;
 
-    ::v-deep .g-sidebar {
+    &::v-deep .g-sidebar {
       position: relative;
     }
 
     ul::v-deep {
       .g-treeview-item {
         margin-right: 0;
+      }
 
-        &:not(.g-treeview-subheader):hover {
-          background: linear-gradient(11.17deg, #303F9F 0%, #1976D2 100%);
+      .g-treeview__active {
+        background: linear-gradient(11.17deg, #303F9F 0%, #1976D2 100%) !important;
+        color: white;
 
-          i, span {
-            color: #F2F2F2;
-          }
+        .g-icon {
+          color: inherit;
         }
       }
 
@@ -205,15 +209,22 @@
   .content {
     grid-area: content;
     background: #F2F2F2;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 2px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
     padding-left: 20px;
     padding-right: 19.5px;
 
     display: grid;
-    grid-template: [row1-start] ". . . ." 70px [row1-end] [row2-start] "btn1 btn2 btn3 ." 177.5px [row2-end] [row3-start] ". . . ." 80.5px [row3-end] [row4-start] "btn4 btn5 btn6 btn7" 177.5px [row4-end]
+    grid-template: [row1-start] ". . . ." 70px [row1-end] [row2-start] "btn1 btn2 btn3 ." 177.5px [row2-end] [row3-start] "line line line line" 80.5px [row3-end] [row4-start] "btn4 btn5 btn6 btn7" 177.5px [row4-end]
       /177.5px 177.5px 177.5px 177.5px;
     grid-column-gap: 10.5px;
 
+  }
+
+  .line {
+    grid-area: line;
+    align-self: center;
+    height: 1px;
+    background-color: #E0E0E0;
   }
 
   .btn1 {
@@ -274,4 +285,7 @@
     margin: 0;
   }
 
+  .elevation-4 {
+    box-shadow: 2px 0 0px -1px rgba(0, 0, 0, 0.2), 1px 0 2px 0px rgba(0, 0, 0, 0.14), 2px 0 5px 0px rgba(0, 0, 0, 0.12);
+  }
 </style>
