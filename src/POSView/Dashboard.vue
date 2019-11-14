@@ -57,7 +57,7 @@
 
       function genSidebar() {
 
-        return <g-sidebar class="sidebar" width="243px">
+        return <g-sidebar class="sidebar" width="100%">
           <g-side-bar-tree-view data={state.data} vModel={state.value}/>
           <g-spacer/>
           <div class="footer">
@@ -70,43 +70,43 @@
         return <div class="content">
           <p class="welcome">Welcome !</p>
           <div class="line"/>
-          <g-btn class="btn1" height="177.5px" backgroundColor="#FFFFFF">
+          <g-btn class="btn1" backgroundColor="#FFFFFF" height="100%">
             <div>
               <g-icon>{CashRegister}</g-icon>
               <div class="btn-text" style="margin-top: 15px">Cash Register</div>
             </div>
           </g-btn>
-          <g-btn class="btn2" height="177.5px" backgroundColor="#FFFFFF">
+          <g-btn class="btn2" backgroundColor="#FFFFFF" height="100%">
             <div>
               <g-icon>{OrderHistory}</g-icon>
               <div class="btn-text">Order History</div>
             </div>
           </g-btn>
-          <g-btn class="btn3" height="177.5px" backgroundColor="#FFFFFF">
+          <g-btn class="btn3" backgroundColor="#FFFFFF" height="100%">
             <div>
               <g-icon>{StaffReport}</g-icon>
               <div class="btn-text">Staff Report</div>
             </div>
           </g-btn>
-          <g-btn class="btn4" height="177.5px" backgroundColor="#FFFFFF">
+          <g-btn class="btn4" backgroundColor="#FFFFFF" height="100%">
             <div>
               <g-icon>{Setting}</g-icon>
               <div class="btn-text">Setting</div>
             </div>
           </g-btn>
-          <g-btn class="btn5" height="177.5px" backgroundColor="#FFFFFF">
+          <g-btn class="btn5" backgroundColor="#FFFFFF" height="100%">
             <div>
               <g-icon>{AdminDashboard}</g-icon>
               <div class="btn-text">Admin Dashboard</div>
             </div>
           </g-btn>
-          <g-btn class="btn6" height="177.5px" backgroundColor="#FFFFFF">
+          <g-btn class="btn6" backgroundColor="#FFFFFF" height="100%">
             <div>
               <g-icon>{EndOfDayIcon}</g-icon>
               <div class="btn-text">End of Day</div>
             </div>
           </g-btn>
-          <g-btn class="btn7" height="177.5px" backgroundColor="#FFFFFF">
+          <g-btn class="btn7" backgroundColor="#FFFFFF" height="100%">
             <div>
               <g-icon>{Support}</g-icon>
               <div class="btn-text">Support</div>
@@ -137,13 +137,17 @@
 <style scoped lang="scss">
   .container {
     display: grid;
-    grid-template-columns: 243px 781px;
-    grid-template-rows: 64px 712px;
+    grid-template-columns: 23.75% 76.25%;
+    grid-template-rows: 8.25% 91.75%;
     grid-template-areas: "header header" "sidebar content";
+    max-width: 1500px;
+    max-height: 100%;
   }
 
   .header {
     grid-area: header;
+    //min-height: 40px;
+    height: 100% !important;
 
     font-family: Muli;
     font-style: normal;
@@ -163,7 +167,16 @@
     }
 
     ::v-deep .g-toolbar-content {
-      padding: 10px 10px 10px 20px;
+      padding: 1.28% 1.28% 1.28% 2.56%;
+      height: 100% !important;
+    }
+
+    ::v-deep .g-toolbar-background {
+      height: 100% !important;
+
+      div {
+        height: 100% !important;
+      }
     }
   }
 
@@ -172,6 +185,8 @@
 
     &::v-deep .g-sidebar {
       position: relative;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     ul::v-deep {
@@ -210,13 +225,13 @@
     grid-area: content;
     background: #F2F2F2;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    padding-left: 20px;
-    padding-right: 19.5px;
+    padding-left: 2.25%;
+    padding-right: 2.25%;
 
     display: grid;
-    grid-template: [row1-start] ". . . ." 70px [row1-end] [row2-start] "btn1 btn2 btn3 ." 177.5px [row2-end] [row3-start] "line line line line" 80.5px [row3-end] [row4-start] "btn4 btn5 btn6 btn7" 177.5px [row4-end]
-      /177.5px 177.5px 177.5px 177.5px;
-    grid-column-gap: 10.5px;
+    grid-template: [row1-start] "welcome welcome . ." 10% [row1-end] [row2-start] "btn1 btn2 btn3 ." 25% [row2-end] [row3-start] "line line line line" 12.5% [row3-end] [row4-start] "btn4 btn5 btn6 btn7" 25% [row4-end]
+      /23.875% 23.875% 23.875% 23.875%;
+    grid-column-gap: 1.5%;
 
   }
 
@@ -229,14 +244,17 @@
 
   .btn1 {
     grid-area: btn1;
+    //height: 25%;
   }
 
   .btn2 {
     grid-area: btn2;
+    //height: 25%;
   }
 
   .btn3 {
     grid-area: btn3;
+    //height: 25%;
   }
 
   .btn4 {
@@ -266,6 +284,7 @@
   }
 
   .welcome {
+    grid-area: welcome;
     align-self: center;
     font-family: Muli;
     font-style: normal;
