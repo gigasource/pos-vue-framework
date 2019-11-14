@@ -14,7 +14,7 @@
     deleteGridItem, createEmptyArea, createGridArea,
     isGridAreaNameValid, getGridList, isAreaOverflowed,
     insertRowAbove, insertRowBelow, insertColumnLeft, insertColumnRight, deleteColumn, deleteRow,
-    generateRandomColor, adjustRowColNumbers, generateLayoutJson, parseLayoutJson
+    generateRandomColor, adjustRowColNumbers, generateLayoutJson, parseLayoutStr, parseLayoutJsonObject
   } from './logic/GGridGeneratorUtil'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
@@ -26,6 +26,10 @@
     name: 'GGridGenerator',
     components: { GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
+      // layout can be:
+      // - json string
+      // - json object (column, rows items are string
+      // - layout object (columns, rows items are ref(string))
       layout: {
         type: [String, Object]
       }
@@ -34,16 +38,16 @@
       // initialize layout
       let initLayout = null
       if (typeof (props.layout) === 'string') {
-        initLayout = parseLayoutJson(props.layout)
+        initLayout = parseLayoutStr(props.layout)
       } else {
-        initLayout = props.layout || {
+        initLayout = parseLayoutJsonObject(props.layout || {
           name: 'app',
-          columns: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
-          rows: [ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr'), ref('1fr')],
+          columns: ['1fr', '1fr', '1fr', '1fr', '1fr'],
+          rows: ['1fr', '1fr', '1fr', '1fr', '1fr'],
           columnGap: 0,
           rowGap: 0,
           subAreas: []
-        }
+        })
       }
 
       const selectedSetting = {
@@ -662,7 +666,7 @@
       function loadLayoutFile() {
         openFile({ multiple: false, mimeType: 'application/json' }, files => {
           files[0].text().then(content => {
-            state.layout = parseLayoutJson(content)
+            state.layout = parseLayoutStr(content)
             state.selectedGrid = state.layout
           })
         })

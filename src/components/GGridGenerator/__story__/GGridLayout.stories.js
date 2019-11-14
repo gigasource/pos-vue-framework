@@ -5,6 +5,7 @@ import GGridGenerator from '../GGridGenerator';
 import GEditViewInput from '../GEditViewInput'
 import GIncDecNumberInput from '../GIncDecNumberInput'
 import { createLayoutObject, createLayoutStr } from './storyHelper';
+import loginLayout from './layout'
 
 //
 export default {
@@ -127,4 +128,23 @@ export const layoutStr = () => ({
     }
   },
   template: createTemplate()
+})
+
+
+export const login = () => ({
+  components: { GGridLayout},
+  props: {
+    layout: {
+      default: loginLayout
+    }
+  },
+  template: `
+    <div>
+      <g-grid-layout :layout="layout" style="height: 700px" :displayPreviewColor="true">
+        <div area="num7">7</div>
+        <div area="num8">8</div>
+        <div area="login">Login</div>
+      </g-grid-layout>
+    </div>
+  `
 })
