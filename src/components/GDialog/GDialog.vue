@@ -193,8 +193,8 @@
       // Clean-up when destroy
       onBeforeUnmount(() => {
         unwatch();
-        detach(context.refs.wrapper);
-        detach(context.refs.overlay.$el);
+        context.refs.wrapper && detach(context.refs.wrapper);
+        context.refs.overlay && detach(context.refs.overlay.$el);
         detach();
       });
 
