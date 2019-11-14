@@ -188,7 +188,7 @@ button {
   @include elevation(2);
 
   &:active {
-    @include elevation(8);
+    @include elevation(0);
   }
 }
 
