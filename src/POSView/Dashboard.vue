@@ -26,7 +26,19 @@
     components: {GLayout, GToolbar, GSidebar, GSideBarTreeView, GAvatar, GIcon, GBtn, GImg, GSpacer},
     setup() {
 
-      function genDashboard() {
+
+      function genHeader() {
+        return <g-toolbar class="header" gradient="indigo, blue">
+          <g-avatar>
+            <g-img src="https://carlisletheacarlisletheatre.org/images/person-icon-flat-7.png"/>
+          </g-avatar>
+          <h6>Admin</h6>
+          <g-spacer/>
+          <h6>time & date</h6>
+        </g-toolbar>
+      }
+
+      function genSidebar() {
         const state = reactive({
           data: [{
             title: 'Dashboard', icon: 'mdi-cart-outline',
@@ -40,47 +52,47 @@
           },],
           value: null,
         })
+        return <g-sidebar class="sidebar" width="243px">
+          <g-side-bar-tree-view data={state.data} vModel={state.value}/>
+          <g-spacer/>
+          <div class="footer">
+            <g-icon style="padding-left:21px">{LogOut}</g-icon>
+            <span style="padding-left:15px">Log Out</span></div>
+        </g-sidebar>
+      }
 
+      function genContent() {
+       return <div class="content">
+         <h5>Welcome !</h5>
+         <g-btn class="btn1" height="177.5px" backgroundColor="#FFFFFF">
+           <g-icon>{CashRegister}</g-icon>
+         </g-btn>
+         <g-btn class="btn2" height="177.5px" backgroundColor="#FFFFFF">
+           <g-icon>{OrderHistory}</g-icon>
+         </g-btn>
+         <g-btn class="btn3" height="177.5px" backgroundColor="#FFFFFF">
+           <g-icon>{StaffReport}</g-icon>
+         </g-btn>
+         <g-btn class="btn4" height="177.5px" backgroundColor="#FFFFFF">
+           <g-icon>{Setting}</g-icon>
+         </g-btn>
+         <g-btn class="btn5" height="177.5px" backgroundColor="#FFFFFF">
+           <g-icon>{AdminDashboard}</g-icon>
+         </g-btn>
+         <g-btn class="btn6" height="177.5px" backgroundColor="#FFFFFF">
+           <g-icon>{EndOfDayIcon}</g-icon>
+         </g-btn>
+         <g-btn class="btn7" height="177.5px" backgroundColor="#FFFFFF">
+           <g-icon>{Support}</g-icon>
+         </g-btn>
+       </div>
+      }
+
+      function genDashboard() {
         return <g-layout class="container">
-          <g-toolbar class="header" gradient="indigo, blue">
-            <g-avatar>
-              <g-img src="https://carlisletheacarlisletheatre.org/images/person-icon-flat-7.png"/>
-            </g-avatar>
-            <h6>Admin</h6>
-            <g-spacer/>
-            <h6>time & date</h6>
-          </g-toolbar>
-          <g-sidebar class="sidebar" width="243px">
-            <g-side-bar-tree-view data={state.data} vModel={state.value}/>
-            <g-spacer/>
-            <div class="footer">
-              <g-icon style="padding-left:21px">{LogOut}</g-icon>
-              <span style="padding-left:15px">Log Out</span></div>
-          </g-sidebar>
-          <div class="content">
-            <h5>Welcome !</h5>
-            <g-btn class="btn1" height="177.5px" backgroundColor="#FFFFFF">
-              <g-icon>{CashRegister}</g-icon>
-            </g-btn>
-            <g-btn class="btn2" height="177.5px" backgroundColor="#FFFFFF">
-              <g-icon>{OrderHistory}</g-icon>
-            </g-btn>
-            <g-btn class="btn3" height="177.5px" backgroundColor="#FFFFFF">
-              <g-icon>{StaffReport}</g-icon>
-            </g-btn>
-            <g-btn class="btn4" height="177.5px" backgroundColor="#FFFFFF">
-              <g-icon>{Setting}</g-icon>
-            </g-btn>
-            <g-btn class="btn5" height="177.5px" backgroundColor="#FFFFFF">
-              <g-icon>{AdminDashboard}</g-icon>
-            </g-btn>
-            <g-btn class="btn6" height="177.5px" backgroundColor="#FFFFFF">
-              <g-icon>{EndOfDayIcon}</g-icon>
-            </g-btn>
-            <g-btn class="btn7" height="177.5px" backgroundColor="#FFFFFF">
-              <g-icon>{Support}</g-icon>
-            </g-btn>
-          </div>
+          {genHeader()}
+          {genSidebar()}
+          {genContent()}
         </g-layout>
       }
 
@@ -171,11 +183,6 @@
     grid-area: btn7;
   }
 
-  h6 {
-    color: white;
-    padding-left: 10px;
-  }
-
   .footer {
     height: 53px;
     width: 243px;
@@ -186,6 +193,15 @@
 
   .g-sidebar {
     position: relative;
+  }
+
+  h6 {
+    color: white;
+    padding-left: 10px;
+  }
+
+  body {
+    margin: 0;
   }
 
 </style>
