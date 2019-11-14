@@ -38,9 +38,12 @@
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
-					<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
-						<g-icon :color=iconColor>{{clearIcon}}</g-icon>
-					</div>
+					<slot name="clearableSlot"  :iconColor="iconColor">
+						<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
+							<g-icon :color=iconColor>{{clearIcon}}</g-icon>
+						</div>
+					</slot>
+
 					<slot name="appendInner" :iconColor="iconColor">
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>

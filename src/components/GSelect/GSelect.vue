@@ -11,6 +11,7 @@
   import {isSelected} from "../GDatePicker/logic/TableUtil";
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
+  import {keyCodes} from "../../utils/helpers";
 
   export default {
     name: "GSelect",
@@ -166,13 +167,9 @@
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
 
-      function onKeyDown() {
-        console.log('down')
-      }
-
       const genListScopedSlots = {
         listItem: ({item, isSelected, onSelect, onArrowDown, onArrowUp}) =>
-            <GListItem style={{'min-height': '48px'}} item={item} isSelected={isSelected}
+            <GListItem tabindex="0" style={{'min-height': '48px'}} item={item} isSelected={isSelected}
                        vOn:singleItemClick={() => onSelect(item)}
             >
               <GListItemContent>
@@ -181,8 +178,10 @@
             </GListItem>
 
       }
+
       const genList = props.genList || function (showOptions) {
         return <GList
+            tabindex="0"
             item-title={props.itemText}
             items={options.value}
             mandatory={props.mandatory}
@@ -223,10 +222,6 @@
           return selections.value.join(', ');
         }
 
-        function onInputArrowDown() {
-          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
-        }
-
         const genSingleSelectionSlot = () => {
           if (props.chips && selections.value) {
             return <GChip small={props.smallChips}
@@ -234,6 +229,7 @@
           }
           return selections.value
         }
+
         const getTextFieldScopedSlots = {
           appendInner: ({iconColor}) =>
               <GIcon color={iconColor}>arrow_drop_down</GIcon>,
@@ -256,7 +252,6 @@
             }}
                         {...{on: {'click:clearIcon': () => clearSelection()}}}
                         vOn:click={toggleContent}
-                        vOn:arrowdown={onInputArrowDown}
                         value={textfieldValue.value}
                         scopedSlots={getTextFieldScopedSlots}>
             </GTextField>

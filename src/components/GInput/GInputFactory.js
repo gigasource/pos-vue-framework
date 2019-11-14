@@ -157,9 +157,6 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     if (event.key === 'Delete' || event.key === 'Backspace') {
       return context.emit('delete')
     }
-    if (event.key === 'ArrowDown') {
-      return context.emit('arrowdown')
-    }
     context.emit('keydown', event)
   }
 

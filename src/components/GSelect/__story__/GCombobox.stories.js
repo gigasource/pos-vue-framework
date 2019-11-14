@@ -9,7 +9,22 @@ export default {
 
 export const GComboboxSingleSelectNoChips = () => ({
   components: {GCombobox},
-  props: {},
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
+    hint: {default: text('hint', 'Hint')},
+    persistent: {default: boolean('persistent', false)},
+    counter: {type: [String, Number], default: Number('counter', 25)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemValue', 'value')},
+  },
   data() {
     return {
       items: [
@@ -23,12 +38,43 @@ export const GComboboxSingleSelectNoChips = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox :items="items" label="Label" v-model="selected" hint="Hint" searchable></g-combobox>
+  <g-combobox :items="items" 
+             :item-text="itemText" 
+             :item-value="itemValue"  
+             :label="label"
+             :clearable="clearable"
+             :filled="filled"
+             :solo="solo"
+             :outlined="outlined"
+             :flat="flat"
+             :rounded="rounded"
+             :shaped="shaped"
+             :hint="hint"
+             :persistent="persistent"
+             :counter="counter"
+             :placeholder="placeholder"
+             v-model="selected" />
 </div>`,
 })
 export const GComboboxSingleSelectChips = () => ({
   components: {GCombobox},
-  props: {},
+  props: {
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
+    hint: {default: text('hint', 'Hint')},
+    persistent: {default: boolean('persistent', false)},
+    counter: {type: [String, Number], default: Number('counter', 25)},
+    smallChips: {default: boolean('smallChips', true)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemValue', 'value')},
+  },
   data() {
     return {
       items: [
@@ -42,12 +88,35 @@ export const GComboboxSingleSelectChips = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox :items="items" label="Label" chips v-model="selected" searchable></g-combobox>
+  <g-combobox chips
+              :items="items" 
+              :item-text="itemText" 
+             :item-value="itemValue"  
+             :label="label"
+             :clearable="clearable"
+             :filled="filled"
+             :solo="solo"
+             :outlined="outlined"
+             :flat="flat"
+             :rounded="rounded"
+             :shaped="shaped"
+             :hint="hint"
+             :persistent="persistent"
+             :counter="counter"
+             :placeholder="placeholder"  
+             :smallChips="smallChips"
+             v-model="selected" />
 </div>`,
 })
-export const GComboboxMultiSelectNoChips = () => ({
+export const GComboboxMultiSelect = () => ({
   components: {GCombobox},
-  props: {},
+  props: {
+    chips: {default: boolean('chips', false)},
+    smallChips: {default: boolean('smallChips', true)},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemValue', 'value')},
+    clearable: {default: boolean('clearable', false)},
+  },
   data() {
     return {
       items: [
@@ -61,7 +130,16 @@ export const GComboboxMultiSelectNoChips = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple clearable></g-combobox>
+  <g-combobox :items="items" 
+              :item-text="itemText" 
+             :item-value="itemValue"  
+             label="label"
+             :clearable="clearable" 
+             v-model="selected" 
+             :chips="chips"
+             :smallChips="smallChips"
+             multiple 
+             clearable></g-combobox>
 </div>`,
 })
 export const GComboboxMultiSelectAllowDuplicates = () => ({
@@ -82,25 +160,6 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
   <div data-app>
   <div>{{selected}}</div>
   <g-combobox :items="items" label="Label" v-model="selected" searchable multiple clearable allow-duplicates></g-combobox>
-</div>`,
-})
-export const GComboboxMultiSelectChips = () => ({
-  components: {GCombobox},
-  props: {},
-  data() {
-    return {
-      items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
-      ],
-      selected: null
-    }
-  },
-  template: `
-  <div data-app>
-  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple chips clearable></g-combobox>
 </div>`,
 })
 export const GComboboxNoDataSlot = () => ({
@@ -124,7 +183,7 @@ export const GComboboxNoDataSlot = () => ({
       <g-list-item>
         <g-list-item-content>
           <g-list-item-text>
-              No data match, Enter to add value to selections.
+              No data match, Enter to add value to selections.sy
           </g-list-item-text>
         </g-list-item-content>
       </g-list-item>
