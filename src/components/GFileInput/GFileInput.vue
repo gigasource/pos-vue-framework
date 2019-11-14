@@ -1,73 +1,20 @@
-<template>
-  <div class="g-tf--wrapper g-file-input" :class="[tfWrapperClasses, tfErrWrapperClass]"
-       @click="onClickWrapper"
-       @mouseup="onMouseUp"
-       @mousedown="onMouseDown">
-    <div class="g-tf--prepend__outer" ref="prependRef">
-      <g-icon>{{prependIcon}}</g-icon>
-    </div>
-    <fieldset>
-      <legend :style="legendStyles">{{label}}</legend>
-      <div class='g-tf' :class="tfErrClasses">
-        <div class="g-tf--prepend__inner">
-          <g-icon>{{prependInnerIcon}}</g-icon>
-        </div>
-        <div v-if="prefix" class="g-tf--affix" ref="prefixRef">{{prefix}}</div>
-        <div class="inputGroup">
-          <label for="input" class="g-tf--label" :class="labelClasses" :style="labelStyles">{{label}}</label>
-          <div class="g-file-input--text">
-            <slot v-if="isDirty" name="selection">
-              <div v-if="chips || smallChips">
-                <g-chip v-for="file in files" :small="smallChips">
-                  {{file.name}}{{showSize?'('+convertFileSize(file.size)+')':''}}
-                </g-chip>
-              </div>
-              <div v-else>{{fileName}}{{showSize?' ('+fileSize+')':''}}</div>
-            </slot>
-            <slot v-else>{{placeholder}}</slot>
-          </div>
-          <input id="input" ref="input"
-                 class="g-tf--input"
-                 :type="type"
-                 :multiple="multiple"
-                 :accept="accept"
-                 @focus="onFocus"
-                 @blur="onBlur"
-                 v-model="internalValue">
-        </div>
-        <div v-if="suffix" class="g-tf--affix">{{suffix}}</div>
-        <div class="g-tf--append__inner">
-          <div v-if="isDirty && clearable" @click.stop="onClearIconClick">
-            <g-icon style="cursor: pointer">mdi-close</g-icon>
-          </div>
-          <g-icon>{{appendIcon}}</g-icon>
-        </div>
-        <div v-if="!isValidInput" class="g-tf__error">{{errorMessages}}</div>
-        <div v-else class="g-tf--hint" :class="hintClasses">{{hint}}</div>
-        <div v-show="counter" :class="{'g-tf--counter': true, 'g-tf--counter__error': !isValidInput}">
-          {{fileNumber + ' (' + fileSize + ' in total)'}}
-        </div>
-      </div>
-    </fieldset>
-    <div class="g-tf--append__outer" ref="appendOuter">
-      <g-icon>{{appendOuterIcon}}</g-icon>
-    </div>
-  </div>
-</template>
-
 <script>
-  import {ref, computed} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getValidate} from '../GInput/GInputField';
-  import GIcon from '../GIcon/GIcon';
+  import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
+  import {ref, computed, watch} from '@vue/composition-api';
+  import {getEvents, getLabel, getValidate} from '../GInput/GInputFactory';
 
   export default {
-    name: 'GFileInput',
-    components: {GIcon, GChip},
+    name: "GFileInputJSX",
+    components: {GChip, GIcon},
+    model: {
+      prop: 'value',
+      event: 'change',
+    },
     props: {
-      ...{//display props
+      //display props
+      ...{
         label: String,
-        placeholder: String,
         prependIcon: String,
         prependInnerIcon: {
           type: String,
@@ -83,92 +30,87 @@
           type: String,
           default: ''
         },
-        //input states
         clearable: {
           type: Boolean,
           default: true
         },
-        disabled: Boolean,
-        readonly: Boolean,
+        hint: String,
+        placeholder: String,
+        persistent: Boolean,
+        counter: [Number, Boolean, String],
       },
-      //rules and validation props
+      //validator
       rules: Array,
-      hint: String,
       errorCount: {
         type: Number,
         default: 1
       },
-      persistent: Boolean,
-      counter: [Number, Boolean, String],
       validateOnBlur: Boolean,
       error: Boolean,
-      //styles
+      disabled: Boolean,
+      readonly: Boolean,
+      //style
       filled: Boolean,
       outlined: Boolean,
       solo: Boolean,
-      shaped: Boolean,
       rounded: Boolean,
+      shaped: Boolean,
       flat: Boolean,
-      // basic props
-      value: String,
-      type: {
-        type: String,
-        default: 'file',
-      },
       //file input logic
       multiple: Boolean,
       accept: String,
       showSize: Boolean,
       chips: Boolean,
       smallChips: Boolean,
+      truncateLength: {
+        type: [String, Number],
+        default: 22,
+      },
+      value: {
+        default: () => [],
+        validator: val => {
+          return typeof val === 'object' || Array.isArray(val) || typeof val === 'string'
+        },
+      },
+      type: {
+        type: String,
+        default: 'file',
+      },
     },
     setup(props, context) {
-      const tfWrapperClasses = getTfWrapperClasses(props)
-
-      const internalValue = getInternalValue(props, context)
-      const isDirty = computed(() => internalValue.value.length > 0)
-      const isValidInput = ref(true)
-      const isFocused = ref(false)
-
-      const {labelClasses, labelStyles, isLabelActive, prefixRef} = getLabel(props, internalValue, isValidInput, isFocused, 'tf-label__active', {'color': 'red'})
-
-      //Activate non persistent hint
-      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'tf-hint__active': true} : {})
-
-      //event handler function
-      const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
-
-      const inputErrStyles = computed(() => isValidInput.value ? {} : {'color': 'red'})
-      //change input border color
-      const tfErrClasses = computed(() => isValidInput.value ? {} : {'g-tf__error': true})
-
-      const tfErrWrapperClass = computed(() => ({'g-tf-wrapper__error': !isValidInput.value}))
-
-      const {
-        onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp,
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
-      //set legend width for label in outlined textfield
-      const legendStyles = computed(() => {
-        if (!props.solo && props.label && (isFocused.value || internalValue.value)) {
-          return {
-            'width': 'auto',
-            'padding': '1px',
-          }
-        } else
-          return {}
+      const lazyValue = ref(props.value)
+      const internalValue = computed({
+        get: () => lazyValue.value,
+        set: (val) => {
+          lazyValue.value = val
+          context.emit('change', lazyValue.value)
+        }
       })
 
+      watch(() => props.value, (v) => {
+        lazyValue.value = v
+      }, {lazy: true})
+
+      const isDirty = computed(() => Array.isArray(internalValue.value) ? internalValue.value.length > 0 : !!internalValue.value)
+      const isFocused = ref(false)
+      const isValidInput = ref(true)
+      const {
+        onClick, onFocus, onBlur, onMouseDown, onMouseUp,
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+      const onInput = function (e) {
+        const files = [...e.target.files || []]
+        internalValue.value = props.multiple ? files : files[0]
+      }
+      const onClearIconClick = function () {
+        internalValue.value = props.multiple ? [] : null
+        context.refs.input.value = ''
+      }
+      const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
+
       //file input logic
-      function onClickWrapper() {
-        onClick()
-        triggerFileInput()
-      }
-
-      function triggerFileInput() {
-        context.refs.input.click()
-      }
-
-      const files = computed(() => isDirty.value ? context.refs.input.files : [])
+      const files = computed(() => {
+        return isDirty.value ? context.refs.input.files : []
+      })
 
       function convertFileSize(fileSize) {
         let size = fileSize
@@ -182,80 +124,218 @@
         return Math.round(size * 1000) / 1000 + unit
       }
 
-      function totalFileSize(files) {
-        if (!isDirty.value) return 0
-
+      const totalFileSize = computed(() => {
+        if (!isDirty.value) return convertFileSize(0)
         let size = 0
-        for (let file of files)
+        for (let file of files.value)
           size = size + file.size
-        return size
+        return convertFileSize(size)
+      })
+
+      function formattedFileName(fileName) {
+        return fileName.length > props.truncateLength
+            ? fileName.slice(0, Math.floor(props.truncateLength / 2 - 1)) + '...' + fileName.slice(-Math.floor((props.truncateLength - 1) / 2 - 1))
+            : fileName
       }
 
-      const fileSize = computed(() => {
-        return convertFileSize(totalFileSize(files.value))
-      })
-
-      const fileName = computed(() => {
+      const fileContent = computed(() => {
         if (files.value.length === 0) return ''
-        if (files.value.length === 1) return files.value[0].name
+        if (files.value.length === 1) return formattedFileName(files.value[0].name)
         if (files.value.length > 1) return files.value.length + ' files'
       })
-
-      const fileNumber = computed(() => {
+      const filesName = computed(() => {
+        let filesName = []
+        for (let file of files.value)
+          filesName.push(formattedFileName(file.name))
+        return filesName
+      })
+      const fileAmount = computed(() => {
         if (files.value.length <= 1) return files.value.length + ' file'
         if (files.value.length > 1) return files.value.length + ' files'
       })
 
-      return {
-        //calculated styles and classes
-        labelClasses,
-        labelStyles,
-        tfErrClasses,
-        tfWrapperClasses,
-        hintClasses,
-        inputErrStyles,
-        //value
-        internalValue,
-        //calculated state
-        isLabelActive,
-        isFocused,
-        isDirty,
-        isValidInput,
-        //calculated error
-        errorMessages,
-        //event listeners
-        onClick,
-        onFocus,
-        onBlur,
-        onMouseUp,
-        onMouseDown,
-        onClickWrapper,
-        onClearIconClick,
-        //ref
-        prefixRef,
-        tfErrWrapperClass,
-        legendStyles,
-        //fileInput
-        files,
-        fileSize,
-        fileName,
-        fileNumber,
-        convertFileSize,
+      //genFileInputGroup
+      const {
+        labelClasses, labelStyles, isLabelActive, prefixRef
+      } = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active', {'color': 'red'})
+
+      function genFilesOrText() {
+        return (props.chips || props.smallChips) ?
+            Array.from(files.value).map((file, index) => (
+                <g-chip small={props.smallChips} ref={'chip' + index}>
+                  {filesName.value[index]}
+                  {props.showSize ? ` (${convertFileSize(file.size)})` : ''}
+                </g-chip>))
+            : (<div>{fileContent.value}{props.showSize ? ` (${totalFileSize.value})` : ''}</div>)
       }
+
+      function genSelectionSlot() {
+        return Array.from(files.value).map((file, index, files) => {
+          if (!context.slots.selection) return
+
+          let text = props.showSize ? filesName.value[index] + ` (${convertFileSize(file.size)})` : filesName.value[index]
+          return context.slots.selection({
+            text: text,
+            file,
+            index,
+            amount: files.length
+          })
+        })
+      }
+
+      function genFileInput() {
+        return <div class="g-file-input--text">
+          {isDirty.value && context.slots.selection && genSelectionSlot()}
+          {isDirty.value && !context.slots.selection && genFilesOrText()}
+          {!isDirty.value && (<p style="opacity: 0.5">{props.placeholder}</p>)}
+        </div>
+      }
+
+      function genInputGroup() {
+        return <div class="inputGroup">
+          <label vShow={!(props.chips || props.smallChips)} class={['g-tf-label', labelClasses.value]}
+                 style={labelStyles.value} for="input">{props.label}</label>
+          {genFileInput()}
+          <input id="input" ref="input"
+                 class="g-tf-input"
+                 type={props.type}
+                 multiple={props.multiple}
+                 accept={props.accept}
+                 vOn:change={onInput}
+                 vOn:focus={onFocus}
+                 vOn:blur={onBlur}/>
+        </div>
+      }
+
+      //genFieldSet
+      const legendStyle = computed(() => {
+        if (!props.solo && props.label && isLabelActive.value && !(props.chips || props.smallChips)) {
+          return {
+            'width': 'auto',
+            'padding': '1px',
+            'margin-left': props.rounded ? '18px' : '4px',
+          }
+        } else
+          return {}
+      })
+      const fileInputClasses = computed(() => ({
+        'g-tf': true,
+        'g-tf__error': !isValidInput.value,
+      }))
+
+      function genPrependInner() {
+        return <div class="g-tf-prepend__inner">
+          <g-icon>{props.prependInnerIcon}</g-icon>
+        </div>
+      }
+
+      function genPrefix() {
+        return <div class="g-tf-affix" ref={prefixRef}>{props.prefix}</div>
+      }
+
+      function genSuffix() {
+        return <div class="g-tf-affix">{props.suffix}</div>
+      }
+
+      function genAppendInner() {
+        return <div class="g-tf-append__inner">
+          {(isDirty.value && props.clearable) && (
+              <div>
+                <g-icon vOn:click_stop={onClearIconClick} style="cursor: pointer">mdi-close</g-icon>
+              </div>
+          )}
+          <g-icon>{props.appendIcon}</g-icon>
+        </div>
+      } // todo remake icon div after g-icon is fixed
+
+      function genErrorMessages() {
+        return <div class="g-tf-error" style="">{errorMessages.value}</div>
+      }
+
+      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
+
+      function genHint() {
+        return <div class={['g-tf-hint', hintClasses.value]}>{props.hint}</div>
+      }
+
+      function genCounter() {
+        return <div class={['g-tf-counter', {'g-tf-counter__error': !isValidInput.value}]}
+                    vShow={props.counter}>
+          {`${fileAmount.value} (${totalFileSize.value} in total)`}
+        </div>
+      }
+
+      function genFileInputWrapper() {
+        return <fieldset>
+          <legend style={legendStyle.value}>{props.label}</legend>
+          <div class={fileInputClasses.value}>
+            {genPrependInner()}
+            {props.prefix && genPrefix()}
+            {genInputGroup()}
+            {props.suffix && genSuffix()}
+            {genAppendInner()}
+            {!isValidInput.value ? genErrorMessages() : genHint()}
+            {genCounter()}
+          </div>
+        </fieldset>
+      }
+
+      //genFileInputComponent
+      const wrapperClasses = computed(() => {
+        const isDisabled = {
+          'g-tf-wrapper__disabled': props.disabled,
+          'g-tf__filled': props.filled,
+          'g-tf__outlined': props.outlined,
+          'g-tf__solo': props.solo,
+          'g-tf__rounded': props.rounded,
+          'g-tf__shaped': props.shaped,
+          'g-tf__flat': props.flat,
+        }
+        return {
+          'g-tf-wrapper': true,
+          'g-tf-wrapper__error': !isValidInput.value,
+          'g-file-input': true,
+          ...isDisabled,
+        }
+      })
+
+      function genPrependOuter() {
+        return <div class="g-tf-prepend__outer" ref="prependRef">
+          <g-icon>{props.prependIcon}</g-icon>
+        </div>
+      }
+
+      function genAppendOuter() {
+        return <div class="g-tf-append__outer" ref="appendOuter">
+          <g-icon>{props.appendOuterIcon}</g-icon>
+        </div>
+      }
+
+      function onClickWrapper(e) {
+        onClick(e)
+        context.refs.input.click()
+      }
+
+      function genFileInputComponent() {
+        return <div class={wrapperClasses.value}
+                    vOn:click={onClickWrapper}
+                    vOn:mouseup={onMouseUp}
+                    vOn:mousedown={onMouseDown}>
+          {genPrependOuter()}
+          {genFileInputWrapper()}
+          {genAppendOuter()}
+        </div>
+      }
+
+      return {
+        genFileInputComponent
+      }
+    },
+
+    render() {
+      return this.genFileInputComponent()
     }
   }
-
-  function getTfWrapperClasses(props) {
-    return computed(() => (props.disabled ? {'tf-wrapper-disabled': true} : {
-      'g-tf__filled': props.filled,
-      'g-tf__outlined': props.outlined,
-      'g-tf__solo': props.solo,
-      'g-tf__rounded': props.rounded,
-      'g-tf__shaped': props.shaped,
-      'g-tf__flat': props.flat,
-    }))
-  }
-
 </script>
 
 <style scoped lang="scss">
