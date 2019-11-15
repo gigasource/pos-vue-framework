@@ -52,28 +52,32 @@
         return 'translate(' + (props.left ? '-' : '') + disparity + ',' + (props.bottom ? '' : '-') + disparity + ')';
       });
 
-			const computedNudge = computed(() => {
-				let computedObject = {};
+      const computedNudge = computed(() => {
+        let computedObject = {};
 
-				if (props.nudgeTop) {
-					computedObject = {...computedObject, top: convertToUnit(-parseInt(props.nudgeTop)), bottom: 'unset'};
-				}
-				if (props.nudgeBottom) {
-					computedObject = {...computedObject, bottom: convertToUnit(-parseInt(props.nudgeBottom)), top: 'unset'};
-				}
-				if (props.nudgeLeft) {
-					computedObject = {...computedObject, left: convertToUnit(-parseInt(props.nudgeLeft)), right: 'unset'};
-				}
-				if (props.nudgeRight) {
-					computedObject = {...computedObject, right: convertToUnit(-parseInt(props.nudgeRight)), left: 'unset'};
-				}
+        if (props.nudgeTop) {
+          computedObject.top = convertToUnit(-parseInt(props.nudgeTop))
+          computedObject.bottom = 'unset';
+        }
+        if (props.nudgeBottom) {
+          computedObject.bottom = convertToUnit(-parseInt(props.nudgeBottom));
+          computedObject.top = 'unset';
+        }
+        if (props.nudgeLeft) {
+          computedObject.left = convertToUnit(-parseInt(props.nudgeLeft));
+          computedObject.right = 'unset';
+        }
+        if (props.nudgeRight) {
+          computedObject.right = convertToUnit(-parseInt(props.nudgeRight));
+          computedObject.left = 'unset';
+        }
 
-				return computedObject;
-			})
+        return computedObject;
+      })
 
       const styles = computed(() => ({
         ...!props.inline && { transform: transform.value },
-				...computedNudge.value,
+        ...computedNudge.value,
         ...isCssColor(props.color) && { 'background-color': props.color },
       }));
 
@@ -81,7 +85,7 @@
         wrapperClasses,
         classes,
         styles,
-				computedNudge
+        computedNudge
       }
     }
   }
