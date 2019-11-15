@@ -1,65 +1,66 @@
 <template>
-  <span :class="wrapClass">
-    <slot></slot>
-    <span v-show="show" :class="badgeSlotClass" :style="badgeSlotStyle"><slot name="badge"></slot></span>
-  </span>
+	<div :class="wrapperClasses">
+		<slot></slot>
+		<div v-if="value" :class="classes" :style="styles">
+			<slot name="badge"></slot>
+		</div>
+	</div>
 </template>
 
 <script>
-  import {computed} from '@vue/composition-api'
-  import GIcon from "../GIcon/GIcon";
-  import {setBackgroundColor} from "../../mixins/colorable";
+	import { computed } from '@vue/composition-api'
+  import { isCssColor } from '../../mixins/colorable';
 
   export default {
-    name: "GBadge",
-    components: {GIcon},
-    model: {
-      prop: 'show',
-      event: 'change'
-    },
-    props: {
-      // value: {
-      //   default: null
-      // },
-      show: {type: Boolean, default: true},
-      //style
-      bottom: Boolean,
-      left: Boolean,
-      overlap: Boolean,
-      color: {type: String, default: 'green'},
-      //transition
-      transition: String,
-      mode: String,
-      origin: String,
-    },
-    setup(props, context) {
+    name: 'GBadge',
+		props: {
+			overlay: Boolean,
+			left: Boolean,
+			bottom: Boolean,
+			color: {
+			  type: String,
+				default: 'blue'
+			},
+			showOnHover: Boolean,
+			inline: Boolean,
+			value: {
+			  type: Boolean,
+				default: true
+			},
+		},
+		setup(props) {
+      const wrapperClasses = computed(() => ({
+				'g-badge-wrapper': true,
+				'g-badge__hover': props.showOnHover,
+				'g-badge__inline': props.inline,
+			}));
 
-      const wrapClass = computed(() => {
-        return {
-          'g-badge': true,
-          'g-badge__bottom': props.bottom,
-          'g-badge__left': props.left,
-          'g-badge__overlap': props.overlap,
-        }
-      })
+			const classes = computed(() => ({
+				'g-badge': true,
+				'g-badge__left': props.left,
+				'g-badge__bottom': props.bottom,
+				['bg-' + props.color.split(' ').join('-')]: props.color && !isCssColor(props.color),
+			}));
 
-      const badgeSlotClass = computed(() => ({
-        'g-badge--badge': true,
-      }))
+			const transform = computed(() => {
+				const disparity = props.overlay ? '50%' : '80%';
+				return 'translate(' + (props.left ? '-' : '') + disparity + ',' + (props.bottom ? '' : '-') + disparity + ')';
+			});
 
-      const badgeSlotStyle = computed(() => ({
-        'background-color': props.color
-      }))
+			const styles = computed(() => ({
+				... !props.inline && { transform: transform.value },
+				... isCssColor(props.color) && { 'background-color': props.color },
+			}));
 
-      return {
-        wrapClass,
-        badgeSlotClass,
-        badgeSlotStyle
-      }
-    }
+			return {
+        wrapperClasses,
+			  classes,
+				styles
+			}
+		}
   }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+	@import '_GBadge.scss';
 </style>

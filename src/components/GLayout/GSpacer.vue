@@ -12,5 +12,8 @@
 </script>
 
 <style scoped>
-
+	.g-spacer {
+		flex-grow: 1;
+		visibility: hidden;
+	}
 </style>

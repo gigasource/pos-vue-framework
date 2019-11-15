@@ -1,6 +1,6 @@
 $icon-size: 24px !default;
 $icon-size-dense: 20px !default;
-
+@import "../../style/variables";
 //Theme
 //+theme(v-icon) using ($material){
 //  color: map-deep-get($material, 'icons', 'active');

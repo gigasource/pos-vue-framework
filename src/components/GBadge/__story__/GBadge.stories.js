@@ -1,50 +1,73 @@
-import {boolean, text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions';
-import GBadge from "../GBadge";
+import { boolean, text, withKnobs } from '@storybook/addon-knobs';
+import GBadge from '../GBadge';
+import GBtn from '../../GBtn/GBtn';
 import GIcon from '../../GIcon/GIcon';
-
 
 export default {
   title: 'GBadge',
-  decorators: [withKnobs],
-};
+  decorators: [withKnobs]
+}
 
-export const basicBadge = () => ({
-  components: {GBadge, GIcon},
-  props: {
-    icon: {default: text('icon', 'mdi-close')},
-    color: {default: text('color', 'pink')},
-    bottom: {default: boolean('bottom', false)},
-    left: {default: boolean('left', false)},
-    overlap: {default: boolean('overlap', false)},
-    show: {default: boolean('show', true)},
-  },
-  template: `<g-badge v-model="show" :bottom="bottom" :left="left" :overlap="overlap" :color="color">
-              <g-icon large color="grey">mail</g-icon>
-              <template v-slot:badge><span>!</span></template>
-             </g-badge>`,
-})
-
-export const eventListenBadge = () => ({
-  components: {GBadge, GIcon},
-  data() {
+export const basic = () => ({
+  components: { GBadge, GBtn, GIcon },
+  data () {
     return {
-      show: false
+      show : true
     }
   },
   props: {
-    icon: {default: text('icon', 'mdi-close')},
-    color: {default: text('color', 'pink')},
-    bottom: {default: boolean('bottom', false)},
-    left: {default: boolean('left', false)},
-    overlap: {default: boolean('overlap', false)},
-    //show: {default: boolean('show', true)},
+    overlay: {
+      type: Boolean,
+      default: boolean('Overlay Badge', false)
+    },
+    left: {
+      type: Boolean,
+      default: boolean('Left', false)
+    },
+    bottom: {
+      type: Boolean,
+      default: boolean('Bottom', false)
+    },
+    color: {
+      type: String,
+      default: text('Color', 'blue')
+    },
+    showOnHover: {
+      type: Boolean,
+      default: boolean('Show on hover', false)
+    },
+    inline: {
+      type: Boolean,
+      default: boolean('Inline', false)
+    }
   },
-  template: `<g-badge v-model="show" :bottom="bottom" :left="left" :overlap="overlap" :color="color">
-              <span @mouseover="show = true"
-                   @mouseout="show = false">
-                   <g-icon large color="grey">mail</g-icon>
-              </span>
-              <template v-slot:badge><span>!</span></template>
-             </g-badge>`,
+  template: `
+  <g-badge :overlay="overlay" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
+    <template v-slot:badge>
+      <g-icon x-small>notifications</g-icon>
+    </template>
+    <g-btn @click="show = !show">Toggle</g-btn>
+  </g-badge>
+  `
+})
+
+export const soloInline = () => ({
+  components: { GBadge, GIcon },
+  props: {
+    color: {
+      type: String,
+      default: text('Color', 'blue')
+    },
+    inline: {
+      type: Boolean,
+      default: boolean('Inline', true)
+    }
+  },
+  template: `
+  <g-badge :color="color" :inline="inline">
+    <template v-slot:badge>
+      <g-icon x-small>notifications</g-icon>
+    </template>
+  </g-badge>
+  `
 })

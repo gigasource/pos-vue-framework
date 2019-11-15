@@ -376,7 +376,7 @@ $colors: (
         background-color: $color_value !important;
       }
       //text
-      .#{$color_name} {
+      .text-#{$color_name} {
         color: $color_value !important;
       }
       //border
@@ -392,7 +392,7 @@ $colors: (
         background-color: $color_value !important;
       }
       //text
-      .#{$color_name}-#{$color_type} {
+      .text-#{$color_name}-#{$color_type} {
         color: $color_value  !important;
       }
       //border
@@ -412,7 +412,7 @@ $colors: (
   .bg-#{$color} {
     background-color: $color_value !important;
   }
-  .#{$color} {
+  .text-#{$color} {
     color: $color_value !important;
   }
   .b-#{$color} {
@@ -590,6 +590,14 @@ $gradient-colors: (
 
     &.gradient-shadow {
       box-shadow: 0 6px 20px 0 rgba($end-color, 0.5) !important;
+    }
+  }
+}
+
+@each $gradient_name, $gradient_obj in $gradient-colors {
+  @each $property, $value in $gradient_obj {
+    :export {
+      #{$gradient_name}--#{$property}: $value
     }
   }
 }
