@@ -90,11 +90,11 @@
 						<g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color">{{item.title}}</g-btn>
 					</g-scroll-window-item>
 				</g-scroll-window>
-				<g-item-group :items="delimeters" v-model="window">
+				<g-item-group :items="listItems" v-model="window" :return-object="false" mandatory>
 					<template v-slot:default="{ toggle, active }">
-						<template v-for="(item, index) in delimeters">
-							<g-item :item="item" :is-active="active(item)" @toggle="toggle" :key="index">
-								<g-btn @click="toggle"></g-btn>
+						<template v-for="(item, index) in listItems">
+							<g-item :is-active="active(item)" :key="index">
+								<g-btn @click="toggle(item)"></g-btn>
 							</g-item>
 						</template>
 					</template>
@@ -421,7 +421,7 @@
             { title: 'Tiramisu', color: 'yellow accent 1' },
           ],
         ],
-        delimeters: null,
+        delimiters: null,
         orderDetail: [
           {
             id: 1,
@@ -631,7 +631,7 @@
     created() {
       this.menuSelected = this.menu[0];
       this.window = 0;
-      this.delimeters = [...this.listItems.keys()];
+      this.delimiters = [...this.listItems.keys()];
     }
   }
 </script>
@@ -816,7 +816,7 @@
 					background-color: #E0E0E0 !important;
 				}
 
-				.g-item:not(:first-child):not(:last-child) .g-btn {
+				.g-item__active .g-btn {
 					background-color: #2196F3 !important;
 				}
 			}

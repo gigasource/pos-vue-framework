@@ -19,14 +19,15 @@
 			}
     },
 		setup(props, {emit}) {
-      const {disabled, activeClass, isActive, item} = props;
-      const itemClass = computed(() => ({
-				[activeClass]: isActive
-			}));
+      const itemClass = computed(() => {
+      	return {
+					[props.activeClass]: props.isActive
+				}
+			});
 
 			const toggle = () => {
-        if (disabled) return;
-        emit('toggle', item);
+        if (props.disabled) return;
+        emit('toggle', props.item);
 			};
 
 			return {

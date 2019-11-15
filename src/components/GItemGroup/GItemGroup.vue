@@ -23,14 +23,17 @@
       mandatory: Boolean,
       multiple: Boolean,
       //todo: return item/index
-      returnItem: Boolean,
+			returnObject: {
+      	type: Boolean,
+				default: true
+			},
       value: null,
       items: Array
     },
     setup(props, context) {
       const model = computed({
         get: () => {
-          if (props.value) {
+          if (props.value !== undefined) {
             if (props.multiple && !Array.isArray(props.value)) {
               props.value = [props.value];
             }
