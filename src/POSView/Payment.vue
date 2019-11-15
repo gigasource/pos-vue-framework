@@ -3,7 +3,13 @@
 		<div class="layout__left">
 			<div class="info">
 				<div class="info__left">
-
+					<g-avatar size="36">
+						<g-img :src="require('../assets/order/customer_ava.svg')"/>
+					</g-avatar>
+					<p class="pa-1 ml-2" style="line-height: 16px">
+						Select Customer
+					</p>
+					<g-icon small>add_circle</g-icon>
 				</div>
 				<div class="info__right">
 					<g-avatar size="36">
@@ -15,26 +21,27 @@
 					</div>
 				</div>
 			</div>
-			<g-simple-table striped fixed-header class="table">
-				<thead>
-				<tr>
-					<th style="color: inherit; padding: 0">
-						<div class="row-flex" style="line-height: 1.75">
-							<span class="flex-grow-1 pa-2 ta-left">Name</span>
-							<span class="w-10 pa-2 ta-center">Unit</span>
-							<span class="w-10 pa-2 ta-right">Qty</span>
-							<span class="w-12 pa-2 ta-right">Each(€)</span>
-							<span class="W-12 pa-2 ta-right">Total(€)</span>
-						</div>
-					</th>
-				</tr>
-				</thead>
-				<tbody>
+			<div class="table">
+				<g-simple-table striped fixed-header style="height: 100%">
+					<thead>
+					<tr>
+						<th style="color: inherit; padding: 0">
+							<div class="row-flex" style="line-height: 1.75">
+								<span class="flex-grow-1 pa-2 ta-left">Name</span>
+								<span class="w-10 pa-2 ta-center">Unit</span>
+								<span class="w-10 pa-2 ta-right">Qty</span>
+								<span class="w-12 pa-2 ta-right">Each(€)</span>
+								<span class="W-12 pa-2 ta-right">Total(€)</span>
+							</div>
+						</th>
+					</tr>
+					</thead>
+					<tbody>
 					<tr v-for="order in orderDetail">
 						<td style="color: inherit; padding: 0">
 							<div class="row-flex" style="line-height: 1.75">
 								<div class="flex-grow-1 pa-2 ta-left" style="font-size: 15px">
-									<p>{{order.name}} <g-icon v-if="order.edited" small color="#f44336">edit</g-icon></p>
+									<p>{{order.name}} <g-icon v-if="order.edited" small color="#f44336" style="margin-bottom: 5px">edit</g-icon></p>
 									<p v-if="order.promotion" class="promotion">{{order.promotion}}</p>
 								</div>
 								<div class="w-10 pa-2 ta-center">{{order.unit}}</div>
@@ -50,8 +57,9 @@
 							</div>
 						</td>
 					</tr>
-				</tbody>
-			</g-simple-table>
+					</tbody>
+				</g-simple-table>
+			</div>
 			<div class="report">
 				<div class="report-column">
 					<span>Discount (€)</span>
@@ -70,14 +78,14 @@
 			<div class="action">
 				<g-btn outlined>F1</g-btn>
 				<g-btn outlined>F2</g-btn>
-				<g-btn outlined>F3</g-btn>
-				<g-btn outlined>F4</g-btn>
+				<g-btn outlined>F1</g-btn>
+				<g-btn outlined>F2</g-btn>
 			</div>
-			<g-toolbar class="toolbar" color="#eee">
+			<g-toolbar class="toolbar" color="#eee" elevation="0">
 				<g-btn background-color="white">
 					<router-link to="/order">
 						<g-icon>{{require('../assets/order/back.svg')}}</g-icon>
-						Back
+						<span style="color: rgba(0, 0, 0, 0.87)">Back</span>
 					</router-link>
 				</g-btn>
 				<g-btn background-color="white">
@@ -182,7 +190,7 @@
 			.info__left {
 				flex-basis: 50%;
 				display: flex;
-				padding: 16px;
+				padding: 16px 16px 16px 6px;
 				align-items: center;
 				font-size: 13px;
 				font-weight: 700;
@@ -199,10 +207,14 @@
 
 		.table {
 			grid-area: table;
-			border: 1px solid #e8e8e8;
-			border-radius: 6px;
-			font-size: 13px;
 			margin: 6px;
+			overflow: hidden;
+
+			.g-table {
+				border: 1px solid #e8e8e8;
+				border-radius: 6px;
+				font-size: 13px;
+			}
 
 			.empty-row {
 				height: 42px;
@@ -256,6 +268,23 @@
 			::v-deep .g-badge-wrapper .g-btn {
 				margin-right: 0;
 			}
+
+			::v-deep .g-toolbar-content {
+				height: 100% !important;
+
+				& > .g-btn:first-child {
+					margin-left: 0;
+				}
+			}
+
+			::v-deep .g-toolbar-background {
+				height: 100% !important;
+
+				& > div {
+					height: 100% !important;
+					box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.25);
+				}
+			}
 		}
 	}
 
@@ -298,7 +327,7 @@
 			border-bottom: none !important;
 		}
 
-		.text__editted {
+		.text__edited {
 			color: #F44336;
 		}
 
@@ -322,5 +351,9 @@
 		&::-webkit-scrollbar {
 			display: none;
 		}
+	}
+
+	a:visited, a:link {
+		text-decoration: none;
 	}
 </style>
