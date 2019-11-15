@@ -99,7 +99,7 @@
     },
 
     render() {
-      const icon = this.$slots.default && this.$slots.default[0] ? this.$slots.default[0].text.trim() : ''
+      const icon = this.$slots.default ? this.$slots.default[0].text.trim() : ''
       return this.genIcon(icon)
     }
   }
