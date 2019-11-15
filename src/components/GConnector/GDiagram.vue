@@ -33,6 +33,8 @@
         connectionPoints,
         zoomState,
         originCoordinate,
+				svgDimension,
+				containerDimension,
         zoom,
         scroll
       } = GDiagramFactory(props, context)
@@ -87,7 +89,8 @@
 
       const contentStyles = computed(() => ({
         transform: `scale(${zoomState.value}, ${zoomState.value})`,
-				transformOrigin: zoomState.value > 1 ? `0 0` : undefined
+				//transformOrigin: zoomState.value > 1 ? `0 0` : undefined
+				transformOrigin: `0 0`
       }))
 
 
@@ -141,11 +144,14 @@
         e.preventDefault()
 
         if (isDrag.value) {
+          const targetWidth = window.getComputedStyle(target, 'width')
+          const targetHeight = window.getComputedStyle(target, 'height')
+
           const newTop = startPosition.top - (mouseStartPosition.pageY - e.pageY)/zoomState.value
           const newLeft = startPosition.left - (mouseStartPosition.pageX - e.pageX)/zoomState.value
 
-          target.style.top = newTop + 'px'
-          target.style.left = newLeft + 'px'
+          target.style.top = newTop >= 0 ? newTop + 'px' : 0
+          target.style.left = newLeft >= 0 ? newLeft + 'px' : 0
         }
       }
 
@@ -166,7 +172,7 @@
       function genDiagram() {
         return <div class="g-diagram-container" style={containerStyles.value} vOn:wheel={zoom} vOn:scroll={scroll} scroll-top="500" ref="container">
           <div class="g-diagram-content" style={contentStyles.value} ref="content">
-            <portal-target name={diagramId.value} tag="svg" multiple ref="svg"/>
+            <portal-target name={diagramId.value} width={svgDimension.width} height={svgDimension.height} tag="svg" multiple ref="svg"/>
 						<portal to={diagramId.value} slim>
 							<foreignObject width="100%" height="100%">
               	{context.slots.default ? context.slots.default({ dragStart }) : undefined}
@@ -199,7 +205,6 @@
 		}
 
 		&-content {
-			border: 1px solid green;
 			//position: relative;
 			width: 100%;
 			height: 100%;
@@ -209,8 +214,8 @@
 
 			svg {
 				position: absolute;
-				width: 100%;
-				height: 100%;
+				//width: 100%;
+				//height: 100%;
 				z-index: 1000;
 			}
 		}

@@ -7,6 +7,15 @@ export default function GDiagramFactory(props, context) {
   const scaleFactor = 0.05
   const minScale = 0.1
   const maxScale = 100
+  const svgDimension = reactive({
+    width: 0,
+    height: 0
+  })
+
+  const containerDimension = reactive({
+    width: 0,
+    height: 0
+  })
 
   const originCoordinate = reactive({
     x: 0,
@@ -25,10 +34,16 @@ export default function GDiagramFactory(props, context) {
   }
 
   onMounted(() => {
+    const rect = context.refs.container.getBoundingClientRect()
+    containerDimension.width = rect.width
+    containerDimension.height = rect.height
+    svgDimension.width = rect.width
+    svgDimension.height = rect.height
     updateOriginCoordinate()
     startOriginCoordinate.x = originCoordinate.x
     startOriginCoordinate.y = originCoordinate.y
   })
+
 
   function zoom(e) {
     if (!Number.isInteger(e.deltaY)) {
@@ -52,18 +67,20 @@ export default function GDiagramFactory(props, context) {
       zoomState.value = Math.max(minScale, Math.min(maxScale, zoomState.value))
 
       if (zoomState.value < 1) {
+        svgDimension.width = Math.max(containerDimension.width / zoomState.value, svgDimension.width)
+        svgDimension.height = Math.max(containerDimension.height / zoomState.value, svgDimension.height)
         context.root.$nextTick(() => {
           updateOriginCoordinate()
         })
-      } else {
-        const newZoomPoint = {
-          x: zoomPoint.x * zoomState.value,
-          y: zoomPoint.y * zoomState.value
-        }
-
-        context.refs.container.scrollLeft = newZoomPoint.x - mousePoint.pageX
-        context.refs.container.scrollTop = newZoomPoint.y - mousePoint.pageY
       }
+
+      const newZoomPoint = {
+        x: zoomPoint.x * zoomState.value,
+        y: zoomPoint.y * zoomState.value
+      }
+
+      context.refs.container.scrollLeft = newZoomPoint.x - mousePoint.pageX
+      context.refs.container.scrollTop = newZoomPoint.y - mousePoint.pageY
     }
   }
 
@@ -75,6 +92,8 @@ export default function GDiagramFactory(props, context) {
     connectionPoints,
     zoomState,
     originCoordinate,
+    svgDimension,
+    containerDimension,
     zoom,
     scroll
   }

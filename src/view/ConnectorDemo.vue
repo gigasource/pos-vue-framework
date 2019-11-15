@@ -8,7 +8,7 @@
 					<g-connector v-for="prop in Props"
 											 v-model="prop.value"
 											 point-radius="10"
-											 point-position="right"
+											 point-position="x"
 											 path-color="#118f41"
 											 show-point
 											 @connected="y => connect(prop.value, y)"
@@ -24,7 +24,7 @@
 											 v-model="event.value"
 											 point-radius="10"
 											 path-color="#0e5bad"
-											 point-position="right"
+											 point-position="x"
 											 show-point
 											 @connected="y => connect(event.value, y)"
 											 @disconnected="y => disconnect(event.value, y)" :key="event.value">
@@ -39,7 +39,7 @@
 											 v-model="context.value"
 											 point-radius="10"
 											 path-color="#d97d14"
-											 point-position="left"
+											 point-position="x"
 											 show-point
 											 @connected="y => connect(context.value, y)"
 											 @disconnected="y => disconnect(context.value, y)" :key="context.value">
@@ -54,7 +54,7 @@
 											 v-model="data.value"
 											 point-radius="10"
 											 path-color="#7d0f85"
-											 point-position="left"
+											 point-position="x"
 											 show-point
 											 @connected="y => connect(data.value, y)"
 											 @disconnected="y => disconnect(data.value, y)" :key="data.value">
@@ -156,11 +156,11 @@
 
 	#props {
 		border: 1px solid #118f41;
-		width: 30%;
-		height: 40%;
+		width: 240px;
+		height: 240px;
 		position: absolute;
-		top: 5%;
-		left: 10%;
+		top: 30px;
+		left: 80px;
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
@@ -186,11 +186,11 @@
 
 	#event {
 		border: 1px solid #0e5bad;
-		width: 30%;
-		height: 40%;
+		width: 240px;
+		height: 240px;
 		position: absolute;
-		top: 55%;
-		left: 10%;
+		top: 330px;
+		left: 80px;
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
@@ -216,11 +216,11 @@
 
 	#context {
 		border: 1px solid #d97d14;
-		width: 30%;
-		height: 40%;
+		width: 240px;
+		height: 240px;
 		position: absolute;
-		top: 5%;
-		left: 60%;
+		top: 30px;
+		left: 480px;
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
@@ -246,11 +246,11 @@
 
 	#data {
 		border: 1px solid #7d0f85;
-		width: 30%;
-		height: 40%;
+		width: 240px;
+		height: 240px;
 		position: absolute;
-		top: 55%;
-		left: 60%;
+		top: 330px;
+		left: 480px;
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
