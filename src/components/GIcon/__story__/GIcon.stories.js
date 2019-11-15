@@ -1,6 +1,6 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
-import GIcon from '../GIconJSX';
+import GIcon from '../GIcon';
 import GBtn from "../../GButton/GButton";
 import {mdiAccount} from '@mdi/js'
 import customIcon from '../../../assets/home/avatar.svg';
@@ -70,19 +70,14 @@ export const sizeAndColor = () => ({
 
 export const iconInButton = () => ({
   components: {GIcon, GBtn},
-  method: {
-    foo() {
-      //do nothing
-    }
-  },
   props: {
     color: {default: text('color', 'brown')},
     dense: {default: boolean('dense', false)},
     disabled: {default: boolean('disabled', false)},
-    left: {default: boolean('left', true)},
+    left: {default: boolean('left', false)},
     right: {default: boolean('right', false)}
   },
-  template: `<div><g-btn>Buy this <b>{{color}}</b>   car    <g-icon :right="right" :left="!left" :color="color" :dense="dense" :disabled="disabled">fas fa-car</g-icon></g-btn></div>`,
+  template: `<div><g-btn>Buy this <b>{{color}}</b>   car    <g-icon :right="right" :left="left" :color="color" :dense="dense" :disabled="disabled" >fas fa-car</g-icon></g-btn></div>`,
 })
 
 

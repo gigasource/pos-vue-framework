@@ -10,18 +10,18 @@ $icon-size-dense: 20px !default;
   letter-spacing: normal;
   line-height: 1;
   text-indent: 0;
-  transition: $primary-transition;
+  transition: default;
   vertical-align: middle;
   user-select: none;
 }
 
 .g-icon {
   &__right {
-    margin-left: map-get($grid-gutters, 'md');
+    margin-left: 12px;
   }
 
   &__left {
-    margin-right: map-get($grid-gutters, 'md');
+    margin-right: 12px;
   }
 
   &__link {
