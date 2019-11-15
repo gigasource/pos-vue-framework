@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs';
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import GBadge from '../GBadge';
 import GBtn from '../../GBtn/GBtn';
 import GIcon from '../../GIcon/GIcon';
@@ -10,9 +10,9 @@ export default {
 
 export const basic = () => ({
   components: { GBadge, GBtn, GIcon },
-  data () {
+  data() {
     return {
-      show : true
+      show: true
     }
   },
   props: {
@@ -32,6 +32,22 @@ export const basic = () => ({
       type: String,
       default: text('Color', 'blue')
     },
+    nudgeTop: {
+      type: Number,
+      default: number('nudgeTop', 0, { min: 0, max: 50 })
+    },
+    nudgeBottom: {
+      type: Number,
+      default: number('nudgeBottom', 0, { min: 0, max: 50 })
+    },
+    nudgeLeft: {
+      type: Number,
+      default: number('nudgeLeft', 0, { min: 0, max: 50 })
+    },
+    nudgeRight: {
+      type: Number,
+      default: number('nudgeRight', 0, { min: 0, max: 50 })
+    },
     showOnHover: {
       type: Boolean,
       default: boolean('Show on hover', false)
@@ -42,7 +58,7 @@ export const basic = () => ({
     }
   },
   template: `
-  <g-badge :overlay="overlay" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
+  <g-badge :overlay="overlay" :nudge-top="nudgeTop" :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
     <template v-slot:badge>
       <g-icon x-small>notifications</g-icon>
     </template>
