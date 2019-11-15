@@ -18,7 +18,7 @@
 <script>
   import { computed, ref, onMounted, onUpdated } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
-  import { setBackgroundColor } from '../../mixins/colorable';
+	import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import { Fragment } from 'vue-fragment'
 
   export default {
@@ -48,7 +48,7 @@
       const icon = ref('')
 
       function getIcon() {
-        icon.value = context.slots.default()[0].text.trim()
+        icon.value = context.slots.default ? context.slots.default()[0].text.trim() : ''
       }
 
       onMounted(() => getIcon())
@@ -127,7 +127,7 @@
         ...nodeData.value.tag
       }))
 
-      let iconColor = computed(() => setBackgroundColor(props.color, {}))
+      let iconColor = computed(() => setTextColor(props.color, {}))
 
       let iconClass = computed(() => ({
         ...nodeData.value.class,
@@ -151,9 +151,9 @@
         role: context.listeners.click ? 'button' : null
       }))
 
-			let onClick = (event) => {
-				context.emit('click', event);
-			}
+      let onClick = (event) => {
+        context.emit('click', event);
+      }
 
       return {
         iconClass,
@@ -162,8 +162,8 @@
         activeTags,
         icon,
         materialIconName,
-				onClick,
-			}
+        onClick,
+      }
     }
   }
 
@@ -189,3 +189,7 @@
     return '24px'
   }
 </script>
+
+<style scoped lang="scss">
+	@import "GIcon";
+</style>

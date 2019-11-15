@@ -10,6 +10,10 @@ export function linearGradient(colorArr, angle = 45) {
     return
   }
 
+  if(typeof colorArr === 'string') {
+    colorArr = colorArr.split(',')
+  }
+
   if(!!Number(+angle)) {
     angle = `${Number(angle)}deg`
   }
@@ -23,4 +27,11 @@ export function linearGradient(colorArr, angle = 45) {
     }
     return `${acc}, ${curVal}`;
   }, `linear-gradient(${angle}`);
+}
+
+export function getCssColor(color) {
+  if(!color || isCssColor(color)) {
+    return color
+  }
+  return colors[color.trim().split(' ').join('-')]
 }

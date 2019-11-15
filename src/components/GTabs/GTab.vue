@@ -1,12 +1,6 @@
-<template>
-	<div :class="classes" @click="toggle">
-		<slot></slot>
-	</div>
-</template>
-
 <script>
-	import { computed, inject } from '@vue/composition-api'
-	import { isEqual } from 'lodash'
+  import { computed, inject } from '@vue/composition-api'
+  import { isEqual } from 'lodash'
 
   export default {
     name: 'GTab',
@@ -16,37 +10,98 @@
         required: false
       },
       item: null,
-      // isActive: Boolean,
-			activeClass: {
+      activeClass: {
         type: String,
-				default: 'g-tab__active'
-			}
+        default: 'g-tab__active'
+      },
+      ripple: {
+        type: Boolean,
+        default: true
+      }
     },
-    setup(props) {
+    setup(props, context) {
       const model = inject('model', null);
-			const isActive = computed(() => (model && isEqual(model.value, props.item)));
+      const isActive = computed(() => (model && isEqual(model.value, props.item)));
 
       const classes = computed(() => ({
-				'g-tab': true,
-				'waves-effect': true,
+        'g-tab': true,
+        'waves-effect': props.ripple,
         [props.activeClass]: isActive.value,
-				'g-tab__disabled': props.disabled || (props.item && props.item.disabled)
-			}));
-
+        'g-tab__disabled': props.disabled || (props.item && props.item.disabled)
+      }));
 
       function toggle() {
         if (props.disabled) return;
         model.value = props.item;
       }
 
-			return {
-        classes,
-				toggle
-			}
+      return () =>
+        <div class={classes.value} vOn:click={toggle}>
+          {context.slots.default()}
+        </div>
     },
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	@import "../../style/variables";
 
+	.g-tab {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		flex: 0 1 auto;
+		align-items: center;
+		font-size: 14px;
+		font-weight: 400;
+		justify-content: center;
+		line-height: normal;
+		min-width: 90px;
+		max-width: 360px;
+		outline: none;
+		padding: 0 16px;
+		text-align: center;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition: none;
+		user-select: none;
+		cursor: pointer;
+
+		&:before {
+			position: absolute;
+			content: '';
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			opacity: 0;
+			background-color: currentColor;
+			pointer-events: none;
+			transition: $primary-transition;
+		}
+
+		&:hover:before {
+			opacity: 0.24;
+		}
+
+		&__disabled {
+			opacity: 0.42;
+			cursor: none;
+			pointer-events: none;
+		}
+
+		&:not(.g-tab__active):not(.g-tab__disabled) {
+			opacity: 0.7;
+		}
+
+		> i,
+		> ::v-deep .g-icon {
+			order: 0;
+			margin-bottom: 6px;
+		}
+
+		> *:not(i):not(.g-icon) {
+			order: 1;
+		}
+	}
 </style>

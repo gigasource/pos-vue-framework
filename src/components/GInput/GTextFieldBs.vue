@@ -1,6 +1,6 @@
 <template>
   <div class="bs-tf-wrapper" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown"
-       :class="{'tf-wrapper-disabled': disabled, 'tf-wrapper-readonly': readOnly}">
+       :class="{'g-tf--wrapper-disabled': disabled, 'g-tf--wrapper-readonly': readOnly}">
     <label class="bs-tf-label">
       <slot name="label">{{label}}</slot>
     </label>
@@ -37,7 +37,7 @@
 
 <script>
   import {ref, computed, onMounted} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputField';
+  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
 
   export default {
     name: 'GTextFieldBs',

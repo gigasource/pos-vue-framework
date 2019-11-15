@@ -1,5 +1,7 @@
 import { computed } from '@vue/composition-api'
 import { convertToGradient, convertToUnit } from '../../../utils/helpers';
+import { setBackgroundColor, setTextColor } from '../../../mixins/colorable';
+import { linearGradient } from '../../../utils/colors';
 
 export default (props, context) => {
   let classes = computed(() => {
@@ -12,7 +14,7 @@ export default (props, context) => {
       'g-btn__icon': props.icon,
       'g-btn__text': props.text,
       'g-btn__top': props.top,
-      'g-btn__fixed': props.fixed,
+      'g-btn__fixed': isFixed.value,
       'g-btn__absolute': props.absolute,
       'g-btn__bottom': props.bottom,
       'g-btn__left': props.left,
@@ -25,7 +27,9 @@ export default (props, context) => {
       'g-btn__round': isRound.value,
       'g-btn__contained': contained.value,
       [props.activeClass]: props.active,
-      ...elevationClasses.value
+      ...elevationClasses.value,
+      ...backgroundColorOutput.value && backgroundColorOutput.value.class,
+      ...textColorOutput.value && textColorOutput.value.class
     };
 
     let size = '';
@@ -77,29 +81,40 @@ export default (props, context) => {
   });
 
   const isFlat = computed(() => {
-    return props.text || props.icon || props.outlined;
+    return props.text || props.icon || props.outlined || props.flat;
   });
 
   const contained = computed(() => {
     return !isFlat.value && !props.depressed && !props.elevation;
   });
 
+  const isFixed = computed(()=> {
+    return props.fixed || props.fab;
+  });
+
+  const backgroundColorOutput = computed(() => {
+    if (props.backgroundColor) {
+      return props.backgroundColor && setBackgroundColor(props.backgroundColor, {})
+    }
+  });
+
+  const textColorOutput = computed(() => {
+    return props.textColor && setTextColor(props.textColor, {})
+  });
+
   const styles = computed(() => {
     let _styles = {
-      ...props.textColor && { color: props.textColor.replace('-', '') },
-      ...props.backgroundColor && { backgroundColor: props.backgroundColor.replace('-', '') },
       ...props.width && { width: convertToUnit(props.width) },
       ...props.height && { height: convertToUnit(props.height) },
       ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
       ...props.maxHeight && { maxHeight: convertToUnit(props.maxHeight) },
       ...props.minWidth && { minWidth: convertToUnit(props.minWidth) },
       ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
+      ...backgroundColorOutput.value && backgroundColorOutput.value.style,
+      ...textColorOutput.value && textColorOutput.value.style,
     };
 
-    // Params: linear-gradient(45deg, yellow, green)
-    if (props.gradient && !props.gradient.toString().includes('-')) {
-      _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
-    }
+    _styles['background-image'] = linearGradient(props.gradient && props.gradient.split(','), props.gradientAngle);
 
     return _styles;
   });

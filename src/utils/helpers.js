@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {computed, ref, watch} from "@vue/composition-api";
+import { computed, ref, watch } from '@vue/composition-api';
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -101,6 +101,8 @@ export default function colorHandler() {
     if (color) {
       if (option === 'background') {
         color = 'bg ' + color;
+      } else {
+        color = 'text ' + color;
       }
       return color.split(' ').join('-');
     }
@@ -112,19 +114,20 @@ export default function colorHandler() {
   }
 };
 
-export function createSimpleFunctional (c, el = 'div', name) {
+export function createSimpleFunctional(c, el = 'div', name) {
   return Vue.extend({
     name: name || c.replace(/__/g, '-'),
     functional: true,
-    render (h, { data, children }) {
+    render(h, { data, children }) {
       data.staticClass = (`${c} ${data.staticClass || ''}`).trim();
       return h(el, data, children);
     },
   })
 }
+
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref(props.value || '');
+  const rawInternalValue = ref(props.value);
 
   watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
 
@@ -140,16 +143,43 @@ export function getInternalValue(props, context) {
 }
 
 
-export function createRange (length) {
-  return Array.from({ length }, (v, k) => k)
+export function createRange(length, mapFn) {
+  const range = [...Array(length).keys()]
+  if (mapFn) return range.map(mapFn)
+  else return range
 }
 
-export function kebabCase (str) {
+export function kebabCase(str) {
   return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
 // Return transition duration of an element in millisecond
 export function getTransitionDuration(el) {
-  const duration =  window.getComputedStyle(el).getPropertyValue('transition-duration');
-  return Math.round(parseFloat(duration)*1000);
+  const duration = window.getComputedStyle(el).getPropertyValue('transition-duration');
+  return Math.round(parseFloat(duration) * 1000);
+}
+
+export function openFile(options = { multiple: false, mimeType: '*/*' }, onFileOpened) {
+  const input = document.createElement('input')
+  input.type='file'
+  input.accept = options.mimeType
+  input.multiple = options.multiple
+  input.addEventListener('change', e => {
+    onFileOpened && onFileOpened(e.target.files)
+  })
+  input.click()
+}
+
+/**
+ * Saving file
+ * @param fileName
+ * @param content
+ * @param type
+ */
+export function saveFile(fileName, content, type) {
+  const blob = new Blob([content], { type });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click()
 }

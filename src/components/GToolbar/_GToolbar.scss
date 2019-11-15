@@ -19,14 +19,14 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    .g-btn {
+    ::v-deep .g-btn {
 
       &:hover {
         background-color: rgba(0, 0, 0, 0.1);
       }
     }
 
-    > .g-btn {
+    > ::v-deep .g-btn {
       &:first-child {
         margin-left: -12px;
 
@@ -40,12 +40,12 @@
       }
     }
 
-    > .g-tabs {
+    > ::v-deep .g-tabs {
       height: inherit;
       margin-top: -4px;
       margin-bottom: -4px;
 
-      .g-tab {
+      ::v-deep .g-tab {
         height: inherit;
 
         &:first-child {
@@ -72,7 +72,7 @@
     contain: strict;
     border-radius: inherit;
 
-    .g-image {
+    ::v-deep .g-image {
       border-radius: inherit;
     }
   }
@@ -100,7 +100,7 @@
   }
 
   &__prominent {
-    .g-btn {
+    ::v-deep .g-btn {
       align-self: flex-start;
     }
 
@@ -130,14 +130,14 @@
   }
 
   //custom materialize search bar in toolbar
-  .tf-wrapper {
+  ::v-deep .g-tf-wrapper {
     margin: 0;
     background-color: rgba(230, 230, 230, 0.3);
     color: white;
     border-radius: 4px;
 
-    .tf-input,
-    .tf-input::placeholder {
+    .g-tf-input,
+    .g-tf-input::placeholder {
       color: inherit;
       background-color: inherit;
     }
@@ -146,12 +146,12 @@
       background-color: rgba(230, 230, 230, 0.12);
     }
 
-    .tf-prepend__inner {
+    .g-tf-prepend__inner {
       margin: 8px;
     }
 
-    .tf-prepend__outer,
-    .tf-append__outer {
+    .g-tf-prepend__outer,
+    .g-tf-append__outer {
       margin: 0;
     }
   }

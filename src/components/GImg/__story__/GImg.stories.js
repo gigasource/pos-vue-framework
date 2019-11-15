@@ -9,12 +9,7 @@ export default {
 
 export const imgBasic = () => ({
   components: {GImg},
-  prop:{
-    contain:{default: boolean('contain',false)}
-  },
-  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"
-               gradient="to top right, rgba(100,115,201,.33), rgba(255,32,72,.7)"
-               height="400" aspect-ratio="1" :contain="contain"></g-img>`,
+  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg"></g-img>`,
 })
 
 export const withHeightContain = () => ({
@@ -25,8 +20,7 @@ export const withHeightContain = () => ({
     width: {default: number('width', 500)},
     aspectRatio: {default: number('ratio', null)},
   },
-  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg" :width="width" :height="height" :aspectRatio="aspectRatio" :contain="contain"
-              :gradient="gradient"></g-img>`,
+  template: `<g-img src="https://i.ytimg.com/vi/B5Qb12DqZTA/maxresdefault.jpg" :width="width" :height="height" :aspectRatio="aspectRatio" :contain="contain"></g-img>`,
 })
 
 export const gradient = () => ({
@@ -47,14 +41,14 @@ export const placeHolder = () => ({
   template: `<div>
              <g-img src="http://www.effigis.com/wp-content/uploads/2015/02/Airbus_Pleiades_50cm_8bit_RGB_Yogyakarta.jpg" 
               lazy-src="https://picsum.photos/id/11/10/6"
-              :width="width" :height="height" :aspectRatio="aspectRatio" :contain="contain">
+              :width="width" :height="height" :contain="contain">
                <template v-slot:placeholder><p>This is showed in loading time </p></template>
                <p style="background-color: #cccccc"> This is default placeholder </p>
              </g-img>
              <br>
              <g-img src="http://www.effigis.com/wp-_50cm_8bit_RGB_Yogyakarta.jpg" 
               lazy-src="https://picsum.photos/id/11/10/6"
-              :width="width" :height="height" :aspectRatio="aspectRatio" :contain="contain">
+              :width="width" :height="height" :contain="contain">
                <template v-slot:placeholder><p>This is showed in loading time </p></template>
                <p style="background-color: #cccccc"> This is default placeholder </p>
              </g-img>
@@ -71,14 +65,14 @@ export const lazyLoading = () => ({
   template: `<div>
              <g-img src="http://www.effigis.com/wp-content/uploads/2015/02/Airbus_Pleiades_50cm_8bit_RGB_Yogyakarta.jpg" 
               lazy-src="https://picsum.photos/id/11/10/6"
-              :width="width" :height="height" :aspectRatio="aspectRatio" :contain="contain">
+              :width="width" :height="height" :contain="contain">
                <template v-slot:placeholder><p>This is showed in loading time </p></template>
                <p style="background-color: #cccccc"> This is default placeholder </p>
              </g-img>
              <div style="height: 2000px; width: 500px"></div>
              <g-img src="http://www.effigis.com/wp-content/uploads/2015/02/Airbus_Pleiades_50cm_8bit_RGB_Yogyakarta.jpg" 
               lazy-src="https://picsum.photos/id/11/10/6"
-              :width="width" :height="height" :aspectRatio="aspectRatio" :contain="contain">
+              :width="width" :height="height" :contain="contain">
                <template v-slot:placeholder><p>This is showed in loading time </p></template>
                <p style="background-color: #cccccc"> This is default placeholder </p>
              </g-img>
