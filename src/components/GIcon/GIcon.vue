@@ -1,10 +1,10 @@
 <script>
-  import {computed} from '@vue/composition-api';
-  import {convertToUnit} from '../../utils/helpers';
-  import {setTextColor} from '../../mixins/colorable';
+  import { computed } from '@vue/composition-api';
+  import { convertToUnit } from '../../utils/helpers';
+  import { setTextColor } from '../../mixins/colorable';
 
   export default {
-    name: "GIcon",
+    name: 'GIcon',
     props: {
       value: String,
       dense: Boolean,
@@ -88,7 +88,7 @@
         }
 
         if (isFontAwesome5(icon)) return genFontAwesomeIcon(icon, iconClass, iconStyle)
-				if (isSvgPath(icon)) return genSvgIcon(icon, iconClass, iconStyle)
+        if (isSvgPath(icon)) return genSvgIcon(icon, iconClass, iconStyle)
         if (isCustomSvgIcon(icon)) return genCustomSvgIcon(icon, iconClass, iconStyle)
         return genMaterialIcon(icon, iconClass, iconStyle)
       }
