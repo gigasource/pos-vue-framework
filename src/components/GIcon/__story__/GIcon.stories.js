@@ -1,7 +1,7 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
 import GIcon from '../GIcon';
-import GBtn from "../../GButton/GButton";
+import GBtn from "../../GBtn/GBtn";
 import {mdiAccount} from '@mdi/js'
 import customIcon from '../../../assets/home/avatar.svg';
 

@@ -4,7 +4,7 @@
   import {setTextColor} from '../../mixins/colorable';
 
   export default {
-    name: "GIconJSX",
+    name: "GIcon",
     props: {
       value: String,
       dense: Boolean,
