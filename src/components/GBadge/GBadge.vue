@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import { computed, onMounted, reactive } from '@vue/composition-api'
+  import { computed } from '@vue/composition-api'
   import { isCssColor } from '../../mixins/colorable';
   import { convertToUnit } from '../../utils/helpers';
 
@@ -53,26 +53,26 @@
       });
 
       const computedNudge = computed(() => {
-        let computedObject = {};
+        let nudge = {};
 
         if (props.nudgeTop) {
-          computedObject.top = convertToUnit(-parseInt(props.nudgeTop))
-          computedObject.bottom = 'unset';
+          nudge.top = convertToUnit(-parseInt(props.nudgeTop))
+          nudge.bottom = 'unset';
         }
         if (props.nudgeBottom) {
-          computedObject.bottom = convertToUnit(-parseInt(props.nudgeBottom));
-          computedObject.top = 'unset';
+          nudge.bottom = convertToUnit(-parseInt(props.nudgeBottom));
+          nudge.top = 'unset';
         }
         if (props.nudgeLeft) {
-          computedObject.left = convertToUnit(-parseInt(props.nudgeLeft));
-          computedObject.right = 'unset';
+          nudge.left = convertToUnit(-parseInt(props.nudgeLeft));
+          nudge.right = 'unset';
         }
         if (props.nudgeRight) {
-          computedObject.right = convertToUnit(-parseInt(props.nudgeRight));
-          computedObject.left = 'unset';
+          nudge.right = convertToUnit(-parseInt(props.nudgeRight));
+          nudge.left = 'unset';
         }
 
-        return computedObject;
+        return nudge;
       })
 
       const styles = computed(() => ({
