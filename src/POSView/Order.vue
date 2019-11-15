@@ -119,7 +119,9 @@
 					<g-btn outlined>Discount</g-btn>
 					<g-btn outlined>Plastic Refund</g-btn>
 					<g-btn text background-color="orange lighten 1" text-color="white">Save</g-btn>
-					<g-btn text background-color="blue darken 2" text-color="white">Pay</g-btn>
+					<g-btn text background-color="blue darken 2" text-color="white">
+						<router-link to="/payment">Pay</router-link>
+					</g-btn>
 				</div>
 			</div>
 		</div>
@@ -476,7 +478,7 @@
         dialogDeleteSave: false,
 				discount: -0.50,
 				tax: 0.50,
-				subTotal: 40.00,
+				subTotal: 40.50,
 				total: 40.50,
 				lastPayment: 0,
 				dialogProductLookup: false,
@@ -865,6 +867,7 @@
 </style>
 
 <style lang="scss">
+
 	.g-btn {
 		letter-spacing: 0 !important;
 	}
@@ -889,6 +892,10 @@
 
 		td {
 			border-bottom: none !important;
+		}
+
+		.text__editted {
+			color: #8bc34a;
 		}
 	}
 

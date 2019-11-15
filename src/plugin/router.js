@@ -19,6 +19,7 @@ import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
 import Order from '../POSView/Order';
+import Payment from '../POSView/Payment';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -39,6 +40,7 @@ const routes = [
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
   {path: '/textarea', name: 'Textarea', component: Textarea},
   { path: '/order', name: 'Order', component: Order},
+  { path: '/payment', name: 'Payment', component: Payment},
 ];
 
 const router = new VueRouter({

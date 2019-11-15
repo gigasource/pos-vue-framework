@@ -32,8 +32,8 @@
 
       const genHeader = function (item) {
 				const promotion = item['promotion'] && <p class="promotion">{item['promotion']}</p>
-				const oldPrice = item['oldPrice'] && <p class="promotion-price">{item['oldPrice']}</p>
-				const oldTotal = item['oldPrice'] && <p class="promotion-price">{item['quantity'] * item['oldPrice']}</p>
+				const oldPrice = item['promotion'] && item['oldPrice'] && <p class="promotion-price">{item['oldPrice']}</p>
+				const oldTotal = item['promotion'] && item['oldPrice'] && <p class="promotion-price">{item['quantity'] * item['oldPrice']}</p>
         return <div
           class={['g-expansion-header', { 'g-expansion-header__active': isActiveItem(item) }]}
           vOn:click={() => toggleItem(item)}>
@@ -47,7 +47,7 @@
           <span class="w-10 pa-2 ta-right">
             { item['quantity'] }
           </span>
-          <div class={["w-12 pa-2 ta-right", item['edited'] && 'text-light-green']}>
+          <div class={["w-12 pa-2 ta-right", item['edited'] && 'text__editted']}>
 						<p>{ item['price'] }</p>
 						{ oldPrice }
           </div>
