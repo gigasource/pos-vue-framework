@@ -63,10 +63,9 @@ export default {
 <style lang="scss" scoped>
   @import "../../style/colors";
   @import "../../style/variables";
-  ::v-deep .g-tabs-wrapper {
+  .g-tabs-wrapper {
     align-items: center;
   }
-
   ::v-deep .g-tabs-bar {
     mix-blend-mode: normal;
     width: 260px;
