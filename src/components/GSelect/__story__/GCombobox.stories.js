@@ -38,6 +38,7 @@ export const GComboboxSingleSelectNoChips = () => ({
   },
   template: `
   <div data-app>
+  {{selected}}
   <g-combobox :items="items" 
              :item-text="itemText" 
              :item-value="itemValue"  
@@ -72,6 +73,7 @@ export const GComboboxSingleSelectChips = () => ({
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: Number('counter', 25)},
     smallChips: {default: boolean('smallChips', true)},
+    deletableChips: {default: boolean('deletable-chips', true)},
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemValue', 'value')},
   },
@@ -89,6 +91,7 @@ export const GComboboxSingleSelectChips = () => ({
   template: `
   <div data-app>
   <g-combobox chips
+  :deletableChips="deletableChips"
               :items="items" 
               :item-text="itemText" 
              :item-value="itemValue"  
@@ -114,7 +117,6 @@ export const GComboboxMultiSelect = () => ({
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', true)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
   },
   data() {
@@ -130,9 +132,9 @@ export const GComboboxMultiSelect = () => ({
   },
   template: `
   <div data-app>
+  {{selected}}
   <g-combobox :items="items" 
               :item-text="itemText" 
-             :item-value="itemValue"  
              label="label"
              :clearable="clearable" 
              v-model="selected" 
@@ -142,9 +144,11 @@ export const GComboboxMultiSelect = () => ({
              clearable></g-combobox>
 </div>`,
 })
-export const GComboboxMultiSelectAllowDuplicates = () => ({
+export const GComboboxMultiSelectAllowDuplicatesReturnObject = () => ({
   components: {GCombobox},
-  props: {},
+  props: {
+    itemValue: {default: text('itemValue', null)},
+  },
   data() {
     return {
       items: [
@@ -159,7 +163,7 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
   template: `
   <div data-app>
   <div>{{selected}}</div>
-  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple clearable allow-duplicates></g-combobox>
+  <g-combobox :items="items" :itemValue="itemValue" label="Label" v-model="selected" searchable multiple clearable allow-duplicates></g-combobox>
 </div>`,
 })
 export const GComboboxNoDataSlot = () => ({

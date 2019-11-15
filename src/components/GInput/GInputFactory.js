@@ -195,5 +195,5 @@ export function getInternalValue(props, context) {
     }
   });
 
-  return internalValue;
+  return{ internalValue, rawInternalValue};
 }

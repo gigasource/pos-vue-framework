@@ -21,73 +21,35 @@
       width: [String, Number],
       //text field's props
       ...{
-
         //textfield style
         ...{
-          filled: {
-            type: Boolean,
-            default: false
-          },
-          solo: {
-            type: Boolean,
-            default: false
-          },
-          outlined: {
-            type: Boolean,
-            default: false
-          },
-          flat: {
-            type: Boolean,
-            default: false
-          },
-          rounded: {
-            type: Boolean,
-            default: false
-          },
-          shaped: {
-            type: Boolean,
-            default: false
-          }
+          filled: Boolean,
+          solo: Boolean,
+          outlined: Boolean,
+          flat: Boolean,
+          rounded: Boolean,
+          shaped: Boolean
         },
         //textfield parts
-        clearable: {
-          type: Boolean,
-          default: false
-        },
-        hint: {
-          type: String,
-          default: ''
-        },
-        persistent: {
-          type: Boolean,
-          default: false
-        },
+        clearable: Boolean,
+        hint: String,
+        persistent: Boolean,
         counter: {
           type: [Boolean, Number, String],
           default: false
         },
-        placeholder: {
-          type: String,
-          default: ''
-        },
+        placeholder: String,
         label: {
           type: String,
           default: 'Label'
         },
-        prefix: {
-          type: String,
-          default: ''
-        },
-        suffix: {
-          type: String,
-          default: ''
-        },
+        prefix: String,
+        suffix: String,
         rules: Array,
         type: {
           type: String,
           default: 'text'
         }
-
       },
 
       //list props
@@ -108,15 +70,9 @@
         })
       },
       //item textfieldValue props
-      chips: {
-        type: Boolean,
-        default: false
-      },
-      smallChips: {
-        type: Boolean,
-        default: false
-      }
-      ,
+      chips: Boolean,
+      smallChips: Boolean,
+      deletableChips: Boolean,
       items: Array,
       itemText: {
         type: String,
@@ -167,26 +123,14 @@
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
 
-      function onListKeyDown(e, onArrowDown, onArrowUp, item, onSelect) {
-        switch (e.keyCode) {
-          case keyCodes.down:
-            onArrowDown(item)
-            break
-          case keyCodes.up:
-            onArrowUp(item)
-            break
-          case keyCodes.enter:
-            onSelect(item)
-            break
-
-        }
-      }
-
       const genListScopedSlots = {
-        listItem: ({item, isSelected, onSelect, onArrowDown, onArrowUp}) =>
-            <GListItem tabindex="0" style={{'min-height': '48px'}} item={item} isSelected={isSelected}
-                       vOn:singleItemClick={() => onSelect(item)}
-                       vOn:keydown_native={(e) => onListKeyDown(e, onArrowDown, onArrowUp, item, onSelect)}
+        listItem: ({item, isSelected, on, onSelect}) =>
+            <GListItem
+                vOn:singleItemClick={() => onSelect(item)}
+                tabindex="0"
+                isSelected={isSelected}
+                style="min-height: 48px"
+                {...{on}}
             >
               <GListItemContent>
                 <GListItemText>{item[props.itemText]}</GListItemText>
@@ -194,11 +138,10 @@
             </GListItem>
 
       }
-
-      const genList = props.genListFn || function (showOptions) {
+      const genList = props.genListFn || function (showOptions, slots = genListScopedSlots) {
         return <GList
             {...{
-              props:{
+              props: {
                 items: options.value,
                 'item-title': props.itemText,
                 mandatory: props.mandatory,
@@ -207,11 +150,11 @@
                 dense: true,
                 selectable: true,
               },
-              on:{
+              on: {
                 'click:item': () => !props.multiple ? showOptions.value = false : null
               },
               scopedSlots: {
-                ...genListScopedSlots
+                ...slots
               }
             }}
             vModel={selectedItem.value}
@@ -235,19 +178,26 @@
         }
       }
 
+      const deleteItemColor = ref('#1d1d1d')
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.allowDuplicates) {
           return selections.value.map((item, index) => <GChip small={props.smallChips}
-                                                              close {...{on: {'close': () => onChipCloseClick(index)}}}>{item}
+                                                              close={props.deletableChips}
+                                                              vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
-        return selections.value.join(', ');
+        return selections.value.map(function (item, index) {
+          if (index === selections.value.length - 1) return <div
+              style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
+          return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
+        })
       }
 
       const genSingleSelectionSlot = () => {
         if (props.chips && selections.value) {
           return <GChip small={props.smallChips}
-                        close {...{on: {'close': () => onChipCloseClick()}}}>{selections.value}</GChip>
+                        close={props.deletableChips}
+                        vOn:close={() => onChipCloseClick()}>{selections.value}</GChip>
         }
         return selections.value
       }
@@ -259,6 +209,7 @@
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
       }
+
       function clearSelection() {
         selectedItem.value = props.multiple ? [] : ''
         state.searchText = ''
@@ -280,6 +231,7 @@
                     value: textfieldValue.value
                   },
                   on: {
+                    'click:clearIcon': () => clearSelection(),
                     click: toggleContent,
                     keydown: (e) => {
                       onInputKeyDown(e)
@@ -291,12 +243,13 @@
         )
       }
 
+      //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
         return <g-menu vModel={showOptions.value}
                        {...{
                          props: {
-                           ... props.menuProps,
+                           ...props.menuProps,
                            nudgeBottom: nudgeBottom.value
                          },
                          scopedSlots: {
@@ -307,7 +260,7 @@
           <template slot="default">
             {genSearchTextField()}
             {context.slots['prepend-item'] && context.slots['prepend-item']()}
-            {genList(showOptions)}
+            {genList(showOptions, genListScopedSlots)}
             {context.slots['append-item'] && context.slots['append-item']()}
           </template>
         </g-menu>
@@ -340,6 +293,10 @@
           transition: transform 0.4s
         }
 
+        .g-tf-input {
+          display: flex;
+        }
+
         .input {
           display: flex;
         }
@@ -357,7 +314,7 @@
 
   .g-select__active::v-deep {
 
-    .g-tf-append__inner .g-icon {
+    .g-tf-append__inner .g-icon:last-child {
       transform: rotateZ(180deg);
     }
   }

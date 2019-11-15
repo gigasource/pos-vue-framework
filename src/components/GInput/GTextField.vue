@@ -76,31 +76,31 @@
       ...{//display props
         label: String,
         placeholder: String,
-        appendIcon:{
-          type: String,
-          default: ''
-        } ,
-        prependIcon: {
-          type: String,
-          default: ''
-        } ,
+				appendIcon:{
+					type: String,
+					default: ''
+				} ,
+				prependIcon: {
+					type: String,
+					default: ''
+				} ,
 				prependInnerIcon:{
-          type: String,
-          default: ''
-        } ,
+					type: String,
+					default: ''
+				} ,
 				appendInnerIcon: {
-          type: String,
-          default: ''
-        } ,
-				clearIcon:  {
-          type: String,
-          default: 'clear'
-        },
+					type: String,
+					default: ''
+				} ,
         prefix: {
           type: String,
           default: ''
         },
-        suffix: {
+				clearIcon:  {
+					type: String,
+					default: 'clear'
+				},
+				suffix: {
           type: String,
           default: ''
         },
@@ -148,7 +148,7 @@
         'g-tf__flat': props.flat,
       }));
 
-      const internalValue = getInternalValue(props, context);
+      const {internalValue, rawInternalValue} = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
@@ -201,6 +201,7 @@
 				iconColor,
         //value
         internalValue,
+				rawInternalValue,
         //calculated state
         isLabelActive,
         isFocused,

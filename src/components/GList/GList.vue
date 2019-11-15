@@ -9,16 +9,13 @@
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
       </slot>
       <template v-for="(item, index) in renderList">
-        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :onSelect="onSelect"
-              :onArrowDown="onArrowDown" :onArrowUp="onArrowUp">
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :on="getListEvents(item)"
+              :onSelect="onSelect">
           <div v-if="item[itemTitle]"
                class="g-list-item"
                :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
                tabindex="0"
-               @click="onSelect(item)"
-               @keydown.enter="onSelect(item)"
-               @keydown.down="onArrowDown(item)"
-               @keydown.up="onArrowUp(item)"
+               v-on="getListEvents(item)"
           >
             <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
               <div :class="prependClasses" v-if="item.prepend">
@@ -100,6 +97,7 @@
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
+  import {keyCodes} from "../../utils/helpers";
 
   export default {
     name: 'GList',
@@ -202,13 +200,33 @@
         context.emit('keydown:down')
       }
 
-      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
-
       function onSelect(item) {
         if (!props.selectable) return;
         toggleItem(item)
         context.emit('click:item')
       }
+
+      const getListEvents = (item) => {
+       let listListeners ={}
+        return listListeners = {
+         click: () => onSelect(item),
+         keydown: (e) => {
+           switch (e.keyCode) {
+             case keyCodes.down:
+               onArrowDown(item)
+               break
+             case keyCodes.up:
+               onArrowUp(item)
+               break
+             case keyCodes.enter:
+               onSelect(item)
+               break
+           }
+         }
+        }
+      }
+
+      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
 
       return {
         classes,
@@ -222,6 +240,7 @@
         onSelect,
         internalValue,
         isActiveItem,
+        getListEvents,
       }
     }
   }

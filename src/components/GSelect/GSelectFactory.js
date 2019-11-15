@@ -88,7 +88,7 @@ export function getSelections(props, selectedItem) {
         return item;
       }
       if (props.itemValue) {
-        item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]);
+        item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]) || item;
       }
       return {text: item[props.itemText], value: item[props.itemValue]} || '';
     } else {

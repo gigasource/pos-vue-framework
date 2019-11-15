@@ -14,7 +14,7 @@ function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vMode
   };
 
   const updateSingle = (item) => {
-    const isSame = item === vModel.value;
+    const isSame = _.isEqual(vModel.value, item);
     if (isSame && mandatory) {
       return;
     }
