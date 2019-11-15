@@ -88,9 +88,9 @@
         }
 
         if (isFontAwesome5(icon)) return genFontAwesomeIcon(icon, iconClass, iconStyle)
-        else if (isSvgPath(icon)) return genSvgIcon(icon, iconClass, iconStyle)
-        else if (isCustomSvgIcon(icon)) return genCustomSvgIcon(icon, iconClass, iconStyle)
-        else return genMaterialIcon(icon, iconClass, iconStyle)
+				if (isSvgPath(icon)) return genSvgIcon(icon, iconClass, iconStyle)
+        if (isCustomSvgIcon(icon)) return genCustomSvgIcon(icon, iconClass, iconStyle)
+        return genMaterialIcon(icon, iconClass, iconStyle)
       }
 
       return {
