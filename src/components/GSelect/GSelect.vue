@@ -289,6 +289,9 @@
   .g-select::v-deep {
     .g-menu--activator {
       & {
+        .g-tf-wrapper{
+         margin: 16px 0px 24px;
+        }
         .g-tf-append__inner {
           transition: transform 0.4s
         }
