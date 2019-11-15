@@ -179,7 +179,7 @@
 
       // 2) Editor
       // render row, column unit editor
-      const heightUnitSettingRowWidth = '60px' // define the width of row height setting section
+      const heightUnitSettingRowWidth = '150px' // define the width of row height setting section
       const widthUnitSettingColumnHeight = '30px' // define the height of column width setting section
       function getColumnUnitClass(id) {
         return {
@@ -821,7 +821,7 @@
       text-align: center;
 
       & > input {
-        width: 80%;
+        width: 100%;
 
         &:focus {
           outline: none;
