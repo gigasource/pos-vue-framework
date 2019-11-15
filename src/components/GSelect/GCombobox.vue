@@ -288,7 +288,7 @@
                       state.searchText = e
                     },
                   },
-                  scopedSlots:{...getTextFieldScopedSlots }
+                  scopedSlots: {...getTextFieldScopedSlots}
                 }}
             />
         )
@@ -340,7 +340,7 @@
         }
         return <GList
             {...{
-              props:{
+              props: {
                 items: options.value,
                 'item-title': props.itemText,
                 mandatory: props.mandatory,
@@ -349,11 +349,11 @@
                 dense: true,
                 selectable: true,
               },
-              on:{
+              on: {
                 'click:item': onClickItem
-                },
+              },
               scopedSlots: {...genListScopedSlots}
-              }
+            }
             }
             vModel={selectedItem.value}
         />
@@ -372,16 +372,17 @@
         return <div class="g-combobox">
           <g-select
               {...{
-                props: {..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
-                  'shaped', 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label',
-                  'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
-                  'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
-                ),
+                props: {
+                  ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
+                    'shaped', 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label',
+                    'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
+                    'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
+                  ),
                   selectOnly: false,
                   genTextFieldFn: genTextFieldProps,
                   genListFn: genListProps,
                 },
-                scopedSlots:{...genComboboxSlots.value}
+                scopedSlots: {...genComboboxSlots.value}
               }}
           >
           </g-select>
@@ -429,19 +430,13 @@
           }
         }
       }
-
     }
 
     .g-select__active ::v-deep {
-      .g-tf-append__inner {
-        transition: transform 0.4s;
-
-        & {
-          .g-icon {
-            transform: rotateZ(180deg);
-          }
-        }
+      .g-tf-append__inner .g-icon {
+        transform: rotateZ(180deg);
       }
     }
   }
+
 </style>

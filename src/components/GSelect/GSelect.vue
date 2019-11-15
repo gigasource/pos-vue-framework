@@ -356,7 +356,8 @@
   }
 
   .g-select__active::v-deep {
-    .g-icon {
+
+    .g-tf-append__inner .g-icon {
       transform: rotateZ(180deg);
     }
   }
