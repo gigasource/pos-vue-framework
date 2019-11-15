@@ -16,6 +16,7 @@
 				<div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
 					<input id="input" type="text"
+								 autocomplete="off"
 								 class="g-tf-input"
 								 :style="inputErrStyles"
 								 :type="type"
