@@ -1,7 +1,7 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
 import GIcon from '../GIcon';
-import GBtn from "../../GButton/GButton";
+import GBtn from "../../GBtn/GBtn";
 import {mdiAccount} from '@mdi/js'
 import customIcon from '../../../assets/home/avatar.svg';
 
@@ -77,7 +77,7 @@ export const iconInButton = () => ({
     left: {default: boolean('left', false)},
     right: {default: boolean('right', false)}
   },
-  template: `<div><g-btn>Buy this <b>{{color}}</b>   car    <g-icon :right="right" :left="left" :color="color" :dense="dense" :disabled="disabled" >fas fa-car</g-icon></g-btn></div>`,
+  template: `<div><g-btn>Buy-this-<b>{{color}}</b>-car<g-icon :right="right" :left="left" :color="color" :dense="dense" :disabled="disabled" >fas fa-car</g-icon></g-btn></div>`,
 })
 
 

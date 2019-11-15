@@ -4,7 +4,7 @@
   import {setTextColor} from '../../mixins/colorable';
 
   export default {
-    name: "GIconJSX",
+    name: "GIcon",
     props: {
       value: String,
       dense: Boolean,
@@ -24,55 +24,55 @@
         context.emit('click', event);
       }
 
-      const iconColor = computed(() => setTextColor(props.color, {}))
+      const iconColor = computed(() => setTextColor(props.color))
 
       function genFontAwesomeIcon(icon, iconClass, iconStyle) {
-        iconClass.value[icon.value] = true
-        return <i class={iconClass.value}
-                  style={iconStyle.value}
+        iconClass[icon] = true
+        return <i class={iconClass}
+                  style={iconStyle}
                   vOn:click={onClick}/>
       }
 
       function genMaterialIcon(icon, iconClass, iconStyle) {
         let iconType = 'material-icons'
-        const delimiterIndex = icon.value.indexOf('-')
+        const delimiterIndex = icon.indexOf('-')
         const isMdiIcon = !(delimiterIndex <= -1)
         if (isMdiIcon) {
-          iconType = icon.value.slice(0, delimiterIndex)
-          iconClass.value[icon.value] = true
+          iconType = icon.slice(0, delimiterIndex)
+          iconClass[icon] = true
         }
 
-        iconClass.value[iconType] = true
-        return <i class={iconClass.value}
-                  style={iconStyle.value}
-                  vOn:click={onClick}>{!isMdiIcon ? icon.value : ''}</i>
+        iconClass[iconType] = true
+        return <i class={iconClass}
+                  style={iconStyle}
+                  vOn:click={onClick}>{!isMdiIcon ? icon : ''}</i>
       }
 
       function genSvgIcon(icon, iconClass, iconStyle) {
-        iconClass.value['g-icon__svg'] = true
-        iconStyle.value['width'] = getSize(props)
-        iconStyle.value['height'] = getSize(props)
-        return <svg class={iconClass.value}
-                    style={iconStyle.value}
+        iconClass['g-icon__svg'] = true
+        iconStyle['width'] = getSize(props)
+        iconStyle['height'] = getSize(props)
+        return <svg class={iconClass}
+                    style={iconStyle}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     vOn:click={onClick}>
-          <path d={icon.value} fill={props.color}/>
+          <path d={icon} fill={props.color}/>
         </svg>
       }
 
       function genCustomSvgIcon(icon, iconClass, iconStyle) {
-        iconStyle.value['width'] = getSize(props)
-        iconStyle.value['height'] = getSize(props)
-        return <img class={iconClass.value}
-                    style={iconStyle.value}
-                    src={icon.value}
+        iconStyle['width'] = getSize(props)
+        iconStyle['height'] = getSize(props)
+        return <img class={iconClass}
+                    style={iconStyle}
+                    src={icon}
                     alt="Can't load icon"
                     vOn:click={onClick}/>
       }
 
-      function genIcon() {
-        const iconClass = computed(() => ({
+      function genIcon(icon) {
+        const iconClass = {
           ...iconColor.value.class,
           'g-icon': true,
           'g-icon__dense': props.dense,
@@ -80,16 +80,16 @@
           'g-icon__left': props.left,
           'g-icon__right': props.right,
           'g-icon__link': !!context.listeners.click,
-        }))
+        }
 
-        const iconStyle = computed(() => ({
+        const iconStyle = {
           ...iconColor.value.style,
           'font-size': getSize(props),
-        }))
-        let icon = computed(() => context.slots.default ? context.slots.default() ? context.slots.default()[0].text.trim() : '' : '')
-        return isFontAwesome5(icon.value) ? genFontAwesomeIcon(icon, iconClass, iconStyle)
-            : isSvgPath(icon.value) ? genSvgIcon(icon, iconClass, iconStyle)
-                : isCustomSvgIcon(icon.value) ? genCustomSvgIcon(icon, iconClass, iconStyle)
+        }
+
+        return isFontAwesome5(icon) ? genFontAwesomeIcon(icon, iconClass, iconStyle)
+            : isSvgPath(icon) ? genSvgIcon(icon, iconClass, iconStyle)
+                : isCustomSvgIcon(icon) ? genCustomSvgIcon(icon, iconClass, iconStyle)
                     : genMaterialIcon(icon, iconClass, iconStyle)
       }
 
@@ -99,7 +99,8 @@
     },
 
     render() {
-      return this.genIcon()
+      const icon = this.$slots.default ? this.$slots.default[0].text.trim() : ''
+      return this.genIcon(icon)
     }
   }
 
