@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs';
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import GBadge from '../GBadge';
 import GBtn from '../../GBtn/GBtn';
 import GIcon from '../../GIcon/GIcon';
@@ -10,9 +10,9 @@ export default {
 
 export const basic = () => ({
   components: { GBadge, GBtn, GIcon },
-  data () {
+  data() {
     return {
-      show : true
+      show: true
     }
   },
   props: {
@@ -33,20 +33,20 @@ export const basic = () => ({
       default: text('Color', 'blue')
     },
     nudgeTop: {
-      type: String,
-      default: text('nudgeTop', '')
+      type: Number,
+      default: number('nudgeTop', 0, { min: 0, max: 50 })
     },
     nudgeBottom: {
-      type: String,
-      default: text('nudgeBottom', '')
+      type: Number,
+      default: number('nudgeBottom', 0, { min: 0, max: 50 })
     },
     nudgeLeft: {
-      type: String,
-      default: text('nudgeLeft', '')
+      type: Number,
+      default: number('nudgeLeft', 0, { min: 0, max: 50 })
     },
     nudgeRight: {
-      type: String,
-      default: text('nudgeRight', '')
+      type: Number,
+      default: number('nudgeRight', 0, { min: 0, max: 50 })
     },
     showOnHover: {
       type: Boolean,
