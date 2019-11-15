@@ -5,8 +5,19 @@ import * as fa from '@fortawesome/fontawesome-free/js/all'
 import * as mdi from '@mdi/js/mdi'
 import * as materialDesignIcons from '../styles/materialDesignIconExport.scss'
 import { kebabCase } from '../../../utils/helpers';
+import FontAwesomeCategories from './FontAwesomeFreeCategories'
+
+
+// TODO:
+// - icon missing
+// - categories
+// - water mark??
+// - paging
+
 
 /**
+ * Object models:
+ *
  * iconSources: [
  *   {
  *     name: 'Font Awesome 5 Brands',
@@ -76,13 +87,22 @@ import { kebabCase } from '../../../utils/helpers';
  *   }
  * ]
  */
+
 export function getIconSources() {
   return [..._getFontAweSomeIconSource(), _getFontMDIIconSource(), _getMaterialDesignIconSource()]
 }
 
 function _getFontAweSomeIconSource() {
   function _getFontAwesomeCategories(iconSrc, type) {
-    // TODO:
+    return _.map(FontAwesomeCategories, category => {
+      return {
+        name: category.name,
+        icons: _.filter(_.map(category.icons, ico => _.has(iconSrc, ico) ? {
+          name: ico,
+          value: `${type} fa-${ico}`
+        }: null ), ico => ico != null)
+      }
+    })
   }
 
   function _getFontAwesomeIcons(iconSrc, type /*brands, solid, regular*/) {
@@ -106,22 +126,12 @@ function _getFontAweSomeIconSource() {
     {
       name: 'Font Awesome 5 Solid',
       source: 'https://fontawesome.com/',
-      categories: [
-        {
-          name: 'solid',
-          icons: _getFontAwesomeIcons(window.___FONT_AWESOME___.styles.fas, 'fas')
-        }
-      ]
+      categories: _getFontAwesomeCategories(window.___FONT_AWESOME___.styles.fas, 'fas')
     },
     {
       name: 'Font Awesome 5 Regular',
       source: 'https://fontawesome.com/',
-      categories: [
-        {
-          name: 'regular',
-          icons: _getFontAwesomeIcons(window.___FONT_AWESOME___.styles.far, 'far')
-        }
-      ]
+      categories: _getFontAwesomeCategories(window.___FONT_AWESOME___.styles.far, 'far')
     }
   ]
 }
