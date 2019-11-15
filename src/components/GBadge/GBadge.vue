@@ -10,25 +10,30 @@
 <script>
 	import { computed } from '@vue/composition-api'
   import { isCssColor } from '../../mixins/colorable';
+  import { convertToUnit } from '../../utils/helpers';
 
   export default {
     name: 'GBadge',
-		props: {
-			overlay: Boolean,
-			left: Boolean,
-			bottom: Boolean,
-			color: {
-			  type: String,
-				default: 'blue'
-			},
-			showOnHover: Boolean,
-			inline: Boolean,
-			value: {
-			  type: Boolean,
-				default: true
-			},
-		},
-		setup(props) {
+    props: {
+      overlay: Boolean,
+      left: Boolean,
+      bottom: Boolean,
+      color: {
+        type: String,
+        default: 'blue'
+      },
+      nudgeTop: [String, Number],
+      nudgeBottom: [String, Number],
+      nudgeLeft: [String, Number],
+      nudgeRight: [String, Number],
+      showOnHover: Boolean,
+      inline: Boolean,
+      value: {
+        type: Boolean,
+        default: true
+      },
+    },
+    setup(props) {
       const wrapperClasses = computed(() => ({
 				'g-badge-wrapper': true,
 				'g-badge__hover': props.showOnHover,
@@ -47,10 +52,14 @@
 				return 'translate(' + (props.left ? '-' : '') + disparity + ',' + (props.bottom ? '' : '-') + disparity + ')';
 			});
 
-			const styles = computed(() => ({
-				... !props.inline && { transform: transform.value },
-				... isCssColor(props.color) && { 'background-color': props.color },
-			}));
+      const styles = computed(() => ({
+        ...!props.inline && { transform: transform.value },
+        ...props.nudgeTop && { top: convertToUnit(props.nudgeTop) },
+        ...props.nudgeBottom && { bottom: convertToUnit(props.nudgeBottom) },
+        ...props.nudgeLeft && { left: convertToUnit(props.nudgeLeft) },
+        ...props.nudgeRight && { right: convertToUnit(props.nudgeRight) },
+        ...isCssColor(props.color) && { 'background-color': props.color },
+      }));
 
 			return {
         wrapperClasses,
