@@ -38,10 +38,7 @@
         type: [String, Number],
         default: 2
       },
-      touch: Object,
-      touchless: Boolean,
     },
-    directives: { Touch },
     setup(props, context) {
       const data = reactive({
         transitionHeight: undefined, // Intermediate height during transition.
@@ -88,10 +85,6 @@
 
       const isActive = computed(() => data.transitionCount > 0);
 
-      const hasNext = computed(() => props.continuous || internalValue.value < data.items.length - 1);
-
-      const hasPrev = computed(() => props.continuous || internalValue.value > 0)
-
       const internalReverse = computed(() => props.reverse ? props.reverse : data.isReverse)
       provide('internalReverse', internalReverse);
 
@@ -101,8 +94,6 @@
 
         data.isReverse = val < oldVal
       }, { flush: 'pre', lazy: true });
-
-      const hasActiveItems = computed(() => !!data.items.find(item => !item.disabled));
 
       const computedTransition = computed(() => {
         if (!data.isBooted) {
@@ -116,47 +107,6 @@
       });
 
       provide('windowComputedTransition', computedTransition);
-
-      function getNextIndex(index) {
-        const nextIndex = (index + 1) % data.items.length;
-        const item = data.items[nextIndex];
-        if (item.disabled) {
-          return getNextIndex(nextIndex);
-        }
-
-        return nextIndex;
-      }
-
-      function getPrevIndex(index) {
-        const prevIndex = (index + data.items.length - 1) % data.items.length;
-
-        const item = data.items[prevIndex];
-        if (item.disabled) {
-          return getPrevIndex(prevIndex);
-        }
-
-        return prevIndex
-      }
-
-      function next() {
-        data.isReverse = false;
-
-        if (!hasActiveItems.value || !hasNext.value) {
-          return;
-        }
-
-        internalValue.value = getNextIndex(internalValue.value);
-      }
-
-      function prev() {
-        data.isReverse = true;
-
-        if (!hasActiveItems.value || !hasPrev.value) {
-          return;
-        }
-
-        internalValue.value = getPrevIndex(internalValue.value);
-      }
 
       function genDelimiters() {
         const nodeData = {
@@ -214,16 +164,6 @@
           directives: []
         };
 
-        !props.touchless && windowData.directives.push({
-          name: 'touch',
-          value: props.touch || {
-            left: next,
-            right: prev,
-            end: e => e.stopPropagation(),
-            start: e => e.stopPropagation(),
-          }
-        });
-
         return <div ref="window" {...windowData}>{genContainer()} {!props.hideDelimiters && genDelimiters()}</div>
       }
 
@@ -232,10 +172,7 @@
         internalReverse,
         internalValue,
         genWindow,
-        next,
         data,
-        hasPrev,
-        hasNext
       }
     },
     render() {
