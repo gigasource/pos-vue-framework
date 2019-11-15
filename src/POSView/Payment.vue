@@ -99,7 +99,52 @@
 			</g-toolbar>
 		</div>
 		<div class="layout-right">
-
+			<div class="screen">
+				<div class="two-head">
+					<p>Balance due</p>
+					<p>Amount Tendered</p>
+				</div>
+				<div>Change</div>
+				<div class="input two-head">
+					<p class="balance">€ {{convertMoney(total)}}</p>
+					<p class="amount">€ {{amount}}</p>
+				</div>
+				<div class="input change">
+					€ {{parseInt(change)}}
+				</div>
+				<div>
+					Tip
+					<span class="tip">€ {{tip}}</span>
+				</div>
+			</div>
+			<div class="main">
+				<g-btn x-large flat background-color="blue accent 3" text-color="white">
+					<g-icon>{{require('../assets/order/cash.svg')}}</g-icon>
+					<span class="ml-2">Cash</span>
+				</g-btn>
+				<g-btn x-large outlined text-color="#1271ff" class="ml-3">
+					<g-icon>{{require('../assets/order/credit_card.svg')}}</g-icon>
+					<span class="ml-2 text-black">Card</span>
+				</g-btn>
+			</div>
+			<div class="action">
+				<g-number-keyboard class="keyboard" :items="keyboard" :template="template" v-model="amount">
+					<template v-slot:screen>
+						<div></div>
+					</template>
+				</g-number-keyboard>
+				<div class="disabled"></div>
+				<div class="disabled"></div>
+				<div class="disabled"></div>
+				<div class="disabled"></div>
+				<g-btn outlined text-color="#979797">
+					<span style="color: #1c1c1c; font-size: 16px">Multiple Payment</span>
+				</g-btn>
+				<div class="disabled"></div>
+				<g-btn flat background-color="blue darken 1" text-color="white">
+					<span class="fs-large-2">Pay</span>
+				</g-btn>
+			</div>
 		</div>
 	</div>
 </template>
@@ -116,10 +161,11 @@
   import GTextField from '../components/GInput/GTextField';
   import GSpacer from '../components/GLayout/GSpacer';
   import GKeyboard from '../components/GKeyboard/GKeyboard';
+  import GNumberKeyboard from '../components/GKeyboard/GNumberKeyboard';
 
   export default {
     name: 'Payment',
-    components: { GKeyboard, GSpacer, GTextField, GIcon, GToolbar, GDivider, GSimpleTable, GImg, GAvatar, GRow, GBtn },
+    components: { GNumberKeyboard, GKeyboard, GSpacer, GTextField, GIcon, GToolbar, GDivider, GSimpleTable, GImg, GAvatar, GRow, GBtn },
     data() {
       return {
         orderDetail: [
@@ -160,8 +206,34 @@
         tax: 0.50,
         subTotal: 40.00,
         total: 40.00,
+				amount: 100,
+				tip: 0,
+				keyboard: [
+					{ content: ['7'], style: 'grid-area: key7', action: (value, append) => (value + append)},
+					{ content: ['8'], style: 'grid-area: key8', action: (value, append) => (value + append)},
+					{ content: ['9'], style: 'grid-area: key9', action: (value, append) => (value + append)},
+					{ content: ['€ 100'], style: 'grid-area: key100', action: (value) => (value + 100)},
+					{ content: ['4'], style: 'grid-area: key4', action: (value, append) => (value + append)},
+					{ content: ['5'], style: 'grid-area: key5', action: (value, append) => (value + append)},
+					{ content: ['6'], style: 'grid-area: key6', action: (value, append) => (value + append)},
+					{ content: ['€ 50'], style: 'grid-area: key50', action: (value) => (value + 50)},
+					{ content: ['1'], style: 'grid-area: key1', action: (value, append) => (value + append)},
+					{ content: ['2'], style: 'grid-area: key2', action: (value, append) => (value + append)},
+					{ content: ['3'], style: 'grid-area: key3', action: (value, append) => (value + append)},
+					{ content: ['€ 20'], style: 'grid-area: key20', action: (value) => (value + 20)},
+					{ content: ['0'], style: 'grid-area: key0', action: (value, append) => (value + append)},
+					{ content: [','], style: 'grid-area: keyC', action: (value, append) => (value + append)},
+					{ img: 'delivery/key_delete', style: 'grid-area: keyD', action: (value) => (value && value.substring(0, value.length - 1))},
+					{ content: ['€ 10'], style: 'grid-area: key10', action: (value) => (value + 10)},
+				],
+				template: 'grid-template-areas: "key7 key8 key9 key100" "key4 key5 key6 key50" "key1 key2 key3 key20" "key0 keyC keyD key10"; grid-auto-rows: 1fr; grid-auto-columns: 1fr; grid-gap: 6px'
       }
     },
+		computed: {
+			change () {
+			  return this.convertMoney(this.amount - this.total);
+			}
+		},
     methods: {
       convertMoney(val) {
         if (val && typeof (val) === 'number') {
@@ -291,11 +363,100 @@
 	.layout-right {
 		flex-basis: 50%;
 		width: 50%;
-		display: grid;
+		display: flex;
+		flex-direction: column;
 		box-shadow: 0 0 8px rgba(0, 0, 0, 0.252295);
 
 		::v-deep .g-btn {
 			text-transform: none;
+		}
+
+		.screen {
+			flex-basis: 16.6667%;
+			max-height: 16.6667%;
+			display: grid;
+			grid-template-columns: 2fr 1fr;
+			grid-template-rows: 1fr 4fr 1fr;
+			grid-gap: 6px;
+			padding: 12px;
+			line-height: 16px;
+			font-size: 13px;
+			font-weight: 700;
+
+			.two-head {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.input {
+				border: 1px solid #c9c9c9;
+				background: #f0f0f0;
+				border-radius: 4px;
+				padding: 16px;
+
+				.balance {
+					font-size: 24px;
+					color: #1271ff;
+				}
+
+				.amount {
+					font-size: 20px;
+				}
+
+				&.change {
+					display: flex;
+					align-items: center;
+					font-size: 20px;
+				}
+			}
+
+			.tip {
+				font-weight: 400;
+			}
+		}
+
+		.main {
+			flex-grow: 1;
+			flex-basis: 0;
+			padding: 12px;
+			display: flex;
+		}
+
+		.action {
+			flex-basis: 50%;
+			max-height: 50%;
+			padding: 12px;
+			display: grid;
+			grid-template-rows: repeat(5, 1fr);
+			grid-template-columns: repeat(3, 1fr);
+			grid-gap: 6px;
+
+			.keyboard {
+				grid-area: 1/1/5/3;
+
+				::v-deep .key {
+					background: #FFFFFF;
+					border: 1px solid #979797;
+					box-sizing: border-box;
+					border-radius: 6px;
+					box-shadow: none;
+					font-size: 20px;
+					font-weight: 700;
+					font-family: "Muli", sans-serif;
+				}
+			}
+
+			::v-deep .g-btn {
+				height: 100% !important;
+			}
+
+			div.disabled {
+				background: #DFDFDF;
+				opacity: 0.5;
+				border: 1px solid #9B9B9B;
+				border-radius: 6px;
+			}
 		}
 	}
 </style>

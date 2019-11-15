@@ -41,7 +41,9 @@
 
       // Overlay styling
       overlayColor: String,
-      overlayOpacity: [Number, String]
+      overlayOpacity: [Number, String],
+
+			bottom: Boolean,
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
@@ -137,7 +139,8 @@
           ref: 'wrapper',
           staticClass: 'g-dialog-wrapper',
           class: {
-            'g-dialog-wrapper__active': isActive.value
+            'g-dialog-wrapper__active': isActive.value,
+						'g-dialog-wrapper__bottom': props.bottom,
           },
           style: {
             zIndex: wrapperZIndex.value
@@ -297,12 +300,12 @@
 		&-content__fullscreen {
 			border-radius: 0;
 			margin: 0;
-			width: 100%;
 			height: 100%;
 			position: fixed;
 			overflow-y: auto;
 			top: 0;
 			left: 0;
+			right: 0;
 
 			> .g-card {
 				min-height: 100%;
@@ -310,6 +313,10 @@
 				margin: 0 !important;
 				padding: 0 !important;
 			}
+		}
+
+		&-wrapper__bottom {
+			align-items: flex-end;
 		}
 	}
 </style>

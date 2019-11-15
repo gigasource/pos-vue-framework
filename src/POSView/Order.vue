@@ -128,7 +128,7 @@
 			</div>
 		</div>
 		<g-dialog v-model="dialogSavedList" overlay-color="#6b6f82" overlay-opacity="0.95" bottom max-width="100%" width="100%" lazy>
-			<div>
+			<div class="w-100">
 				<g-simple-table striped style="font-size: 14px;">
 					<thead>
 					<tr>
@@ -185,7 +185,7 @@
 			</g-card>
 		</g-dialog>
 		<g-dialog v-model="dialogProductLookup" fullscreen>
-			<div class="dialog-lookup">
+			<div class="dialog-lookup w-100">
 				<g-toolbar class="header" color="grey lighten 3" elevation="0">
 					<g-text-field outlined clearable class="w-50" style="color: #1d1d26" clear-icon="cancel" v-model="productLookup" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
 					<g-spacer/>
@@ -771,6 +771,10 @@
 			flex-flow: column wrap;
 			margin-bottom: 4px;
 
+			&::-webkit-scrollbar {
+				display: none;
+			}
+
 			&__active {
 				background-color: #2979FF !important;
 				color: white !important;
@@ -1090,7 +1094,7 @@
 				}
 			}
 
-			.g-btn {
+			div:not(.action) .g-btn {
 				height: 50px !important;
 			}
 
@@ -1119,12 +1123,18 @@
 
 		.keyboard-wrapper {
 			background-color: #bdbdbd;
-			padding: 16px 200px;
+			padding: 16px 180px;
 			border-bottom-left-radius: 6px;
 			border-bottom-right-radius: 6px;
+			margin-top: -16px;
 
 			.key-number {
-				padding: 12px 8px;
+				padding: 10px 8px;
+				background: #FFFFFF;
+				border: 1px solid #979797;
+				box-sizing: border-box;
+				border-radius: 4px;
+				font-family: "Muli", sans-serif;
 			}
 		}
 	}
