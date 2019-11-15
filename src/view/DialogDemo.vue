@@ -177,10 +177,9 @@
   import GCard from '../components/GCard/GCard';
   import GCardTitle from '../components/GCard/GCardTitle';
   import {GCardText, GCardActions} from '../components/GCard/GCardFunctionalComponent'
-
   export default {
     name: 'DialogDemo',
-    components: { GCardText, GCardActions, GCardTitle, GCard, GButton, GDialog },
+    components: { GDialog, GCardText, GCardActions, GCardTitle, GCard, GButton},
     data() {
       return {
         dialog: false,
