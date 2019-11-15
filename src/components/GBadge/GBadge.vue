@@ -10,6 +10,7 @@
 <script>
 	import { computed } from '@vue/composition-api'
   import { isCssColor } from '../../mixins/colorable';
+	import { convertToUnit } from '../../utils/helpers';
 
   export default {
     name: 'GBadge',
@@ -21,6 +22,10 @@
 			  type: String,
 				default: 'blue'
 			},
+			nudgeTop: [String, Number],
+			nudgeBottom: [String, Number],
+			nudgeLeft: [String, Number],
+			nudgeRight: [String, Number],
 			showOnHover: Boolean,
 			inline: Boolean,
 			value: {
@@ -49,6 +54,10 @@
 
 			const styles = computed(() => ({
 				... !props.inline && { transform: transform.value },
+				...props.nudgeTop && {top: convertToUnit(props.nudgeTop)},
+				...props.nudgeBottom && {bottom: convertToUnit(props.nudgeBottom)},
+				...props.nudgeLeft && {left: convertToUnit(props.nudgeLeft)},
+				...props.nudgeRight && {right: convertToUnit(props.nudgeRight)},
 				... isCssColor(props.color) && { 'background-color': props.color },
 			}));
 
