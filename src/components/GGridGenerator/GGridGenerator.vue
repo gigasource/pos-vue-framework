@@ -1,21 +1,24 @@
 <script>
   import _ from 'lodash'
   import { reactive, ref, computed, onUpdated } from '@vue/composition-api'
-  import { saveFile, openFile } from '../../utils/helpers';
+  import { saveFile, openFile } from '../../utils/helpers'
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
+  import copy from 'copy-to-clipboard'
+  import { generateRandomCssColor } from '../../utils/colors'
   import {
     _gridItemOptions, _gridContentOptions,
-    changeAlignSelf, changeAlignItems, changeAlignContent, changeJustifySelf, changeJustifyItems, changeJustifyContent,
+    setAlignSelf, setAlignItems, setAlignContent, setJustifySelf, setJustifyItems, setJustifyContent,
     isActiveAlignSelf, isActiveAlignItems, isActiveAlignContent, isActiveJustifySelf, isActiveJustifyItems, isActiveJustifyContent,
-    joinRefArrayValue,
-    getGridAreaCss,
-    addSubGridArea,
-    addSubItemArea,
-    deleteGridItem, createEmptyArea, createGridArea,
-    isGridAreaNameValid, getGridList, isAreaOverflowed,
-    insertRowAbove, insertRowBelow, insertColumnLeft, insertColumnRight, deleteColumn, deleteRow,
-    generateRandomColor, adjustRowColNumbers, generateLayoutJson, parseLayoutStr, parseLayoutJsonObject
-  } from './logic/GGridGeneratorUtil'
+  } from './logic/gridJustifyAlignment'
+  import { joinRefArrayValue } from './logic/utils'
+  import { createLayoutStr, parseLayoutStr, parseLayoutObject } from './logic/gridLayoutConvert'
+  import { insertRowAbove, insertRowBelow, insertColumnLeft, insertColumnRight, deleteColumn, deleteRow, adjustRowColNumbers } from './logic/gridLayoutAdjust'
+  import { generateGridAreaCss } from './logic/gridCssGenerate'
+  import {
+    createEmptyArea, createArea, addSubGridArea, addSubItemArea, deleteArea,
+    isAreaNameValid, getGridList, isAreaOverflowed
+  } from './logic/layoutModelUtil'
+
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
@@ -40,7 +43,7 @@
       if (typeof (props.layout) === 'string') {
         initLayout = parseLayoutStr(props.layout)
       } else {
-        initLayout = parseLayoutJsonObject(props.layout || {
+        initLayout = parseLayoutObject(props.layout || {
           name: 'app',
           columns: ['1fr', '1fr', '1fr', '1fr', '1fr'],
           rows: ['1fr', '1fr', '1fr', '1fr', '1fr'],
@@ -279,14 +282,14 @@
                     rowEnd: i,
                     columnEnd: j
                   }
-                  state.hoveringArea = createGridArea(_selectingArea)
+                  state.hoveringArea = createArea(_selectingArea)
                   state.hovering = true
                 }}
                 vOn:mouseenter={() => {
                   if (state.viewMode) return
                   if (state.hovering) {
                     _selectingArea = { ..._selectingArea, rowEnd: i, columnEnd: j }
-                    state.hoveringArea = createGridArea(_selectingArea)
+                    state.hoveringArea = createArea(_selectingArea)
                   }
                 }}
                 vOn:mouseup={() => {
@@ -367,10 +370,10 @@
 
       function renderGridAreaInEditMode(gridItem) {
         return <div class={getAreaClass(gridItem)}
-                    style={{ backgroundColor: gridItem.bgColor, gridArea: getGridAreaCss(gridItem) }}>
+                    style={{ backgroundColor: gridItem.bgColor, gridArea: generateGridAreaCss(gridItem) }}>
           <span>{gridItem.name}</span>
           <span class={actionWrapperClass}>
-            <span class={actionClass} vOn:click={() => gridItem.bgColor = generateRandomColor()}>
+            <span class={actionClass} vOn:click={() => gridItem.bgColor = generateRandomCssColor()}>
               <g-icon small>autorenew</g-icon>
             </span>
             <span class={actionClass}
@@ -380,7 +383,7 @@
                   }}>
               <g-icon small>edit</g-icon>
             </span>
-            <span class={actionClass} vOn:click={() => deleteGridItem(gridItem)}>
+            <span class={actionClass} vOn:click={() => deleteArea(gridItem)}>
               <g-icon small>delete</g-icon>
             </span>
           </span>
@@ -389,13 +392,13 @@
 
       // render area in view mode
       function renderGridAreaInViewMode(gridItem) {
-        if (gridItem.subAreas) {
+        if (gridItem.subAreas && gridItem.subAreas.length > 0) {
           return <div
               class="grid-gen__editor__field__area"
               style={{
-                border: '1px dashed #0008',
+                border: '1px solid #0008',
                 backgroundColor: gridItem.bgColor,
-                gridArea: getGridAreaCss(gridItem),
+                gridArea: generateGridAreaCss(gridItem),
                 display: 'grid',
                 'grid-template-columns': joinRefArrayValue(gridItem.columns),
                 'grid-template-rows': joinRefArrayValue(gridItem.rows),
@@ -407,9 +410,9 @@
           return <div
               class="grid-gen__editor__field__area"
               style={{
-                border: '1px dashed #0008',
+                border: '2px solid #0008',
                 backgroundColor: gridItem.bgColor,
-                gridArea: getGridAreaCss(gridItem)
+                gridArea: generateGridAreaCss(gridItem)
               }}>
             {gridItem.name}
           </div>
@@ -431,7 +434,7 @@
       function renderHoveringArea() {
         return state.hovering ? <div style={{
           border: '3px dashed #000',
-          'grid-area': getGridAreaCss({ area: state.hoveringArea })
+          'grid-area': generateGridAreaCss({ area: state.hoveringArea })
         }}></div> : null
       }
 
@@ -454,7 +457,7 @@
       }
 
       function onSubGridBtnClicked(grid) {
-        if (isGridAreaNameValid(_selectingArea.name)) {
+        if (isAreaNameValid(_selectingArea.name)) {
           // can use state.hoveringArea directly instead of _selectingArea
           addSubGridArea(grid, _selectingArea)
           state.showConfirmDialog = false
@@ -463,7 +466,7 @@
       }
 
       function onSubItemBtnClicked(grid) {
-        if (isGridAreaNameValid(_selectingArea.name)) {
+        if (isAreaNameValid(_selectingArea.name)) {
           addSubItemArea(grid, _selectingArea)
           state.showConfirmDialog = false
           _selectingArea = createEmptyArea()
@@ -536,8 +539,6 @@
       }
 
       // a helper method adjust row, col number
-
-
       function renderGridSettings(grid) {
         return state.selectedSetting === selectedSetting.grid ? [
           // columns number, rows number, gap pixel setting
@@ -562,32 +563,32 @@
           // justify/align items
           <div class="grid-gen__settings-prop">
             <label>Align Items:</label>
-            <select vOn:change={e => changeAlignItems(grid, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveAlignItems(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => setAlignItems(grid, e.target.value)}>
+              {_.map(_gridItemOptions, value => <option selected={isActiveAlignItems(grid, value)} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align content:</label>
-            <select vOn:change={e => changeAlignContent(grid, e.target.value)}>
-              { _.map(_gridContentOptions, value => <option selected={isActiveAlignContent(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => setAlignContent(grid, e.target.value)}>
+              {_.map(_gridContentOptions, value => <option selected={isActiveAlignContent(grid, value)} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify Items:</label>
-            <select vOn:change={e => changeJustifyItems(grid, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveJustifyItems(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => setJustifyItems(grid, e.target.value)}>
+              {_.map(_gridItemOptions, value => <option selected={isActiveJustifyItems(grid, value)} value={value}>{value}</option>)}
             </select>
           </div>,
 
           // justify/alignment contents
           <div class="grid-gen__settings-prop">
             <label>Justify content:</label>
-            <select vOn:change={e => changeJustifyContent(grid, e.target.value)}>
-              { _.map(_gridContentOptions, value => <option selected={isActiveJustifyContent(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => setJustifyContent(grid, e.target.value)}>
+              {_.map(_gridContentOptions, value => <option selected={isActiveJustifyContent(grid, value)} value={value}>{value}</option>)}
             </select>
           </div>,
 
-            // Insert/delete row/column
+          // Insert/delete row/column
           <div class="grid-gen__settings-section">Insert/Delete</div>,
           <div class="grid-gen__settings-prop">
             <label>Rows:</label>
@@ -649,14 +650,14 @@
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align self:</label>
-            <select vOn:change_stop={e => changeAlignSelf(gridItem, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveAlignSelf(gridItem, value)} value={value}>{value}</option>) }
+            <select vOn:change_stop={e => setAlignSelf(gridItem, e.target.value)}>
+              {_.map(_gridItemOptions, value => <option selected={isActiveAlignSelf(gridItem, value)} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify self:</label>
-            <select vOn:change_stop={e => changeJustifySelf(gridItem, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveJustifySelf(gridItem, value)} value={value}>{value}</option>) }
+            <select vOn:change_stop={e => setJustifySelf(gridItem, e.target.value)}>
+              {_.map(_gridItemOptions, value => <option selected={isActiveJustifySelf(gridItem, value)} value={value}>{value}</option>)}
             </select>
           </div>,
         ] : null
@@ -673,7 +674,11 @@
       }
 
       function saveLayoutFile() {
-        saveFile('layout.json', generateLayoutJson(state.layout), 'application/json')
+        saveFile('layout.json', createLayoutStr(state.layout), 'application/json')
+      }
+
+      function copyLayoutStrToClipBoard() {
+        copy(createLayoutStr(state.layout))
       }
 
       function renderGridGeneratorOutput() {
@@ -681,6 +686,7 @@
           <div class="grid-gen__settings-section">Files</div>,
           <button vOn:click_stop_prevent={loadLayoutFile}>Import</button>,
           <button vOn:click_stop_prevent={saveLayoutFile}>Export</button>,
+          <button vOn:click_stop_prevent={copyLayoutStrToClipBoard}>Copy To Clipboard</button>,
         ]
       }
 

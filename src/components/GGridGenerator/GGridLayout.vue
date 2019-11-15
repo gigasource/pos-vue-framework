@@ -1,7 +1,8 @@
 <script>
   import _ from 'lodash'
-  import { generateGridCSS, parseLayoutJsonObject, parseLayoutStr } from './logic/GGridGeneratorUtil'
-  import { onMounted, onUpdated, reactive } from '@vue/composition-api'
+  import { parseLayoutObject, parseLayoutStr } from './logic/gridLayoutConvert'
+  import { generateGridCSS } from './logic/gridCssGenerate'
+  import { onMounted, onUpdated, reactive, ref } from '@vue/composition-api'
   import GGridGenerator from './GGridGenerator';
   import GDialog from '../GDialog/GDialog'
 
@@ -22,7 +23,7 @@
       },
     },
     setup(props, context) {
-      const layout = (typeof(props.layout) === 'string') ? parseLayoutStr(props.layout) : parseLayoutJsonObject(props.layout)
+      const layout = (typeof(props.layout) === 'string') ? parseLayoutStr(props.layout) : parseLayoutObject(props.layout)
 
       // vue template ref id
       const refIdWrapperElement = 'el'
@@ -40,8 +41,7 @@
         props.editable && wrapperEl.parentNode.appendChild(context.refs[refIdEditor])
       }
 
-
-      // state
+      // editor dialog
       const refIdEditor = 'editor'
       const dialogState = reactive({ show: false })
       function renderEditDialog() {
@@ -51,11 +51,11 @@
             <div class="editor-dialog">
               <div class='editor-dialog__title-bar'>
                 <span class='editor-dialog__title-bar__title'>
-                  Grid Layout Editor <span class="uid">#{uid}</span>
+                  Grid Layout Editor
                 </span>
                 <button class="close-btn" vOn:click={() => dialogState.show = false}>x</button>
               </div>
-              <g-grid-generator layout={layout} style="flex: 1" uid={uid}/>
+              <g-grid-generator layout={layout} style="flex: 1"/>
             </div>
           </g-dialog>
         </div>

@@ -3,13 +3,14 @@ import { createLocalVue } from '@vue/test-utils'
 import plugin, { ref, isRef } from '@vue/composition-api'
 import _ from 'lodash'
 import {
-  _createSingleItem, _createSubGridItem, addSubGridArea, addSubItemArea, adjustRowColNumbers,
-  createEmptyArea, deleteColumn, deleteGridItem, deleteRow,
-  _getFullCssModelName,
-  getGridAreaCss, getGridList, insertColumnLeft, insertColumnRight, insertRowAbove, insertRowBelow, isAreaOverflowed,
-  isGridAreaNameValid,
-  joinRefArrayValue
-} from '../GGridGeneratorUtil'
+  _createSingleItem, _createSubGridItem, addSubGridArea, addSubItemArea,
+  createEmptyArea, deleteArea, getGridList,  isAreaOverflowed,
+  isAreaNameValid,
+} from '../layoutModelUtil'
+
+import { generateGridAreaCss, _getFullCssModelName } from '../gridCssGenerate'
+import { joinRefArrayValue } from '../utils'
+import { insertColumnLeft, insertColumnRight, insertRowAbove, insertRowBelow, adjustRowColNumbers, deleteColumn, deleteRow } from '../gridLayoutAdjust'
 import { createRange } from '../../../../utils/helpers';
 
 describe('/GGridGeneratorUtil', () => {
@@ -34,9 +35,9 @@ describe('/GGridGeneratorUtil', () => {
     })
   })
 
-  describe('getGridAreaCss', () => {
+  describe('generateGridAreaCss', () => {
     it('Should return grid area css value', () => {
-      expect(getGridAreaCss({
+      expect(generateGridAreaCss({
         area: {
           rowStart: 5,
           columnStart: 3,
@@ -47,20 +48,20 @@ describe('/GGridGeneratorUtil', () => {
     })
   })
 
-  describe('isGridAreaNameValid', () => {
+  describe('isAreaNameValid', () => {
     it('Should pass the test if input contain only word and - character', () => {
-      expect(isGridAreaNameValid('abcd')).toBe(true)
-      expect(isGridAreaNameValid('abcd_')).toBe(true)
-      expect(isGridAreaNameValid('_abcd_')).toBe(true)
-      expect(isGridAreaNameValid('_abcd-')).toBe(true)
-      expect(isGridAreaNameValid('09-')).toBe(true)
-      expect(isGridAreaNameValid('_09-')).toBe(true)
+      expect(isAreaNameValid('abcd')).toBe(true)
+      expect(isAreaNameValid('abcd_')).toBe(true)
+      expect(isAreaNameValid('_abcd_')).toBe(true)
+      expect(isAreaNameValid('_abcd-')).toBe(true)
+      expect(isAreaNameValid('09-')).toBe(true)
+      expect(isAreaNameValid('_09-')).toBe(true)
 
     })
 
     it('Should fail the test if input contain non (word and -) character', () => {
-      expect(isGridAreaNameValid('')).toBe(false)
-      expect(isGridAreaNameValid('~!#$%^&*()')).toBe(false)
+      expect(isAreaNameValid('')).toBe(false)
+      expect(isAreaNameValid('~!#$%^&*()')).toBe(false)
     })
   })
 
@@ -247,7 +248,7 @@ describe('/GGridGeneratorUtil', () => {
     Math.random = orgRandom
   })
 
-  it('deleteGridItem', () => {
+  it('deleteArea', () => {
     const child = {
       name: 'head',
       hide: false,
@@ -262,7 +263,7 @@ describe('/GGridGeneratorUtil', () => {
     const parent = { name: 'root', subAreas: [null, null, child] }
     child.parent = parent
 
-    deleteGridItem(child)
+    deleteArea(child)
 
     for (let i = 0; i < parent.subAreas.length; ++i) {
       expect(parent.subAreas[i] != child).toBe(true)
