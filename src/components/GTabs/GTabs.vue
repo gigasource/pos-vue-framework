@@ -39,6 +39,7 @@
       }
     },
     setup(props, context) {
+      console.log(props);
       const model = getVModel(props, context);
 
       if (!model.value) {
@@ -160,12 +161,13 @@
 
       const genTabs = () => {
         return props.items.map((item, index) => (
-          (context.slots.tab && context.slots.tab({ item, index }))
-          || <g-tab item={item} key={index}>
-            {genTabIcon(item)}
-            {item.title}
-          </g-tab>
-        ))
+            (context.slots.tab && context.slots.tab({ item, index })) ||
+            <g-tab item={item} key={index}>
+              {genTabIcon(item)}
+              {item.title}
+            </g-tab>
+          )
+        )
       };
 
       const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles}></div>

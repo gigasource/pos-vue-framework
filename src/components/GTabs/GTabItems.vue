@@ -24,7 +24,7 @@
         } else {
           transition.value = 'g-tab-transition';
         }
-      }, { flush: 'pre' })
+      }, { flush: 'pre' });
 
       return () =>
         <div class="g-tab-items">

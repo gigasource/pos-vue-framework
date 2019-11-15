@@ -27,31 +27,33 @@ export default {
   },
   setup(props, context) {
     const model = getVModel(props, context);
-    const gTabitems = props.items.map((item, index) => {
-      return (
-        <g-tab-item key={index} item={item}>
+    const gTabItems = () => props.items.map((item, index) => {
+      return (<g-tab-item key={index} item={item}>
           {item.title}
         </g-tab-item>
       )
     });
+
     return () => (
-      <g-tabs {...{
-        props: {
-          ...props,
-          showSlider: false
-        },
-        on: {
-          input(e) {
-            model.value = e
+      <g-tabs {
+        ...{
+          props: {
+            ...props,
+            showSlider: false
+          },
+          on: {
+            input(e) {
+              model.value = e
+            }
+          },
+          scopedSlots: {
+            tab: ({item, index}) => (
+                <g-tab item={item} key={index}>{item.title}</g-tab>
+            )
           }
-        },
-        scopedSlots: {
-          tab: ({item, index}) => (
-              <g-tab item={item} key={index}>{item.title}</g-tab>
-          )
         }
-      }}>
-        {gTabitems}
+      }>
+        {context.slots.default ? context.slots.default() : gTabItems()}
       </g-tabs>
     )
   }
@@ -60,6 +62,11 @@ export default {
 
 <style lang="scss" scoped>
   @import "../../style/colors";
+  @import "../../style/variables";
+  ::v-deep .g-tabs-wrapper {
+    align-items: center;
+  }
+
   ::v-deep .g-tabs-bar {
     mix-blend-mode: normal;
     width: 260px;
@@ -76,12 +83,12 @@ export default {
     flex-basis: 100%;
     border-radius: 29px;
     text-transform: none;
+    &:hover:before {
+      opacity: 0;
+    }
     &:not(.g-tab__active):not(.g-tab__disabled) {
       color: color("grey", "base");
       opacity: 1;
-    }
-    &:hover:before {
-      opacity: 0;
     }
     &__active {
       background-color: #1271FF;

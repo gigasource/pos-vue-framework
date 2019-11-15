@@ -1,5 +1,7 @@
-import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
+import {withKnobs, text, boolean, number} from '@storybook/addon-knobs';
 import IosTab from '../IosTab';
+import GList from "../../../components/GList/GList";
+import GTabItem from "../../../components/GTabs/GTabItem";
 
 export default {
   title: 'IosTab',
@@ -7,12 +9,113 @@ export default {
 }
 
 export const tab = () => ({
-  components: { IosTab },
+  components: {IosTab, GList, GTabItem},
   data() {
     return {
       items: [
-        { title: 'By Month', icon: 'month' },
-        { title: 'By Day', icon: 'day' },
+        {
+          title: 'By Month',
+          icon: 'month',
+          list: [
+            { subheader: '2019', type: 'subheader' },
+            {
+              title: 'September',
+              subtitle: '25',
+              append: '542.742,06'
+            },
+            {
+              title: 'August',
+              subtitle: '32',
+              append: '542.742,06'
+            },
+            {
+              title: 'July',
+              subtitle: '52',
+              append: '542.742,06'
+            },
+            {
+              title: 'June',
+              subtitle: '72',
+              append: '542.742,06'
+            },
+            {
+              title: 'May',
+              subtitle: '35',
+              append: '542.742,06'
+            },
+            {
+              title: 'April',
+              subtitle: '73',
+              append: '542.742,06'
+            },
+            {
+              title: 'March',
+              subtitle: '43',
+              append: '542.742,06'
+            },
+            {
+              title: 'February',
+              subtitle: '45',
+              append: '542.742,06'
+            },
+            {
+              title: 'January',
+              subtitle: '15',
+              append: '542.742,06'
+            }
+          ]
+        },
+        {
+          title: 'By Day',
+          icon: 'day',
+          list: [
+            {
+              title: 'September',
+              subtitle: '25',
+              append: '542.742,06'
+            },
+            {
+              title: 'August',
+              subtitle: '32',
+              append: '542.742,06'
+            },
+            {
+              title: 'July',
+              subtitle: '52',
+              append: '542.742,06'
+            },
+            {
+              title: 'June',
+              subtitle: '72',
+              append: '542.742,06'
+            },
+            {
+              title: 'May',
+              subtitle: '35',
+              append: '542.742,06'
+            },
+            {
+              title: 'April',
+              subtitle: '73',
+              append: '542.742,06'
+            },
+            {
+              title: 'March',
+              subtitle: '43',
+              append: '542.742,06'
+            },
+            {
+              title: 'February',
+              subtitle: '45',
+              append: '542.742,06'
+            },
+            {
+              title: 'January',
+              subtitle: '15',
+              append: '542.742,06'
+            }
+          ]
+        },
       ],
       model: null,
     }
@@ -75,6 +178,9 @@ export const tab = () => ({
       :icon="icon"
       :slider-size="sliderSize"
       :slider-color="sliderColor">
-    </ios-tabs>
+      <g-tab-item v-for="tabItem in items" :item="tabItem">
+        <g-list :items="tabItem.list"/>
+      </g-tab-item>
+    </ios-tab>
   `
 });
