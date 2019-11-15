@@ -32,6 +32,22 @@ export const basic = () => ({
       type: String,
       default: text('Color', 'blue')
     },
+    nudgeTop: {
+      type: String,
+      default: text('nudgeTop', '')
+    },
+    nudgeBottom: {
+      type: String,
+      default: text('nudgeBottom', '')
+    },
+    nudgeLeft: {
+      type: String,
+      default: text('nudgeLeft', '')
+    },
+    nudgeRight: {
+      type: String,
+      default: text('nudgeRight', '')
+    },
     showOnHover: {
       type: Boolean,
       default: boolean('Show on hover', false)
@@ -42,7 +58,7 @@ export const basic = () => ({
     }
   },
   template: `
-  <g-badge :overlay="overlay" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
+  <g-badge :overlay="overlay" :nudge-top="nudgeTop" :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
     <template v-slot:badge>
       <g-icon x-small>notifications</g-icon>
     </template>
