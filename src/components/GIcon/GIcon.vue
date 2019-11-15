@@ -18,7 +18,7 @@
 <script>
   import { computed, ref, onMounted, onUpdated } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
-  import { setTextColor } from '../../mixins/colorable';
+	import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import { Fragment } from 'vue-fragment'
 
   export default {
