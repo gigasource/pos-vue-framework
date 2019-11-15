@@ -18,7 +18,7 @@ import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
-import Dashboard from "../POSView/Dashboard";
+import Dashboard from "../view/DashboardDemo";
 
 const routes = [
   {path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
