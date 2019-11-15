@@ -33,6 +33,10 @@
       centerActive: Boolean,
       icon: Boolean,
       alignWithTitle: Boolean,
+      showSlider: {
+        type: Boolean,
+        default: true
+      }
     },
     setup(props, context) {
       const model = getVModel(props, context);
@@ -152,7 +156,7 @@
 
       const genTabIcon = (item) => {
         if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
-      }
+      };
 
       const genTabs = () => {
         return props.items.map((item, index) => (
@@ -162,7 +166,7 @@
             {item.title}
           </g-tab>
         ))
-      }
+      };
 
       const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles}></div>
 
@@ -178,12 +182,12 @@
             'click:next': calculateSliderStyle
           },
           slot: 'tabs'
-        }
+        };
         return <g-slide-group {...slideGroupData} vModel={model.value} dense>
           {genTabs()}
-          {genTabSlider()}
+          {props.showSlider && genTabSlider()}
         </g-slide-group>
-      }
+      };
 
       return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
