@@ -19,7 +19,7 @@
       large: Boolean,
       xLarge: Boolean,
     },
-    setup(props, context) {
+    setup: function (props, context) {
       const onClick = (event) => {
         context.emit('click', event);
       }
@@ -87,10 +87,10 @@
           'font-size': getSize(props),
         }
 
-        return isFontAwesome5(icon) ? genFontAwesomeIcon(icon, iconClass, iconStyle)
-            : isSvgPath(icon) ? genSvgIcon(icon, iconClass, iconStyle)
-                : isCustomSvgIcon(icon) ? genCustomSvgIcon(icon, iconClass, iconStyle)
-                    : genMaterialIcon(icon, iconClass, iconStyle)
+        if (isFontAwesome5(icon)) return genFontAwesomeIcon(icon, iconClass, iconStyle)
+        else if (isSvgPath(icon)) return genSvgIcon(icon, iconClass, iconStyle)
+        else if (isCustomSvgIcon(icon)) return genCustomSvgIcon(icon, iconClass, iconStyle)
+        else return genMaterialIcon(icon, iconClass, iconStyle)
       }
 
       return {
