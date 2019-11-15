@@ -132,62 +132,53 @@
       });
 
       // Render functions
-      const wrapperData = computed(() => ({
-        ref: 'wrapper',
-        staticClass: 'g-dialog-wrapper',
-        class: {
-          'g-dialog-wrapper__active': isActive.value
-        },
-        style: {
-          zIndex: wrapperZIndex.value
-        },
-        attrs: {
-          tabindex: wrapperTabIndex.value
-        },
-        on: {
-          keydown: onKeydown
-        }
-      }))
-
-      const contentData = computed(() => ({
-        ref: 'content',
-        staticClass: 'g-dialog-content',
-        class: {
-          'g-dialog-content__active': isActive.value,
-          'g-dialog-content__scrollable': props.scrollable,
-          'g-dialog-content__fullscreen': props.fullscreen
-        },
-        style: {
-          maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
-          width: props.width === 'auto' || props.fullscreen ? undefined : convertToUnit(props.width),
-        },
-        directives: [
-          {
-            name: 'clickOutside',
-            value: () => {
-              isActive.value = false
-            },
-            arg: {
-              closeConditional,
-              include: () => []
-            }
-          }
-        ]
-      }))
-
-      const overlayData = computed(() => ({
-        ref: 'overlay',
-        props: {
-          zIndex: overlayZIndex.value,
-          color: props.overlayColor,
-          opacity: props.overlayOpacity
-        }
-      }))
-
       function genContent() {
-        return <div {...wrapperData.value}>
+        const wrapperData = {
+          ref: 'wrapper',
+          staticClass: 'g-dialog-wrapper',
+          class: {
+            'g-dialog-wrapper__active': isActive.value
+          },
+          style: {
+            zIndex: wrapperZIndex.value
+          },
+          attrs: {
+            tabindex: wrapperTabIndex.value
+          },
+          on: {
+            keydown: onKeydown
+          }
+        }
+
+        const contentData = {
+          ref: 'content',
+          staticClass: 'g-dialog-content',
+          class: {
+            'g-dialog-content__active': isActive.value,
+            'g-dialog-content__scrollable': props.scrollable,
+            'g-dialog-content__fullscreen': props.fullscreen
+          },
+          style: {
+            maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
+            width: props.width === 'auto' || props.fullscreen ? undefined : convertToUnit(props.width),
+          },
+          directives: [
+            {
+              name: 'clickOutside',
+              value: () => {
+                isActive.value = false
+              },
+              arg: {
+                closeConditional,
+                include: () => []
+              }
+            }
+          ]
+        }
+
+        return <div {...wrapperData}>
           <transition name="dialog-transition">
-            <div {...contentData.value} vShow={isActive.value}>
+            <div {...contentData} vShow={isActive.value}>
               {context.slots.default ? context.slots.default() : undefined}
             </div>
           </transition>
@@ -195,7 +186,16 @@
       }
 
       function genOverlay() {
-        return <g-overlay vModel={isActive.value} {...overlayData.value} vShow={renderOverlay.value}/>
+        const overlayData = {
+          ref: 'overlay',
+          props: {
+            zIndex: overlayZIndex.value,
+            color: props.overlayColor,
+            opacity: props.overlayOpacity
+          }
+        }
+
+        return <g-overlay vModel={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
       }
 
       function genActivator() {
