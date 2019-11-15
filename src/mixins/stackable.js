@@ -9,7 +9,7 @@ export default function stackable(props, context) {
     const activeElementsZIndexes = [stackMinZIndex.value];
 
     const activeElements = [
-      ...document.getElementsByClassName('dialog-wrapper__active'),
+      ...document.getElementsByClassName('g-dialog-wrapper__active'),
     ];
 
     for (let index = 0; index < activeElements.length; index++) {
