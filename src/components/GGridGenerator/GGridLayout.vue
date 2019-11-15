@@ -45,30 +45,17 @@
       const refIdEditor = 'editor'
       const dialogState = reactive({ show: false })
       function renderEditDialog() {
-        const editDialogActivatorStyle = {
-          position: 'fixed',
-          top: '5px',
-          right: '5px'
-        }
-        const editorDialogStyle = {
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          height: "100vh",
-          padding: "20px",
-          backgroundColor: "white",
-          border: '1px solid black'
-        }
-
         return <div ref={refIdEditor}>
-          <button vOn:click={() => dialogState.show = true} style={editDialogActivatorStyle}>Open Editor</button>
+          <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
           <g-dialog value={dialogState.show} persistent fullscreen>
-            <div style={editorDialogStyle}>
-              <div style="display: flex; flex-direction: row; padding: 10px;">
-                <span style="flex: 1;">Layout editor</span>
-                <button vOn:click={() => dialogState.show = false}>x</button>
+            <div class="editor-dialog">
+              <div class='editor-dialog__title-bar'>
+                <span class='editor-dialog__title-bar__title'>
+                  Grid Layout Editor <span class="uid">#{uid}</span>
+                </span>
+                <button class="close-btn" vOn:click={() => dialogState.show = false}>x</button>
               </div>
-              <g-grid-generator layout={layout} style="flex: 1"/>
+              <g-grid-generator layout={layout} style="flex: 1" uid={uid}/>
             </div>
           </g-dialog>
         </div>
@@ -119,3 +106,68 @@
     }
   }
 </script>
+<style scoped lang="scss">
+  .editor-dialog__open-btn {
+    position: fixed;
+    border: none;
+    box-shadow: 0 2px 2px 0 #0003;
+    top: 15px;
+    right: 10px;
+    opacity: 0.6;
+    padding: 10px;
+    transition: box-shadow 0.5s;
+
+    &:hover {
+      opacity: 1;
+      cursor: pointer;
+      box-shadow: 0 2px 8px 4px #0003;
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .editor-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    background-color: white;
+    border: 1px solid #666;
+
+    &__title-bar {
+      display: flex;
+      flex-direction: row;
+      padding: 10px;
+      margin-bottom: 15px;
+      background: #eee;
+      border-bottom: 1px solid #666;
+
+      &__title {
+        flex: 1;
+        color: #666;
+
+        &>.uid {
+          color: #888;
+          font-weight: bold;
+        }
+      }
+
+      &>.close-btn {
+        border-radius: 2px;
+        background-color: #888;
+        color: #eee;
+
+        &:focus {
+          outline: none;
+        }
+
+        &:hover {
+          cursor: pointer;
+          background-color: #aaa;
+        }
+      }
+    }
+  }
+
+</style>
