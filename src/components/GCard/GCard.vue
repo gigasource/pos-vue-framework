@@ -30,7 +30,10 @@
         ripple: Boolean,
         width: [String, Number],
         borderRadius: [String, Number],
-        elevation: [String, Number],
+        elevation: {
+          type: [String, Number],
+          default: 2
+        },
         height: [String, Number],
         img: String,
         outlined: Boolean,
