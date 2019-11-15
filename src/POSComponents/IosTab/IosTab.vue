@@ -30,7 +30,7 @@ export default {
     const gTabitems = props.items.map((item, index) => {
       return (
         <g-tab-item key={index} item={item}>
-          { item.title }
+          {item.title}
         </g-tab-item>
       )
     });
@@ -59,22 +59,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "../../style/variables";
+  @import "../../style/colors";
   ::v-deep .g-tabs-bar {
     mix-blend-mode: normal;
-    width: auto;
+    width: 260px;
+    min-height: 32px;
     border-radius: 29px;
+    font-family: "Muli", sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 16px;
+    text-align: center;
   }
   ::v-deep .g-tab {
     flex-basis: 100%;
     border-radius: 29px;
     text-transform: none;
     &:not(.g-tab__active):not(.g-tab__disabled) {
-      color: #9E9E9E;
+      color: color("grey", "base");
       opacity: 1;
     }
-    &:before {
-      background-color: #1271FF;
+    &:hover:before {
+      opacity: 0;
     }
     &__active {
       background-color: #1271FF;
