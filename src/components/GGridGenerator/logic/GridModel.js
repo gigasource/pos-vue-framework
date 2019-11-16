@@ -181,6 +181,6 @@ export default class GridModel extends AreaModel {
   genCss(uid, genOptions) {
     let mySubAreaCss = ''
     _.each(this.subAreas, subArea => mySubAreaCss += subArea.genCss(uid, genOptions) + '\r\n')
-    return `.${this.getFullCssModelName(uid)} { ${this.genAreaCss(genOptions)} ${this._genGridCss()} }` + '\r\n' + mySubAreaCss
+    return `.${this.getFullCssModelName(uid, genOptions)} { ${this.genAreaCss(genOptions)} ${this._genGridCss()} }` + '\r\n' + mySubAreaCss
   }
 }

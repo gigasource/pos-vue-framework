@@ -136,11 +136,14 @@ export const login = () => ({
   props: {
     layout: {
       default: loginLayout
+    },
+    passThrough: {
+      default: boolean('passThrough', false)
     }
   },
   template: `
     <div>
-      <g-grid-layout :layout="layout" style="height: 700px" :displayPreviewColor="true"><div>PT1</div><div>PT2</div><div area="num7">7</div><div area="num7">7</div><div area="num8">8</div><div>PT3</div><div>PT3</div><div area="login">Login</div><div>PT5</div><div>PT6</div><div>PT7</div><div>PT8</div></g-grid-layout>
+      <g-grid-layout :layout="layout" :passThrough="passThrough" style="height: 700px" :displayPreviewColor="true"><div>PT1</div><div>PT2</div><div area="num7">7</div><div area="num7">7</div><div area="num8">8</div><div>PT3</div><div>PT3</div><div area="login">Login</div><div>PT5</div><div>PT6</div><div>PT7</div><div>PT8</div></g-grid-layout>
     </div>
   `
 })

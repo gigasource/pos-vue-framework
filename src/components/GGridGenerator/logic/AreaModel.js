@@ -70,11 +70,11 @@ export default class AreaModel {
     })
   }
 
-  getFullCssModelName(uid) {
+  getFullCssModelName(uid, genOptions) {
     if (this._parent == null) {
-      return `${this.name}[${uid}]`
+      return `${genOptions.prefix}${this.name}[${uid}]`
     } else {
-      return `${this._parent.getFullCssModelName(uid)}>.${this.name}`
+      return `${this._parent.getFullCssModelName(uid, genOptions)}>.${genOptions.prefix}${this.name}`
     }
   }
 
@@ -88,6 +88,6 @@ export default class AreaModel {
   }
 
   genCss(uid, genOptions) {
-    return `.${this.getFullCssModelName(uid)} { ${this.genAreaCss(genOptions)} }`
+    return `.${this.getFullCssModelName(uid, genOptions)} { ${this.genAreaCss(genOptions)} }`
   }
 }

@@ -24,23 +24,33 @@
       // Allow un-named area render
       passThrough: {
         type: Boolean,
-        default: true
+        default: false
       }
     },
     setup(props, context) {
       const layout = fromJson(props.layout)
-
+      // a unique uid for scoped stylesheet of grid layout instance
+      const uid = 'gl-' + (gridLayoutInstanceCounter++)
       // vue template ref id
       const refIdWrapperElement = 'el'
-
-      // a unique uid for scoped stylesheet of grid layout instance
-      const uid = 'data-g-grid-layout-' + (gridLayoutInstanceCounter++)
-
+      // css generate
+      const cssClassPrefix = 'gl-'
+      const getAreaClass = name => `${name} ${cssClassPrefix}${name}`
       const addAreaClassForPredefinedArea = () => {
         // assign class for pre-defined area
         const wrapperEl = context.refs[refIdWrapperElement]
-        const areaNodes = wrapperEl.querySelectorAll(`[area]`)
-        _.each(areaNodes, node => node.classList.add(node.getAttribute('area')))
+        _.each(wrapperEl.querySelectorAll(`[area]`), areaDomNode => {
+          const areaName = areaDomNode.getAttribute('area')
+          // in case default slot contains multiple element which have the same area value, these areas will be wrapped
+          // in a div. The wrapper div will have class value is the value of duplicated area name to get styling of grid generator
+          // and we don't want to add class to these area in this case
+          if (!areaDomNode.parentNode.classList.contains(areaName)) {
+            areaDomNode.classList.add(areaName, `${cssClassPrefix}${areaName}`)
+          }
+
+          // now we wipe out all area attribute
+          areaDomNode.removeAttribute('area')
+        })
 
         // bring editor out of grid layout
         props.editable && wrapperEl.parentNode.appendChild(context.refs[refIdEditor])
@@ -49,7 +59,6 @@
       // editor dialog
       const refIdEditor = 'editor'
       const dialogState = reactive({ show: false })
-
       function renderEditDialog() {
         return <div ref={refIdEditor}>
           <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
@@ -67,19 +76,10 @@
         </div>
       }
 
-      onMounted(() => addAreaClassForPredefinedArea())
-      onUpdated(() => addAreaClassForPredefinedArea())
-
       // try to find pre-defined VNode in default slot of gridLayout
-      function _findVnodesInSlot(name) {
-        console.log('find name: ', name)
-        const rs = _.filter(context.slots.default(), slot => {
-          return slot && slot.data && slot.data.attrs && slot.data.attrs['area'] === name
-        })
-        console.log('rs:', rs)
-        return rs
+      function _findVNodesInSlot(name) {
+        return _.filter(context.slots.default(), slot => slot && slot.data && slot.data.attrs && slot.data.attrs['area'] === name)
       }
-
 
       /**
        * Pass through vnode is a vnode which:
@@ -95,14 +95,17 @@
          */
         function _getDeclaredArea(model) {
           let areaNames = [model.name]
-          if (model instanceof GridModel)
+          if (model instanceof GridModel) {
             _.each(model.subAreas, area => areaNames.push(..._getDeclaredArea(area)))
+          }
           return areaNames
         }
 
         let declaredNames = _getDeclaredArea(layout)
         return _.filter(context.slots.default(), slot => {
-          if (!slot.data) {
+          if (slot == null)
+            return false
+          else if (!slot.data) {
             return true
           } else if (slot.data && !slot.data.attrs) {
             return true
@@ -114,22 +117,23 @@
       }
 
       function processLayout(model) {
-        // find a pre-defined Vnode in default slot, if default slot doesn't include current name
-        // then add new div wrapper
-        let vNode = _findVnodesInSlot(model.name)
+        const cssClassName = getAreaClass(model.name)
+        let vNode = _findVNodesInSlot(model.name)
         if (vNode.length > 1) {
           // multiple slot with the same area name
-          vNode = <div {...{ attrs: {class: model.name} }}>
-            {...vNode}
-          </div>
+          vNode = <div {...{ attrs: { class: cssClassName } }}>{...vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name
           vNode = vNode[0]
         } else if (!model._parent) {
-          // root node then attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
-          const attrs = { class: model.name, [uid]: '' }
+          // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
+          const attrs = { class: cssClassName, [uid]: '' }
           const refWrapper = { ref: refIdWrapperElement }
-          const styleVNode = <style type="text/css">{model.genCss(uid, { showBackgroundColor: props.displayPreviewColor })}</style>
+          const styleVNode = (
+              <style type="text/css">
+                {model.genCss(uid, { showBackgroundColor: props.displayPreviewColor, prefix: cssClassPrefix })}
+              </style>
+          )
           const dialogEditVNode = props.editable ? renderEditDialog() : null
           const passThroughVNodes = props.passThrough ? _findPassThroughVNodes() : null
 
@@ -142,15 +146,15 @@
         } else {
           // an area which was declared in layout but not exist in grid template
           // will be rendered as a empty div
-          vNode = <div {...{attrs: {class: model.name}}}></div>
+          vNode = <div {...{ attrs: { class: cssClassName } }}></div>
         }
-
         return vNode
       }
 
-      return function () {
-        return processLayout(layout)
-      }
+      onMounted(() => addAreaClassForPredefinedArea())
+      onUpdated(() => addAreaClassForPredefinedArea())
+
+      return () => processLayout(layout)
     }
   }
 </script>
