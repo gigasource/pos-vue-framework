@@ -15,34 +15,29 @@
 				</div>
 				<div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
-					<div class="input">
-						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
-						<input id="input" type="text"
-									 class="g-tf-input"
-									 :style="inputErrStyles"
-									 :type="type"
-									 :label="label"
-									 v-model="internalValue"
-									 :placeholder="placeholder"
-									 :readonly="readOnly"
-									 ref="input"
-									 @change="onChange"
-									 @focus="onFocus"
-									 @blur="onBlur"
-									 @keydown="onKeyDown">
-					</div>
-					<slot name="label">
-						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
-					</slot>
-
+					<input id="input" type="text"
+                 autocomplete="off"
+								 class="g-tf-input"
+								 :style="inputErrStyles"
+								 :type="type"
+								 :label="label"
+								 v-model="internalValue"
+								 :placeholder="placeholder"
+								 :readonly="readOnly"
+								 ref="input"
+								 @change="onChange"
+								 @focus="onFocus"
+								 @blur="onBlur"
+								 @keydown="onKeyDown">
+					<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">
+						<slot name="label">{{label}}</slot>
+					</label>
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
 					<slot name="clearableSlot"  :iconColor="iconColor">
-						<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
-							<g-icon :color=iconColor>{{clearIcon}}</g-icon>
-						</div>
-					</slot>
+            <g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
+          </slot>
 
 					<slot name="appendInner" :iconColor="iconColor">
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
@@ -76,31 +71,31 @@
       ...{//display props
         label: String,
         placeholder: String,
-				appendIcon:{
-					type: String,
-					default: ''
-				} ,
-				prependIcon: {
-					type: String,
-					default: ''
-				} ,
+        appendIcon:{
+          type: String,
+          default: ''
+        } ,
+        prependIcon: {
+          type: String,
+          default: ''
+        } ,
 				prependInnerIcon:{
-					type: String,
-					default: ''
-				} ,
+          type: String,
+          default: ''
+        } ,
 				appendInnerIcon: {
-					type: String,
-					default: ''
-				} ,
+          type: String,
+          default: ''
+        } ,
+				clearIcon:  {
+          type: String,
+          default: 'clear'
+        },
         prefix: {
           type: String,
           default: ''
         },
-				clearIcon:  {
-					type: String,
-					default: 'clear'
-				},
-				suffix: {
+        suffix: {
           type: String,
           default: ''
         },
