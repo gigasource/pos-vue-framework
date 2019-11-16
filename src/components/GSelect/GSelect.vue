@@ -288,30 +288,29 @@
 <style scoped lang="scss">
   .g-select::v-deep {
     .g-menu--activator {
-      & {
-        .g-tf-wrapper{
-         margin: 16px 0px 24px;
-        }
-        .g-tf-append__inner {
-          transition: transform 0.4s
-        }
 
-        .g-tf-input {
-          display: flex;
-        }
-
-        .input {
-          display: flex;
-        }
-
-        input {
-          flex-shrink: 1;
-          flex-grow: 1;
-          flex-basis: 0%;
-        }
-
-
+      .g-tf-wrapper {
+        margin: 16px 0px 24px;
       }
+
+      .g-tf-append__inner {
+        transition: transform 0.4s
+      }
+
+      .g-tf-input {
+        display: flex;
+      }
+
+      .input {
+        display: flex;
+      }
+
+      input {
+        flex-shrink: 1;
+        flex-grow: 1;
+        flex-basis: 0%;
+      }
+
     }
   }
 

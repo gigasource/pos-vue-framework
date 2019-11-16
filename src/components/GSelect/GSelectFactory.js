@@ -7,16 +7,18 @@ export function getList(props, selectedItem, state) {
       let _options
       if (props.allowDuplicates) {
         _options = props.items;
+      } else {
         if (!props.itemValue) {
           _options = props.items.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
+        } else {
+          _options = props.items.filter(item => {
+            if (item[props.itemText]) {
+              return !selectedItem.value.find(value => _.isEqual(value, item));
+            }
+            return selectedItem.value.find(value => _.isEqual(value, item));
+          });
         }
-      } else {
-        _options = props.items.filter(item => {
-          if (item[props.itemText]) {
-            return !selectedItem.value.find(value => _.isEqual(value, item));
-          }
-          return selectedItem.value.find(value => _.isEqual(value, item));
-        });
+
       }
       if (props.searchable) {
         let items = _.cloneDeep(_options);
@@ -49,9 +51,8 @@ export function getList(props, selectedItem, state) {
           return selectedItem.value.find(value => _.isEqual(value, item));
         });
       } else return _options
-    }
-    else  if (props.searchable)  {
-     {
+    } else if (props.searchable) {
+      {
         let items = _.cloneDeep(props.items);
         if (!state.searchText) {
           return items;
@@ -71,8 +72,7 @@ export function getList(props, selectedItem, state) {
         }));
         return _options
       }
-    }
-    else return props.items
+    } else return props.items
   })
 
 }
