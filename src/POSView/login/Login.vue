@@ -262,6 +262,7 @@
       text-align: center;
       font-size: 24px;
       letter-spacing: 12px;
+      color: #2196F3;
     }
   }
 
