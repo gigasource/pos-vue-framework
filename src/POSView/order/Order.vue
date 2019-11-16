@@ -94,7 +94,7 @@
 					</template>
 				</template>
 			</g-item-group>
-			<g-number-keyboard area="keyboard" v-model="number" :items="numpad_1">
+			<g-number-keyboard area="keyboard" v-model="number" :items="numpad_1" @submit="dialogProductSearch = true">
 				<template v-slot:screen>
 					<div class="number-key-show ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
 						<input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" style="border: none; outline: none" v-model="number">
@@ -108,7 +108,7 @@
 				<g-btn outlined height="100%" @click="dialogProductLookup = true">Product Lookup</g-btn>
 				<g-btn outlined height="100%" disabled>Disabled Button</g-btn>
 				<g-btn outlined height="100%">Discount</g-btn>
-				<g-btn outlined height="100%" @click="dialogProductSearch = true"></g-btn>
+				<g-btn outlined height="100%"></g-btn>
 				<g-btn outlined height="100%">Plastic Refund</g-btn>
 				<g-btn area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
 				<g-btn text background-color="orange lighten 1" text-color="white" height="100%">Save</g-btn>
