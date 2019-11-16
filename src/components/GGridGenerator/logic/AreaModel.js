@@ -83,6 +83,8 @@ export default class AreaModel {
     if (this.top) css += `grid-area: ${this.gridAreaCss()}; `
     if (this.justifySelf) css += `justify-self: ${this.justifySelf}; `
     if (this.alignSelf) css += `align-self: ${this.alignSelf}; `
+    if (this.padding) css += `padding: ${this.padding}; `
+    if (this.margin) css += `margin: ${this.margin}; `
     if (genOptions && genOptions.showBackgroundColor) css += `background: ${this.bgColor}; `
     return css
   }
