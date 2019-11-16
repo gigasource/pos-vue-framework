@@ -72,9 +72,9 @@ export default class AreaModel {
 
   getFullCssModelName(uid) {
     if (this._parent == null) {
-      return `.${this.name}[${uid}]`
+      return `${this.name}[${uid}]`
     } else {
-      return `${this.getFullCssModelName(this._parent, uid)}>.${this.name}`
+      return `${this._parent.getFullCssModelName(uid)}>.${this.name}`
     }
   }
 
