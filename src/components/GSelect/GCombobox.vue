@@ -130,7 +130,7 @@
       }
 
       const genMultiSelectionsSlot = () => {
-        if (props.chips || props.allowDuplicates) {
+        if (props.chips|| props.smallChips || props.deletableChips || props.allowDuplicates) {
           return selections.value.map((item, index) => <GChip small={props.smallChips}
                                                               close={props.deletableChips}
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
