@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { generateGridCSS, parseLayoutJson } from './logic/GGridGeneratorUtil'
+  import { generateGridCSS, parseLayoutJsonObject, parseLayoutStr } from './logic/GGridGeneratorUtil'
   import { onMounted, onUpdated } from '@vue/composition-api'
 
   let gridLayoutInstanceCounter = 0
@@ -15,7 +15,7 @@
       displayPreviewColor: Boolean,
     },
     setup(props, context) {
-      const layout = (typeof(props.layout) === 'string') ? parseLayoutJson(props.layout) : props.layout
+      const layout = (typeof(props.layout) === 'string') ? parseLayoutStr(props.layout) : parseLayoutJsonObject(props.layout)
 
       // vue template ref id
       const refIdWrapperElement = 'el'

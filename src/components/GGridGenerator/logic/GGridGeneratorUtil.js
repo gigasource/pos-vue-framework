@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { ref } from '@vue/composition-api'
+import { ref, isRef } from '@vue/composition-api'
 import { createRange } from '../../../utils/helpers';
 
 // References: https://css-tricks.com/snippets/css/complete-guide-grid/
@@ -7,12 +7,12 @@ export const _gridItemOptions = ['', 'start', 'end', 'center', 'stretch']
 export const _gridContentOptions = ['', 'start', 'end', 'center', 'stretch', 'space-around', 'space-between', 'space-evenly']
 
 // update
-export const changeAlignSelf = (grid, value) => { grid['align-self'] = value; console.log('set align self', value) }
-export const changeAlignItems = (grid, value) => { grid['align-items'] = value; console.log('set align items', value) }
-export const changeAlignContent = (grid, value) => { grid['align-content'] = value; console.log('set align content', value) }
-export const changeJustifySelf = (grid, value) => { grid['justify-self'] = value; console.log('justify self', value) }
-export const changeJustifyItems = (grid, value) => { grid['justify-items'] = value; console.log('justify-items', value) }
-export const changeJustifyContent = (grid, value) => { grid['justify-content'] = value; }
+export const changeAlignSelf = (grid, value) => grid['align-self'] = value
+export const changeAlignItems = (grid, value) => grid['align-items'] = value
+export const changeAlignContent = (grid, value) => grid['align-content'] = value
+export const changeJustifySelf = (grid, value) => grid['justify-self'] = value;
+export const changeJustifyItems = (grid, value) => grid['justify-items'] = value;
+export const changeJustifyContent = (grid, value) => grid['justify-content'] = value
 // check
 export const isActiveAlignSelf = (grid, value) => grid['align-self'] === value
 export const isActiveAlignItems = (grid, value) => grid['align-items'] === value
@@ -354,16 +354,36 @@ function _attachParent(layout, parentLayout) {
   _.each(layout.subAreas, subArea => _attachParent(subArea, layout))
 }
 
+export function parseLayoutJsonObject(jsonObject, parent) {
+  // wrap ref
+  _.each(Object.keys(jsonObject), key => {
+    if (key === 'rows' || key === 'columns') {
+      // if rows item, column item is not ref then it's json object
+      // not layoutObject
+      // => convert to ref
+      if (!isRef(jsonObject[key][0])) {
+        jsonObject[key] = _.map(jsonObject[key], item => ref(item))
+      }
+    }
+  })
+  _.each(jsonObject.subAreas, subArea => parseLayoutJsonObject(subArea, jsonObject))
+
+  // attach parent
+  if (parent && !jsonObject.parent) jsonObject.parent = parent
+  return jsonObject
+}
+
 /**
  * Create Layout object from json
  * @param jsonLayout
  * @returns {any}
  */
-export function parseLayoutJson(jsonLayout) {
+export function parseLayoutStr(jsonLayout) {
   const jsonParseReviver = (k, v) => {
     // wrap ref
-    if (k === 'rows' || k === 'columns')
+    if (k === 'rows' || k === 'columns') {
       return _.map(v, vItem => ref(vItem))
+    }
     else
       return v
   }

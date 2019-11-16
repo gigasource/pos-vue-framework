@@ -82,5 +82,5 @@
 </script>
 
 <style scoped lang="scss">
-	@import "_GBtn.scss";
+	@import "GBtn";
 </style>
