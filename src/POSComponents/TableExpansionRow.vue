@@ -32,13 +32,13 @@
 
       const genHeader = function (item) {
 				const promotion = item['promotion'] && <p class="promotion">{item['promotion']}</p>
-				const oldPrice = item['oldPrice'] && <p class="promotion-price">{item['oldPrice']}</p>
-				const oldTotal = item['oldPrice'] && <p class="promotion-price">{item['quantity'] * item['oldPrice']}</p>
+				const oldPrice = item['promotion'] && item['oldPrice'] && <p class="promotion-price">{item['oldPrice']}</p>
+				const oldTotal = item['promotion'] && item['oldPrice'] && <p class="promotion-price">{item['quantity'] * item['oldPrice']}</p>
         return <div
           class={['g-expansion-header', { 'g-expansion-header__active': isActiveItem(item) }]}
           vOn:click={() => toggleItem(item)}>
           <div class="flex-grow-1 pa-2" style="font-size: 15px">
-						<p>{ item['name'] }</p>
+						<p>{ item['name'] } <g-icon vShow={item['edited']} small color="#FF4452" style="margin-bottom: 5px">edit</g-icon></p>
 						{ promotion }
           </div>
           <span class="w-10 pa-2 ta-center">
@@ -47,11 +47,11 @@
           <span class="w-10 pa-2 ta-right">
             { item['quantity'] }
           </span>
-          <div class="w-12 pa-2 ta-right">
+          <div class={["w-12 pa-2 ta-right", item['edited'] && 'text__editted']}>
 						<p>{ item['price'] }</p>
 						{ oldPrice }
           </div>
-          <div class="w-12 pa-2 ta-right fw-700">
+          <div class={["w-12 pa-2 ta-right fw-700", item['edited'] && 'text-light-green']}>
             <p>{ item['quantity'] * item['price'] }</p>
 						{ oldTotal }
           </div>
