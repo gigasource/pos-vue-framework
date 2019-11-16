@@ -33,6 +33,10 @@
       centerActive: Boolean,
       icon: Boolean,
       alignWithTitle: Boolean,
+      showSlider: {
+        type: Boolean,
+        default: true
+      }
     },
     setup(props, context) {
       const model = getVModel(props, context);
@@ -41,7 +45,7 @@
         model.value = props.items.find(item => !item.disabled);
       }
       provide('model', model);
-      provide('items', props.items)
+      provide('items', props.items);
 
       const { getColorType, convertColorClass } = colorHandler();
 
@@ -152,22 +156,25 @@
 
       const genTabIcon = (item) => {
         if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
-      }
+      };
 
       const genTabs = () => {
         return props.items.map((item, index) => (
-          (context.slots.tab && context.slots.tab({ item, index }))
-          || <g-tab item={item} key={index}>
-            {genTabIcon(item)}
-            {item.title}
-          </g-tab>
-        ))
-      }
+            (context.slots.tab && context.slots.tab({ item, index })) ||
+            <g-tab item={item} key={index}>
+              {genTabIcon(item)}
+              {item.title}
+            </g-tab>
+          )
+        )
+      };
 
-      const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles}></div>
+      const genTabSlider = () =>
+          <div class="g-tabs-slider" style={sliderStyles}>
+          </div>;
 
       const genTabsBar = () => {
-        if (!fullTitle) return
+        if (!fullTitle) return;
         const slideGroupData = {
           props: {
             centerActive: props.centerActive,
@@ -177,13 +184,13 @@
             'click:prev': calculateSliderStyle,
             'click:next': calculateSliderStyle
           },
-          slot: 'tabs'
-        }
+          // slot: 'tabs',
+        };
         return <g-slide-group {...slideGroupData} vModel={model.value} dense>
           {genTabs()}
-          {genTabSlider()}
+          {props.showSlider && genTabSlider()}
         </g-slide-group>
-      }
+      };
 
       return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
         <div class={tabsClasses.value} style={tabsStyles.value}>

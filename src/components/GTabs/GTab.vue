@@ -22,7 +22,6 @@
     setup(props, context) {
       const model = inject('model', null);
       const isActive = computed(() => (model && isEqual(model.value, props.item)));
-
       const classes = computed(() => ({
         'g-tab': true,
         'waves-effect': props.ripple,

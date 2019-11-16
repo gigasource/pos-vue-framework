@@ -19,7 +19,7 @@ export const tab = () => ({
     return {
       items: [
         { title: 'Tab 1', icon: 'home' },
-        { title: 'Tab 2', icon: 'group' },
+        { title: 'Tab 232233', icon: 'group' },
         { title: 'Tab 3', icon: 'notifications' },
         { title: 'Tab 4', icon: 'block', disabled: true },
         { title: 'Tab 5', icon: 'phone' },

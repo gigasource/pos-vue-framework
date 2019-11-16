@@ -34,7 +34,10 @@
             </div>
               <slot name="append" :item="item">
                 <div class="g-list-item-action">
-                  <g-icon color="yellow">star</g-icon>
+                  <template v-if="item.append">
+                    {{item.append}}
+                  </template>
+                  <g-icon v-else color="yellow">star</g-icon>
                 </div>
               </slot>
           </div>

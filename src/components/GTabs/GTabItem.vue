@@ -10,10 +10,12 @@
       const model = inject('model');
       const show = computed(() => (model.value === props.item));
       const _transition = inject('transition');
-
+      function onClick(event) {
+        context.emit('click', event)
+      }
       return () =>
           <transition name={_transition.value}>
-            <div vShow={show.value} className="g-tab-item">
+            <div vShow={show.value} className="g-tab-item" vOn:click={onClick}>
               {context.slots.default()}
             </div>
           </transition>
