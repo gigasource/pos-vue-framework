@@ -13,7 +13,7 @@
 					<p class="fs-small-2">16:45 &#8231; May 20, 19</p>
 				</div>
 			</div>
-			<g-simple-table area="table" striped fixed-header class="table">
+			<g-simple-table area="table" striped fixed-header>
 				<thead>
 				<tr>
 					<th style="color: inherit; padding: 0">
@@ -34,7 +34,7 @@
 					</tr>
 				</template>
 			</g-simple-table>
-			<div area="report" class="report">
+			<div area="report">
 				<div class="report-column">
 					<span>Discount (€)</span>
 					<span class="number">{{convertMoney(discount)}}</span>
@@ -49,19 +49,19 @@
 					<span class="number__important">{{convertMoney(total)}}</span>
 				</div>
 			</div>
-			<div area="action" class="action">
+			<div area="action">
 				<g-btn outlined height="100%">F1</g-btn>
 				<g-btn outlined height="100%">F2</g-btn>
 				<g-btn outlined height="100%">F3</g-btn>
 				<g-btn outlined height="100%">F4</g-btn>
 			</div>
-			<g-toolbar area="toolbar" class="toolbar" color="#eee" elevation="0" fill-height>
+			<g-toolbar area="toolbar" color="#eee" elevation="0" fill-height>
 				<g-btn background-color="white" class="mr-2">
-					<g-icon>{{require('../../assets/order/back.svg')}}</g-icon>
+					<g-icon class="mr-2">{{require('../../assets/order/back.svg')}}</g-icon>
 					Back
 				</g-btn>
 				<g-btn background-color="white" class="mr-2">
-					<g-icon>{{require('../../assets/order/menu.svg')}}</g-icon>
+					<g-icon class="mr-2">{{require('../../assets/order/menu.svg')}}</g-icon>
 					More
 				</g-btn>
 				<g-badge overlay color="#FF4452">
@@ -69,12 +69,12 @@
 						<span>2</span>
 					</template>
 					<g-btn background-color="white" @click="dialogSavedList = true">
-						<g-icon>{{require('../../assets/order/folder.svg')}}</g-icon>
+						<g-icon class="mr-2">{{require('../../assets/order/folder.svg')}}</g-icon>
 						Saved list
 					</g-btn>
 				</g-badge>
 			</g-toolbar>
-			<div area="menu" class="menu">
+			<div area="menu">
 				<g-btn v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
 							 @click.stop="selectMenu(item)" :class="[item === menuSelected ? 'menu__active' : '']">
 					{{item.title}}
@@ -94,14 +94,14 @@
 					</template>
 				</template>
 			</g-item-group>
-			<g-number-keyboard area="keyboard" class="keyboard" v-model="number" :items="numpad_1">
+			<g-number-keyboard area="keyboard" v-model="number" :items="numpad_1">
 				<template v-slot:screen>
 					<div class="number-key-show ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
 						<input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" style="border: none; outline: none" v-model="number">
 					</div>
 				</template>
 			</g-number-keyboard>
-			<div area="buttons" class="buttons">
+			<div area="buttons">
 				<g-btn outlined height="100%">F1</g-btn>
 				<g-btn outlined height="100%" @click="dialogChangePrice = true">Change Price</g-btn>
 				<g-btn outlined height="100%">Note</g-btn>
@@ -377,77 +377,71 @@
 </script>
 
 <style lang="scss">
-	.layout__left {
-		background-color: #fff;
+	.info__left {
+		display: flex;
+		padding: 16px;
+		align-items: center;
+		font-size: 13px;
+		font-weight: 700;
+	}
 
-		.info {
-			.info__left {
-				display: flex;
-				padding: 16px;
-				align-items: center;
-				font-size: 13px;
-				font-weight: 700;
-			}
+	.info__right {
+		display: flex;
+		flex-direction: row-reverse;
+		align-items: center;
+		padding: 0 6px;
+	}
 
-			.info__right {
-				display: flex;
-				flex-direction: row-reverse;
-				align-items: center;
-				padding: 0 6px;
-			}
+	.table {
+		border: 1px solid #e8e8e8;
+		border-radius: 6px;
+		font-size: 13px;
+		margin: 6px;
+
+		.empty-row {
+			height: 42px;
 		}
+	}
 
-		.table {
-			border: 1px solid #e8e8e8;
-			border-radius: 6px;
-			font-size: 13px;
-			margin: 6px;
+	.report {
+		display: flex;
 
-			.empty-row {
-				height: 42px;
-			}
-		}
+		&-column {
+			flex: 1 1 0;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			grid-auto-rows: 1fr;
+			grid-gap: 6px;
+			padding: 8px 16px;
 
-		.report {
-			display: flex;
+			.number {
+				text-align: right;
 
-			&-column {
-				flex: 1 1 0;
-				display: grid;
-				grid-template-columns: repeat(2, 1fr);
-				grid-auto-rows: 1fr;
-				grid-gap: 6px;
-				padding: 8px 16px;
-
-				.number {
+				&__important {
 					text-align: right;
-
-					&__important {
-						text-align: right;
-						font-size: 20px;
-						font-weight: 700;
-						color: #1271ff;
-					}
+					font-size: 20px;
+					font-weight: 700;
+					color: #1271ff;
 				}
 			}
 		}
+	}
 
-		.action {
-			padding: 9px 6px;
+	.action {
+		padding: 9px 6px;
+	}
+
+	.toolbar {
+		.g-badge-wrapper .g-btn {
+			margin-right: 0;
 		}
 
-		.toolbar {
-			.g-badge-wrapper .g-btn {
-				margin-right: 0;
-			}
+		.g-toolbar-content > .g-btn:first-child {
+			margin-left: 0;
+		}
 
-			.g-toolbar-content > .g-btn:first-child {
-				margin-left: 0;
-			}
-
-			.g-toolbar-background > div {
-				box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.25);
-			}
+		.g-toolbar-background > div {
+			box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.25);
 		}
 	}
 

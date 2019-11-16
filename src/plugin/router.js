@@ -18,7 +18,7 @@ import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
-import Order2 from '../POSView/order/Order2';
+import Order from '../POSView/order/Order';
 import Payment from '../POSView/order/Payment';
 
 const routes = [
@@ -39,7 +39,7 @@ const routes = [
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
   {path: '/textarea', name: 'Textarea', component: Textarea},
-  { path: '/order2', name: 'Order2', component: Order2},
+  { path: '/order', name: 'Order', component: Order},
   { path: '/payment', name: 'Payment', component: Payment},
 ];
 

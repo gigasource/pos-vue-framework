@@ -12,7 +12,6 @@
 <!--			<router-link to="/input">Input</router-link>-->
 <!--			<router-link to="/transition-demo">Transition</router-link>-->
 			<router-link to="/order">Order</router-link>
-			<router-link to="/order2">Order2</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
