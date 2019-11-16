@@ -78,7 +78,9 @@
 
       // try to find pre-defined VNode in default slot of gridLayout
       function _findVNodesInSlot(name) {
-        return _.filter(context.slots.default(), slot => slot && slot.data && slot.data.attrs && slot.data.attrs['area'] === name)
+        return _.filter(context.slots.default(), slot => {
+          return slot && slot.data && slot.data.attrs && slot.data.attrs['area'] === name
+        })
       }
 
       /**
@@ -119,12 +121,14 @@
       function processLayout(model) {
         const cssClassName = getAreaClass(model.name)
         let vNode = _findVNodesInSlot(model.name)
+        console.log(model.name, 'found', vNode)
         if (vNode.length > 1) {
           // multiple slot with the same area name
           vNode = <div {...{ attrs: { class: cssClassName } }}>{...vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name
           vNode = vNode[0]
+          console.log('found single', model.name, vNode[0])
         } else if (!model._parent) {
           // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
           const attrs = { class: cssClassName, [uid]: '' }
@@ -146,7 +150,9 @@
         } else {
           // an area which was declared in layout but not exist in grid template
           // will be rendered as a empty div
-          vNode = <div {...{ attrs: { class: cssClassName } }}></div>
+          vNode = <div {...{ attrs: { class: cssClassName } }}>
+            {_.map(model.subAreas, processLayout)}
+          </div>
         }
         return vNode
       }
