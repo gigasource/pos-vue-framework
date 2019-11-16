@@ -157,11 +157,12 @@
 			//set legend width for label in outlined textfield
 			const legendStyles = computed(() => {
 			  if( !props.solo && props.label && (isFocused.value || internalValue.value||props.placeholder)) {
-					const margin = props.rounded ? '16px' : '5px';
+					const margin = props.rounded ? (props.filled ? '24px' : '16px') : (props.shaped ? '12px' : '5px');
 			    return {
 			      'width': 'auto',
-						'padding': '1px',
+						'padding': '2px 4px 2px 2px',
 						'margin-left': margin,
+						'transition': 'margin 0.4s',
 					}
 				} else
 				  return {}
