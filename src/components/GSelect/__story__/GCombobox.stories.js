@@ -1,4 +1,4 @@
-import {boolean, text, withKnobs} from '@storybook/addon-knobs';
+import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions'
 
 //
@@ -227,7 +227,7 @@ export const GComboboxSingleWithValidate = () => ({
     clearable: {default: boolean('clearable', false)},
     hint: {default: text('hint', 'Test hint')},
     persistent: {default: boolean('persistent', true)},
-    counter: {type: [String, Number], default: Number('counter', 25)},
+    counter: {type: [String, Number], default: number('counter', 25)},
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemText', 'value')},
     chips: {default: boolean('chips', false)},
@@ -261,7 +261,7 @@ export const GComboboxSingleWithValidate = () => ({
  :clearable="clearable"
  :hint="hint"
  :persistent="persistent"
- counter="5"
+ :counter="counter"
  :placeholder="placeholder"
  :chips="chips"
  :rules="[rules.required, rules.counter, rules.max]"
