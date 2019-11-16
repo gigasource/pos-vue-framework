@@ -39,14 +39,13 @@
       }
     },
     setup(props, context) {
-      console.log(props);
       const model = getVModel(props, context);
 
       if (!model.value) {
         model.value = props.items.find(item => !item.disabled);
       }
       provide('model', model);
-      provide('items', props.items)
+      provide('items', props.items);
 
       const { getColorType, convertColorClass } = colorHandler();
 
@@ -170,10 +169,12 @@
         )
       };
 
-      const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles}></div>
+      const genTabSlider = () =>
+          <div class="g-tabs-slider" style={sliderStyles}>
+          </div>;
 
       const genTabsBar = () => {
-        if (!fullTitle) return
+        if (!fullTitle) return;
         const slideGroupData = {
           props: {
             centerActive: props.centerActive,
@@ -183,7 +184,7 @@
             'click:prev': calculateSliderStyle,
             'click:next': calculateSliderStyle
           },
-          slot: 'tabs'
+          // slot: 'tabs',
         };
         return <g-slide-group {...slideGroupData} vModel={model.value} dense>
           {genTabs()}

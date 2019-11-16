@@ -28,7 +28,8 @@ export default {
   setup(props, context) {
     const model = getVModel(props, context);
     const gTabItems = () => props.items.map((item, index) => {
-      return (<g-tab-item key={index} item={item}>
+      return (
+        <g-tab-item key={index} item={item}>
           {item.title}
         </g-tab-item>
       )
@@ -52,7 +53,9 @@ export default {
             )
           }
         }
-      }>
+      }
+      >
+
         {context.slots.default ? context.slots.default() : gTabItems()}
       </g-tabs>
     )
@@ -63,9 +66,9 @@ export default {
 <style lang="scss" scoped>
   @import "../../style/colors";
   @import "../../style/variables";
-  .g-tabs-wrapper {
-    align-items: center;
-  }
+  /*.g-tabs-wrapper {*/
+  /*  align-items: center;*/
+  /*}*/
   ::v-deep .g-tabs-bar {
     mix-blend-mode: normal;
     width: 260px;

@@ -2,7 +2,7 @@ import {withKnobs, text, boolean, number} from '@storybook/addon-knobs';
 import IosTab from '../IosTab';
 import GList from "../../../components/GList/GList";
 import GTabItem from "../../../components/GTabs/GTabItem";
-
+require('./_glist-custom.scss');
 export default {
   title: 'IosTab',
   decorators: [withKnobs]
@@ -16,103 +16,104 @@ export const tab = () => ({
         {
           title: 'By Month',
           icon: 'month',
+          subheader: '2019',
           list: [
-            { subheader: '2019', type: 'subheader' },
             {
               title: 'September',
-              subtitle: '25',
-              append: '542.742,06'
+              subtitle: '25 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'August',
-              subtitle: '32',
-              append: '542.742,06'
+              subtitle: '32 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'July',
-              subtitle: '52',
-              append: '542.742,06'
+              subtitle: '52 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'June',
-              subtitle: '72',
-              append: '542.742,06'
+              subtitle: '72 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'May',
-              subtitle: '35',
-              append: '542.742,06'
+              subtitle: '35 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'April',
-              subtitle: '73',
-              append: '542.742,06'
+              subtitle: '73 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'March',
-              subtitle: '43',
-              append: '542.742,06'
+              subtitle: '43 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'February',
-              subtitle: '45',
-              append: '542.742,06'
+              subtitle: '45 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'January',
-              subtitle: '15',
-              append: '542.742,06'
+              subtitle: '15 Sales',
+              append: '€ 542.742,06'
             }
           ]
         },
         {
           title: 'By Day',
           icon: 'day',
+          subheader: '2019',
           list: [
             {
               title: 'September',
-              subtitle: '25',
-              append: '542.742,06'
+              subtitle: '25 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'August',
-              subtitle: '32',
-              append: '542.742,06'
+              subtitle: '32 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'July',
-              subtitle: '52',
-              append: '542.742,06'
+              subtitle: '52 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'June',
-              subtitle: '72',
-              append: '542.742,06'
+              subtitle: '72 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'May',
-              subtitle: '35',
-              append: '542.742,06'
+              subtitle: '35 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'April',
-              subtitle: '73',
-              append: '542.742,06'
+              subtitle: '73 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'March',
-              subtitle: '43',
-              append: '542.742,06'
+              subtitle: '43 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'February',
-              subtitle: '45',
-              append: '542.742,06'
+              subtitle: '45 Sales',
+              append: '€ 542.742,06'
             },
             {
               title: 'January',
-              subtitle: '15',
-              append: '542.742,06'
+              subtitle: '15 Sales',
+              append: '€ 542.742,06'
             }
           ]
         },
@@ -122,6 +123,11 @@ export const tab = () => ({
   },
   created() {
     this.model = this.items[0]
+  },
+  methods: {
+    itemClickHandler(e) {
+      console.log(e)
+    }
   },
   props: {
     color: {
@@ -179,8 +185,9 @@ export const tab = () => ({
       :slider-size="sliderSize"
       :slider-color="sliderColor">
       <g-tab-item v-for="tabItem in items" :item="tabItem">
-        <g-list :items="tabItem.list"/>
+        <g-list :items="tabItem.list" :subheader="tabItem.subheader" @click="itemClickHandler">
+        </g-list>
       </g-tab-item>
     </ios-tab>
-  `
+  `,
 });
