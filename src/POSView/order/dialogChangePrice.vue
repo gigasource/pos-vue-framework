@@ -47,12 +47,12 @@
 </template>
 
 <script>
-  import GDialog from '../components/GDialog/GDialog';
-  import GTextField from '../components/GInput/GTextField';
-  import GRadioGroup from '../components/GRadio/GRadioGroup';
-  import GRadio from '../components/GRadio/GRadio';
-  import GBtn from '../components/GBtn/GBtn';
-  import GKeyboard from '../components/GKeyboard/GKeyboard';
+  import GDialog from '../../components/GDialog/GDialog';
+  import GTextField from '../../components/GInput/GTextField';
+  import GRadioGroup from '../../components/GRadio/GRadioGroup';
+  import GRadio from '../../components/GRadio/GRadio';
+  import GBtn from '../../components/GBtn/GBtn';
+  import GKeyboard from '../../components/GKeyboard/GKeyboard';
 
   export default {
     name: 'dialogChangePrice',

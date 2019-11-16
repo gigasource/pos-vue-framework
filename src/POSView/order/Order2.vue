@@ -1,21 +1,19 @@
 <template>
-	<div class="row-12 row-flex">
-		<div class="layout__left">
-			<div class="info">
-				<div class="info__left">
-					<p v-if="lastPayment > 0">Last Pay: <span style="color: #1271ff">€ {{convertMoney(lastPayment)}}</span></p>
-				</div>
-				<div class="info__right">
-					<g-avatar size="36">
-						<g-img :src="require('../assets/order/avatar.svg')"/>
-					</g-avatar>
-					<div class="pa-1" style="line-height: 16px">
-						<p class="ta-right fw-700 fs-small">Admin</p>
-						<p class="fs-small-2">16:45 &#8231; May 20, 19</p>
-					</div>
+	<div class="row-flex row-12">
+		<g-grid-layout :layout="layout" class="order row-12">
+			<div area="info__left">
+				<p v-if="lastPayment > 0">Last Pay: <span style="color: #1271ff">€ {{convertMoney(lastPayment)}}</span></p>
+			</div>
+			<div area="info__right">
+				<g-avatar size="36">
+					<g-img :src="require('../../assets/order/avatar.svg')"/>
+				</g-avatar>
+				<div class="pa-1" style="line-height: 16px">
+					<p class="ta-right fw-700 fs-small">Admin</p>
+					<p class="fs-small-2">16:45 &#8231; May 20, 19</p>
 				</div>
 			</div>
-			<g-simple-table striped fixed-header class="table">
+			<g-simple-table area="table" striped fixed-header class="table">
 				<thead>
 				<tr>
 					<th style="color: inherit; padding: 0">
@@ -36,7 +34,7 @@
 					</tr>
 				</template>
 			</g-simple-table>
-			<div class="report">
+			<div area="report" class="report">
 				<div class="report-column">
 					<span>Discount (€)</span>
 					<span class="number">{{convertMoney(discount)}}</span>
@@ -51,19 +49,19 @@
 					<span class="number__important">{{convertMoney(total)}}</span>
 				</div>
 			</div>
-			<div class="action">
-				<g-btn outlined>F1</g-btn>
-				<g-btn outlined>F2</g-btn>
-				<g-btn outlined>F3</g-btn>
-				<g-btn outlined>F4</g-btn>
+			<div area="action" class="action">
+				<g-btn outlined height="100%">F1</g-btn>
+				<g-btn outlined height="100%">F2</g-btn>
+				<g-btn outlined height="100%">F3</g-btn>
+				<g-btn outlined height="100%">F4</g-btn>
 			</div>
-			<g-toolbar class="toolbar" color="#eee" elevation="0">
-				<g-btn background-color="white">
-					<g-icon>{{require('../assets/order/back.svg')}}</g-icon>
+			<g-toolbar area="toolbar" class="toolbar" color="#eee" elevation="0" fill-height>
+				<g-btn background-color="white" class="mr-2">
+					<g-icon>{{require('../../assets/order/back.svg')}}</g-icon>
 					Back
 				</g-btn>
-				<g-btn background-color="white">
-					<g-icon>{{require('../assets/order/menu.svg')}}</g-icon>
+				<g-btn background-color="white" class="mr-2">
+					<g-icon>{{require('../../assets/order/menu.svg')}}</g-icon>
 					More
 				</g-btn>
 				<g-badge overlay color="#FF4452">
@@ -71,62 +69,56 @@
 						<span>2</span>
 					</template>
 					<g-btn background-color="white" @click="dialogSavedList = true">
-						<g-icon>{{require('../assets/order/folder.svg')}}</g-icon>
+						<g-icon>{{require('../../assets/order/folder.svg')}}</g-icon>
 						Saved list
 					</g-btn>
 				</g-badge>
 			</g-toolbar>
-		</div>
-		<div class="layout-right">
-			<div class="menu">
-				<g-btn v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26"
+			<div area="menu" class="menu">
+				<g-btn v-for="(item, i) in menu" :key="i" elevation="0" background-color="#fff" text-color="#1d1d26" height="100%"
 							 @click.stop="selectMenu(item)" :class="[item === menuSelected ? 'menu__active' : '']">
 					{{item.title}}
 				</g-btn>
 			</div>
-			<div class="main">
-				<g-scroll-window :show-arrows="false" v-model="window">
-					<g-scroll-window-item v-for="(items, i) in listItems" :key="i">
-						<g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color">{{item.title}}</g-btn>
-					</g-scroll-window-item>
-				</g-scroll-window>
-				<g-item-group :items="listItems" v-model="window" :return-object="false" mandatory>
-					<template v-slot:default="{ toggle, active }">
-						<template v-for="(item, index) in listItems">
-							<g-item :is-active="active(item)" :key="index">
-								<g-btn @click="toggle(item)"></g-btn>
-							</g-item>
-						</template>
+			<g-scroll-window area="window" :show-arrows="false" v-model="window">
+				<g-scroll-window-item v-for="(items, i) in listItems" :key="i">
+					<g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color" height="100%">{{item.title}}</g-btn>
+				</g-scroll-window-item>
+			</g-scroll-window>
+			<g-item-group area="delimeter" :items="listItems" v-model="window" :return-object="false" mandatory>
+				<template v-slot:default="{ toggle, active }">
+					<template v-for="(item, index) in listItems">
+						<g-item :is-active="active(item)" :key="index">
+							<g-btn @click="toggle(item)"></g-btn>
+						</g-item>
 					</template>
-				</g-item-group>
+				</template>
+			</g-item-group>
+			<g-number-keyboard area="keyboard" class="keyboard" v-model="number" :items="numpad_1">
+				<template v-slot:screen>
+					<div class="number-key-show ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
+						<input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" style="border: none; outline: none" v-model="number">
+					</div>
+				</template>
+			</g-number-keyboard>
+			<div area="buttons" class="buttons">
+				<g-btn outlined height="100%">F1</g-btn>
+				<g-btn outlined height="100%" @click="dialogChangePrice = true">Change Price</g-btn>
+				<g-btn outlined height="100%">Note</g-btn>
+				<g-btn outlined height="100%" @click="dialogProductLookup = true">Product Lookup</g-btn>
+				<g-btn outlined height="100%" disabled>Disabled Button</g-btn>
+				<g-btn outlined height="100%">Discount</g-btn>
+				<g-btn outlined height="100%"></g-btn>
+				<g-btn outlined height="100%">Plastic Refund</g-btn>
+				<g-btn area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
+				<g-btn text background-color="orange lighten 1" text-color="white" height="100%">Save</g-btn>
+				<g-btn text background-color="blue darken 2" height="100%">
+					<router-link to="/payment">
+						<span class="text-white">Pay</span>
+					</router-link>
+				</g-btn>
 			</div>
-			<div class="action">
-				<g-number-keyboard class="keyboard" v-model="number" :items="numpad_1">
-					<template v-slot:screen>
-						<div class="number-key-show ba-thin bg-grey-lighten-3" style="height: calc(16.6667% - 4px)">
-							<input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pl-2" style="border: none; outline: none" v-model="number">
-						</div>
-					</template>
-				</g-number-keyboard>
-				<div class="buttons">
-					<g-btn outlined>F1</g-btn>
-					<g-btn outlined>Note</g-btn>
-					<g-btn outlined disabled>Disabled Button</g-btn>
-					<g-btn outlined></g-btn>
-					<g-btn text background-color="green lighten 1" text-color="white" class="big" @click="quickCash">Quick Cash</g-btn>
-					<g-btn outlined @click="dialogChangePrice = true">Change Price</g-btn>
-					<g-btn outlined @click="dialogProductLookup = true">Product Lookup</g-btn>
-					<g-btn outlined>Discount</g-btn>
-					<g-btn outlined>Plastic Refund</g-btn>
-					<g-btn text background-color="orange lighten 1" text-color="white">Save</g-btn>
-					<g-btn text background-color="blue darken 2">
-						<router-link to="/payment">
-							<span class="text-white">Pay</span>
-						</router-link>
-					</g-btn>
-				</div>
-			</div>
-		</div>
+		</g-grid-layout>
 		<dialog-saved-list v-model="dialogSavedList"/>
 		<dialog-product-lookup v-model="dialogProductLookup"/>
 		<dialog-change-price v-model="dialogChangePrice" :product="product" @change-price="changePrice($event)"/>
@@ -134,41 +126,44 @@
 </template>
 
 <script>
-  import GBtn from '../components/GBtn/GBtn';
-  import GRow from '../components/GLayout/GRow';
-  import GNumberKeyboard from '../components/GKeyboard/GNumberKeyboard';
-  import GWindow from '../components/GWindow/GWindow';
-  import GWindowItem from '../components/GWindow/GWindowItem';
-  import GItemGroup from '../components/GItemGroup/GItemGroup';
-  import GItem from '../components/GItemGroup/GItem';
-  import GAvatar from '../components/GAvatar/GAvatar';
-  import GImg from '../components/GImg/GImg';
-  import GSimpleTable from '../components/GSimpleTable/GSimpleTable';
-  import TableExpansionRow from '../POSComponents/TableExpansionRow';
-  import GDivider from '../components/GLayout/GDivider';
-  import GToolbar from '../components/GToolbar/GToolbar';
-  import GBadge from '../components/GBadge/GBadge';
-  import GIcon from '../components/GIcon/GIcon';
-  import GDialog from '../components/GDialog/GDialog';
-  import GCard from '../components/GCard/GCard';
-  import GCardTitle from '../components/GCard/GCardTitle';
-  import { GCardText, GCardActions } from '../components/GCard/GCardFunctionalComponent';
-  import GScrollWindow from '../components/GWindow/GScrollWindow';
-  import GScrollWindowItem from '../components/GWindow/GScrollWindowItem';
-  import GTextField from '../components/GInput/GTextField';
-  import GSpacer from '../components/GLayout/GSpacer';
-  import GKeyboard from '../components/GKeyboard/GKeyboard';
-  import GRadioGroup from '../components/GRadio/GRadioGroup';
-  import GRadio from '../components/GRadio/GRadio';
+  import GBtn from '../../components/GBtn/GBtn';
+  import GRow from '../../components/GLayout/GRow';
+  import GNumberKeyboard from '../../components/GKeyboard/GNumberKeyboard';
+  import GWindow from '../../components/GWindow/GWindow';
+  import GWindowItem from '../../components/GWindow/GWindowItem';
+  import GItemGroup from '../../components/GItemGroup/GItemGroup';
+  import GItem from '../../components/GItemGroup/GItem';
+  import GAvatar from '../../components/GAvatar/GAvatar';
+  import GImg from '../../components/GImg/GImg';
+  import GSimpleTable from '../../components/GSimpleTable/GSimpleTable';
+  import TableExpansionRow from '../../POSComponents/TableExpansionRow';
+  import GDivider from '../../components/GLayout/GDivider';
+  import GToolbar from '../../components/GToolbar/GToolbar';
+  import GBadge from '../../components/GBadge/GBadge';
+  import GIcon from '../../components/GIcon/GIcon';
+  import GDialog from '../../components/GDialog/GDialog';
+  import GCard from '../../components/GCard/GCard';
+  import GCardTitle from '../../components/GCard/GCardTitle';
+  import { GCardText, GCardActions } from '../../components/GCard/GCardFunctionalComponent';
+  import GScrollWindow from '../../components/GWindow/GScrollWindow';
+  import GScrollWindowItem from '../../components/GWindow/GScrollWindowItem';
+  import GTextField from '../../components/GInput/GTextField';
+  import GSpacer from '../../components/GLayout/GSpacer';
+  import GKeyboard from '../../components/GKeyboard/GKeyboard';
+  import GRadioGroup from '../../components/GRadio/GRadioGroup';
+  import GRadio from '../../components/GRadio/GRadio';
   import DialogSavedList from './dialogSavedList';
   import DialogProductLookup from './dialogProductLookup';
   import DialogChangePrice from './dialogChangePrice';
+  import GGridLayout from '../../components/GGridGenerator/GGridLayout';
+  import layout from './orderLayout';
 
   export default {
-    name: 'Order',
-    components: { DialogChangePrice, DialogProductLookup, DialogSavedList, GRadio, GRadioGroup, GKeyboard, GSpacer, GTextField, GScrollWindowItem, GScrollWindow, GCardText, GCardActions, GCardTitle, GCard, GDialog, GIcon, GBadge, GToolbar, GDivider, TableExpansionRow, GSimpleTable, GImg, GAvatar, GItem, GItemGroup, GWindowItem, GWindow, GNumberKeyboard, GRow, GBtn },
+    name: 'Order2',
+    components: { GGridLayout, DialogChangePrice, DialogProductLookup, DialogSavedList, GRadio, GRadioGroup, GKeyboard, GSpacer, GTextField, GScrollWindowItem, GScrollWindow, GCardText, GCardActions, GCardTitle, GCard, GDialog, GIcon, GBadge, GToolbar, GDivider, TableExpansionRow, GSimpleTable, GImg, GAvatar, GItem, GItemGroup, GWindowItem, GWindow, GNumberKeyboard, GRow, GBtn },
     data() {
       return {
+        layout: layout,
         number: 0,
         menuSelected: null,
         menu: [
@@ -338,18 +333,15 @@
           },
         ],
         product: null,
-        dialogSavedList: false,
-				showKeyboard: false,
         discount: -0.50,
         tax: 0.50,
         subTotal: 40.50,
         total: 40.50,
         lastPayment: 0,
+        dialogSavedList: false,
         dialogProductLookup: false,
         dialogChangePrice: false,
       }
-    },
-    computed: {
     },
     methods: {
       selectMenu(item) {
@@ -371,10 +363,10 @@
           return 0
         }
       },
-			changePrice(product) {
+      changePrice(product) {
         const i = this.orderDetail.findIndex(p => p.id === product.id);
         this.orderDetail.splice(i, 1, product);
-			}
+      }
     },
     created() {
       this.menuSelected = this.menu[0];
@@ -384,21 +376,12 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 	.layout__left {
-		flex-basis: 50%;
-		width: 50%;
-		display: grid;
 		background-color: #fff;
-		grid-template: "info" "table" "report" "action" "toolbar";
-		grid-template-rows: 8% 64% 11% 9% 8%;
 
 		.info {
-			grid-area: info;
-			display: flex;
-
 			.info__left {
-				flex-basis: 50%;
 				display: flex;
 				padding: 16px;
 				align-items: center;
@@ -407,7 +390,6 @@
 			}
 
 			.info__right {
-				flex-basis: 50%;
 				display: flex;
 				flex-direction: row-reverse;
 				align-items: center;
@@ -416,7 +398,6 @@
 		}
 
 		.table {
-			grid-area: table;
 			border: 1px solid #e8e8e8;
 			border-radius: 6px;
 			font-size: 13px;
@@ -428,7 +409,6 @@
 		}
 
 		.report {
-			grid-area: report;
 			display: flex;
 
 			&-column {
@@ -453,62 +433,36 @@
 		}
 
 		.action {
-			grid-area: action;
-			padding: 6px;
-			display: flex;
-
-			::v-deep .g-btn {
-				margin: 3px;
-				flex: 1 1 0;
-				height: auto !important;
-				border-radius: 6px;
-				background-color: #fafafa;
-			}
+			padding: 9px 6px;
 		}
 
 		.toolbar {
-			grid-area: toolbar;
-			width: 100%;
-			height: 100% !important;
-
-			::v-deep .g-badge-wrapper .g-btn {
+			.g-badge-wrapper .g-btn {
 				margin-right: 0;
 			}
 
-			::v-deep .g-toolbar-content {
-				height: 100% !important;
-
-				& > .g-btn:first-child {
-					margin-left: 0;
-				}
+			.g-toolbar-content > .g-btn:first-child {
+				margin-left: 0;
 			}
 
-			::v-deep .g-toolbar-background {
-				height: 100% !important;
-
-				& > div {
-					height: 100% !important;
-					box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.25);
-				}
+			.g-toolbar-background > div {
+				box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.25);
 			}
 		}
 	}
 
-	.layout-right {
-		flex-basis: 50%;
-		width: 50%;
-		display: grid;
-		grid-template: "menu" "main" "action";
-		grid-template-rows: 12% 44% 44%;
-		box-shadow: 0 0 8px rgba(0, 0, 0, 0.252295);
+	.layout__right {
+		box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
 
 		.menu {
-			grid-area: menu;
 			background-color: #90CAF9;
 			overflow-x: auto;
-			display: flex;
-			flex-flow: column wrap;
-			margin-bottom: 4px;
+			display: grid;
+			grid-template-rows: 1fr 1fr;
+			grid-auto-columns: 31.25%;
+			grid-gap: 6px;
+			grid-auto-flow: column;
+			padding: 6px;
 
 			&::-webkit-scrollbar {
 				display: none;
@@ -519,31 +473,19 @@
 				color: white !important;
 			}
 
-			::v-deep .g-btn {
-				flex-basis: calc(50% - 8px);
-				height: calc(50% - 8px) !important;
-				width: 31.25%;
-				margin: 6px 0 0 6px;
-			}
-
 			&:after {
 				content: '';
-				width: 6px;
+				width: 1px;
 				height: 100%;
-				flex-basis: 100%;
 			}
 		}
 
 		.main {
-			grid-area: main;
-			padding: 0 6px;
-			display: flex;
-			flex-direction: column;
+			padding: 6px 6px 0 6px;
 			overflow: hidden;
 
-			::v-deep .g-window {
+			.g-window {
 				box-shadow: none;
-				flex-basis: calc(100% - 12px);
 				width: 100%;
 
 				.g-window__container {
@@ -557,16 +499,10 @@
 					grid-template-rows: repeat(7, 1fr);
 					grid-template-columns: repeat(4, 1fr);
 					grid-gap: 6px;
-
-					.g-btn {
-						height: 100% !important;
-					}
 				}
 			}
 
-			::v-deep .g-item-group {
-				flex-basis: 12px !important;
-				height: 12px;
+			.g-item-group {
 				align-items: center;
 				justify-content: center;
 
@@ -587,104 +523,23 @@
 			}
 		}
 
-		.action {
-			grid-area: action;
-			display: flex;
+		.controller {
 			padding: 8px;
-
-			.keyboard {
-				flex-basis: calc(50% - 3px);
-				width: calc(50% - 3px);
-				margin-right: 3px;
-			}
-
-			.buttons {
-				display: flex;
-				flex-flow: column wrap;
-				margin: -2px 3px -2px 0;
-				flex-basis: calc(50% - 3px);
-				width: calc(50% - 3px);
-
-				::v-deep .g-btn {
-					height: calc(16.6667% - 4px) !important;
-					width: calc(50% - 3px) !important;
-					flex-basis: calc(16.6667% - 4px);
-					margin: 2px 3px;
-					border: 1px solid #979797;
-					background-color: #fafafa;
-
-					&.big {
-						height: calc(33.3333% - 4px) !important;
-						flex-basis: calc(33.3333% - 4px);
-					}
-
-					&.g-btn__disabled {
-						background-color: #DFDFDF;
-					}
-
-					&.g-btn__text {
-						border: 0;
-					}
-				}
-			}
 		}
 	}
-</style>
-
-<style lang="scss">
 
 	.g-btn {
-		letter-spacing: 0 !important;
-	}
-
-	.g-data-table__striped {
-		tr:nth-child(odd) {
-			background: rgba(242, 242, 242, 0.5);
+		&.g-btn__outlined {
+			border: 1px solid #979797;
+			background-color: #fafafa;
 		}
 
-		tr:nth-child(even) {
-			background: white !important;
+		&.g-btn__disabled {
+			background-color: #DFDFDF;
 		}
 
-		thead tr:last-child {
-			background: white !important;
-
-			th {
-				border: 0 !important;
-				box-shadow: none !important;
-			}
-		}
-
-		td {
-			border-bottom: none !important;
-		}
-
-		.text__editted {
-			color: #8bc34a;
-		}
-	}
-
-	.g-data-table__wrapper {
-		border-radius: inherit;
-
-		&::-webkit-scrollbar {
-			display: none;
-		}
-	}
-
-	.g-toolbar .g-btn {
-		box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-		border-radius: 6px;
-		margin: 0 16px 0 -4px;
-		padding: 0 12px !important;
-		height: 40px !important;
-
-		.g-btn__content {
-			justify-content: space-evenly;
-		}
-
-		.g-icon {
-			margin-right: 6px;
+		&.g-btn__text {
+			border: 0;
 		}
 	}
 </style>

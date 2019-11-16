@@ -4,7 +4,7 @@
 			<div class="info">
 				<div class="info__left">
 					<g-avatar size="36">
-						<g-img :src="require('../assets/order/customer_ava.svg')"/>
+						<g-img :src="require('../../assets/order/customer_ava.svg')"/>
 					</g-avatar>
 					<p class="pa-1 ml-2" style="line-height: 16px">
 						Select Customer
@@ -13,7 +13,7 @@
 				</div>
 				<div class="info__right">
 					<g-avatar size="36">
-						<g-img :src="require('../assets/order/avatar.svg')"/>
+						<g-img :src="require('../../assets/order/avatar.svg')"/>
 					</g-avatar>
 					<div class="pa-1" style="line-height: 16px">
 						<p class="ta-right fw-700 fs-small">Admin</p>
@@ -84,16 +84,16 @@
 			<g-toolbar class="toolbar" color="#eee" elevation="0">
 				<g-btn background-color="white">
 					<router-link to="/order">
-						<g-icon>{{require('../assets/order/back.svg')}}</g-icon>
+						<g-icon>{{require('../../assets/order/back.svg')}}</g-icon>
 						<span style="color: rgba(0, 0, 0, 0.87)">Back</span>
 					</router-link>
 				</g-btn>
 				<g-btn background-color="white">
-					<g-icon>{{require('../assets/order/menu.svg')}}</g-icon>
+					<g-icon>{{require('../../assets/order/menu.svg')}}</g-icon>
 					More
 				</g-btn>
 				<g-btn background-color="white" @click="dialogSavedList = true">
-					<g-icon>{{require('../assets/order/cashier.svg')}}</g-icon>
+					<g-icon>{{require('../../assets/order/cashier.svg')}}</g-icon>
 					Cashier drawer
 				</g-btn>
 			</g-toolbar>
@@ -119,11 +119,11 @@
 			</div>
 			<div class="main">
 				<g-btn x-large flat background-color="blue accent 3" text-color="white">
-					<g-icon>{{require('../assets/order/cash.svg')}}</g-icon>
+					<g-icon>{{require('../../assets/order/cash.svg')}}</g-icon>
 					<span class="ml-2">Cash</span>
 				</g-btn>
 				<g-btn x-large outlined text-color="#1271ff" class="ml-3">
-					<g-icon>{{require('../assets/order/credit_card.svg')}}</g-icon>
+					<g-icon>{{require('../../assets/order/credit_card.svg')}}</g-icon>
 					<span class="ml-2 text-black">Card</span>
 				</g-btn>
 			</div>
@@ -150,18 +150,18 @@
 </template>
 
 <script>
-  import GBtn from '../components/GBtn/GBtn';
-  import GRow from '../components/GLayout/GRow';
-  import GAvatar from '../components/GAvatar/GAvatar';
-  import GImg from '../components/GImg/GImg';
-  import GSimpleTable from '../components/GSimpleTable/GSimpleTable';
-  import GDivider from '../components/GLayout/GDivider';
-  import GToolbar from '../components/GToolbar/GToolbar';
-  import GIcon from '../components/GIcon/GIcon';
-  import GTextField from '../components/GInput/GTextField';
-  import GSpacer from '../components/GLayout/GSpacer';
-  import GKeyboard from '../components/GKeyboard/GKeyboard';
-  import GNumberKeyboard from '../components/GKeyboard/GNumberKeyboard';
+  import GBtn from '../../components/GBtn/GBtn';
+  import GRow from '../../components/GLayout/GRow';
+  import GAvatar from '../../components/GAvatar/GAvatar';
+  import GImg from '../../components/GImg/GImg';
+  import GSimpleTable from '../../components/GSimpleTable/GSimpleTable';
+  import GDivider from '../../components/GLayout/GDivider';
+  import GToolbar from '../../components/GToolbar/GToolbar';
+  import GIcon from '../../components/GIcon/GIcon';
+  import GTextField from '../../components/GInput/GTextField';
+  import GSpacer from '../../components/GLayout/GSpacer';
+  import GKeyboard from '../../components/GKeyboard/GKeyboard';
+  import GNumberKeyboard from '../../components/GKeyboard/GNumberKeyboard';
 
   export default {
     name: 'Payment',

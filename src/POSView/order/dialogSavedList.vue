@@ -20,11 +20,11 @@
 						<td class="ta-left">{{save.time}}</td>
 						<td class="ta-left row-flex justify-center align-items-center">
 							<g-btn background-color="#1271FF" text-color="white">
-								<g-icon>{{require('../assets/order/open.svg')}}</g-icon>
+								<g-icon>{{require('../../assets/order/open.svg')}}</g-icon>
 								Select
 							</g-btn>
 							<g-btn background-color="#FF4452" text-color="white" class="ml-2" @click="dialogDeleteSave = true">
-								<g-icon>{{require('../assets/home/delete.svg')}}</g-icon>
+								<g-icon>{{require('../../assets/delivery/delete.svg')}}</g-icon>
 								Delete
 							</g-btn>
 						</td>
@@ -33,11 +33,11 @@
 				</g-simple-table>
 				<g-toolbar color="#eee" elevation="2">
 					<g-btn background-color="white">
-						<g-icon>{{require('../assets/order/back.svg')}}</g-icon>
+						<g-icon>{{require('../../assets/order/back.svg')}}</g-icon>
 						Back
 					</g-btn>
 					<g-btn background-color="white">
-						<g-icon>{{require('../assets/order/folder.svg')}}</g-icon>
+						<g-icon>{{require('../../assets/order/folder.svg')}}</g-icon>
 						Saved list
 					</g-btn>
 				</g-toolbar>
@@ -61,14 +61,14 @@
 </template>
 
 <script>
-  import GDialog from '../components/GDialog/GDialog';
-  import GSimpleTable from '../components/GSimpleTable/GSimpleTable';
-  import GBtn from '../components/GBtn/GBtn';
-  import GIcon from '../components/GIcon/GIcon';
-  import GToolbar from '../components/GToolbar/GToolbar';
-  import GCardTitle from '../components/GCard/GCardTitle';
-  import GCard from '../components/GCard/GCard';
-  import { GCardText, GCardActions } from '../components/GCard/GCardFunctionalComponent';
+  import GDialog from '../../components/GDialog/GDialog';
+  import GSimpleTable from '../../components/GSimpleTable/GSimpleTable';
+  import GBtn from '../../components/GBtn/GBtn';
+  import GIcon from '../../components/GIcon/GIcon';
+  import GToolbar from '../../components/GToolbar/GToolbar';
+  import GCardTitle from '../../components/GCard/GCardTitle';
+  import GCard from '../../components/GCard/GCard';
+  import { GCardText, GCardActions } from '../../components/GCard/GCardFunctionalComponent';
 
   export default {
     name: 'dialogSavedList',
@@ -105,32 +105,31 @@
 		.g-table {
 			thead tr th {
 				font-size: inherit;
-				color: #1d1d26;
 			}
 
 			.g-btn {
 				margin: 0 8px;
 			}
 		}
+	}
 
-		.g-card {
-			.g-card-title,
-			.g-card-text {
-				justify-content: center;
-				text-align: center;
-				color: #1d1d26;
-			}
+	.g-card {
+		.g-card-title,
+		.g-card-text {
+			justify-content: center;
+			text-align: center;
+			color: #1d1d26;
+		}
 
-			.g-card-text {
-				padding: 32px 64px;
-			}
+		.g-card-text {
+			padding: 32px 64px;
+		}
 
-			.g-card-actions {
-				justify-content: flex-end;
+		.g-card-actions {
+			justify-content: flex-end;
 
-				.g-btn {
-					min-width: 120px !important;
-				}
+			.g-btn {
+				min-width: 120px !important;
 			}
 		}
 	}

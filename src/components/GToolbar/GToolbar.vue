@@ -49,6 +49,7 @@
         default: true
       },
       height: String,
+			fillHeight: Boolean,
     },
     setup(props, context) {
       const classes = computed(() => ({
@@ -90,15 +91,15 @@
       });
 
       const contentStyles = computed(() => ({
-        'height': convertToUnit(contentHeight.value)
+        'height': props.fillHeight ? ('calc(100% - ' + convertToUnit(computedExtensionHeight.value ? computedExtensionHeight.value : 0) + ')') : convertToUnit(contentHeight.value)
       }));
 
       const totalHeightStyles = computed(() => ({
-        'height': convertToUnit(totalHeight.value)
+        'height': props.fillHeight ? '100%' : convertToUnit(totalHeight.value)
       }));
 
       const extensionStyles = computed(() => ({
-        'height': convertToUnit(computedExtensionHeight.value)
+        'height': props.fillHeight ? 'auto' : convertToUnit(computedExtensionHeight.value)
       }));
 
       const backgroundStyles = computed(() => ({
@@ -107,7 +108,7 @@
         'left': '0',
         'z-index': '-1',
         'width': '100%',
-        'height': convertToUnit(totalHeight.value),
+        'height': props.fillHeight ? '100%' : convertToUnit(totalHeight.value),
 				... props.src && {
           'background-image': 'url("' + props.src + '")',
           'background-position': 'center center',

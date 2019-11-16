@@ -41,14 +41,14 @@
 </template>
 
 <script>
-  import GDialog from '../components/GDialog/GDialog';
-  import GToolbar from '../components/GToolbar/GToolbar';
-  import GTextField from '../components/GInput/GTextField';
-  import GSpacer from '../components/GLayout/GSpacer';
-  import GBtn from '../components/GBtn/GBtn';
-  import GIcon from '../components/GIcon/GIcon';
-  import GSimpleTable from '../components/GSimpleTable/GSimpleTable';
-  import GKeyboard from '../components/GKeyboard/GKeyboard';
+  import GDialog from '../../components/GDialog/GDialog';
+  import GToolbar from '../../components/GToolbar/GToolbar';
+  import GTextField from '../../components/GInput/GTextField';
+  import GSpacer from '../../components/GLayout/GSpacer';
+  import GBtn from '../../components/GBtn/GBtn';
+  import GIcon from '../../components/GIcon/GIcon';
+  import GSimpleTable from '../../components/GSimpleTable/GSimpleTable';
+  import GKeyboard from '../../components/GKeyboard/GKeyboard';
 
   export default {
     name: 'dialogProductLookup',
@@ -202,7 +202,7 @@
 			}
 		}
 
-		.keyboard-wrapper {
+		::v-deep .keyboard-wrapper {
 			flex-basis: 35%;
 			height: 35%;
 			padding: 16px;
