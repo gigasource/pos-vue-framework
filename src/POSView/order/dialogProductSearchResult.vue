@@ -272,11 +272,16 @@
     padding: 5px;
   }
 
+  .result-item {
+    padding-bottom: 12px;
+  }
+
   .active-attribute {
     background-color: #E0E0E0 !important;
   }
 
   .attribute-title {
+    padding-top: 12px;
     width: 50px;
     display: flex;
     justify-content: center;
