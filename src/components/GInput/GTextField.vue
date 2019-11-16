@@ -15,35 +15,43 @@
 				</div>
 				<div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
 				<div class="inputGroup">
-					<input id="input" type="text"
-								 autocomplete="off"
-								 :maxlength="counter"
-								 class="g-tf-input"
-								 :style="inputErrStyles"
-								 :type="type"
-								 :label="label"
-								 v-model="internalValue"
-								 :placeholder="placeholder"
-								 :readonly="readOnly"
-								 ref="input"
-								 @change="onChange"
-								 @focus="onFocus"
-								 @blur="onBlur"
-								 @keydown="onKeyDown">
-					<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">
-						<slot name="label">{{label}}</slot>
-					</label>
+					<div class="input">
+						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
+						<input id="input" type="text"
+									 autocomplete="off"
+									 class="g-tf-input"
+									 :style="inputErrStyles"
+									 :type="type"
+									 :label="label"
+									 v-model="internalValue"
+									 :placeholder="placeholder"
+									 :readonly="readOnly"
+									 ref="input"
+									 @change="onChange"
+									 @focus="onFocus"
+									 @blur="onBlur"
+									 @keydown="onKeyDown">
+					</div>
+					<slot name="label">
+						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
+					</slot>
+
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
-					<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
-					<slot name="append-inner">
+					<slot name="clearableSlot"  :iconColor="iconColor">
+						<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
+					</slot>
+
+					<slot name="appendInner" :iconColor="iconColor">
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
-				<div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
-				<div class="g-tf-hint" v-else :class="hintClasses" >{{hint}}</div>
-				<div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
+				<slot name="inputMessage">
+					<div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
+					<div class="g-tf-hint" v-else :class="hintClasses" >{{hint}}</div>
+					<div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
+				</slot>
 			</div>
 		</fieldset>
 		<div class="g-tf-append__outer" @click="onClickAppendOuter">
