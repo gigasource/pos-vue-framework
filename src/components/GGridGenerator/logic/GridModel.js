@@ -34,6 +34,7 @@ export default class GridModel extends AreaModel {
   deleteColumn(index) {
     if (index >= this.columns.length)
       return
+
     this.columns.splice(index, 1)
     _.each(this.subAreas, area => {
       if (area.right <= index + 1) {
@@ -44,6 +45,8 @@ export default class GridModel extends AreaModel {
         area.width -= 1
       }
     })
+
+    this._removeEmptyAreas()
   }
   setColumnUnit(index, val) {
     this.columns[index].value = val
@@ -82,6 +85,8 @@ export default class GridModel extends AreaModel {
         area.height -= 1
       }
     })
+
+    this._removeEmptyAreas()
   }
   setRowUnit(index, val) {
     this.rows[index].value = val
@@ -90,6 +95,18 @@ export default class GridModel extends AreaModel {
     this._adjustRowColNumbers(this.rows, length)
   }
 
+  _removeEmptyAreas() {
+    let subAreaId = 0
+    while(subAreaId< this.subAreas.length) {
+      let area = this.subAreas[subAreaId]
+      if (area.width === 0 || area.height === 0)
+        area.destroy()
+      else
+        subAreaId++
+    }
+
+
+  }
   _adjustRowColNumbers(targetArr, newLen) {
     const oldLen = targetArr.length
     if (oldLen < newLen) {
