@@ -20,7 +20,7 @@ import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
 import Order from '../POSView/order/Order';
 import Payment from '../POSView/order/Payment';
-
+import LoginView from '../view/LoginView';
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
   { path: '/groupable', name: 'Groupable', component: Groupable},

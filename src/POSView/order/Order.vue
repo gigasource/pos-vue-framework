@@ -108,7 +108,7 @@
 				<g-btn outlined height="100%" @click="dialogProductLookup = true">Product Lookup</g-btn>
 				<g-btn outlined height="100%" disabled>Disabled Button</g-btn>
 				<g-btn outlined height="100%">Discount</g-btn>
-				<g-btn outlined height="100%"></g-btn>
+				<g-btn outlined height="100%" @click="dialogProductSearch = true"></g-btn>
 				<g-btn outlined height="100%">Plastic Refund</g-btn>
 				<g-btn area="btn__big" text background-color="green lighten 1" text-color="white" height="100%" @click="quickCash">Quick Cash</g-btn>
 				<g-btn text background-color="orange lighten 1" text-color="white" height="100%">Save</g-btn>
@@ -122,6 +122,7 @@
 		<dialog-saved-list v-model="dialogSavedList"/>
 		<dialog-product-lookup v-model="dialogProductLookup"/>
 		<dialog-change-price v-model="dialogChangePrice" :product="product" @change-price="changePrice($event)"/>
+		<dialog-product-search-result v-model="dialogProductSearch"></dialog-product-search-result>
 	</div>
 </template>
 
@@ -157,10 +158,11 @@
   import DialogChangePrice from './dialogChangePrice';
   import GGridLayout from '../../components/GGridGenerator/GGridLayout';
   import layout from './orderLayout';
+	import DialogProductSearchResult from './dialogProductSearchResult';
 
   export default {
     name: 'Order2',
-    components: { GGridLayout, DialogChangePrice, DialogProductLookup, DialogSavedList, GRadio, GRadioGroup, GKeyboard, GSpacer, GTextField, GScrollWindowItem, GScrollWindow, GCardText, GCardActions, GCardTitle, GCard, GDialog, GIcon, GBadge, GToolbar, GDivider, TableExpansionRow, GSimpleTable, GImg, GAvatar, GItem, GItemGroup, GWindowItem, GWindow, GNumberKeyboard, GRow, GBtn },
+    components: { DialogProductSearchResult, GGridLayout, DialogChangePrice, DialogProductLookup, DialogSavedList, GRadio, GRadioGroup, GKeyboard, GSpacer, GTextField, GScrollWindowItem, GScrollWindow, GCardText, GCardActions, GCardTitle, GCard, GDialog, GIcon, GBadge, GToolbar, GDivider, TableExpansionRow, GSimpleTable, GImg, GAvatar, GItem, GItemGroup, GWindowItem, GWindow, GNumberKeyboard, GRow, GBtn },
     data() {
       return {
         layout: layout,
@@ -341,6 +343,7 @@
         dialogSavedList: false,
         dialogProductLookup: false,
         dialogChangePrice: false,
+				dialogProductSearch: false
       }
     },
     methods: {

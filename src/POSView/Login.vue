@@ -268,7 +268,6 @@
     grid-gap: 10px;
   }
 
-
   .footer-section {
     grid-row: 4 / span 1;
     position: fixed;
