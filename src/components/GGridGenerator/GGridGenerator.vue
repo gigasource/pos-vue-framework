@@ -440,8 +440,8 @@
             return !gridItem.visible
                 ? null
                 : state.viewMode
-                ? renderGridAreaInViewMode(gridItem)
-                : renderGridAreaInEditMode(gridItem)
+                    ? renderGridAreaInViewMode(gridItem)
+                    : renderGridAreaInEditMode(gridItem)
           })
         }
       }
@@ -568,11 +568,11 @@
           <div class="grid-gen__settings-section">Grid Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Columns: </label>
-            <g-inc-dec-number-input min={1} value={grid.columns.length} vOn:input={grid.setColumnNumbers}/>
+            <g-inc-dec-number-input min={1} value={grid.columns.length} vOn:input={v => grid.setColumnNumbers(v)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Rows: </label>
-            <g-inc-dec-number-input min={1} value={grid.rows.length} vOn:input={grid.setRowNumbers}/>
+            <g-inc-dec-number-input min={1} value={grid.rows.length} vOn:input={v => grid.setRowNumbers(v)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Column Gap(px): </label>
@@ -609,6 +609,16 @@
             <select vOn:change={e => grid.justifyContent = e.target.value}>
               {_.map(_gridContentOptions, value => <option selected={grid.justifyContent === value} value={value}>{value}</option>)}
             </select>
+          </div>,
+
+          // padding/margin
+          <div class="grid-gen__settings-prop">
+            <label>Padding:</label>
+            <input vModel={grid.padding}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Margin:</label>
+            <input vModel={grid.margin}/>
           </div>,
 
           // Insert/delete row/column
@@ -667,6 +677,15 @@
             <select vOn:change_stop={e => gridItem.justifySelf = e.target.value}>
               {_.map(_gridItemOptions, value => <option selected={gridItem.justifySelf === value} value={value}>{value}</option>)}
             </select>
+          </div>,
+          // padding/margin
+          <div class="grid-gen__settings-prop">
+            <label>Padding:</label>
+            <input vModel={gridItem.padding}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Margin:</label>
+            <input vModel={gridItem.margin}/>
           </div>,
         ] : null
       }
