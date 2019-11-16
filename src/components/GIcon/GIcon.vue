@@ -1,169 +1,106 @@
-<template>
-	<i v-if="activeTags.i" :class="iconClass" :style="iconStyle"
-		 :aria-hidden="attributes.ariaHidden"
-		 :role="attributes.role" @click="onClick">{{materialIconName}}</i>
-	<svg v-else-if="activeTags.svg" :class="iconClass" :style="iconStyle"
-			 :aria-hidden="attributes.ariaHidden"
-			 :role="attributes.role"
-			 xmlns="http://www.w3.org/2000/svg"
-			 viewBox="0 0 24 24" @click="onClick">
-		<path :d="icon"></path>
-	</svg>
-	<img v-else-if="activeTags.img" :src="icon" alt="Can't load icon" :class="iconClass" :style="iconStyle" @click="onClick"/>
-	<span v-else-if="activeTags.slot" @click="onClick">
-		<slot></slot>
-	</span>
-</template>
-
 <script>
-  import { computed, ref, onMounted, onUpdated } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
-  import { setBackgroundColor } from '../../mixins/colorable';
-  import { Fragment } from 'vue-fragment'
+  import { setTextColor } from '../../mixins/colorable';
 
   export default {
     name: 'GIcon',
-    components: { Fragment },
     props: {
       value: String,
       dense: Boolean,
       disabled: Boolean,
       left: Boolean,
       right: Boolean,
+      color: [String],
       size: [Number, String],
       xSmall: Boolean,
       small: Boolean,
       medium: Boolean,
       large: Boolean,
       xLarge: Boolean,
-      color: [String],
-      tag: {
-        type: String,
-        required: false,
-        default: 'i',
-      },
     },
-
-    setup(props, context) {
-      const icon = ref('')
-
-      function getIcon() {
-        icon.value = context.slots.default ? context.slots.default()[0].text.trim() : ''
-      }
-
-      onMounted(() => getIcon())
-      onUpdated(() => getIcon())
-
-      function renderFontAwesomeIcon(nodeData) {
-        nodeData.class[icon.value] = true
-        nodeData.style['fontSize'] = getSize(props)
-      }
-
-      function renderMaterialIcon(nodeData) {
-        let iconType = 'material-icons'
-        const delimiterIndex = icon.value.indexOf('-')
-        const isNotMdiIcon = delimiterIndex <= -1
-
-        if (isNotMdiIcon) {
-          nodeData.materialIcon = icon.value
-        } else {
-          iconType = icon.value.slice(0, delimiterIndex)
-				}
-
-        nodeData.class[iconType] = true
-        nodeData.class[icon.value] = !isNotMdiIcon
-        nodeData.style['fontSize'] = getSize(props)
-      }
-
-      function renderSvgIcon(nodeData) {
-        nodeData.tag.svg = true
-        nodeData.tag.i = false
-
-        nodeData.class['g-icon__svg'] = true
-        nodeData.style['fontSize'] = getSize(props)
-        nodeData.style['width'] = getSize(props)
-        nodeData.style['height'] = getSize(props)
-      }
-
-      function renderCustomSvgIcon(nodeData) {
-        nodeData.tag.img = true
-        nodeData.tag.i = false
-        nodeData.style['fontSize'] = getSize(props) * 2
-        nodeData.style['width'] = getSize(props) * 2
-        nodeData.style['height'] = getSize(props) * 2
-      }
-
-      let nodeData = computed(() => {
-        let _nodeData = {
-          tag: {
-            i: true,
-            svg: false,
-            img: false,
-            slot: true
-          },
-          class: {},
-          style: {},
-          materialIcon: ''
-        }
-
-        if (isFontAwesome5(icon.value)) {
-          renderFontAwesomeIcon(_nodeData)
-        } else if (isSvgPath(icon.value)) {
-					renderSvgIcon(_nodeData)
-        } else if (isCustomSvgIcon(icon.value)) {
-					renderCustomSvgIcon(_nodeData)
-        } else {
-					renderMaterialIcon(_nodeData)
-        }
-        _nodeData.tag.slot = false
-        return _nodeData
-      })
-
-      const materialIconName = computed(() => {
-        return nodeData.value.materialIcon
-      })
-
-      let activeTags = computed(() => ({
-        ...nodeData.value.tag
-      }))
-
-      let iconColor = computed(() => setBackgroundColor(props.color, {}))
-
-      let iconClass = computed(() => ({
-        ...nodeData.value.class,
-        ...iconColor.value.class,
-        'g-icon': true,
-        'g-icon__dense': props.dense,
-        'g-icon__disabled': props.disabled,
-        'g-icon__left': props.left,
-        'g-icon__right': props.right,
-        'g-icon__link': !!context.listeners.click
-      }))
-
-      let iconStyle = computed(() => ({
-        ...nodeData.value.style,
-        ...iconColor.value.style
-      }))
-
-      // accessibility attrs
-      let attributes = computed(() => ({
-        ariaHidden: !!context.listeners.click,
-        role: context.listeners.click ? 'button' : null
-      }))
-
-      let onClick = (event) => {
+    setup: function (props, context) {
+      const onClick = (event) => {
         context.emit('click', event);
       }
 
-      return {
-        iconClass,
-        iconStyle,
-        attributes,
-        activeTags,
-        icon,
-        materialIconName,
-        onClick,
+      const iconColor = computed(() => setTextColor(props.color))
+
+      function genFontAwesomeIcon(icon, iconClass, iconStyle) {
+        iconClass[icon] = true
+        return <i class={iconClass}
+                  style={iconStyle}
+                  vOn:click={onClick}/>
       }
+
+      function genMaterialIcon(icon, iconClass, iconStyle) {
+        let iconType = 'material-icons'
+        const delimiterIndex = icon.indexOf('-')
+        const isMdiIcon = !(delimiterIndex <= -1)
+        if (isMdiIcon) {
+          iconType = icon.slice(0, delimiterIndex)
+          iconClass[icon] = true
+        }
+
+        iconClass[iconType] = true
+        return <i class={iconClass}
+                  style={iconStyle}
+                  vOn:click={onClick}>{!isMdiIcon ? icon : ''}</i>
+      }
+
+      function genSvgIcon(icon, iconClass, iconStyle) {
+        iconClass['g-icon__svg'] = true
+        iconStyle['width'] = getSize(props)
+        iconStyle['height'] = getSize(props)
+        return <svg class={iconClass}
+                    style={iconStyle}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    vOn:click={onClick}>
+          <path d={icon} fill={props.color}/>
+        </svg>
+      }
+
+      function genCustomSvgIcon(icon, iconClass, iconStyle) {
+        iconStyle['width'] = getSize(props)
+        iconStyle['height'] = getSize(props)
+        return <img class={iconClass}
+                    style={iconStyle}
+                    src={icon}
+                    alt="Can't load icon"
+                    vOn:click={onClick}/>
+      }
+
+      function genIcon(icon) {
+        const iconClass = {
+          ...iconColor.value.class,
+          'g-icon': true,
+          'g-icon__dense': props.dense,
+          'g-icon__disabled': props.disabled,
+          'g-icon__left': props.left,
+          'g-icon__right': props.right,
+          'g-icon__link': !!context.listeners.click,
+        }
+
+        const iconStyle = {
+          ...iconColor.value.style,
+          'font-size': getSize(props),
+        }
+
+        if (isFontAwesome5(icon)) return genFontAwesomeIcon(icon, iconClass, iconStyle)
+        if (isSvgPath(icon)) return genSvgIcon(icon, iconClass, iconStyle)
+        if (isCustomSvgIcon(icon)) return genCustomSvgIcon(icon, iconClass, iconStyle)
+        return genMaterialIcon(icon, iconClass, iconStyle)
+      }
+
+      return {
+        genIcon
+      }
+    },
+
+    render() {
+      const icon = this.$slots.default ? this.$slots.default[0].text.trim() : ''
+      return this.genIcon(icon)
     }
   }
 
@@ -191,5 +128,5 @@
 </script>
 
 <style scoped lang="scss">
-	@import "GIcon";
+  @import "GIcon";
 </style>

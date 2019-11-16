@@ -25,7 +25,6 @@
   position: relative;
   white-space: normal;
   @include elevationTransition();
-  @include elevation(2);
 
   &:not(.g-card__tile):not(.g-card__shaped) {
     border-radius: 4px;

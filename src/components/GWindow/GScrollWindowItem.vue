@@ -42,10 +42,6 @@
         value: null
       });
 
-      const show = computed(function () {
-        return internalValue.value === data.value;
-      });
-
       const computedTransition = computed(() => {
           if (!internalReverse.value) {
             return props.transition ? props.transition || '' : windowComputedTransition.value
@@ -54,62 +50,6 @@
           return props.reverseTransition ? props.reverseTransition || '' : windowComputedTransition.value
         }
       );
-
-      function onAfterTransition() {
-
-        if (!data.inTransition) {
-          return
-        }
-
-        // Finalize transition state.
-        data.inTransition = false;
-        if (windowData.transitionCount > 0) {
-          windowData.transitionCount--;
-
-          // Remove container height if we are out of transition.
-          if (windowData.transitionCount === 0) {
-            windowData.transitionHeight = undefined
-          }
-        }
-      }
-
-      function onBeforeTransition() {
-        if (data.inTransition) {
-          return;
-        }
-
-        // Initialize transition state here.
-        data.inTransition = true;
-
-        if (windowData.transitionCount === 0) {
-          // Set initial height for height transition.
-          context.root.$nextTick(() => {
-            windowData.transitionHeight = convertToUnit(window.value.$el.clientHeight);
-          })
-        }
-        windowData.transitionCount++;
-      }
-
-      function onTransitionCancelled() {
-        onAfterTransition() // This should have the same path as normal transition end.
-      }
-
-      function onEnter(el) {
-
-        if (!data.inTransition) {
-          return
-        }
-
-        context.root.$nextTick(() => {
-          // Do not set height if no transition or cancelled.
-          if (!computedTransition.value || !data.inTransition) {
-            return;
-          }
-
-          // Set transition target height.
-          windowData.transitionHeight = convertToUnit(el.clientHeight);
-        })
-      }
 
       function genWindowItem() {
         const nodeData = {
@@ -131,25 +71,11 @@
         return <div {...nodeData}> {context.slots.default && context.slots.default()}</div>
       }
 
-      function gen() {
+      function genScrollWindowItem() {
         return h('transition', {
           props: {
             name: this.computedTransition,
-          },
-          on: {
-            // Handlers for enter windows.
-            beforeEnter: this.onBeforeTransition,
-            afterEnter: this.onAfterTransition,
-            enterCancelled: this.onTransitionCancelled,
-
-            // Handlers for leave windows.
-            beforeLeave: this.onBeforeTransition,
-            afterLeave: this.onAfterTransition,
-            leaveCancelled: this.onTransitionCancelled,
-
-            // Enter handler for height transition.
-            enter: this.onEnter,
-          },
+          }
         }, [this.genWindowItem()])
       }
 
@@ -157,15 +83,11 @@
         data,
         computedTransition,
         genWindowItem,
-        onBeforeTransition,
-        onAfterTransition,
-        onTransitionCancelled,
-        onEnter,
-        gen
+        genScrollWindowItem
       }
     },
     render() {
-      return this.gen()
+      return this.genScrollWindowItem()
     }
   }
 </script>
@@ -177,7 +99,6 @@
     flex-shrink: 0;
     height: 300px;
     border-radius: 10px;
-    background: #eee;
     transform-origin: center center;
     transform: scale(1);
     transition: transform 0.5s;
