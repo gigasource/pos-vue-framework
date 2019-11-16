@@ -1,5 +1,5 @@
 <template>
-	<div :class="classes" :style="styles">
+	<div :class="classes" :style="styles" @click="onSelectItem" @keydown="onKeyDown">
 		<slot></slot>
 	</div>
 </template>
@@ -40,10 +40,18 @@
 					}
 				}
 			});
+      const onSelectItem = () => {
+        context.emit('singleItemClick')
+			}
+			const onKeyDown = (e) => {
+      	context.emit('keydown', e)
+			}
 
       return {
         classes,
 				styles,
+				onSelectItem,
+				onKeyDown,
 			}
 		}
   }

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {computed, ref, watch} from "@vue/composition-api";
+import { computed, ref, watch } from '@vue/composition-api';
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -165,4 +165,29 @@ export function getElementPosition(el) {
     bottom: rect.bottom + offsetY,
     right: rect.right + offsetX
   }
+}
+
+export function openFile(options = { multiple: false, mimeType: '*/*' }, onFileOpened) {
+  const input = document.createElement('input')
+  input.type='file'
+  input.accept = options.mimeType
+  input.multiple = options.multiple
+  input.addEventListener('change', e => {
+    onFileOpened && onFileOpened(e.target.files)
+  })
+  input.click()
+}
+
+/**
+ * Saving file
+ * @param fileName
+ * @param content
+ * @param type
+ */
+export function saveFile(fileName, content, type) {
+  const blob = new Blob([content], { type });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click()
 }

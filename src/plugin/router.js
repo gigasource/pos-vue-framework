@@ -23,6 +23,7 @@ import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import ConnectorDemo from '../view/ConnectorDemo';
 import ZoomDirectiveDemo from '../view/ZoomDirectiveDemo';
+import Textarea from "../view/TextareaDemo";
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -48,6 +49,8 @@ const routes = [
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
   { path: '/zoom-directive-demo', name: 'Zoom Directive', component: ZoomDirectiveDemo}
+  { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
+  {path: '/textarea', name: 'Textarea', component: Textarea},
 ];
 
 const router = new VueRouter({

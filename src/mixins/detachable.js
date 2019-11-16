@@ -7,7 +7,7 @@ export default function detachable(props, context) {
     if (!node) {
       node = context.refs.content
     }
-    const target = document.querySelector('[data-app]')
+    const target = document.querySelector('[data-app]') || document.body
     if (!target) {
       console.warn('Unable to locate root element');
       return;
@@ -42,7 +42,7 @@ export default function detachable(props, context) {
     }
   }
 
-  function detach(node) {
+  function detach(node, activator = context.refs.activator) {
     if (node) {
       node.parentNode.removeChild(node);
     } else {
@@ -51,7 +51,7 @@ export default function detachable(props, context) {
         for (let node of activatorChildNodes)
           node.parentNode.removeChild(node);
       } else {
-        context.refs.activator.parentNode.removeChild(context.refs.activator);
+        activator.parentNode.removeChild(context.refs.activator);
       }
     }
   }
