@@ -1,17 +1,6 @@
 $icon-size: 24px !default;
 $icon-size-dense: 20px !default;
-@import "../../style/variables";
-//Theme
-//+theme(v-icon) using ($material){
-//  color: map-deep-get($material, 'icons', 'active');
-//
-//  &--disabled {
-//    color: map-deep-get($material, 'icons', 'inactive') !important;
-//  }
-//}
 
-//Increased specificity to overwrite
-//iconfont css interference
 .g-icon.g-icon {
   align-items: center;
   display: inline-flex;
@@ -21,18 +10,18 @@ $icon-size-dense: 20px !default;
   letter-spacing: normal;
   line-height: 1;
   text-indent: 0;
-  transition: $primary-transition;
+  transition: default;
   vertical-align: middle;
   user-select: none;
 }
 
 .g-icon {
   &__right {
-    margin-left: map-get($grid-gutters, 'md');
+    margin-left: 16px;
   }
 
   &__left {
-    margin-right: map-get($grid-gutters, 'md');
+    margin-right: 16px;
   }
 
   &__link {
