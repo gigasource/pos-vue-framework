@@ -297,7 +297,7 @@
   }
 
   .g-card {
-    overflow-y: hidden;
+    overflow-y: hidden !important;
   }
 
   th {
