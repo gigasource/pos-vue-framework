@@ -17,10 +17,9 @@ import DndDialogDemo from '../view/DndDialogDemo';
 import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
-import Textarea from '../view/TextareaDemo';
-import LoginView from '../view/LoginView';
-import Order from '../POSView/Order';
-import Payment from '../POSView/Payment';
+import Textarea from "../view/TextareaDemo";
+import Order from '../POSView/order/Order';
+import Payment from '../POSView/order/Payment';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},

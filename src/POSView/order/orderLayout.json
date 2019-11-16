@@ -1,0 +1,350 @@
+{
+  "name": "order",
+  "columns": [
+    "50%",
+    "50%"
+  ],
+  "rows": [
+    "1fr"
+  ],
+  "columnGap": 0,
+  "rowGap": 0,
+  "subAreas": [
+    {
+      "name": "layout__left",
+      "hide": false,
+      "bgColor": "hsl(298, 100%, 50%, 50%)",
+      "area": {
+        "rowStart": 1,
+        "columnStart": 1,
+        "rowEnd": 2,
+        "columnEnd": 2
+      },
+      "justify-self": "",
+      "align-self": "",
+      "columns": [
+        "1fr"
+      ],
+      "rows": [
+        "8%",
+        "64%",
+        "11%",
+        "9%",
+        "8%"
+      ],
+      "columnGap": 0,
+      "rowGap": 0,
+      "align-items": "",
+      "align-content": "",
+      "justify-items": "",
+      "justify-content": "",
+      "subAreas": [
+        {
+          "name": "info",
+          "hide": false,
+          "bgColor": "hsl(149, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 1,
+            "columnStart": 1,
+            "rowEnd": 2,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": "",
+          "columns": [
+            "1fr",
+            "1fr"
+          ],
+          "rows": [
+            "1fr"
+          ],
+          "columnGap": 0,
+          "rowGap": 0,
+          "align-items": "",
+          "align-content": "",
+          "justify-items": "",
+          "justify-content": "",
+          "subAreas": [
+            {
+              "name": "info__left",
+              "hide": false,
+              "bgColor": "hsl(136, 100%, 50%, 50%)",
+              "area": {
+                "rowStart": 1,
+                "columnStart": 1,
+                "rowEnd": 2,
+                "columnEnd": 2
+              },
+              "justify-self": "",
+              "align-self": ""
+            },
+            {
+              "name": "info__right",
+              "hide": false,
+              "bgColor": "hsl(196, 100%, 50%, 50%)",
+              "area": {
+                "rowStart": 1,
+                "columnStart": 2,
+                "rowEnd": 2,
+                "columnEnd": 3
+              },
+              "justify-self": "",
+              "align-self": ""
+            }
+          ]
+        },
+        {
+          "name": "table",
+          "hide": false,
+          "bgColor": "hsl(342, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 2,
+            "columnStart": 1,
+            "rowEnd": 3,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": ""
+        },
+        {
+          "name": "action",
+          "hide": false,
+          "bgColor": "hsl(235, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 4,
+            "columnStart": 1,
+            "rowEnd": 5,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": "",
+          "columns": [
+            "1fr",
+            "1fr",
+            "1fr",
+            "1fr"
+          ],
+          "rows": [
+            "1fr"
+          ],
+          "columnGap": 6,
+          "rowGap": 0,
+          "align-items": "",
+          "align-content": "",
+          "justify-items": "",
+          "justify-content": "",
+          "subAreas": []
+        },
+        {
+          "name": "toolbar",
+          "hide": false,
+          "bgColor": "hsl(190, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 5,
+            "columnStart": 1,
+            "rowEnd": 6,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": ""
+        },
+        {
+          "name": "report",
+          "hide": false,
+          "bgColor": "hsl(350, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 3,
+            "columnStart": 1,
+            "rowEnd": 4,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": ""
+        }
+      ]
+    },
+    {
+      "name": "layout__right",
+      "hide": false,
+      "bgColor": "hsl(239, 100%, 50%, 50%)",
+      "area": {
+        "rowStart": 1,
+        "columnStart": 2,
+        "rowEnd": 2,
+        "columnEnd": 3
+      },
+      "justify-self": "",
+      "align-self": "",
+      "columns": [
+        "1fr"
+      ],
+      "rows": [
+        "12%",
+        "1fr",
+        "1fr"
+      ],
+      "columnGap": 0,
+      "rowGap": 0,
+      "align-items": "",
+      "align-content": "",
+      "justify-items": "",
+      "justify-content": "",
+      "subAreas": [
+        {
+          "name": "menu",
+          "hide": false,
+          "bgColor": "hsl(21, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 1,
+            "columnStart": 1,
+            "rowEnd": 2,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": ""
+        },
+        {
+          "name": "controller",
+          "hide": false,
+          "bgColor": "hsl(94, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 3,
+            "columnStart": 1,
+            "rowEnd": 4,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": "",
+          "columns": [
+            "1fr",
+            "1fr"
+          ],
+          "rows": [
+            "1fr"
+          ],
+          "columnGap": 6,
+          "rowGap": 0,
+          "align-items": "",
+          "align-content": "",
+          "justify-items": "",
+          "justify-content": "",
+          "subAreas": [
+            {
+              "name": "keyboard",
+              "hide": false,
+              "bgColor": "hsl(243, 100%, 50%, 50%)",
+              "area": {
+                "rowStart": 1,
+                "columnStart": 1,
+                "rowEnd": 2,
+                "columnEnd": 2
+              },
+              "justify-self": "",
+              "align-self": ""
+            },
+            {
+              "name": "buttons",
+              "hide": false,
+              "bgColor": "hsl(253, 100%, 50%, 50%)",
+              "area": {
+                "rowStart": 1,
+                "columnStart": 2,
+                "rowEnd": 2,
+                "columnEnd": 3
+              },
+              "justify-self": "",
+              "align-self": "",
+              "columns": [
+                "1fr",
+                "1fr"
+              ],
+              "rows": [
+                "1fr",
+                "1fr",
+                "1fr",
+                "1fr",
+                "1fr",
+                "1fr"
+              ],
+              "columnGap": 6,
+              "rowGap": 4,
+              "align-items": "",
+              "align-content": "",
+              "justify-items": "",
+              "justify-content": "",
+              "subAreas": [
+                {
+                  "name": "btn__big",
+                  "hide": false,
+                  "bgColor": "hsl(50, 100%, 50%, 50%)",
+                  "area": {
+                    "rowStart": 5,
+                    "columnStart": 1,
+                    "rowEnd": 7,
+                    "columnEnd": 2
+                  },
+                  "justify-self": "",
+                  "align-self": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "main",
+          "hide": false,
+          "bgColor": "hsl(243, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 2,
+            "columnStart": 1,
+            "rowEnd": 3,
+            "columnEnd": 2
+          },
+          "justify-self": "",
+          "align-self": "",
+          "columns": [
+            "100%"
+          ],
+          "rows": [
+            "1fr",
+            "12px"
+          ],
+          "columnGap": 0,
+          "rowGap": 0,
+          "align-items": "",
+          "align-content": "",
+          "justify-items": "",
+          "justify-content": "",
+          "subAreas": [
+            {
+              "name": "window",
+              "hide": false,
+              "bgColor": "hsl(126, 100%, 50%, 50%)",
+              "area": {
+                "rowStart": 1,
+                "columnStart": 1,
+                "rowEnd": 2,
+                "columnEnd": 2
+              },
+              "justify-self": "",
+              "align-self": ""
+            },
+            {
+              "name": "delimeter",
+              "hide": false,
+              "bgColor": "hsl(247, 100%, 50%, 50%)",
+              "area": {
+                "rowStart": 2,
+                "columnStart": 1,
+                "rowEnd": 3,
+                "columnEnd": 2
+              },
+              "justify-self": "",
+              "align-self": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

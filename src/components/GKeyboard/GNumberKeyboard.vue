@@ -5,7 +5,7 @@
 				<input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pr-2" style="border: none; outline: none; direction: rtl" v-model="computedNumber">
 			</div>
 		</slot>
-		<g-keyboard :items="items" v-model="computedNumber" :template="template" class="flex-grow-1"></g-keyboard>
+		<g-keyboard :items="items" v-model="computedNumber" :template="template" class="flex-grow-1" @submit="$emit('submit')"></g-keyboard>
 	</div>
 </template>
 
