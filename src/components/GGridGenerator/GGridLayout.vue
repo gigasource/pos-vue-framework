@@ -19,7 +19,7 @@
       // Allow hide or show grid layout editor
       editable: {
         type: Boolean,
-        default: true
+        default: false
       },
       // Allow un-named area render
       passThrough: {
