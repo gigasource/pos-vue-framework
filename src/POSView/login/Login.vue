@@ -257,6 +257,12 @@
   .input-text-field {
     position: relative;
     top: 120px;
+
+    ::v-deep .g-tf .inputGroup .g-tf-input {
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 12px;
+    }
   }
 
   .input-section {
