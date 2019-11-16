@@ -17,6 +17,7 @@
 				<div class="inputGroup">
 					<input id="input" type="text"
 								 autocomplete="off"
+								 :maxlength="counter"
 								 class="g-tf-input"
 								 :style="inputErrStyles"
 								 :type="type"
@@ -35,9 +36,7 @@
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
-					<div v-if="isDirty && clearable" @click.stop="onClearIconClick">
-						<g-icon :color=iconColor>{{clearIcon}}</g-icon>
-					</div>
+					<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
 					<slot name="append-inner">
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
