@@ -160,7 +160,7 @@
 					const margin = props.rounded ? (props.filled ? '24px' : '16px') : (props.shaped ? '12px' : '5px');
 			    return {
 			      'width': 'auto',
-						'padding': '2px',
+						'padding': '2px 4px 2px 2px',
 						'margin-left': margin,
 						'transition': 'margin 0.4s',
 					}
