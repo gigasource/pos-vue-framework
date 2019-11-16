@@ -272,12 +272,12 @@
     padding: 5px;
   }
 
-  .result-item {
-    padding-bottom: 12px;
-  }
-
   .active-attribute {
     background-color: #E0E0E0 !important;
+  }
+
+  .result-item-attribute {
+    padding-bottom: 12px;
   }
 
   .attribute-title {
