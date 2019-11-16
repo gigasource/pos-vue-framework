@@ -369,7 +369,7 @@ input[type=text] {
   }
 
   .g-tf-label__active {
-    transform: translateY(-26px) translateX(5px) scale(0.75);
+    transform: translateY(-26px) translateX(6px) scale(0.75);
     background-color: transparent;
   }
 
@@ -401,13 +401,13 @@ input[type=text] {
     border-radius: 9999px;
 
     .g-tf-label__active {
-      transform: translateY(-25px) translateX(2px) scale(0.75);
+      transform: translateY(-24px) translateX(2px) scale(0.75);
       background-color: transparent;
     }
   }
 
-  &.g-tf__filled.g-tf__outlined .g-tf-label {
-    transform: translateY(-30px) translateX(6px) scale(0.75);
+  &.g-tf__filled.g-tf__outlined .g-tf-label__active {
+    transform: translateY(-30px) translateX(10px) scale(0.75);
   }
 
   &.g-tf__filled .g-tf {
@@ -453,8 +453,16 @@ input[type=text] {
     left: 12px;
   }
 
+  &.g-tf__outlined .g-tf-prepend__inner {
+    padding-left: 12px;
+  }
+
   &.g-tf__outlined .g-tf-input {
-    padding-left: 16px;
+    padding-left: 18px;
+  }
+
+  &.g-tf__outlined.g-tf__filled .g-tf-input {
+    padding-left: 26px;
   }
 
   &.g-tf__outlined .g-tf-affix ~ .inputGroup .g-tf-input {
@@ -469,12 +477,16 @@ input[type=text] {
     left: 12px;
   }
 
+  &.g-tf__outlined .g-tf-prepend__inner ~ .inputGroup .g-tf-input {
+    padding-left: 6px;
+  }
+
   &.g-tf__outlined .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
-    left: -12px;
+    left: -24px;
   }
 
   &.g-tf__outlined .g-tf-prepend__inner ~ .g-tf-affix ~ .inputGroup .g-tf-label__active {
-    left: -16px;
+    left: -28px;
   }
 
   &.g-tf__solo .g-tf-prepend__outer.g-tf-icon__active ~ .g-tf-hint,
@@ -492,7 +504,7 @@ input[type=text] {
       border-top-right-radius: 16px;
 
       .g-tf-label__active {
-        transform: translateY(-25px) scale(0.75);
+        transform: translateY(-24px) translateX(6px) scale(0.75);
         background-color: transparent;
       }
     }
@@ -505,8 +517,8 @@ input[type=text] {
     }
   }
 
-  &.g-tf__filled.g-tf__outlined .g-tf-label {
-    transform: translateY(-29px) translateX(-2px) scale(0.75);
+  &.g-tf__filled.g-tf__outlined .g-tf-label__active {
+    transform: translateY(-29px) translateX(6px) scale(0.75);
   }
 
   &.g-tf__filled .g-tf {
@@ -545,8 +557,12 @@ input[type=text] {
     padding-left: 16px;
   }
 
+  &.g-tf__outlined .g-tf-prepend__inner {
+    padding-left: 6px;
+  }
+
   &.g-tf__outlined .g-tf-input {
-    padding-left: 8px;
+    padding-left: 14px;
   }
 
   &.g-tf__outlined .g-tf-affix ~ .inputGroup .g-tf-label {
@@ -557,12 +573,16 @@ input[type=text] {
     left: 12px;
   }
 
+  &.g-tf__outlined .g-tf-prepend__inner ~ .inputGroup .g-tf-input {
+    padding-left: 6px;
+  }
+
   &.g-tf__outlined .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
-    left: -20px;
+    left: -26px;
   }
 
   &.g-tf__outlined .g-tf-prepend__inner ~ .g-tf-affix ~ .inputGroup .g-tf-label__active {
-    left: -24px;
+    left: -26px;
   }
 
   &.g-tf__solo .g-tf-prepend__outer.g-tf-icon__active ~ .g-tf-hint,
