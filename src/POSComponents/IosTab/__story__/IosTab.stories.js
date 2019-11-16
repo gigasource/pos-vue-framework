@@ -124,11 +124,6 @@ export const tab = () => ({
   created() {
     this.model = this.items[0]
   },
-  methods: {
-    itemClickHandler(e) {
-      console.log(e)
-    }
-  },
   props: {
     color: {
       type: String,
@@ -185,7 +180,7 @@ export const tab = () => ({
       :slider-size="sliderSize"
       :slider-color="sliderColor">
       <g-tab-item v-for="tabItem in items" :item="tabItem">
-        <g-list :items="tabItem.list" :subheader="tabItem.subheader" @click="itemClickHandler">
+        <g-list :items="tabItem.list" :subheader="tabItem.subheader">
         </g-list>
       </g-tab-item>
     </ios-tab>
