@@ -53,7 +53,10 @@
         })
 
         // bring editor out of grid layout
-        props.editable && wrapperEl.parentNode.appendChild(context.refs[refIdEditor])
+        if (props.editable) {
+          console.log(context.refs[refIdEditor])
+          wrapperEl.parentNode.appendChild(context.refs[refIdEditor])
+        }
       }
 
       // editor dialog
@@ -121,14 +124,12 @@
       function processLayout(model) {
         const cssClassName = getAreaClass(model.name)
         let vNode = _findVNodesInSlot(model.name)
-        console.log(model.name, 'found', vNode)
         if (vNode.length > 1) {
           // multiple slot with the same area name
           vNode = <div {...{ attrs: { class: cssClassName } }}>{...vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name
           vNode = vNode[0]
-          console.log('found single', model.name, vNode[0])
         } else if (!model._parent) {
           // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
           const attrs = { class: cssClassName, [uid]: '' }
