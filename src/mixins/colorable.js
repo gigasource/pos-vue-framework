@@ -66,8 +66,7 @@ export function setBackgroundColor(color, data) {
  *    + <colorName>: add [<colorName>--text] property in data.class
  *    + <colorName> <colorModifier>: add [<colorName>--text] and [text--<colorModifier>] in data.class
  */
-export function setTextColor(color, data) {
-  data = data || {}
+export function setTextColor(color, data = {}) {
 
   if (!shouldApplyColor(color, data))
     return data
