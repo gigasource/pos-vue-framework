@@ -1,7 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { parseLayoutObject, parseLayoutStr } from './logic/gridLayoutConvert'
-  import { generateGridCSS } from './logic/gridCssGenerate'
+  import { fromJson } from './logic/modelParser'
   import { onMounted, onUpdated, reactive, ref } from '@vue/composition-api'
   import GGridGenerator from './GGridGenerator';
   import GDialog from '../GDialog/GDialog'
@@ -23,7 +22,7 @@
       },
     },
     setup(props, context) {
-      const layout = (typeof(props.layout) === 'string') ? parseLayoutStr(props.layout) : parseLayoutObject(props.layout)
+      const layout = fromJson(props.layout)
 
       // vue template ref id
       const refIdWrapperElement = 'el'
@@ -86,7 +85,7 @@
             attrs[uid] = ''
             refWrapper = { ref : refIdWrapperElement }
             styleEl = <style type="text/css">
-              {generateGridCSS(layout, uid, { showBackgroundColor: props.displayPreviewColor })}
+              {model.genCss(uid, { showBackgroundColor: props.displayPreviewColor })}
             </style>
             dialogEdit = props.editable ? renderEditDialog() : null
           }

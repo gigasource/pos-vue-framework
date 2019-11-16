@@ -270,7 +270,7 @@ describe('/GGridGeneratorUtil', () => {
     }
   })
 
-  it('isAreaOverflowed', () => {
+  it('isOverflowed', () => {
     const child = {
       name: 'head',
       hide: false,
