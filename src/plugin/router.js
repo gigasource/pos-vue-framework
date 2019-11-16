@@ -20,7 +20,7 @@ import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
 import Order from '../POSView/order/Order';
 import Payment from '../POSView/order/Payment';
-import LoginView from '../view/LoginView';
+import Login from '../POSView/login/Login';
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
   { path: '/groupable', name: 'Groupable', component: Groupable},
@@ -41,7 +41,7 @@ const routes = [
   {path: '/textarea', name: 'Textarea', component: Textarea},
   { path: '/order', name: 'Order', component: Order},
   { path: '/payment', name: 'Payment', component: Payment},
-  { path: '/login', name: 'Login', component: LoginView },
+  { path: '/login', name: 'Login', component: Login },
   { path: '/order', name: 'Order', component: Order },
 ];
 

@@ -6,7 +6,7 @@
       </div>
       <div class="right-side-section">
         <div class="header-section">
-          <img alt="" height="40px" src="../assets/home/login-logo.jpg" width="240px"/>
+          <img alt="" height="40px" src="../../assets/home/login-logo.jpg" width="240px"/>
         </div>
         <div class="textfield-section">
           <p class="introduction-line">Enter your passcode to login</p>
@@ -73,17 +73,17 @@
 </template>
 
 <script>
-  import GImg from '../components/GImg/GImg';
-  import GTextField from '../components/GInput/GTextField';
-  import GBtn from '../components/GBtn/GBtn';
-  import GIcon from '../components/GIcon/GIcon';
-  import GDndDialog from '../components/GDndDialog/GDndDialog';
-  import GDialog from '../components/GDialog/GDialog';
-  import GCard from '../components/GCard/GCard';
-  import { GCardText, GCardActions, GCardSubtitle } from '../components/GCard/GCardFunctionalComponent';
-  import loginSupportDialog from './loginSupportDialog'
-  import GGridLayout from '../components/GGridGenerator/GGridLayout';
-  import GKeyboard from '../components/GKeyboard/GKeyboard';
+  import GImg from '../../components/GImg/GImg';
+  import GTextField from '../../components/GInput/GTextField';
+  import GBtn from '../../components/GBtn/GBtn';
+  import GIcon from '../../components/GIcon/GIcon';
+  import GDndDialog from '../../components/GDndDialog/GDndDialog';
+  import GDialog from '../../components/GDialog/GDialog';
+  import GCard from '../../components/GCard/GCard';
+  import { GCardText, GCardActions, GCardSubtitle } from '../../components/GCard/GCardFunctionalComponent';
+  import loginSupportDialog from '../login/loginSupportDialog'
+  import GGridLayout from '../../components/GGridGenerator/GGridLayout';
+  import GKeyboard from '../../components/GKeyboard/GKeyboard';
 
   export default {
     name: 'Login',
