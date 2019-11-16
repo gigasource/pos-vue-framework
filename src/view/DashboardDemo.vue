@@ -1,7 +1,5 @@
 <template>
-  <div style="height: 100%">
     <dashboard-template/>
-  </div>
 </template>
 
 <script>
