@@ -6,13 +6,13 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
     return isDirty.value || isFocused.value || !!props.placeholder;
   })
   const labelClasses = computed(() => {
-        return {
-          'g-tf-label__disabled': props.disabled,
-          'g-tf-label__readOnly': props.readOnly,
-          'g-tf-label__active': isLabelActive.value,
-          'g-tf-label__error': !isValidInput.value
-        }
+      return {
+        'g-tf-label__disabled': props.disabled,
+        'g-tf-label__readOnly': props.readOnly,
+        'g-tf-label__active': isLabelActive.value,
+        'g-tf-label__error': !isValidInput.value
       }
+    }
   )
   //Label transform when textfield has prefix, prepend
   const prefixRef = ref(null)
@@ -66,7 +66,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
         }
       }
 
-      errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')} `
+      errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
       errorBucket.length ? isValid.value = false : isValid.value = true
       return isValid
     } else {
@@ -151,8 +151,11 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onKeyDown(event) {
-    if (event.keyCode === keyCodes.enter && props.isDirty) {
-      context.emit('change', internalValue.value);
+    if (event.key === 'Enter') {
+      return context.emit('enter', internalValue.value);
+    }
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      return context.emit('delete')
     }
     context.emit('keydown', event)
   }
@@ -184,6 +187,7 @@ export function getInternalValue(props, context) {
   watch(() => props.value, () => rawInternalValue.value = props.value, {lazy: true});
 
   const internalValue = computed({
+
     get: () => rawInternalValue.value,
     set: (value) => {
       rawInternalValue.value = value;
@@ -191,5 +195,5 @@ export function getInternalValue(props, context) {
     }
   });
 
-  return internalValue;
+  return{ internalValue, rawInternalValue};
 }
