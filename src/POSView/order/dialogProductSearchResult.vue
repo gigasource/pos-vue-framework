@@ -1,6 +1,6 @@
 <template>
   <g-dialog v-model="dialogProductSearch">
-    <g-card style="height: 650px">
+    <g-card style="height: 568px">
       <g-card-title>
         {{searchedResult.length}} {{searchedResult.length > 1 ? 'results' : 'result'}} for product id "{{this.searchQuery}}"
         <g-spacer></g-spacer>
@@ -8,7 +8,7 @@
           <g-icon>close</g-icon>
         </g-btn>
       </g-card-title>
-      <g-simple-table fixed-header height="600px" striped>
+      <g-simple-table fixed-header height="500px" striped>
         <template>
           <thead>
           <tr class="search-table-row">
