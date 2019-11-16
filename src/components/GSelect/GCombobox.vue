@@ -130,7 +130,7 @@
       }
 
       const genMultiSelectionsSlot = () => {
-        if (props.chips|| props.smallChips || props.deletableChips || props.allowDuplicates) {
+        if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) {
           return selections.value.map((item, index) => <GChip small={props.smallChips}
                                                               close={props.deletableChips}
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
@@ -366,9 +366,14 @@
   .g-combobox {
     .g-select ::v-deep {
       .g-menu--activator {
+        span {
+          margin: 3px
+        }
+
         .g-tf-wrapper {
           margin: 16px 0px 24px;
         }
+
         .g-tf-append__inner {
           transition: transform 0.4s;
         }

@@ -205,7 +205,7 @@ export const GComboboxNoDataSlot = () => ({
       <g-list-item>
         <g-list-item-content>
           <g-list-item-text>
-              No data match, Enter to add value to selections.sy
+              No data match, Enter to add value to selections
           </g-list-item-text>
         </g-list-item-content>
       </g-list-item>
