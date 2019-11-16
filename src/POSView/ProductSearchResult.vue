@@ -37,7 +37,7 @@
               <div style="display: flex; justify-content: center; align-items: center;">
                 <g-item-group :items="item.unitOptions" v-model="item.selectedUnit">
                   <template v-slot:item="{item, toggle, active}">
-                    <g-btn outlined style="margin-left: 5px"> {{item.optionTitle}}</g-btn>
+                    <g-btn outlined style="margin-left: 5px" @click="toggle(item)"> {{item.optionTitle}}</g-btn>
                   </template>
                 </g-item-group>
               </div>
@@ -51,7 +51,7 @@
                 </span>
                 <g-item-group :items="item.attributeOptions[0].attributeColor" v-model="item.selectedColor">
                   <template v-slot:item="{item, toggle, active}">
-                    <g-btn outlined style="margin-left: 5px"> {{item.optionTitle}}</g-btn>
+                    <g-btn outlined style="margin-left: 5px" @click="toggle(item)"> {{item.optionTitle}}</g-btn>
                   </template>
                 </g-item-group>
               </div>
@@ -61,7 +61,7 @@
                 </span>
                 <g-item-group :items="item.attributeOptions[1].attributeAge" v-model="item.selectedAge">
                   <template v-slot:item="{item, toggle, active}">
-                    <g-btn outlined style="margin-left: 5px"> {{item.optionTitle}}</g-btn>
+                    <g-btn outlined style="margin-left: 5px" @click="toggle(item)"> {{item.optionTitle}}</g-btn>
                   </template>
                 </g-item-group>
               </div>
