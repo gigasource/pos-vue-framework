@@ -5,18 +5,22 @@ import { createRange } from '../../../utils/helpers'
 import AreaModel from './AreaModel'
 
 export default class GridModel extends AreaModel {
+  // public field
+  alignItems = ''
+  alignContent = ''
+  justifyItems = ''
+  justifyContent = ''
+  columns = createRange(5, () => ref('1fr'))
+  rows = createRange(5, () => ref('1fr'))
+  columnGap = 0
+  rowGap = 0
+  subAreas = []
+
   constructor({area, parent}) {
     super({area, parent})
-    this.columns = createRange(5, () => ref('1fr'))
-    this.rows = createRange(5, () => ref('1fr'))
-    this.columnGap = 0
-    this.rowGap = 0
-    this.subAreas = []
   }
 
   // columns
-  get columns() { return this._columns }
-  set columns(val) { this._columns = val }
   insertColumnLeft(index) {
     this.columns.splice(index, 0, ref('1fr'))
     _.each(this.subAreas, area => {
@@ -41,14 +45,14 @@ export default class GridModel extends AreaModel {
       }
     })
   }
-  setColumnUnit(index, val) { this.columns[index].value = val}
+  setColumnUnit(index, val) {
+    this.columns[index].value = val
+  }
   setColumnNumbers(length) {
     this._adjustRowColNumbers(this.columns, length)
   }
 
   // rows
-  get rows() { return this._rows }
-  set rows(val) { this._rows = val }
   insertRowAbove(index) {
     // add one new row from index
     this.rows.splice(index, 0, ref('1fr'))
@@ -79,7 +83,9 @@ export default class GridModel extends AreaModel {
       }
     })
   }
-  setRowUnit(index, val) { this.rows[index].value = val }
+  setRowUnit(index, val) {
+    this.rows[index].value = val
+  }
   setRowNumbers(length) {
     this._adjustRowColNumbers(this.rows, length)
   }
@@ -93,27 +99,6 @@ export default class GridModel extends AreaModel {
       targetArr.splice(newLen, oldLen - newLen)
     }
   }
-
-  get columnGap() { return this._columnGap }
-  set columnGap(val) { this._columnGap = val }
-
-  get rowGap() { return this._rowGap }
-  set rowGap(val) { this._rowGap = val }
-
-  // align-justify
-  get alignItems() { return this._alignItems }
-  set alignItems(v) { this._alignItems = v }
-  get alignContent() { return this._alignContent }
-  set alignContent(v) { this._alignContent = v }
-  get justifyItems() { return this._justifyItems }
-  set justifyItems(v) { this._justifyItems = v }
-  get justifyContent() { return this._justifyContent }
-  set justifyContent(v) { this._justifyContent = v }
-
-
-  // sub area
-  get subAreas() { return this._subAreas }
-  set subAreas(v) { this._subAreas = v}
 
   /**
    * Validate area name
@@ -135,6 +120,11 @@ export default class GridModel extends AreaModel {
     return uniqueAreaName
   }
 
+  /**
+   * Add sub grid item from selected area
+   * @param area
+   * @returns {boolean} true if area name is not valid
+   */
   addSubGrid(area) {
     if (!this._isAreaNameValid(area.name))
       return false
@@ -142,6 +132,12 @@ export default class GridModel extends AreaModel {
     this.subAreas.push(new GridModel({parent: this, area}))
     return true
   }
+
+  /**
+   * Add sub item from selected area
+   * @param area
+   * @returns {boolean} true if area name is not valid
+   */
   addSubItem(area) {
     if (!this._isAreaNameValid(area.name))
       return false
@@ -159,6 +155,12 @@ export default class GridModel extends AreaModel {
     return gridCss
   }
 
+  /**
+   * generate css style
+   * @param uid unique grid layout identity
+   * @param genOptions showBackgroundColor
+   * @returns {string} css style
+   */
   genCss(uid, genOptions) {
     let mySubAreaCss = ''
     _.each(this.subAreas, subArea => mySubAreaCss += subArea.genCss(uid, genOptions) + '\r\n')

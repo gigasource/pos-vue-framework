@@ -3,54 +3,35 @@ import { generateRandomCssColor } from '../../../utils/colors'
 import { getCssArea, normalizeArea } from './utils';
 
 export default class AreaModel {
-
+  // public fields
+  name = ''
+  top = -1
+  left = -1
+  width = 0
+  height = 0
+  margin = ''
+  padding = ''
+  bgColor = generateRandomCssColor()
+  alignSelf = ''
+  justifySelf = ''
 
   constructor({area, parent}) {
-    this._parent = parent
     this._visible = true
-    this._bgColor = generateRandomCssColor()
+
     if (area) {
       this.name = area.name
       this.setArea(area)
+    }
+
+    if (parent) {
+      this._parent = parent
     } else {
-      this.name = 'div'
-      this.top = -1
-      this.left = -1
-      this.width = 0
-      this.height = 0
+      this.name = 'app'
     }
   }
 
-  get name() { return this._name }
-  set name(v) { this._name = v }
-
-  get alignSelf() { return this._alignSelf }
-  set alignSelf(value) { this._alignSelf = value }
-
-  get justifySelf() { return this._justifySelf }
-  set justifySelf(value) { this._justifySelf = value }
-
-  get padding() { return this._padding }
-  set padding(value) { this._padding = value }
-
-  get margin() { return this._margin }
-  set margin(val) { this._margin = val }
-
-  get top() { return this._top }
-  set top(val) { this._top = val }
-
-  get left() { return this._left }
-  set left(val) { this._left = val }
-
-  get right() { return this._left + this._width }
-  get bottom() { return this._top + this._height }
-
-  get width() { return this._width }
-  set width(val) { this._width = val }
-
-  get height() { return this._height }
-  set height(v) { this._height = v }
-
+  get right() { return this.left + this.width }
+  get bottom() { return this.top + this.height }
   get visible() { return this._visible }
   toggleVisible() { this._visible = !this._visible }
 
@@ -73,8 +54,7 @@ export default class AreaModel {
     this.height = rowEnd - rowStart
   }
 
-  get bgColor() { return this._bgColor }
-  changeBgColor() { this._bgColor = generateRandomCssColor() }
+  changeBgColor() { this.bgColor = generateRandomCssColor() }
 
   destroy() {
     let id = _.findIndex(this._parent.subAreas, area => area === this)
@@ -82,7 +62,12 @@ export default class AreaModel {
   }
 
   gridAreaCss() {
-    return getCssArea({ rowStart: this.top, rowEnd: this.bottom, columnStart: this.left, columnEnd: this.right })
+    return getCssArea({
+      rowStart: this.top,
+      rowEnd: this.bottom,
+      columnStart: this.left,
+      columnEnd: this.right
+    })
   }
 
   getFullCssModelName(uid) {

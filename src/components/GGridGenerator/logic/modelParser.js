@@ -11,14 +11,13 @@ export function fromJson(inputModel) {
   } else {
     if (typeof(inputModel) === 'string')
       inputModel = JSON.parse(inputModel)
-
     return _parseGridModel(inputModel, null)
   }
 }
 export function toJsonStr(gridModel) {
   return JSON.stringify(gridModel, (k, v) => {
-    console.log('key:', k, v)
-    if (k === '_parent')
+    // skip private field
+    if (k.startsWith('_'))
       return
     // unwrap ref
     if (k === 'rows' || k === 'columns')
@@ -51,6 +50,12 @@ function _copyAreaInfo(areaModel, inputModel) {
       case 'justify-self':
         areaModel.justifySelf = inputModel[key]
         break
+      case 'area':
+        areaModel.top = inputModel[key]['rowStart']
+        areaModel.left = inputModel[key]['columnStart']
+        areaModel.width =  inputModel[key]['columnEnd'] - inputModel[key]['columnStart']
+        areaModel.height = inputModel[key]['rowEnd'] - inputModel[key]['rowStart']
+        break
     }
   })
 }
@@ -70,7 +75,7 @@ function _copyGridInfo(gridModel, inputModel) {
         gridModel[key] = inputModel[key]
         break;
       case 'subAreas':
-        gridModel.subAreas = _.map(inputModel[key], item => item.subAreas ? _parseGridModel(item, parent) : _parseAreaModel(item, parent))
+        gridModel.subAreas = _.map(inputModel[key], item => item.subAreas ? _parseGridModel(item, gridModel) : _parseAreaModel(item, gridModel))
         break;
         // compatibility
       case 'align-items':
@@ -85,8 +90,6 @@ function _copyGridInfo(gridModel, inputModel) {
       case 'justify-content':
         gridModel.justifyContent = inputModel[key]
         break
-      default:
-        console.log(`unsupported key ${key}`)
     }
   })
 }
