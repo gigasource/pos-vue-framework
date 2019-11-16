@@ -1,7 +1,7 @@
 <template>
 	<div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
 		<div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-			<slot name="prepend-outer" >
+			<slot name="prepend-outer">
 				<g-icon :color=iconColor>{{prependIcon}}</g-icon>
 			</slot>
 		</div>
@@ -39,7 +39,7 @@
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
-					<slot name="clearableSlot"  :iconColor="iconColor">
+					<slot name="clearableSlot" :iconColor="iconColor">
 						<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
 					</slot>
 
@@ -49,7 +49,9 @@
 				</div>
 				<slot name="inputMessage">
 					<div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
-					<div class="g-tf-hint" v-else :class="hintClasses" >{{hint}}</div>
+					<div class="g-tf-hint" v-else :class="hintClasses">
+						<slot name="hint">{{hint}}</slot>
+					</div>
 					<div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
 				</slot>
 			</div>
@@ -65,7 +67,8 @@
 
 <script>
   import { ref, computed } from '@vue/composition-api';
-  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';import VueTheMask from 'vue-the-mask'
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';
+  import VueTheMask from 'vue-the-mask'
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -75,23 +78,23 @@
       ...{//display props
         label: String,
         placeholder: String,
-        appendIcon:{
+        appendIcon: {
           type: String,
           default: ''
-        } ,
+        },
         prependIcon: {
           type: String,
           default: ''
-        } ,
-				prependInnerIcon:{
+        },
+        prependInnerIcon: {
           type: String,
           default: ''
-        } ,
-				appendInnerIcon: {
+        },
+        appendInnerIcon: {
           type: String,
           default: ''
-        } ,
-				clearIcon:  {
+        },
+        clearIcon: {
           type: String,
           default: 'clear'
         },
@@ -109,25 +112,29 @@
         readOnly: Boolean,
       },
       //rules and validation props
-      ...{rules: Array,
-      hint: String,
-      errorCount: {
-        type: Number,
-        default: 1
+      ...{
+        rules: Array,
+        hint: String,
+        errorCount: {
+          type: Number,
+          default: 1
+        },
+        persistent: Boolean,
+        counter: [Number, Boolean, String],
+        validateOnBlur: Boolean,
+        error: Boolean
       },
-      persistent: Boolean,
-      counter: [Number, Boolean, String],
-      validateOnBlur: Boolean,
-      error: Boolean},
 
       //styles
-      ...{filled: Boolean,
-      outlined: Boolean,
-      solo: Boolean,
-      shaped: Boolean,
-      rounded: Boolean,
-      flat: Boolean,
-			dense: Boolean},
+      ...{
+        filled: Boolean,
+        outlined: Boolean,
+        solo: Boolean,
+        shaped: Boolean,
+        rounded: Boolean,
+        flat: Boolean,
+        dense: Boolean
+      },
 
       // basic props
       value: [String, Number],
@@ -160,79 +167,85 @@
 
       const { onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner, } = getSlotEventListeners(context);
 
-      const { onClick, onFocus, onBlur, onClearIconClick,
-				onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
-			//set legend width for label in outlined textfield
-			const legendStyles = computed(() => {
-			  if( !props.solo && props.label && (isFocused.value || internalValue.value||props.placeholder)) {
-					const margin = props.rounded ? (props.filled ? '24px' : '16px') : (props.shaped ? '12px' : '5px');
-			    return {
-			      'width': 'auto',
-						'padding': '2px 4px 2px 2px',
-						'margin-left': margin,
-						'transition': 'margin 0.4s',
-					}
-				} else
-				  return {}
-			});
-			const iconColor = computed(() => {
-			  if(isLabelActive.value) {
-          if (!isValidInput.value) return 'red'
-			    return 'rgb(24, 103, 192)'
-			  }
-			})
+      const {
+        onClick, onFocus, onBlur, onClearIconClick,
+        onMouseDown, onMouseUp, onChange, onKeyDown
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+      //set legend width for label in outlined textfield
+      const legendStyles = computed(() => {
+        if (!props.solo && props.label && (isFocused.value || internalValue.value || props.placeholder)) {
+          const margin = props.rounded ? (props.filled ? '24px' : '16px') : (props.shaped ? '12px' : '5px');
+          return {
+            'width': 'auto',
+            'padding': '2px 4px 2px 2px',
+            'margin-left': margin,
+            'transition': 'margin 0.4s',
+          }
+        } else {
+          return {}
+        }
+      });
+      const iconColor = computed(() => {
+        if (isLabelActive.value) {
+          if (!isValidInput.value) {
+            return 'red'
+          }
+          return 'rgb(24, 103, 192)'
+        }
+      })
 
 
       return {
-				//calculated styles and classes
-				labelClasses,
-				labelStyles,
-				tfErrClasses,
-				tfWrapperClasses,
-				hintClasses,
-				inputErrStyles,
-				//value
-				internalValue,
-				//calculated state
-				isLabelActive,
-				isFocused,
-				isDirty,
-				isValidInput,
-				//calculated error
-				errorMessages,
-				//event listeners
-				onClick,
-				onChange,
-				onFocus,
-				onBlur,
-				onKeyDown,
-				onMouseUp,
-				onMouseDown,
-				onClickPrependOuter,
-				onClickPrependInner,
-				onClickAppendOuter,
-				onClickAppendInner,
-				onClearIconClick,
-				//ref
-				prefixRef,
+        //calculated styles and classes
+        labelClasses,
+        labelStyles,
+        tfErrClasses,
+        tfWrapperClasses,
+        hintClasses,
+        inputErrStyles,
+        //value
+        internalValue,
+        //calculated state
+        isLabelActive,
+        isFocused,
+        isDirty,
+        isValidInput,
+        //calculated error
+        errorMessages,
+        //event listeners
+        onClick,
+        onChange,
+        onFocus,
+        onBlur,
+        onKeyDown,
+        onMouseUp,
+        onMouseDown,
+        onClickPrependOuter,
+        onClickPrependInner,
+        onClickAppendOuter,
+        onClickAppendInner,
+        onClearIconClick,
+        //ref
+        prefixRef,
         tfErrWrapperClass,
         legendStyles,
-				iconColor,
+        iconColor,
       }
     }
   }
 
   function getTfWrapperClasses(props) {
-    return computed(() => { return{
-      'g-tf-wrapper__disabled': props.disabled,
-      'g-tf__filled': props.filled,
-      'g-tf__outlined': props.outlined,
-      'g-tf__solo': props.solo,
-      'g-tf__rounded': props.rounded,
-      'g-tf__shaped': props.shaped,
-      'g-tf__flat': props.flat,
-			'g-tf__dense': props.dense,
-		}
+    return computed(() => {
+      return {
+        'g-tf-wrapper__disabled': props.disabled,
+        'g-tf__filled': props.filled,
+        'g-tf__outlined': props.outlined,
+        'g-tf__solo': props.solo,
+        'g-tf__rounded': props.rounded,
+        'g-tf__shaped': props.shaped,
+        'g-tf__flat': props.flat,
+        'g-tf__dense': props.dense,
+      }
     })
   }
 

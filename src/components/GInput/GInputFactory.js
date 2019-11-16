@@ -7,9 +7,9 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   })
   const labelClasses = computed(() => {
       return {
+        'g-tf-label__active': isLabelActive.value,
         'g-tf-label__disabled': props.disabled,
         'g-tf-label__readOnly': props.readOnly,
-        'g-tf-label__active': isLabelActive.value,
         'g-tf-label__error': !isValidInput.value
       }
     }
