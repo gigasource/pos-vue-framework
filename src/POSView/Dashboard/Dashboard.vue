@@ -17,7 +17,7 @@
       <g-sidebar class="sidebar">
         <g-side-bar-tree-view :data="state.data" v-model="state.value"/>
         <g-spacer/>
-        <div class="footer">
+        <div class="footer waves-effect">
           <g-icon style="margin: 16px 12px 13px 21px">{{LogOut}}</g-icon>
           <span>Log Out</span>
         </div>
@@ -45,25 +45,25 @@
 <script>
     import {reactive} from "@vue/composition-api"
     //import component
-    import GGridLayout from "../components/GGridGenerator/GGridLayout";
+    import GGridLayout from "../../components/GGridGenerator/GGridLayout";
     import DashboardLayout from "./layout";
-    import GToolbar from "../components/GToolbar/GToolbar";
-    import GSidebar from '../components/GSidebar/GSidebar';
-    import GSideBarTreeView from "../components/GSidebar/GSideBarTreeView";
-    import GAvatar from "../components/GAvatar/GAvatar";
-    import GIcon from "../components/GIcon/GIcon";
-    import GImg from "../components/GImg/GImg";
-    import GBtn from "../components/GBtn/GBtn";
-    import GSpacer from "../components/GLayout/GSpacer";
+    import GToolbar from "../../components/GToolbar/GToolbar";
+    import GSidebar from '../../components/GSidebar/GSidebar';
+    import GSideBarTreeView from "../../components/GSidebar/GSideBarTreeView";
+    import GAvatar from "../../components/GAvatar/GAvatar";
+    import GIcon from "../../components/GIcon/GIcon";
+    import GImg from "../../components/GImg/GImg";
+    import GBtn from "../../components/GBtn/GBtn";
+    import GSpacer from "../../components/GLayout/GSpacer";
     //import icon
-    import CashRegister from "../assets/dashboard/code.svg"
-    import OrderHistory from "../assets/dashboard/history.svg"
-    import StaffReport from "../assets/dashboard/report.svg"
-    import Setting from "../assets/dashboard/gear.svg"
-    import AdminDashboard from "../assets/dashboard/dashboard.svg"
-    import EndOfDayIcon from "../assets/dashboard/calendar.svg"
-    import Support from "../assets/dashboard/info.svg"
-    import LogOut from "../assets/dashboard/LogOut.svg"
+    import CashRegister from "../../assets/dashboard/code.svg"
+    import OrderHistory from "../../assets/dashboard/history.svg"
+    import StaffReport from "../../assets/dashboard/report.svg"
+    import Setting from "../../assets/dashboard/gear.svg"
+    import AdminDashboard from "../../assets/dashboard/dashboard.svg"
+    import EndOfDayIcon from "../../assets/dashboard/calendar.svg"
+    import Support from "../../assets/dashboard/info.svg"
+    import LogOut from "../../assets/dashboard/LogOut.svg"
 
     export default {
         name: "DashboardTemplate",
@@ -95,6 +95,7 @@
 
             return {
                 DashboardLayout,
+                LogOut,
                 //data
                 state,
                 btnData,

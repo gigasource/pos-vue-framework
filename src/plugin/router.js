@@ -18,8 +18,8 @@ import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
-import Dashboard from "../view/DashboardDemo";
-import OrderHistory from "../POSView/SubPage/OrderHistory";
+import Dashboard from "../POSView/Dashboard/Dashboard";
+import OrderHistory from "../POSView/OrderHistory/OrderHistory";
 
 const routes = [
     {path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -39,8 +39,8 @@ const routes = [
     {path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
     {path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
     {path: '/textarea', name: 'Textarea', component: Textarea},
-    {path: '/dashboard', name: 'Dashboard', component: Dashboard},
-    {path: '/dashboard/order-history', name: 'Order History', component: OrderHistory},
+    {path: '/dashboard/', name: 'Dashboard', component: Dashboard},
+    {path: '/dashboard/order-history', name: 'OrderHistory', component: OrderHistory},
 ];
 
 const router = new VueRouter({
