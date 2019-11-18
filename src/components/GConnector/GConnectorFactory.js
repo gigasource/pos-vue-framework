@@ -66,7 +66,7 @@ export default function GConnectorFactory(props, context, model, id, connectionP
   })
 
 
-  // Draw new connect path
+  // Draw new connection path
 
   function drawStart(e) {
     const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)

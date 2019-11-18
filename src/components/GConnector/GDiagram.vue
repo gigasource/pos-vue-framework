@@ -18,6 +18,18 @@
         type: [Number, String],
         default: 0
       },
+			minZoom: {
+        type: [Number, String],
+				default: 0.1
+			},
+      maxZoom: {
+        type: [Number, String],
+        default: 100
+      },
+      zoomSpeed: {
+        type: [Number, String],
+        default: 5
+      }
 		},
     setup(props, context) {
       const diagramId = ref('null')
@@ -75,10 +87,14 @@
 
       document.body.addEventListener('mousemove', mouseMove)
       document.body.addEventListener('mouseup', mouseUp)
+      document.body.addEventListener('mousemove', drag);
+      document.body.addEventListener('mouseup', dragEnd);
 
 			onBeforeUnmount(() => {
         document.body.removeEventListener('mousemove', mouseMove)
         document.body.removeEventListener('mouseup', mouseUp)
+        document.body.removeEventListener('mousemove', drag);
+        document.body.removeEventListener('mouseup', dragEnd);
 			})
 
 			// Dynamic styles
@@ -97,8 +113,6 @@
       }))
 
 
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('mouseup', dragEnd);
 
 			// Render function
       function genDiagram() {
@@ -116,6 +130,7 @@
 
       return {
         genDiagram,
+				connectionPoints
       }
     },
     render() {

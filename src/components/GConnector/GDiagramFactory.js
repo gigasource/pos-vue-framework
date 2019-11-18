@@ -1,4 +1,4 @@
-import { ref, reactive, onMounted} from '@vue/composition-api';
+import { ref, reactive, computed, onMounted, onBeforeUnmount} from '@vue/composition-api';
 import { getElementPosition } from '../../utils/helpers';
 
 function getConnectorId(el, ids) {
@@ -19,9 +19,9 @@ function getConnectorIds(el) {
 export default function GDiagramFactory(props, context) {
   const connectionPoints = ref([])
   const zoomState = ref(1)
-  const scaleFactor = 0.05
-  const minScale = 0.1
-  const maxScale = 100
+  const minScale = computed(() => +props.minZoom)
+  const maxScale = computed(() => +props.maxZoom)
+  const scaleFactor = computed(() => (+props.zoomSpeed)/100)
   const svgDimension = reactive({
     width: 0,
     height: 0
@@ -60,25 +60,40 @@ export default function GDiagramFactory(props, context) {
     originCoordinate.y = svgRect.top
   }
 
-  onMounted(() => {
+  function updateContainer() {
     const rect = context.refs.container.getBoundingClientRect()
 
     containerPosition.top = rect.top
     containerPosition.left = rect.left
     containerPosition.bottom = rect.bottom
     containerPosition.right = rect.right
-
     containerDimension.width = context.refs.container.clientWidth
     containerDimension.height = context.refs.container.clientHeight
 
     svgDimension.width = context.refs.container.clientWidth
     svgDimension.height = context.refs.container.clientHeight
-    maxSvgDimension.width = svgDimension.width / minScale
-    maxSvgDimension.height = svgDimension.height / minScale
+    maxSvgDimension.width = svgDimension.width / minScale.value
+    maxSvgDimension.height = svgDimension.height / minScale.value
+  }
 
+  // Update data when mounted
+  onMounted(() => {
+    updateContainer()
     updateOriginCoordinate()
     startOriginCoordinate.x = originCoordinate.x
     startOriginCoordinate.y = originCoordinate.y
+  })
+
+  // Update data when resize window
+  function updateOnResize() {
+    updateContainer()
+    updateOriginCoordinate()
+  }
+
+  window.addEventListener('resize', updateOnResize)
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', updateOnResize)
   })
 
   // Zoom
@@ -100,8 +115,8 @@ export default function GDiagramFactory(props, context) {
         y: (mousePoint.pageY + scrollState.top)/zoomState.value
       }
 
-      zoomState.value += delta * scaleFactor * zoomState.value
-      zoomState.value = Math.max(minScale, Math.min(maxScale, zoomState.value))
+      zoomState.value += delta * scaleFactor.value * zoomState.value
+      zoomState.value = Math.max(minScale.value, Math.min(maxScale.value, zoomState.value))
 
       if (zoomState.value < 1) {
         svgDimension.width = Math.max(containerDimension.width / zoomState.value, svgDimension.width)
@@ -209,7 +224,6 @@ export default function GDiagramFactory(props, context) {
     zoomState,
     originCoordinate,
     svgDimension,
-    containerDimension,
     zoom,
     scroll,
     isDrag,
