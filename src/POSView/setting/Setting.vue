@@ -44,7 +44,7 @@
           { title: 'Reporring', icon: chart },
           { title: 'User', icon: 'person', href: '/setting/user' },
           {
-            title: 'Product', icon: cog,
+            title: 'Settings', icon: cog,
             items: [
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/general'},
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small'},
@@ -52,7 +52,7 @@
             ]
           },
           {
-            title: 'Product', icon: switchMulti,
+            title: 'Advance settings', icon: switchMulti,
             items: [
               { title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/company' },
               { title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/payment' },
