@@ -358,7 +358,7 @@
               document.body.style.cursor = 'nwse-resize';
               break;
             default:
-              if (e.target === context.refs.header) {
+              if (e.target === context.refs.header || e.target === context.refs.title) {
                 cursor.value = 'move';
                 document.body.style.cursor = 'move';
 							} else {
