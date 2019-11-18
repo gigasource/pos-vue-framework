@@ -86,7 +86,17 @@ export default function GDiagramFactory(props, context) {
 
   // Update data when resize window
   function updateOnResize() {
-    updateContainer()
+    const rect = context.refs.container.getBoundingClientRect()
+
+    containerDimension.width = context.refs.container.clientWidth
+    containerDimension.height = context.refs.container.clientHeight
+
+    maxSvgDimension.width = svgDimension.width / minScale.value
+    maxSvgDimension.height = svgDimension.height / minScale.value
+
+    svgDimension.width = Math.max(containerDimension.width / zoomState.value, svgDimension.width)
+    svgDimension.height = Math.max(containerDimension.height / zoomState.value, svgDimension.height)
+
     updateOriginCoordinate()
   }
 
