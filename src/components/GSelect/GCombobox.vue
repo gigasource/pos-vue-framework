@@ -42,10 +42,7 @@
           default: false
         },
         placeholder: String,
-        label: {
-          type: String,
-          default: 'Label'
-        },
+        label: String,
         prefix: String,
         suffix: String,
         appendIcon: String,

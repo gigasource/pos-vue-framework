@@ -4,6 +4,7 @@
        :style="styles"
        @click="onClick"
   >
+
     <template v-if="!multiSection">
       <slot name="subheader">
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
@@ -18,7 +19,7 @@
                v-on="getListEvents(item)"
           >
             <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
-              <div :class="prependClasses" v-if="item.prepend">
+              <div :class="prependClasses" v-if="item.prepend &&  prependType">
                 <g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
                 <g-avatar v-else-if="prependType==='avatar'">
                   <g-img :src="item.prepend"/>
@@ -34,9 +35,9 @@
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
-            <slot name="append" :item="item">
-              <template v-if="item.append">{{item.append}}</template>
-            </slot>
+              <slot name="append" :item="item">
+                <template v-if="item.append">{{item.append}}</template>
+              </slot>
           </div>
           <g-divider v-if="(divider && (index < renderList.length -1) )"
                      :inset="divider === 'inset'"/>
@@ -79,6 +80,7 @@
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
             <slot name="append" :item="item">
+              <template v-if="item.append">{{item.append}}</template>
             </slot>
 
           </div>
@@ -134,10 +136,8 @@
         type: String,
         default: 'title'
       },
-      activeClass: {
-        type: String,
-        default: ''
-      }
+      activeClass: String,
+       inMenu: Boolean,
     },
     setup: function (props, context) {
       //G list computed class
@@ -155,7 +155,7 @@
         'g-list__rounded': props.rounded,
         'g-list__shaped': props.shaped,
         ['elevation-' + props.elevation]: true,
-        'g-list__dense': props.dense,
+        'g-list__dense': props.dense || props.inMenu,
         'g-list__nav': props.nav,
         'g-list__empty': !props.items.length
 
@@ -165,7 +165,6 @@
         ...props.height && {'height': props.height},
         ...props.width && {'width': props.width}
       }));
-      let _activeClass = props.activeClass
       const prependClasses = computed(() => {
         if (!['icon', 'avatar', 'image'].includes(props.prependType)) {
           return `g-list-item-icon`
@@ -179,22 +178,18 @@
       function onClick(event) {
         context.emit('click', event)
       }
-
-      function onArrowDown(item) {
-        let index = renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
+      function onArrowDown(item){
+        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
         let i = index
-        index < (renderList.value.length - 1) ? i += 1 : i = 0
+        index < (renderList.value.length -1) ? i += 1 : i=0
         context.root.$el.getElementsByClassName('g-list-item')[i].focus()
-        console.log('down' + index)
         context.emit('keydown:up')
       }
-
-      function onArrowUp(item) {
-        let index = renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
+      function onArrowUp(item){
+        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
         let i = index
-        index > 0 ? i -= 1 : i = props.items.length - 1
+        index > 0 ? i -= 1 : i = props.items.length -1
         context.root.$el.getElementsByClassName('g-list-item')[i].focus()
-        console.log('up' + index)
         context.emit('keydown:down')
       }
 

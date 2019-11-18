@@ -42,10 +42,7 @@
           default: false
         },
         placeholder: String,
-        label: {
-          type: String,
-          default: 'Label'
-        },
+        label: String,
         prefix: String,
         suffix: String,
         appendIcon: String,
@@ -295,6 +292,7 @@
                 multiple: props.multiple,
                 dense: true,
                 selectable: true,
+                inMenu: true
               },
               on: {
                 'click:item': onClickItem
