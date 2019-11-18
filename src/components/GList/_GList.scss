@@ -251,6 +251,32 @@
       }
     }
   }
+  &__inMenu{
+    .g-list-header {
+      padding: 0 8px;
+    }
+    .g-list-item-content{
+      margin-left: 0
+    }
+
+    .g-list-item-text {
+      font-size: 14px;
+
+      &__sub {
+        font-size: 10px;
+      }
+    }
+
+    .g-list-item-icon {
+      margin: 12px 12px 12px 16px
+    }
+
+    .g-list-item-image,
+    .g-list-item-avatar {
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+  }
 }
 
 .g-list__two-line .g-list-item,

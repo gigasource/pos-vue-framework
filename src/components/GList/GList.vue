@@ -66,27 +66,26 @@
                @keydown.down="onArrowDown(item)"
                @keydown.up="onArrowUp(item)">
             <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
-              <div :class="prependClasses" v-if="item.prepend">
-                <g-avatar>
-                  <g-img :src="item.prepend"></g-img>
+              <div :class="prependClasses" v-if="item.prepend &&  prependType">
+                <g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
+                <g-avatar v-else-if="prependType==='avatar'">
+                  <g-img :src="item.prepend"/>
                 </g-avatar>
+                <g-img v-else-if="prependType==='image'" :src="item.prepend"/>
               </div>
+              <div v-else>{{item.prepend}}</div>
             </slot>
 
             <div class="g-list-item-content">
               <div class="g-list-item-text">{{item[itemTitle]}}</div>
               <div class="g-list-item-text__sub"
                    v-if="lineNumber > 1">
-                {{item.subtitle || '&nbsp;'}}
+                {{!inMenu && (item.subtitle || '&nbsp;')}}
               </div>
-              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
+              <div class="g-list-item-text__sub" v-if="lineNumber === 3 && !inMenu">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
             <slot name="append" :item="item">
               <template v-if="item.append">{{item.append}}</template>
-
-              <div v-else class="g-list-item-action">
-                <g-icon color="yellow">star</g-icon>
-              </div>
             </slot>
 
           </div>
@@ -149,6 +148,7 @@
       //G list computed class
       //Computed subtitle
       const lineNumber = computed(() => {
+        if(props.inMenu) return 0;
         if (!props.items.find(i => i.subtitle)) return 1;
         if (props.items.find(i => i.subtitle2)) return 3;
         return 2;
@@ -161,7 +161,8 @@
         'g-list__rounded': props.rounded,
         'g-list__shaped': props.shaped,
         ['elevation-' + props.elevation]: true,
-        'g-list__dense': props.dense || props.inMenu,
+        'g-list__dense': props.dense,
+        'g-list__inMenu': props.inMenu,
         'g-list__nav': props.nav,
       }));
 
