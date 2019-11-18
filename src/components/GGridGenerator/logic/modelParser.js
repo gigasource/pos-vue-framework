@@ -41,6 +41,7 @@ function _copyAreaInfo(areaModel, inputModel) {
       case 'width':
       case 'height':
       case 'bgColor':
+      case 'wrapInDiv':
         areaModel[key] = inputModel[key]
         break
         // compatibility old version

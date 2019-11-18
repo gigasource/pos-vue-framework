@@ -13,6 +13,10 @@
   import GFileInputJSX from '../GFileInput/GFileInput'
   import GridModel from './logic/GridModel';
 
+  const selectedSettingEnum = {
+    grid: 0,
+    area: 1
+  }
 
   /**
    * Return all grid/sub-grid item
@@ -30,7 +34,6 @@
     }
     return gridList
   }
-
 
   function createEmptySelectingArea() {
     return {
@@ -53,12 +56,6 @@
     setup(props, context) {
       // initialize layout
       let initLayout = fromJson(props.layout)
-
-      const selectedSetting = {
-        grid: 0,
-        area: 1
-      }
-
       const state = reactive({
         layout: initLayout,
         //// view settings
@@ -78,7 +75,7 @@
         },
 
         //
-        selectedSetting: selectedSetting.grid,
+        selectedSetting: selectedSettingEnum.grid,
         // a value hold the selected grid/sub-grid
         selectedGrid: initLayout,
         // a value hold the selected area
@@ -102,11 +99,12 @@
         // a value which hold generated css
         generatedCss: ''
       })
-
       // store selecting area temporary information
       // similar to state.hoveringArea but store raw grid index base 0
       // state.hoveringArea contain modified area and only used for display hovering area
       let _selectingArea = createEmptySelectingArea()
+      // a flag enabled for select an area in grid container
+      let ctrlPressFlag = false
 
       // 1) List
       // list all grid item is grid or sub-grid (not for single item)
@@ -116,15 +114,13 @@
           'grid-gen__sub-list__item--selected': grid === state.selectedGrid
         }
       }
-
       function setSelectedGrid(grid) {
         state.selectedGrid = grid
-        state.selectedSetting = selectedSetting.grid
+        state.selectedSetting = selectedSettingEnum.grid
       }
-
       function renderGridList() {
         return <div class="grid-gen__sub-list">
-          <div class="grid-gen__sub-list__section">GRID</div>
+          <div class="grid-gen__sub-list__section">Grid</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(getGridList(state.layout), grid =>
                 <li class={getGridListItemClass(grid)}>
@@ -150,12 +146,12 @@
 
       function setSelectedArea(area) {
         state.selectedArea = area
-        state.selectedSetting = selectedSetting.area
+        state.selectedSetting = selectedSettingEnum.area
       }
 
       function renderAreaList() {
         return <div class="grid-gen__sub-list">
-          <div class="grid-gen__sub-list__section">AREA</div>
+          <div class="grid-gen__sub-list__section">Area</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(state.selectedGrid.subAreas, area =>
                 <li class={getAreaListItemClass(area)}>
@@ -275,9 +271,11 @@
                   // view mode
                   if (state.viewMode) return
 
-                  // execute action
-                  const actionExecuted = tryToExecuteActionIfHit(e)
-                  if (actionExecuted) return
+                  // check and execute if area hit
+                  if (ctrlPressFlag && areaHit(e)) return
+
+                  // check and execute if area's action hit
+                  if (tryToExecuteActionIfHit(e)) return
 
                   // create or modify existing item
                   _selectingArea = {
@@ -291,15 +289,12 @@
                   state.hovering = true
                 }}
                 vOn:mouseenter={() => {
-                  if (state.viewMode) return
                   if (state.hovering) {
                     _selectingArea = { ..._selectingArea, rowEnd: i, columnEnd: j }
                     state.hoveringArea = normalizeArea(_selectingArea)
                   }
                 }}
                 vOn:mouseup={() => {
-                  if (state.viewMode) return
-                  // checking hovering in mouseup to prevent action mouse up
                   if (state.hovering) {
                     state.hovering = false
                     if (state.editingArea) {
@@ -353,6 +348,21 @@
       const actionWrapperClass = 'grid-gen__editor__field__area__actions'
       const actionClass = 'area-action'
 
+      function areaHit(e) {
+        for(let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
+          const area = actionWrapperElement.parentNode
+          const { top, left, width, height } = area.getBoundingClientRect()
+          const pageTop = top + window.scrollY
+          const pageLeft = left + window.scrollX
+          const pageBottom = pageTop + height
+          const pageRight = pageLeft + width
+          if ((pageLeft <= e.pageX && e.pageX <= pageRight) && (pageTop <= e.pageY && e.pageY <= pageBottom)) {
+            area.click()
+            return true
+          }
+        }
+      }
+
       function tryToExecuteActionIfHit(e) {
         let actionExecuted = false
         _.each(context.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
@@ -377,7 +387,8 @@
       function renderGridAreaInEditMode(gridItem) {
         return <div
             class={getAreaClass(gridItem)}
-            style={{ backgroundColor: gridItem.bgColor, gridArea: gridItem.gridAreaCss() }}>
+            style={{ backgroundColor: gridItem.bgColor, gridArea: gridItem.gridAreaCss() }}
+            vOn:click={() => {setSelectedArea(gridItem)}}>
           <span>{gridItem.name}</span>
           <span class={actionWrapperClass}>
             <span class={actionClass} vOn:click={() => gridItem.changeBgColor()}>
@@ -552,7 +563,7 @@
           </div>,
           <div class="grid-gen__settings-prop">
             <label>View mode: </label>
-            <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}>Overview</input>
+            <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}/>
           </div>,
         ]
       }
@@ -563,7 +574,7 @@
        * @param grid {GridModel}
        */
       function renderGridSettings(grid) {
-        return state.selectedSetting === selectedSetting.grid ? [
+        return state.selectedSetting === selectedSettingEnum.grid ? [
           // columns number, rows number, gap pixel setting
           <div class="grid-gen__settings-section">Grid Settings</div>,
           <div class="grid-gen__settings-prop">
@@ -611,31 +622,21 @@
             </select>
           </div>,
 
-          // padding/margin
-          <div class="grid-gen__settings-prop">
-            <label>Padding:</label>
-            <input vModel={grid.padding}/>
-          </div>,
-          <div class="grid-gen__settings-prop">
-            <label>Margin:</label>
-            <input vModel={grid.margin}/>
-          </div>,
-
           // Insert/delete row/column
           <div class="grid-gen__settings-section">Insert/Delete</div>,
           <div class="grid-gen__settings-prop">
             <label>Rows:</label>
-            <span>
-              <button vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button>
-              <button vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button>
+            <div>
+              <button vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button><br/>
+              <button vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button><br/>
               <button vOn:click={() => grid.deleteRow(state.selectedRowId)}>Delete</button>
-            </span>
+            </div>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Columns:</label>
             <span>
-              <button vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button>
-              <button vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button>
+              <button vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button><br/>
+              <button vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button><br/>
               <button vOn:click={() => grid.deleteColumn(state.selectedColumnId)}>Delete</button>
             </span>
           </div>,
@@ -648,7 +649,7 @@
        * @returns {*}
        */
       function renderAreaSettings(gridItem) {
-        return gridItem != null && (gridItem._parent === state.selectedGrid) && state.selectedSetting === selectedSetting.area ? [
+        return gridItem != null && (gridItem._parent === state.selectedGrid) && state.selectedSetting === selectedSettingEnum.area ? [
           <div class="grid-gen__settings-section">Area Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Top: </label>
@@ -679,6 +680,11 @@
             </select>
           </div>,
           // padding/margin
+          <div class="grid-gen__settings-section">Wrapper</div>,
+          <div class="grid-gen__settings-prop">
+            <label>Wrap in div:</label>
+            <input type="checkbox" checked={gridItem.wrapInDiv} vOn:change={e => gridItem.wrapInDiv = e.target.checked}/>
+          </div>,
           <div class="grid-gen__settings-prop">
             <label>Padding:</label>
             <input vModel={gridItem.padding}/>
@@ -705,7 +711,9 @@
       }
 
       function copyLayoutStrToClipBoard() {
-        copy(toJsonStr(state.layout))
+        const json = toJsonStr(state.layout)
+        copy(json)
+        context.emit('json', json)
       }
 
       function renderGridGeneratorOutput() {
@@ -724,18 +732,23 @@
         if (state.showConfirmDialog) {
           context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
           context.refs[refIdNewItemNameInput].focus()
+        } else {
+          context.refs.el.focus()
         }
       })
 
       // 0) Entire render
+      // event handler doesn't invoke
       function renderGridGenerator() {
         return (
-            <div class="grid-gen" ref="el">
+            <div class="grid-gen" ref="el" tabIndex="0"
+                 vOn:contextmenu_prevent={e => false}
+                 vOn:keydown={e => ctrlPressed(e) && (ctrlPressFlag = true)}
+                 vOn:keyup={e => ctrlPressed(e) && (ctrlPressFlag = false)}>
               <div class="grid-gen__list">
                 {renderGridList()}
                 {renderAreaList()}
               </div>
-
               <div class="grid-gen__editor">
                 <div style={{
                   position: 'relative',
@@ -778,6 +791,10 @@
     flex-direction: row;
     align-items: stretch;
 
+    &:focus {
+      outline: none;
+    }
+
     button {
       border-radius: 0;
     }
@@ -785,16 +802,26 @@
     &__list {
       background-color: #fff;
       border-right: 2px solid #888;
-      padding: 0 20px;
+      padding: 0 15px;
     }
 
     &__sub-list {
       margin-bottom: 20px;
 
       &__section {
-        font-size: larger;
-        border-top: 2px solid #888;
+        position: relative;
         color: #888;
+        overflow: hidden;
+
+        &:after {
+          width: 100%;
+          height: 100%;
+          content: "";
+          border-top: 1px solid #888;
+          margin-left: 5px;
+          position: absolute;
+          transform: translateY(50%);
+        }
       }
 
       &__items {
@@ -870,7 +897,7 @@
       flex: 1;
       overflow: auto;
       border: 1px solid #0003;
-      background-color: #ddd;
+      background: #444;
 
       &__field {
         background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='8' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%239C92AC' fill-opacity='.4' fill-rule='evenodd'/%3E%3C/svg%3E");
@@ -921,17 +948,29 @@
     }
 
     &__settings {
-      padding: 0 20px;
+      padding: 0 15px;
       background-color: #fff;
       border-left: 2px solid #888;
-      min-width: 265px;
+      min-width: 220px;
       top: 0;
       right: 0;
 
+
       &-section {
         font-size: larger;
-        border-top: 2px solid #888;
         color: #888;
+        position: relative;
+        overflow: hidden;
+
+        &:after {
+          width: 100%;
+          height: 100%;
+          content: "";
+          border-top: 1px solid #888;
+          margin-left: 5px;
+          position: absolute;
+          transform: translateY(50%);
+        }
 
         &:nth-of-type(n+2) {
           margin-top: 20px;
@@ -939,14 +978,18 @@
       }
 
       &-prop {
+        display: flex;
+        flex-direction: row;
+        margin-top: 5px;
+
         & > label {
           width: 110px;
           display: inline-block;
           font-size: small;
         }
 
-        & > input {
-          width: 40px;
+        & > input, select, div {
+          width: 102px;
         }
       }
     }

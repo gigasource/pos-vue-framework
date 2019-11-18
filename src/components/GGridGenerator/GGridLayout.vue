@@ -28,7 +28,10 @@
       }
     },
     setup(props, context) {
-      const layout = fromJson(props.layout)
+      let state = reactive({
+        layout: fromJson(props.layout)
+      })
+
       // a unique uid for scoped stylesheet of grid layout instance
       const uid = 'gl-' + (gridLayoutInstanceCounter++)
       // vue template ref id
@@ -44,8 +47,14 @@
           // in case default slot contains multiple element which have the same area value, these areas will be wrapped
           // in a div. The wrapper div will have class value is the value of duplicated area name to get styling of grid generator
           // and we don't want to add class to these area in this case
-          if (!areaDomNode.parentNode.classList.contains(areaName)) {
-            areaDomNode.classList.add(areaName, `${cssClassPrefix}${areaName}`)
+          const parentClassList = areaDomNode.parentNode.classList
+
+          if (!parentClassList.contains(areaName)) {
+            areaDomNode.classList.add(areaName)
+          }
+
+          if (!parentClassList.contains(`${cssClassPrefix}${areaName}`)) {
+            areaDomNode.classList.add(`${cssClassPrefix}${areaName}`)
           }
 
           // now we wipe out all area attribute
@@ -62,10 +71,11 @@
       // editor dialog
       const refIdEditor = 'editor'
       const dialogState = reactive({ show: false })
+
       function renderEditDialog() {
         return <div ref={refIdEditor}>
           <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
-          <g-dialog value={dialogState.show} persistent fullscreen>
+          <g-dialog value={dialogState.show} fullscreen>
             <div class="editor-dialog">
               <div class='editor-dialog__title-bar'>
                 <span class='editor-dialog__title-bar__title'>
@@ -73,7 +83,13 @@
                 </span>
                 <button class="close-btn" vOn:click={() => dialogState.show = false}>x</button>
               </div>
-              <g-grid-generator layout={toJsonStr(layout)} style="flex: 1"/>
+              <g-grid-generator
+                  layout={toJsonStr(state.layout)}
+                  style="flex: 1"
+                  vOn:json={(json) => {
+                    console.log('on export')
+                    state.layout = fromJson(json)
+                  }}/>
             </div>
           </g-dialog>
         </div>
@@ -106,11 +122,11 @@
           return areaNames
         }
 
-        let declaredNames = _getDeclaredArea(layout)
+        let declaredNames = _getDeclaredArea(state.layout)
         return _.filter(context.slots.default(), slot => {
-          if (slot == null)
+          if (slot == null) {
             return false
-          else if (!slot.data) {
+          } else if (!slot.data) {
             return true
           } else if (slot.data && !slot.data.attrs) {
             return true
@@ -129,7 +145,7 @@
           vNode = <div {...{ attrs: { class: cssClassName } }}>{...vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name
-          vNode = vNode[0]
+          vNode = model.wrapInDiv ? <div {...{ attrs: { class: `${cssClassPrefix}${model.name}` } }}>{vNode[0]}</div> : vNode[0]
         } else if (!model._parent) {
           // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
           const attrs = { class: cssClassName, [uid]: '' }
@@ -161,7 +177,7 @@
       onMounted(() => addAreaClassForPredefinedArea())
       onUpdated(() => addAreaClassForPredefinedArea())
 
-      return () => processLayout(layout)
+      return () => processLayout(state.layout)
     }
   }
 </script>

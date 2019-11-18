@@ -114,7 +114,7 @@ export const layoutJsonObject = () => ({
       default: boolean('passThrough', false)
     },
     editable: {
-      default: boolean('editable', false)
+      default: boolean('editable', true)
     }
   },
   template: `

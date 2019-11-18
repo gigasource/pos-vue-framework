@@ -14,6 +14,7 @@ export default class AreaModel {
   bgColor = generateRandomCssColor()
   alignSelf = ''
   justifySelf = ''
+  wrapInDiv = false
 
   constructor({area, parent}) {
     this._visible = true
