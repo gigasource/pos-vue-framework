@@ -94,7 +94,6 @@ export const buttons = () => ({
   <div>
     <span>selected: {{selectedList}}</span>
       <g-grid-select :items="itemList"
-                     :item-image="itemImage"
                      :item-text="itemText"
                      :item-value="itemValue"
                      :multiple="multiple"
@@ -173,6 +172,10 @@ export const cardSelect = () => ({
       type: Boolean,
       default: boolean('multiple', true)
     },
+    grid: {
+      type: Boolean,
+      default: boolean('show as grid', true)
+    },
     returnObject: {
       type: Boolean,
       default: boolean('return object', false)
@@ -191,10 +194,10 @@ export const cardSelect = () => ({
     <span>selected: {{selectedList}}</span>
     <g-row style="height: 300px">
       <g-grid-select :items="itemList"
-                     :item-image="itemImage"
                      :item-text="itemText"
                      :item-value="itemValue"
                      :multiple="multiple"
+                     :grid="grid"
                      :return-object="returnObject"
                      v-model="selectedList"
       >
