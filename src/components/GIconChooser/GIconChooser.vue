@@ -1,9 +1,9 @@
 <script>
   import _ from 'lodash'
   import { getIconSources } from './logic/Utils'
-  import { reactive } from '@vue/composition-api'
+  import { reactive, computed } from '@vue/composition-api'
   import GIcon from '../GIcon/GIcon';
-  import { paging } from './logic/pagingUtil';
+  import paging from './logic/pagingUtil';
 
   const pagingOptions = { itemsPerPage: 30, pageEntriesShowInView: 7 }
 
@@ -13,15 +13,25 @@
     props: {},
     setup(props, context) {
       const iconSources = getIconSources()
-
       const state = reactive({
         selectedIconSource: iconSources[0],
-        selectedCategories: null
+        selectedCategories: []
+      })
+      const cptPagingModel = computed(() => {
+        let icons = []
+        // if no category selected, return all icons
+        if (state.selectedCategories.length == 0) {
+          _.each(state.selectedIconSource.categories, category => icons.push(...category.icons))
+        } else {
+          _.each(state.selectedCategories, category => icons.push(...category.icons))
+        }
+        return paging(icons, pagingOptions)
       })
 
+      // render source
       function selectSource(src) {
         state.selectedIconSource = src
-        state.selectedCategories = null
+        state.selectedCategories = []
       }
 
       function getIconSrcTabClass(src) {
@@ -31,49 +41,103 @@
         }
       }
 
-      function getIconSrcCategoryNameClass(category) {
-        return {
-          'category-name': true,
-          'category-name--selected': state.selectedCategories && state.selectedCategories[category]
+      function renderIconSource() {
+        return (
+            <div class="icon-src-tabs">
+              {
+                _.map(iconSources, iconSrc =>
+                    <span class={getIconSrcTabClass(iconSrc)} vOn:click={() => selectSource(iconSrc)}>
+                      <div>{iconSrc.name}</div>
+                      <div>
+                        <small>{iconSrc.source.substr(0, 30)}...</small>
+                      </div>
+                    </span>
+                )
+              }
+            </div>
+        )
+      }
+
+      // category names
+      function addRemoveCategory(category) {
+        const idOfNewCate = state.selectedCategories.indexOf(category)
+        if (idOfNewCate > 0) {
+          state.selectedCategories.splice(idOfNewCate, 1)
+        } else {
+          state.selectedCategories.push(category)
         }
       }
 
+      function getCategoryNameClass(category) {
+        return {
+          'category-name': true,
+          'category-name--selected': (state.selectedCategories && state.selectedCategories.indexOf(category) >= 0)
+        }
+      }
+
+      function renderCategoryName() {
+        return <div class="category-names">
+          {
+            _.map(state.selectedIconSource.categories, category =>
+                <span class={getCategoryNameClass(category)}
+                      vOn:click={() => addRemoveCategory(category)}>
+                  {category.name}
+                </span>
+            )
+          }
+        </div>
+      }
+
+      // category icons
+      // -> render icon
+      function renderIcon(icon) {
+        return <span class="icon" key={icon.value}>
+          <g-icon large>{icon.value}</g-icon>
+          <div class="icon-name">{icon.name}</div>
+        </span>
+      }
+
+      function renderCategoryIcons() {
+        return <div class="icons">
+          {
+            _.map(_.filter(cptPagingModel.value.pages, page => page != null),
+                page => page.selected
+                    ? _.map(page.items, renderIcon)
+                    : null
+            )
+          }
+        </div>
+      }
+
+      // render page entries
+      function renderPageEntries() {
+        return <div class="page-entries">
+          <button>|&lt;</button>
+          <button>&lt;</button>
+          {
+            _.map(cptPagingModel.value.pages, page => page
+                ? <button vOn:click={() => page.select()}>
+                    {page.index}
+                  </button>
+                : '...'
+            )
+          }
+          <button>&gt;</button>
+          <button>&gt;|</button>
+        </div>
+      }
+
+      // render function
       return () => {
         return (
             <div class="g-icon-chooser">
-              <div class="icon-src-tabs">
-                {
-                  _.map(iconSources, iconSrc =>
-                      <span class={getIconSrcTabClass(iconSrc)} vOn:click={() => selectSource(iconSrc)}>
-                        <div>{iconSrc.name}</div>
-                        <div>{iconSrc.source}</div>
-                      </span>
-                  )
-                }
-              </div>
+              {renderIconSource()}
               <div class="icon-src-tab-content">
-                <div class="category-names">
-                  {
-                    _.map(state.selectedIconSource.categories, iconCategory =>
-                        <span class={getIconSrcCategoryNameClass(iconCategory)}
-                              vOn:click={ () => state.selectedCategories = iconCategory }>
-                          {iconCategory.name}
-                        </span>
-                    )
-                  }
+                {renderCategoryName()}
+                <div class="category-icons">
+                  {renderCategoryIcons()}
+                  {renderPageEntries()}
                 </div>
-                {
-                  <div class="icons">
-                    {
-                      _.map(paging(state.selectedCategories.icons), iconPage => iconPage.selected ?
-                        _.map(iconPage, icon => <span class="icon" key={icon.value}>
-                          <g-icon large>{icon.value}</g-icon>
-                          <div class="icon-name">{icon.name}</div>
-                        </span>
-                      ) : null
-                    }
-                  </div>
-                }
               </div>
             </div>
         )
