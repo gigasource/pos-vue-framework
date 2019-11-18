@@ -14,6 +14,7 @@ import {
   GListItemSubText,
   GListHeader
 } from '../GListFunctionalComponent'
+import GButton from '../../GButton/GButton';
 
 export default {
   title: 'GList',
@@ -32,21 +33,21 @@ export const gListPlayGround = () => ({
     }
   },
   props: {
-    disabled: { default: boolean('disabled', fasse) },
-    rounded: { default: boolean('rounded', fasse) },
-    shaped: { default: boolean('shaped', fasse) },
+    disabled: { default: boolean('disabled', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
     elevation: { type: [Number, String], default: number('elevation', 2) },
-    dense: { default: boolean('dense', fasse) },
-    nav: { default: boolean('nav', fasse) },
-    multiSection: { default: boolean('multiSection', fasse) },
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', false) },
+    multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type: [String, Boolean], default: boolean('divider', fasse) },
+    divider: { type: [String, Boolean], default: boolean('divider', false) },
     prependType: { default: text('prependType', 'avatar') },
-    subtitleWrap: { default: boolean('subtitleWrap', fasse) },
-    selectable: { default: boolean('selectable', fasse) },
-    multiple: { default: boolean('multiple', fasse) },
-    mandatory: { default: boolean('mandatory', fasse) },
-    allowDuplicates: { default: boolean('allowDuplicates', fasse) },
+    subtitleWrap: { default: boolean('subtitleWrap', false) },
+    selectable: { default: boolean('selectable', false) },
+    multiple: { default: boolean('multiple', false) },
+    mandatory: { default: boolean('mandatory', false) },
+    allowDuplicates: { default: boolean('allowDuplicates', false) },
     itemValue: { default: text('itemValue', '') },
     itemTitle: { default: text('itemTitle', 'title') },
     activeClass: { default: text('activeClass', '') },
@@ -82,18 +83,18 @@ export const gListSingleSelectPlayGround = () => ({
     }
   },
   props: {
-    disabled: { default: boolean('disabled', fasse) },
-    rounded: { default: boolean('rounded', fasse) },
-    shaped: { default: boolean('shaped', fasse) },
+    disabled: { default: boolean('disabled', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
     elevation: { type: [Number, String], default: number('elevation', 2) },
-    dense: { default: boolean('dense', fasse) },
-    nav: { default: boolean('nav', fasse) },
-    multiSection: { default: boolean('multiSection', fasse) },
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', false) },
+    multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type: [String, Boolean], default: boolean('divider', fasse) },
+    divider: { type: [String, Boolean], default: boolean('divider', false) },
     prependType: { default: text('prependType', 'avatar') },
-    subtitleWrap: { default: boolean('subtitleWrap', fasse) },
-    mandatory: { default: boolean('mandatory', fasse) },
+    subtitleWrap: { default: boolean('subtitleWrap', false) },
+    mandatory: { default: boolean('mandatory', false) },
     itemValue: { default: text('itemValue', '') },
     itemTitle: { default: text('itemTitle', 'title') },
     activeClass: { default: text('activeClass', '') },
@@ -137,19 +138,19 @@ export const gListMultiSelectPlayGround = () => ({
     }
   },
   props: {
-    disabled: { default: boolean('disabled', fasse) },
-    rounded: { default: boolean('rounded', fasse) },
-    shaped: { default: boolean('shaped', fasse) },
+    disabled: { default: boolean('disabled', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
     elevation: { type: [Number, String], default: number('elevation', 2) },
-    dense: { default: boolean('dense', fasse) },
-    nav: { default: boolean('nav', fasse) },
-    multiSection: { default: boolean('multiSection', fasse) },
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', false) },
+    multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type: [String, Boolean], default: boolean('divider', fasse) },
+    divider: { type: [String, Boolean], default: boolean('divider', false) },
     prependType: { default: text('prependType', 'avatar') },
-    subtitleWrap: { default: boolean('subtitleWrap', fasse) },
+    subtitleWrap: { default: boolean('subtitleWrap', false) },
     multiple: { default: boolean('multiple', true) },
-    mandatory: { default: boolean('mandatory', fasse) },
+    mandatory: { default: boolean('mandatory', false) },
     allowDuplicates: { default: boolean('allowDuplicates', true) },
     itemValue: { default: text('itemValue', '') },
     itemTitle: { default: text('itemTitle', 'title') },
@@ -217,7 +218,7 @@ export const gListDense = () => ({
     }
   },
   props: {
-    dense: { default: boolean('dense', fasse) }
+    dense: { default: boolean('dense', false) }
   },
   template:
     `<g-container>
@@ -248,7 +249,7 @@ export const gListShapedInset = () => ({
 export const gListNav = () => ({
   components: { GList },
   props: {
-    dense: { default: boolean('dense', fasse) },
+    dense: { default: boolean('dense', false) },
     nav: { default: boolean('nav', true) },
     prependType: { default: text('prependType', 'avatar') },
   },
@@ -272,7 +273,7 @@ export const gListNav = () => ({
 export const gListTwoLine = () => ({
   components: { GList },
   props: {
-    dense: { default: boolean('dense', fasse) },
+    dense: { default: boolean('dense', false) },
   },
   data() {
     return {
@@ -553,10 +554,10 @@ export const gListMultiSelect = () => ({
     }
   },
   props: {
-    rounded: { default: boolean('rounded', fasse) },
-    dense: { default: boolean('dense', fasse) },
+    rounded: { default: boolean('rounded', false) },
+    dense: { default: boolean('dense', false) },
     divider: { default: text('divider', '') },
-    allowDuplicates: { default: boolean('allowDuplicates', fasse) },
+    allowDuplicates: { default: boolean('allowDuplicates', false) },
   },
   template:
       `
@@ -616,14 +617,23 @@ export const gListCustomActiveClass = () => ({
       `,
 })
 export const gListAsMenuContent = () => ({
-  components: { GList, GIcon, GListItemIcon },
+  components: { GList, GIcon, GListItemIcon, GContainer, GDivider, GRow, GBtn },
   data() {
     return {
-      items: [
-        { title: 'Jason Oner', subtitle: 'This won\'t be displayed in inMenu mode', prepend: 'flag-icon flag-icon-gb' },
-        { title: 'Ranee Carlson', prepend: 'flag-icon flag-icon-fr' },
-        { title: 'Cindy Baker', prepend: 'flag-icon flag-icon-cn' },
-        { title: 'Ali Connors', prepend: 'flag-icon flag-icon-de' },
+      list1: [
+        { title: 'Profile', prepend: 'person' },
+        { title: 'Chat', prepend: 'chat' },
+        { title: 'Help', prepend: 'help' },
+        { type: 'divider' },
+        { title: 'Lock', prepend: 'lock' },
+        { title: 'Log out', prepend: 'keyboard_tab' },
+      ],
+      list2:[
+        { title: ' A new order has been placed!', subtitle: '2 hours ago', prepend: 'add_shopping_cart', color: 'cyan' },
+        { title: '  Completed the task', subtitle: '3 days ago', prepend: 'star', color: 'red' },
+        { title: '  Settings updated', subtitle: '4 days ago', prepend: 'settings', color: 'teal' },
+        { title: ' Settings updated', subtitle: '6 days ago', prepend: 'today', color: 'deep-orange' },
+        { title: '  Generate monthly report', subtitle: '1 week ago', prepend: 'trending_up', color: 'amber' },
       ],
       testValue: null
     }
@@ -635,21 +645,38 @@ export const gListAsMenuContent = () => ({
     `
       <div>
         selectedItem: {{testValue}}
-        <g-list v-model="testValue" :items="items" prependType="icon"  selectable :inMenu="inMenu">
-          <template v-slot:prepend="{item, isSelected}">
-          <g-list-item-icon>
-            <span :class="item.prepend"></span>
-          </g-list-item-icon>
-          </template>
+        <g-container>
+        <g-row>Multi-section</g-row>
+        <g-row>
+        <g-list v-model="testValue" :items="list1" prependType="icon"  selectable :inMenu="inMenu" multiSection/>
+        </g-row>
+        <g-row>Single section</g-row>
+        <g-row>
+        <g-list v-model="testValue" :items="list2" prependType="icon"  selectable :inMenu="inMenu">
+        <template v-slot:subheader>
+        <div class="g-list-header" style="background-color: #9fa8da">
+        <h6>Notifications</h6>
+        <g-btn  small style="background-color: #00AEFF; margin-left: 100px">5 new</g-btn>
+        </div>
+        <g-divider/>
+       </template>
+       <template v-slot:prepend="{item}">
+       <g-list-item-icon >
+       <g-icon small :color="item.color">{{item.prepend}}</g-icon>
+</g-list-item-icon>
+       </template>
         </g-list>
-      </div>
-      `,
+        </g-row>
+        </g-container>
+      </div>`,
 })
 import Vue from 'vue/dist/vue.common.js'
 import GContainer from '../../GLayout/GContainer';
 import GRow from '../../GLayout/GRow';
 import GCol from '../../GLayout/GCol';
 import GIcon from '../../GIcon/GIcon';
+import GBtn from '../../GBtn/GBtn';
+
 
 describe('GList', function () {
   it('should render rounded dense', function () {
