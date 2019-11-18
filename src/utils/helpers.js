@@ -127,7 +127,7 @@ export function createSimpleFunctional(c, el = 'div', name) {
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref(props.value || '');
+  const rawInternalValue = ref(props.value);
 
   watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
 
@@ -143,8 +143,10 @@ export function getInternalValue(props, context) {
 }
 
 
-export function createRange(length) {
-  return Array.from({ length }, (v, k) => k)
+export function createRange(length, mapFn) {
+  const range = [...Array(length).keys()]
+  if (mapFn) return range.map(mapFn)
+  else return range
 }
 
 export function kebabCase(str) {
@@ -155,4 +157,29 @@ export function kebabCase(str) {
 export function getTransitionDuration(el) {
   const duration = window.getComputedStyle(el).getPropertyValue('transition-duration');
   return Math.round(parseFloat(duration) * 1000);
+}
+
+export function openFile(options = { multiple: false, mimeType: '*/*' }, onFileOpened) {
+  const input = document.createElement('input')
+  input.type='file'
+  input.accept = options.mimeType
+  input.multiple = options.multiple
+  input.addEventListener('change', e => {
+    onFileOpened && onFileOpened(e.target.files)
+  })
+  input.click()
+}
+
+/**
+ * Saving file
+ * @param fileName
+ * @param content
+ * @param type
+ */
+export function saveFile(fileName, content, type) {
+  const blob = new Blob([content], { type });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click()
 }

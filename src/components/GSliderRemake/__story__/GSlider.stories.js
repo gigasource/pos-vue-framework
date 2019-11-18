@@ -1,6 +1,6 @@
 import {number, boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
-import GSlider from "../GSliderJSX";
+import GSlider from '../GSlider.vue'
 import GIcon from "../../GIcon/GIcon";
 
 export default {
@@ -21,19 +21,19 @@ export const basicSlider = () => ({
 })
 
 export const thumbLabelSlider = () => ({
-  components: {GSlider,GIcon},
+  components: {GSlider, GIcon},
   data() {
     return {
       value: 0,
     }
   },
-  props :{
+  props: {
     trackFillColor: {default: text('track fill color', "#00b0ff")},
     trackBgrColor: {default: text('track background color', "light blue lighten 3")},
     thumbColor: {default: text('thumb color', '#00b0ff')},
     thumbLabel: {type: String, default: text('thumb label', '')},
-    thumbSize: {type: Number,default:number('thumb size',36)},
-    icon: {default:text('icon','mdi-leaf')}
+    thumbSize: {type: Number, default: number('thumb size', 36)},
+    icon: {default: text('icon', 'mdi-leaf')}
   },
   template: `<div style="height: 500px; padding-top: 100px">
                <g-slider v-model="value"

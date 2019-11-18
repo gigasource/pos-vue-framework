@@ -1,36 +1,6 @@
-<template>
-	<div ref="el" class="dialog">
-		<div ref="wrapper"
-				 class="dialog-wrapper"
-				 v-if="renderContent"
-				 :class="wrapperClasses"
-				 :style="wrapperStyles"
-				 :tabindex="wrapperTabIndex"
-				 @keydown.esc="onKeydown">
-			<div ref="content"
-					 class="dialog-content"
-					 :class="contentClasses"
-					 :style="contentStyles"
-					 v-click-outside:[clickOutsideDirective.arg]="clickOutsideDirective.value">
-				<slot></slot>
-			</div>
-		</div>
-		<g-overlay ref="overlay"
-							 v-if="renderOverlay"
-							 v-model="isActive"
-							 :z-index="overlayZIndex"
-							 :color="overlayColor"
-							 :opacity="overlayOpacity">
-		</g-overlay>
-		<div ref="activator">
-			<slot name="activator" :toggleDialog="toggleDialog"></slot>
-		</div>
-	</div>
-</template>
-
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { getZIndex } from '../../utils/helpers';
+  import { getZIndex, convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import stackable from '../../mixins/stackable';
   import { computed, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
@@ -96,18 +66,14 @@
       const renderContent = computed(() => isBooted.value || !props.lazy);
 
       function initComponent() {
-        if (renderOverlay.value) {
-          attachToRoot(context.refs.overlay.$el);
-        }
+				attachToRoot(context.refs.overlay.$el);
         attachToRoot(context.refs.wrapper);
-        attachToParent();
       }
 
       onMounted(() => {
-        if (props.lazy) {
-          return;
-        }
-        initComponent();
+        attachToParent(context.refs.activator)
+        if (props.lazy) return
+        initComponent()
       });
 
       const unwatch = watch(isActive, newVal => {
@@ -116,35 +82,16 @@
             isBooted.value = true;
             context.root.$nextTick(() => {
               initComponent();
+              context.refs.wrapper.focus();
             })
           }
-          context.refs.wrapper.focus();
+          context.refs.wrapper && context.refs.wrapper.focus();
         }
       })
 
       function toggleDialog() {
         isActive.value = !isActive.value;
       }
-
-      // Dynamic Classes and Styles
-      const contentClasses = computed(() => ({
-        'dialog-content__active': isActive.value,
-        'dialog-content__scrollable': props.scrollable,
-        'dialog-content__fullscreen': props.fullscreen
-      }));
-
-      const contentStyles = computed(() => ({
-        maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : props.maxWidth,
-        width: props.width === 'auto' || props.fullscreen ? undefined : props.width,
-      }));
-
-      const wrapperClasses = computed(() => ({
-        'dialog-wrapper__active': isActive.value
-      }));
-
-      const wrapperStyles = computed(() => ({
-        zIndex: wrapperZIndex.value
-      }));
 
       // Close conditional for click outside directive
       const closeConditional = (e) => {
@@ -163,54 +110,206 @@
         return getZIndex(context.refs.wrapper) >= getMaxZIndex(context.refs.wrapper);
       };
 
-      const clickOutsideDirective = {
-        value: () => {
-          isActive.value = false
-        },
-        arg: {
-          closeConditional,
-          include: () => []
-        }
-      }
-
       // Set the wrapper div tabindex to 0 when active, to make wrapper div focusable
       const wrapperTabIndex = computed(() => isActive.value ? 0 : undefined);
 
       // Change active state when press ESC
       function onKeydown(e) {
-        if (props.persistent) {
-          return;
+        if (e.key === 'Escape') {
+          if (props.persistent) {
+            return;
+          }
+          isActive.value = !isActive.value;
+          context.emit('keydown', e);
         }
-        isActive.value = !isActive.value;
-        context.emit('keydown', e);
       }
 
       // Clean-up when destroy
       onBeforeUnmount(() => {
         unwatch();
-        detach(context.refs.wrapper);
-        detach(context.refs.overlay.$el);
-        detach();
+        context.refs.wrapper && detach(context.refs.wrapper);
+        context.refs.overlay && detach(context.refs.overlay.$el);
       });
 
-      return {
-        isActive,
-        renderOverlay,
-        overlayZIndex,
-        renderContent,
-        toggleDialog,
-        contentClasses,
-        contentStyles,
-        wrapperClasses,
-        wrapperStyles,
-        clickOutsideDirective,
-        wrapperTabIndex,
-        onKeydown
+      // Render functions
+      function genContent() {
+        const wrapperData = {
+          ref: 'wrapper',
+          staticClass: 'g-dialog-wrapper',
+          class: {
+            'g-dialog-wrapper__active': isActive.value
+          },
+          style: {
+            zIndex: wrapperZIndex.value
+          },
+          attrs: {
+            tabindex: wrapperTabIndex.value
+          },
+          on: {
+            keydown: onKeydown
+          }
+        }
+
+        const contentData = {
+          ref: 'content',
+          staticClass: 'g-dialog-content',
+          class: {
+            'g-dialog-content__active': isActive.value,
+            'g-dialog-content__scrollable': props.scrollable,
+            'g-dialog-content__fullscreen': props.fullscreen
+          },
+          style: {
+            maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
+            width: props.width === 'auto' || props.fullscreen ? undefined : convertToUnit(props.width),
+          },
+          directives: [
+            {
+              name: 'clickOutside',
+              value: () => {
+                isActive.value = false
+              },
+              arg: {
+                closeConditional,
+                include: () => []
+              }
+            }
+          ]
+        }
+
+        return <div {...wrapperData}>
+          <transition name="dialog-transition">
+            <div {...contentData} vShow={isActive.value}>
+              {context.slots.default ? context.slots.default() : undefined}
+            </div>
+          </transition>
+        </div>
       }
+
+      function genOverlay() {
+        const overlayData = {
+          ref: 'overlay',
+          props: {
+            zIndex: overlayZIndex.value,
+            color: props.overlayColor,
+            opacity: props.overlayOpacity
+          }
+        }
+
+        return <g-overlay vModel={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
+      }
+
+      function genActivator() {
+        return <div ref="activator" class="g-dialog-activator">
+          {context.slots.activator ? context.slots.activator({ toggleDialog }) : undefined}
+        </div>
+      }
+
+      function genDialog() {
+        return <div ref="el" class="g-dialog">
+          {renderContent.value && genContent()}
+          {genOverlay()}
+          {genActivator()}
+        </div>
+      }
+
+      return {
+        genDialog
+      }
+    },
+    render() {
+      return this.genDialog()
     }
   }
 </script>
-
 <style scoped lang="scss">
- @import "GDialog";
+	.g-dialog {
+		pointer-events: auto;
+		overflow-y: hidden;
+		display: inline;
+		position: relative;
+
+		&-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: fixed;
+			pointer-events: none;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			z-index: 6;
+			outline: none;
+		}
+
+		&-content {
+			display: flex;
+			transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
+
+			&:not(.g-dialog-content__fullscreen) {
+				max-width: 90%;
+				max-height: 90%;
+			}
+
+			> * {
+				width: 100%
+			}
+
+			> ::v-deep.g-card {
+				height: auto;
+				overflow-y: auto;
+
+				> .g-card-title {
+					font-size: 2em;
+					font-weight: 500;
+				}
+
+				> .g-card-actions {
+					justify-content: flex-end;
+				}
+			}
+		}
+
+		&-content__active {
+			pointer-events: auto;
+		}
+
+		&-content__scrollable {
+			> ::v-deep.g-card {
+				display: flex;
+				flex: 1 1 100%;
+				flex-direction: column;
+				max-height: 100%;
+				max-width: 100%;
+
+				> .g-card-title, .g-card-actions {
+					flex: 0 0 auto
+				}
+
+				> .g-card-text {
+					backface-visibility: hidden;
+					flex: 1 1 auto;
+					overflow-y: auto;
+				}
+			}
+		}
+
+		&-content__fullscreen {
+			border-radius: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			overflow-y: auto;
+			top: 0;
+			left: 0;
+
+			> .g-card {
+				min-height: 100%;
+				min-width: 100%;
+				margin: 0 !important;
+				padding: 0 !important;
+			}
+		}
+	}
 </style>

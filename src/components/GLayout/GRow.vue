@@ -70,11 +70,5 @@
 				padding: 0;
 			}
 		}
-
-		@for $i from 1 through $grid-columns {
-			::v-deep .offset-#{$i} {
-				margin-left: percentage($i/$grid-columns);
-			}
-		}
 	}
 </style>

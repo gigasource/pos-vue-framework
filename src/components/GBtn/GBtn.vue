@@ -58,14 +58,13 @@
 
       function genBtnContent() {
         return <span class="g-btn__content">
-          {context.slots.default()}
+          {context.slots.default && context.slots.default()}
         </span>
       }
 
       function genBtn() {
         return <button ref="btn" id="btn" v-ripple class={classes.value} style={styles.value} vOn:click={(event) => {
           context.emit('click', event);
-          context.refs.btn.blur();
         }}>
           {genBtnContent()}
         </button>
@@ -82,5 +81,5 @@
 </script>
 
 <style scoped lang="scss">
-	@import "_GBtn.scss";
+	@import "GBtn";
 </style>

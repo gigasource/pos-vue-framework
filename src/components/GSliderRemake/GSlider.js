@@ -1,8 +1,14 @@
 import {addOnceEventListener, keyCodes, passiveSupported} from '../../utils/helpers';
 import {isEqual} from 'lodash';
 
+export function getEventHandler(props, context, state, internalValue, minValue, maxValue, onMouseMove) {
+  function _onMouseMove(e) {
+    const {value} = parseMouseMove(e, props, context, minValue, maxValue)
+    internalValue.value = value
+  }
 
-export function getEventHandler(props, context, state, internalValue, minValue, maxValue) {
+  onMouseMove = onMouseMove && typeof onMouseMove === 'function' ? onMouseMove : _onMouseMove
+
   function onThumbMouseDown(e) {
     state.oldValue = internalValue.value;
     state.keyPressed = 2
@@ -21,31 +27,7 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     context.emit('start', internalValue.value)
   }
 
-  function onMouseMove(e) {
-    const {value} = parseMouseMove(e)
-    internalValue.value = value
-  }
-
-  function parseMouseMove(e) {
-    const start = props.vertical ? 'top' : 'left'
-    const length = props.vertical ? 'height' : 'width'
-    const click = props.vertical ? 'clientY' : 'clientX'
-
-    const {
-      [start]: trackStart,
-      [length]: trackLength,
-    } = context.refs.track.getBoundingClientRect()
-    const clickOffset = 'touches' in e ? e.touches[0][click] : e[click]
-    let clickPos = Math.min(Math.max((clickOffset - trackStart) / trackLength, 0), 1) || 0
-    if (props.vertical) clickPos = 1 - clickPos
-
-    const isInsideTrack = clickOffset >= trackStart && clickOffset <= trackStart + trackLength
-    const value = parseFloat(props.min) + clickPos * (maxValue.value - minValue.value)
-
-    return {value, isInsideTrack}
-  }
-
-  function onSliderMouseUp(e) {
+  const onSliderMouseUp = function (e) {
     e.stopPropagation()
     state.keyPressed = 0
     const mouseMoveOptions = passiveSupported ? {passive: true} : false
@@ -69,6 +51,19 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     onMouseMove(e)
   }
 
+  function onKeyUp() {
+    state.keyPressed = 0
+  }
+
+  function onKeyDown(e) {
+    if (props.disabled || props.readonly) return
+
+    const value = parseKeyDown(e, internalValue.value, props, state, minValue, maxValue)
+    if (value == null) return
+
+    internalValue.value = value
+  }
+
   function onFocus(e) {
     state.isFocused = true
     context.emit('focus', e)
@@ -79,53 +74,61 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     context.emit('blur', e)
   }
 
-  function onKeyUp() {
-    state.keyPressed = 0
+  return {onThumbMouseDown, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp}
+}
+
+//shared function
+export const parseMouseMove = function (e, props, context, minValue, maxValue) {
+  const start = props.vertical ? 'top' : 'left'
+  const length = props.vertical ? 'height' : 'width'
+  const click = props.vertical ? 'clientY' : 'clientX'
+
+  const {
+    [start]: trackStart,
+    [length]: trackLength,
+  } = context.refs.track.getBoundingClientRect()
+  const clickOffset = 'touches' in e ? e.touches[0][click] : e[click]
+  let clickPos = Math.min(Math.max((clickOffset - trackStart) / trackLength, 0), 1) || 0
+  if (props.vertical) clickPos = 1 - clickPos
+
+  const isInsideTrack = clickOffset >= trackStart && clickOffset <= trackStart + trackLength
+  const value = parseFloat(props.min) + clickPos * (maxValue.value - minValue.value)
+
+  return {value, isInsideTrack}
+}
+
+export const parseKeyDown = function (e, value, props, state, minValue, maxValue) {
+  if (props.disabled) return
+
+  const {pageup, pagedown, end, home, left, right, down, up} = keyCodes
+
+  if (![pageup, pagedown, end, home, left, right, down, up].includes(e.keyCode)) return
+
+  e.preventDefault(props)
+  const step = props.step ? parseFloat(props.step) : 1
+  const steps = (maxValue.value - minValue.value) / step
+  if ([left, right, down, up].includes(e.keyCode)) {
+    state.keyPressed += 1
+
+    const increase = [right, up]
+    const direction = increase.includes(e.keyCode) ? 1 : -1
+    const multiplier = e.shiftKey ? 3 : (e.ctrlKey ? 2 : 1)
+
+    value = value + (direction * step * multiplier)
+  } else if (e.keyCode === home) {
+    value = minValue.value
+  } else if (e.keyCode === end) {
+    value = maxValue.value
+  } else {
+    const direction = e.keyCode === pagedown ? 1 : -1
+    value = value - (direction * step * (steps > 100 ? steps / 10 : 10))
   }
 
-  function onKeyDown(e) {
-    if (props.disabled || props.readonly) return
-
-    const value = parseKeyDown(e, internalValue.value)
-    if (value == null) return
-
-    internalValue.value = value
-  }
-
-  function parseKeyDown(e, value) {
-    if (props.disabled) return
-
-    const {pageup, pagedown, end, home, left, right, down, up} = keyCodes
-
-    if (![pageup, pagedown, end, home, left, right, down, up].includes(e.keyCode)) return
-
-    e.preventDefault(props)
-    const step = props.step ? parseFloat(props.step) : 1
-    const steps = (maxValue.value - minValue.value) / step
-    if ([left, right, down, up].includes(e.keyCode)) {
-      state.keyPressed += 1
-
-      const increase = [right, up]
-      const direction = increase.includes(e.keyCode) ? 1 : -1
-      const multiplier = e.shiftKey ? 3 : (e.ctrlKey ? 2 : 1)
-
-      value = value + (direction * step * multiplier)
-    } else if (e.keyCode === home) {
-      value = minValue.value
-    } else if (e.keyCode === end) {
-      value = maxValue.value
-    } else {
-      const direction = e.keyCode === pagedown ? 1 : -1
-      value = value - (direction * step * (steps > 100 ? steps / 10 : 10))
-    }
-
-    return value
-  }
-
-  return {onThumbMouseDown, parseMouseMove, onSliderMouseUp, onSliderClick, onFocus, onBlur, onKeyDown, onKeyUp}
+  return value
 }
 
 
+//helper function
 export function helperFunctions(props, minValue, maxValue) {
   function roundValue(value) {
     if (!props.step) return value

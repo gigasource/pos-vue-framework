@@ -26,7 +26,7 @@ const ClickOutside = {
   inserted (el, binding) {
     const onClick = (e) => directive(e, el, binding)
 
-    const app = document.body
+    const app = window
     app.addEventListener('click', onClick, true)
     el._clickOutside = onClick
   },
