@@ -31,16 +31,16 @@ export const gListPlayGround = () => ({
       ]
     }
   },
-  props :{
+  props: {
     disabled: { default: boolean('disabled', false) },
     rounded: { default: boolean('rounded', false) },
     shaped: { default: boolean('shaped', false) },
-    elevation: { type: [Number, String],default: number('elevation', 2) },
+    elevation: { type: [Number, String], default: number('elevation', 2) },
     dense: { default: boolean('dense', false) },
     nav: { default: boolean('nav', false) },
     multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type:[String, Boolean],default: boolean('divider', false) },
+    divider: { type: [String, Boolean], default: boolean('divider', false) },
     prependType: { default: text('prependType', 'avatar') },
     subtitleWrap: { default: boolean('subtitleWrap', false) },
     selectable: { default: boolean('selectable', false) },
@@ -81,16 +81,16 @@ export const gListSingleSelectPlayGround = () => ({
       testValue: null
     }
   },
-  props :{
+  props: {
     disabled: { default: boolean('disabled', false) },
     rounded: { default: boolean('rounded', false) },
     shaped: { default: boolean('shaped', false) },
-    elevation: { type: [Number, String],default: number('elevation', 2) },
+    elevation: { type: [Number, String], default: number('elevation', 2) },
     dense: { default: boolean('dense', false) },
     nav: { default: boolean('nav', false) },
     multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type:[String, Boolean],default: boolean('divider', false) },
+    divider: { type: [String, Boolean], default: boolean('divider', false) },
     prependType: { default: text('prependType', 'avatar') },
     subtitleWrap: { default: boolean('subtitleWrap', false) },
     mandatory: { default: boolean('mandatory', false) },
@@ -136,16 +136,16 @@ export const gListMultiSelectPlayGround = () => ({
       testValue: null
     }
   },
-  props :{
+  props: {
     disabled: { default: boolean('disabled', false) },
     rounded: { default: boolean('rounded', false) },
     shaped: { default: boolean('shaped', false) },
-    elevation: { type: [Number, String],default: number('elevation', 2) },
+    elevation: { type: [Number, String], default: number('elevation', 2) },
     dense: { default: boolean('dense', false) },
     nav: { default: boolean('nav', false) },
     multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type:[String, Boolean],default: boolean('divider', false) },
+    divider: { type: [String, Boolean], default: boolean('divider', false) },
     prependType: { default: text('prependType', 'avatar') },
     subtitleWrap: { default: boolean('subtitleWrap', false) },
     multiple: { default: boolean('multiple', true) },
@@ -194,9 +194,9 @@ export const gListInset = () => ({
       ]
     }
   },
-  props:{
-    divider: {default:text("divider", 'inset')},
-    prependType: {default:text("prependType", 'avatar')}
+  props: {
+    divider: { default: text('divider', 'inset') },
+    prependType: { default: text('prependType', 'avatar') }
   },
   template:
     `
@@ -205,7 +205,7 @@ export const gListInset = () => ({
       `,
 })
 export const gListDense = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, GContainer,GRow, GCol },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, GContainer, GRow, GCol },
   data() {
     return {
       items: [
@@ -216,22 +216,15 @@ export const gListDense = () => ({
       ]
     }
   },
+  props:{
+    dense:{default: boolean('dense', false)}
+  },
   template:
     `<g-container>
-        <g-row>
-          <g-col>Dense<g-list :items="items" dense subheader="subheader" divider='inset'  ></g-list></g-col>
-          <g-col>Normal <g-list :items="items" subheader="subheader" divider='inset'></g-list></g-col>
-        </g-row>
         <g-row>Two-line</g-row>
-         <g-row>
-          <g-col>Dense<g-list :items="items"  dense subheader="subheader" divider='inset' ></g-list></g-col>
-          <g-col>Normal<g-list :items="items"   subheader="subheader" divider='inset' ></g-list></g-list></g-col>
-        </g-row>
+        <g-row><g-list :items="items" :dense="dense" subheader="subheader" divider='inset' /> </g-row>
         <g-row>Two-line with wrapper</g-row>
-         <g-row>
-          <g-col>Dense<g-list :items="items"  dense subheader="subheader" divider='inset' subtitleWrap ></g-list></g-col>
-          <g-col>Normal<g-list :items="items"   subheader="subheader" divider='inset' subtitleWrap ></g-list></g-list></g-col>
-        </g-row>
+         <g-row><g-list :items="items"  :dense="dense" subheader="subheader" divider='inset' subtitleWrap/></g-row>
     </g-container>`,
 })
 export const gListShapedInset = () => ({
@@ -254,7 +247,7 @@ export const gListShapedInset = () => ({
 })
 export const gListNav = () => ({
   components: { GList },
-  props:{
+  props: {
     dense: { default: boolean('dense', false) },
     nav: { default: boolean('nav', true) },
     prependType: { default: text('prependType', 'avatar') },
@@ -483,7 +476,7 @@ export const gListSingleSectionSelect = () => ({
     `
       <div>
         selectedItem: {{testValue}}
-        <g-list v-model="testValue" :items="items" subheader="subheader" divider=true selectable>
+        <g-list :items="items" subheader="subheader" divider=true selectable>
         </g-list>
       </div>
       `,
@@ -559,11 +552,11 @@ export const gListMultiSelect = () => ({
       testValue: null
     }
   },
-  props:{
-    rounded: {default: boolean('rounded', false)},
-    dense: {default: boolean('dense', false)},
-    divider: {default: text('divider', '')},
-    allowDuplicates: {default: boolean('allowDuplicates', false)},
+  props: {
+    rounded: { default: boolean('rounded', false) },
+    dense: { default: boolean('dense', false) },
+    divider: { default: text('divider', '') },
+    allowDuplicates: { default: boolean('allowDuplicates', false) },
   },
   template:
     `
@@ -610,14 +603,38 @@ export const gListCustomActiveClass = () => ({
       testValue: null
     }
   },
-  props:{
-    activeClass:{default:text('activeClass', 'border')}
+  props: {
+    activeClass: { default: text('activeClass', 'border') }
   },
   template:
     `
       <div>
         selectedItem: {{testValue}}
         <g-list v-model="testValue" :items="items" divider=inset selectable :active-class="activeClass">
+        </g-list>
+      </div>
+      `,
+})
+export const gListAsMenuContent = () => ({
+  components: { GList },
+  data() {
+    return {
+      items: [
+        { title: 'Jason Oner', prepend: 'flag-icon-gb' },
+        { title: 'Ranee Carlson', prepend: 'flag-icon-fr' },
+        { title: 'Cindy Baker', prepend: 'flag-icon flag-icon-cn' },
+        { title: 'Ali Connors', prepend: 'flag-icon flag-icon-de' },
+      ],
+      testValue: null
+    }
+  },
+  props: {
+  },
+  template:
+    `
+      <div>
+        selectedItem: {{testValue}}
+        <g-list v-model="testValue" :items="items" prependType="icon"  selectable dense>
         </g-list>
       </div>
       `,

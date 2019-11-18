@@ -21,7 +21,7 @@
                @keydown.up="onArrowUp(item)"
           >
             <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
-              <div :class="prependClasses" v-if="item.prepend">
+              <div :class="prependClasses" v-if="item.prepend &&  prependType">
                 <g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
                 <g-avatar v-else-if="prependType==='avatar'">
                   <g-img :src="item.prepend"/>
@@ -38,9 +38,7 @@
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
               <slot name="append" :item="item">
-                <div class="g-list-item-action">
-                  <g-icon color="yellow">star</g-icon>
-                </div>
+                <template v-if="item.append">{{item.append}}</template>
               </slot>
           </div>
           <g-divider v-if="(divider && (index < renderList.length -1) )"
@@ -84,6 +82,11 @@
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
             <slot name="append" :item="item">
+              <template v-if="item.append">{{item.append}}</template>
+
+              <div v-else class="g-list-item-action">
+                <g-icon color="yellow">star</g-icon>
+              </div>
             </slot>
 
           </div>
@@ -100,10 +103,11 @@
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
+  import Textarea from '../../view/TextareaDemo';
 
   export default {
     name: 'GList',
-    components: { GImg, GAvatar, GIcon, GDivider},
+    components: { Textarea, GImg, GAvatar, GIcon, GDivider},
     props: {
       height: String,
       width: String,
@@ -138,10 +142,8 @@
         type: String,
         default: 'title'
       },
-      activeClass:{
-        type: String,
-        default: ''
-      }
+      activeClass: String,
+       inMenu: Boolean,
     },
     setup: function (props, context) {
       //G list computed class
@@ -159,7 +161,7 @@
         'g-list__rounded': props.rounded,
         'g-list__shaped': props.shaped,
         ['elevation-' + props.elevation]: true,
-        'g-list__dense': props.dense,
+        'g-list__dense': props.dense || props.inMenu,
         'g-list__nav': props.nav,
       }));
 
@@ -167,7 +169,6 @@
         ...props.height && {'height': props.height},
         ...props.width && {'width': props.width}
       }));
-      let _activeClass = props.activeClass
       const prependClasses = computed(() => {
         if (!['icon', 'avatar', 'image'].includes(props.prependType)) {
           return `g-list-item-icon`
@@ -182,7 +183,7 @@
         context.emit('click', event)
       }
       function onArrowDown(item){
-        let index = renderList.value.findIndex(i=> i.title === item.title && i.subtitle === item.subtitle && i.prepend=== item.prepend)
+        let index = renderList.value.findIndex(i=> i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend=== item.prepend)
         let i = index
         index < (renderList.value.length -1) ? i += 1 : i=0
         context.root.$el.getElementsByClassName('g-list-item')[i].focus()
@@ -195,13 +196,14 @@
         context.root.$el.getElementsByClassName('g-list-item')[i].focus()
         context.emit('keydown:down')
       }
-
-      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
       function onSelect(item) {
         if (!props.selectable) return;
         toggleItem(item)
         context.emit('click:item')
       }
+
+      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
+
 
       return {
         classes,
