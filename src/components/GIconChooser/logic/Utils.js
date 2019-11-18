@@ -7,13 +7,11 @@ import * as materialDesignIcons from '../styles/materialDesignIconExport.scss'
 import { kebabCase } from '../../../utils/helpers';
 import FontAwesomeCategories from './FontAwesomeFreeCategories'
 
-
 // TODO:
 // - icon missing
 // - categories
 // - water mark??
 // - paging
-
 
 /**
  * Object models:
@@ -94,15 +92,13 @@ export function getIconSources() {
 
 function _getFontAweSomeIconSource() {
   function _getFontAwesomeCategories(iconSrc, type) {
-    return _.map(FontAwesomeCategories, category => {
-      return {
-        name: category.name,
-        icons: _.filter(_.map(category.icons, ico => _.has(iconSrc, ico) ? {
-          name: ico,
-          value: `${type} fa-${ico}`
-        }: null ), ico => ico != null)
-      }
-    })
+    return _.map(FontAwesomeCategories, category => ({
+      name: category.name,
+      icons: _.filter(_.map(category.icons, ico => _.has(iconSrc, ico) ? {
+        name: ico,
+        value: `${type} fa-${ico}`
+      }: null ), ico => ico != null)
+    }))
   }
 
   function _getFontAwesomeIcons(iconSrc, type /*brands, solid, regular*/) {
@@ -111,6 +107,7 @@ function _getFontAweSomeIconSource() {
       value: `${type} fa-${prop}`,
     }))
   }
+
   // font-awesome: add all svg path to window object window.___FONT_AWESOME___
   return [
     {

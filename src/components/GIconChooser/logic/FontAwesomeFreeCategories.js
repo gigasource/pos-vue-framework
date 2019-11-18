@@ -4,10 +4,13 @@
 // Step 3: Paste in here
 
 function createUniqueIconArr(str) {
-  let arr = str.split(',')
-  let  output = []
-  _.each(arr, iconName => (output.indexOf(iconName) < 0) && output.push(iconName))
-  return output
+  let icons = str.split(',')
+  let  uniqueIcons = []
+  _.each(icons, iconName => {
+    if (uniqueIcons.indexOf(iconName) < 0)
+      uniqueIcons.push(iconName)
+  })
+  return uniqueIcons
 }
 
 export default [

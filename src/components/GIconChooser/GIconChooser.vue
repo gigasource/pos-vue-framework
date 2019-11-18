@@ -3,6 +3,9 @@
   import { getIconSources } from './logic/Utils'
   import { reactive } from '@vue/composition-api'
   import GIcon from '../GIcon/GIcon';
+  import { paging } from './logic/pagingUtil';
+
+  const pagingOptions = { itemsPerPage: 30, pageEntriesShowInView: 7 }
 
   export default {
     name: 'GIconChooser',
@@ -11,55 +14,69 @@
     setup(props, context) {
       const iconSources = getIconSources()
 
-      console.log(iconSources)
-
       const state = reactive({
-        selectedIconSource: 0,
-        selectedCategory: 0
+        selectedIconSource: iconSources[0],
+        selectedCategories: null
       })
 
+      function selectSource(src) {
+        state.selectedIconSource = src
+        state.selectedCategories = null
+      }
+
+      function getIconSrcTabClass(src) {
+        return {
+          'icon-src-tabs__name': true,
+          'icon-src-tabs__name--selected': src == state.selectedIconSource
+        }
+      }
+
+      function getIconSrcCategoryNameClass(category) {
+        return {
+          'category-name': true,
+          'category-name--selected': state.selectedCategories && state.selectedCategories[category]
+        }
+      }
+
       return () => {
-        let output = (
+        return (
             <div class="g-icon-chooser">
-              <div class="iconTabs">
+              <div class="icon-src-tabs">
                 {
-                  _.map(iconSources, (iconSource, id) =>
-                      <span class="iconSource" vOn:click={() => {
-                        state.selectedIconSource = id
-                        state.selectedCategory = 0
-                      }}>
-                        <div>{iconSource.name}</div>
-                        <div>{iconSource.source}</div>
+                  _.map(iconSources, iconSrc =>
+                      <span class={getIconSrcTabClass(iconSrc)} vOn:click={() => selectSource(iconSrc)}>
+                        <div>{iconSrc.name}</div>
+                        <div>{iconSrc.source}</div>
                       </span>
                   )
                 }
               </div>
-              <div class="iconTabsContent">
+              <div class="icon-src-tab-content">
                 <div class="category-names">
                   {
-                    _.map(iconSources[state.selectedIconSource].categories, (cate, id) =>
-                        <span class='category-name' vOn:click={ () => state.selectedCategory = id }>
-                          {cate.name}
+                    _.map(state.selectedIconSource.categories, iconCategory =>
+                        <span class={getIconSrcCategoryNameClass(iconCategory)}
+                              vOn:click={ () => state.selectedCategories = iconCategory }>
+                          {iconCategory.name}
                         </span>
                     )
                   }
                 </div>
                 {
-                  _.map(iconSources[state.selectedIconSource].categories, (category, id) => id === state.selectedCategory ?
-                    <div class="icons">
-                      {
-                        _.map(_.take(category.icons, 30), icon => <span class="icon" key={icon.value}>
+                  <div class="icons">
+                    {
+                      _.map(paging(state.selectedCategories.icons), iconPage => iconPage.selected ?
+                        _.map(iconPage, icon => <span class="icon" key={icon.value}>
                           <g-icon large>{icon.value}</g-icon>
                           <div class="icon-name">{icon.name}</div>
-                        </span>)
-                      }
-                    </div> : null)
+                        </span>
+                      ) : null
+                    }
+                  </div>
                 }
               </div>
             </div>
         )
-
-        return output
       }
     }
   }
@@ -69,28 +86,33 @@
     width: 600px;
   }
 
-  .iconTabs {
+  .icon-src-tabs {
     width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-  }
 
-  .iconSource {
-    margin: 5px;
-    width: 290px;
-    padding: 10px;
-    border: 1px solid black;
-    transition: background-color 0.5s;
+    &__name {
+      margin: 5px;
+      width: 290px;
+      padding: 10px;
+      border: 1px solid #333;
+      transition: background-color 0.5s;
 
-    &:hover {
-      background-color: black;
-      color: white;
-      cursor: pointer;
+      &:hover {
+        background-color: #333;
+        color: #aaa;
+        cursor: pointer;
+      }
+
+      &--selected {
+        background-color: #333;
+        color: #aaa;
+      }
     }
   }
 
-  .iconTabsContent {
+  .icon-src-tab-content {
     width: 100%;
   }
 
@@ -106,6 +128,11 @@
     border: 1px solid black;
     margin: 5px;
     padding: 5px;
+
+    &--selected {
+      background-color: #333;
+      color: #aaa;
+    }
 
     &:hover {
       cursor: pointer;
