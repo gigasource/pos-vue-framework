@@ -18,6 +18,7 @@
 					<div class="input">
 						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
 						<input id="input" type="text"
+									 :autofocus="autofocus"
 									 class="g-tf-input"
 									 :style="inputErrStyles"
 									 :type="type"
@@ -134,6 +135,7 @@
         type: String,
         default: 'text',
       },
+			autofocus: Boolean,
 
     },
     setup(props, context) {

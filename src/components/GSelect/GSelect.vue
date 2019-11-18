@@ -110,11 +110,19 @@
       })
 
       //gen SearchText
+      const searchFocused = ref(false)
+      const onInputClick = () => {
+        context.root.$el.getElementsByClassName('g-tf-input')[0].focus()
+        searchFocused.value = true
+      }
+
       function genSearchTextField() {
         if (props.searchable && props.selectOnly) {
           return <GTextField placeholder="Search"
                              vModel={state.searchText}
                              clearable
+                             autofocus={searchFocused.value}
+                             vOn:keydown={(e) => onInputKeyDown(e)}
                              style="margin-bottom: 0; background-color: transparent"/>
         }
       }
@@ -153,9 +161,6 @@
               on: {
                 'click:item': () => !props.multiple ? showOptions.value = false : null
               },
-              scopedSlots: {
-                ...slots
-              }
             }}
             vModel={selectedItem.value}
         />
@@ -206,6 +211,7 @@
             <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
+              {selections.value.length === 0 ? <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
       }
@@ -219,6 +225,10 @@
         if (props.multiple) return selections.value.join(', ')
         return selections.value
       })
+      const _readOnly = computed(() => {
+        return props.searchable ? true : props.readOnly
+      })
+
       const genTextField = props.genTextFieldFn || function (toggleContent) {
 
         return (
@@ -232,7 +242,7 @@
                   },
                   on: {
                     'click:clearIcon': () => clearSelection(),
-                    click: toggleContent,
+                    click: [toggleContent, onInputClick],
                     keydown: (e) => {
                       onInputKeyDown(e)
                     },
@@ -293,7 +303,7 @@
       }
 
       .g-tf-wrapper {
-        margin: 16px 0px 24px;
+        margin: 16px 0px 24px 10px;
       }
 
       .g-tf-append__inner {

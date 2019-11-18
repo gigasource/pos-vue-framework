@@ -35,9 +35,7 @@
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
             <slot name="append" :item="item">
-              <div class="g-list-item-action">
-                <g-icon color="yellow">star</g-icon>
-              </div>
+              <template v-if="item.append">{{item.append}}</template>
             </slot>
           </div>
           <g-divider v-if="(divider && (index < renderList.length -1) )"

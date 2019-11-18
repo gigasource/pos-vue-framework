@@ -15,7 +15,7 @@ export function getList(props, selectedItem, state) {
             if (item[props.itemText]) {
               return !selectedItem.value.find(value => _.isEqual(value, item));
             }
-            return selectedItem.value.find(value => _.isEqual(value, item));
+            return !selectedItem.value.find(_selectedItem => (_selectedItem[props.itemValue] === item[props.itemValue]));
           });
         }
 
@@ -25,26 +25,32 @@ export function getList(props, selectedItem, state) {
         if (!state.searchText) {
           return items;
         }
-        const searchText = state.searchText.trim().toLowerCase();
+        const searchText = !props.filter ? state.searchText.trim().toLowerCase() : state.searchText;
         if (!searchText) {
           return items;
         }
         //Search text match
-        let _searchedOptions = items.filter(item => {
-          const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
-          return text.startsWith(searchText);
-        });
-        _searchedOptions = _searchedOptions.concat(items.filter(item => {
-          const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
-          return !text.startsWith(searchText) && text.includes(searchText);
-        }));
+        let filteredOptions
+        if (!props.filter) {
+          let _searchedOptions = items.filter(item => {
+            const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
+            return text.startsWith(searchText);
+          });
+          filteredOptions = _searchedOptions.concat(items.filter(item => {
+            const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
+            return !text.startsWith(searchText) && text.includes(searchText);
+          }));
+        } else if (typeof props.filter === 'function') {
+          filteredOptions = items.filter(item => props.filter(item[props.itemText], searchText))
+        }
+
         if (props.allowDuplicates) {
-          return _searchedOptions
+          return filteredOptions
         }
         if (!props.itemValue) {
-          return _searchedOptions.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
+          return filteredOptions.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
         }
-        return _searchedOptions.filter(item => {
+        return filteredOptions.filter(item => {
           if (item[props.itemText]) {
             return !selectedItem.value.find(value => _.isEqual(value, item));
           }
@@ -57,20 +63,25 @@ export function getList(props, selectedItem, state) {
         if (!state.searchText) {
           return items;
         }
-        const searchText = state.searchText.trim().toLowerCase();
+        const searchText = !props.filter ? state.searchText.trim().toLowerCase() : state.searchText;
         if (!searchText) {
           return items;
         }
         //Search text match
-        let _options = items.filter(item => {
-          const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
-          return text.startsWith(searchText);
-        });
-        _options = _options.concat(items.filter(item => {
-          const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
-          return !text.startsWith(searchText) && text.includes(searchText);
-        }));
-        return _options
+        let filteredOptions
+        if (!props.filter) {
+          let _searchedOptions = items.filter(item => {
+            const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
+            return text.startsWith(searchText);
+          });
+          filteredOptions = _searchedOptions.concat(items.filter(item => {
+            const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
+            return !text.startsWith(searchText) && text.includes(searchText);
+          }));
+        } else if (typeof props.filter === 'function') {
+          filteredOptions = items.filter(item => props.filter(item[props.itemText], searchText))
+        }
+        return filteredOptions
       }
     } else return props.items
   })

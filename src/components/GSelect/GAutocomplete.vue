@@ -15,8 +15,8 @@
   import {keyCodes} from "../../utils/helpers";
 
   export default {
-    name: "GCombobox",
-    components: {GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText},
+    name: "GAutocomplete",
+    components: {GSelect},
     props: {
       //select props
       width: [String, Number],
@@ -97,6 +97,8 @@
         type: String,
       },
       value: null,
+      filter: Function,
+      noFilter: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -117,7 +119,8 @@
         }
 
       })
-      const options = getList(props, selectedItem, state)
+      const options = getList(props, selectedItem, state, props.filter)
+
       const lazySearch = ref('')
 
       //gen textfield
@@ -136,6 +139,7 @@
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
+
         return selections.value.map(function (item, index) {
               if (index === selections.value.length - 1) return <div
                   style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
@@ -162,22 +166,6 @@
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
       //textfield events
-      const inputAddSelection = () => {
-        if (state.searchText.trim().length !== 0) {
-          let inputAddedItem
-          props.itemValue
-              ? inputAddedItem = {
-                [props.itemText]: state.searchText,
-                [props.itemValue]: state.searchText
-              } :
-              inputAddedItem = {
-                [props.itemText]: state.searchText
-              }
-          toggleItem(inputAddedItem)
-          setSearch()
-        }
-      }
-
       function clearSelection() {
         selectedItem.value = props.multiple ? [] : ''
         setSearch()
@@ -192,7 +180,7 @@
 
       function onInputClick() {
         isFocused.value = true
-        state.searchText = ''
+        lazySearch.value ? state.searchText = '' : null
       }
 
       function onInputBlur() {
@@ -226,7 +214,8 @@
       }
 
       const tfValue = computed(() =>
-          props.multiple ? state.searchText : lazySearch.value)
+          props.multiple || props.chips || props.smallChips || props.deletableChips ? state.searchText :
+              lazySearch.value)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
@@ -267,7 +256,6 @@
                     blur: () => onInputBlur(),
                     click: toggleContent,
                     delete: onInputDelete,
-                    enter: inputAddSelection,
                     keydown: (e) => onInputKeyDown(e),
                     input: (e) => {
                       state.searchText = e
@@ -311,7 +299,6 @@
               on: {
                 'click:item': onClickItem
               },
-              scopedSlots: {...genListScopedSlots}
             }
             }
             vModel={selectedItem.value}
@@ -319,15 +306,9 @@
       }
 
 
-      function genCombobox() {
-        const comboboxSlots = {
-          'prepend-item': () =>
-              <div vShow={options.value.length === 0}>
-                {context.slots['no-data'] && context.slots['no-data']()}
-              </div>
-        }
+      function genAutocomplete() {
 
-        return <div class="g-combobox">
+        return <div class="g-autocomplete">
           <g-select
               {...{
                 props: {
@@ -340,7 +321,6 @@
                   genTextFieldFn: genTextFieldProps,
                   genListFn: genListProps,
                 },
-                scopedSlots: {...comboboxSlots}
               }}
           >
           </g-select>
@@ -348,7 +328,7 @@
       }
 
       return {
-        genCombobox,
+        genAutocomplete,
         state,
         options,
         showOptions,
@@ -358,20 +338,26 @@
       }
     },
     render() {
-      return this.genCombobox()
+      return this.genAutocomplete()
     }
   }
 </script>
 <style lang="scss" scoped>
-  .g-combobox {
+  .g-menu--content {
+   background-color: #00b0ff;
+  }
+  .g-autocomplete {
+
+
     .g-select ::v-deep {
+
       .g-menu--activator {
+
         span {
           margin: 3px
         }
 
         .g-tf-wrapper {
-          margin: 16px 0px 24px 5px
         }
 
         .g-tf-append__inner {
@@ -393,14 +379,8 @@
           flex-basis: auto;
           cursor: text;
         }
-      }
-    }
 
-    .g-select__active ::v-deep {
-      .g-tf-append__inner .g-icon:last-child {
-        transform: rotateZ(180deg);
       }
     }
   }
-
 </style>
