@@ -27,6 +27,29 @@
         type: [Number, String],
         default: 2
       },
+      slideTransHorLeft: {
+        type: String,
+        default: 'left 0.5s, right 1s'
+      },
+      slideTransHorRight: {
+        type: String,
+        default: 'left 1s, right 0.5s'
+      },
+      sliderBorderColor: {
+        type: String,
+        default: '0'
+      },
+      sliderZindex: {
+        type: String,
+      },
+      sliderTop: {
+        type: String,
+        default: '46px'
+      },
+      sliderHeight: {
+        type: String,
+        default: '2px'
+      },
       vertical: Boolean,
       right: Boolean,
       center: Boolean,
@@ -40,7 +63,6 @@
     },
     setup(props, context) {
       const model = getVModel(props, context);
-
       if (!model.value) {
         model.value = props.items.find(item => !item.disabled);
       }
@@ -74,26 +96,28 @@
 
       const sliderStyles = reactive({
         'width': '90px',
-        'height': '2px',
-        'top': '46px',
+        'height': props.sliderHeight,
+        'top': props.sliderTop,
         'right': 'auto',
         'left': '0',
         'bottom': 'auto',
         'background-color': 'currentColor',
-        'transition': 'left 1s, right 0.5s'
+        'border-radius': props.sliderBorderColor,
+        'transition': 'left 1s, right 0.5s',
+        'z-index': props.sliderZindex ? props.sliderZindex : '0'
       });
 
       function calculateSliderStyle() {
-        if (!itemsRef.value) return
-        const children = itemsRef.value.querySelector('.g-slide-group__content').children
+        if (!itemsRef.value) return;
+        const children = itemsRef.value.querySelector('.g-slide-group__content').children;
         const activeTab = find(children, i => i.classList.contains('g-tab__active'));
         sliderStyles.width = convertToUnit(props.vertical ? props.sliderSize : 'auto');
-        sliderStyles.height = convertToUnit(props.vertical ? activeTab.offsetHeight : props.sliderSize);
-        sliderStyles.top = convertToUnit(props.vertical ? activeTab.offsetTop : (activeTab.offsetHeight - props.sliderSize));
+        sliderStyles.height = convertToUnit(props.vertical ? activeTab.offsetHeight : (props.sliderHeight ? props.sliderHeight : props.sliderSize));
+        sliderStyles.top = convertToUnit(props.vertical ? activeTab.offsetTop : (props.sliderTop ? props.sliderTop : (activeTab.offsetHeight - props.sliderSize)));
 
-        const parent = context.refs.itemsRef.querySelector('.g-slide-group__content')
-        sliderStyles.left = convertToUnit(activeTab.offsetLeft)
-        sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft)
+        const parent = context.refs.itemsRef.querySelector('.g-slide-group__content');
+        sliderStyles.left = convertToUnit(activeTab.offsetLeft);
+        sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft);
 
         sliderStyles['background-color'] = props.sliderColor
           ? (getColorType(props.sliderColor) === 'style'
@@ -102,8 +126,18 @@
           : 'currentColor';
       }
 
-      const itemsRef = ref(null)
-      watch(() => [itemsRef.value, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
+      const itemsRef = ref(null);
+      watch(() => [
+          itemsRef.value,
+          props.grow,
+          props.right,
+          props.center,
+          props.vertical,
+          props.sliderSize,
+          props.sliderColor,
+          props.alignWithTitle,
+          props.icon
+      ], () => {
         calculateSliderStyle();
       });
 
@@ -125,34 +159,36 @@
           sliderStyles.height = 'auto';
         } else {
           if (activeTab.offsetLeft < +sliderStyles.left.replace('px', '')) {
-            sliderStyles['transition'] = 'left 0.5s, right 1s';
+            // sliderStyles['transition'] = 'left 0.5s, right 1s';
+            sliderStyles['transition'] = props.slideTransHorLeft;
           } else {
-            sliderStyles['transition'] = 'left 1s, right 0.5s';
+            sliderStyles['transition'] = props.slideTransHorRight;
           }
 
           sliderStyles.width = 'auto';
-          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft)
-          sliderStyles.left = convertToUnit(activeTab.offsetLeft)
+          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft);
+          sliderStyles.left = convertToUnit(activeTab.offsetLeft);
         }
       }, { lazy: true });
 
       const fullTitle = computed(() => {
         const noTitle = find(props.items, item => item.title === undefined);
-        console.warn(`Required prop title for tab`)
+        console.warn(`Required prop title for tab`);
         return !noTitle;
       });
 
-      const genWrapper = () => <g-layout className="g-tabs-wrapper" vertical={!props.vertical}>
-        <div className={tabsClasses.value} style={tabsStyles.value}>
-          <div ref="itemsRef"
-               className={{ ...barClasses.value, 'g-tabs-bar': true }}
-               style={barStyles.value}
-               v-resize={calculateSliderStyle}>
-            {genTabsBar()}
+      const genWrapper = () =>
+        <g-layout className="g-tabs-wrapper" vertical={!props.vertical}>
+          <div className={tabsClasses.value} style={tabsStyles.value}>
+            <div ref="itemsRef"
+                 className={{ ...barClasses.value, 'g-tabs-bar': true }}
+                 style={barStyles.value}
+                 v-resize={calculateSliderStyle}>
+              {genTabsBar()}
+            </div>
           </div>
-        </div>
-        {context.slots.default && context.slots.default()}
-      </g-layout>
+          {context.slots.default && context.slots.default()}
+        </g-layout>;
 
       const genTabIcon = (item) => {
         if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
@@ -184,12 +220,11 @@
             'click:prev': calculateSliderStyle,
             'click:next': calculateSliderStyle
           },
-          // slot: 'tabs',
         };
         return <g-slide-group {...slideGroupData} vModel={model.value} dense>
-          {genTabs()}
-          {props.showSlider && genTabSlider()}
-        </g-slide-group>
+                 {genTabs()}
+                 {props.showSlider && genTabSlider()}
+               </g-slide-group>
       };
 
       return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>

@@ -2,14 +2,15 @@ import {withKnobs, text, boolean, number} from '@storybook/addon-knobs';
 import IosTab from '../IosTab';
 import GList from "../../../components/GList/GList";
 import GTabItem from "../../../components/GTabs/GTabItem";
-require('./_glist-custom.scss');
+import GListCustom from '../GListCustom';
+
 export default {
   title: 'IosTab',
   decorators: [withKnobs]
 }
 
 export const tab = () => ({
-  components: {IosTab, GList, GTabItem},
+  components: {IosTab, GList, GTabItem, GListCustom},
   data() {
     return {
       items: [
@@ -117,6 +118,58 @@ export const tab = () => ({
             }
           ]
         },
+        {
+          title: 'By Week',
+          icon: 'day',
+          subheader: '2019',
+          list: [
+            {
+              title: 'September',
+              subtitle: '25 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'August',
+              subtitle: '32 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'July',
+              subtitle: '52 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'June',
+              subtitle: '72 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'May',
+              subtitle: '35 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'April',
+              subtitle: '73 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'March',
+              subtitle: '43 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'February',
+              subtitle: '45 Sales',
+              append: '€ 542.742,06'
+            },
+            {
+              title: 'January',
+              subtitle: '15 Sales',
+              append: '€ 542.742,06'
+            }
+          ]
+        },
       ],
       model: null,
     }
@@ -163,7 +216,7 @@ export const tab = () => ({
     sliderColor: {
       type: String,
       default: text('Slider Color', 'currentColor')
-    }
+    },
   },
   template: `
     <ios-tab 
@@ -178,10 +231,11 @@ export const tab = () => ({
       :grow="grow"
       :icon="icon"
       :slider-size="sliderSize"
-      :slider-color="sliderColor">
+      :slider-color="sliderColor"
+      >
       <g-tab-item v-for="tabItem in items" :item="tabItem">
-        <g-list :items="tabItem.list" :subheader="tabItem.subheader">
-        </g-list>
+        <g-list-custom :items="tabItem.list" :subheader="tabItem.subheader">
+        </g-list-custom>
       </g-tab-item>
     </ios-tab>
   `,

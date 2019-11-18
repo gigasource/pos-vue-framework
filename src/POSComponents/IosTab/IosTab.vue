@@ -1,10 +1,10 @@
 <script>
-import GTabs from "../../components/GTabs/GTabs";
-import GTabItem from "../../components/GTabs/GTabItem";
-import GTab from "../../components/GTabs/GTab";
-import getVModel from "../../mixins/getVModel";
+  import GTabs from "../../components/GTabs/GTabs";
+  import GTabItem from "../../components/GTabs/GTabItem";
+  import GTab from "../../components/GTabs/GTab";
+  import getVModel from "../../mixins/getVModel";
 
-export default {
+  export default {
   name: 'IosTab',
   components: {GTab, GTabItem, GTabs},
   props: {
@@ -23,7 +23,7 @@ export default {
     center: Boolean,
     centerActive: Boolean,
     icon: Boolean,
-    alignWithTitle: Boolean
+    alignWithTitle: Boolean,
   },
   setup(props, context) {
     const model = getVModel(props, context);
@@ -40,7 +40,15 @@ export default {
         ...{
           props: {
             ...props,
-            showSlider: false
+            // showSlider: false
+            ripple: false,
+            sliderColor: '#1271FF',
+            slideTransHorLeft: 'left 0.3s, right 0.3s',
+            slideTransHorRight: 'left 0.3s, right 0.3s',
+            sliderBorderColor: '29px',
+            sliderZindex: '-2',
+            sliderTop: '0px',
+            sliderHeight: '32px',
           },
           on: {
             input(e) {
@@ -49,13 +57,14 @@ export default {
           },
           scopedSlots: {
             tab: ({item, index}) => (
-                <g-tab item={item} key={index}>{item.title}</g-tab>
+                <transition>
+                  <g-tab item={item} key={index} >{item.title}</g-tab>
+                </transition>
             )
           }
         }
       }
       >
-
         {context.slots.default ? context.slots.default() : gTabItems()}
       </g-tabs>
     )
@@ -66,12 +75,15 @@ export default {
 <style lang="scss" scoped>
   @import "../../style/colors";
   @import "../../style/variables";
-  /*.g-tabs-wrapper {*/
-  /*  align-items: center;*/
-  /*}*/
+
+  ::v-deep .g-tab-items {
+    margin: 20px 0;
+    width: 300px;
+  }
   ::v-deep .g-tabs-bar {
     mix-blend-mode: normal;
-    width: 260px;
+    /*width: 260px;*/
+    width: auto;
     min-height: 32px;
     border-radius: 29px;
     font-family: "Muli", sans-serif;
@@ -93,7 +105,7 @@ export default {
       opacity: 1;
     }
     &__active {
-      background-color: #1271FF;
+      /*background-color: #1271FF;*/
     }
   }
 </style>
