@@ -49,6 +49,7 @@
         default: true
       },
       height: String,
+			filled: Boolean,
     },
     setup(props, context) {
       const classes = computed(() => ({
@@ -61,6 +62,7 @@
         'g-toolbar__floating': props.floating,
         'g-toolbar__tile': props.tile,
         'g-toolbar__collapse': props.collapse,
+        'g-toolbar__filled': props.filled,
 				['bg-'+props.color.split(' ').join('-')]: props.color && !isCssColor(props.color),
       }));
 

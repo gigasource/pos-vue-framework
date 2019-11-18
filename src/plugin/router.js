@@ -18,6 +18,12 @@ import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import Textarea from "../view/TextareaDemo";
+import Setting from '../POSView/setting/Setting';
+import UserSetting from '../POSView/setting/view/viewUser';
+import ArticleSetting from '../POSView/setting/view/viewArticle';
+import CompanySetting from '../POSView/setting/view/viewCompany';
+import GeneralSetting from '../POSView/setting/view/viewGeneral';
+import PaymentSetting from '../POSView/setting/view/viewPayment';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -37,6 +43,18 @@ const routes = [
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
   {path: '/textarea', name: 'Textarea', component: Textarea},
+  {
+    path: '/setting',
+    name: 'Setting',
+    component: Setting,
+    children: [
+      { path: 'user', component: UserSetting},
+      { path: 'article', component: ArticleSetting},
+      { path: 'company', component: CompanySetting},
+      { path: 'general', component: GeneralSetting},
+      { path: 'payment', component: PaymentSetting},
+    ]
+  },
 ];
 
 const router = new VueRouter({

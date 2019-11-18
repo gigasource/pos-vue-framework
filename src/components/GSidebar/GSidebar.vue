@@ -20,6 +20,7 @@
     components: { GOverlay },
     props: {
       absolute: Boolean,
+      fixed: Boolean,
       bottom: Boolean,
       right: Boolean,
       clipped: Boolean,
@@ -40,6 +41,7 @@
       const classes = computed(() => ({
         'g-sidebar': true,
         'g-sidebar__absolute': props.absolute,
+        'g-sidebar__fixed': props.fixed,
         'g-sidebar__collapsed': props.collapsed,
         [convertColorClass(props.color, 'background')]: props.color && getColorType(props.color) === 'class'
       }));

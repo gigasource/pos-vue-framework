@@ -11,6 +11,7 @@
       <router-link to="/tool-tip-demo">Tooltip demo</router-link>
 			<router-link to="/input">Input</router-link>
 			<router-link to="/transition-demo">Transition</router-link>
+			<router-link to="/setting">Setting</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

@@ -67,8 +67,10 @@
               if (childrenVNodes) {
                 state.collapse = !state.collapse;
                 openPath.value = path
-              } else
-              	activePath.value = path;
+              } else {
+                activePath.value = path;
+                node.href && context.root.$router && context.root.$router.currentRoute.path !== node.href && context.root.$router.push(node.href);
+							}
             }
           },
         }
@@ -152,7 +154,6 @@
 			display: flex;
 			align-items: center;
 			contain: layout;
-			margin-right: 8px;
 			transition: none;
 			color: rgba(0, 0, 0, .87);
 
@@ -163,6 +164,7 @@
 			&__rounded {
 				border-top-right-radius: 32px;
 				border-bottom-right-radius: 32px;
+				margin-right: 8px;
 			}
 		}
 
