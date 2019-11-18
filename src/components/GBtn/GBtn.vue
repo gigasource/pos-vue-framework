@@ -65,7 +65,6 @@
       function genBtn() {
         return <button ref="btn" id="btn" v-ripple class={classes.value} style={styles.value} vOn:click={(event) => {
           context.emit('click', event);
-          context.refs.btn.blur();
         }}>
           {genBtnContent()}
         </button>
