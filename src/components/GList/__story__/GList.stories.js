@@ -255,10 +255,10 @@ export const gListNav = () => ({
   data() {
     return {
       items: [
-        { title: 'Jason Oner', subtitle: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
-        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
-        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
-        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+        {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ]
     }
   },
@@ -460,7 +460,7 @@ export const gListMultiSection = () => ({
 })
 
 export const gListSingleSectionSelect = () => ({
-  components: { GList },
+  components: {GList},
   data() {
     return {
       items: [
@@ -528,7 +528,7 @@ export const gListItemSlotRenderArray = () => ({
       selectedItem: {{testValue}}
       <g-list :items="items" selectable v-model="testValue">
               <template v-slot:listItem="{item, isSelected, onSelect}">
-                <g-list-item :item="item" :isSelected="isSelected" @click:singleItem="onSelect(item)" >
+                <g-list-item :item="item" :isSelected="isSelected" @singleItemClick="onSelect(item)" >
                   <g-list-item-content>
                       <g-list-item-text >{{item.title}}</g-list-item-text>
                   </g-list-item-content>
@@ -559,7 +559,7 @@ export const gListMultiSelect = () => ({
     allowDuplicates: { default: boolean('allowDuplicates', fasse) },
   },
   template:
-    `
+      `
       <div>
         selectedItem: {{testValue}}
         <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense" :subheader="subheader" :divider="divider" selectable multiple :allowDuplicates="allowDuplicates">
@@ -568,7 +568,7 @@ export const gListMultiSelect = () => ({
       `,
 })
 export const gListSelectMandatory = () => ({
-  components: { GList },
+  components: {GList},
   data() {
     return {
       items: [

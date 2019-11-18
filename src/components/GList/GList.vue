@@ -4,21 +4,18 @@
        :style="styles"
        @click="onClick"
   >
-
     <template v-if="!multiSection">
       <slot name="subheader">
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
       </slot>
       <template v-for="(item, index) in renderList">
-        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :onSelect="onSelect">
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :on="getListEvents(item)"
+              :onSelect="onSelect">
           <div v-if="item[itemTitle]"
                class="g-list-item"
                :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
                tabindex="0"
-               @click="onSelect(item)"
-               @keydown.enter="onSelect(item)"
-               @keydown.down="onArrowDown(item)"
-               @keydown.up="onArrowUp(item)"
+               v-on="getListEvents(item)"
           >
             <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
               <div :class="prependClasses" v-if="item.prepend &&  prependType">
@@ -80,9 +77,9 @@
               <div class="g-list-item-text">{{item[itemTitle]}}</div>
               <div class="g-list-item-text__sub"
                    v-if="lineNumber > 1">
-                {{!inMenu && (item.subtitle || '&nbsp;')}}
+                {{item.subtitle || '&nbsp;'}}
               </div>
-              <div class="g-list-item-text__sub" v-if="lineNumber === 3 && !inMenu">{{item.subtitle2||'&nbsp;'}}</div>
+              <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
             <slot name="append" :item="item">
               <template v-if="item.append">{{item.append}}</template>
@@ -102,11 +99,11 @@
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
-  import Textarea from '../../view/TextareaDemo';
+  import {keyCodes} from "../../utils/helpers";
 
   export default {
     name: 'GList',
-    components: { Textarea, GImg, GAvatar, GIcon, GDivider},
+    components: {GImg, GAvatar, GIcon, GDivider},
     props: {
       height: String,
       width: String,
@@ -164,6 +161,8 @@
         'g-list__dense': props.dense,
         'g-list__inMenu': props.inMenu,
         'g-list__nav': props.nav,
+        'g-list__empty': !props.items.length
+
       }));
 
       const styles = computed(() => ({
@@ -206,6 +205,28 @@
       const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
 
 
+      const getListEvents = (item) => {
+       let listListeners ={}
+        return listListeners = {
+         click: () => onSelect(item),
+         keydown: (e) => {
+           switch (e.keyCode) {
+             case keyCodes.down:
+               onArrowDown(item)
+               break
+             case keyCodes.up:
+               onArrowUp(item)
+               break
+             case keyCodes.enter:
+               onSelect(item)
+               break
+           }
+         }
+        }
+      }
+
+      const {internalValue, toggleItem, isActiveItem} = makeSelectable(props, context);
+
       return {
         classes,
         styles,
@@ -218,6 +239,7 @@
         onSelect,
         internalValue,
         isActiveItem,
+        getListEvents,
       }
     }
   }

@@ -251,6 +251,9 @@
       }
     }
   }
+  &__empty{
+    padding: 0
+  }
   &__inMenu{
     .g-list-header {
       padding: 0 8px;
