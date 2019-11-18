@@ -1,11 +1,12 @@
 <script>
   import _ from 'lodash';
-  import { computed } from '@vue/composition-api';
+  import { computed, ref } from '@vue/composition-api';
   import GRow from '../GLayout/GRow';
   import GCol from '../GLayout/GCol';
   import GCard from '../GCard/GCard';
   import { GCardActions } from '../GCard/GCardFunctionalComponent';
   import GSpacer from '../GLayout/GSpacer';
+  import getVModel from '../../mixins/getVModel';
 
   export default {
     name: 'GGridSelect',
@@ -37,17 +38,7 @@
       }
     },
     setup(props, context) {
-      const internalValue = computed(({
-        get() {
-          if (props.multiple && !Array.isArray(props.value)) {
-            return props.value ? [props.value] : [];
-          }
-          return props.value
-        },
-        set(value) {
-          context.emit('input', value)
-        }
-      }))
+      const internalValue = getVModel(props, context)
 
       const options = computed(() => {
         if (Array.isArray(props.items)) return props.items;
@@ -66,7 +57,8 @@
           if (_.includes(internalValue.value, returnItem)) {
             internalValue.value.splice(internalValue.value.indexOf(returnItem), 1);
           } else {
-            internalValue.value.push(returnItem);
+            if (!internalValue.value || !Array.isArray(internalValue.value)) internalValue.value = ref([returnItem]).value
+            else internalValue.value.push(returnItem);
           }
         } else {
           internalValue.value = internalValue.value === returnItem ? null : returnItem;
