@@ -6,14 +6,14 @@
 					<slot name="title"></slot>
 				</span>
 				<div class="g-dnddialog-action" ref="action">
-					<g-btn v-if="!(isMinimize || isMaximize)" small flat width="30" height="30" min-width="30" color="orange" @click="toggleMinimize">
-						<i class="material-icons">minimize</i>
+					<g-btn v-if="!(isMinimize || isMaximize)" x-small flat tile width="16" height="16" min-width="16" @click="toggleMinimize">
+						<g-icon size="16">{{ minimizeIcon }}</g-icon>
 					</g-btn>
-					<g-btn small flat width="30" height="30" min-width="30" color="green" @click="toggleMaximize">
-						<i class="material-icons">crop_din</i>
+					<g-btn x-small flat tile width="16" height="16" min-width="16" @click="toggleMaximize">
+						<g-icon size="16">{{ maximizeIcon }}</g-icon>
 					</g-btn>
-					<g-btn small flat width="30" height="30" min-width="30" color="red" @click="toggleDialog">
-						<i class="material-icons">close</i>
+					<g-btn x-small flat tile width="16" height="16" min-width="16" @click="toggleDialog">
+						<g-icon size="16">{{ closeIcon }}</g-icon>
 					</g-btn>
 				</div>
 			</div>
@@ -29,10 +29,15 @@
   import getVModel from '../../mixins/getVModel';
   import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn';
+  import GIcon from '../GIcon/GIcon';
+  import minimizeIcon from '../../assets/dnddialog/minimize.svg'
+  import maximize1Icon from '../../assets/dnddialog/maximize1.svg'
+  import maximize2Icon from '../../assets/dnddialog/maximize2.svg'
+  import closeIcon from '../../assets/dnddialog/close.svg'
 
   export default {
     name: 'GDndDialog',
-    components: { GBtn },
+    components: { GIcon, GBtn },
     props: {
       value: {
         type: Boolean,
@@ -134,6 +139,8 @@
           isMaximize.value = !isMaximize.value
         }
       }
+
+      const maximizeIcon = computed(() => isMaximize.value ? maximize2Icon : maximize1Icon)
 
       // Dialog Positions and Dimensions
       const dialogPosition = reactive({
@@ -351,8 +358,13 @@
               document.body.style.cursor = 'nwse-resize';
               break;
             default:
-              cursor.value = '';
-              document.body.style.cursor = '';
+              if (e.target === context.refs.header) {
+                cursor.value = 'move';
+                document.body.style.cursor = 'move';
+							} else {
+                cursor.value = '';
+                document.body.style.cursor = '';
+              }
               break;
           }
         }
@@ -388,12 +400,92 @@
         toggleMaximize,
         wrapperClasses,
         wrapperStyles,
-        dragStart
+        dragStart,
+				minimizeIcon,
+				maximizeIcon,
+				closeIcon
       }
     }
   }
 </script>
 
 <style scoped lang="scss">
- @import "GDndDialog";
+	@import "../../style/elevation";
+
+	.g-dnddialog {
+		&-wrapper{
+			display: flex;
+			flex: 1 1 100%;
+			flex-direction: column;
+			position: absolute;
+			z-index: 10000;
+			transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			transition-property: transform, opacity;
+			box-shadow: 0 0 9px rgba(0, 0, 0, 0.24);
+			border-radius: 4px;
+		}
+
+		&-header {
+			box-sizing: border-box;
+			flex: 0 0 auto;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			height: 32px;
+			background-color: #f5f5f5;
+			border-bottom: 1px solid #E0E0E0;
+			padding: 8px 8px 7px 16px;
+			border-radius: 4px 4px 0 0;
+		}
+
+		&-title {
+			font-family: Roboto;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 12px;
+			line-height: 22px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
+		&-action {
+			display: flex;
+			align-items: center;
+
+			::v-deep.g-btn {
+				padding: 0 !important;
+
+				&:not(:last-child) {
+					margin-right: 4px
+				}
+			}
+		}
+
+		&-content {
+			flex: 1 1 auto;
+			font-family: Roboto;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 12px;
+			line-height: 22px;
+			backface-visibility: hidden;
+			overflow-y: auto;
+			background-color: #FFFFFF;
+			padding: 16px;
+			border-radius: 0 0 4px 4px;
+		}
+
+		&__minimize {
+			height: auto;
+		}
+
+		&__maximize {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
 </style>
