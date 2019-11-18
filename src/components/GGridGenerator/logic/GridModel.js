@@ -126,15 +126,8 @@ export default class GridModel extends AreaModel {
     return /^(\w|-)+$/i.test(areaName)
   }
 
-  _getUniqueAreaName(name) {
-    const subItemNames = _.map(this.subAreas, subArea => subArea.name)
-    let counter = 0
-    let uniqueAreaName = name
-    while(subItemNames.indexOf(uniqueAreaName) > -1) {
-      counter++
-      uniqueAreaName = `${name}${counter}`
-    }
-    return uniqueAreaName
+  isSubAreaNameExisted(name) {
+    return _.find(this.subAreas, subArea => subArea.name === name)
   }
 
   /**
@@ -145,7 +138,6 @@ export default class GridModel extends AreaModel {
   addSubGrid(area) {
     if (!this._isAreaNameValid(area.name))
       return false
-    area.name = this._getUniqueAreaName(area.name)
     this.subAreas.push(new GridModel({parent: this, area}))
     return true
   }
@@ -158,7 +150,6 @@ export default class GridModel extends AreaModel {
   addSubItem(area) {
     if (!this._isAreaNameValid(area.name))
       return false
-    area.name = this._getUniqueAreaName(area.name)
     this.subAreas.push(new AreaModel({area, parent: this}))
     return true
   }

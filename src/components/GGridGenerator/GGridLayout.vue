@@ -78,18 +78,21 @@
           <g-dialog value={dialogState.show} fullscreen>
             <div class="editor-dialog">
               <div class='editor-dialog__title-bar'>
-                <span class='editor-dialog__title-bar__title'>
-                  Grid Layout Editor
-                </span>
-                <button class="close-btn" vOn:click={() => dialogState.show = false}>x</button>
+                <span class='editor-dialog__title-bar__title'>Grid Layout Editor</span>
+                <button vOn:click={() => {
+                  context.refs.gridGenerator.save()
+                  dialogState.show = false
+                }}>Save</button>
+                <button vOn:click={() => {
+                  context.refs.gridGenerator.cancel()
+                  dialogState.show = false
+                }}>Cancel</button>
               </div>
               <g-grid-generator
+                  ref="gridGenerator"
                   layout={toJsonStr(state.layout)}
                   style="flex: 1"
-                  vOn:json={(json) => {
-                    console.log('on export')
-                    state.layout = fromJson(json)
-                  }}/>
+                  vOn:json={json => state.layout = fromJson(json)}/>
             </div>
           </g-dialog>
         </div>
@@ -142,14 +145,12 @@
         let vNode = _findVNodesInSlot(model.name)
         if (vNode.length > 1) {
           // multiple slot with the same area name
-          vNode = <div {...{ attrs: { class: cssClassName } }}>{...vNode}</div>
+          vNode = <div class={cssClassName}>{vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name
-          vNode = model.wrapInDiv ? <div {...{ attrs: { class: `${cssClassPrefix}${model.name}` } }}>{vNode[0]}</div> : vNode[0]
+          vNode = model.wrapInDiv ? <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div> : vNode[0]
         } else if (!model._parent) {
           // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
-          const attrs = { class: cssClassName, [uid]: '' }
-          const refWrapper = { ref: refIdWrapperElement }
           const styleVNode = (
               <style type="text/css">
                 {model.genCss(uid, { showBackgroundColor: props.displayPreviewColor, prefix: cssClassPrefix })}
@@ -158,7 +159,10 @@
           const dialogEditVNode = props.editable ? renderEditDialog() : null
           const passThroughVNodes = props.passThrough ? _findPassThroughVNodes() : null
 
-          vNode = <div {...{ attrs }} {...refWrapper}>
+          vNode = <div
+              class={cssClassName}
+              ref={refIdWrapperElement}
+              {...{ attrs: {[uid]:''} }}>
             {styleVNode}
             {dialogEditVNode}
             {passThroughVNodes}
@@ -167,7 +171,7 @@
         } else {
           // an area which was declared in layout but not exist in grid template
           // will be rendered as a empty div
-          vNode = <div {...{ attrs: { class: cssClassName } }}>
+          vNode = <div class={cssClassName}>
             {_.map(model.subAreas, processLayout)}
           </div>
         }

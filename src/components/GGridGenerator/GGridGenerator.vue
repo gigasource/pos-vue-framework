@@ -4,7 +4,7 @@
   import { saveFile, openFile } from '../../utils/helpers'
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
-  import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea } from './logic/utils'
+  import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName } from './logic/utils'
   import { fromJson, toJsonStr } from './logic/modelParser'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
@@ -93,6 +93,7 @@
         // a value indicate whether a confirm dialog will be shown or not
         // the confirm dialog should be show when user create new sub-grid/single item
         showConfirmDialog: false,
+        confirmDialogErrorMsg: '',
         // a value indicate whether an output dialog will be shown or not
         // the output dialog should be shown when user click to generate output button
         showOutputDialog: false,
@@ -114,10 +115,12 @@
           'grid-gen__sub-list__item--selected': grid === state.selectedGrid
         }
       }
+
       function setSelectedGrid(grid) {
         state.selectedGrid = grid
         state.selectedSetting = selectedSettingEnum.grid
       }
+
       function renderGridList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">Grid</div>
@@ -279,7 +282,7 @@
 
                   // create or modify existing item
                   _selectingArea = {
-                    name: _selectingArea.name,
+                    name: state.editingArea ? state.editingArea.name : getUniqueAreaName('div', state.selectedGrid.subAreas),
                     rowStart: i,
                     columnStart: j,
                     rowEnd: i,
@@ -349,7 +352,7 @@
       const actionClass = 'area-action'
 
       function areaHit(e) {
-        for(let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
+        for (let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
           const area = actionWrapperElement.parentNode
           const { top, left, width, height } = area.getBoundingClientRect()
           const pageTop = top + window.scrollY
@@ -388,7 +391,9 @@
         return <div
             class={getAreaClass(gridItem)}
             style={{ backgroundColor: gridItem.bgColor, gridArea: gridItem.gridAreaCss() }}
-            vOn:click={() => {setSelectedArea(gridItem)}}>
+            vOn:click={() => {
+              setSelectedArea(gridItem)
+            }}>
           <span>{gridItem.name}</span>
           <span class={actionWrapperClass}>
             <span class={actionClass} vOn:click={() => gridItem.changeBgColor()}>
@@ -483,11 +488,19 @@
         }
       }
 
+      function newAreaNameIsAvailable(grid) {
+        if (grid.isSubAreaNameExisted(_selectingArea.name)) {
+          state.confirmDialogErrorMsg = `"${_selectingArea.name.substr(0, 30)}" existed!`
+          return false
+        }
+        return true
+      }
+
       /**
        * @param grid {GridModel}
        */
       function onSubGridBtnClicked(grid) {
-        if (grid.addSubGrid(_selectingArea)) {
+        if (newAreaNameIsAvailable(grid) && grid.addSubGrid(_selectingArea)) {
           state.showConfirmDialog = false
           _selectingArea = createEmptySelectingArea()
         }
@@ -497,7 +510,7 @@
        * @param grid {GridModel}
        */
       function onSubItemBtnClicked(grid) {
-        if (grid.addSubItem(_selectingArea)) {
+        if (newAreaNameIsAvailable(grid) && grid.addSubItem(_selectingArea)) {
           state.showConfirmDialog = false
           _selectingArea = createEmptySelectingArea()
         }
@@ -526,7 +539,15 @@
                 <input class="grid-gen__dialog__confirm__item-name"
                        type="text"
                        ref={refIdNewItemNameInput}
-                       vModel={_selectingArea.name}/>
+                       value={_selectingArea.name}
+                       vOn:input={e => {
+                         _selectingArea.name = e.target.value
+                         if (state.confirmDialogErrorMsg !== '') {
+                           state.confirmDialogErrorMsg = ''
+                         }
+                       }}
+                />
+                <span class="grid-gen__dialog__confirm__error-msg">{state.confirmDialogErrorMsg}</span>
               </div>
               <div>
                 <small>
@@ -627,16 +648,20 @@
           <div class="grid-gen__settings-prop">
             <label>Rows:</label>
             <div>
-              <button vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button><br/>
-              <button vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button><br/>
+              <button vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button>
+              <br/>
+              <button vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button>
+              <br/>
               <button vOn:click={() => grid.deleteRow(state.selectedRowId)}>Delete</button>
             </div>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Columns:</label>
             <span>
-              <button vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button><br/>
-              <button vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button><br/>
+              <button vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button>
+              <br/>
+              <button vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button>
+              <br/>
               <button vOn:click={() => grid.deleteColumn(state.selectedColumnId)}>Delete</button>
             </span>
           </div>,
@@ -687,11 +712,11 @@
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Padding:</label>
-            <input vModel={gridItem.padding}/>
+            <input value={gridItem.padding} vOn:input={e => enterPressed(e) && (gridItem.padding = e.target.value)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Margin:</label>
-            <input vModel={gridItem.margin}/>
+            <input value={gridItem.margin} vOn:input={e => enterPressed(e) && (gridItem.margin = e.target.value)}/>
           </div>,
         ] : null
       }
@@ -713,7 +738,6 @@
       function copyLayoutStrToClipBoard() {
         const json = toJsonStr(state.layout)
         copy(json)
-        context.emit('json', json)
       }
 
       function renderGridGeneratorOutput() {
@@ -774,8 +798,19 @@
         )
       }
 
+      function save() {
+        context.emit('json', toJsonStr(state.layout))
+      }
+
+      function cancel() {
+        state.layout = fromJson(props.layout)
+        state.selectedGrid = state.layout
+      }
+
       return {
         state,
+        save,
+        cancel,
         renderGridGenerator
       }
     },
@@ -1017,6 +1052,12 @@
         &__item-name {
           border: 1px solid #888;
           padding: 5px;
+        }
+
+        &__error-msg {
+          font-size: small;
+          color: red;
+          padding-left: 10px;
         }
 
         &__action-btn {

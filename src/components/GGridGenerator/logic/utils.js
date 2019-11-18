@@ -36,3 +36,13 @@ export function getCssArea({rowStart, rowEnd, columnStart, columnEnd}) {
   return `${rowStart} / ${columnStart} / ${rowEnd} / ${columnEnd}`
 }
 
+export function getUniqueAreaName(name, subAreas) {
+  const subItemNames = _.map(subAreas, subArea => subArea.name)
+  let counter = 0
+  let uniqueAreaName = name
+  while(subItemNames.indexOf(uniqueAreaName) > -1) {
+    counter++
+    uniqueAreaName = `${name}${counter}`
+  }
+  return uniqueAreaName
+}
