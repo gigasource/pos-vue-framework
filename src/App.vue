@@ -1,5 +1,5 @@
 <template>
-	<div id="app" className="body-wrapper__responsive__vertical" data-app>
+	<div id="app" class="body-wrapper__responsive__vertical" data-app>
 		<g-layout vertical v-if="$route.path === '/'">
 			<router-link to="/keyboard-demo">Keyboard Demo</router-link>
 			<router-link to="/groupable">Groupable</router-link>
