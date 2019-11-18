@@ -1,5 +1,5 @@
 <script>
-	import getVModel from '../../mixins/getVModel';
+	import getInternalValue from '../../mixins/getVModel';
   import { ref, inject, onMounted } from '@vue/composition-api';
   import GConnectorFactory from './GConnectorFactory';
   import { Fragment } from 'vue-fragment'
@@ -34,7 +34,11 @@
 			pathWidth: {
 			  type: [Number, String],
 				default: 3
-			}
+			},
+
+			startLimit: [Number, String],
+			endLimit: [Number, String],
+			filter: Function
     },
     setup(props, context) {
       // Connector Id handling
@@ -50,7 +54,7 @@
 				})
       })
 
-      const { model } = getVModel(props, context)
+      const model = getInternalValue(props, context)
       const diagramId = inject('diagramId')
       const connectionPoints = inject('connectionPoint')
       const zoomState = inject('zoomState')

@@ -1,4 +1,4 @@
-const scaleFactor = 0.05
+const scaleFactor = 0.01
 const minScale = 0.1
 const maxScale = 100
 const zoomState = '_zoomState_'

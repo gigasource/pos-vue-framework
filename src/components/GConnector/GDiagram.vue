@@ -1,6 +1,5 @@
 <script>
-	import { getElementPosition, convertToUnit } from '../../utils/helpers';
-	import { Point } from './CoordinateSystem';
+	import { convertToUnit } from '../../utils/helpers';
   import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GDiagramFactory from './GDiagramFactory';
   import Vue from 'vue';
@@ -34,9 +33,13 @@
         zoomState,
         originCoordinate,
 				svgDimension,
-				containerDimension,
         zoom,
-        scroll
+        scroll,
+        isDrag,
+        activeDragIds,
+        dragStart,
+        drag,
+        dragEnd
       } = GDiagramFactory(props, context)
 
       provide('diagramId', diagramId)
@@ -94,77 +97,6 @@
       }))
 
 
-      // Drag
-      const isDrag = ref(false)
-			const activeDragIds = ref([])
-
-      const startPosition = {
-        top: 0,
-        left: 0,
-      }
-
-      const mouseStartPosition = {
-        pageX: 0,
-        pageY: 0
-      }
-      let target = null
-
-			function getConnectorId(el, ids) {
-        if (el.classList.contains('g-connector')) ids.push(el.id)
-				if (el.children.length !== 0) {
-				  for (let children of el.children) {
-				    getConnectorId(children, ids)
-					}
-				}
-			}
-
-			function getConnectorIds(el) {
-        const ids = []
-				getConnectorId(el, ids)
-				return ids
-			}
-
-      function dragStart(e) {
-        e.preventDefault()
-
-        target = e.currentTarget
-				activeDragIds.value = getConnectorIds(target)
-				console.log(activeDragIds.value)
-
-        const rect = getElementPosition(target)
-        startPosition.top = (rect.top - originCoordinate.y)/zoomState.value
-        startPosition.left = (rect.left - originCoordinate.x)/zoomState.value
-        mouseStartPosition.pageX = e.pageX
-        mouseStartPosition.pageY = e.pageY
-				isDrag.value = true
-        target.style.cursor = 'move'
-      }
-
-      function drag(e) {
-        e.preventDefault()
-
-        if (isDrag.value) {
-          const targetWidth = window.getComputedStyle(target, 'width')
-          const targetHeight = window.getComputedStyle(target, 'height')
-
-          const newTop = startPosition.top - (mouseStartPosition.pageY - e.pageY)/zoomState.value
-          const newLeft = startPosition.left - (mouseStartPosition.pageX - e.pageX)/zoomState.value
-
-          target.style.top = newTop >= 0 ? newTop + 'px' : 0
-          target.style.left = newLeft >= 0 ? newLeft + 'px' : 0
-        }
-      }
-
-      function dragEnd(e) {
-        e.preventDefault()
-
-        if(isDrag.value) {
-          activeDragIds.value = []
-          isDrag.value = false
-          target.style.cursor = ''
-        }
-      }
-
       document.addEventListener('mousemove', drag);
       document.addEventListener('mouseup', dragEnd);
 
@@ -184,7 +116,6 @@
 
       return {
         genDiagram,
-				connectionPoints
       }
     },
     render() {
@@ -200,7 +131,7 @@
 			border: 1px solid grey;
 			width: 100%;
 			height: 100%;
-			overflow: scroll;
+			overflow: auto;
 			@include elevation(4)
 		}
 

@@ -11,6 +11,9 @@
 											 point-position="x"
 											 path-color="#118f41"
 											 show-point
+											 start-limit="1"
+											 end-limit="1"
+											 :filter="filter"
 											 @connected="y => connect(prop.value, y)"
 											 @disconnected="y => disconnect(prop.value, y)" :key="prop.value">
 						<div>
@@ -26,6 +29,9 @@
 											 path-color="#0e5bad"
 											 point-position="x"
 											 show-point
+											 start-limit="1"
+											 end-limit="1"
+											 :filter="filter"
 											 @connected="y => connect(event.value, y)"
 											 @disconnected="y => disconnect(event.value, y)" :key="event.value">
 						<div>
@@ -41,6 +47,9 @@
 											 path-color="#d97d14"
 											 point-position="x"
 											 show-point
+											 start-limit="1"
+											 end-limit="1"
+											 :filter="filter"
 											 @connected="y => connect(context.value, y)"
 											 @disconnected="y => disconnect(context.value, y)" :key="context.value">
 						<div>
@@ -56,6 +65,9 @@
 											 path-color="#7d0f85"
 											 point-position="x"
 											 show-point
+											 start-limit="1"
+											 end-limit="1"
+											 :filter="filter"
 											 @connected="y => connect(data.value, y)"
 											 @disconnected="y => disconnect(data.value, y)" :key="data.value">
 						<div>
@@ -71,8 +83,6 @@
   import { ref, reactive, computed, onMounted } from '@vue/composition-api'
   import GConnector from '../components/GConnector/GConnector';
   import GDiagram from '../components/GConnector/GDiagram';
-  import { getElementPosition } from '../utils/helpers';
-
   export default {
     name: 'ConnectorDemo',
     components: { GDiagram, GConnector },
@@ -128,8 +138,27 @@
 
 			const connections = ref([])
 
-			function test() {
-			  console.log('ok')
+			const filter = (startValue, endValue) => {
+			  let startValueSource = null
+				let endValueSource = null
+			  for (let prop of Props.value) {
+			    if (prop.value === startValue) startValueSource = Props
+          if (prop.value === endValue) endValueSource = Props
+				}
+        for (let event of Events.value) {
+          if (event.value === startValue) startValueSource = Events
+          if (event.value === endValue) endValueSource = Events
+        }
+        for (let context of Contexts.value) {
+          if (context.value === startValue) startValueSource = Contexts
+          if (context.value === endValue) endValueSource = Contexts
+        }
+        for (let data of Datas.value) {
+          if (data.value === startValue) startValueSource = Datas
+          if (data.value === endValue) endValueSource = Datas
+        }
+
+        return startValueSource !== endValueSource
 			}
 
 			function connect(x, y) {
@@ -146,6 +175,7 @@
 				Events,
 				Datas,
 				connections,
+				filter,
 				connect,
 				disconnect
 			}

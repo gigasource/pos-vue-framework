@@ -4,6 +4,10 @@ export class Point {
     this.y = y
     this.position = position
     this.value = value
+    this.startCount = 0
+    this.startLimit = Infinity
+    this.endCount = 0
+    this.endLimit = Infinity
   }
 
   isInside(regions) {

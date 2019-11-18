@@ -1,5 +1,20 @@
-import { ref, reactive, computed, onMounted} from '@vue/composition-api';
+import { ref, reactive, onMounted} from '@vue/composition-api';
 import { getElementPosition } from '../../utils/helpers';
+
+function getConnectorId(el, ids) {
+  if (el.classList.contains('g-connector')) ids.push(el.id)
+  if (el.children.length !== 0) {
+    for (let children of el.children) {
+      getConnectorId(children, ids)
+    }
+  }
+}
+
+function getConnectorIds(el) {
+  const ids = []
+  getConnectorId(el, ids)
+  return ids
+}
 
 export default function GDiagramFactory(props, context) {
   const connectionPoints = ref([])
@@ -12,9 +27,21 @@ export default function GDiagramFactory(props, context) {
     height: 0
   })
 
+  const maxSvgDimension = {
+    width: 0,
+    height: 0
+  }
+
   const containerDimension = reactive({
     width: 0,
     height: 0
+  })
+
+  const containerPosition = reactive({
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   })
 
   const originCoordinate = reactive({
@@ -35,16 +62,26 @@ export default function GDiagramFactory(props, context) {
 
   onMounted(() => {
     const rect = context.refs.container.getBoundingClientRect()
-    containerDimension.width = rect.width
-    containerDimension.height = rect.height
-    svgDimension.width = rect.width
-    svgDimension.height = rect.height
+
+    containerPosition.top = rect.top
+    containerPosition.left = rect.left
+    containerPosition.bottom = rect.bottom
+    containerPosition.right = rect.right
+
+    containerDimension.width = context.refs.container.clientWidth
+    containerDimension.height = context.refs.container.clientHeight
+
+    svgDimension.width = context.refs.container.clientWidth
+    svgDimension.height = context.refs.container.clientHeight
+    maxSvgDimension.width = svgDimension.width / minScale
+    maxSvgDimension.height = svgDimension.height / minScale
+
     updateOriginCoordinate()
     startOriginCoordinate.x = originCoordinate.x
     startOriginCoordinate.y = originCoordinate.y
   })
 
-
+  // Zoom
   function zoom(e) {
     if (!Number.isInteger(e.deltaY)) {
       e.preventDefault()
@@ -88,6 +125,85 @@ export default function GDiagramFactory(props, context) {
     updateOriginCoordinate()
   }
 
+  // Drag
+  const isDrag = ref(false)
+  const activeDragIds = ref([])
+
+  const startPosition = {
+    top: 0,
+    left: 0,
+  }
+
+  const mouseStartPosition = {
+    pageX: 0,
+    pageY: 0
+  }
+  let target = null
+
+  function dragStart(e) {
+    e.preventDefault()
+
+    target = e.currentTarget
+    activeDragIds.value = getConnectorIds(target)
+    console.log(activeDragIds.value)
+
+    const rect = getElementPosition(target)
+    startPosition.top = (rect.top - originCoordinate.y)/zoomState.value
+    startPosition.left = (rect.left - originCoordinate.x)/zoomState.value
+    mouseStartPosition.pageX = e.pageX
+    mouseStartPosition.pageY = e.pageY
+    isDrag.value = true
+    target.style.cursor = 'move'
+  }
+
+  function drag(e) {
+    e.preventDefault()
+    if (isDrag.value) {
+      if (e.pageY > containerPosition.bottom) return
+      if (1) {
+        let newTop = startPosition.top - (mouseStartPosition.pageY - e.pageY) / zoomState.value
+        let newLeft = startPosition.left - (mouseStartPosition.pageX - e.pageX) / zoomState.value
+
+        newLeft = newLeft <= 0 ? 0 : newLeft >= maxSvgDimension.width - target.offsetWidth ? maxSvgDimension.width - target.offsetWidth : newLeft
+        newTop = newTop <= 0 ? 0 : newTop >= maxSvgDimension.height - target.offsetHeight ? maxSvgDimension.height - target.offsetHeight : newTop
+
+        target.style.left = newLeft + 'px'
+        target.style.top = newTop + 'px'
+
+        if (newLeft + target.offsetWidth > svgDimension.width) {
+          svgDimension.width = newLeft + target.offsetWidth
+          context.refs.container.scrollLeft = svgDimension.width - containerDimension.width
+          // target.scrollIntoView()
+        }
+        if (newTop + target.offsetHeight > svgDimension.height) {
+          svgDimension.height = newTop + target.offsetHeight
+          context.refs.container.scrollTop = svgDimension.height - containerDimension.height
+          // target.scrollIntoView()
+        }
+      } else {
+        const newLeft = target.offsetLeft + 5
+        target.style.left = newLeft + 'px'
+
+        if (newLeft + target.offsetWidth > svgDimension.width) {
+          svgDimension.width = newLeft + target.offsetWidth
+          context.refs.container.scrollLeft = svgDimension.width - containerDimension.width
+        }
+          // target.scrollIntoView()
+      }
+    }
+  }
+
+  function dragEnd(e) {
+    e.preventDefault()
+
+    if(isDrag.value) {
+      activeDragIds.value = []
+      isDrag.value = false
+      target.style.cursor = ''
+    }
+  }
+
+
   return {
     connectionPoints,
     zoomState,
@@ -95,6 +211,11 @@ export default function GDiagramFactory(props, context) {
     svgDimension,
     containerDimension,
     zoom,
-    scroll
+    scroll,
+    isDrag,
+    activeDragIds,
+    dragStart,
+    drag,
+    dragEnd
   }
 }
