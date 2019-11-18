@@ -13,9 +13,10 @@
     props: {
       items: [Array, Object],
       multiple: Boolean,
-      itemImage: {
-        type: String,
-        default: 'image'
+      mandatory: Boolean,
+      grid: {
+        type: Boolean,
+        default: true
       },
       itemText: {
         type: String,
@@ -30,7 +31,7 @@
         type: [Array, Object, String, Number]
       },
       selectFirst: Boolean,
-      cols: {
+      itemCols: {
         type: [Number, String],
         default: 3
       }
@@ -82,42 +83,21 @@
         return internalValue.value === returnItem;
       }
 
-      const genItem = (item, index) => <g-col cols={props.cols}>
-        {context.slots.default
-          ? context.slots.default({
+      const genItem = (item, index) => {
+        const defaultSlot = context.slots.default
+          && context.slots.default({
             toggleSelect, item, index
           })
-          : //fallback
-          <g-card vOn:click={(e) => {
-            e.stopPropagation()
-            toggleSelect(item)
-          }}>
-            <g-card-actions>
-              <g-spacer/>
-              <span>{item[props.itemText] || item}</span>
-            </g-card-actions>
-          </g-card>
-        }
-      </g-col>
+        return props.grid ? <g-col cols={props.itemCols}>{defaultSlot}</g-col> : defaultSlot
+      }
 
-      const genSelectedItem = (item, index) => <g-col cols={props.cols}>
-        {context.slots.selected
-          ? context.slots.selected({
+      const genSelectedItem = (item, index) => {
+        const selectedSlot = context.slots.selected
+          && context.slots.selected({
             toggleSelect, item, index
           })
-          : //fallback
-          <g-card vOn:click={(e) => {
-            e.stopPropagation()
-            toggleSelect(item)
-          }}>
-            <g-card-actions>
-              <g-spacer/>
-              <span>{item[props.itemText] || item}</span>
-            </g-card-actions>
-          </g-card>
-        }
-      </g-col>
-
+        return props.grid ? <g-col cols={props.itemCols}>{selectedSlot}</g-col> : selectedSlot
+      }
 
       const genWrapper = () => <g-row align-items="start">
         {options.value.map((item, index) =>
