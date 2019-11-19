@@ -111,9 +111,8 @@
           return fieldItem.value.map(item => {
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
-        } else {
-          return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
         }
+        return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
 
       })
       const options = getList(props, selectedItem, state, props.filter)
@@ -139,7 +138,7 @@
 
         return selections.value.map(function (item, index) {
               if (index === selections.value.length - 1) return <div
-                  style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
+                  style={{'color': lastItemColor.value, 'padding-right': '5px'}}>{item}</div>
               return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
             }
         )
@@ -169,7 +168,7 @@
       }
 
       function onInputKeyDown(e) {
-        setSelectionsDisplay()
+        resetSelectionsDisplay()
         if (e.keyCode === keyCodes.down) {
           const listRef = context.refs.select.$refs.list
           listRef.$el.getElementsByClassName('g-list-item')[0].focus()
@@ -183,33 +182,33 @@
 
       function onInputBlur() {
         isFocused.value = false
-        setSelectionsDisplay()
+        resetSelectionsDisplay()
       }
 
-      let pressDeleteTimes = 0
-      const deleteItemColor = ref('#1d1d1d')
-      const setSelectionsDisplay = () => {
-        pressDeleteTimes = 0
-        deleteItemColor.value = '#1d1d1d'
-      }
+        let pressDeleteTimes = 0
+        const lastItemColor = ref('#1d1d1d')
+        const resetSelectionsDisplay = () => {
+          pressDeleteTimes = 0
+          lastItemColor.value = '#1d1d1d'
+        }
 
-      function onInputDelete() {
-        if (!props.multiple || props.chips) return
-        if (state.searchText) return pressDeleteTimes = 0
-        else {
-          if (pressDeleteTimes === 0) {
-            pressDeleteTimes++
-            deleteItemColor.value = '#1867c0 '
-          }
-          if (pressDeleteTimes === 1) {
-            return pressDeleteTimes++
-          }
-          if (pressDeleteTimes === 2) {
-            selectedItem.value.pop()
-            return pressDeleteTimes
+        function onInputDelete() {
+          if (!props.multiple || props.chips) return
+          if (state.searchText) return pressDeleteTimes = 0
+          else {
+            if (pressDeleteTimes === 0) {
+              pressDeleteTimes++
+              lastItemColor.value = '#1867c0 '
+            }
+            if (pressDeleteTimes === 1) {
+              return pressDeleteTimes++
+            }
+            if (pressDeleteTimes === 2) {
+              selectedItem.value.pop()
+              return pressDeleteTimes
+            }
           }
         }
-      }
 
       const tfValue = computed(() =>
           props.multiple || props.chips || props.smallChips || props.deletableChips ? state.searchText :
@@ -269,12 +268,8 @@
       const showOptions = ref(false)
       const setSearch = () => {
         context.root.$nextTick(() => {
-          if (!props.multiple && !props.chips) {
-            lazySearch.value = selections.value
-            state.searchText = ''
-          } else {
-            state.searchText = ''
-          }
+          if (!props.multiple && !props.chips) lazySearch.value = selections.value
+          state.searchText = ''
         })
       }
 
@@ -316,7 +311,7 @@
                     'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
                     'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
                   ),
-                  selectOnly: false,
+                  showSearchField: false,
                   genTextFieldFn: genTextFieldProps,
                   genListFn: genListProps,
                 },

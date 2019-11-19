@@ -3,6 +3,7 @@
        class="g-list"
        :style="styles"
        @click="onClick"
+       ref="list"
   >
     <template v-if="!multiSection">
       <slot name="subheader">
@@ -185,16 +186,20 @@
       function onArrowDown(item) {
         let index = renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
         let i = index
-        index < (renderList.value.length - 1) ? i += 1 : i = 0
-        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
-        context.emit('keydown:up')
+        if (index < (renderList.value.length - 1)) {
+          i += 1
+        } else {
+          i = 0
+        }
+        context.refs.list.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:down')
       }
       function onArrowUp(item) {
         let index = renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
         let i = index
         index > 0 ? i -= 1 : i = props.items.length -1
-        context.root.$el.getElementsByClassName('g-list-item')[i].focus()
-        context.emit('keydown:down')
+        context.refs.list.getElementsByClassName('g-list-item')[i].focus()
+        context.emit('keydown:up')
       }
 
       function onSelect(item) {

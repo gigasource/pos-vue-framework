@@ -1,7 +1,7 @@
 import {computed} from '@vue/composition-api';
 import _ from "lodash";
 
-const listMultipleFilter = (props, selectedItem,) => {
+const listMultipleFilter = (props, selectedItem) => {
   let _options
   if (props.allowDuplicates) {
     _options = props.items;
@@ -17,16 +17,15 @@ const listMultipleFilter = (props, selectedItem,) => {
       });
     }
   }
-return _options
+  return _options
 }
 const searchTextFilteredItems = (props, state, items) => {
-  if (!state.searchText) {
+  if (!state.searchText || !state.searchText.trim()) {
     return items;
   }
-  const searchText = !props.filter ? state.searchText.trim().toLowerCase() : state.searchText;
-  if (!searchText) {
-    return items;
-  }
+
+  // normalize search text if used in g-select
+  const searchText = !props.filter ? state.searchText.trim().toLowerCase() : state.searchText.trim();
   //Search text match
   let _filteredOptions
   if (!props.filter) {
@@ -44,53 +43,46 @@ const searchTextFilteredItems = (props, state, items) => {
   return _filteredOptions
 }
 
-  export function getList(props, selectedItem, state) {
+export function getList(props, selectedItem, state) {
+  return computed(() => {
+    if (props.multiple) {
+      let options = listMultipleFilter(props, selectedItem)
 
-    return computed(() => {
-      if (props.multiple) {
-        let options = listMultipleFilter(props, selectedItem)
-
-        if (props.searchable) {
-          let items = _.cloneDeep(options);
-          let filteredOptions = searchTextFilteredItems(props, state, items)
-          listMultipleFilter(props, selectedItem, filteredOptions)
-          return filteredOptions
-        } else return options
-      } else if (props.searchable) {
-        {
-          let items = _.cloneDeep(props.items);
-          return searchTextFilteredItems(props, state, items)
-        }
-      } else return props.items
-    })
-
-  }
-
-  export function getSelections(props, selectedItem) {
-    return computed(() => {
-      if (!props.multiple) {
-        let item = selectedItem.value;
-        if (!item) {
-          return null;
-        }
-        if (typeof item === 'string' || typeof item === 'number') {
-          return item;
-        }
-        if (props.itemValue) {
-          item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]) || item;
-        }
-        return {text: item[props.itemText], value: item[props.itemValue]} || '';
-      } else {
-        let list = selectedItem.value
-        if (props.itemText && props.itemValue) {
-          return list.map(item => {
-            if (item[props.itemText]) {
-              return {text: item[props.itemText], value: item[props.itemValue]};
-            }
-            return item;
-          });
-        }
-        return list
+      if (props.searchable) {
+        let items = _.cloneDeep(options);
+        return searchTextFilteredItems(props, state, items)
       }
-    })
-  }
+      return options
+    }
+    if (props.searchable) return searchTextFilteredItems(props, state, _.cloneDeep(props.items))
+    return props.items
+  })
+}
+
+export function getSelections(props, selectedItem) {
+  return computed(() => {
+    if (!props.multiple) {
+      let item = selectedItem.value;
+      if (!item) {
+        return null;
+      }
+      if (typeof item === 'string' || typeof item === 'number') {
+        return item;
+      }
+      if (props.itemValue) {
+        item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]) || item;
+      }
+      return {text: item[props.itemText], value: item[props.itemValue]} || '';
+    }
+    const list = selectedItem.value
+    if (props.itemText && props.itemValue) {
+      return list.map(item => {
+        if (item[props.itemText]) {
+          return {text: item[props.itemText], value: item[props.itemValue]};
+        }
+        return item;
+      });
+    }
+    return list
+  })
+}

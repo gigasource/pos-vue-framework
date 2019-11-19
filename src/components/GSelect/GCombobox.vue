@@ -160,7 +160,7 @@
 
       //textfield events
       const inputAddSelection = () => {
-        if (state.searchText.trim().length !== 0) {
+        if (state.searchText.trim().length > 0) {
           let inputAddedItem
           props.itemValue
               ? inputAddedItem = {
@@ -334,7 +334,7 @@
                     'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
                     'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
                   ),
-                  selectOnly: false,
+                  showSearchField: false,
                   genTextFieldFn: genTextFieldProps,
                   genListFn: genListProps,
                 },

@@ -55,6 +55,11 @@ export const GAutocompleteSingleSelect = () => ({
           fn: (item, queryText) => queryText.length > 2 && item.toLowerCase().indexOf(queryText) > -1,
           text: 'Search Length > 2 & Loose Match',
         },
+        {
+          value: 2,
+          fn: (item, queryText) => item.indexOf(queryText) > -1,
+          text: 'Banana',
+        },
       ],
       selectedFilter: null,
     }
@@ -68,6 +73,7 @@ export const GAutocompleteSingleSelect = () => ({
   itemValue="value"
   v-model="selectedFilter"
   placeholder="Select filter"
+ 
   >
   
 </g-select>

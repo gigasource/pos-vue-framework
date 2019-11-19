@@ -82,7 +82,7 @@
       value: null,
       genTextFieldFn: Function,
       genListFn: Function,
-      selectOnly: {
+      showSearchField: {
         type: Boolean,
         default: true
       }
@@ -100,10 +100,8 @@
           return fieldItem.value.map(item => {
             return item ? (item['text'] || item['value'] || item) : ''
           })
-        } else {
-          return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
         }
-
+        return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
       })
 
       //gen SearchText
@@ -114,7 +112,7 @@
       }
 
       function genSearchTextField() {
-        if (props.searchable && props.selectOnly) {
+        if (props.searchable && props.showSearchField) {
           return <GTextField placeholder="Search"
                              vModel={state.searchText}
                              clearable
@@ -129,27 +127,27 @@
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
 
-      const genList = props.genListFn || function (showOptions) {
-        return <GList
-            {...{
-              props: {
-                items: options.value,
-                'item-title': props.itemText,
-                mandatory: props.mandatory,
-                'allow-duplicates': props.allowDuplicates,
-                multiple: props.multiple,
-                inMenu: true,
-                selectable: true,
-              },
-              on: {
-                'click:item': () => !props.multiple ? showOptions.value = false : null
-              },
-            }}
-            vModel={selectedItem.value}
-            ref="list"
-        />
-
-      }
+      const genList = (typeof props.genListFn === 'function' && props.genListFn)
+          || function (showOptions) {
+            return <GList
+                {...{
+                  props: {
+                    items: options.value,
+                    'item-title': props.itemText,
+                    mandatory: props.mandatory,
+                    'allow-duplicates': props.allowDuplicates,
+                    multiple: props.multiple,
+                    inMenu: true,
+                    selectable: true,
+                  },
+                  on: {
+                    'click:item': () => showOptions.value = props.multiple
+                  },
+                }}
+                vModel={selectedItem.value}
+                ref="list"
+            />
+          }
 
 
       //gen Text field
@@ -195,7 +193,8 @@
             <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-              {selections.value.length === 0 ? <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
+              {selections.value.length === 0 ?
+                  <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
       }
@@ -209,13 +208,8 @@
         if (props.multiple) return selections.value.join(', ')
         return selections.value
       })
-      //todo: TF readonly
-      const _readOnly = computed(() => {
-        return props.searchable ? true : props.readOnly
-      })
 
-      const genTextField = props.genTextFieldFn || function (toggleContent) {
-
+      const genTextField = (typeof props.genTextFieldFn === 'function' && props.genTextFieldFn) || function (toggleContent) {
         return (
             <GTextField
                 {...{
@@ -288,7 +282,7 @@
       }
 
       .g-tf-wrapper {
-        margin: 16px 0px 24px 10px;
+        margin: 16px 0 24px 10px;
       }
 
       .g-tf-append__inner {
@@ -306,14 +300,13 @@
       input {
         flex-shrink: 1;
         flex-grow: 1;
-        flex-basis: 0%;
+        flex-basis: 0;
       }
 
     }
   }
 
   .g-select__active::v-deep {
-
     .g-tf-append__inner .g-icon:last-child {
       transform: rotateZ(180deg);
     }
