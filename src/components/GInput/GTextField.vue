@@ -74,34 +74,16 @@
       ...{//display props
         label: String,
         placeholder: String,
-        appendIcon: {
-          type: String,
-          default: ''
-        },
-        prependIcon: {
-          type: String,
-          default: ''
-        },
-        prependInnerIcon: {
-          type: String,
-          default: ''
-        },
-        appendInnerIcon: {
-          type: String,
-          default: ''
-        },
+        appendIcon: String,
+        prependIcon: String,
+        prependInnerIcon: String,
+        appendInnerIcon: String,
         clearIcon: {
           type: String,
           default: 'clear'
         },
-        prefix: {
-          type: String,
-          default: ''
-        },
-        suffix: {
-          type: String,
-          default: ''
-        },
+        prefix: String,
+        suffix: String,
         //input states
         clearable: Boolean,
         disabled: Boolean,
@@ -109,6 +91,7 @@
       },
       //rules and validation props
       ...{
+        required: Boolean,
         rules: Array,
         hint: String,
         errorCount: {
@@ -118,7 +101,8 @@
         persistent: Boolean,
         counter: [Number, Boolean, String],
         validateOnBlur: Boolean,
-        error: Boolean
+        error: Boolean,
+
       },
 
       //styles
@@ -141,6 +125,10 @@
 
     },
     setup(props, context) {
+      //todo: icon margin
+			//todo: required
+			//todo: tfbs internalvalue
+			//todo: tfbs clearable
       const tfWrapperClasses = getTfWrapperClasses(props);
 
       const {internalValue, rawInternalValue} = getInternalValue(props, context);
@@ -183,6 +171,9 @@
 			    return 'rgb(24, 103, 192)'
 			  }
 			})
+			const requiredRule = computed(() => {
+			  return props.required ? value => !!value || 'Required' : null
+			})
 
 
       return {
@@ -202,7 +193,7 @@
         isFocused,
         isDirty,
         isValidInput,
-        //calculated error
+        //calculated error, rule
         errorMessages,
         //event listeners
         onClick,
