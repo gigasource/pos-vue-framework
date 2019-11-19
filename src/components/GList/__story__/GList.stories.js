@@ -661,9 +661,9 @@ export const gListAsMenuContent = () => ({
         <g-divider/>
        </template>
        <template v-slot:prepend="{item}">
-       <g-list-item-icon >
+       <g-list-item-icon>
        <g-icon small :color="item.color">{{item.prepend}}</g-icon>
-</g-list-item-icon>
+       </g-list-item-icon>
        </template>
         </g-list>
         </g-row>
