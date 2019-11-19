@@ -126,8 +126,6 @@
     },
     setup(props, context) {
       //todo: icon margin
-			//todo: required
-			//todo: tfbs internalvalue
 			//todo: tfbs clearable
       const tfWrapperClasses = getTfWrapperClasses(props);
 

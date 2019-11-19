@@ -375,13 +375,19 @@ export const TextFieldHint = () => ({
 
 export const TextFieldRequired = () => ({
   components: { GTextField, GIcon },
+  data() {
+    return {
+      text: ''
+    }
+  },
   props: {
     hint: { default: text('hint', 'Why so serious') },
     persistent: { default: boolean('persistent', false) },
-    required: {default: boolean('required', true)}
+    required: { default: boolean('required', true) },
   },
   template: `<g-text-field label="Hint"
-                           :required="required"
+:required="required"
+                           v-model="text"
                            :hint="hint"
                            :persistent="persistent">
               </g-text-field>`,
@@ -534,22 +540,23 @@ export const TextFieldValidate = () => ({
 export const TextFieldBoostrap= () => ({
   components: { GTextFieldBs },
   directives: { mask },
+  props:{
+    required: {default: boolean('required', false)},
+    clearable: {default: boolean('clearable', true)}
+  },
   data() {
     return {
       rules: {
-        required: value => !!value || 'Required',
-        email: value => {
-          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          return pattern.test(value) || 'Invalid e-mail'
-        }
-      },
+        max: value => value.length < 3||'Exceeded' },
     }
   },
   template:
-    `<g-text-field-bs label="test Label"
+    `<g-text-field-bs label="test"
 								 placeholder="demo placeholder"
 								 hint="test hint"
-								 :rules="[rules.required, rules.counter]">
+								 :required="required"
+								 :clearable="clearable"
+								 :rules="[rules.max]">
       <template #prependContent>
         Prepend
       </template>
