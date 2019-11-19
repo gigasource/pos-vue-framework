@@ -113,16 +113,17 @@
           }
         })
 
-        // get all vue 2.0 slots
+        /*// get all vue 2.0 slots
         return _.each(context.slots.default(), vnode => {
           if (vnode && vnode.data && vnode.data.scopedSlots && vnode.data.scopedSlots) {
             _.each(_.keys(vnode.data.scopedSlots), slotName => {
               if (typeof (vnode.data.scopedSlots[slotName]) === 'function') {
+                console.log('v2', slotName)
                 namedSlotVNodes[slotName] = vnode.data.scopedSlots[slotName]()
               }
             })
           }
-        })
+        })*/
       }
 
       // get named area vNodes
