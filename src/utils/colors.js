@@ -35,3 +35,12 @@ export function getCssColor(color) {
   }
   return colors[color.trim().split(' ').join('-')]
 }
+
+/**
+ * Create random color
+ * @returns {string}
+ * @private
+ */
+export function generateRandomCssColor(opacity = '50%') {
+  return `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, ${opacity})`
+}
