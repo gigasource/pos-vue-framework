@@ -3,6 +3,7 @@ import {action} from '@storybook/addon-actions'
 import PosTextField from "../POSTextField";
 import PosTextFieldLarge from "../POSTextFieldLarge";
 import PosSelect from "../POSSelect";
+import GSelect from "../../../components/GSelect/GSelect";
 import GIcon from "../../../components/GIcon/GIcon";
 
 export default {
@@ -53,7 +54,7 @@ export const larger = () => ({
 })
 
 export const POSSelect = () => ({
-    components: {PosSelect, GIcon},
+    components: {PosSelect, GSelect, GIcon},
     data() {
         return {
             items: [
@@ -70,6 +71,8 @@ export const POSSelect = () => ({
                  <pos-select :items="items"
                  item-Text="text"
                  v-model="selected"
+                 label="Person name"
+                 clearable
                  >
                  </pos-select>
                </div>`
