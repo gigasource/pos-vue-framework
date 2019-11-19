@@ -11,12 +11,13 @@ import PulseDemo from '../view/PulseDemo';
 import ToolTipDemo from '../view/ToolTipDemo';
 import InputDemo from "../view/InputDemo";
 import TransitionDemo from '../view/TransitionDemo';
-import ListDemo from '../view/ListDemo';
 import List2Demo from "../view/List2Demo";
 import DndDialogDemo from '../view/DndDialogDemo';
 import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
+import ConnectorDemo from '../view/ConnectorDemo';
+import ZoomDirectiveDemo from '../view/ZoomDirectiveDemo';
 import Textarea from "../view/TextareaDemo";
 
 const routes = [
@@ -35,7 +36,10 @@ const routes = [
   { path: '/list-demo', name: 'List', component: List2Demo},
   { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  { path: '/connector-demo', name: 'Connector', component: ConnectorDemo},
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
+  { path: '/zoom-directive-demo', name: 'Zoom Directive', component: ZoomDirectiveDemo},
   {path: '/textarea', name: 'Textarea', component: Textarea},
 ];
 
