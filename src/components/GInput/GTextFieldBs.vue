@@ -10,25 +10,29 @@
 					<slot name="prependContent"></slot>
 				</span>
       </div>
-      <slot name="prepend" :on-click="onClickPrepend"></slot>
-      <input class="bs-tf-input"
-             type="text"
-             ref="input"
-             :placeholder="placeholder"
-             :class="{'input-error': !isValidInput,
+			<div :class="['bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}]">
+				<slot name="prepend" :on-click="onClickPrepend"></slot>
+				<input class="bs-tf-input"
+							 type="text"
+							 ref="input"
+							 :placeholder="placeholder"
+							 :class="{'input-error': !isValidInput,
                       'bs-tf-input-has-prepend': ($slots.prependContent || $slots.prepend),
                       'bs-tf-input-has-append': ($slots.appendContent || $slots.append)}"
-             v-model="internalValue"
-             @change="onChange"
-             @focus="onFocus"
-             @blur="onBlur"
-             @keydown="onKeyDown">
+							 v-model="internalValue"
+							 @change="onChange"
+							 @focus="onFocus"
+							 @blur="onBlur"
+							 @keydown="onKeyDown">
+				<slot name="append" :on-click="onClickAppend"></slot>
+			</div>
+
       <div class="bs-tf-input-append" @click="onClickAppend" v-if="$slots.appendContent">
         <span class="bs-tf-input-text">
 					<slot name="appendContent"></slot>
 				</span>
       </div>
-      <slot name="append" :on-click="onClickAppend"></slot>
+
     </div>
     <div class="bs-tf-error-message" v-if="!isValidInput">{{errorMessages}}</div>
     <div class="bs-tf-message" v-else>{{hint}}</div>
@@ -50,6 +54,7 @@
         readOnly: Boolean,
       },
       //rules and validation props
+			required: Boolean,
       rules: Array,
       hint: String,
       validateOnBlur: Boolean,
@@ -80,6 +85,7 @@
       return {
         internalValue,
         isValidInput,
+				isFocused,
         //calculated error
         errorMessages,
         //event listeners
@@ -114,6 +120,7 @@
   }
 
   .bs-tf-input-group,
+	.bs-tf-inner-input-group,
   .bs-tf-input-prepend,
   .bs-tf-input-append {
     display: flex;
