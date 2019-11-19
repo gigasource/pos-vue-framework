@@ -23,8 +23,8 @@ import Textarea from "../view/TextareaDemo";
 import Order from '../POSView/order/Order';
 import Payment from '../POSView/order/Payment';
 import Login from '../POSView/login/Login';
-import Article from '../POSView/order/Article';
-import FunctionButton from '../POSView/order/FunctionButton';
+import Article from '../POSView/article/Article';
+import FunctionButton from '../POSView/button/FunctionButton';
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
   { path: '/groupable', name: 'Groupable', component: Groupable},
