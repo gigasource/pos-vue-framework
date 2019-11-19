@@ -44,6 +44,8 @@
         default: () => ([]),
       },
       //track
+      height: String,
+      trackColor: String,
       trackFillColor: String,
       trackBgrColor: String,
       //thumb
@@ -116,6 +118,11 @@
       }
 
       //function genTrack
+      const trackStyle = computed(() => ({
+        'background-color': props.trackColor,
+        'height': props.height
+      }))
+
       const trackBgrStyle = computed(() => {
         const startDir = props.vertical ? 'bottom' : 'left'
         const endDir = props.vertical ? 'height' : 'width'
@@ -128,7 +135,7 @@
         const endPadding = 0
         const start = `calc(${startLength}% + ${startPadding}px)`
         const end = `calc(${endLength}% + ${endPadding}px)`
-        const color = props.disabled ? '#d2d2d2' : (props.trackBgrColor ? getCssColor(props.trackBgrColor) : '#d2d2d2')
+        const color = props.trackColor ? 'none' : props.disabled ? '#d2d2d2' : (props.trackBgrColor ? getCssColor(props.trackBgrColor) : '#d2d2d2')
 
         return {
           [startDir]: start,
@@ -143,7 +150,7 @@
         const bg = 'background-color'
 
         const fillPercent = Math.abs(inputWidth.value[0] - inputWidth.value[1])
-        const color = props.disabled ? '#8d8d8d' : (props.trackFillColor ? getCssColor(props.trackFillColor) : '#8d8d8d')
+        const color = props.trackColor ? 'none' : props.disabled ? '#8d8d8d' : (props.trackFillColor ? getCssColor(props.trackFillColor) : '#8d8d8d')
 
         return {
           [bg]: color,
@@ -154,7 +161,7 @@
       })
 
       function genTrack() {
-        return <div class="g-slider-track-container" ref="track">
+        return <div class="g-slider-track-container" ref="track" style={trackStyle.value}>
           <div class="g-slider-track-background" style={trackBgrStyle.value}/>
           <div class="g-slider-track-fill" style={trackFillStyle.value}/>
         </div>

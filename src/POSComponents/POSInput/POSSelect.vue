@@ -4,7 +4,6 @@
     export default {
         name: "POSSelect",
         mixins: [GSelect],
-        props: {}
     }
 </script>
 

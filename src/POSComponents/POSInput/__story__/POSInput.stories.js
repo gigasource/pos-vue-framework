@@ -3,7 +3,9 @@ import {action} from '@storybook/addon-actions'
 import PosTextField from "../POSTextField";
 import PosTextFieldLarge from "../POSTextFieldLarge";
 import PosSelect from "../POSSelect";
+import PosRangeSlider from "../POSRangeSlider";
 import GSelect from "../../../components/GSelect/GSelect";
+import GRangeSlider from "../../../components/GRangeSlider/GRangeSlider";
 import GIcon from "../../../components/GIcon/GIcon";
 
 export default {
@@ -75,5 +77,23 @@ export const POSSelect = () => ({
                  clearable
                  >
                  </pos-select>
+               </div>`
+})
+
+
+export const POSSlider = () => ({
+    components: {PosRangeSlider},
+    data() {
+      return {
+          value: [0,20]
+      }
+    },
+    template: `<div style="margin-top: 100px">
+                 <pos-range-slider v-model="value">
+                  <template v-slot:thumb-label="props">
+                  <span>€{{props.value}}</span>
+                  <div style="height: 0; width: 0; border: 4px #1271FF solid; transform: rotate(-45deg); position: absolute; left: 24px; top: 26px"></div>
+                  </template>
+                 </pos-range-slider>
                </div>`
 })

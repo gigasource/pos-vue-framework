@@ -53,7 +53,6 @@ import {convertToUnit, keyCodes} from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
-  debugger
   const rules = computed(() =>{
     return props.required ? props.rules.shift(value => !!value || 'Required!') : props.rules
   })
