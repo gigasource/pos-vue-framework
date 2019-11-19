@@ -193,26 +193,21 @@
         if (vNode.length > 1) {
           // multiple slot with the same area name
           // slot with multiple children
-          console.log(model.name, 'multiple')
           vNode = <div class={cssClassName}>{vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name or scopedSlot
 
           if (model.wrapInDiv) {
-            console.log(model.name, 'wrap in div')
             vNode = <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
           } else if (!vNode[0].tag) {
             // do not render clear text node
-            console.log(model.name, 'prevent render')
             vNode = null
           } else if (_.has(namedSlotVNodes, model.name)) {
-            console.log(model.name, 'attach area to slot')
             // try to attach area into slot vnode which is not clear text vnode and not wrap in div
             if (!vNode[0].data) vNode[0].data = {}
             if (!vNode[0].data.attrs) vNode[0].data.attrs = {}
             vNode[0].data.attrs.area = model.name
           } else {
-            console.log(model.name, 'area vnode')
             // area vNode, no wrap in div, not clear text vNode
             vNode = vNode[0]
           }

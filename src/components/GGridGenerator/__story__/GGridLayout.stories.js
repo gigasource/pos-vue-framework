@@ -132,6 +132,10 @@ export const layoutJsonObject = () => ({
           singleItemSlot
         </span>
         
+        <span slot="s1" class="slot" :class="abc">
+          singleItemSlot
+        </span>
+        
         <template slot="s2" class="slot" :class="abc">
           singleItemSlot
         </template>
