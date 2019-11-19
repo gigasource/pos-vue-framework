@@ -1,9 +1,9 @@
 <template>
-	<div class="g-switch-wrapper">
+	<div class="g-switch-wrapper" :class="containerClasses">
 		<slot name="label">
 			<p class="g-switch-label">{{label}}</p>
 		</slot>
-		<div class="g-switch-container" :class="containerClasses" @click.prevent="toggle">
+		<div class="g-switch-container" @click.prevent="toggle">
 			<input type="checkbox">
 			<span class="g-switch" :class="classes" :style="styles">
 				<span class="g-switch-track"></span>
@@ -35,7 +35,8 @@
       //custom v-model
       inputValue: null,
       //native value
-      value: null
+      value: null,
+			dense: Boolean,
     },
     setup(props, context) {
       const internalValue = computed({
@@ -67,7 +68,7 @@
         [colorClass.value]: !!type.value && type.value === 'class',
         'g-switch__active': isActive.value,
         'g-switch__flat': props.flat,
-        'g-switch__inset': props.inset
+        'g-switch__inset': props.inset,
       }));
 
       const styles = computed(() => {
@@ -81,6 +82,7 @@
       const containerClasses = computed(() => ({
         readonly: props.readonly,
         disabled: props.disabled,
+        'g-switch__dense': props.dense
       }));
 
       function toggle() {
@@ -131,6 +133,7 @@
 			font-weight: 400;
 			background-clip: content-box;
 			font-size: 16px;
+			display: inline-flex;
 		}
 
 		&-container input {
@@ -147,9 +150,9 @@
 			left: 0;
 			width: 36px;
 			height: 14px;
-			background-color: #878787;
+			background-color: #000;
 			border-radius: 9999px;
-			opacity: 0.4;
+			opacity: 0.38;
 		}
 
 		&-thumb {
@@ -159,8 +162,8 @@
 			width: 20px;
 			height: 20px;
 			border-radius: 50%;
-			background-color: #fff;
-			box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+			background-color: #F1F1F1;
+			box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px rgba(0, 0, 0, 0.2);
 			transition: 0.5s;
 		}
 
@@ -224,6 +227,12 @@
 
 			~ .g-switch-label {
 				padding-top: 2px;
+			}
+		}
+
+		&__dense {
+			.g-switch-label {
+				margin-bottom: 0;
 			}
 		}
 	}
