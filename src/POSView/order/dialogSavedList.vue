@@ -32,12 +32,12 @@
 					</tbody>
 				</g-simple-table>
 				<g-toolbar color="#eee" elevation="2">
-					<g-btn background-color="white">
-						<g-icon>{{require('../../assets/order/back.svg')}}</g-icon>
+					<g-btn background-color="white" class="mr-2">
+						<g-icon class="mr-2">{{require('../../assets/order/back.svg')}}</g-icon>
 						Back
 					</g-btn>
-					<g-btn background-color="white">
-						<g-icon>{{require('../../assets/order/folder.svg')}}</g-icon>
+					<g-btn background-color="white" class="mr-2">
+						<g-icon class="mr-2">{{require('../../assets/order/folder.svg')}}</g-icon>
 						Saved list
 					</g-btn>
 				</g-toolbar>

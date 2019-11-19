@@ -17,6 +17,8 @@ import DndDialogDemo from '../view/DndDialogDemo';
 import GChipGroupDemo from '../view/GChipGroupDemo';
 import DatePicker from '../view/DatePickerDemo';
 import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
+import ConnectorDemo from '../view/ConnectorDemo';
+import ZoomDirectiveDemo from '../view/ZoomDirectiveDemo';
 import Textarea from "../view/TextareaDemo";
 import Order from '../POSView/order/Order';
 import Payment from '../POSView/order/Payment';
@@ -37,7 +39,10 @@ const routes = [
   { path: '/list-demo', name: 'List', component: List2Demo},
   { path: '/dnd-dialog-demo', name: 'Dnd Dialog Demo', component: DndDialogDemo},
   { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
+  { path: '/connector-demo', name: 'Connector', component: ConnectorDemo},
+  { path: '/date-picker-demo', name: 'Date Picker', component: DatePicker},
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
+  { path: '/zoom-directive-demo', name: 'Zoom Directive', component: ZoomDirectiveDemo},
   {path: '/textarea', name: 'Textarea', component: Textarea},
   { path: '/order', name: 'Order', component: Order},
   { path: '/payment', name: 'Payment', component: Payment},
