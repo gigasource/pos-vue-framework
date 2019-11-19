@@ -19,7 +19,6 @@
 </template>
 
 <script>
-
   import GLayout from '@/components/GLayout/GLayout';
   import GContainer from '@/components/GLayout/GContainer';
   export default {
@@ -29,5 +28,4 @@
 </script>
 
 <style>
-
 </style>
