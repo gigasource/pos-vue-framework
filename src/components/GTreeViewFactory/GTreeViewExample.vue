@@ -50,14 +50,13 @@
         )
       }
 
-      const cptExpandLevel = computed(() => props.expandLevel)
       const { treeStates, genTree } = GTreeFactory({
         genNode,
         genWrapper,
         genRootWrapper,
         data: props.data,
         itemChildren: props.itemChildren,
-        cptExpandLevel
+        expandLevel: props.expandLevel
       })
 
       return { treeStates, genTree }
