@@ -181,9 +181,10 @@
       }
 
       function onInputKeyDown(e) {
-        setSelectionsDisplay
+        setSelectionsDisplay()
         if (e.keyCode === keyCodes.down) {
-          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
+          const listRef = context.refs.select.$refs.list
+          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
         }
       }
 
@@ -194,7 +195,7 @@
 
       function onInputBlur() {
         isFocused.value = false
-        setSelectionsDisplay
+        setSelectionsDisplay()
       }
 
       let pressDeleteTimes = 0
@@ -289,7 +290,7 @@
         })
       }
 
-      const genListProps = (showOptions, genListScopedSlots) => {
+      const genListProps = (showOptions) => {
         const onClickItem = () => {
           setSearch()
           !props.multiple ? showOptions.value = false : null
@@ -308,10 +309,10 @@
               on: {
                 'click:item': onClickItem
               },
-              scopedSlots: {...genListScopedSlots}
             }
             }
             vModel={selectedItem.value}
+            ref="list"
         />
       }
 
@@ -325,7 +326,7 @@
         }
 
         return <div class="g-combobox">
-          <g-select
+          <g-select ref="select"
               {...{
                 props: {
                   ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',

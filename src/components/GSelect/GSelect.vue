@@ -108,8 +108,8 @@
 
       //gen SearchText
       const searchFocused = ref(false)
+      //todo: use ref to avoid query wrong element
       const onInputClick = () => {
-        context.root.$el.getElementsByClassName('g-tf-input')[0].focus()
         searchFocused.value = true
       }
 
@@ -118,6 +118,7 @@
           return <GTextField placeholder="Search"
                              vModel={state.searchText}
                              clearable
+                             ref="searchText"
                              autofocus={searchFocused.value}
                              vOn:keydown={(e) => onInputKeyDown(e)}
                              style="margin-bottom: 0; background-color: transparent"/>
@@ -128,22 +129,7 @@
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
 
-      const genListScopedSlots = {
-        listItem: ({item, isSelected, on, onSelect}) =>
-            <GListItem
-                vOn:singleItemClick={() => onSelect(item)}
-                tabindex="0"
-                isSelected={isSelected}
-                style="min-height: 48px"
-                {...{on}}
-            >
-              <GListItemContent>
-                <GListItemText>{item[props.itemText]}</GListItemText>
-              </GListItemContent>
-            </GListItem>
-
-      }
-      const genList = props.genListFn || function (showOptions, slots = genListScopedSlots) {
+      const genList = props.genListFn || function (showOptions) {
         return <GList
             {...{
               props: {
@@ -152,7 +138,7 @@
                 mandatory: props.mandatory,
                 'allow-duplicates': props.allowDuplicates,
                 multiple: props.multiple,
-                dense: true,
+                inMenu: true,
                 selectable: true,
               },
               on: {
@@ -160,6 +146,7 @@
               },
             }}
             vModel={selectedItem.value}
+            ref="list"
         />
 
       }
@@ -168,7 +155,7 @@
       //gen Text field
       function onInputKeyDown(e) {
         if (e.keyCode === keyCodes.down) {
-          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
+          context.refs.list.$el.getElementsByClassName('g-list-item')[0].focus()
         }
       }
 
@@ -222,6 +209,7 @@
         if (props.multiple) return selections.value.join(', ')
         return selections.value
       })
+      //todo: TF readonly
       const _readOnly = computed(() => {
         return props.searchable ? true : props.readOnly
       })
@@ -267,7 +255,7 @@
           <template slot="default">
             {genSearchTextField()}
             {context.slots['prepend-item'] && context.slots['prepend-item']()}
-            {genList(showOptions, genListScopedSlots)}
+            {genList(showOptions)}
             {context.slots['append-item'] && context.slots['append-item']()}
           </template>
         </g-menu>

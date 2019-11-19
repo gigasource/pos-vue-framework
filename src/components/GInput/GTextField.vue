@@ -71,6 +71,7 @@
   export default {
     name: 'GTextField',
     components: { GIcon },
+		//todo: required prop
     props: {
       ...{//display props
         label: String,
@@ -119,6 +120,7 @@
       counter: [Number, Boolean, String],
       validateOnBlur: Boolean,
       error: Boolean},
+			required: Boolean,
 
       //styles
       ...{filled: Boolean,

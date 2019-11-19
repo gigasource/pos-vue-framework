@@ -169,9 +169,10 @@
       }
 
       function onInputKeyDown(e) {
-        setSelectionsDisplay
+        setSelectionsDisplay()
         if (e.keyCode === keyCodes.down) {
-          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
+          const listRef = context.refs.select.$refs.list
+          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
         }
       }
 
@@ -182,7 +183,7 @@
 
       function onInputBlur() {
         isFocused.value = false
-        setSelectionsDisplay
+        setSelectionsDisplay()
       }
 
       let pressDeleteTimes = 0
@@ -290,7 +291,6 @@
                 mandatory: props.mandatory,
                 allowDuplicates: props.allowDuplicates,
                 multiple: props.multiple,
-                dense: true,
                 selectable: true,
                 inMenu: true
               },
@@ -300,6 +300,7 @@
             }
             }
             vModel={selectedItem.value}
+            ref="list"
         />
       }
 
@@ -320,6 +321,7 @@
                   genListFn: genListProps,
                 },
               }}
+              ref="select"
           >
           </g-select>
         </div>
