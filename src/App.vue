@@ -13,7 +13,9 @@
 <!--			<router-link to="/transition-demo">Transition</router-link>-->
 			<router-link to="/order">Order</router-link>
       <router-link to="/login">Login</router-link>
-    </g-layout>
+			<router-link to="/article">Article</router-link>
+			<router-link to="/function-button">Function Button</router-link>
+		</g-layout>
 		<router-view></router-view>
 	</div>
 </template>

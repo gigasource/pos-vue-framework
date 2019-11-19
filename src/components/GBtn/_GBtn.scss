@@ -127,6 +127,12 @@ button {
     width: $btn-icon-font-size;
   }
 
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .g-icon__left {
     margin-left: -4px;
     margin-right: 8px;

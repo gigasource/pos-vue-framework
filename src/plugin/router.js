@@ -23,6 +23,8 @@ import Textarea from "../view/TextareaDemo";
 import Order from '../POSView/order/Order';
 import Payment from '../POSView/order/Payment';
 import Login from '../POSView/login/Login';
+import Article from '../POSView/order/Article';
+import FunctionButton from '../POSView/order/FunctionButton';
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
   { path: '/groupable', name: 'Groupable', component: Groupable},
@@ -48,6 +50,9 @@ const routes = [
   { path: '/payment', name: 'Payment', component: Payment},
   { path: '/login', name: 'Login', component: Login },
   { path: '/order', name: 'Order', component: Order },
+  { path: '/article', name: 'Article', component: Article },
+  { path: '/function-button', name: 'Function Button', component: FunctionButton },
+
 ];
 
 const router = new VueRouter({
