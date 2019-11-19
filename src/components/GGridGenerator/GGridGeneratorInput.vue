@@ -6,7 +6,7 @@
   import GBtn from '../GBtn/GBtn'
 
   export default {
-    name: 'GGridLayoutInput',
+    name: 'GGridGeneratorInput',
     components: { GDialog, GGridGenerator, GBtn },
     props: {
       model: Object,
@@ -22,7 +22,7 @@
           <g-btn vOn:click={() => dialogState.show = true}>
             { props.model[props.field.key] != null ? 'Edit grid': 'Add grid' }
           </g-btn>
-          <g-dialog value={dialogState.show} fullscreen>
+          <g-dialog value={dialogState.show} fullscreen >
             <div class="editor-dialog">
               <div class='editor-dialog__title-bar'>
                 <span class='editor-dialog__title-bar__title'>Grid Layout Editor</span>
