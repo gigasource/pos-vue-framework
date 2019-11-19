@@ -62,7 +62,7 @@
       },
     },
     setup: function (props, context) {
-      const internalValue = getInternalValue(props, context);
+      const {internalValue} = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
 

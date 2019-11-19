@@ -13,8 +13,7 @@
     "storybook": "start-storybook -s ./src/assets -p 6006",
     "build-storybook": "build-storybook"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@mdi/font": "^4.5.95",
     "@vue/composition-api": "0.3.2",
