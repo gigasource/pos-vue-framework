@@ -63,7 +63,6 @@
 
         // bring editor out of grid layout
         if (props.editable) {
-          console.log(context.refs[refIdEditor])
           wrapperEl.parentNode.appendChild(context.refs[refIdEditor])
         }
       }
@@ -71,7 +70,6 @@
       // editor dialog
       const refIdEditor = 'editor'
       const dialogState = reactive({ show: false })
-
       function renderEditDialog() {
         return <div ref={refIdEditor}>
           <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
@@ -98,25 +96,46 @@
         </div>
       }
 
-      // try to find pre-defined VNode in default slot of gridLayout
-      function _findVNodesInSlot(name) {
-        return _.filter(context.slots.default(), slot => {
-          return slot && slot.data && slot.data.attrs && slot.data.attrs['area'] === name
+      // vnode collection
+      let namedSlotVNodes = null // vnode which created by scopedSlots
+      let namedAreaVNodes = null // vnode which define area attribute
+
+      // get named slots vnode function
+      function extractNamedSlotVnodeFn() {
+        namedSlotVNodes = {}
+        // get all vue 1.0 slots
+        _.each(_.keys(context.slots), slotName => {
+          if (slotName !== 'default')
+            namedSlotVNodes[slotName] = context.slots[slotName]()
+        })
+
+        // get all vue 2.0 slots
+        return _.each(context.slots.default(), vnode => {
+          if (vnode && vnode.data && vnode.data.scopedSlots && vnode.data.scopedSlots) {
+            _.each(_.keys(vnode.data.scopedSlots), slotName => {
+              if (typeof(vnode.data.scopedSlots[slotName]) === 'function') {
+                namedSlotVNodes[slotName] = vnode.data.scopedSlots[slotName]()
+              }
+            })
+          }
         })
       }
 
-      /**
-       * Pass through vnode is a vnode which:
-       * - doesn't have "area" attribute
-       * - area attribute value which was not defined in layout
-       * @private
-       */
-      function _findPassThroughVNodes() {
-        /**
-         * Get all name of grid/area model
-         * @param model
-         * @private
-         */
+      // get named area vNodes
+      function extractNamedAreaVNodes() {
+        namedAreaVNodes = {}
+        return _.each(context.slots.default(), vnode => {
+          if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['area']) {
+            if (namedAreaVNodes[vnode.data.attrs['area']])
+              namedAreaVNodes[vnode.data.attrs['area']].push(vnode)
+            else
+              namedAreaVNodes[vnode.data.attrs['area']] = [vnode]
+          }
+        })
+      }
+
+      // get pass through vNodes
+      function getPassThroughVNodes() {
         function _getDeclaredArea(model) {
           let areaNames = [model.name]
           if (model instanceof GridModel) {
@@ -124,31 +143,55 @@
           }
           return areaNames
         }
-
         let declaredNames = _getDeclaredArea(state.layout)
         return _.filter(context.slots.default(), slot => {
           if (slot == null) {
             return false
           } else if (!slot.data) {
             return true
-          } else if (slot.data && !slot.data.attrs) {
+          } else if (slot.data.scopedSlots) {
+            return false
+          } else if (!slot.data.attrs) {
             return true
           } else if (slot.data.attrs['area'] == null || declaredNames.indexOf(slot.data.attrs['area']) === -1) {
             return true
+          } else {
+            return false // ?? :D ??
           }
-          return false
         })
+      }
+
+      /**
+       * try to find pre-declared VNode in default slot of gridLayout
+       * @param name
+       * @returns {Array} of node
+       * [] if no node found
+       * [Node] if only one node found: unique area or named slots
+       * [Node1, Node2, ...] if multiple area have the same name
+       * @private
+       */
+      function _findDeclaredVNodes(name) {
+        // no duplicated named slots => return array
+        if (_.has(namedSlotVNodes, name)) {
+          return namedSlotVNodes[name]
+        } else if (_.has(namedAreaVNodes, name))
+          return namedAreaVNodes[name]
+        else
+          return []
       }
 
       function processLayout(model) {
         const cssClassName = getAreaClass(model.name)
-        let vNode = _findVNodesInSlot(model.name)
+        let vNode = _findDeclaredVNodes(model.name)
         if (vNode.length > 1) {
           // multiple slot with the same area name
+          // slot with multiple children
           vNode = <div class={cssClassName}>{vNode}</div>
         } else if (vNode.length === 1) {
-          // single slot with area name
-          vNode = model.wrapInDiv ? <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div> : vNode[0]
+          // single slot with area name or scopedSlot
+          vNode = model.wrapInDiv && !_.has(namedSlotVNodes, model.name)
+              ? <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
+              : vNode[0]
         } else if (!model._parent) {
           // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
           const styleVNode = (
@@ -157,7 +200,7 @@
               </style>
           )
           const dialogEditVNode = props.editable ? renderEditDialog() : null
-          const passThroughVNodes = props.passThrough ? _findPassThroughVNodes() : null
+          const passThroughVNodes = props.passThrough ? getPassThroughVNodes() : null
 
           vNode = <div
               class={cssClassName}
@@ -181,7 +224,13 @@
       onMounted(() => addAreaClassForPredefinedArea())
       onUpdated(() => addAreaClassForPredefinedArea())
 
-      return () => processLayout(state.layout)
+      return () => {
+        // run every time render function execute because of v-if
+        extractNamedSlotVnodeFn()
+        extractNamedAreaVNodes()
+        console.log(namedSlotVNodes)
+        return processLayout(state.layout)
+      }
     }
   }
 </script>

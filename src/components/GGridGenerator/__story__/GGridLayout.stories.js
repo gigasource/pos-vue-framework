@@ -15,7 +15,7 @@ export default {
 
 // inc/dec number input
 export const incDecNumberInput = () => ({
-  components: {GIncDecNumberInput},
+  components: { GIncDecNumberInput },
   setup() {
     const data = reactive({
       val: 20
@@ -105,7 +105,7 @@ export const layoutJsonStr = () => ({
 })
 
 export const layoutJsonObject = () => ({
-  components: { GGridLayout},
+  components: { GGridLayout },
   props: {
     layout: {
       default: loginLayout
@@ -117,9 +117,60 @@ export const layoutJsonObject = () => ({
       default: boolean('editable', true)
     }
   },
+  data() {
+    return {
+      abc: {
+        width: 100,
+      }
+    }
+  },
   template: `
     <div>
-      <g-grid-layout :layout="layout" :passThrough="passThrough" :editable="editable" style="height: 700px" :displayPreviewColor="true"><div>PT1</div><div>PT2</div><div area="num7">7</div><div area="num7">7</div><div area="num8">8</div><div>PT3</div><div>PT3</div><div area="login">Login</div><div>PT5</div><div>PT6</div><div>PT7</div><div>PT8</div></g-grid-layout>
+      <g-grid-layout :layout="layout" :passThrough="passThrough" :editable="editable" style="height: 700px" :displayPreviewColor="true">
+        
+        <span v-show="false" slot="s1" class="slot" :class="abc">
+          singleItemSlot
+        </span>
+        
+        <template slot="s2" class="slot" :class="abc">
+          singleItemSlot
+        </template>
+        
+        <span slot="s3" class="slot" :class="abc">
+          Multiple template slot
+          <div>Hello slot</div>
+        </span>
+        <template slot="s4" class="slot" :class="abc">
+          Multiple template slot
+          <div>Hello slot</div>
+        </template>
+        
+        <span v-slot:s5 class="vslot">s5</span>
+        <template v-slot:s6 class="vslot">s7</template>
+        
+        <span v-slot:s7 class="vslot">
+          v-slot:heyhey
+          <div>Hello vslot</div>
+        </span>
+        
+        <template v-slot:s8 class="vslot">
+          s8
+          <div>Hello vslot</div>
+        </template>
+      
+        <div area="num7">7</div>
+        <div area="num7">7</div>
+        <div area="num8">8</div>
+        <div>PT1</div>
+        <div>PT2</div>
+        <div>PT3</div>
+        <div>PT3</div>
+        <div area="login">Login</div>
+        <div>PT5</div>
+        <div>PT6</div>
+        <div>PT7</div>
+        <div>PT8</div>
+      </g-grid-layout>
     </div>
   `
 })
