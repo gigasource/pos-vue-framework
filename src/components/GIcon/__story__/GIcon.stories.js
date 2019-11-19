@@ -3,7 +3,6 @@ import {action} from '@storybook/addon-actions';
 import GIcon from '../GIcon';
 import GBtn from "../../GBtn/GBtn";
 import {mdiAccount} from '@mdi/js'
-import customIcon from '../../../assets/home/avatar.svg';
 
 export default {
   title: 'GIcon',
@@ -28,29 +27,15 @@ export const basicIcon = () => ({
 
 export const svgIcon = () => ({
   components: {GIcon},
-  data: () => ({
-    svgPath: mdiAccount
-  }),
   props: {
-    icon: {default: text('icon', 'fas fa-cat')},
-    color: {default: text('color', '#DC143C')},
+    svg: {default: text('svg', 'icon-store')},
     xSmall: {default: boolean('xSmall', false)},
     small: {default: boolean('small', false)},
     medium: {default: boolean('medium', false)},
     large: {default: boolean('large', false)},
     xLarge: {default: boolean('xLarge', false)},
-    disabled: {default: boolean('disabled', false)},
-    dense: {default: boolean('dense', false)},
   },
-  template: `<g-icon :color="color" :xSmall="xSmall" :small="small" :meidum="medium" :large="large" :xLarge="xLarge" :disabled="disabled" :dense="dense">{{svgPath}}</g-icon>`,
-})
-
-export const customSvgIcon = () => ({
-  components: {GIcon},
-  data: () => ({
-    customIcon: customIcon
-  }),
-  template: `<g-icon size="100px">{{customIcon}}</g-icon>`,
+  template: `<g-icon :xSmall="xSmall" :small="small" :meidum="medium" :large="large" :xLarge="xLarge" svg>{{svg}}</g-icon>`,
 })
 
 export const sizeAndColor = () => ({
