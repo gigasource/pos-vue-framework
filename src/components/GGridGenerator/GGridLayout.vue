@@ -189,7 +189,7 @@
           vNode = <div class={cssClassName}>{vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name or scopedSlot
-          vNode = model.wrapInDiv && !_.has(namedSlotVNodes, model.name)
+          vNode = model.wrapInDiv
               ? <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
               : vNode[0]
         } else if (!model._parent) {
