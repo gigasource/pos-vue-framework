@@ -7,15 +7,17 @@ export function enterNotPressed(e) {
 }
 
 export function shiftPressed(e) {
-  return e.shiftKey
+  return e.keyCode === 16 || e.shiftKey
 }
 
 export function ctrlPressed(e) {
-  return e.ctrlKey
+  return e.keyCode === 17 || e.ctrlKey
 }
 
 export function metaPressed(e) {
-  return e.metaKey
+  // meta left/window left: 91
+  // meta right/window right: 92
+  return e.keyCode === 91 || e.keyCode === 92 || e.metaKey
 }
 
 export function escapePressed(e) {

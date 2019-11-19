@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs';
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import GList from '../GList';
 import GListItem from '../GListItem';
@@ -19,8 +19,7 @@ export default {
   title: 'GList',
   decorators: [withKnobs],
 };
-
-export const gListInset = () => ({
+export const gListPlayGround = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
@@ -32,9 +31,176 @@ export const gListInset = () => ({
       ]
     }
   },
+  props :{
+    disabled: { default: boolean('disabled', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
+    elevation: { type: [Number, String],default: number('elevation', 2) },
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', false) },
+    multiSection: { default: boolean('multiSection', false) },
+    subheader: { default: text('subheader', 'subheader') },
+    divider: { type:[String, Boolean],default: boolean('divider', false) },
+    prependType: { default: text('prependType', 'avatar') },
+    subtitleWrap: { default: boolean('subtitleWrap', false) },
+    selectable: { default: boolean('selectable', false) },
+    multiple: { default: boolean('multiple', false) },
+    mandatory: { default: boolean('mandatory', false) },
+    allowDuplicates: { default: boolean('allowDuplicates', false) },
+    itemValue: { default: text('itemValue', '') },
+    itemTitle: { default: text('itemTitle', 'title') },
+    activeClass: { default: text('activeClass', '') },
+  },
   template:
     `
-      <g-list :items="items" subheader="subheader" divider='inset'  >
+      <g-list :items="items"
+        :disabled="disabled"
+        :rounded="rounded"
+        :shaped="shaped"
+        :elevation="elevation"
+        :dense="dense"
+        :nav="nav"
+        :multiSection="multiSection"
+        :subheader="subheader"
+        :divider="divider"
+        :prependType="prependType"
+        :subtitleWrap="subtitleWrap"
+      />
+      `,
+})
+export const gListSingleSelectPlayGround = () => ({
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  data() {
+    return {
+      items: [
+        { title: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+      ],
+      testValue: null
+    }
+  },
+  props :{
+    disabled: { default: boolean('disabled', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
+    elevation: { type: [Number, String],default: number('elevation', 2) },
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', false) },
+    multiSection: { default: boolean('multiSection', false) },
+    subheader: { default: text('subheader', 'subheader') },
+    divider: { type:[String, Boolean],default: boolean('divider', false) },
+    prependType: { default: text('prependType', 'avatar') },
+    subtitleWrap: { default: boolean('subtitleWrap', false) },
+    mandatory: { default: boolean('mandatory', false) },
+    itemValue: { default: text('itemValue', '') },
+    itemTitle: { default: text('itemTitle', 'title') },
+    activeClass: { default: text('activeClass', '') },
+  },
+  template:
+    ` 
+ <div>{{testValue}}
+      <g-list v-model="testValue"
+        :items="items"
+        :disabled="disabled"
+        :rounded="rounded"
+        :shaped="shaped"
+        :elevation="elevation"
+        :dense="dense"
+        :nav="nav"
+        :multiSection="multiSection"
+        :subheader="subheader"
+        :divider="divider"
+        :prependType="prependType"
+        :subtitleWrap="subtitleWrap"
+        selectable
+        :mandatory="mandatory"
+        :itemValue="itemValue"
+        :itemTitle="itemTitle"
+        :activeClass="activeClass">
+      </g-list>
+      </div>
+      `,
+})
+export const gListMultiSelectPlayGround = () => ({
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  data() {
+    return {
+      items: [
+        { title: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+      ],
+      testValue: null
+    }
+  },
+  props :{
+    disabled: { default: boolean('disabled', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
+    elevation: { type: [Number, String],default: number('elevation', 2) },
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', false) },
+    multiSection: { default: boolean('multiSection', false) },
+    subheader: { default: text('subheader', 'subheader') },
+    divider: { type:[String, Boolean],default: boolean('divider', false) },
+    prependType: { default: text('prependType', 'avatar') },
+    subtitleWrap: { default: boolean('subtitleWrap', false) },
+    multiple: { default: boolean('multiple', true) },
+    mandatory: { default: boolean('mandatory', false) },
+    allowDuplicates: { default: boolean('allowDuplicates', true) },
+    itemValue: { default: text('itemValue', '') },
+    itemTitle: { default: text('itemTitle', 'title') },
+    activeClass: { default: text('activeClass', '') },
+  },
+  template:
+    ` 
+ <div>{{testValue}}
+      <g-list v-model="testValue"
+        :items="items"
+        :disabled="disabled"
+        :rounded="rounded"
+        :shaped="shaped"
+        :elevation="elevation"
+        :dense="dense"
+        :nav="nav"
+        :multiSection="multiSection"
+        :subheader="subheader"
+        :divider="divider"
+        :prependType="prependType"
+        :subtitleWrap="subtitleWrap"
+        selectable
+        :multiple="multiple"
+        :mandatory="mandatory"
+        :allowDuplicates="allowDuplicates"
+        :itemValue="itemValue"
+        :itemTitle="itemTitle"
+        :activeClass="activeClass">
+      </g-list>
+      </div>
+      `,
+})
+export const gListInset = () => ({
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  data() {
+    return {
+      items: [
+        { title: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/1.jpg' },
+        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+      ]
+    }
+  },
+  props:{
+    divider: {default:text("divider", 'inset')},
+    prependType: {default:text("prependType", 'avatar')}
+  },
+  template:
+    `
+      <g-list :items="items" subheader="subheader" :divider='divider' :prependType="prependType"  >
       </g-list>
       `,
 })
@@ -56,11 +222,13 @@ export const gListDense = () => ({
           <g-col>Dense<g-list :items="items" dense subheader="subheader" divider='inset'  ></g-list></g-col>
           <g-col>Normal <g-list :items="items" subheader="subheader" divider='inset'></g-list></g-col>
         </g-row>
-         <g-row>Two-line
+        <g-row>Two-line</g-row>
+         <g-row>
           <g-col>Dense<g-list :items="items"  dense subheader="subheader" divider='inset' ></g-list></g-col>
           <g-col>Normal<g-list :items="items"   subheader="subheader" divider='inset' ></g-list></g-list></g-col>
         </g-row>
-         <g-row>Two-line with wrapper
+        <g-row>Two-line with wrapper</g-row>
+         <g-row>
           <g-col>Dense<g-list :items="items"  dense subheader="subheader" divider='inset' subtitleWrap ></g-list></g-col>
           <g-col>Normal<g-list :items="items"   subheader="subheader" divider='inset' subtitleWrap ></g-list></g-list></g-col>
         </g-row>
@@ -86,19 +254,24 @@ export const gListShapedInset = () => ({
 })
 export const gListNav = () => ({
   components: { GList },
+  props:{
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', true) },
+    prependType: { default: text('prependType', 'avatar') },
+  },
   data() {
     return {
       items: [
-        { title: 'Jason Oner', subtitle: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
-        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
-        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
-        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+        {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ]
     }
   },
   template:
     `
-      <g-list :items="items"  dense nav prepend-type="icon">
+      <g-list :items="items" dense="dense" nav="nav" prepend-type="prependType">
       </g-list>
       `,
 })
@@ -115,7 +288,8 @@ export const gListTwoLine = () => ({
         { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
-      ]
+      ],
+
     }
   },
   template:
@@ -161,7 +335,7 @@ export const gListThreeLine = () => ({
       `,
 })
 export const gListPrependWithSlot = () => ({
-  components: { GList },
+  components: { GList, GIcon },
   data() {
     return {
       items: [
@@ -174,14 +348,34 @@ export const gListPrependWithSlot = () => ({
   },
   template:
     `
-      <g-list :items="items" rounded dense subheader="subheader" divider='inset' >
+      <g-list :items="items"  subheader="subheader"  >
         <template v-slot:prepend="{item}">
-          <img :src="item.prepend" alt="">
+        <g-icon>mdi-ninja</g-icon>
         </template>
       </g-list>
       `,
 })
-
+export const gListAppendWithSlot = () => ({
+  components: { GList, GIcon },
+  data() {
+    return {
+      items: [
+        { title: 'Jason Oner', subtitle: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+      ]
+    }
+  },
+  template:
+    `
+      <g-list :items="items"  subheader="subheader"  >
+        <template v-slot:append="{item}">
+        <g-icon color="indigo">mdi-mail</g-icon>
+        </template>
+      </g-list>
+      `,
+})
 export const gListNormalPrependAvatar = () => ({
   components: { GList },
   data() {
@@ -212,12 +406,12 @@ export const gListNormalPrependIcon = () => ({
     return {
       items: [
         { subheader: 'User', type: 'subheader' },
-        { title: 'Jason Oner', subtitle: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
-        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Jason Oner', subtitle: 'Jason the ant', prepend: 'mdi-pen' },
+        { title: 'Ranee Carlson', prepend: 'mdi-ninja' },
         { type: 'divider' },
         { subheader: 'Admin', type: 'subheader' },
-        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
-        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+        { title: 'Cindy Baker', prepend: 'mdi-glasses' },
+        { title: 'Ali Connors', prepend: 'mdi-mail' },
         { subheader: 'Admin', type: 'subheader' },
 
       ]
@@ -244,7 +438,7 @@ export const gListNormalPrependImg = () => ({
   },
   template:
     `
-      <g-list :items="items" rounded dense prepend-type="image">
+      <g-list :items="items"  prepend-type="image">
       </g-list>
       `,
 })
@@ -273,7 +467,7 @@ export const gListMultiSection = () => ({
 })
 
 export const gListSingleSectionSelect = () => ({
-  components: { GList },
+  components: {GList},
   data() {
     return {
       items: [
@@ -289,7 +483,7 @@ export const gListSingleSectionSelect = () => ({
     `
       <div>
         selectedItem: {{testValue}}
-        <g-list v-model="testValue" :items="items" rounded dense subheader="subheader" divider=inset selectable>
+        <g-list v-model="testValue" :items="items" subheader="subheader" divider=true selectable>
         </g-list>
       </div>
       `,
@@ -340,8 +534,8 @@ export const gListItemSlotRenderArray = () => ({
       <div>
       selectedItem: {{testValue}}
       <g-list :items="items" selectable v-model="testValue">
-              <template v-slot:listItem="{item, isSelected}">
-                <g-list-item :isSelected="isSelected">
+              <template v-slot:listItem="{item, isSelected, onSelect}">
+                <g-list-item :item="item" :isSelected="isSelected" @singleItemClick="onSelect(item)" >
                   <g-list-item-content>
                       <g-list-item-text >{{item.title}}</g-list-item-text>
                   </g-list-item-content>
@@ -365,17 +559,23 @@ export const gListMultiSelect = () => ({
       testValue: null
     }
   },
+  props:{
+    rounded: {default: boolean('rounded', false)},
+    dense: {default: boolean('dense', false)},
+    divider: {default: text('divider', '')},
+    allowDuplicates: {default: boolean('allowDuplicates', false)},
+  },
   template:
-    `
+      `
       <div>
         selectedItem: {{testValue}}
-        <g-list v-model="testValue" :items="items" rounded dense subheader="subheader" divider=inset selectable multiple allowDuplicates>
+        <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense" :subheader="subheader" :divider="divider" selectable multiple :allowDuplicates="allowDuplicates">
         </g-list>
       </div>
       `,
 })
 export const gListSelectMandatory = () => ({
-  components: { GList },
+  components: {GList},
   data() {
     return {
       items: [
@@ -397,10 +597,36 @@ export const gListSelectMandatory = () => ({
       `,
 })
 
+export const gListCustomActiveClass = () => ({
+  components: { GList },
+  data() {
+    return {
+      items: [
+        { title: 'Jason Oner', subtitle: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+      ],
+      testValue: null
+    }
+  },
+  props:{
+    activeClass:{default:text('activeClass', 'border')}
+  },
+  template:
+    `
+      <div>
+        selectedItem: {{testValue}}
+        <g-list v-model="testValue" :items="items" divider=inset selectable :active-class="activeClass">
+        </g-list>
+      </div>
+      `,
+})
 import Vue from 'vue/dist/vue.common.js'
 import GContainer from '../../GLayout/GContainer';
 import GRow from '../../GLayout/GRow';
 import GCol from '../../GLayout/GCol';
+import GIcon from '../../GIcon/GIcon';
 
 describe('GList', function () {
   it('should render rounded dense', function () {
