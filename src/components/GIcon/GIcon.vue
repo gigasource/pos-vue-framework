@@ -18,6 +18,7 @@
       medium: Boolean,
       large: Boolean,
       xLarge: Boolean,
+      svg: Boolean,
     },
     setup: function (props, context) {
       const onClick = (event) => {
@@ -48,26 +49,14 @@
                   vOn:click={onClick}>{!isMdiIcon ? icon : ''}</i>
       }
 
-      function genSvgIcon(icon, iconClass, iconStyle) {
+      function genSvgIcon(svgName, iconClass, iconStyle) {
         iconClass['g-icon__svg'] = true
+        iconClass[svgName] = true
         iconStyle['width'] = getSize(props)
         iconStyle['height'] = getSize(props)
-        return <svg class={iconClass}
-                    style={iconStyle}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    vOn:click={onClick}>
-          <path d={icon} fill={props.color}/>
-        </svg>
-      }
 
-      function genCustomSvgIcon(icon, iconClass, iconStyle) {
-        iconStyle['width'] = getSize(props)
-        iconStyle['height'] = getSize(props)
-        return <img class={iconClass}
+        return <div class={iconClass}
                     style={iconStyle}
-                    src={icon}
-                    alt="Can't load icon"
                     vOn:click={onClick}/>
       }
 
@@ -87,9 +76,8 @@
           'font-size': getSize(props),
         }
 
+        if (props.svg) return genSvgIcon(icon, iconClass, iconStyle)
         if (isFontAwesome5(icon)) return genFontAwesomeIcon(icon, iconClass, iconStyle)
-        if (isSvgPath(icon)) return genSvgIcon(icon, iconClass, iconStyle)
-        if (isCustomSvgIcon(icon)) return genCustomSvgIcon(icon, iconClass, iconStyle)
         return genMaterialIcon(icon, iconClass, iconStyle)
       }
 
@@ -106,14 +94,6 @@
 
   function isFontAwesome5(icon) {
     return ['fas', 'far', 'fal', 'fab'].some(val => icon.includes(val))
-  }
-
-  function isSvgPath(icon) {
-    return (/^[mzlhvcsqta]\s*[-+.0-9][^mlhvzcsqta]+/i.test(icon) && /[\dz]$/i.test(icon) && icon.length > 4)
-  }
-
-  function isCustomSvgIcon(icon) {
-    return icon.slice(-3) === 'svg'
   }
 
   function getSize(props) {
