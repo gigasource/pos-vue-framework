@@ -1,16 +1,18 @@
 <script>
   import { computed } from '@vue/composition-api';
   import GTreeFactory, { genTextFactory } from '../../components/GTreeViewFactory/GTreeFactory';
+	import GIcon from '../../components/GIcon/GIcon';
 
   export default {
-    name: 'GTreeViewExample',
+    name: 'BindingDiagramTreeView',
+		components: { GIcon },
     props: {
       itemText: {
-        default: 'text',
+        default: 'content',
         type: [Function, String]
       },
       itemChildren: {
-        default: 'items',
+        default: 'children',
         type: [Function, String]
       },
       expandLevel: {
@@ -24,17 +26,9 @@
 
       const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
         return <li>
-          <span
-            class='g-tree-view__collapse-expand'
-            vShow={childrenVNodes}
-            vOn:click={() => state.collapse = !state.collapse}>
-            <span>
-              {state.collapse ? '+' : '-'}
-            </span>
-          </span>
-          {genText.value(node)}
+          <g-icon>fas fa-folder</g-icon>
+					{genText.value(node)}
           {!state.collapse ? childrenVNodes : null}
-          {isLast ? <span style="color: #959595">&nbsp;last</span> : null}
         </li>
       }
 
