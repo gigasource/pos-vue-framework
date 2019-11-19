@@ -21,7 +21,8 @@
     "vue-the-mask": "^0.11.1",
     "vue-svg-loader": "^0.15.0",
     "vue-template-compiler": "^2.6.10",
-    "copy-to-clipboard": "^3.2.0"
+    "copy-to-clipboard": "^3.2.0",
+    "resolve-url-loader": "^3.1.0"
   },
   "devDependencies": {
     "@vue/composition-api": "0.3.2",
@@ -74,7 +75,6 @@
     "markdown-it-prism": "^2.0.3",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2",
-    "resolve-url-loader": "^3.1.0",
     "sass-loader": "^8.0.0",
     "storybook-addon-specifications": "^2.1.5",
     "vue-jest": "^3.0.5",
