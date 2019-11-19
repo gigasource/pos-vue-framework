@@ -159,7 +159,6 @@
           sliderStyles.height = 'auto';
         } else {
           if (activeTab.offsetLeft < +sliderStyles.left.replace('px', '')) {
-            // sliderStyles['transition'] = 'left 0.5s, right 1s';
             sliderStyles['transition'] = props.slideTransHorLeft;
           } else {
             sliderStyles['transition'] = props.slideTransHorRight;

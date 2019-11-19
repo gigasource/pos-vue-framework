@@ -40,7 +40,6 @@
         ...{
           props: {
             ...props,
-            // showSlider: false
             ripple: false,
             sliderColor: '#1271FF',
             slideTransHorLeft: 'left 0.3s, right 0.3s',
@@ -75,14 +74,15 @@
 <style lang="scss" scoped>
   @import "../../style/colors";
   @import "../../style/variables";
-
+  .g-tabs-wrapper {
+    align-items: center;
+  }
   ::v-deep .g-tab-items {
     margin: 20px 0;
     width: 300px;
   }
   ::v-deep .g-tabs-bar {
     mix-blend-mode: normal;
-    /*width: 260px;*/
     width: auto;
     min-height: 32px;
     border-radius: 29px;
@@ -103,9 +103,6 @@
     &:not(.g-tab__active):not(.g-tab__disabled) {
       color: color("grey", "base");
       opacity: 1;
-    }
-    &__active {
-      /*background-color: #1271FF;*/
     }
   }
 </style>

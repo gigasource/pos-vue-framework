@@ -72,12 +72,12 @@ export const tab = () => ({
           subheader: '2019',
           list: [
             {
-              title: 'September',
+              title: 'August',
               subtitle: '25 Sales',
               append: '€ 542.742,06'
             },
             {
-              title: 'August',
+              title: 'September',
               subtitle: '32 Sales',
               append: '€ 542.742,06'
             },

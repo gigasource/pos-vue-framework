@@ -39,7 +39,7 @@
         default: 'title'
       }
     },
-    setup(props) {
+    setup(props, context) {
       return () => (
           <g-list {...{props}}>
           </g-list>
