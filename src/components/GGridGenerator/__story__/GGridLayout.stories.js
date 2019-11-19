@@ -128,7 +128,7 @@ export const layoutJsonObject = () => ({
     <div>
       <g-grid-layout :layout="layout" :passThrough="passThrough" :editable="editable" style="height: 700px" :displayPreviewColor="true">
         
-        <span v-show="false" slot="s1" class="slot" :class="abc">
+        <span slot="s1" class="slot" :class="abc">
           singleItemSlot
         </span>
         

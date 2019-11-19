@@ -70,6 +70,7 @@
       // editor dialog
       const refIdEditor = 'editor'
       const dialogState = reactive({ show: false })
+
       function renderEditDialog() {
         return <div ref={refIdEditor}>
           <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
@@ -80,11 +81,13 @@
                 <button vOn:click={() => {
                   context.refs.gridGenerator.save()
                   dialogState.show = false
-                }}>Save</button>
+                }}>Save
+                </button>
                 <button vOn:click={() => {
                   context.refs.gridGenerator.cancel()
                   dialogState.show = false
-                }}>Cancel</button>
+                }}>Cancel
+                </button>
               </div>
               <g-grid-generator
                   ref="gridGenerator"
@@ -105,15 +108,16 @@
         namedSlotVNodes = {}
         // get all vue 1.0 slots
         _.each(_.keys(context.slots), slotName => {
-          if (slotName !== 'default')
+          if (slotName !== 'default') {
             namedSlotVNodes[slotName] = context.slots[slotName]()
+          }
         })
 
         // get all vue 2.0 slots
         return _.each(context.slots.default(), vnode => {
           if (vnode && vnode.data && vnode.data.scopedSlots && vnode.data.scopedSlots) {
             _.each(_.keys(vnode.data.scopedSlots), slotName => {
-              if (typeof(vnode.data.scopedSlots[slotName]) === 'function') {
+              if (typeof (vnode.data.scopedSlots[slotName]) === 'function') {
                 namedSlotVNodes[slotName] = vnode.data.scopedSlots[slotName]()
               }
             })
@@ -126,10 +130,11 @@
         namedAreaVNodes = {}
         return _.each(context.slots.default(), vnode => {
           if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['area']) {
-            if (namedAreaVNodes[vnode.data.attrs['area']])
+            if (namedAreaVNodes[vnode.data.attrs['area']]) {
               namedAreaVNodes[vnode.data.attrs['area']].push(vnode)
-            else
+            } else {
               namedAreaVNodes[vnode.data.attrs['area']] = [vnode]
+            }
           }
         })
       }
@@ -143,6 +148,7 @@
           }
           return areaNames
         }
+
         let declaredNames = _getDeclaredArea(state.layout)
         return _.filter(context.slots.default(), slot => {
           if (slot == null) {
@@ -174,10 +180,11 @@
         // no duplicated named slots => return array
         if (_.has(namedSlotVNodes, name)) {
           return namedSlotVNodes[name]
-        } else if (_.has(namedAreaVNodes, name))
+        } else if (_.has(namedAreaVNodes, name)) {
           return namedAreaVNodes[name]
-        else
+        } else {
           return []
+        }
       }
 
       function processLayout(model) {
@@ -186,12 +193,29 @@
         if (vNode.length > 1) {
           // multiple slot with the same area name
           // slot with multiple children
+          console.log(model.name, 'multiple')
           vNode = <div class={cssClassName}>{vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name or scopedSlot
-          vNode = model.wrapInDiv
-              ? <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
-              : vNode[0]
+
+          if (model.wrapInDiv) {
+            console.log(model.name, 'wrap in div')
+            vNode = <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
+          } else if (!vNode[0].tag) {
+            // do not render clear text node
+            console.log(model.name, 'prevent render')
+            vNode = null
+          } else if (_.has(namedSlotVNodes, model.name)) {
+            console.log(model.name, 'attach area to slot')
+            // try to attach area into slot vnode which is not clear text vnode and not wrap in div
+            if (!vNode[0].data) vNode[0].data = {}
+            if (!vNode[0].data.attrs) vNode[0].data.attrs = {}
+            vNode[0].data.attrs.area = model.name
+          } else {
+            console.log(model.name, 'area vnode')
+            // area vNode, no wrap in div, not clear text vNode
+            vNode = vNode[0]
+          }
         } else if (!model._parent) {
           // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
           const styleVNode = (
@@ -205,7 +229,7 @@
           vNode = <div
               class={cssClassName}
               ref={refIdWrapperElement}
-              {...{ attrs: {[uid]:''} }}>
+              {...{ attrs: { [uid]: '' } }}>
             {styleVNode}
             {dialogEditVNode}
             {passThroughVNodes}
@@ -228,7 +252,6 @@
         // run every time render function execute because of v-if
         extractNamedSlotVnodeFn()
         extractNamedAreaVNodes()
-        console.log(namedSlotVNodes)
         return processLayout(state.layout)
       }
     }
