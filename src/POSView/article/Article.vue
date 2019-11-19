@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div area="color-title" style="padding: 20px 8px 20px 8px" class="title"><p>Color</p></div>
+    <div area="color-title" style="padding: 15px 8px 15px 8px" class="title"><p>Color</p></div>
     <div area="color-content" style="padding: 5px 5px 5px 0;">
       <g-grid-select :grid="false" :items="buttonColors" v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
