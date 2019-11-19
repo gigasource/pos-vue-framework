@@ -147,7 +147,8 @@
         //todo write unit tests
         if (props.width) return convertToUnit(props.width)
         if (props.height && props.aspectRatio) return convertToUnit(props.height * props.aspectRatio)
-        if (state.naturalWidth) return convertToUnit(state.naturalWidth)
+        // if (state.naturalWidth) return convertToUnit(state.naturalWidth)
+        return 'auto'
       }
 
       function calculateHeight(props, state) {
@@ -155,7 +156,8 @@
         if (props.height) return convertToUnit(props.height)
         if (props.width && props.aspectRatio) return convertToUnit(props.width / props.aspectRatio)
         if (props.aspectRatio) return convertToUnit(state.naturalWidth / props.aspectRatio)
-        if (state.naturalHeight) return convertToUnit(state.naturalHeight)
+        // if (state.naturalHeight) return convertToUnit(state.naturalHeight)
+        return 'auto'
       }
 
       const containerStyles = computed(() => ({
@@ -196,3 +198,7 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+  @import "GImg";
+</style>

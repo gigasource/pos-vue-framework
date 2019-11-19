@@ -1,6 +1,6 @@
 <template>
 	<div class="outerdiv">
-		<g-dialog v-model="dialog" width="500px">
+		<g-dialog v-model="dialog" width="500px" lazy>
 			<template v-slot:activator="{ toggleDialog }">
 				<g-button width="100px" height="50px" @click="toggleDialog">Dialog</g-button>
 			</template>
@@ -177,10 +177,9 @@
   import GCard from '../components/GCard/GCard';
   import GCardTitle from '../components/GCard/GCardTitle';
   import {GCardText, GCardActions} from '../components/GCard/GCardFunctionalComponent'
-
   export default {
     name: 'DialogDemo',
-    components: { GCardText, GCardActions, GCardTitle, GCard, GButton, GDialog },
+    components: { GDialog, GCardText, GCardActions, GCardTitle, GCard, GButton},
     data() {
       return {
         dialog: false,

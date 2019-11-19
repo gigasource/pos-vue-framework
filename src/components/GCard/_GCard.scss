@@ -1,3 +1,6 @@
+@import "../../style/variables";
+@import "../../style/elevation";
+
 .g-card {
   //New
   background-color: #FFFFFF;
@@ -22,7 +25,6 @@
   position: relative;
   white-space: normal;
   @include elevationTransition();
-  @include elevation(2);
 
   &:not(.g-card__tile):not(.g-card__shaped) {
     border-radius: 4px;
@@ -72,92 +74,92 @@
   &__raised {
     @include elevation(8);
   }
-}
 
-//New refactor
-.g-card-subtitle {
-  padding: 16px;
+  //New refactor
+  .g-card-subtitle {
+    padding: 16px;
 
-  & + .g-card-text {
-    padding-top: 0
-  }
-}
-
-.g-card-subtitle,
-.g-card-text {
-  font-size: .875rem;
-  font-weight: 400 !important;
-  line-height: 1.375rem;
-  letter-spacing: .0071428571em;
-}
-
-.g-card-text,
-.g-card-title {
-  padding: 16px
-}
-
-.g-card-title {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 1.25rem;
-  font-weight: 500;
-  letter-spacing: .0125em;
-  line-height: 2rem;
-  word-break: break-all;
-
-  & + .g-card-subtitle, & + .g-card-text {
-    padding-top: 0;
-  }
-
-  & + .g-card-subtitle {
-    margin-top: -16px;
-  }
-}
-
-.g-card-text {
-  width: 100%;
-}
-
-.g-card-actions {
-  align-items: center;
-  display: flex;
-  padding: 8px;
-
-  .g-btn.g-btn {
-    padding: 0 8px;
-
-    & + .g-btn {
-      margin-left: 8px
-    }
-
-    .g-icon__left {
-      margin-left: 4px;
-    }
-
-    .g-icon__right {
-      margin-right: 4px;
+    & + .g-card-text {
+      padding-top: 0
     }
   }
-}
 
-.g-card-title__top {
-  top: map-get($grid-gutters, 'xs');
-}
+  .g-card-subtitle,
+  .g-card-text {
+    font-size: .875rem;
+    font-weight: 400 !important;
+    line-height: 1.375rem;
+    letter-spacing: .0071428571em;
+  }
 
-.g-card-title__left {
-  left: map-get($grid-gutters, 'xs');
-}
+  .g-card-text,
+  .g-card-title {
+    padding: 16px
+  }
 
-.g-card-title__bottom {
-  bottom: map-get($grid-gutters, 'xs');
-}
+  ::v-deep .g-card-title {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: .0125em;
+    line-height: 2rem;
+    word-break: break-all;
 
-.g-card-title__right {
-  right: map-get($grid-gutters, 'xs');
-}
+    & + .g-card-subtitle, & + .g-card-text {
+      padding-top: 0;
+    }
 
-.g-card-title__absolute {
-  position: absolute;
+    & + .g-card-subtitle {
+      margin-top: -16px;
+    }
+
+    &__top {
+      top: map-get($grid-gutters, 'xs');
+    }
+
+    &__left {
+      left: map-get($grid-gutters, 'xs');
+    }
+
+    &__bottom {
+      bottom: map-get($grid-gutters, 'xs');
+    }
+
+    &__right {
+      right: map-get($grid-gutters, 'xs');
+    }
+
+    &__absolute {
+      position: absolute;
+    }
+  }
+
+  .g-card-text {
+    width: 100%;
+  }
+
+  .g-card-actions {
+    align-items: center;
+    display: flex;
+    padding: 8px;
+
+    ::v-deep .g-btn.g-btn {
+      padding: 0 8px;
+
+      & + .g-btn {
+        margin-left: 8px
+      }
+
+      .g-icon__left {
+        margin-left: 4px;
+      }
+
+      .g-icon__right {
+        margin-right: 4px;
+      }
+    }
+  }
 }
 

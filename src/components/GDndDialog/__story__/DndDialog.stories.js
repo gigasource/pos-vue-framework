@@ -7,7 +7,7 @@ export default {
   decorators: [withKnobs],
 };
 
-export const test = () => ({
+export const Demo = () => ({
   components: { GBtn, GDndDialog },
   props: {
     minWidth: {default: number('Min Width', 200)},
@@ -22,11 +22,11 @@ export const test = () => ({
   },
   template:
     `<div data-app>
-    <g-btn color="red" width="100" height="50" @click="dnddialog = true">Open Dialog</g-btn>
+    <g-btn color="red" height="50" @click="dnddialog = true">Open Dialog</g-btn>
     
     <g-dnd-dialog v-model="dnddialog" :width="width" :height="height" :min-width="200" :min-height="100" lazy>
       <template v-slot:title>
-        Dialog header
+        Title
       </template>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
         nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
