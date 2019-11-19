@@ -195,7 +195,7 @@
         )
       }
 
-      const itemChildren = (node, isRoot) => {
+      const itemChildren = (node, {isRoot}) => {
         if (Array.isArray(node)) {
           return node
         } else if (typeof node === 'object') {
@@ -222,16 +222,24 @@
         }
       }
 
-      const cptExpandLevel = computed(() => props.expandLevel)
+      const itemPath = function (node, { key, path, isRoot }) {
+        const firstPropKey = Object.keys(node)[0];
+        if (isRoot) return key;
+				if (typeof node !== 'object') return key;
+        if (firstPropKey) return firstPropKey;
+      }
+
       const { treeStates, genTree } = GTreeFactory({
         genNode,
         genWrapper,
         genRootWrapper,
         data: props.data,
         itemText,
+				itemPath,
         itemChildren,
-        cptExpandLevel
+        expandLevel: props.expandLevel
       })
+
       return { treeStates, genTree }
     },
     render() {
