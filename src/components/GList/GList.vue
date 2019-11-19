@@ -37,7 +37,6 @@
               <slot name="append" :item="item">
                 <template v-if="item.append">{{item.append}}</template>
               </slot>
->>>>>>>>> Temporary merge branch 2
 					</div>
 					<g-divider v-if="(divider && (index < renderList.length -1) )"
 										 :inset="divider === 'inset'"/>

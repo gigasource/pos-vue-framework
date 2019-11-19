@@ -38,7 +38,7 @@ export const GAutocompleteSingleSelect = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle:"This won't be displayed anw", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
