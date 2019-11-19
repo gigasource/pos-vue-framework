@@ -88,14 +88,5 @@
     border: none;
   }
 
-  .g-tf-wrapper::v-deep {
 
-  }
-
-  /*.g-tf__filled {*/
-  /*  .g-tf-input::v-deep {*/
-  /*    box-shadow: none !important;*/
-  /*    padding: 11px 16px !important;*/
-  /*  }*/
-  /*}*/
 </style>

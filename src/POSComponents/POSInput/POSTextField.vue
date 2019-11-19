@@ -1,10 +1,10 @@
 <script>
-    import GTextFieldBs from "../../components/GInput/GTextFieldBs";
+  import GTextFieldBs from "../../components/GInput/GTextFieldBs";
 
-    export default {
-        name: "POSTextField",
-        mixins: [GTextFieldBs],
-    }
+  export default {
+    name: "POSTextField",
+    mixins: [GTextFieldBs],
+  }
 </script>
 
 <style scoped lang="scss">

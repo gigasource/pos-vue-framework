@@ -8,7 +8,6 @@
       height: {default: '8px'},
       trackFillColor: {default: '#1271FF'},
       thumbLabel: {default: 'always'},
-      //thumbSize: {default: 40},
       thumbColor: {default: '#1271FF'}
     }
   }
@@ -18,6 +17,7 @@
   @import "../../components/GSliderRemake/_GSlider.scss";
 
   .g-slider::v-deep {
+
     .g-slider-track-background {
       border-radius: 98px;
     }
@@ -30,6 +30,7 @@
     }
 
     .g-slider-thumb-container {
+
       &:hover, &__focused {
         .g-slider-thumb:before {
           content: none;
