@@ -2,23 +2,23 @@
 	<div>
 		<div style="padding-left: 256px">
 			<div class="main">
-				<div>
+				<div class="main__item">
 					<p>Company Name</p>
 					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
 				</div>
-				<div>
+				<div class="main__item">
 					<p>Address</p>
 					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
 				</div>
-				<div>
+				<div class="main__item">
 					<p>Telephone</p>
 					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
 				</div>
-				<div>
+				<div class="main__item">
 					<p>Tax Number</p>
 					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
 				</div>
-				<div>
+				<div class="main__item">
 					<p>Logo</p>
 					<g-file-input solo filled dense :prependInnerIcon="uploadIcon"></g-file-input>
 				</div>
@@ -98,6 +98,10 @@
 				height: 16px !important;
 			}
 		}
+	}
+
+	.main__item {
+		padding-right: 32px;
 	}
 
 	.logo {
