@@ -5,6 +5,8 @@
   import GIcon from '../GIcon/GIcon';
   import Paging from './Paging';
 
+  Paging.components['GIcon'] = GIcon
+
   export default {
     name: 'GIconChooser',
     components: { Paging, GIcon },
@@ -67,19 +69,20 @@
       }
 
       function renderCategoryName(category) {
-        return <span class={getCategoryNameClass(category)}
-                     vOn:click={() => addRemoveCategory(category)}>
-          {category.name}
-        </span>
+        return (
+            <span class={getCategoryNameClass(category)}
+                  vOn:click={() => addRemoveCategory(category)}>
+              {category.name}
+            </span>)
       }
 
       // category icons
       // -> render icon
       function renderIcon(icon) {
         return <span class="icon" key={icon.value}>
-                <g-icon large>{icon.value}</g-icon>
-                <div class="icon-name">{icon.name}</div>
-               </span>
+          <g-icon large>{icon.value}</g-icon>
+          <div class="icon-name">{icon.name}</div>
+        </span>
       }
 
       // render function
@@ -89,14 +92,13 @@
               <div class="icon-src-tabs">{_.map(iconSources, renderIconSrc)}</div>
               <div class="icon-src-tab-content">
                 <div class="category-names">{_.map(state.selectedIconSource.categories, renderCategoryName)} </div>
-                <div class="category-icons">
-                  <paging
-                      dataSrc={cptIcons.value}
-                      itemsPerPage={30}
-                      pageIndexesShowInView={7}
-                      renderItems={renderIcon}>
-                  </paging>
-                </div>
+                <paging
+                    class="category-icons"
+                    dataSrc={cptIcons.value}
+                    itemsPerPage={30}
+                    pageIndexesShowInView={7}
+                    renderItems={renderIcon}>
+                </paging>
               </div>
             </div>
         )
@@ -166,15 +168,9 @@
     }
   }
 
-  .icons {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
   $size: 80px;
 
-  >>> .icon {
+  ::v-deep .icon {
     margin: 5px;
     padding: 5px;
     width: $size;
@@ -190,7 +186,7 @@
     }
   }
 
-  >>> .icon-name {
+  ::v-deep .icon-name {
     white-space: nowrap;
     overflow: hidden;
     font-size: x-small;
