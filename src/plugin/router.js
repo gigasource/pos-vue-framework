@@ -19,6 +19,7 @@ import ExpansionPanelDemo from '../view/ExpansionPanelDemo';
 import ConnectorDemo from '../view/ConnectorDemo';
 import ZoomDirectiveDemo from '../view/ZoomDirectiveDemo';
 import Textarea from "../view/TextareaDemo";
+import BindingDiagramDemo from '../view/BindingDiagram/BindingDiagramDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -41,6 +42,7 @@ const routes = [
   { path: '/expansion-panel-demo', name: 'Expansion Panel', component: ExpansionPanelDemo},
   { path: '/zoom-directive-demo', name: 'Zoom Directive', component: ZoomDirectiveDemo},
   {path: '/textarea', name: 'Textarea', component: Textarea},
+  { path: '/binding-diagram-demo', name: 'Binding Diagram', component: BindingDiagramDemo},
 ];
 
 const router = new VueRouter({

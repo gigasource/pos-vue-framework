@@ -12,6 +12,7 @@
 			<router-link to="/input">Input</router-link>
 			<router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/connector-demo">Connector Demo</router-link>
+			<router-link to="/binding-diagram-demo">Binding Diagram Demo</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
