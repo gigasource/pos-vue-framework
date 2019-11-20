@@ -1,10 +1,10 @@
 <script>
   import {computed, reactive, watch} from '@vue/composition-api';
-  import {helperFunctions} from "../GSliderRemake/GSlider";
+  import {helperFunctions} from "../GSliderRemake/GSliderFactory";
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
-  import {getRangeSliderEventHandler} from './GRangeSlider';
+  import {getRangeSliderEventHandler} from './GRangeSliderFactory';
 
   export default {
     name: "GRangeSlider",
