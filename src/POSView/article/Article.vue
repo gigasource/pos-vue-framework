@@ -1,39 +1,39 @@
 <template>
   <g-grid-layout :layout="layout" style="height: 100%;">
-    <div area="category-title" class="title" style="padding: 16px 8px 8px 8px"><p>Category </p></div>
-    <div area="category-content" style="padding: 16px 8px 8px 8px">
+    <div area="category-title" class="title" style="padding: 23px 5px 17px 17px"><p>Category </p></div>
+    <div area="category-content" style="padding: 23px 8px 17px 5px">
       <p style="font-size: 14px; font-weight: bold; line-height: 18px;">{{productCategory}}</p>
     </div>
-    <div area="product-title" class="title" style="padding: 8px"><p>Product </p></div>
-    <div area="product-content-left" class="pa-2">
+    <div area="product-title" class="title" style="padding: 17px 5px 17px 17px"><p>Product </p></div>
+    <div area="product-content-left" class="pa-2" style="padding: 17px 28px 45px 5px">
       <div>
         <p style="font-size: 15px; line-height: 19px">{{productName}}</p>
         <p class="product-info">{{productId}}</p>
       </div>
       <div style="display: block;">
-        <p class="title">Unit </p>
+        <p class="sub-title">Unit </p>
         <p class="product-info">{{productUnit}}</p>
       </div>
       <div>
-        <p class="title">Price </p>
+        <p class="sub-title">Price </p>
         <p class="product-info">{{productPriceUnit}} {{productPrice}}</p>
       </div>
     </div>
-    <div area="product-content-right" style="padding: 5px;">
+    <div area="product-content-right" style="padding: 17px 28px 45px 17px">
       <div>
-        <p class="title">Barcode: </p>
+        <p class="sub-title">Barcode: </p>
         <p class="product-info">{{productBarcode}}</p>
       </div>
       <div>
-        <span class="title">Attribute:</span>
+        <span class="sub-title">Attribute:</span>
         <div class="product-info" :key="index" v-for="(attribute, index) in productAttributes">
           <span class="product-info">{{attribute.attribute}}: </span>
           <span class="product-info">{{attribute.attributeDetail}}</span>
         </div>
       </div>
     </div>
-    <div area="color-title" style="padding: 15px 8px 15px 8px" class="title"><p>Color</p></div>
-    <div area="color-content" style="padding: 5px 5px 5px 0;">
+    <div area="color-title" style="padding: 10px 8px 15px 17px" class="title"><p>Color</p></div>
+    <div area="color-content" style="padding: 0 5px 5px 5px;">
       <g-grid-select :grid="false" :items="buttonColors" v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
           <g-btn :background-color="item.value" :key="index" :ripple="false" @click="toggleSelect(item)" style="margin-right: 17px; box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px;height: 38px; border: 1px solid #D2D2D2;"></g-btn>
@@ -50,7 +50,7 @@
         </template>
       </g-grid-select>
     </div>
-    <div area="sorting-title" class="title" style="padding: 8px"><p>Sorting</p></div>
+    <div area="sorting-title" class="title" style="padding: 5px 5px 5px 17px"><p>Sorting</p></div>
     <div area="sorting-content" style="padding: 5px; display: flex; justify-content: center">
       <div style="display: grid; grid-template-columns: 53px 62px 53px; grid-template-rows: 35px 46px 35px; grid-gap: 17px; width: 202px; height: 150px;">
         <div style="grid-column: 2 / 3; grid-row: 1 / 2; width: 62px; height: 35px;">
@@ -362,10 +362,12 @@
       font-weight: bold;
     }
   }
+
   .title {
     font-size: 13px;
     font-weight: normal;
     line-height: 16px;
+    color: #1D1D26;
   }
 
   .product-info {
@@ -430,7 +432,7 @@
     padding: 8px;
   }
 
-  .title {
+  .sub-title {
     font-size: 13px;
     opacity: 0.5;
   }

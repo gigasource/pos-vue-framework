@@ -1,35 +1,42 @@
 <template>
   <g-grid-layout :layout="layout" style="height: 100%">
-    <div area="button-name" style="padding: 8px;">
-      <p style="margin: 5px" class="title">Button Name</p>
-      <g-text-field appendInnerIcon="mdi-keyboard" outlined style="color: #1d1d26"></g-text-field>
+    <div area="button-name" style="padding: 12px 10px 12px 13px;">
+      <p-o-s-text-field label="Button Name" placeholder="Fill your text">
+        <template v-slot:append>
+          <g-icon color="red">mdi-keyboard</g-icon>
+        </template>
+      </p-o-s-text-field>
+
     </div>
     <div area="button-action">
-      <g-btn background-color="white" elevation="0" style="position: relative; top: 65px; left: 10px;" text-color="red">
+      <g-btn background-color="white" elevation="0" style="position: relative; top: 50px; left: 10px;" text-color="red">
         <g-icon class="g-icon__left">mdi-minus-circle</g-icon>
         Remove button
       </g-btn>
     </div>
-    <div area="function" class="pa-2">
+    <div area="function" style="padding: 9px 12px 8px 13px">
       <p class="title">Functions</p>
-      <g-select :items="items"
-                outlined
-                v-model="selectedButton">
+      <p-o-s-select :items="items"
+                    clearable
+                    item-Text="text"
+                    placeholder="Select"
+                    v-model="selectedButton"
+      >
+      </p-o-s-select>
+    </div>
 
-      </g-select>
+    <div area="function-action">
+      <p-o-s-text-field label="Value" placeholder="Fill your value"></p-o-s-text-field>
     </div>
-    <div area="function-action" class="pa-2">
-      <p class="title">Value</p>
-      <g-text-field label="Fill your value" outlined style="color: #1d1d26"></g-text-field>
-    </div>
-    <div area="color" class="pa-2">
+
+    <div area="color" style="padding: 8px 8px 8px 13px">
       <p class="title">Color</p>
       <g-grid-select :grid="false" :items="buttonColors" v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
           <g-btn :background-color="item.value" :key="index" :ripple="false" @click="toggleSelect(item)" style="margin-right: 17px; box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px;height: 38px; border: 1px solid #D2D2D2;"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
-          <g-badge overlay style="margin-right: 17px;" :badge-size="12">
+          <g-badge :badge-size="12" overlay style="margin-right: 17px;">
             <template v-slot:badge>
               <g-icon>done</g-icon>
             </template>
@@ -44,10 +51,13 @@
     <div area="button-chooser" class="pa-2">
       <g-grid-select :grid="true" :items="buttonGroupItems" multiple v-model="selectedButtons">
         <template #default="{ toggleSelect, item, index }">
-          <g-btn :disabled="item.disabled" :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 1px solid #979797; box-shadow: none">{{item.text}}</g-btn>
+          <g-btn :disabled="item.disabled" :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 1px solid #979797; box-shadow: none">
+            {{item.text}}
+          </g-btn>
         </template>
         <template #selected="{ toggleSelect, item, index }">
-          <g-btn :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 2px solid #1271FF; box-shadow: none">{{item.text}}</g-btn>
+          <g-btn :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 2px solid #1271FF; box-shadow: none">{{item.text}}
+          </g-btn>
         </template>
       </g-grid-select>
 
@@ -69,7 +79,7 @@
 
       <g-spacer/>
 
-      <g-btn background-color="#2979FF" class="mr-2" text-color="white" width="114" v-if="selectedButtons.length === 2">
+      <g-btn background-color="#2979FF" class="mr-2" text-color="white" v-if="selectedButtons.length === 2" width="114">
         Merge
       </g-btn>
     </div>
@@ -103,7 +113,7 @@
 
     <div area="main__overlay" class="menu-disabled" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
-    <div area="function-overlay" v-if="selectedButtons.length === 2" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
+    <div area="function-overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;" v-if="selectedButtons.length === 2"></div>
 
     <g-number-keyboard :items="numpad_1" @submit="dialogProductSearch = true" area="keyboard" v-model="number">
       <template v-slot:screen>
@@ -154,10 +164,12 @@
   import GNumberKeyboard from '../../components/GKeyboard/GNumberKeyboard';
   import GScrollWindowItem from '../../components/GWindow/GScrollWindowItem';
   import GItem from '../../components/GItemGroup/GItem';
+  import POSTextField from '../../POSComponents/POSInput/POSTextField';
+  import POSSelect from '../../POSComponents/POSInput/POSSelect';
 
   export default {
     name: 'FunctionButton',
-    components: { GItem, GScrollWindowItem, GNumberKeyboard, GItemGroup, GScrollWindow, GSpacer, GBadge, GGridSelect, GSelect, GTextField, GIcon, GBtn, GGridLayout },
+    components: { POSSelect, POSTextField, GItem, GScrollWindowItem, GNumberKeyboard, GItemGroup, GScrollWindow, GSpacer, GBadge, GGridSelect, GSelect, GTextField, GIcon, GBtn, GGridLayout },
     data: () => ({
       layout: functionButtonLayout,
       activeClass: 'color-select-active',
@@ -347,6 +359,19 @@
 </script>
 
 <style lang="scss" scoped>
+  .button-name {
+    ::v-deep .bs-tf-wrapper {
+      margin-left: 0;
+    }
+  }
+
+
+  .button-name {
+    ::v-deep .bs-tf-wrapper .bs-tf-input-group .bs-tf-inner-input-group {
+      width: 100%;
+    }
+  }
+
   .title {
     font-size: 13px;
     line-height: 16px;
@@ -380,6 +405,7 @@
   .color-select-active {
     border: 2px solid #1271FF;
   }
+
   .button-group-item {
     border: 1px solid #979797;
     height: 80% !important;
@@ -416,7 +442,7 @@
 
   .function {
     ::v-deep .g-select .g-tf-wrapper {
-      margin: 16px 0 24px 0;
+      margin: 8px 0 24px 0;
     }
   }
 
