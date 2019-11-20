@@ -6,7 +6,6 @@ import { GStepperHeader } from '../../GStepper/GStepperFunctionalComponent';
 import GStepperContents from '../../GStepper/GStepperContents';
 import GStepperContent from '../../GStepper/GStepperContent';
 import GCard from '../../GCard/GCard';
-import GButton from '../../GButton/GButton';
 import GCardTitle from '../../GCard/GCardTitle';
 import { GCardActions, GCardText } from '../../GCard/GCardFunctionalComponent'
 import GBtn from '../../GBtn/GBtn';
@@ -17,7 +16,7 @@ export default {
 }
 
 export const basic = () => ({
-  components: { GBtn, GCardActions, GCardText, GCardTitle, GButton, GCard, GStepperContent, GStepperContents, GStepperHeader, GDivider, GStepperStep, GStepper },
+  components: { GBtn, GCardActions, GCardText, GCardTitle, GCard, GStepperContent, GStepperContents, GStepperHeader, GDivider, GStepperStep, GStepper },
   data: () => {
     return {
       vertical: false,
@@ -82,7 +81,7 @@ export const basic = () => ({
 })
 
 export const customDivider = () => ({
-  components: { GBtn, GCardActions, GCardText, GCardTitle, GButton, GCard, GStepperContent, GStepperContents, GStepper },
+  components: { GBtn, GCardActions, GCardText, GCardTitle, GCard, GStepperContent, GStepperContents, GStepper },
   data: () => {
     return {
       vertical: false,
@@ -153,7 +152,7 @@ export const customDivider = () => ({
 })
 
 export const customHeader = () => ({
-  components: { GBtn, GCardActions, GCardText, GCardTitle, GButton, GCard, GStepperContent, GStepperContents, GStepperHeader, GDivider, GStepperStep, GStepper },
+  components: { GBtn, GCardActions, GCardText, GCardTitle, GCard, GStepperContent, GStepperContents, GStepperHeader, GDivider, GStepperStep, GStepper },
   data: () => {
     return {
       vertical: false,

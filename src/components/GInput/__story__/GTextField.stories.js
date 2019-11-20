@@ -307,7 +307,6 @@ export const TextFieldCounter = () => ({
                            :flat="flat"
                            :rounded="rounded"
                            :shaped="shaped"
-                           :append-inner-icon="appendInnerIcon"
                            counter="5"
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">

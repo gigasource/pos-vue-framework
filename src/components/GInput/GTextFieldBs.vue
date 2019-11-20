@@ -1,6 +1,5 @@
 <template>
-  <div class="bs-tf-wrapper" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown"
-       :class="{'g-tf--wrapper-disabled': disabled, 'g-tf--wrapper-readonly': readOnly}">
+  <div class="bs-tf-wrapper" :class="wrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
     <label class="bs-tf-label">
       <slot name="label">
 				<template v-if="required">
@@ -48,12 +47,11 @@
 <script>
   import {ref, computed, onMounted} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
-  import Textarea from '../../view/TextareaDemo';
   import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GTextFieldBs',
-    components: { GIcon, Textarea },
+    components: { GIcon },
     props: {
       ...{//display props
         label: String,
@@ -79,6 +77,8 @@
         type: String,
         default: 'text',
       },
+			small: Boolean,
+			large: Boolean,
     },
     setup: function (props, context) {
       const {internalValue} = getInternalValue(props, context);
@@ -96,6 +96,13 @@
 
       const onClickPrepend = () => context.emit('click :prepend');
       const onClickAppend = () => context.emit('click :append');
+
+      const wrapperClasses = computed(() => ({
+				'bs-tf__small': props.small,
+				'bs-tf__large': props.large,
+        'g-tf--wrapper-disabled': props.disabled,
+				'g-tf--wrapper-readonly': props.readOnly
+			}));
 
       return {
         internalValue,
@@ -115,6 +122,7 @@
         onClickPrepend,
         onClickAppend,
         onClearIconClick,
+				wrapperClasses
       }
     }
   }
