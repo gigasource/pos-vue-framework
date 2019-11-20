@@ -10,7 +10,7 @@
     </div>
     <div area="button-action">
       <g-btn :disabled="buttonName === ''" background-color="white" elevation="0" style="position: relative; top: 50px; left: 10px;" text-color="red">
-        <g-icon class="g-icon__left">mdi-minus-circle</g-icon>
+        <g-icon class="g-icon__left" size="16">mdi-minus-circle</g-icon>
         Remove button
       </g-btn>
     </div>
@@ -51,7 +51,7 @@
     <div area="button-chooser" class="pa-2">
       <g-grid-select :grid="true" :items="buttonGroupItems" multiple v-model="selectedButtons">
         <template #default="{ toggleSelect, item, index }">
-          <g-btn :disabled="item.disabled" :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 1px solid #979797; box-shadow: none">
+          <g-btn :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 1px solid #979797; box-shadow: none">
             {{item.text}}
           </g-btn>
         </template>
@@ -82,10 +82,14 @@
       <g-btn background-color="#2979FF" class="mr-2" text-color="white" v-if="selectedButtons.length === 2" width="114">
         Merge
       </g-btn>
+
+      <g-btn background-color="#2979FF" class="mr-2" text-color="white" v-if="quickCashClicked === true" width="114">
+        Split
+      </g-btn>
     </div>
     <div area="menu">
-      <g-btn :key="i" background-color="#fff" elevation="0" height="100%"
-             text-color="#1d1d26" v-for="(item, i) in menu">
+      <g-btn :key="i" :style="item.style ? item.style : ''" background-color="#fff" elevation="0"
+             height="100%" text-color="#1d1d26" v-for="(item, i) in menu">
         {{item.title}}
       </g-btn>
     </div>
@@ -114,6 +118,7 @@
     <div area="main__overlay" class="menu-disabled" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
     <div area="function-overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;" v-if="selectedButtons.length === 2"></div>
+    <div area="keyboard__overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
     <g-number-keyboard :items="numpad_1" @submit="dialogProductSearch = true" area="keyboard" v-model="number">
       <template v-slot:screen>
@@ -132,13 +137,15 @@
       <g-btn height="100%" outlined>Discount</g-btn>
       <g-btn height="100%" outlined></g-btn>
       <g-btn height="100%" outlined>Plastic Refund</g-btn>
-      <g-btn area="btn__big" background-color="green lighten 1" height="100%" style="background: linear-gradient(41.19deg, #43A047 0%, #1DE9B6 100%);" text text-color="white">
-        Quick Cash
-      </g-btn>
-      <g-btn background-color="orange lighten 1" height="100%" style="background: linear-gradient(22.62deg, #FF6F00 0%, #FFCA28 100%);" text text-color="white">
+      <div area="btn__big">
+        <g-btn :active="quickCashClicked" :active-class="quickCashActive" @click="quickCashClicked = !quickCashClicked" background-color="green lighten 1" height="100%" text text-color="#ffffff" width="100%">
+          Quick Cash
+        </g-btn>
+      </div>
+      <g-btn background-color="orange lighten 1" height="100%" text text-color="white">
         Save
       </g-btn>
-      <g-btn background-color="blue darken 2" height="100%" style="background: linear-gradient(22.62deg, #6200EA 0%, #1976D2 100%);" text>
+      <g-btn background-color="blue darken 2" height="100%" text>
         <router-link to="/payment">
           <span class="text-white">Pay</span>
         </router-link>
@@ -173,6 +180,8 @@
     data: () => ({
       layout: functionButtonLayout,
       activeClass: 'color-select-active',
+      quickCashClicked: false,
+      quickCashActive: 'quick-cash-active',
       selectedButton: null,
       buttonName: '',
       number: 0,
@@ -180,8 +189,8 @@
       buttonGroupItems: [
         { area: 'btn-1', disabled: true, text: 'Note', value: 'Note' },
         { area: 'btn-2', disabled: false, text: 'F5', value: 'F5' },
-        { area: 'btn-3', disabled: true, text: '', value: '' },
-        { area: 'btn-4', disabled: true, text: '', value: '' },
+        { area: 'btn-3', disabled: true, text: '', value: '1' },
+        { area: 'btn-4', disabled: true, text: '', value: '2' },
         { area: 'btn-5', disabled: false, text: 'F1', value: 'F1' },
         { area: 'btn-6', disabled: false, text: 'F2', value: 'F2' },
         { area: 'btn-7', disabled: false, text: 'F3', value: 'F3' },
@@ -245,7 +254,7 @@
         { content: ['00'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key00; border: 1px solid #979797' },
         { content: ['x'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1), style: 'grid-area: keyX; border: 1px solid #979797' },
         { content: ['C'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: () => '0', style: 'grid-area: keyC; border: 1px solid #979797' },
-        { content: [''], classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: Enter; border: 1px solid #979797; background-color: #eeeeee' }
+        { content: ['&crarr;'], classes: 'key-number white', type: 'enter', action: () => null, style: 'grid-area: Enter; border: 1px solid #979797; background-color: #eeeeee' }
       ],
       listItems: [
         [
@@ -390,6 +399,18 @@
     }
   }
 
+  .function {
+    ::v-deep .g-select .g-menu--activator .g-tf {
+      border: 1px solid #ced4da !important;
+    }
+  }
+
+  .quick-cash-active {
+    border: 3px solid #1271FF !important;
+    background-color: #EFEFEF !important;
+    color: #000000 !important;
+  }
+
   ::v-deep .g-badge {
     background-color: #1271FF !important;
     width: 12px;
@@ -400,6 +421,12 @@
     .g-icon {
       font-size: 10px !important;
       font-weight: bold;
+    }
+  }
+
+  .function-action {
+    .bs-tf-wrapper {
+      padding-right: 23px;
     }
   }
 

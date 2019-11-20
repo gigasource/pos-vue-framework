@@ -90,7 +90,7 @@
 
     <div area="menu">
       <g-btn :key="i" background-color="#fff" elevation="0" height="100%"
-             text-color="#1d1d26" v-for="(item, i) in menu">
+             text-color="#1d1d26" v-for="(item, i) in menu" :style="item.style ? item.style : ''">
         {{item.title}}
       </g-btn>
     </div>
@@ -135,13 +135,13 @@
       <g-btn height="100%" outlined>Discount</g-btn>
       <g-btn height="100%" outlined></g-btn>
       <g-btn height="100%" outlined>Plastic Refund</g-btn>
-      <g-btn area="btn-big" background-color="green lighten 1" height="100%" style="background: linear-gradient(41.19deg, #43A047 0%, #1DE9B6 100%);" text text-color="white">
+      <g-btn area="btn-big" background-color="green lighten 1" height="100%" text text-color="white">
         Quick Cash
       </g-btn>
-      <g-btn background-color="orange lighten 1" height="100%" style="background: linear-gradient(22.62deg, #FF6F00 0%, #FFCA28 100%);" text text-color="white">
+      <g-btn background-color="orange lighten 1" height="100%" text text-color="white">
         Save
       </g-btn>
-      <g-btn background-color="blue darken 2" height="100%" style="background: linear-gradient(22.62deg, #6200EA 0%, #1976D2 100%);" text>
+      <g-btn background-color="blue darken 2" height="100%" text>
         <router-link to="/payment">
           <span class="text-white">Pay</span>
         </router-link>
@@ -332,7 +332,7 @@
       ],
       menuSelected: null,
       menu: [
-        { title: 'Favorite' },
+        { title: 'Favorite', style: 'background-color: #2979FF; color: #ffffff' },
         { title: 'Drink' },
         { title: 'Sport' },
         { title: 'Material' },
