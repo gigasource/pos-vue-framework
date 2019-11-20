@@ -44,7 +44,7 @@
       })
 
       const genNode = function ({ node, text, childrenVNodes, state, path }) {
-        const icon = node.icon && <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}>{node.icon}</g-icon>
+        const icon = node.icon && <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]} svg={node.svgIcon}>{node.icon}</g-icon>
         if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path+'.'))) {
           state.collapse = true
         }
@@ -67,8 +67,10 @@
               if (childrenVNodes) {
                 state.collapse = !state.collapse;
                 openPath.value = path
-              } else
-              	activePath.value = path;
+              } else {
+                activePath.value = path;
+                node.href && context.root.$router && context.root.$router.currentRoute.path !== node.href && context.root.$router.push(node.href);
+							}
             }
           },
         }
@@ -144,6 +146,7 @@
 
 	li {
 		padding: 0;
+		line-height: 0;
 	}
 
 	.g-treeview {
@@ -151,9 +154,9 @@
 			display: flex;
 			align-items: center;
 			contain: layout;
-			margin-right: 8px;
 			transition: none;
 			color: rgba(0, 0, 0, .87);
+			margin-right: 8px;
 
 			&:not(.g-treeview-subheader):hover {
 				background: rgba(0, 0, 0, 0.035);
@@ -168,18 +171,22 @@
 		&-icon {
 			margin: 12px 16px;
 			font-size: 20px !important;
+			width: 20px !important;
+			height: 20px !important;
 			color: rgba(0, 0, 0, .54);
 
 			&__small {
 				font-size: 12px !important;
-				margin: 16px 16px 16px 20px;
+				width: 12px !important;
+				height: 12px !important;
+				margin: 16px 20px;
 			}
 		}
 
 		&-title {
-			font-size: 14px;
+			font-size: 16px;
 			line-height: 1.75;
-			flex: 1 1 100%;
+			flex: 1 1 0;
 			white-space: nowrap;
 			text-overflow: ellipsis;
 		}
