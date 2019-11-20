@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { reactive, computed } from '@vue/composition-api';
+  import { reactive, computed, watch } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn'
 
 
@@ -15,21 +15,18 @@
     },
     setup(props, context) {
       const _state = reactive({ selectedIndex: 0 })
+      watch(() => props.dataSrc, () => _state.selectedIndex = 0, { flush: 'pre' })
+
       const cptTotalPages = computed(() => {
-        console.log('re cpt total pages')
         return Math.floor((props.dataSrc.length + props.itemsPerPage - 1) / props.itemsPerPage)
       })
-
-      function getPageDataFn(pageIndex) {
-        return props.dataSrc.slice(pageIndex * props.itemsPerPage, pageIndex * props.itemsPerPage + props.itemsPerPage)
-      }
 
       const cptPages = computed(() => {
         const _pages = []
         for (let i = 0; i < cptTotalPages.value; ++i) {
           _pages.push({
             index: i,
-            items: getPageDataFn(i),
+            items: props.dataSrc.slice(i * props.itemsPerPage, i * props.itemsPerPage + props.itemsPerPage),
             select: () => _state.selectedIndex = i
           })
         }
@@ -68,7 +65,7 @@
         return (
             <div>
               <div class="items">
-                {_.map(cptPages.value[_state.selectedIndex].items, _renderItems)}
+                { cptPages.value.length == 0 ? null : _.map(cptPages.value[_state.selectedIndex].items, _renderItems)}
               </div>
               <div class="page-indexes">
                 <g-btn

@@ -26,6 +26,8 @@
         } else {
           _.each(state.selectedCategories, category => icons.push(...category.icons))
         }
+        icons = _.uniqBy(icons, icon => icon.name)
+        console.log(icons.length)
         return icons
       })
 
@@ -69,7 +71,7 @@
       }
 
       function renderCategoryName(category) {
-        return (
+        return ( category.icons.length == 0 ? null :
             <span class={getCategoryNameClass(category)}
                   vOn:click={() => addRemoveCategory(category)}>
               {category.name}
@@ -82,6 +84,7 @@
         return <span class="icon" key={icon.value}>
           <g-icon large>{icon.value}</g-icon>
           <div class="icon-name">{icon.name}</div>
+          <div class="">{icon.value}</div>
         </span>
       }
 
