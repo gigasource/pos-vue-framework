@@ -1,7 +1,9 @@
 import {withKnobs, text, boolean, number} from '@storybook/addon-knobs';
 import IosTab from '../IosTab';
 import GList from "../../../components/GList/GList";
-import GTabItemAnimation from "../../../components/GTabs/GTabItemAnimation";
+import GTabItemWebAnimation from "../../../components/GTabs/GTabItemWebAnimation";
+import GTabItemVueAnimation from "../../../components/GTabs/GTabItemVueAnimation";
+import GTabItem from "../../../components/GTabs/GTabItem";
 import GListCustom from '../GListCustom';
 
 export default {
@@ -10,7 +12,7 @@ export default {
 }
 
 export const tab = () => ({
-  components: {IosTab, GList, GListCustom, GTabItemAnimation},
+  components: {IosTab, GList, GListCustom, GTabItemWebAnimation, GTabItemVueAnimation, GTabItem},
   data() {
     return {
       items: [
@@ -233,10 +235,10 @@ export const tab = () => ({
       :slider-size="sliderSize"
       :slider-color="sliderColor"
       >
-      <g-tab-item-animation v-for="tabItem in items" :item="tabItem">
+      <g-tab-item-web-animation v-for="tabItem in items" :item="tabItem">
         <g-list-custom :items="tabItem.list" :subheader="tabItem.subheader">
         </g-list-custom>
-      </g-tab-item-animation>
+      </g-tab-item-web-animation>
     </ios-tab>
   `,
 });

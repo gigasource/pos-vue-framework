@@ -56,9 +56,7 @@
           },
           scopedSlots: {
             tab: ({item, index}) => (
-                <transition>
                   <g-tab item={item} key={index} >{item.title}</g-tab>
-                </transition>
             )
           }
         }
