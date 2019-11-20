@@ -1,7 +1,12 @@
 <template>
   <div class="bs-tf-wrapper" :class="wrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
     <label class="bs-tf-label">
-      <slot name="label">{{label}}</slot>
+      <slot name="label">
+				<template v-if="required">
+					{{label}}<span style="color: red">*</span>
+				</template>
+				<template v-else>{{label}}</template>
+			</slot>
     </label>
     <div class="bs-tf-input-group">
       <div class="bs-tf-input-prepend" @click="onClickPrepend" v-if="$slots.prependContent">
@@ -41,9 +46,11 @@
 <script>
   import {ref, computed, onMounted} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GTextFieldBs',
+    components: { GIcon },
     props: {
       ...{//display props
         label: String,
@@ -51,6 +58,11 @@
         //input states
         disabled: Boolean,
         readOnly: Boolean,
+				clearable: Boolean,
+      },
+      clearIcon: {
+        type: String,
+        default: 'clear'
       },
       //rules and validation props
 			required: Boolean,
@@ -71,6 +83,7 @@
       const {internalValue} = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
+      const {isDirty} = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active')
 
       //event handler function
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput);
@@ -94,6 +107,7 @@
         internalValue,
         isValidInput,
 				isFocused,
+				isDirty,
         //calculated error
         errorMessages,
         //event listeners
