@@ -152,17 +152,18 @@
       const { onClick, onFocus, onBlur, onClearIconClick,
 				onMouseDown, onMouseUp, onChange, onKeyDown } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
 			//set legend width for label in outlined textfield
-			const legendStyles = computed(() => {
-			  if( !props.solo && props.label && (isFocused.value || internalValue.value||props.placeholder)) {
-					const margin = props.rounded ? '16px' : '5px';
-			    return {
-			      'width': 'auto',
-						'padding': '1px',
-						'margin-left': margin,
-					}
-				} else
-				  return {}
-			});
+      const legendStyles = computed(() => {
+        if( !props.solo && props.label && (isFocused.value || internalValue.value||props.placeholder)) {
+          const margin = props.rounded ? (props.filled ? '24px' : '16px') : (props.shaped ? '12px' : '5px');
+          return {
+            'width': 'auto',
+            'padding': '2px',
+            'margin-left': margin,
+            'transition': 'margin 0.4s',
+          }
+        } else
+          return {}
+      });
 			const iconColor = computed(() => {
 			  if(isLabelActive.value) {
           if (!isValidInput.value) return 'red'
