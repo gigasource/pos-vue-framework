@@ -283,7 +283,7 @@ export const GAutocompleteMultiSelectAllowDuplicate = () => ({
 // testing
 import Vue from 'vue/dist/vue.common.js'
 import GAutocomplete from "../GAutocomplete";
-import GSelect from "../GSelect";
+import GSelect from "../../GSelect/GSelect";
 
 describe('test', function () {
   it('should', function () {

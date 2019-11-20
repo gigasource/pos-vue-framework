@@ -3,20 +3,21 @@
   import GMenu from "../GMenu/GMenu"
   import {makeSelectable} from "../../mixins/groupable";
   import {reactive, ref, computed, watch} from "@vue/composition-api";
-  import {getList, getSelections} from "./GSelectFactory";
+
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
   import _ from "lodash"
   import {getLabel, getValidate} from "../GInput/GInputFactory";
-  import GSelect from "./GSelect";
+  import GSelect from "../GSelect/GSelect";
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
+  import {getList, getSelections} from "../GSelect/GSelectFactory";
 
   export default {
-    name: "GAutocomplete",
-    components: {GSelect},
+    name: "GCombobox",
+    components: {GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText},
     props: {
       //select props
       width: [String, Number],
@@ -94,14 +95,13 @@
         type: String,
       },
       value: null,
-      filter: Function,
-      noFilter: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
         searchText: '',
         fieldItem: null
       })
+
 
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeSelectable(props, context)
@@ -111,12 +111,12 @@
           return fieldItem.value.map(item => {
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
+        } else {
+          return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
         }
-        return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
 
       })
-      const options = getList(props, selectedItem, state, props.filter)
-
+      const options = getList(props, selectedItem, state)
       const lazySearch = ref('')
 
       //gen textfield
@@ -135,10 +135,9 @@
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
-
         return selections.value.map(function (item, index) {
               if (index === selections.value.length - 1) return <div
-                  style={{'color': lastItemColor.value, 'padding-right': '5px'}}>{item}</div>
+                  style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
               return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
             }
         )
@@ -162,13 +161,29 @@
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
       //textfield events
+      const inputAddSelection = () => {
+        if (state.searchText.trim().length > 0) {
+          let inputAddedItem
+          props.itemValue
+              ? inputAddedItem = {
+                [props.itemText]: state.searchText,
+                [props.itemValue]: state.searchText
+              } :
+              inputAddedItem = {
+                [props.itemText]: state.searchText
+              }
+          toggleItem(inputAddedItem)
+          setSearch()
+        }
+      }
+
       function clearSelection() {
         selectedItem.value = props.multiple ? [] : ''
         setSearch()
       }
 
       function onInputKeyDown(e) {
-        resetSelectionsDisplay()
+        setSelectionsDisplay()
         if (e.keyCode === keyCodes.down) {
           const listRef = context.refs.select.$refs.list
           listRef.$el.getElementsByClassName('g-list-item')[0].focus()
@@ -177,42 +192,41 @@
 
       function onInputClick() {
         isFocused.value = true
-        lazySearch.value ? state.searchText = '' : null
+        state.searchText = ''
       }
 
       function onInputBlur() {
         isFocused.value = false
-        resetSelectionsDisplay()
+        setSelectionsDisplay()
       }
 
-        let pressDeleteTimes = 0
-        const lastItemColor = ref('#1d1d1d')
-        const resetSelectionsDisplay = () => {
-          pressDeleteTimes = 0
-          lastItemColor.value = '#1d1d1d'
-        }
+      let pressDeleteTimes = 0
+      const deleteItemColor = ref('#1d1d1d')
+      const setSelectionsDisplay = () => {
+        pressDeleteTimes = 0
+        deleteItemColor.value = '#1d1d1d'
+      }
 
-        function onInputDelete() {
-          if (!props.multiple || props.chips) return
-          if (state.searchText) return pressDeleteTimes = 0
-          else {
-            if (pressDeleteTimes === 0) {
-              pressDeleteTimes++
-              lastItemColor.value = '#1867c0 '
-            }
-            if (pressDeleteTimes === 1) {
-              return pressDeleteTimes++
-            }
-            if (pressDeleteTimes === 2) {
-              selectedItem.value.pop()
-              return pressDeleteTimes
-            }
+      function onInputDelete() {
+        if (!props.multiple || props.chips) return
+        if (state.searchText) return pressDeleteTimes = 0
+        else {
+          if (pressDeleteTimes === 0) {
+            pressDeleteTimes++
+            deleteItemColor.value = '#1867c0 '
+          }
+          if (pressDeleteTimes === 1) {
+            return pressDeleteTimes++
+          }
+          if (pressDeleteTimes === 2) {
+            selectedItem.value.pop()
+            return pressDeleteTimes
           }
         }
+      }
 
       const tfValue = computed(() =>
-          props.multiple || props.chips || props.smallChips || props.deletableChips ? state.searchText :
-              lazySearch.value)
+          props.multiple ? state.searchText : lazySearch.value)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
@@ -253,6 +267,7 @@
                     blur: () => onInputBlur(),
                     click: toggleContent,
                     delete: onInputDelete,
+                    enter: inputAddSelection,
                     keydown: (e) => onInputKeyDown(e),
                     input: (e) => {
                       state.searchText = e
@@ -268,12 +283,16 @@
       const showOptions = ref(false)
       const setSearch = () => {
         context.root.$nextTick(() => {
-          if (!props.multiple && !props.chips) lazySearch.value = selections.value
-          state.searchText = ''
+          if (!props.multiple && !props.chips) {
+            lazySearch.value = selections.value
+            state.searchText = ''
+          } else {
+            state.searchText = ''
+          }
         })
       }
 
-      const genListProps = (showOptions, genListScopedSlots) => {
+      const genListProps = (showOptions) => {
         const onClickItem = () => {
           setSearch()
           !props.multiple ? showOptions.value = false : null
@@ -286,8 +305,8 @@
                 mandatory: props.mandatory,
                 allowDuplicates: props.allowDuplicates,
                 multiple: props.multiple,
+                inMenu:true,
                 selectable: true,
-                inMenu: true
               },
               on: {
                 'click:item': onClickItem
@@ -300,10 +319,16 @@
       }
 
 
-      function genAutocomplete() {
+      function genCombobox() {
+        const comboboxSlots = {
+          'prepend-item': () =>
+              <div vShow={options.value.length === 0}>
+                {context.slots['no-data'] && context.slots['no-data']()}
+              </div>
+        }
 
-        return <div class="g-autocomplete">
-          <g-select
+        return <div class="g-combobox">
+          <g-select ref="select"
               {...{
                 props: {
                   ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
@@ -315,15 +340,15 @@
                   genTextFieldFn: genTextFieldProps,
                   genListFn: genListProps,
                 },
+                scopedSlots: {...comboboxSlots}
               }}
-              ref="select"
           >
           </g-select>
         </div>
       }
 
       return {
-        genAutocomplete,
+        genCombobox,
         state,
         options,
         showOptions,
@@ -333,26 +358,16 @@
       }
     },
     render() {
-      return this.genAutocomplete()
+      return this.genCombobox()
     }
   }
 </script>
 <style lang="scss" scoped>
-  .g-menu--content {
-   background-color: #00b0ff;
-  }
-  .g-autocomplete {
-
-
+  .g-combobox {
     .g-select ::v-deep {
-
       .g-menu--activator {
-
         span {
           margin: 3px
-        }
-
-        .g-tf-wrapper {
         }
 
         .g-tf-append__inner {
@@ -374,8 +389,14 @@
           flex-basis: auto;
           cursor: text;
         }
+      }
+    }
 
+    .g-select__active ::v-deep {
+      .g-tf-append__inner .g-icon:last-child {
+        transform: rotateZ(180deg);
       }
     }
   }
+
 </style>
