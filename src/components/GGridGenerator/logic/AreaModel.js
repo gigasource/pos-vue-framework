@@ -31,6 +31,22 @@ export default class AreaModel {
     }
   }
 
+  toJSON() {
+    return {
+      name: this.name,
+      top: this.top,
+      left: this.left,
+      width: this.width,
+      height: this.height,
+      margin: this.margin,
+      padding: this.padding,
+      bgColor: this.bgColor,
+      alignSelf: this.alignSelf,
+      justifySelf: this.justifySelf,
+      wrapInDiv: this.wrapInDiv
+    }
+  }
+
   get right() { return this.left + this.width }
   get bottom() { return this.top + this.height }
   get visible() { return this._visible }
