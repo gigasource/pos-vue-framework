@@ -6,14 +6,16 @@ import AreaModel from './AreaModel';
 //
 export function fromJson(inputModel) {
   if (inputModel == null) {
-    // empty grid model
     return new GridModel({parent: null})
   } else {
-    if (typeof(inputModel) === 'string')
-      inputModel = JSON.parse(inputModel)
     return _parseGridModel(inputModel, null)
   }
 }
+
+export function toJSON(gridModel) {
+  return JSON.parse(toJsonStr(gridModel))
+}
+
 export function toJsonStr(gridModel) {
   return JSON.stringify(gridModel, (k, v) => {
     // skip private field

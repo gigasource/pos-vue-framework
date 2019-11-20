@@ -5,7 +5,7 @@
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
   import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName } from './logic/utils'
-  import { fromJson, toJsonStr } from './logic/modelParser'
+  import { fromJson, toJsonStr, toJSON } from './logic/modelParser'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
@@ -50,7 +50,7 @@
     components: { GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
       layout: {
-        type: [String, Object] // json string or json object
+        type: Object
       }
     },
     setup(props, context) {
@@ -736,8 +736,7 @@
       }
 
       function copyLayoutStrToClipBoard() {
-        const json = toJsonStr(state.layout)
-        copy(json)
+        copy(toJsonStr(state.layout))
       }
 
       function renderGridGeneratorOutput() {
@@ -799,7 +798,7 @@
       }
 
       function save() {
-        context.emit('json', toJsonStr(state.layout))
+        context.emit('json', toJSON(state.layout))
       }
 
       function cancel() {
