@@ -5,6 +5,7 @@ import GGridGenerator from '../GGridGenerator';
 import GEditViewInput from '../GEditViewInput'
 import GIncDecNumberInput from '../GIncDecNumberInput'
 import { createLayoutObject, createLayoutStr } from './storyHelper';
+import GGridGeneratorInput from '../GGridGeneratorInput';
 import loginLayout from './layout'
 
 //
@@ -184,4 +185,28 @@ export const layoutJsonObject = () => ({
       </g-grid-layout>
     </div>
   `
+})
+
+
+export const layoutGridGeneratorInput = () => ({
+  components: { GGridLayout, GGridGeneratorInput },
+  data() {
+    return {
+      model: { layout: undefined },
+      field: { key: 'layout' }
+    }
+  },
+  template: `
+    <div>
+      <g-grid-generator-input :model="model" :field="field"></g-grid-generator-input>
+      <g-grid-layout :layout="model[field.key]" style="height: 700px" :displayPreviewColor="true">
+        <span slot="s1" class="slot" >s1</span>
+        <span slot="s1" class="slot">s1</span>
+        <span slot="s2" class="slot">s2</span>
+        <div area="num7">7</div>
+        <div area="num7">7</div>
+        <div area="num8">8</div>
+        <div area="login">Login</div>
+      </g-grid-layout>
+    </div>`
 })

@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { fromJson, toJsonStr } from './logic/modelParser'
-  import { onMounted, onUpdated, reactive, ref } from '@vue/composition-api'
+  import { onMounted, onUpdated, reactive, ref, watch} from '@vue/composition-api'
   import GGridGenerator from './GGridGenerator';
   import GDialog from '../GDialog/GDialog'
   import GridModel from './logic/GridModel';
@@ -30,6 +30,11 @@
     setup(props, context) {
       let state = reactive({
         layout: fromJson(props.layout)
+      })
+
+      !props.editable && watch(() => props.layout, () => {
+        console.log('watch')
+        state.layout = fromJson(props.layout)
       })
 
       // a unique uid for scoped stylesheet of grid layout instance
@@ -112,32 +117,22 @@
             namedSlotVNodes[slotName] = context.slots[slotName]()
           }
         })
-
-        /*// get all vue 2.0 slots
-        return _.each(context.slots.default(), vnode => {
-          if (vnode && vnode.data && vnode.data.scopedSlots && vnode.data.scopedSlots) {
-            _.each(_.keys(vnode.data.scopedSlots), slotName => {
-              if (typeof (vnode.data.scopedSlots[slotName]) === 'function') {
-                console.log('v2', slotName)
-                namedSlotVNodes[slotName] = vnode.data.scopedSlots[slotName]()
-              }
-            })
-          }
-        })*/
       }
 
       // get named area vNodes
       function extractNamedAreaVNodes() {
         namedAreaVNodes = {}
-        return _.each(context.slots.default(), vnode => {
-          if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['area']) {
-            if (namedAreaVNodes[vnode.data.attrs['area']]) {
-              namedAreaVNodes[vnode.data.attrs['area']].push(vnode)
-            } else {
-              namedAreaVNodes[vnode.data.attrs['area']] = [vnode]
+        if (typeof(context.slots.default) === 'function') {
+          _.each(context.slots.default(), vnode => {
+            if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['area']) {
+              if (namedAreaVNodes[vnode.data.attrs['area']]) {
+                namedAreaVNodes[vnode.data.attrs['area']].push(vnode)
+              } else {
+                namedAreaVNodes[vnode.data.attrs['area']] = [vnode]
+              }
             }
-          }
-        })
+          })
+        }
       }
 
       // get pass through vNodes

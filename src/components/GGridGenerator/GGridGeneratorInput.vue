@@ -16,8 +16,6 @@
       const dialogState = reactive({ show: false })
 
       return () => {
-        console.log(props.model)
-
         return <div>
           <g-btn vOn:click={() => dialogState.show = true}>
             { props.model[props.field.key] != null ? 'Edit grid': 'Add grid' }
