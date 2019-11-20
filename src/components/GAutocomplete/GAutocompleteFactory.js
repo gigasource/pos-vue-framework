@@ -26,6 +26,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputClick() {
+    resetSelectionsDisplay(pressDeleteTimes, lastItemColor)
     isFocused.value = true
     lazySearch.value ? state.searchText = '' : null
   }
