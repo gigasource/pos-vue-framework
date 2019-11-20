@@ -23,8 +23,8 @@ input[type=text] {
   display: flex;
   align-items: center;
   cursor: text;
-  width: calc(100% - 10px);
-  margin: 16px 5px 24px;
+  width: 100%;
+  margin: 16px 0 24px 0;
   position: relative;
   color: rgba(0, 0, 0, 0.32);
 
@@ -130,7 +130,7 @@ input[type=text] {
     }
 
     &__disabled, &__readOnly {
-      color: gray;
+      color: rgba(0, 0, 0, 0.54) !important;
     }
   }
 
@@ -250,8 +250,11 @@ input[type=text] {
     display: none;
   }
 
+  .g-tf-prepend__inner ~.inputGroup .g-tf-input{
+    padding-left: 0;
+  }
   .g-tf-input {
-    padding: 8px 8px 8px 0;
+    padding: 8px;
     border-radius: 4px;
   }
 
@@ -407,9 +410,13 @@ input[type=text] {
   .g-tf-label:not(.g-tf-label__active) {
     left: 6px;
   }
+  .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active{
+    transform: translateY(-26px) translateX(-5px) scale(0.75);
+  }
+
 
   .g-tf-label__active {
-    transform: translateY(-26px) translateX(-5px) scale(0.75);
+    transform: translateY(-26px) translateX(7px) scale(0.75);
     background-color: transparent;
   }
 
@@ -823,7 +830,7 @@ input[type=text] {
     }
 
     .g-tf-label__active {
-      transform: translateY(-22px) translateX(5px) scale(0.75);
+      transform: translateY(-21px) translateX(7px) scale(0.75);
     }
 
     &.g-tf__rounded {
