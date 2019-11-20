@@ -39,7 +39,7 @@
           <g-btn :background-color="item.value" :key="index" :ripple="false" @click="toggleSelect(item)" style="margin-right: 17px; box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px;height: 38px; border: 1px solid #D2D2D2;"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
-          <g-badge overlay style="margin-right: 17px;">
+          <g-badge overlay style="margin-right: 17px;" :badge-size="12">
             <template v-slot:badge>
               <g-icon>done</g-icon>
             </template>
@@ -354,7 +354,6 @@
   ::v-deep .g-badge {
     background-color: #1271FF !important;
     width: 12px;
-    height: 12px;
     min-width: 12px;
     left: 20px;
     top: 5px;

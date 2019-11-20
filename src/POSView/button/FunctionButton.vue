@@ -1,7 +1,7 @@
 <template>
   <g-grid-layout :layout="layout" style="height: 100%">
     <div area="button-name" style="padding: 8px;">
-      <p style="margin: 5px">Button Name</p>
+      <p style="margin: 5px" class="title">Button Name</p>
       <g-text-field appendInnerIcon="mdi-keyboard" outlined style="color: #1d1d26"></g-text-field>
     </div>
     <div area="button-action">
@@ -11,7 +11,7 @@
       </g-btn>
     </div>
     <div area="function" class="pa-2">
-      <p>Functions</p>
+      <p class="title">Functions</p>
       <g-select :items="items"
                 outlined
                 v-model="selectedButton">
@@ -19,17 +19,17 @@
       </g-select>
     </div>
     <div area="function-action" class="pa-2">
-      <p>Value</p>
+      <p class="title">Value</p>
       <g-text-field label="Fill your value" outlined style="color: #1d1d26"></g-text-field>
     </div>
     <div area="color" class="pa-2">
-      <p>Color</p>
+      <p class="title">Color</p>
       <g-grid-select :grid="false" :items="buttonColors" v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
           <g-btn :background-color="item.value" :key="index" :ripple="false" @click="toggleSelect(item)" style="margin-right: 17px; box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px;height: 38px; border: 1px solid #D2D2D2;"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
-          <g-badge overlay style="margin-right: 17px;">
+          <g-badge overlay style="margin-right: 17px;" :badge-size="12">
             <template v-slot:badge>
               <g-icon>done</g-icon>
             </template>
@@ -347,10 +347,9 @@
 </script>
 
 <style lang="scss" scoped>
-  .gl-color {
-    ::v-deeep .g-row {
-      margin-top: 20px;
-    }
+  .title {
+    font-size: 13px;
+    line-height: 16px;
   }
 
   .button-chooser {
@@ -359,10 +358,15 @@
     }
   }
 
+  .color {
+    ::v-deep .g-row {
+      margin-top: 20px;
+    }
+  }
+
   ::v-deep .g-badge {
     background-color: #1271FF !important;
     width: 12px;
-    height: 12px;
     min-width: 12px;
     left: 20px;
     top: 5px;
@@ -407,6 +411,12 @@
       content: '';
       width: 1px;
       height: 100%;
+    }
+  }
+
+  .function {
+    ::v-deep .g-select .g-tf-wrapper {
+      margin: 16px 0 24px 0;
     }
   }
 

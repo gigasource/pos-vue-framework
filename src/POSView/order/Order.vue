@@ -6,7 +6,7 @@
 			</div>
 			<div area="info__right">
 				<g-avatar size="36">
-					<g-img :src="require('../../assets/order/avatar.svg')"/>
+					<g-icon svg>icon-avatar</g-icon>
 				</g-avatar>
 				<div class="pa-1" style="line-height: 16px">
 					<p class="ta-right fw-700 fs-small">Admin</p>
