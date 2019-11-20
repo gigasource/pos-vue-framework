@@ -135,6 +135,7 @@ input[type=text] {
   }
 
   &-hint {
+    display: flex;
     position: absolute;
     bottom: -22px;
     opacity: 0;

@@ -69,7 +69,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
         }
       }
 
-      errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
+      errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}`
       errorBucket.length ? isValid.value = false : isValid.value = true
       return isValid
     } else {

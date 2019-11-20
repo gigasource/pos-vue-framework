@@ -95,25 +95,7 @@ export const TextFieldShapedAndRounded = () => ({
 </g-container>
 `,
 });
-export const TextFieldCustomHint = () => ({
-  components: { GTextField, GContainer, GRow, GCol, GIcon},
-  props: {
-    label: { default: text('Input label', 'Label') },
-    placeholder: { default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-  },
-  template: `
-<g-container>
-<g-text-field :label="label" :placeholder="placeholder" outlined shaped :filled="filled" >
-<template v-slot:hint>
-<g-icon x-small>mdi-ninja</g-icon>
-<p>gsafaj</p>
-</template>
-</g-text-field>
 
-</g-container>
-`,
-});
 
 export const TextFieldDisableandReadonly = () => ({
   components: { GTextField, GContainer, GRow, GCol },
@@ -372,7 +354,25 @@ export const TextFieldHint = () => ({
                            :persistent="persistent">
               </g-text-field>`,
 });
+export const TextFieldCustomHint = () => ({
+  components: { GTextField, GContainer, GRow, GCol, GIcon},
+  props: {
+    label: { default: text('Input label', 'Label') },
+    placeholder: { default: text('Input placeholder', '') },
+    filled: { default: boolean('filled', false) },
+  },
+  template: `
+<g-container>
+<g-text-field :label="label" :placeholder="placeholder" outlined shaped :filled="filled" >
+<template v-slot:hint>
+<g-icon small>mdi-ninja</g-icon>
+<p style="padding-left: 2px">Ninja appears when input focused</p>
+</template>
+</g-text-field>
 
+</g-container>
+`,
+});
 export const TextFieldRequired = () => ({
   components: { GTextField, GIcon },
   data() {
@@ -381,11 +381,11 @@ export const TextFieldRequired = () => ({
     }
   },
   props: {
-    hint: { default: text('hint', 'Why so serious') },
+    hint: { default: text('hint', 'Input is required!') },
     persistent: { default: boolean('persistent', false) },
     required: { default: boolean('required', true) },
   },
-  template: `<g-text-field label="Hint"
+  template: `<g-text-field label="Label"
 :required="required"
                            v-model="text"
                            :hint="hint"
