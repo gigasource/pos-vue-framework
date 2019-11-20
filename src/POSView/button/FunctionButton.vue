@@ -1,7 +1,7 @@
 <template>
   <g-grid-layout :layout="layout" style="height: 100%">
     <div area="button-name" style="padding: 12px 10px 12px 13px;">
-      <p-o-s-text-field label="Button Name" placeholder="Fill your text">
+      <p-o-s-text-field label="Button Name" placeholder="Fill your text" v-model="buttonName">
         <template v-slot:append>
           <g-icon color="red">mdi-keyboard</g-icon>
         </template>
@@ -9,7 +9,7 @@
 
     </div>
     <div area="button-action">
-      <g-btn background-color="white" elevation="0" style="position: relative; top: 50px; left: 10px;" text-color="red">
+      <g-btn :disabled="buttonName === ''" background-color="white" elevation="0" style="position: relative; top: 50px; left: 10px;" text-color="red">
         <g-icon class="g-icon__left">mdi-minus-circle</g-icon>
         Remove button
       </g-btn>
@@ -174,6 +174,7 @@
       layout: functionButtonLayout,
       activeClass: 'color-select-active',
       selectedButton: null,
+      buttonName: '',
       number: 0,
       selectedColor: null,
       buttonGroupItems: [
