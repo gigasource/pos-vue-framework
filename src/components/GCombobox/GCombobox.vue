@@ -305,7 +305,7 @@
                 mandatory: props.mandatory,
                 allowDuplicates: props.allowDuplicates,
                 multiple: props.multiple,
-                dense: true,
+                inMenu:true,
                 selectable: true,
               },
               on: {
@@ -368,10 +368,6 @@
       .g-menu--activator {
         span {
           margin: 3px
-        }
-
-        .g-tf-wrapper {
-          margin: 16px 0px 24px 5px
         }
 
         .g-tf-append__inner {
