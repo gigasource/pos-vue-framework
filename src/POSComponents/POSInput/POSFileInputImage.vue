@@ -39,7 +39,6 @@
       height: 192px;
       width: 268px;
       margin-top: 30px;
-      //border: 1px solid #C9C9C9;
       background-image: url("./FileInputImage.png");
       background-size: contain;
       cursor: pointer;
