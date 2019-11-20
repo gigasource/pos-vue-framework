@@ -5,6 +5,7 @@ import router from './plugin/router';
 import VueRouter from 'vue-router';
 import PortalVue from 'portal-vue';
 
+require('src/style/main.scss')
 require('./plugin/waves');
 
 Vue.config.productionTip = false;
