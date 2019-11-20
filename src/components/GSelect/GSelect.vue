@@ -286,10 +286,6 @@
         width: 100%;
       }
 
-      .g-tf-append__inner {
-        transition: transform 0.4s
-      }
-
       .g-tf-input {
         display: flex;
       }
@@ -308,7 +304,8 @@
   }
 
   .g-select__active::v-deep {
-    .g-tf-append__inner .g-icon:last-child {
+    .g-icon:last-child {
+      transition: transform 0.4s;
       transform: rotateZ(180deg);
     }
   }
