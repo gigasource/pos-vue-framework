@@ -20,10 +20,6 @@
   import GSidebar from '../../components/GSidebar/GSidebar';
   import GAvatar from '../../components/GAvatar/GAvatar';
   import GImg from '../../components/GImg/GImg';
-  import packet from '../../assets/config/liefer_packet.svg';
-  import chart from '../../assets/config/bar_chart.svg';
-  import cog from '../../assets/config/cog.svg';
-  import switchMulti from '../../assets/config/switch.svg';
   import GBtn from '../../components/GBtn/GBtn';
 
   export default {
@@ -34,17 +30,17 @@
         nav: null,
         data: [
 					{
-					  title: 'Product', icon: packet,
+					  title: 'Product', icon: 'icon-liefer_packet', svgIcon: true,
 						items: [
               { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/article'},
               { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small'},
               { title: 'Layout', icon: 'radio_button_unchecked', iconType: 'small'},
 						]
 					},
-          { title: 'Reporring', icon: chart },
+          { title: 'Reporring', icon: 'icon-bar_chart', svgIcon: true },
           { title: 'User', icon: 'person', href: '/setting/user' },
           {
-            title: 'Settings', icon: cog,
+            title: 'Settings', icon: 'icon-cog', svgIcon: true ,
             items: [
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/general'},
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small'},
@@ -52,7 +48,7 @@
             ]
           },
           {
-            title: 'Advance settings', icon: switchMulti,
+            title: 'Advance settings', icon: 'icon-switch', svgIcon: true,
             items: [
               { title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/company' },
               { title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/payment' },
@@ -69,6 +65,6 @@
 
 <style scoped>
  .g-treeview-wrapper ::v-deep .g-treeview__active {
-	 background: linear-gradient(9.61deg, #6200EA 0%, #1976D2 100%) !important;
+	 background: linear-gradient(9.78deg, #3949AB 0%, #4FC3F7 100%) !important;
  }
 </style>

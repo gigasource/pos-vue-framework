@@ -19,8 +19,11 @@
 					Edit User
 				</div>
 				<div class="edit__item">
-					<p>Name</p>
-					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
+					<p-o-s-text-field label="Name">
+						<template v-slot:append>
+							<g-icon svg>icon-keyboard</g-icon>
+						</template>
+					</p-o-s-text-field>
 				</div>
 				<div class="edit__item">
 					<pos-switch label="Cancel Invoice" v-model="val"/>
@@ -44,18 +47,21 @@
 					<pos-switch label="Allow Table Takeover"/>
 				</div>
 				<div class="edit__item">
-					<p class="mt-3">Employee iButton Key</p>
-					<p class="mt-2">
+					<p class="mt-3 ml-1">Employee iButton Key</p>
+					<p class="mt-2 ml-1">
 						<span class="fs-small text-green-accent-4">Registered!</span>
-						<g-icon class="ml-1" size="20">{{require('../../../assets/config/redo.svg')}}</g-icon>
+						<g-icon class="ml-1" size="20" svg>icon-redo</g-icon>
 					</p>
 				</div>
 				<div class="edit__item">
 					<pos-switch style="max-width: 200px" dense label="Allow Item Cancellation after reactivate paid Table" v-model="val"/>
 				</div>
 				<div class="edit__item">
-					<p>Postcode</p>
-					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
+					<p-o-s-text-field label="Postcode">
+						<template v-slot:append>
+							<g-icon svg>icon-keyboard</g-icon>
+						</template>
+					</p-o-s-text-field>
 				</div>
 				<div class="edit__item">
 					<pos-switch label="Allow Move Item" v-model="val"/>
@@ -77,15 +83,15 @@
 		</g-grid-layout>
 		<g-toolbar absolute bottom color="grey lighten 3">
 			<g-btn background-color="white" text-color="#1d1d26" class="ma-1">
-				<g-icon class="mr-2">
-					{{require('../../../assets/order/back.svg')}}
+				<g-icon class="mr-2" svg>
+					icon-back
 				</g-icon>
 				Back
 			</g-btn>
 			<g-spacer/>
 			<g-btn background-color="white" text-color="#1d1d26" class="ma-1">
-				<g-icon class="mr-2">
-					{{require('../../../assets/config/trash.svg')}}
+				<g-icon class="mr-2" svg>
+					icon-trash
 				</g-icon>
 				Delete
 			</g-btn>
@@ -107,10 +113,11 @@
   import GGridLayout from '../../../components/GGridGenerator/GGridLayout';
   import GTextField from '../../../components/GInput/GTextField';
   import keyboard from '../../../assets/config/keyboard.svg';
+  import POSTextField from '../../../POSComponents/POSInput/POSTextField';
 
   export default {
     name: 'StaffPermission',
-    components: { GTextField, GGridLayout, GSpacer, GImg, GAvatar, GListItem, GList, PosSwitch, GIcon, GBtn, GToolbar },
+    components: { POSTextField, GTextField, GGridLayout, GSpacer, GImg, GAvatar, GListItem, GList, PosSwitch, GIcon, GBtn, GToolbar },
     data() {
       return {
         layout: layout,
@@ -147,18 +154,6 @@
 				border-right: 5px solid #1271ff;
 				color: #1271ff;
 			}
-		}
-	}
-
-	.g-tf-wrapper {
-		margin: 8px 0 0 0;
-
-		::v-deep .g-tf .g-tf-input {
-			padding: 4px 6px;
-		}
-
-		::v-deep .g-tf-append__inner {
-			margin-right: 8px;
 		}
 	}
 

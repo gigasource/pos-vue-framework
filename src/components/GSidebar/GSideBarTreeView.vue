@@ -44,7 +44,7 @@
       })
 
       const genNode = function ({ node, text, childrenVNodes, state, path }) {
-        const icon = node.icon && <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}>{node.icon}</g-icon>
+        const icon = node.icon && <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]} svg={node.svgIcon}>{node.icon}</g-icon>
         if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path+'.'))) {
           state.collapse = true
         }
@@ -156,6 +156,7 @@
 			contain: layout;
 			transition: none;
 			color: rgba(0, 0, 0, .87);
+			margin-right: 8px;
 
 			&:not(.g-treeview-subheader):hover {
 				background: rgba(0, 0, 0, 0.035);
@@ -164,7 +165,6 @@
 			&__rounded {
 				border-top-right-radius: 32px;
 				border-bottom-right-radius: 32px;
-				margin-right: 8px;
 			}
 		}
 
@@ -186,7 +186,7 @@
 		&-title {
 			font-size: 16px;
 			line-height: 1.75;
-			flex: 1 1 100%;
+			flex: 1 1 0;
 			white-space: nowrap;
 			text-overflow: ellipsis;
 		}

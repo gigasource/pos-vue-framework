@@ -6,7 +6,7 @@
   display: block;
   cursor: text;
   width: calc(100% - 10px);
-  margin: 4px 5px 8px;
+  margin: 4px 4px 8px;
 }
 
 .bs-tf-label {
@@ -22,6 +22,7 @@
 .bs-tf-input-prepend,
 .bs-tf-input-append {
   display: flex;
+  align-items: center;
 }
 
 .bs-tf-inner-input-group {
@@ -30,6 +31,7 @@
   padding-right: 6px;
   border: 1px solid #ced4da !important;
   color: #9E9E9E;
+  flex-basis: 100%;
 }
 
 .bs-tf-inner-input-group__active {

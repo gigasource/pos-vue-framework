@@ -22,8 +22,8 @@
 		</div>
 		<g-toolbar absolute bottom color="grey lighten 3">
 			<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
-				<g-icon class="mr-2">
-					{{require('../../../assets/order/back.svg')}}
+				<g-icon class="mr-2" svg>
+					icon-back
 				</g-icon>
 				Back
 			</g-btn>

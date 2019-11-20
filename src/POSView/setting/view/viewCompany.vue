@@ -3,24 +3,36 @@
 		<div style="padding-left: 256px">
 			<div class="main">
 				<div class="main__item">
-					<p>Company Name</p>
-					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
+					<p-o-s-text-field label="Company Name">
+						<template v-slot:append>
+							<g-icon svg>icon-keyboard</g-icon>
+						</template>
+					</p-o-s-text-field>
 				</div>
 				<div class="main__item">
-					<p>Address</p>
-					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
+					<p-o-s-text-field label="Address">
+						<template v-slot:append>
+							<g-icon svg>icon-keyboard</g-icon>
+						</template>
+					</p-o-s-text-field>
 				</div>
 				<div class="main__item">
-					<p>Telephone</p>
-					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
+					<p-o-s-text-field label="Telephone">
+						<template v-slot:append>
+							<g-icon svg>icon-keyboard</g-icon>
+						</template>
+					</p-o-s-text-field>
 				</div>
 				<div class="main__item">
-					<p>Tax Number</p>
-					<g-text-field solo filled dense :appendInnerIcon="keyboardIcon"></g-text-field>
+					<p-o-s-text-field label="Tax Number">
+						<template v-slot:append>
+							<g-icon svg>icon-keyboard</g-icon>
+						</template>
+					</p-o-s-text-field>
 				</div>
 				<div class="main__item">
 					<p>Logo</p>
-					<g-file-input solo filled dense :prependInnerIcon="uploadIcon"></g-file-input>
+					<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon></g-file-input>
 				</div>
 				<div>
 					<p>Logo size</p>
@@ -34,8 +46,8 @@
 		</div>
 		<g-toolbar absolute bottom color="grey lighten 3">
 			<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
-				<g-icon class="mr-2">
-					{{require('../../../assets/order/back.svg')}}
+				<g-icon class="mr-2" svg>
+					icon-back
 				</g-icon>
 				Back
 			</g-btn>
@@ -51,14 +63,14 @@
   import GFileInput from '../../../components/GFileInput/GFileInput';
   import upload from '../../../assets/config/upload.svg';
   import keyboard from '../../../assets/config/keyboard.svg';
+  import POSTextField from '../../../POSComponents/POSInput/POSTextField';
 
   export default {
     name: 'viewCompany',
-    components: { GFileInput, GTextField, GIcon, GBtn, GToolbar },
+    components: { POSTextField, GFileInput, GTextField, GIcon, GBtn, GToolbar },
     data() {
       return {
-        uploadIcon: upload,
-				keyboardIcon: keyboard
+        keyboardIcon: keyboard
       }
     }
   }
@@ -92,11 +104,20 @@
 			padding: 0;
 			margin: 0 0 0 16px;
 
-			img {
+			.g-icon {
 				font-size: 16px !important;
 				width: 16px !important;
 				height: 16px !important;
 			}
+		}
+
+		::v-deep fieldset {
+			border-color: #ced4da !important;
+			border-radius: 2px !important;
+		}
+
+		&:focus-within ::v-deep fieldset {
+			border-color: #1471ff !important;
 		}
 	}
 
