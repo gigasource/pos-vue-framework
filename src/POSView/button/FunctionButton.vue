@@ -117,7 +117,7 @@
 
     <div area="main__overlay" class="menu-disabled" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
-    <div area="function-overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;" v-if="selectedButtons.length === 2"></div>
+    <div area="function-overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;" v-if="selectedButtons.length === 2 || quickCashClicked"></div>
     <div area="keyboard__overlay" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
     <g-number-keyboard :items="numpad_1" @submit="dialogProductSearch = true" area="keyboard" v-model="number">
