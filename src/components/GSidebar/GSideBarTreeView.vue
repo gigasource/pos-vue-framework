@@ -147,6 +147,7 @@
 
 	li {
 		padding: 0;
+		line-height: 0;
 	}
 
 	.g-treeview {
@@ -171,16 +172,20 @@
 		&-icon {
 			margin: 12px 16px;
 			font-size: 20px !important;
+			width: 20px !important;
+			height: 20px !important;
 			color: rgba(0, 0, 0, .54);
 
 			&__small {
 				font-size: 12px !important;
-				margin: 16px 16px 16px 20px;
+				width: 12px !important;
+				height: 12px !important;
+				margin: 16px 20px;
 			}
 		}
 
 		&-title {
-			font-size: 14px;
+			font-size: 16px;
 			line-height: 1.75;
 			flex: 1 1 100%;
 			white-space: nowrap;

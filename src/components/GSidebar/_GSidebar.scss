@@ -120,4 +120,38 @@
       }
     }
   }
+
+  &__small {
+    width: 220px;
+    max-width: 220px;
+
+    ::v-deep .g-treeview-icon {
+      margin: 8px 12px;
+
+      &__small {
+        margin: 12px 16px;
+      }
+    }
+
+    ::v-deep .g-treeview-title {
+      font-size: 12px;
+    }
+  }
+
+  &__medium {
+    width: 220px;
+    max-width: 220px;
+
+    ::v-deep .g-treeview-icon {
+      margin: 10px 14px;
+
+      &__small {
+        margin: 14px 18px;
+      }
+    }
+
+    ::v-deep .g-treeview-title {
+      font-size: 14px;
+    }
+  }
 }
