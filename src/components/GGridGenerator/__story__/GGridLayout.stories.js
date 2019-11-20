@@ -22,7 +22,7 @@ export const incDecNumberInput = () => ({
     })
 
     return () => (
-        <g-inc-dec-number-input vModel={data.val} min={0} max={100}></g-inc-dec-number-input>
+        <g-inc-dec-number-input value={data.val} vOn:input={v => data.val = v} min={0} max={100}></g-inc-dec-number-input>
     )
   }
 })
@@ -42,9 +42,16 @@ export const editViewInput = () => ({
             2) Click Pen icon, now the caret will be shown on the right hand side of text<br/>
             3) Now you can edit the text, press Enter to apply new change or move mouse out of this control to cancel
           </div>
-          <g-edit-view-input
-              vModel={data.value}
-          />
+          <br/>
+          <span>{data.value}</span>
+          <div>
+            <label>Lazy mode: changed input when enter pressed</label>
+            <g-edit-view-input value={data.value} vOn:input={v => data.value = v}/>
+          </div>
+          <div>
+            <label>Reactive mode: changed input immediately when input change</label>
+            <g-edit-view-input value={data.value} vOn:input={v => data.value = v} reactive/>
+          </div>
         </div>
     )
   }
