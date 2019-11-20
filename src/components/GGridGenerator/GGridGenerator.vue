@@ -5,7 +5,7 @@
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
   import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName } from './logic/utils'
-  import { fromJson, toJsonStr } from './logic/modelParser'
+  import { fromJSON, toJSONStr, toJSON } from './logic/modelParser'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
@@ -50,12 +50,12 @@
     components: { GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
       layout: {
-        type: [String, Object] // json string or json object
+        type: Object
       }
     },
     setup(props, context) {
       // initialize layout
-      let initLayout = fromJson(props.layout)
+      let initLayout = fromJSON(props.layout)
       const state = reactive({
         layout: initLayout,
         //// view settings
@@ -104,8 +104,6 @@
       // similar to state.hoveringArea but store raw grid index base 0
       // state.hoveringArea contain modified area and only used for display hovering area
       let _selectingArea = createEmptySelectingArea()
-      // a flag enabled for select an area in grid container
-      let ctrlPressFlag = false
 
       // 1) List
       // list all grid item is grid or sub-grid (not for single item)
@@ -126,7 +124,7 @@
           <div class="grid-gen__sub-list__section">Grid</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(getGridList(state.layout), grid =>
-                <li class={getGridListItemClass(grid)}>
+                <li class={getGridListItemClass(grid)} key={grid.name}>
                   <g-edit-view-input
                       width="100%"
                       value={grid.name}
@@ -157,7 +155,7 @@
           <div class="grid-gen__sub-list__section">Area</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(state.selectedGrid.subAreas, area =>
-                <li class={getAreaListItemClass(area)}>
+                <li class={getAreaListItemClass(area)} key={area.name}>
                   <g-edit-view-input
                       width="100%"
                       value={area.name} vOn:input={v => area.name = v}
@@ -203,7 +201,7 @@
         }
         return <div style={colStyle}> {
           _.map(grid.columns, (col, id) =>
-              <div class={getColumnUnitClass(id)}>
+              <div class={getColumnUnitClass(id)} key={`${col.value}_${id}`}>
                 <input
                     value={col.value}
                     vOn:keypress={e => enterPressed(e) && grid.setColumnUnit(id, e.target.value)}
@@ -241,7 +239,7 @@
         }
         return <div style={rowUnitStyles}> {
           _.map(grid.rows, (row, id) =>
-              <div class={getRowUnitClass(id)}>
+              <div class={getRowUnitClass(id)} key={`${row.value}_${id}`}>
                 <input
                     value={row.value}
                     vOn:keypress={e => enterPressed(e) && grid.setRowUnit(id, e.target.value)}
@@ -275,7 +273,7 @@
                   if (state.viewMode) return
 
                   // check and execute if area hit
-                  if (ctrlPressFlag && areaHit(e)) return
+                  if (e.ctrlKey && areaHit(e)) return
 
                   // check and execute if area's action hit
                   if (tryToExecuteActionIfHit(e)) return
@@ -619,19 +617,19 @@
           <div class="grid-gen__settings-prop">
             <label>Align Items:</label>
             <select vOn:change={e => grid.alignItems = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={grid.alignItems === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={grid.alignItems === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align content:</label>
             <select vOn:change={e => grid.alignContent = e.target.value}>
-              {_.map(_gridContentOptions, value => <option selected={grid.alignContent === value} value={value}>{value}</option>)}
+              {_.map(_gridContentOptions, value => <option key={value} selected={grid.alignContent === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify Items:</label>
             <select vOn:change={e => grid.justifyItems = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={grid.justifyItems === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={grid.justifyItems === value} value={value}>{value}</option>)}
             </select>
           </div>,
 
@@ -639,7 +637,7 @@
           <div class="grid-gen__settings-prop">
             <label>Justify content:</label>
             <select vOn:change={e => grid.justifyContent = e.target.value}>
-              {_.map(_gridContentOptions, value => <option selected={grid.justifyContent === value} value={value}>{value}</option>)}
+              {_.map(_gridContentOptions, value => <option key={value} selected={grid.justifyContent === value} value={value}>{value}</option>)}
             </select>
           </div>,
 
@@ -695,13 +693,13 @@
           <div class="grid-gen__settings-prop">
             <label>Align self:</label>
             <select vOn:change_stop={e => gridItem.alignSelf = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={gridItem.alignSelf === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.alignSelf === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify self:</label>
             <select vOn:change_stop={e => gridItem.justifySelf = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={gridItem.justifySelf === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.justifySelf === value} value={value}>{value}</option>)}
             </select>
           </div>,
           // padding/margin
@@ -725,19 +723,18 @@
       function loadLayoutFile() {
         openFile({ multiple: false, mimeType: 'application/json' }, files => {
           files[0].text().then(content => {
-            state.layout = fromJson(content)
+            state.layout = fromJSON(JSON.parse(content))
             state.selectedGrid = state.layout
           })
         })
       }
 
       function saveLayoutFile() {
-        saveFile('layout.json', toJsonStr(state.layout), 'application/json')
+        saveFile('layout.json', toJSONStr(state.layout), 'application/json')
       }
 
       function copyLayoutStrToClipBoard() {
-        const json = toJsonStr(state.layout)
-        copy(json)
+        copy(toJSONStr(state.layout))
       }
 
       function renderGridGeneratorOutput() {
@@ -749,15 +746,10 @@
         ]
       }
 
-      // do stuff after vue rendered
       onUpdated(() => {
-        // if confirm showed, select all text of new item name input
-        // then focus on it
         if (state.showConfirmDialog) {
           context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
           context.refs[refIdNewItemNameInput].focus()
-        } else {
-          context.refs.el.focus()
         }
       })
 
@@ -766,9 +758,7 @@
       function renderGridGenerator() {
         return (
             <div class="grid-gen" ref="el" tabIndex="0"
-                 vOn:contextmenu_prevent={e => false}
-                 vOn:keydown={e => ctrlPressed(e) && (ctrlPressFlag = true)}
-                 vOn:keyup={e => ctrlPressed(e) && (ctrlPressFlag = false)}>
+                 vOn:contextmenu_prevent={e => false}>
               <div class="grid-gen__list">
                 {renderGridList()}
                 {renderAreaList()}
@@ -799,11 +789,11 @@
       }
 
       function save() {
-        context.emit('json', toJsonStr(state.layout))
+        context.emit('json', toJSON(state.layout))
       }
 
       function cancel() {
-        state.layout = fromJson(props.layout)
+        state.layout = fromJSON(props.layout)
         state.selectedGrid = state.layout
       }
 
