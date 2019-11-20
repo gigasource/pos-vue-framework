@@ -194,12 +194,11 @@
         if (vNode.length > 1) {
           // multiple slot with the same area name
           // slot with multiple children
-          vNode = <div class={cssClassName}>{vNode}</div>
+          vNode = <div key={model.name} class={cssClassName}>{vNode}</div>
         } else if (vNode.length === 1) {
           // single slot with area name or scopedSlot
-
           if (model.wrapInDiv) {
-            vNode = <div class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
+            vNode = <div key={model.name} class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
           } else if (!vNode[0].tag) {
             // do not render clear text node
             vNode = null
@@ -234,7 +233,7 @@
         } else {
           // an area which was declared in layout but not exist in grid template
           // will be rendered as a empty div
-          vNode = <div class={cssClassName}>
+          vNode = <div class={cssClassName} key={model.name}>
             {_.map(model.subAreas, processLayout)}
           </div>
         }

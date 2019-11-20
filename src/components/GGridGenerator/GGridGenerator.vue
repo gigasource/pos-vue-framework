@@ -126,7 +126,7 @@
           <div class="grid-gen__sub-list__section">Grid</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(getGridList(state.layout), grid =>
-                <li class={getGridListItemClass(grid)}>
+                <li class={getGridListItemClass(grid)} key={grid.name}>
                   <g-edit-view-input
                       width="100%"
                       value={grid.name}
@@ -157,7 +157,7 @@
           <div class="grid-gen__sub-list__section">Area</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(state.selectedGrid.subAreas, area =>
-                <li class={getAreaListItemClass(area)}>
+                <li class={getAreaListItemClass(area)} key={area.name}>
                   <g-edit-view-input
                       width="100%"
                       value={area.name} vOn:input={v => area.name = v}
@@ -203,7 +203,7 @@
         }
         return <div style={colStyle}> {
           _.map(grid.columns, (col, id) =>
-              <div class={getColumnUnitClass(id)}>
+              <div class={getColumnUnitClass(id)} key={`${col.value}_${id}`}>
                 <input
                     value={col.value}
                     vOn:keypress={e => enterPressed(e) && grid.setColumnUnit(id, e.target.value)}
@@ -241,7 +241,7 @@
         }
         return <div style={rowUnitStyles}> {
           _.map(grid.rows, (row, id) =>
-              <div class={getRowUnitClass(id)}>
+              <div class={getRowUnitClass(id)} key={`${row.value}_${id}`}>
                 <input
                     value={row.value}
                     vOn:keypress={e => enterPressed(e) && grid.setRowUnit(id, e.target.value)}
@@ -619,19 +619,19 @@
           <div class="grid-gen__settings-prop">
             <label>Align Items:</label>
             <select vOn:change={e => grid.alignItems = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={grid.alignItems === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={grid.alignItems === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align content:</label>
             <select vOn:change={e => grid.alignContent = e.target.value}>
-              {_.map(_gridContentOptions, value => <option selected={grid.alignContent === value} value={value}>{value}</option>)}
+              {_.map(_gridContentOptions, value => <option key={value} selected={grid.alignContent === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify Items:</label>
             <select vOn:change={e => grid.justifyItems = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={grid.justifyItems === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={grid.justifyItems === value} value={value}>{value}</option>)}
             </select>
           </div>,
 
@@ -639,7 +639,7 @@
           <div class="grid-gen__settings-prop">
             <label>Justify content:</label>
             <select vOn:change={e => grid.justifyContent = e.target.value}>
-              {_.map(_gridContentOptions, value => <option selected={grid.justifyContent === value} value={value}>{value}</option>)}
+              {_.map(_gridContentOptions, value => <option key={value} selected={grid.justifyContent === value} value={value}>{value}</option>)}
             </select>
           </div>,
 
@@ -695,13 +695,13 @@
           <div class="grid-gen__settings-prop">
             <label>Align self:</label>
             <select vOn:change_stop={e => gridItem.alignSelf = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={gridItem.alignSelf === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.alignSelf === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify self:</label>
             <select vOn:change_stop={e => gridItem.justifySelf = e.target.value}>
-              {_.map(_gridItemOptions, value => <option selected={gridItem.justifySelf === value} value={value}>{value}</option>)}
+              {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.justifySelf === value} value={value}>{value}</option>)}
             </select>
           </div>,
           // padding/margin
