@@ -95,6 +95,26 @@ export const TextFieldShapedAndRounded = () => ({
 </g-container>
 `,
 });
+export const TextFieldCustomHint = () => ({
+  components: { GTextField, GContainer, GRow, GCol, GIcon},
+  props: {
+    label: { default: text('Input label', 'Label') },
+    placeholder: { default: text('Input placeholder', '') },
+    filled: { default: boolean('filled', false) },
+  },
+  template: `
+<g-container>
+<g-text-field :label="label" :placeholder="placeholder" outlined shaped :filled="filled" >
+<template v-slot:hint>
+<g-icon x-small>mdi-ninja</g-icon>
+<p>gsafaj</p>
+</template>
+</g-text-field>
+
+</g-container>
+`,
+});
+
 export const TextFieldDisableandReadonly = () => ({
   components: { GTextField, GContainer, GRow, GCol },
   template: `
@@ -348,6 +368,20 @@ export const TextFieldHint = () => ({
     persistent: { default: boolean('persistent', false) },
   },
   template: `<g-text-field label="Hint"
+                           :hint="hint"
+                           :persistent="persistent">
+              </g-text-field>`,
+});
+
+export const TextFieldRequired = () => ({
+  components: { GTextField, GIcon },
+  props: {
+    hint: { default: text('hint', 'Why so serious') },
+    persistent: { default: boolean('persistent', false) },
+    required: {default: boolean('required', true)}
+  },
+  template: `<g-text-field label="Hint"
+                           :required="required"
                            :hint="hint"
                            :persistent="persistent">
               </g-text-field>`,
