@@ -352,6 +352,20 @@ export const TextFieldHint = () => ({
                            :persistent="persistent">
               </g-text-field>`,
 });
+
+export const TextFieldRequired = () => ({
+  components: { GTextField, GIcon },
+  props: {
+    hint: { default: text('hint', 'Why so serious') },
+    persistent: { default: boolean('persistent', false) },
+    required: {default: boolean('required', true)}
+  },
+  template: `<g-text-field label="Hint"
+                           :required="required"
+                           :hint="hint"
+                           :persistent="persistent">
+              </g-text-field>`,
+});
 //todo: prefix, suffix
 
 export const TextFieldPrefixAndSuffix = () => ({

@@ -297,7 +297,10 @@ input[type=text] {
     left: calc(4% + 4px);
   }
 
-  .g-tf-hint,
+  .g-tf-hint{
+    left: 12px;
+    display: flex;
+  }
   .g-tf-error {
     left: 12px;
   }
@@ -315,7 +318,6 @@ input[type=text] {
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.87);
     border-radius: 4px;
-    padding: 4px 8px;
     transition: 0.2s ease-in;
     width: 100%;
   }

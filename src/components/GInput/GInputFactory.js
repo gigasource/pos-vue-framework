@@ -53,11 +53,14 @@ import {convertToUnit, keyCodes} from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
+  const rules = computed(() =>{
+    return props.required ? props.rules.shift(value => !!value || 'Required!') : props.rules
+  })
   function validate(value) {
     const errorBucket = []
-    if (props.rules) {
-      for (let i = 0; i < props.rules.length; i++) {
-        const rule = props.rules[i]
+    if (rules) {
+      for (let i = 0; i < rules.length; i++) {
+        const rule = rules[i]
         const validatedValue = typeof rule === 'function' ? rule(value) : rule
         if (typeof validatedValue == 'string') {
           errorBucket.push(validatedValue)

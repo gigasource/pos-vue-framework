@@ -59,7 +59,7 @@
 <style scoped lang="scss">
   .g-inc-dec-number {
     border: 1px solid #757575;
-    display: inline-flex;
+    display: flex;
     justify-content: stretch;
 
     &>span {
@@ -81,6 +81,7 @@
       padding: 0 5px;
       width: 40px;
       height: 20px;
+      flex: 1;
     }
   }
 </style>

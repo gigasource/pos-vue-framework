@@ -99,7 +99,6 @@
         return <ul class="g-treeview-wrapper">{childrenVNodes}</ul>
       }
 
-      const cptExpandLevel = computed(() => props.expandLevel)
       const { treeStates, genTree } = GTreeFactory({
         genNode,
         genWrapper,
@@ -107,7 +106,7 @@
         data: props.data,
         itemText,
         itemChildren: props.itemChildren,
-        cptExpandLevel
+        expandLevel: props.expandLevel
       })
 
       return { treeStates, genTree }
