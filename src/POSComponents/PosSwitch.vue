@@ -1,7 +1,7 @@
 <template>
 	<div class="g-switch-wrapper" :class="containerClasses">
 		<slot name="label">
-			<p class="g-switch-label">{{label}}</p>
+			<p v-if="label" class="g-switch-label">{{label}}</p>
 		</slot>
 		<div class="g-switch-container" @click.prevent="toggle">
 			<input type="checkbox">

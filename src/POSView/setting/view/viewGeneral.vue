@@ -4,19 +4,19 @@
 			<g-simple-table>
 				<tr>
 					<td>Barcode</td>
-					<td><pos-switch v-model="model"/></td>
+					<td><g-switch v-model="model"/></td>
 				</tr>
 				<tr>
 					<td>Favorite article</td>
-					<td><pos-switch v-model="model"/></td>
+					<td><g-switch v-model="model"/></td>
 				</tr>
 				<tr>
 					<td>Virtual keyboard</td>
-					<td><pos-switch v-model="model"/></td>
+					<td><g-switch v-model="model"/></td>
 				</tr>
 				<tr>
 					<td>Cashdrawer opens automatically</td>
-					<td><pos-switch v-model="model"/></td>
+					<td><g-switch v-model="model"/></td>
 				</tr>
 			</g-simple-table>
 		</div>
@@ -36,11 +36,11 @@
   import GIcon from '../../../components/GIcon/GIcon';
   import GBtn from '../../../components/GBtn/GBtn';
   import GSimpleTable from '../../../components/GSimpleTable/GSimpleTable';
-  import PosSwitch from '../../../POSComponents/PosSwitch';
+  import GSwitch from '../../../components/GSwitch/GSwitch';
 
   export default {
     name: 'viewGeneral',
-    components: { PosSwitch, GSimpleTable, GBtn, GIcon, GToolbar },
+    components: { GSwitch, GSimpleTable, GBtn, GIcon, GToolbar },
 		data () {
        return {
          model: true,

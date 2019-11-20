@@ -30,7 +30,7 @@
         nav: null,
         data: [
 					{
-					  title: 'Product', icon: 'icon-liefer_packet', svgIcon: true,
+					  title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, badge: '3', badgeColor: '#FF9529',
 						items: [
               { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/article'},
               { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small'},
@@ -40,7 +40,7 @@
           { title: 'Reporring', icon: 'icon-bar_chart', svgIcon: true },
           { title: 'User', icon: 'person', href: '/setting/user' },
           {
-            title: 'Settings', icon: 'icon-cog', svgIcon: true ,
+            title: 'Settings', icon: 'icon-cog', svgIcon: true , badge: '3', badgeColor: '#9C24AC',
             items: [
               { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/general'},
               { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small'},
@@ -48,7 +48,7 @@
             ]
           },
           {
-            title: 'Advance settings', icon: 'icon-switch', svgIcon: true,
+            title: 'Advance settings', icon: 'icon-switch', svgIcon: true, badge: '3', badgeColor: '#FF4081',
             items: [
               { title: 'Company Info', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/company' },
               { title: 'Payment', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/payment' },
