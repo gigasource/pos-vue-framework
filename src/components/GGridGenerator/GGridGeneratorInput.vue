@@ -41,7 +41,7 @@
                   ref="gridGenerator"
                   layout={toJsonStr(props.model[props.field.key])}
                   style="flex: 1"
-                  vOn:json={json => props.model[props.field.key] = json}/>
+                  vOn:json={json => props.model[props.field.key] = JSON.parse(json)}/>
             </div>
           </g-dialog>
         </div>
