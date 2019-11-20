@@ -31,7 +31,7 @@ export const GSelectSingle = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -89,7 +89,7 @@ export const GSelectSingleWithValidate = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -168,6 +168,7 @@ export const GSelectMultiple = () => ({
       :clearable="clearable"
        multiple 
       :allow-duplicates="allowDuplicates"
+      :menuProps="{closeOnContentClick : true}"
       v-model="selected">
       </g-select>
     </div>`
@@ -325,7 +326,7 @@ export const GSelectPrependAndAppendItem = () => ({
   data() {
     return {
       items: [
-        {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},

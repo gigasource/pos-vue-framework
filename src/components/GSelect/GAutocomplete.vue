@@ -15,8 +15,8 @@
   import {keyCodes} from "../../utils/helpers";
 
   export default {
-    name: "GCombobox",
-    components: {GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText},
+    name: "GAutocomplete",
+    components: {GSelect},
     props: {
       //select props
       width: [String, Number],
@@ -94,6 +94,8 @@
         type: String,
       },
       value: null,
+      filter: Function,
+      noFilter: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -109,12 +111,12 @@
           return fieldItem.value.map(item => {
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
-        } else {
-          return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
         }
+        return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
 
       })
-      const options = getList(props, selectedItem, state)
+      const options = getList(props, selectedItem, state, props.filter)
+
       const lazySearch = ref('')
 
       //gen textfield
@@ -133,9 +135,10 @@
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
+
         return selections.value.map(function (item, index) {
               if (index === selections.value.length - 1) return <div
-                  style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
+                  style={{'color': lastItemColor.value, 'padding-right': '5px'}}>{item}</div>
               return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
             }
         )
@@ -159,29 +162,13 @@
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
       //textfield events
-      const inputAddSelection = () => {
-        if (state.searchText.trim().length > 0) {
-          let inputAddedItem
-          props.itemValue
-              ? inputAddedItem = {
-                [props.itemText]: state.searchText,
-                [props.itemValue]: state.searchText
-              } :
-              inputAddedItem = {
-                [props.itemText]: state.searchText
-              }
-          toggleItem(inputAddedItem)
-          setSearch()
-        }
-      }
-
       function clearSelection() {
         selectedItem.value = props.multiple ? [] : ''
         setSearch()
       }
 
       function onInputKeyDown(e) {
-        setSelectionsDisplay()
+        resetSelectionsDisplay()
         if (e.keyCode === keyCodes.down) {
           const listRef = context.refs.select.$refs.list
           listRef.$el.getElementsByClassName('g-list-item')[0].focus()
@@ -190,41 +177,42 @@
 
       function onInputClick() {
         isFocused.value = true
-        state.searchText = ''
+        lazySearch.value ? state.searchText = '' : null
       }
 
       function onInputBlur() {
         isFocused.value = false
-        setSelectionsDisplay()
+        resetSelectionsDisplay()
       }
 
-      let pressDeleteTimes = 0
-      const deleteItemColor = ref('#1d1d1d')
-      const setSelectionsDisplay = () => {
-        pressDeleteTimes = 0
-        deleteItemColor.value = '#1d1d1d'
-      }
+        let pressDeleteTimes = 0
+        const lastItemColor = ref('#1d1d1d')
+        const resetSelectionsDisplay = () => {
+          pressDeleteTimes = 0
+          lastItemColor.value = '#1d1d1d'
+        }
 
-      function onInputDelete() {
-        if (!props.multiple || props.chips) return
-        if (state.searchText) return pressDeleteTimes = 0
-        else {
-          if (pressDeleteTimes === 0) {
-            pressDeleteTimes++
-            deleteItemColor.value = '#1867c0 '
-          }
-          if (pressDeleteTimes === 1) {
-            return pressDeleteTimes++
-          }
-          if (pressDeleteTimes === 2) {
-            selectedItem.value.pop()
-            return pressDeleteTimes
+        function onInputDelete() {
+          if (!props.multiple || props.chips) return
+          if (state.searchText) return pressDeleteTimes = 0
+          else {
+            if (pressDeleteTimes === 0) {
+              pressDeleteTimes++
+              lastItemColor.value = '#1867c0 '
+            }
+            if (pressDeleteTimes === 1) {
+              return pressDeleteTimes++
+            }
+            if (pressDeleteTimes === 2) {
+              selectedItem.value.pop()
+              return pressDeleteTimes
+            }
           }
         }
-      }
 
       const tfValue = computed(() =>
-          props.multiple ? state.searchText : lazySearch.value)
+          props.multiple || props.chips || props.smallChips || props.deletableChips ? state.searchText :
+              lazySearch.value)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
@@ -265,7 +253,6 @@
                     blur: () => onInputBlur(),
                     click: toggleContent,
                     delete: onInputDelete,
-                    enter: inputAddSelection,
                     keydown: (e) => onInputKeyDown(e),
                     input: (e) => {
                       state.searchText = e
@@ -281,16 +268,12 @@
       const showOptions = ref(false)
       const setSearch = () => {
         context.root.$nextTick(() => {
-          if (!props.multiple && !props.chips) {
-            lazySearch.value = selections.value
-            state.searchText = ''
-          } else {
-            state.searchText = ''
-          }
+          if (!props.multiple && !props.chips) lazySearch.value = selections.value
+          state.searchText = ''
         })
       }
 
-      const genListProps = (showOptions) => {
+      const genListProps = (showOptions, genListScopedSlots) => {
         const onClickItem = () => {
           setSearch()
           !props.multiple ? showOptions.value = false : null
@@ -303,8 +286,8 @@
                 mandatory: props.mandatory,
                 allowDuplicates: props.allowDuplicates,
                 multiple: props.multiple,
-                dense: true,
                 selectable: true,
+                inMenu: true
               },
               on: {
                 'click:item': onClickItem
@@ -317,16 +300,10 @@
       }
 
 
-      function genCombobox() {
-        const comboboxSlots = {
-          'prepend-item': () =>
-              <div vShow={options.value.length === 0}>
-                {context.slots['no-data'] && context.slots['no-data']()}
-              </div>
-        }
+      function genAutocomplete() {
 
-        return <div class="g-combobox">
-          <g-select ref="select"
+        return <div class="g-autocomplete">
+          <g-select
               {...{
                 props: {
                   ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
@@ -338,15 +315,15 @@
                   genTextFieldFn: genTextFieldProps,
                   genListFn: genListProps,
                 },
-                scopedSlots: {...comboboxSlots}
               }}
+              ref="select"
           >
           </g-select>
         </div>
       }
 
       return {
-        genCombobox,
+        genAutocomplete,
         state,
         options,
         showOptions,
@@ -356,20 +333,26 @@
       }
     },
     render() {
-      return this.genCombobox()
+      return this.genAutocomplete()
     }
   }
 </script>
 <style lang="scss" scoped>
-  .g-combobox {
+  .g-menu--content {
+   background-color: #00b0ff;
+  }
+  .g-autocomplete {
+
+
     .g-select ::v-deep {
+
       .g-menu--activator {
+
         span {
           margin: 3px
         }
 
         .g-tf-wrapper {
-          margin: 16px 0px 24px 5px
         }
 
         .g-tf-append__inner {
@@ -391,14 +374,8 @@
           flex-basis: auto;
           cursor: text;
         }
-      }
-    }
 
-    .g-select__active ::v-deep {
-      .g-tf-append__inner .g-icon:last-child {
-        transform: rotateZ(180deg);
       }
     }
   }
-
 </style>
