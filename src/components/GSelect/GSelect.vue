@@ -284,11 +284,6 @@
         transition: transform 0.4s;
       }
 
-      .g-tf-wrapper {
-        margin-left: 0;
-        width: 100%;
-      }
-
       .g-tf-input {
         display: flex;
       }
