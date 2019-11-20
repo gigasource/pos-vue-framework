@@ -1,11 +1,21 @@
 // icons will be added to window.___FONT_AWESOME___ when import js file from fontawesome
 // DON'T DELETE THIS IMPORT LINE
 import _ from 'lodash'
+// font awesome
 import * as fa from '@fortawesome/fontawesome-free/js/all'
-import * as mdi from '@mdi/js/mdi'
-import * as materialDesignIcons from '../styles/materialDesignIconExport.scss'
-import { kebabCase } from '../../../utils/helpers';
 import FontAwesomeCategories from './FontAwesomeFreeCategories'
+
+// mdi
+import * as mdi from '@mdi/js/mdi'
+import mdiCategories from './mdiCategories'
+
+// mddx
+import MDDXCategories from './MDDXFontCategories'
+import * as materialDesignIcons from '../styles/materialDesignIconExport.scss'
+
+import { kebabCase } from '../../../utils/helpers';
+
+const ignoreNullIcon = v => v != null
 
 // TODO:
 // - icon missing
@@ -97,7 +107,7 @@ function _getFontAweSomeIconSource() {
       icons: _.filter(_.map(category.icons, ico => _.has(iconSrc, ico) ? {
         name: ico,
         value: `${type} fa-${ico}`
-      }: null ), ico => ico != null)
+      }: null ), ignoreNullIcon)
     }))
   }
 
@@ -133,39 +143,46 @@ function _getFontAweSomeIconSource() {
   ]
 }
 
+
+
 function _getFontMDIIconSource() {
+  function _getFontMDIIconCategories() {
+    // create kebabKey array of mdi icons name, remove 'mdi'
+    const supportedMdiIcons = {}
+    _.each(Object.keys(mdi), key => supportedMdiIcons[kebabCase(key.substr(3))] = true)
+    return _.map(mdiCategories, category => ({
+      name: category.name,
+      icons: _.filter(_.map(category.icons, icon => supportedMdiIcons[icon] ? ({
+        name: icon,
+        value: `mdi-${icon}`
+      }) : null), ignoreNullIcon)
+    }))
+  }
+
   // font-mdi: export as an object which contain all font as property pair: iconName = 'svg path'
   //   TODO: Split all property into category ???
   return {
     name: 'Material Design Icons',
     source: 'https://materialdesignicons.com/',
-    categories: [
-      {
-        name: 'all',
-        icons: _.map(Object.keys(mdi), key => ({
-          name: kebabCase(key.substr(3)),
-          value: kebabCase(key),
-        }))
-      }
-    ]
+    categories: _getFontMDIIconCategories()
   }
 }
 
 function _getMaterialDesignIconSource() {
-  // material design icons: gathered from _variables.scss
-  const mdi = Object.freeze(materialDesignIcons)
-  let icons = _.map(Object.keys(mdi), v => ({
-    name: v,
-    value: v,
-  }))
+  function _getMDDXCategories() {
+    // material design icons: gathered from _variables.scss
+    const mddx = Object.freeze(materialDesignIcons)
+    return _.map(MDDXCategories, category => ({
+      name: category.name,
+      icons: _.filter(_.map(category.icons, icon => _.has(mddx, icon) ? ({
+        name: icon,
+        value: icon
+      }) : null), ignoreNullIcon)
+    }))
+  }
   return {
     name: 'Material Design Icons DX',
     source: 'https://github.com/jossef/material-design-icons-iconfont',
-    categories: [
-      {
-        name: 'all',
-        icons: icons
-      }
-    ]
+    categories: _getMDDXCategories()
   }
 }

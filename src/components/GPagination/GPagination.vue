@@ -121,7 +121,6 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
     min-height: 400px;
   }
 

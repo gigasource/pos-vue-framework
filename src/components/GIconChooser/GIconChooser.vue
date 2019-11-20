@@ -26,9 +26,7 @@
         } else {
           _.each(state.selectedCategories, category => icons.push(...category.icons))
         }
-        icons = _.uniqBy(icons, icon => icon.name)
-        console.log(icons.length)
-        return icons
+        return _.uniqBy(icons, icon => icon.name)
       })
 
       // render source
@@ -84,7 +82,6 @@
         return <span class="icon" key={icon.value}>
           <g-icon large>{icon.value}</g-icon>
           <div class="icon-name">{icon.name}</div>
-          <div class="">{icon.value}</div>
         </span>
       }
 
