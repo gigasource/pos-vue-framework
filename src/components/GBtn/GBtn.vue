@@ -69,7 +69,7 @@
           directives: props.ripple ? [{ name: 'ripple', value: undefined }] : []
         };
 
-        return <button ref="btn" id="btn" {...nodeData} vOn:click={(event) => {
+        return <button {...nodeData} vOn:click={(event) => {
           context.emit('click', event);
         }}>
           {genBtnContent()}
