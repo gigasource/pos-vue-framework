@@ -55,12 +55,19 @@ export const basic = () => ({
     inline: {
       type: Boolean,
       default: boolean('Inline', false)
+    },
+    badgeSize: {
+      type: Number,
+      default: number('badgeSize', 22, {
+        min: 12,
+        max: 38
+      })
     }
   },
   template: `
-  <g-badge :overlay="overlay" :nudge-top="nudgeTop" :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
+  <g-badge :overlay="overlay" :badge-size="badgeSize" :nudge-top="nudgeTop" :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight" :left="left" :bottom="bottom" :color="color" :show-on-hover="showOnHover" :inline="inline" v-model="show" style="margin: 12px">
     <template v-slot:badge>
-      <g-icon x-small>notifications</g-icon>
+      <g-icon size="12px">notifications</g-icon>
     </template>
     <g-btn @click="show = !show">Toggle</g-btn>
   </g-badge>

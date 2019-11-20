@@ -12,10 +12,10 @@
 </template>
 
 <script>
-  import GButton from '../GButton/GButton';
+  import GBtn from '../GBtn/GBtn';
   export default {
     name: 'GKeyboard',
-    components: { GButton },
+    components: { GBtn },
     props: {
       value: String,
 			template: {
