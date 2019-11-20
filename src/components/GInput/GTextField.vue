@@ -1,7 +1,7 @@
 <template>
 	<div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
 		<div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-			<slot name="prepend-outer">
+			<slot name="prepend-outer" >
 				<g-icon :color=iconColor>{{prependIcon}}</g-icon>
 			</slot>
 		</div>
@@ -18,7 +18,6 @@
 					<div class="input">
 						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
 						<input id="input" type="text"
-									 autocomplete="off"
 									 class="g-tf-input"
 									 :style="inputErrStyles"
 									 :type="type"
@@ -39,16 +38,17 @@
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
-					<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
-					<slot name="append-inner">
+					<slot name="clearableSlot"  :iconColor="iconColor">
+							<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
+					</slot>
+
+					<slot name="appendInner" :iconColor="iconColor">
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
 				<slot name="inputMessage">
 					<div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
-					<div class="g-tf-hint" v-else :class="hintClasses">
-						<slot name="hint">{{hint}}</slot>
-					</div>
+					<div class="g-tf-hint" v-else :class="hintClasses" >{{hint}}</div>
 					<div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
 				</slot>
 			</div>
@@ -74,47 +74,59 @@
       ...{//display props
         label: String,
         placeholder: String,
-        appendIcon: String,
-        prependIcon: String,
-        prependInnerIcon: String,
-        appendInnerIcon: String,
-        clearIcon: {
+        appendIcon:{
+          type: String,
+          default: ''
+        } ,
+        prependIcon: {
+          type: String,
+          default: ''
+        } ,
+				prependInnerIcon:{
+          type: String,
+          default: ''
+        } ,
+				appendInnerIcon: {
+          type: String,
+          default: ''
+        } ,
+				clearIcon:  {
           type: String,
           default: 'clear'
         },
-        prefix: String,
-        suffix: String,
+        prefix: {
+          type: String,
+          default: ''
+        },
+        suffix: {
+          type: String,
+          default: ''
+        },
         //input states
         clearable: Boolean,
         disabled: Boolean,
         readOnly: Boolean,
       },
       //rules and validation props
-      ...{
-        required: Boolean,
-        rules: Array,
-        hint: String,
-        errorCount: {
-          type: Number,
-          default: 1
-        },
-        persistent: Boolean,
-        counter: [Number, Boolean, String],
-        validateOnBlur: Boolean,
-        error: Boolean,
-
+      ...{rules: Array,
+      hint: String,
+      errorCount: {
+        type: Number,
+        default: 1
       },
+      persistent: Boolean,
+      counter: [Number, Boolean, String],
+      validateOnBlur: Boolean,
+      error: Boolean},
 
       //styles
-      ...{
-        filled: Boolean,
-        outlined: Boolean,
-        solo: Boolean,
-        shaped: Boolean,
-        rounded: Boolean,
-        flat: Boolean,
-        dense: Boolean
-      },
+      ...{filled: Boolean,
+      outlined: Boolean,
+      solo: Boolean,
+      shaped: Boolean,
+      rounded: Boolean,
+      flat: Boolean,
+			dense: Boolean},
 
       // basic props
       value: [String, Number, Array, Object],
@@ -125,11 +137,14 @@
 
     },
     setup(props, context) {
-      //todo: icon margin
-			//todo: required
-			//todo: tfbs internalvalue
-			//todo: tfbs clearable
-      const tfWrapperClasses = getTfWrapperClasses(props);
+      const tfWrapperClasses = computed(() => (props.disabled ? {'g-tf-wrapper-disabled': true} : {
+        'g-tf__filled': props.filled,
+        'g-tf__outlined': props.outlined,
+        'g-tf__solo': props.solo,
+        'g-tf__rounded': props.rounded,
+        'g-tf__shaped': props.shaped,
+        'g-tf__flat': props.flat,
+      }));
 
       const {internalValue, rawInternalValue} = getInternalValue(props, context);
       const isValidInput = ref(true)
@@ -166,13 +181,10 @@
 				  return {}
 			});
 			const iconColor = computed(() => {
-			  if(isLabelActive.value) {
+			  if(isFocused.value) {
           if (!isValidInput.value) return 'red'
 			    return 'rgb(24, 103, 192)'
 			  }
-			})
-			const requiredRule = computed(() => {
-			  return props.required ? value => !!value || 'Required' : null
 			})
 
 
@@ -193,7 +205,7 @@
         isFocused,
         isDirty,
         isValidInput,
-        //calculated error, rule
+        //calculated error
         errorMessages,
         //event listeners
         onClick,
@@ -214,20 +226,6 @@
         legendStyles,
       }
     }
-  }
-
-  function getTfWrapperClasses(props) {
-    return computed(() => { return{
-      'g-tf-wrapper__disabled': props.disabled,
-      'g-tf__filled': props.filled,
-      'g-tf__outlined': props.outlined,
-      'g-tf__solo': props.solo,
-      'g-tf__rounded': props.rounded,
-      'g-tf__shaped': props.shaped,
-      'g-tf__flat': props.flat,
-			'g-tf__dense': props.dense,
-		}
-    })
   }
 
 </script>

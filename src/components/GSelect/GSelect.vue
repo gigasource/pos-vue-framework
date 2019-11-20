@@ -39,10 +39,7 @@
           default: false
         },
         placeholder: String,
-        label: {
-          type: String,
-          default: 'Label'
-        },
+        label: String,
         prefix: String,
         suffix: String,
         rules: Array,
@@ -85,7 +82,7 @@
       value: null,
       genTextFieldFn: Function,
       genListFn: Function,
-      selectOnly: {
+      showSearchField: {
         type: Boolean,
         default: true
       }
@@ -103,18 +100,25 @@
           return fieldItem.value.map(item => {
             return item ? (item['text'] || item['value'] || item) : ''
           })
-        } else {
-          return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
         }
-
+        return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
       })
 
       //gen SearchText
+      const searchFocused = ref(false)
+      //todo: use ref to avoid query wrong element
+      const onInputClick = () => {
+        searchFocused.value = true
+      }
+
       function genSearchTextField() {
-        if (props.searchable && props.selectOnly) {
+        if (props.searchable && props.showSearchField) {
           return <GTextField placeholder="Search"
                              vModel={state.searchText}
                              clearable
+                             ref="searchText"
+                             autofocus={searchFocused.value}
+                             vOn:keydown={(e) => onInputKeyDown(e)}
                              style="margin-bottom: 0; background-color: transparent"/>
         }
       }
@@ -123,50 +127,33 @@
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
 
-      const genListScopedSlots = {
-        listItem: ({item, isSelected, on, onSelect}) =>
-            <GListItem
-                vOn:singleItemClick={() => onSelect(item)}
-                tabindex="0"
-                isSelected={isSelected}
-                style="min-height: 48px"
-                {...{on}}
-            >
-              <GListItemContent>
-                <GListItemText>{item[props.itemText]}</GListItemText>
-              </GListItemContent>
-            </GListItem>
-
-      }
-      const genList = props.genListFn || function (showOptions, slots = genListScopedSlots) {
-        return <GList
-            {...{
-              props: {
-                items: options.value,
-                'item-title': props.itemText,
-                mandatory: props.mandatory,
-                'allow-duplicates': props.allowDuplicates,
-                multiple: props.multiple,
-                dense: true,
-                selectable: true,
-              },
-              on: {
-                'click:item': () => !props.multiple ? showOptions.value = false : null
-              },
-              scopedSlots: {
-                ...slots
-              }
-            }}
-            vModel={selectedItem.value}
-        />
-
-      }
+      const genList = (typeof props.genListFn === 'function' && props.genListFn)
+          || function (showOptions) {
+            return <GList
+                {...{
+                  props: {
+                    items: options.value,
+                    'item-title': props.itemText,
+                    mandatory: props.mandatory,
+                    'allow-duplicates': props.allowDuplicates,
+                    multiple: props.multiple,
+                    inMenu: true,
+                    selectable: true,
+                  },
+                  on: {
+                    'click:item': () => showOptions.value = props.multiple
+                  },
+                }}
+                vModel={selectedItem.value}
+                ref="list"
+            />
+          }
 
 
       //gen Text field
       function onInputKeyDown(e) {
         if (e.keyCode === keyCodes.down) {
-          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
+          context.refs.list.$el.getElementsByClassName('g-list-item')[0].focus()
         }
       }
 
@@ -206,6 +193,8 @@
             <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
+              {selections.value.length === 0 ?
+                  <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
       }
@@ -219,8 +208,8 @@
         if (props.multiple) return selections.value.join(', ')
         return selections.value
       })
-      const genTextField = props.genTextFieldFn || function (toggleContent) {
 
+      const genTextField = (typeof props.genTextFieldFn === 'function' && props.genTextFieldFn) || function (toggleContent) {
         return (
             <GTextField
                 {...{
@@ -232,7 +221,7 @@
                   },
                   on: {
                     'click:clearIcon': () => clearSelection(),
-                    click: toggleContent,
+                    click: [toggleContent, onInputClick],
                     keydown: (e) => {
                       onInputKeyDown(e)
                     },
@@ -260,7 +249,7 @@
           <template slot="default">
             {genSearchTextField()}
             {context.slots['prepend-item'] && context.slots['prepend-item']()}
-            {genList(showOptions, genListScopedSlots)}
+            {genList(showOptions)}
             {context.slots['append-item'] && context.slots['append-item']()}
           </template>
         </g-menu>
@@ -293,7 +282,7 @@
       }
 
       .g-tf-wrapper {
-        margin: 16px 0px 24px;
+        margin: 16px 0 24px 10px;
       }
 
       .g-tf-append__inner {
@@ -311,14 +300,13 @@
       input {
         flex-shrink: 1;
         flex-grow: 1;
-        flex-basis: 0%;
+        flex-basis: 0;
       }
 
     }
   }
 
   .g-select__active::v-deep {
-
     .g-tf-append__inner .g-icon:last-child {
       transform: rotateZ(180deg);
     }

@@ -1,5 +1,5 @@
 import { text, withKnobs } from '@storybook/addon-knobs'
-import GGridLayoutInput from '../GGridLayoutInput'
+import GGridGeneratorInput from '../GGridGeneratorInput'
 import { reactive } from '@vue/composition-api'
 
 export default {
@@ -8,13 +8,13 @@ export default {
 }
 
 export const index = () => ({
-  components: { GGridLayoutInput },
+  components: { GGridGeneratorInput },
   setup() {
     const state = reactive({
       model: {},
       field: { key: 'layout' }
     })
-    const render = () => <g-grid-layout-input propsModel={state.model} field={state.field}></g-grid-layout-input>
+    const render = () => <g-grid-generator-input {...{ props: { model: state.model } }} field={state.field}></g-grid-generator-input>
     return { state, render }
   },
   render() {
