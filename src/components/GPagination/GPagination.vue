@@ -42,12 +42,12 @@
           return cptPages.value
         } else {
           if (_state.selectedIndex <= half) {
-            return [...cptPages.value.slice(0, props.pageIndexesShowInView)]
+            return [...cptPages.value.slice(0, props.pageIndexesShowInView), null]
           } else if (_state.selectedIndex >= cptTotalPages.value - 1 - half) {
-            return [...cptPages.value.slice(cptTotalPages.value - props.pageIndexesShowInView, cptTotalPages.value)]
+            return [null, ...cptPages.value.slice(cptTotalPages.value - props.pageIndexesShowInView, cptTotalPages.value)]
           } else {
             const start = _state.selectedIndex - half
-            return [...cptPages.value.slice(start, _state.selectedIndex + half + 1)]
+            return [null, ...cptPages.value.slice(start, _state.selectedIndex + half + 1), null]
           }
         }
       })
@@ -72,13 +72,13 @@
               </div>
               <div class="page-indexes">
                 <g-btn
-                    rounded
+                    outlined icon
                     maxWidth={30}
                     maxHeight={30}
                     disabled={!cptCanGoBegin.value}
                     vOn:click={() => goBegin()}>|&lt;</g-btn>
                 <g-btn
-                    rounded
+                    outlined icon
                     width={30}
                     maxWidth={30}
                     maxHeight={30}
@@ -88,25 +88,26 @@
                   _.map(cptPageIndexes.value, page => page
                       ?
                       <g-btn
-                          rounded
+                          outlined icon
                           width={30}
                           maxWidth={30}
                           maxHeight={30}
-                          disabled={page.index === _state.selectedIndex}
+                          active={page.index === _state.selectedIndex}
+                          activeClass="paging__nav--active"
                           vOn:click={() => page.select()}>
                         {page.index + 1}
                       </g-btn>
-                      : <span class="paging__nav__ellipsis">..</span>
+                      : <span class="paging__nav__ellipsis"> ... </span>
                   )
                 }
                 <g-btn
-                    rounded
+                    outlined icon
                     maxWidth={30}
                     maxHeight={30}
                     disabled={!cptCanGoNext.value}
                     vOn:click={() => goNext()}>&gt;</g-btn>
                 <g-btn
-                    rounded
+                    outlined icon
                     maxWidth={30}
                     maxHeight={30}
                     disabled={!cptCanGoEnd.value}
@@ -131,6 +132,10 @@
     margin-top: 20px;
     display: flex;
     justify-content: center;
+    transition: width 2s;
+    &>* {
+      margin: 5px;
+    }
   }
 
   .paging {
@@ -142,24 +147,8 @@
       border: 1px solid #0003;
       /*transition: background-color 0.5s;*/
 
-      &:hover {
-        cursor: pointer;
-        border: 1px solid #0003;
-        background-color: #aaa;
-      }
-
-      &:focus {
-        outline: none;
-      }
-
-      &--disabled {
-        pointer-events: none;
-        color: #aaa;
-      }
-
-      &--selected {
-        background: #888;
-        color: #fff;
+      &--active {
+        background: #bbb;
       }
 
       &__ellipsis {
