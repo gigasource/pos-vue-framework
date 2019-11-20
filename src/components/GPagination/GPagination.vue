@@ -1,11 +1,12 @@
 <script>
   import _ from 'lodash'
   import { reactive, computed } from '@vue/composition-api';
+  import GBtn from '../GBtn/GBtn'
 
 
   export default {
     name: 'Paging',
-    components: { },
+    components: { GBtn },
     props: {
       dataSrc: Array,
       itemsPerPage: Number,
@@ -45,7 +46,7 @@
           } else if (_state.selectedIndex >= cptTotalPages.value - 1 - half) {
             return [...cptPages.value.slice(cptTotalPages.value - props.pageIndexesShowInView, cptTotalPages.value)]
           } else {
-            const start =  _state.selectedIndex - half
+            const start = _state.selectedIndex - half
             return [...cptPages.value.slice(start, _state.selectedIndex + half + 1)]
           }
         }
@@ -70,19 +71,47 @@
                 {_.map(cptPages.value[_state.selectedIndex].items, _renderItems)}
               </div>
               <div class="page-indexes">
-                <button class={{ 'paging__nav': true, 'paging__nav--disabled': !cptCanGoBegin.value }} vOn:click={() => goBegin()}>|&lt;</button>
-                <button class={{ 'paging__nav': true, 'paging__nav--disabled': !cptCanGoBack.value }} vOn:click={() => goBack()}>&lt;</button>
+                <g-btn
+                    rounded
+                    maxWidth={30}
+                    maxHeight={30}
+                    disabled={!cptCanGoBegin.value}
+                    vOn:click={() => goBegin()}>|&lt;</g-btn>
+                <g-btn
+                    rounded
+                    width={30}
+                    maxWidth={30}
+                    maxHeight={30}
+                    disabled={!cptCanGoBack.value}
+                    vOn:click={() => goBack()}>&lt;</g-btn>
                 {
                   _.map(cptPageIndexes.value, page => page
                       ?
-                      <button class={{ 'paging__nav': true, 'paging__nav--selected': page.index === _state.selectedIndex }} vOn:click={() => page.select()}>
+                      <g-btn
+                          rounded
+                          width={30}
+                          maxWidth={30}
+                          maxHeight={30}
+                          disabled={page.index === _state.selectedIndex}
+                          vOn:click={() => page.select()}>
                         {page.index + 1}
-                      </button>
-                      : <span class="paging__nav__ellipsis" >..</span>
+                      </g-btn>
+                      : <span class="paging__nav__ellipsis">..</span>
                   )
                 }
-                <button class={{ 'paging__nav': true, 'paging__nav--disabled': !cptCanGoNext.value }} vOn:click={() => goNext()}>&gt;</button>
-                <button class={{ 'paging__nav': true, 'paging__nav--disabled': !cptCanGoEnd.value }} vOn:click={() => goEnd()}>&gt;|</button>
+                <g-btn
+                    rounded
+                    maxWidth={30}
+                    maxHeight={30}
+                    disabled={!cptCanGoNext.value}
+                    vOn:click={() => goNext()}>&gt;</g-btn>
+                <g-btn
+                    rounded
+                    maxWidth={30}
+                    maxHeight={30}
+                    disabled={!cptCanGoEnd.value}
+                    vOn:click={() => goEnd()}>&gt;|
+                </g-btn>
               </div>
             </div>)
       }
