@@ -282,7 +282,8 @@
       }
 
       .g-tf-wrapper {
-        margin: 16px 0 24px 10px;
+        margin-left: 0;
+        width: 100%;
       }
 
       .g-tf-append__inner {
