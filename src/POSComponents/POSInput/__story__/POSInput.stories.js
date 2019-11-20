@@ -89,9 +89,25 @@ export const POSSlider = () => ({
 
 export const POSFileInput = () => ({
   components: {PosFileInput},
-  template: `<div style="margin-top: 100px">
-                 <pos-file-input label="Upload file">
-                 
+  methods: {
+    getImageSrc(file) {
+      let reader = new FileReader()
+      reader.onload = function () {
+        let url = reader.result;
+
+        let myImg = document.getElementById("img")
+        myImg.src = url;
+      }
+
+      reader.readAsDataURL(file)
+      return ''
+    }
+  },
+  template: `<div>
+                 <pos-file-input label="Upload file" accept="image/*">
+                 <template v-slot:selection="{file,index,amount}">
+                 <img id="img" :src="getImageSrc(file)"/>
+                 </template>
                  </pos-file-input>
-               </div>`
+            </div>`
 })
