@@ -160,7 +160,7 @@
                 <li class={getAreaListItemClass(area)}>
                   <g-edit-view-input
                       width="100%"
-                      vModel={area.name}
+                      value={area.name} vOn:input={v => area.name = v}
                       vOn:click={() => setSelectedArea(area)}/>
                   <span style="line-height: 16px" vOn:click={() => area.toggleVisible()}>
                     <g-icon small>{area.visible ? 'visibility' : 'visibility_off'}</g-icon>
@@ -522,7 +522,7 @@
       }
 
       function renderConfirmDialog(grid) {
-        return <g-dialog vModel={state.showConfirmDialog} width="600px" persistent>
+        return <g-dialog value={state.showConfirmDialog} width="600px" persistent>
           <div class="grid-gen__dialog__confirm" vOn:keydown={onOnConfirmDialogKeyDown}>
             <span class="grid-gen__dialog__confirm__header">Create new area</span>
             <div class="grid-gen__dialog__confirm__content">
@@ -608,11 +608,11 @@
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Column Gap(px): </label>
-            <g-inc-dec-number-input min={0} vModel={grid.columnGap}/>
+            <g-inc-dec-number-input min={0} value={grid.columnGap} vOn:input={v => grid.columnGap = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Row Gap(px): </label>
-            <g-inc-dec-number-input min={0} vModel={grid.rowGap}/>
+            <g-inc-dec-number-input min={0} value={grid.rowGap} vOn:input={v => grid.rowGap = v}/>
           </div>,
 
           // justify/align items
@@ -678,19 +678,19 @@
           <div class="grid-gen__settings-section">Area Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Top: </label>
-            <g-inc-dec-number-input min={1} vModel={gridItem.top}/>
+            <g-inc-dec-number-input min={1} value={gridItem.top} vOn:input={v => gridItem.top = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Left: </label>
-            <g-inc-dec-number-input min={1} vModel={gridItem.left}/>
+            <g-inc-dec-number-input min={1} value={gridItem.left} vOn:input={v => gridItem.left = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Width: </label>
-            <g-inc-dec-number-input min={1} vModel={gridItem.width}/>
+            <g-inc-dec-number-input min={1} value={gridItem.width} vOn:input={v => gridItem.width = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Height: </label>
-            <g-inc-dec-number-input min={1} vModel={gridItem.height}/>
+            <g-inc-dec-number-input min={1} value={gridItem.height} vOn:input={v => gridItem.height = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align self:</label>
