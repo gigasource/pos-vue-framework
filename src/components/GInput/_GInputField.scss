@@ -355,8 +355,8 @@ input[type=text] {
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.87);
     border-radius: 4px;
-    transition: 0.2s ease-in;
     width: 100%;
+    transition: none;
   }
 
   &.g-tf-wrapper__error fieldset {
@@ -370,7 +370,7 @@ input[type=text] {
     color: transparent;
     font-size: 0.75em;
     padding: 0;
-    transition: 0.8s cubic-bezier(.44, .88, .37, .28);
+    transition: none;
   }
 
   .g-tf {
