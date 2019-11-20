@@ -3,13 +3,13 @@
   import { getIconSources } from './logic/Utils'
   import { reactive, computed } from '@vue/composition-api'
   import GIcon from '../GIcon/GIcon';
-  import Paging from './Paging';
+  import GPagination from '../GPagination/GPagination';
 
-  Paging.components['GIcon'] = GIcon
+  GPagination.components['GIcon'] = GIcon
 
   export default {
     name: 'GIconChooser',
-    components: { Paging, GIcon },
+    components: { GPagination, GIcon },
     props: {},
     setup() {
       const iconSources = getIconSources()
@@ -92,13 +92,13 @@
               <div class="icon-src-tabs">{_.map(iconSources, renderIconSrc)}</div>
               <div class="icon-src-tab-content">
                 <div class="category-names">{_.map(state.selectedIconSource.categories, renderCategoryName)} </div>
-                <paging
+                <g-pagination
                     class="category-icons"
                     dataSrc={cptIcons.value}
                     itemsPerPage={30}
                     pageIndexesShowInView={7}
                     renderItems={renderIcon}>
-                </paging>
+                </g-pagination>
               </div>
             </div>
         )
