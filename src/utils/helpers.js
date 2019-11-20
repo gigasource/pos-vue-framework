@@ -183,3 +183,16 @@ export function saveFile(fileName, content, type) {
   link.download = fileName;
   link.click()
 }
+
+// Return rendered element position
+export function getElementPosition(el) {
+  const rect = el.getBoundingClientRect(),
+    offsetX = window.scrollX || document.documentElement.scrollLeft,
+    offsetY = window.scrollY || document.documentElement.scrollTop;
+  return {
+    top: rect.top + offsetY,
+    left: rect.left + offsetX,
+    bottom: rect.bottom + offsetY,
+    right: rect.right + offsetX
+  }
+}

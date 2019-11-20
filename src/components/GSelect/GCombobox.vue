@@ -42,10 +42,7 @@
           default: false
         },
         placeholder: String,
-        label: {
-          type: String,
-          default: 'Label'
-        },
+        label: String,
         prefix: String,
         suffix: String,
         appendIcon: String,
@@ -163,7 +160,7 @@
 
       //textfield events
       const inputAddSelection = () => {
-        if (state.searchText.trim().length !== 0) {
+        if (state.searchText.trim().length > 0) {
           let inputAddedItem
           props.itemValue
               ? inputAddedItem = {
@@ -184,9 +181,10 @@
       }
 
       function onInputKeyDown(e) {
-        setSelectionsDisplay
+        setSelectionsDisplay()
         if (e.keyCode === keyCodes.down) {
-          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
+          const listRef = context.refs.select.$refs.list
+          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
         }
       }
 
@@ -197,7 +195,7 @@
 
       function onInputBlur() {
         isFocused.value = false
-        setSelectionsDisplay
+        setSelectionsDisplay()
       }
 
       let pressDeleteTimes = 0
@@ -292,7 +290,7 @@
         })
       }
 
-      const genListProps = (showOptions, genListScopedSlots) => {
+      const genListProps = (showOptions) => {
         const onClickItem = () => {
           setSearch()
           !props.multiple ? showOptions.value = false : null
@@ -311,10 +309,10 @@
               on: {
                 'click:item': onClickItem
               },
-              scopedSlots: {...genListScopedSlots}
             }
             }
             vModel={selectedItem.value}
+            ref="list"
         />
       }
 
@@ -328,7 +326,7 @@
         }
 
         return <div class="g-combobox">
-          <g-select
+          <g-select ref="select"
               {...{
                 props: {
                   ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
@@ -336,7 +334,7 @@
                     'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
                     'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
                   ),
-                  selectOnly: false,
+                  showSearchField: false,
                   genTextFieldFn: genTextFieldProps,
                   genListFn: genListProps,
                 },
@@ -371,7 +369,7 @@
         }
 
         .g-tf-wrapper {
-          margin: 16px 0px 24px;
+          margin: 16px 0px 24px 5px
         }
 
         .g-tf-append__inner {

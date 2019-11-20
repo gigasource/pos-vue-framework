@@ -18,6 +18,7 @@
 					<div class="input">
 						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
 						<input id="input" type="text"
+									 :autofocus="autofocus"
 									 class="g-tf-input"
 									 :style="inputErrStyles"
 									 :type="type"
@@ -70,6 +71,7 @@
   export default {
     name: 'GTextField',
     components: { GIcon },
+		//todo: required prop
     props: {
       ...{//display props
         label: String,
@@ -118,6 +120,7 @@
       counter: [Number, Boolean, String],
       validateOnBlur: Boolean,
       error: Boolean},
+			required: Boolean,
 
       //styles
       ...{filled: Boolean,
@@ -134,6 +137,7 @@
         type: String,
         default: 'text',
       },
+			autofocus: Boolean,
 
     },
     setup(props, context) {
