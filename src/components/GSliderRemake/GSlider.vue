@@ -1,6 +1,6 @@
 <script>
     import {computed, reactive, watch} from '@vue/composition-api';
-    import {getEventHandler, helperFunctions} from "./GSlider";
+    import {getEventHandler, helperFunctions} from "./GSliderFactory";
     import {convertToUnit} from "../../utils/helpers";
     import {getCssColor} from '../../utils/colors';
 

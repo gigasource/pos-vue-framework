@@ -1,6 +1,5 @@
 <template>
-  <div class="bs-tf-wrapper" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown"
-       :class="{'g-tf--wrapper-disabled': disabled, 'g-tf--wrapper-readonly': readOnly}">
+  <div class="bs-tf-wrapper" :class="wrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
     <label class="bs-tf-label">
       <slot name="label">{{label}}</slot>
     </label>
@@ -10,25 +9,29 @@
 					<slot name="prependContent"></slot>
 				</span>
       </div>
-      <slot name="prepend" :on-click="onClickPrepend"></slot>
-      <input class="bs-tf-input"
-             type="text"
-             ref="input"
-             :placeholder="placeholder"
-             :class="{'input-error': !isValidInput,
+			<div :class="['bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}]">
+				<slot name="prepend" :on-click="onClickPrepend"></slot>
+				<input class="bs-tf-input"
+							 type="text"
+							 ref="input"
+							 :placeholder="placeholder"
+							 :class="{'input-error': !isValidInput,
                       'bs-tf-input-has-prepend': ($slots.prependContent || $slots.prepend),
                       'bs-tf-input-has-append': ($slots.appendContent || $slots.append)}"
-             v-model="internalValue"
-             @change="onChange"
-             @focus="onFocus"
-             @blur="onBlur"
-             @keydown="onKeyDown">
+							 v-model="internalValue"
+							 @change="onChange"
+							 @focus="onFocus"
+							 @blur="onBlur"
+							 @keydown="onKeyDown">
+				<slot name="append" :on-click="onClickAppend"></slot>
+			</div>
+
       <div class="bs-tf-input-append" @click="onClickAppend" v-if="$slots.appendContent">
         <span class="bs-tf-input-text">
 					<slot name="appendContent"></slot>
 				</span>
       </div>
-      <slot name="append" :on-click="onClickAppend"></slot>
+
     </div>
     <div class="bs-tf-error-message" v-if="!isValidInput">{{errorMessages}}</div>
     <div class="bs-tf-message" v-else>{{hint}}</div>
@@ -50,6 +53,7 @@
         readOnly: Boolean,
       },
       //rules and validation props
+			required: Boolean,
       rules: Array,
       hint: String,
       validateOnBlur: Boolean,
@@ -60,9 +64,11 @@
         type: String,
         default: 'text',
       },
+			small: Boolean,
+			large: Boolean,
     },
     setup: function (props, context) {
-      const internalValue = getInternalValue(props, context);
+      const {internalValue} = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
@@ -77,9 +83,17 @@
       const onClickPrepend = () => context.emit('click :prepend');
       const onClickAppend = () => context.emit('click :append');
 
+      const wrapperClasses = computed(() => ({
+				'bs-tf__small': props.small,
+				'bs-tf__large': props.large,
+        'g-tf--wrapper-disabled': props.disabled,
+				'g-tf--wrapper-readonly': props.readOnly
+			}));
+
       return {
         internalValue,
         isValidInput,
+				isFocused,
         //calculated error
         errorMessages,
         //event listeners
@@ -93,6 +107,7 @@
         onClickPrepend,
         onClickAppend,
         onClearIconClick,
+				wrapperClasses
       }
     }
   }
@@ -114,6 +129,7 @@
   }
 
   .bs-tf-input-group,
+	.bs-tf-inner-input-group,
   .bs-tf-input-prepend,
   .bs-tf-input-append {
     display: flex;
