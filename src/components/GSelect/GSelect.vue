@@ -281,10 +281,6 @@
         margin: 3px
       }
 
-      .g-tf-wrapper {
-        margin-left: 0;
-        width: 100%;
-      }
 
       .g-tf-append__inner {
         transition: transform 0.4s

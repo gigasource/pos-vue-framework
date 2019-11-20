@@ -143,32 +143,18 @@
         onInputKeyDown,
         onInputClick,
         onInputBlur,
-        onInputDelete
-      } = getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused, pressDeleteTimes, lastItemColor)
-
-      const inputAddSelection = () => {
-        if (state.searchText.trim().length > 0) {
-          let inputAddedItem
-          props.itemValue
-              ? inputAddedItem = {
-                [props.itemText]: state.searchText,
-                [props.itemValue]: state.searchText
-              } :
-              inputAddedItem = {
-                [props.itemText]: state.searchText
-              }
-          toggleItem(inputAddedItem)
-          setSearch()
-        }
-      }
-
+        onInputDelete,
+        inputAddSelection
+      } = getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused,
+          pressDeleteTimes, lastItemColor, toggleItem)
 
 
       //textfield scoped slot
       const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, lastItemColor, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection)
 
       const tfValue = computed(() =>
-          props.multiple ? state.searchText : lazySearch.value)
+          (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
+          lazySearch.value)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
@@ -201,7 +187,6 @@
 
       //gen list
       const showOptions = ref(false)
-
 
 
       function genCombobox() {
@@ -254,9 +239,11 @@
         span {
           margin: 3px
         }
+
         .g-tf-append__inner .g-icon:last-child {
           transition: transform 0.4s;
         }
+
         .input {
           display: flex;
         }

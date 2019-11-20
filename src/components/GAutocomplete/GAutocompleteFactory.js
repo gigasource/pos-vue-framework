@@ -3,7 +3,7 @@ import GIcon from "../GIcon/GIcon";
 import {keyCodes} from "../../utils/helpers";
 import GChip from "../GChip/GChip";
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused, pressDeleteTimes, lastItemColor) {
+export function getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused, pressDeleteTimes, lastItemColor, toggleItem) {
   function onChipCloseClick(index = null) {
     if (props.multiple) {
       selectedItem.value.splice(index, 1);
@@ -36,7 +36,8 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputDelete() {
-    if (!props.multiple || props.chips) return
+    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) return
+    console.log('delete')
     if (state.searchText) return pressDeleteTimes = 0
     else {
       if (pressDeleteTimes === 0) {
@@ -47,14 +48,29 @@ export function getInputEventHandlers(props, context, state, selections, selecte
         return pressDeleteTimes++
       }
       if (pressDeleteTimes === 2) {
-        selectedItem.value.pop()
+        props.multiple ? selectedItem.value.pop() : selectedItem.value = null
         return pressDeleteTimes
       }
     }
   }
+  const inputAddSelection = () => {
+    if (state.searchText.trim().length > 0) {
+      let inputAddedItem
+      props.itemValue
+          ? inputAddedItem = {
+            [props.itemText]: state.searchText,
+            [props.itemValue]: state.searchText
+          } :
+          inputAddedItem = {
+            [props.itemText]: state.searchText
+          }
+      toggleItem(inputAddedItem)
+      setSearch(props, context, lazySearch, selections, state)
+    }
+  }
 
   return {
-    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete,
+    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection
   }
 
 }
@@ -108,7 +124,7 @@ export function genTextFieldScopedSlot(props, context, selections, onChipCloseCl
 export function genList(props, options, selectedItem, showOptions, context, lazySearch, selections, state) {
   const onClickItem = () => {
     setSearch(props, context, lazySearch, selections, state)
-    !props.multiple ? showOptions.value = false : null
+    showOptions.value = props.multiple
   }
   return <GList
       {...{
@@ -139,7 +155,7 @@ export function resetSelectionsDisplay(pressDeleteTimes, lastItemColor) {
 
 export function setSearch(props, context, lazySearch, selections, state) {
   context.root.$nextTick(() => {
-    if (!props.multiple && !props.chips) lazySearch.value = selections.value
+    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) lazySearch.value = selections.value
     state.searchText = ''
   })
 }

@@ -152,7 +152,7 @@
       const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, lastItemColor, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection)
 
       const tfValue = computed(() =>
-          props.multiple || props.chips || props.smallChips || props.deletableChips ? state.searchText :
+          (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
               lazySearch.value)
 
       const genTextFieldProps = function (toggleContent) {
