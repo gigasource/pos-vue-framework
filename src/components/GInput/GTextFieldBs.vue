@@ -28,10 +28,9 @@
 							 @focus="onFocus"
 							 @blur="onBlur"
 							 @keydown="onKeyDown">
-
+				<slot name="append" :on-click="onClickAppend"></slot>
 			</div>
-			<slot name="append" :on-click="onClickAppend">
-			</slot>
+
       <div class="bs-tf-input-append" @click="onClickAppend" v-if="$slots.appendContent">
         <span class="bs-tf-input-text">
 					<slot name="appendContent"></slot>
