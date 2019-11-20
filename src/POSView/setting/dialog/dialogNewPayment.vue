@@ -24,7 +24,7 @@
 <script>
   import GDialog from '../../../components/GDialog/GDialog';
   import POSTextField from '../../../POSComponents/POSInput/POSTextField';
-  import POSFileInput from '../../../POSComponents/POSInput/POSFileInput';
+  import POSFileInput from '../../../POSComponents/POSInput/POSFileInputImage';
   import GKeyboard from '../../../components/GKeyboard/GKeyboard';
   import GToolbar from '../../../components/GToolbar/GToolbar';
   import GBtn from '../../../components/GBtn/GBtn';
