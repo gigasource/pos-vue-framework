@@ -12,10 +12,8 @@
 </template>
 
 <script>
-  import GBtn from '../GBtn/GBtn';
   export default {
     name: 'GKeyboard',
-    components: { GBtn },
     props: {
       value: String,
 			template: {

@@ -723,7 +723,7 @@
       function loadLayoutFile() {
         openFile({ multiple: false, mimeType: 'application/json' }, files => {
           files[0].text().then(content => {
-            state.layout = fromJSON(content)
+            state.layout = fromJSON(JSON.parse(content))
             state.selectedGrid = state.layout
           })
         })

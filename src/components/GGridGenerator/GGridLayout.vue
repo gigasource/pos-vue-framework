@@ -122,7 +122,7 @@
       // get named area vNodes
       function extractNamedAreaVNodes() {
         namedAreaVNodes = {}
-        if (typeof(context.slots.default) === 'function') {
+        if (context.slots.default != null) {
           _.each(context.slots.default(), vnode => {
             if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['area']) {
               if (namedAreaVNodes[vnode.data.attrs['area']]) {
@@ -146,21 +146,25 @@
         }
 
         let declaredNames = _getDeclaredArea(state.layout)
-        return _.filter(context.slots.default(), slot => {
-          if (slot == null) {
-            return false
-          } else if (!slot.data) {
-            return true
-          } else if (slot.data.scopedSlots) {
-            return false
-          } else if (!slot.data.attrs) {
-            return true
-          } else if (slot.data.attrs['area'] == null || declaredNames.indexOf(slot.data.attrs['area']) === -1) {
-            return true
-          } else {
-            return false // ?? :D ??
-          }
-        })
+        if (context.slots.default != null) {
+          return _.filter(context.slots.default(), slot => {
+            if (slot == null) {
+              return false
+            } else if (!slot.data) {
+              return true
+            } else if (slot.data.scopedSlots) {
+              return false
+            } else if (!slot.data.attrs) {
+              return true
+            } else if (slot.data.attrs['area'] == null || declaredNames.indexOf(slot.data.attrs['area']) === -1) {
+              return true
+            } else {
+              return false // ?? :D ??
+            }
+          })
+        } else {
+          return []
+        }
       }
 
       /**
