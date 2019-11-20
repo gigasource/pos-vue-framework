@@ -1,22 +1,33 @@
+<template>
+  <g-range-slider v-model="value" :min="min" :max="max" height="8px" track-fill-color="#1271FF" thumb-color="#1271FF" thumb-label="always">
+    <template v-slot:thumb-label="props">
+      <span>€{{props.value}}</span>
+      <div class="arrow_down"/>
+    </template>
+  </g-range-slider>
+</template>
+
 <script>
-  import GRangeSlider from "../../components/GRangeSlider/GRangeSlider.vue";
+  import GRangeSlider from "../../components/GRangeSlider/GRangeSlider";
 
   export default {
     name: "POSRangeSlider",
-    mixins: [GRangeSlider],
+    components: {GRangeSlider},
     props: {
-      height: {default: '8px'},
-      trackFillColor: {default: '#1271FF'},
-      thumbLabel: {default: 'always'},
-      thumbColor: {default: '#1271FF'}
-    }
+      min: [String,Number],
+      max: [String,Number],
+    },
+    data() {
+      return {
+        value: [0, 20]
+      }
+    },
   }
 </script>
 
 <style scoped lang="scss">
-  @import "../../components/GSliderRemake/_GSlider.scss";
-
   .g-slider::v-deep {
+    margin: 30px 30px 0;
 
     .g-slider-track-background {
       border-radius: 98px;
@@ -30,7 +41,6 @@
     }
 
     .g-slider-thumb-container {
-
       &:hover, &__focused {
         .g-slider-thumb:before {
           content: none;
@@ -70,6 +80,15 @@
         transform: none;
       }
     }
+  }
 
+  .arrow_down {
+    height: 0;
+    width: 0;
+    border: 4px #1271FF solid;
+    transform: rotate(-45deg);
+    position: absolute;
+    left: 24px;
+    top: 26px;
   }
 </style>
