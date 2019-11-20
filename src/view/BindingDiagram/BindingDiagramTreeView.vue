@@ -1,5 +1,6 @@
 <script>
-  import { computed } from '@vue/composition-api';
+  import { ref, computed } from '@vue/composition-api';
+  import { getInternalValue } from '../../mixins/getVModel';
   import GTreeFactory, { genTextFactory } from '../../components/GTreeViewFactory/GTreeFactory';
 	import GIcon from '../../components/GIcon/GIcon';
 
@@ -19,16 +20,31 @@
         type: Number,
         default: 0
       },
-      data: Object
+      data: [Object, Array],
+
+			value: ''
     },
-    setup(props) {
+    setup(props, context) {
       const genText = genTextFactory(props.itemText)
+
+			const activePath = getInternalValue(props, context)
+
+			const genIcon = function (state) {
+        return <g-icon size="16" vOn:click={() => state.collapse = !state.collapse}>
+						{state.collapse ? 'far fa-plus-square' : 'far fa-minus-square'}
+					</g-icon>
+			}
 
       const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
         return <li>
-          <g-icon>fas fa-folder</g-icon>
-					{genText.value(node)}
+          <span class="tree-view-prepend">
+						{childrenVNodes && genIcon(state)}
+					</span>
+					<span class={['tree-view-text', {'tree-view-text__active': path === activePath.value}]} vOn:click={() => activePath.value = path}>
+						{genText.value(node)}
+          </span>
           {!state.collapse ? childrenVNodes : null}
+
         </li>
       }
 
@@ -66,7 +82,6 @@
 	ul {
 		list-style-type: none;
 		padding-left: 20px;
-		border-left: 1px dashed #aaa;
 	}
 
 	.g-tree-view__collapse-expand {
@@ -76,6 +91,24 @@
 		span {
 			width: 5px;
 			height: 5px;
+		}
+	}
+
+	.tree-view-prepend {
+		padding-right: 4px;
+	}
+
+	.tree-view-text {
+		border-radius: 4px;
+		padding: 2px 4px;
+
+		&:not(.tree-view-text__active):hover {
+			background-color: lightgreen;
+		}
+
+		&__active {
+			background-color: forestgreen;
+			color: white;
 		}
 	}
 
