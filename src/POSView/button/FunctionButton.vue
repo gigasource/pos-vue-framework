@@ -1,7 +1,7 @@
 <template>
   <g-grid-layout :layout="layout" style="height: 100%">
-    <div area="button-name" style="padding: 5px;">
-      <p>Button Name</p>
+    <div area="button-name" style="padding: 8px;">
+      <p style="margin: 5px">Button Name</p>
       <g-text-field appendInnerIcon="mdi-keyboard" outlined style="color: #1d1d26"></g-text-field>
     </div>
     <div area="button-action">
@@ -26,14 +26,14 @@
       <p>Color</p>
       <g-grid-select :grid="false" :items="buttonColors" v-model="selectedColor">
         <template #default="{toggleSelect, item, index}">
-          <g-btn :background-color="item.value" :key="index" :ripple="false" @click="toggleSelect(item)" style="margin: 12px; box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px;height: 38px; border: 1px solid #D2D2D2;"></g-btn>
+          <g-btn :background-color="item.value" :key="index" :ripple="false" @click="toggleSelect(item)" style="margin-right: 17px; box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px;height: 38px; border: 1px solid #D2D2D2;"></g-btn>
         </template>
         <template #selected="{toggleSelect, item, index}">
-          <g-badge overlay style="margin: 12px">
+          <g-badge overlay style="margin-right: 17px;">
             <template v-slot:badge>
-              <g-icon x-small>done</g-icon>
+              <g-icon>done</g-icon>
             </template>
-            <g-btn :background-color="item.value" :class="activeClass" :ripple="false" @click="toggleSelect(item)" outlined style="box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px; height: 38px;">
+            <g-btn :background-color="item.value" :class="activeClass" :ripple="false" @click="toggleSelect(item)" style="box-shadow: none; border-radius: 50%; width: 38px; min-width: 38px; height: 38px;">
               {{item.optionTitle}}
             </g-btn>
           </g-badge>
@@ -42,14 +42,15 @@
     </div>
 
     <div area="button-chooser" class="pa-2">
-      <g-btn area="btn-1" class="button-group-item">Note</g-btn>
-      <g-btn area="btn-2" class="button-group-item">F2</g-btn>
-      <g-btn area="btn-3" class="button-group-item" disabled>F3</g-btn>
-      <g-btn area="btn-4" class="button-group-item" disabled></g-btn>
-      <g-btn area="btn-5" class="button-group-item">F1</g-btn>
-      <g-btn area="btn-6" class="button-group-item">F2</g-btn>
-      <g-btn area="btn-7" class="button-group-item">F3</g-btn>
-      <g-btn area="btn-8" class="button-group-item">F4</g-btn>
+      <g-grid-select :grid="true" :items="buttonGroupItems" multiple v-model="selectedButtons">
+        <template #default="{ toggleSelect, item, index }">
+          <g-btn :disabled="item.disabled" :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 1px solid #979797; box-shadow: none">{{item.text}}</g-btn>
+        </template>
+        <template #selected="{ toggleSelect, item, index }">
+          <g-btn :ripple="false" @click="toggleSelect(item)" style="width: 100%; height: 50px;  border: 2px solid #1271FF; box-shadow: none">{{item.text}}</g-btn>
+        </template>
+      </g-grid-select>
+
     </div>
     <div area="button-control" style="background-color: #EEEEEE; padding: 12px; position: relative; bottom: 0; display: flex;">
       <g-btn background-color="white" class="mr-2">
@@ -68,7 +69,7 @@
 
       <g-spacer/>
 
-      <g-btn background-color="#2979FF" class="mr-2" text-color="white" width="114">
+      <g-btn background-color="#2979FF" class="mr-2" text-color="white" width="114" v-if="selectedButtons.length === 2">
         Merge
       </g-btn>
     </div>
@@ -100,9 +101,9 @@
       </g-item-group>
     </div>
 
-    <div area="main__overlay" class="menu-disabled" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;">
+    <div area="main__overlay" class="menu-disabled" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
-    </div>
+    <div area="function-overlay" v-if="selectedButtons.length === 2" style="background-color: rgba(255, 255, 255, 0.54); z-index: 99;"></div>
 
     <g-number-keyboard :items="numpad_1" @submit="dialogProductSearch = true" area="keyboard" v-model="number">
       <template v-slot:screen>
@@ -121,9 +122,13 @@
       <g-btn height="100%" outlined>Discount</g-btn>
       <g-btn height="100%" outlined></g-btn>
       <g-btn height="100%" outlined>Plastic Refund</g-btn>
-      <g-btn area="btn__big" background-color="green lighten 1" height="100%" text text-color="white">Quick Cash</g-btn>
-      <g-btn background-color="orange lighten 1" height="100%" text text-color="white">Save</g-btn>
-      <g-btn background-color="blue darken 2" height="100%" text>
+      <g-btn area="btn__big" background-color="green lighten 1" height="100%" style="background: linear-gradient(41.19deg, #43A047 0%, #1DE9B6 100%);" text text-color="white">
+        Quick Cash
+      </g-btn>
+      <g-btn background-color="orange lighten 1" height="100%" style="background: linear-gradient(22.62deg, #FF6F00 0%, #FFCA28 100%);" text text-color="white">
+        Save
+      </g-btn>
+      <g-btn background-color="blue darken 2" height="100%" style="background: linear-gradient(22.62deg, #6200EA 0%, #1976D2 100%);" text>
         <router-link to="/payment">
           <span class="text-white">Pay</span>
         </router-link>
@@ -159,6 +164,17 @@
       selectedButton: null,
       number: 0,
       selectedColor: null,
+      buttonGroupItems: [
+        { area: 'btn-1', disabled: true, text: 'Note', value: 'Note' },
+        { area: 'btn-2', disabled: false, text: 'F5', value: 'F5' },
+        { area: 'btn-3', disabled: true, text: '', value: '' },
+        { area: 'btn-4', disabled: true, text: '', value: '' },
+        { area: 'btn-5', disabled: false, text: 'F1', value: 'F1' },
+        { area: 'btn-6', disabled: false, text: 'F2', value: 'F2' },
+        { area: 'btn-7', disabled: false, text: 'F3', value: 'F3' },
+        { area: 'btn-8', disabled: false, text: 'F4', value: 'F4' },
+      ],
+      selectedButtons: [],
       items: [
         { text: 'Jason Oner', subtitle: 'Jason the ant', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
@@ -331,24 +347,42 @@
 </script>
 
 <style lang="scss" scoped>
-  .button-group-item {
-    height: 100%;
+  .gl-color {
+    ::v-deeep .g-row {
+      margin-top: 20px;
+    }
   }
 
-  ::v-deep .g-badge-wrapper {
-    margin: 12px 12px 0 12px !important;
+  .button-chooser {
+    ::v-deep .g-row .g-col {
+      padding: 2.5px !important;
+    }
+  }
+
+  ::v-deep .g-badge {
+    background-color: #1271FF !important;
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    left: 20px;
+    top: 5px;
+
+    .g-icon {
+      font-size: 10px !important;
+      font-weight: bold;
+    }
   }
 
   .color-select-active {
     border: 2px solid #1271FF;
   }
-
   .button-group-item {
     border: 1px solid #979797;
     height: 80% !important;
     box-shadow: none;
     margin: 5px;
   }
+
 
   .menu {
     background-color: #90CAF9;
