@@ -5,7 +5,7 @@
       <g-text-field appendInnerIcon="mdi-keyboard" outlined style="color: #1d1d26"></g-text-field>
     </div>
     <div area="button-action">
-      <g-btn background-color="white" elevation="0" style="position: relative; top: 55px; left: 10px;" text-color="red">
+      <g-btn background-color="white" elevation="0" style="position: relative; top: 65px; left: 10px;" text-color="red">
         <g-icon class="g-icon__left">mdi-minus-circle</g-icon>
         Remove button
       </g-btn>
