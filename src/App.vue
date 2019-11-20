@@ -4,6 +4,7 @@
 			<router-link to="/keyboard-demo">Keyboard Demo</router-link>
 			<router-link to="/transition-demo">Transition</router-link>
 			<router-link to="/connector-demo">Connector Demo</router-link>
+			<router-link to="/dashboard">Dashboard</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
