@@ -14,6 +14,11 @@
       width: {
         type: String,
         default: '150px'
+      },
+      // emit input immediately
+      reactive: {
+        type: Boolean,
+        default: false
       }
     },
     setup(props, context) {
@@ -45,13 +50,14 @@
         state.showEditMode = false
         context.refs[refIdInput].blur()
       }
-      function onInputKeyPress(e) {
-        context.emit('input', e.target.value)
-        state.showEditMode = false
 
+      function vOnKeyUp(e) {
         if (enterPressed(e)) {
+          context.emit('input', e.target.value)
           context.refs[refIdInput].blur()
           state.showSwitch = false
+        } else if (props.reactive) {
+          context.emit('input', e.target.value)
         }
       }
 
@@ -81,7 +87,8 @@
               ref={refIdInput}
               style={cptViewStyle.value}
               value={props.value}
-              vOn:keypress={onInputKeyPress}/>
+              vOn:keyup={vOnKeyUp}
+          />
         </div>
       }
     }
