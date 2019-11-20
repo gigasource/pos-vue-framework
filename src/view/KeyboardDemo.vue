@@ -15,13 +15,13 @@
 <script>
   import GContainer from '../components/GLayout/GContainer';
   import GLayout from '../components/GLayout/GLayout';
-  import GButton from '../components/GButton/GButton';
+  import GBtn from '../components/GBtn/GBtn';
   import GKeyboard from '../components/GKeyboard/GKeyboard';
   import GTextField from '../components/GInput/GTextField';
 
   export default {
     name: 'Demo',
-    components: { GTextField, GKeyboard, GButton, GLayout, GContainer },
+    components: { GTextField, GKeyboard, GBtn, GLayout, GContainer },
     data() {
       return {
         text: 'asdads',

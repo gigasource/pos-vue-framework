@@ -1,4 +1,4 @@
-import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
+import {boolean, number, object, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions'
 
 //
@@ -120,6 +120,7 @@ export const GComboboxMultiSelect = () => ({
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
+    menuProps:{default: object('menuProps', {closeOnContentClick : true})},
   },
   data() {
     return {
@@ -144,6 +145,7 @@ export const GComboboxMultiSelect = () => ({
              :chips="chips"
              :smallChips="smallChips"
              :deletableChips="deletableChips"
+              :menuProps="menuProps"
              multiple 
              clearable></g-combobox>
 </div>`,

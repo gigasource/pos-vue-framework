@@ -1,7 +1,7 @@
 <template>
 	<div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
 		<div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-			<slot name="prepend-outer">
+			<slot name="prepend-outer" >
 				<g-icon :color=iconColor>{{prependIcon}}</g-icon>
 			</slot>
 		</div>
@@ -39,7 +39,10 @@
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
 				<div class="g-tf-append__inner" @click="onClickAppendInner">
-					<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
+					<slot name="clearableSlot"  :iconColor="iconColor">
+							<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
+					</slot>
+
 					<slot name="appendInner" :iconColor="iconColor">
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
@@ -125,8 +128,7 @@
 
     },
     setup(props, context) {
-      //todo: icon margin
-			//todo: tfbs clearable
+
       const tfWrapperClasses = getTfWrapperClasses(props);
 
       const {internalValue, rawInternalValue} = getInternalValue(props, context);
@@ -165,13 +167,10 @@
           return {}
       });
 			const iconColor = computed(() => {
-			  if(isLabelActive.value) {
+			  if(isFocused.value) {
           if (!isValidInput.value) return 'red'
 			    return 'rgb(24, 103, 192)'
 			  }
-			})
-			const requiredRule = computed(() => {
-			  return props.required ? value => !!value || 'Required' : null
 			})
 
 
@@ -192,7 +191,7 @@
         isFocused,
         isDirty,
         isValidInput,
-        //calculated error, rule
+        //calculated error
         errorMessages,
         //event listeners
         onClick,
