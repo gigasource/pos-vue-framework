@@ -90,7 +90,7 @@
             <td>
               <div class="result-item result-item-action" style="display: flex; justify-content: center; align-items: center;">
                 <g-btn :disabled="!item.selectedColor || !item.selectedUnit || !item.selectedAge" background-color="red" text-color="white">
-                  <g-icon style="margin-right: 8px">{{require('../../assets/home/ico-back.svg')}}</g-icon>
+                  <g-icon class="mr-2" svg>icon-back</g-icon>
                   Create new order
                 </g-btn>
               </div>

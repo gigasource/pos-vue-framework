@@ -84,16 +84,16 @@
 			<g-toolbar area="toolbar" color="#eee" elevation="0" fill-height>
 				<g-btn background-color="white" class="mr-2">
 					<router-link to="/order">
-						<g-icon class="mr-2">{{require('../../assets/order/back.svg')}}</g-icon>
+						<g-icon class="mr-2" svg>icon-back</g-icon>
 						<span style="color: rgba(0, 0, 0, 0.87)">Back</span>
 					</router-link>
 				</g-btn>
 				<g-btn background-color="white" class="mr-2">
-					<g-icon class="mr-2">{{require('../../assets/order/menu.svg')}}</g-icon>
+					<g-icon class="mr-2" svg>icon-menu</g-icon>
 					More
 				</g-btn>
 				<g-btn background-color="white" @click="dialogSavedList = true">
-					<g-icon class="mr-2">{{require('../../assets/order/cashier.svg')}}</g-icon>
+					<g-icon class="mr-2" svg>icon-cashier</g-icon>
 					Cashier drawer
 				</g-btn>
 			</g-toolbar>
@@ -117,11 +117,11 @@
 			</div>
 			<div area="main">
 				<g-btn x-large flat background-color="blue accent 3" text-color="white">
-					<g-icon>{{require('../../assets/order/cash.svg')}}</g-icon>
+					<g-icon svg>icon-cash</g-icon>
 					<span class="ml-2">Cash</span>
 				</g-btn>
 				<g-btn x-large outlined text-color="#1271ff" class="ml-3">
-					<g-icon>{{require('../../assets/order/credit_card.svg')}}</g-icon>
+					<g-icon svg>icon-credit_card</g-icon>
 					<span class="ml-2 text-black">Card</span>
 				</g-btn>
 			</div>

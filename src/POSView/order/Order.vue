@@ -57,11 +57,11 @@
 			</div>
 			<g-toolbar area="toolbar" color="#eee" elevation="0" fill-height>
 				<g-btn background-color="white" class="mr-2">
-					<g-icon class="mr-2">{{require('../../assets/order/back.svg')}}</g-icon>
+					<g-icon class="mr-2" svg>icon-back</g-icon>
 					Back
 				</g-btn>
 				<g-btn background-color="white" class="mr-2">
-					<g-icon class="mr-2">{{require('../../assets/order/menu.svg')}}</g-icon>
+					<g-icon class="mr-2" svg>icon-menu</g-icon>
 					More
 				</g-btn>
 				<g-badge overlay color="#FF4452">
@@ -69,7 +69,7 @@
 						<span>2</span>
 					</template>
 					<g-btn background-color="white" @click="dialogSavedList = true">
-						<g-icon class="mr-2">{{require('../../assets/order/folder.svg')}}</g-icon>
+						<g-icon class="mr-2" svg>icon-folder</g-icon>
 						Saved list
 					</g-btn>
 				</g-badge>
