@@ -5,7 +5,7 @@
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
   import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName } from './logic/utils'
-  import { fromJson, toJsonStr, toJSON } from './logic/modelParser'
+  import { fromJSON, toJSONStr, toJSON } from './logic/modelParser'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
@@ -55,7 +55,7 @@
     },
     setup(props, context) {
       // initialize layout
-      let initLayout = fromJson(props.layout)
+      let initLayout = fromJSON(props.layout)
       const state = reactive({
         layout: initLayout,
         //// view settings
@@ -104,8 +104,6 @@
       // similar to state.hoveringArea but store raw grid index base 0
       // state.hoveringArea contain modified area and only used for display hovering area
       let _selectingArea = createEmptySelectingArea()
-      // a flag enabled for select an area in grid container
-      let ctrlPressFlag = false
 
       // 1) List
       // list all grid item is grid or sub-grid (not for single item)
@@ -275,7 +273,7 @@
                   if (state.viewMode) return
 
                   // check and execute if area hit
-                  if (ctrlPressFlag && areaHit(e)) return
+                  if (e.ctrlKey && areaHit(e)) return
 
                   // check and execute if area's action hit
                   if (tryToExecuteActionIfHit(e)) return
@@ -725,18 +723,18 @@
       function loadLayoutFile() {
         openFile({ multiple: false, mimeType: 'application/json' }, files => {
           files[0].text().then(content => {
-            state.layout = fromJson(content)
+            state.layout = fromJSON(content)
             state.selectedGrid = state.layout
           })
         })
       }
 
       function saveLayoutFile() {
-        saveFile('layout.json', toJsonStr(state.layout), 'application/json')
+        saveFile('layout.json', toJSONStr(state.layout), 'application/json')
       }
 
       function copyLayoutStrToClipBoard() {
-        copy(toJsonStr(state.layout))
+        copy(toJSONStr(state.layout))
       }
 
       function renderGridGeneratorOutput() {
@@ -748,15 +746,10 @@
         ]
       }
 
-      // do stuff after vue rendered
       onUpdated(() => {
-        // if confirm showed, select all text of new item name input
-        // then focus on it
         if (state.showConfirmDialog) {
           context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
           context.refs[refIdNewItemNameInput].focus()
-        } else {
-          context.refs.el.focus()
         }
       })
 
@@ -765,9 +758,7 @@
       function renderGridGenerator() {
         return (
             <div class="grid-gen" ref="el" tabIndex="0"
-                 vOn:contextmenu_prevent={e => false}
-                 vOn:keydown={e => ctrlPressed(e) && (ctrlPressFlag = true)}
-                 vOn:keyup={e => ctrlPressed(e) && (ctrlPressFlag = false)}>
+                 vOn:contextmenu_prevent={e => false}>
               <div class="grid-gen__list">
                 {renderGridList()}
                 {renderAreaList()}
@@ -802,7 +793,7 @@
       }
 
       function cancel() {
-        state.layout = fromJson(props.layout)
+        state.layout = fromJSON(props.layout)
         state.selectedGrid = state.layout
       }
 

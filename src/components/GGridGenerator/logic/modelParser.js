@@ -4,7 +4,7 @@ import GridModel from './GridModel';
 import AreaModel from './AreaModel';
 
 //
-export function fromJson(inputModel) {
+export function fromJSON(inputModel) {
   if (inputModel == null) {
     return new GridModel({parent: null})
   } else {
@@ -13,20 +13,11 @@ export function fromJson(inputModel) {
 }
 
 export function toJSON(gridModel) {
-  return JSON.parse(toJsonStr(gridModel))
+  return gridModel.toJSON()
 }
 
-export function toJsonStr(gridModel) {
-  return JSON.stringify(gridModel, (k, v) => {
-    // skip private field
-    if (k.startsWith('_'))
-      return
-    // unwrap ref
-    if (k === 'rows' || k === 'columns')
-      return _.map(v, vItem => vItem.value)
-    // normal data, return directly
-    return v
-  })
+export function toJSONStr(gridModel) {
+  return JSON.stringify(gridModel.toJSON())
 }
 
 //

@@ -1,5 +1,4 @@
 <script>
-  import { toJsonStr, fromJson } from './logic/modelParser';
   import { reactive } from '@vue/composition-api';
   import GDialog from '../GDialog/GDialog'
   import GGridGenerator from './GGridGenerator'
@@ -24,16 +23,14 @@
             <div class="editor-dialog">
               <div class='editor-dialog__title-bar'>
                 <span class='editor-dialog__title-bar__title'>Grid Layout Editor</span>
-                <button vOn:click={() => {
+                <g-btn flat small vOn:click={() => {
                   context.refs.gridGenerator.save()
                   dialogState.show = false
-                }}>Save
-                </button>
-                <button vOn:click={() => {
+                }}>Save</g-btn>
+                <g-btn flat small vOn:click={() => {
                   context.refs.gridGenerator.cancel()
                   dialogState.show = false
-                }}>Cancel
-                </button>
+                }}>Cancel</g-btn>
               </div>
               <g-grid-generator
                   ref="gridGenerator"
@@ -71,21 +68,6 @@
         & > .uid {
           color: #888;
           font-weight: bold;
-        }
-      }
-
-      & > .close-btn {
-        border-radius: 2px;
-        background-color: #888;
-        color: #eee;
-
-        &:focus {
-          outline: none;
-        }
-
-        &:hover {
-          cursor: pointer;
-          background-color: #aaa;
         }
       }
     }

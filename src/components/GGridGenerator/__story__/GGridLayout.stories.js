@@ -1,10 +1,8 @@
 import { text, withKnobs, boolean } from '@storybook/addon-knobs';
 import { reactive, ref } from '@vue/composition-api'
 import GGridLayout from '../GGridLayout'
-import GGridGenerator from '../GGridGenerator';
 import GEditViewInput from '../GEditViewInput'
 import GIncDecNumberInput from '../GIncDecNumberInput'
-import { createLayoutObject, createLayoutStr } from './storyHelper';
 import GGridGeneratorInput from '../GGridGeneratorInput';
 import loginLayout from './layout'
 
@@ -71,51 +69,16 @@ export const layoutJsonObject = () => ({
       default: boolean('editable', true)
     }
   },
-  data() {
-    return {
-      abc: {
-        width: 100,
-      }
-    }
-  },
   template: `
     <div>
       <g-grid-layout :layout="layout" :passThrough="passThrough" :editable="editable" style="height: 700px" :displayPreviewColor="true">
-        
-        <span slot="s1" class="slot" :class="abc">
-          singleItemSlot
-        </span>
-        
-        <span slot="s1" class="slot" :class="abc">
-          singleItemSlot
-        </span>
-        
-        <template slot="s2" class="slot" :class="abc">
-          singleItemSlot
-        </template>
-        
-        <span slot="s3" class="slot" :class="abc">
-          Multiple template slot
-          <div>Hello slot</div>
-        </span>
-        <template slot="s4" class="slot" :class="abc">
-          Multiple template slot
-          <div>Hello slot</div>
-        </template>
-        
-        <span v-slot:s5 class="vslot">s5</span>
+        <span slot="s1" class="slot">singleItemSlot</span>
+        <span slot="s1" class="slot">singleItemSlot</span>
+        <template slot="s2" class="slot">singleItemSlot</template>
+        <span slot="s3" class="slot">Multiple template slot<div>Hello slot</div></span>
+        <template slot="s4" class="slot">Multiple template slot<div>Hello slot</div></template>
         <template v-slot:s6 class="vslot">s7</template>
-        
-        <span v-slot:s7 class="vslot">
-          v-slot:heyhey
-          <div>Hello vslot</div>
-        </span>
-        
-        <template v-slot:s8 class="vslot">
-          s8
-          <div>Hello vslot</div>
-        </template>
-      
+        <template v-slot:s8 class="vslot">s8<div>Hello vslot</div></template>
         <div area="num7">7</div>
         <div area="num7">7</div>
         <div area="num8">8</div>
