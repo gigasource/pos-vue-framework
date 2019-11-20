@@ -29,7 +29,6 @@
       //style
       ...{
         elevation: [String, Number],
-        gradientAngle: { type: String, default: '45deg' },
         absolute: Boolean,
         fixed: Boolean,
         top: Boolean,
@@ -44,13 +43,14 @@
         maxWidth: [String, Number],
         minHeight: [String, Number],
         minWidth: [String, Number],
-        block: Boolean,
         width: [String, Number],
         height: [String, Number],
+        block: Boolean,
         textColor: String,
         color: String,
         backgroundColor: String,
         gradient: String,
+        gradientAngle: { type: String, default: '45deg' },
       }
     },
     setup(props, context) {
@@ -58,13 +58,13 @@
 
       function genBtnContent() {
         return <span class="g-btn__content">
-          {context.slots.default()}
+          {context.slots.default && context.slots.default()}
         </span>
       }
 
       function genBtn() {
-        return <button v-ripple class={classes.value} style={styles.value} vOn:click={(event) => {
-          context.emit('click', event)
+        return <button ref="btn" id="btn" v-ripple class={classes.value} style={styles.value} vOn:click={(event) => {
+          context.emit('click', event);
         }}>
           {genBtnContent()}
         </button>
@@ -80,6 +80,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GBtn";
 </style>

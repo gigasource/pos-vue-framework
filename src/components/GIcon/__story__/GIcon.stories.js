@@ -1,25 +1,44 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
 import GIcon from '../GIcon';
-import GBtn from "../../GButton/GButton";
+import GBtn from "../../GBtn/GBtn";
+import {mdiAccount} from '@mdi/js'
 
 export default {
   title: 'GIcon',
   decorators: [withKnobs],
 };
 
-export const iconBasic = () => ({
+export const basicIcon = () => ({
   components: {GIcon},
   props: {
     icon: {default: text('icon', 'fas fa-cat')},
-    color: {default: text('color', 'null')},
-    xLarge: {default: boolean('size', false)},
+    color: {default: text('color', '#DC143C')},
+    xSmall: {default: boolean('xSmall', false)},
+    small: {default: boolean('small', false)},
+    medium: {default: boolean('medium', false)},
+    large: {default: boolean('large', false)},
+    xLarge: {default: boolean('xLarge', false)},
     disabled: {default: boolean('disabled', false)},
+    dense: {default: boolean('dense', false)},
   },
-  template: `<g-icon :color="color" :xLarge="xLarge" :disabled="disabled">{{icon}}</g-icon>`,
+  template: `<g-icon :color="color" :xSmall="xSmall" :small="small" :meidum="medium" :large="large" :xLarge="xLarge" :disabled="disabled" :dense="dense">{{icon}}</g-icon>`,
 })
 
-export const iconTypeSizeAndColor = () => ({
+export const svgIcon = () => ({
+  components: {GIcon},
+  props: {
+    svg: {default: text('svg', 'icon-store')},
+    xSmall: {default: boolean('xSmall', false)},
+    small: {default: boolean('small', false)},
+    medium: {default: boolean('medium', false)},
+    large: {default: boolean('large', false)},
+    xLarge: {default: boolean('xLarge', false)},
+  },
+  template: `<g-icon :xSmall="xSmall" :small="small" :meidum="medium" :large="large" :xLarge="xLarge" svg>{{svg}}</g-icon>`,
+})
+
+export const sizeAndColor = () => ({
   components: {GIcon},
   props: {
     color1: {default: text('color1', 'blue')},
@@ -36,19 +55,14 @@ export const iconTypeSizeAndColor = () => ({
 
 export const iconInButton = () => ({
   components: {GIcon, GBtn},
-  method: {
-    foo() {
-      //do nothing
-    }
-  },
   props: {
     color: {default: text('color', 'brown')},
     dense: {default: boolean('dense', false)},
     disabled: {default: boolean('disabled', false)},
-    left: {default: boolean('left', true)},
+    left: {default: boolean('left', false)},
     right: {default: boolean('right', false)}
   },
-  template: `<div><g-btn>Buy this <b>{{color}}</b>   car    <g-icon :right="right" :left="!left" :color="color" :dense="dense" :disabled="disabled">fas fa-car</g-icon></g-btn></div>`,
+  template: `<div><g-btn>Buy-this-<b>{{color}}</b>-car<g-icon :right="right" :left="left" :color="color" :dense="dense" :disabled="disabled" >fas fa-car</g-icon></g-btn></div>`,
 })
 
 

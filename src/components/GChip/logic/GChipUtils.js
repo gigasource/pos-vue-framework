@@ -1,7 +1,7 @@
 import { computed } from '@vue/composition-api'
-import { convertToUnit } from '../../../utils/helpers';
-import { convertToGradient } from '../../../utils/helpers';
 import { setBackgroundColor, setTextColor } from '../../../mixins/colorable';
+import { linearGradient } from '../../../utils/colors';
+
 export default (props, context) => {
   const classes = computed(() => ({
     'g-chip__outlined': props.outlined,
@@ -40,18 +40,11 @@ export default (props, context) => {
   });
 
   const styles = computed(() => {
-    let _styles = {
+    return {
       ...backgroundColorOutput.value && backgroundColorOutput.value.style,
       ...textColorOutput.value && textColorOutput.value.style,
+      ...props.gradient && { 'background-image': linearGradient(props.gradient && props.gradient.split(','), props.gradientAngle) }
     };
-
-    // Params: linear-gradient(45deg, yellow, green)
-    //includes('-'): check if grandient is gradient-45deg-yellow-green or array of colors
-    if (props.gradient && !props.gradient.toString().includes('-')) {
-      _styles['background-image'] = convertToGradient(props.gradient.toString().split(','), props.gradientAngle);
-    }
-
-    return _styles;
   });
 
   return {

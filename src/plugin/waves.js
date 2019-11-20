@@ -104,7 +104,7 @@
             rippleStyle['-ms-transform'] = scale;
             rippleStyle['-o-transform'] = scale;
             rippleStyle.transform = scale;
-            rippleStyle.opacity   = '1';
+            rippleStyle.opacity   = el.classList.contains('waves-auto') ? '0.25' : '1';
 
             rippleStyle['-webkit-transition-duration'] = Effect.duration + 'ms';
             rippleStyle['-moz-transition-duration']    = Effect.duration + 'ms';

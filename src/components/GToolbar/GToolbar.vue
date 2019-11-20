@@ -134,5 +134,5 @@
 </script>
 
 <style scoped lang="scss">
-
+	@import "GToolbar";
 </style>
