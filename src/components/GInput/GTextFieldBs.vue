@@ -47,12 +47,11 @@
 <script>
   import {ref, computed, onMounted} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
-  import Textarea from '../../view/TextareaDemo';
   import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GTextFieldBs',
-    components: { GIcon, Textarea },
+    components: { GIcon },
     props: {
       ...{//display props
         label: String,
