@@ -44,22 +44,6 @@ export const GSelectSingle = () => ({
  <g-select
  width="100%" 
  :items="items" 
- :item-text="itemText" 
- :item-value="itemValue"  
- :label="label"
- :clearable="clearable"
- :filled="filled"
- :solo="solo"
- :outlined="outlined"
- :flat="flat"
- :rounded="rounded"
- :shaped="shaped"
- :hint="hint"
- :persistent="persistent"
- :counter="counter"
- :placeholder="placeholder"
- :chips="chips"
- :smallChips="smallChips"
  v-model="selected" 
   >
    </g-select>
