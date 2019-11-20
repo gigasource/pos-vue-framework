@@ -30,8 +30,8 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
     if (isLabelActive.value && prefixWidth.value) {
       if (props.outlined) {
         if (props.filled) {
-          if (props.rounded) return {'transform': `translateY(-${props.dense ? 30 : 38}px) translateX(${-prefixWidth.value}px)  scale(0.75)`}
-          return {'transform': `translateY(-${props.dense ? 30 : 38}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
+          if (props.rounded) return {'transform': `translateY(-28px) translateX(${-prefixWidth.value}px)  scale(0.75)`}
+          return {'transform': `translateY(-${props.dense ? 26 : 28}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
         } else {
           return {'transform': `translateY(-${props.dense ? 22 : 26}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)`}
         }
