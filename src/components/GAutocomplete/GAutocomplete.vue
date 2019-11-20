@@ -13,6 +13,11 @@
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
+  import {
+    genList,
+    genTextFieldScopedSlot,
+    getInputEventHandlers
+  } from "./GAutocompleteFactory";
 
   export default {
     name: "GAutocomplete",
@@ -118,41 +123,10 @@
       const options = getList(props, selectedItem, state, props.filter)
 
       const lazySearch = ref('')
-
-      //gen textfield
-      function onChipCloseClick(index = null) {
-        if (props.multiple) {
-          selectedItem.value.splice(index, 1);
-        } else {
-          selectedItem.value = null
-        }
-      }
-
-      const genMultiSelectionsSlot = () => {
-        if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) {
-          return selections.value.map((item, index) => <GChip small={props.smallChips}
-                                                              close={props.deletableChips}
-                                                              vOn:close={() => onChipCloseClick(index)}>{item}
-          </GChip>)
-        }
-
-        return selections.value.map(function (item, index) {
-              if (index === selections.value.length - 1) return <div
-                  style={{'color': lastItemColor.value, 'padding-right': '5px'}}>{item}</div>
-              return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
-            }
-        )
-      }
-      const genSingleSelectionSlot = () => {
-        if ((props.chips || props.smallChips || props.deletableChips) && selections.value) {
-          return <GChip small={props.smallChips} close={props.deletableChips}
-                        vOn:close={() => onChipCloseClick()}>{selections.value}</GChip>
-        }
-      }
-
       const selectionsText = computed(() => {
         return props.multiple ? selections.value.join('') : selections.value
       })
+
       //textfield logic, styles, classes computed
       const isValidInput = ref(true)
       const isFocused = ref(false);
@@ -161,82 +135,27 @@
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
+
+      let pressDeleteTimes = 0
+      const lastItemColor = ref('#1d1d1d')
+
       //textfield events
-      function clearSelection() {
-        selectedItem.value = props.multiple ? [] : ''
-        setSearch()
-      }
-
-      function onInputKeyDown(e) {
-        resetSelectionsDisplay()
-        if (e.keyCode === keyCodes.down) {
-          const listRef = context.refs.select.$refs.list
-          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
-        }
-      }
-
-      function onInputClick() {
-        isFocused.value = true
-        lazySearch.value ? state.searchText = '' : null
-      }
-
-      function onInputBlur() {
-        isFocused.value = false
-        resetSelectionsDisplay()
-      }
-
-        let pressDeleteTimes = 0
-        const lastItemColor = ref('#1d1d1d')
-        const resetSelectionsDisplay = () => {
-          pressDeleteTimes = 0
-          lastItemColor.value = '#1d1d1d'
-        }
-
-        function onInputDelete() {
-          if (!props.multiple || props.chips) return
-          if (state.searchText) return pressDeleteTimes = 0
-          else {
-            if (pressDeleteTimes === 0) {
-              pressDeleteTimes++
-              lastItemColor.value = '#1867c0 '
-            }
-            if (pressDeleteTimes === 1) {
-              return pressDeleteTimes++
-            }
-            if (pressDeleteTimes === 2) {
-              selectedItem.value.pop()
-              return pressDeleteTimes
-            }
-          }
-        }
+      const {
+        onChipCloseClick,
+        clearSelection,
+        onInputKeyDown,
+        onInputClick,
+        onInputBlur,
+        onInputDelete
+      } = getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused, pressDeleteTimes,lastItemColor)
+      //textfield scoped slot
+      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, lastItemColor, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection)
 
       const tfValue = computed(() =>
           props.multiple || props.chips || props.smallChips || props.deletableChips ? state.searchText :
               lazySearch.value)
 
-      //gen textfield function
       const genTextFieldProps = function (toggleContent) {
-        //textfield slots
-        const textFieldScopedSlots = {
-          clearableSlot: ({iconColor}) =>
-              <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
-                     color={iconColor}>{props.clearIcon}</GIcon>,
-          appendInner: ({iconColor}) =>
-              <GIcon color={iconColor}>arrow_drop_down</GIcon>,
-          inputSlot: ({inputErrStyles}) =>
-              <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-                {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-              </div>,
-          label: () => <label htmlFor="input" class={["g-tf-label", labelClasses.value]}
-                              style={labelStyles}>{props.label}</label>,
-          inputMessage: () => [<div v-show={props.counter} class={{
-            'g-tf-counter': true,
-            'g-tf-counter__error': !isValidInput.value
-          }}>{validateText.value.length}/{props.counter}</div>,
-            isValidInput.value ? <div class={["g-tf-hint", hintClasses.value]}>{props.hint}</div>
-                : <div class="g-tf-error">{errorMessages.value}</div>
-          ]
-        }
 
         return (
             <GTextField
@@ -266,42 +185,8 @@
 
       //gen list
       const showOptions = ref(false)
-      const setSearch = () => {
-        context.root.$nextTick(() => {
-          if (!props.multiple && !props.chips) lazySearch.value = selections.value
-          state.searchText = ''
-        })
-      }
-
-      const genListProps = (showOptions, genListScopedSlots) => {
-        const onClickItem = () => {
-          setSearch()
-          !props.multiple ? showOptions.value = false : null
-        }
-        return <GList
-            {...{
-              props: {
-                items: options.value,
-                'item-title': props.itemText,
-                mandatory: props.mandatory,
-                allowDuplicates: props.allowDuplicates,
-                multiple: props.multiple,
-                selectable: true,
-                inMenu: true
-              },
-              on: {
-                'click:item': onClickItem
-              },
-            }
-            }
-            vModel={selectedItem.value}
-            ref="list"
-        />
-      }
-
 
       function genAutocomplete() {
-
         return <div class="g-autocomplete">
           <g-select
               {...{
@@ -313,7 +198,7 @@
                   ),
                   showSearchField: false,
                   genTextFieldFn: genTextFieldProps,
-                  genListFn: genListProps,
+                  genListFn: () => genList(props, options, selectedItem, showOptions, context, lazySearch, selections, state),
                 },
               }}
               ref="select"
@@ -339,8 +224,9 @@
 </script>
 <style lang="scss" scoped>
   .g-menu--content {
-   background-color: #00b0ff;
+    background-color: #00b0ff;
   }
+
   .g-autocomplete {
 
 
