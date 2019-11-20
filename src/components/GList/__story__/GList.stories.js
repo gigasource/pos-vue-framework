@@ -14,7 +14,6 @@ import {
   GListItemSubText,
   GListHeader
 } from '../GListFunctionalComponent'
-import GButton from '../../GButton/GButton';
 
 export default {
   title: 'GList',
