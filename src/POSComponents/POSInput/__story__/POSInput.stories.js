@@ -3,7 +3,7 @@ import {action} from '@storybook/addon-actions'
 import PosTextField from "../POSTextField";
 import PosSelect from "../POSSelect";
 import PosRangeSlider from "../POSRangeSlider";
-import PosFileInput from "../POSFileInput";
+import PosFileInputImage from "../POSFileInputImage";
 import GIcon from "../../../components/GIcon/GIcon";
 
 export default {
@@ -26,7 +26,7 @@ export const POSTextField = () => ({
                                  <template v-slot:append="{onClick}">
                                    <g-icon color="red">mdi-pen</g-icon>
                                  </template>
-                                 <template #apendContent>
+                                 <template #appendContent>
                                    Append
                                  </template>
                                </pos-text-field>
@@ -36,12 +36,13 @@ export const POSTextField = () => ({
 export const larger = () => ({
   components: {PosTextField, GIcon},
   props: {},
-  template: `<div><pos-text-field large label="Name">
-                                 <template v-slot:append="{onClick}">
-                                   <g-icon>mdi-pen</g-icon>
-                                 </template>
-                               </pos-text-field>
-               </div>`
+  template: `<div>
+               <pos-text-field large label="Name">
+                  <template v-slot:append="{onClick}">
+                     <g-icon>mdi-pen</g-icon>
+                  </template>
+               </pos-text-field>
+             </div>`
 })
 
 export const POSSelect = () => ({
@@ -59,55 +60,25 @@ export const POSSelect = () => ({
   },
   props: {},
   template: `<div>
-                 <pos-select :items="items"
-                 item-Text="text"
-                 v-model="selected"
-                 label="Person name"
-                 clearable
-                 >
-                 </pos-select>
-               </div>`
+               <pos-select :items="items"
+                           item-Text="text"
+                           v-model="selected"
+                           label="Person name"
+                           clearable />
+             </div>`
 })
 
 
 export const POSSlider = () => ({
   components: {PosRangeSlider},
-  data() {
-    return {
-      value: [0, 20]
-    }
-  },
-  template: `<div style="margin-top: 100px">
-                 <pos-range-slider v-model="value">
-                  <template v-slot:thumb-label="props">
-                  <span>€{{props.value}}</span>
-                  <div style="height: 0; width: 0; border: 4px #1271FF solid; transform: rotate(-45deg); position: absolute; left: 24px; top: 26px"></div>
-                  </template>
-                 </pos-range-slider>
-               </div>`
+  template: `<div>
+               <pos-range-slider min="225" max="448"/>
+             </div>`
 })
 
 export const POSFileInput = () => ({
-  components: {PosFileInput},
-  methods: {
-    getImageSrc(file) {
-      let reader = new FileReader()
-      reader.onload = function () {
-        let url = reader.result;
-
-        let myImg = document.getElementById("img")
-        myImg.src = url;
-      }
-
-      reader.readAsDataURL(file)
-      return ''
-    }
-  },
+  components: {PosFileInputImage},
   template: `<div>
-                 <pos-file-input label="Upload file" accept="image/*">
-                 <template v-slot:selection="{file,index,amount}">
-                 <img id="img" :src="getImageSrc(file)"/>
-                 </template>
-                 </pos-file-input>
-            </div>`
+               <pos-file-input-image/>
+             </div>`
 })

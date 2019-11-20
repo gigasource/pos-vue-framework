@@ -49,7 +49,7 @@
         default: true
       },
       height: String,
-			fillHeight: Boolean,
+			filled: Boolean,
     },
     setup(props, context) {
       const classes = computed(() => ({
@@ -62,6 +62,7 @@
         'g-toolbar__floating': props.floating,
         'g-toolbar__tile': props.tile,
         'g-toolbar__collapse': props.collapse,
+        'g-toolbar__filled': props.filled,
 				['bg-'+props.color.split(' ').join('-')]: props.color && !isCssColor(props.color),
       }));
 
@@ -91,15 +92,15 @@
       });
 
       const contentStyles = computed(() => ({
-        'height': props.fillHeight ? ('calc(100% - ' + convertToUnit(computedExtensionHeight.value ? computedExtensionHeight.value : 0) + ')') : convertToUnit(contentHeight.value)
+        'height': convertToUnit(contentHeight.value)
       }));
 
       const totalHeightStyles = computed(() => ({
-        'height': props.fillHeight ? '100%' : convertToUnit(totalHeight.value)
+        'height': convertToUnit(totalHeight.value)
       }));
 
       const extensionStyles = computed(() => ({
-        'height': props.fillHeight ? 'auto' : convertToUnit(computedExtensionHeight.value)
+        'height': convertToUnit(computedExtensionHeight.value)
       }));
 
       const backgroundStyles = computed(() => ({
@@ -108,7 +109,7 @@
         'left': '0',
         'z-index': '-1',
         'width': '100%',
-        'height': props.fillHeight ? '100%' : convertToUnit(totalHeight.value),
+        'height': convertToUnit(totalHeight.value),
 				... props.src && {
           'background-image': 'url("' + props.src + '")',
           'background-position': 'center center',

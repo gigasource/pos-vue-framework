@@ -558,11 +558,11 @@
               </div>
             </div>
             <div class="grid-gen__dialog__confirm__action-btn">
-              <button ref={refIdBtnCreateSubGrid} vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
+              <button  ref={refIdBtnCreateSubGrid} class='simple-btn' vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
               &nbsp;
-              <button ref={refIdBtnCreateSubItem} vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
+              <button ref={refIdBtnCreateSubItem} class='simple-btn' vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
               &nbsp;
-              <button ref={refIdBtnCancel} vOn:click={onCancelBtnClick}>Cancel</button>
+              <button ref={refIdBtnCancel} class='simple-btn' vOn:click={onCancelBtnClick}>Cancel</button>
             </div>
           </div>
         </g-dialog>
@@ -646,21 +646,21 @@
           <div class="grid-gen__settings-prop">
             <label>Rows:</label>
             <div>
-              <button vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button>
+              <button class='simple-btn' vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button>
               <br/>
-              <button vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button>
+              <button class='simple-btn' vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button>
               <br/>
-              <button vOn:click={() => grid.deleteRow(state.selectedRowId)}>Delete</button>
+              <button class='simple-btn' vOn:click={() => grid.deleteRow(state.selectedRowId)}>Delete</button>
             </div>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Columns:</label>
             <span>
-              <button vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button>
+              <button class='simple-btn' vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button>
               <br/>
-              <button vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button>
+              <button class='simple-btn' vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button>
               <br/>
-              <button vOn:click={() => grid.deleteColumn(state.selectedColumnId)}>Delete</button>
+              <button class='simple-btn' vOn:click={() => grid.deleteColumn(state.selectedColumnId)}>Delete</button>
             </span>
           </div>,
         ] : null
@@ -710,11 +710,11 @@
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Padding:</label>
-            <input value={gridItem.padding} vOn:input={e => enterPressed(e) && (gridItem.padding = e.target.value)}/>
+            <input value={gridItem.padding} vOn:keyup={e => enterPressed(e) && (gridItem.padding = e.target.value)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Margin:</label>
-            <input value={gridItem.margin} vOn:input={e => enterPressed(e) && (gridItem.margin = e.target.value)}/>
+            <input value={gridItem.margin} vOn:keyup={e => enterPressed(e) && (gridItem.margin = e.target.value)}/>
           </div>,
         ] : null
       }
@@ -740,9 +740,9 @@
       function renderGridGeneratorOutput() {
         return [
           <div class="grid-gen__settings-section">Files</div>,
-          <button vOn:click_stop_prevent={loadLayoutFile}>Import</button>,
-          <button vOn:click_stop_prevent={saveLayoutFile}>Export</button>,
-          <button vOn:click_stop_prevent={copyLayoutStrToClipBoard}>Copy To Clipboard</button>,
+          <button class='simple-btn' vOn:click_stop_prevent={loadLayoutFile}>Import</button>,
+          <button class='simple-btn' vOn:click_stop_prevent={saveLayoutFile}>Export</button>,
+          <button class='simple-btn' vOn:click_stop_prevent={copyLayoutStrToClipBoard}>Copy To Clipboard</button>,
         ]
       }
 
@@ -1074,6 +1074,19 @@
           padding: 5px;
         }
       }
+    }
+  }
+
+  .simple-btn {
+    height: 18px;
+    border: 1px solid #0003;
+    margin: 2px;
+    color: #333;
+
+    &:hover {
+      background-color: #888;
+      color: #fff;
+      cursor: pointer;
     }
   }
 </style>
