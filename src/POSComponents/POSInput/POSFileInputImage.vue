@@ -31,6 +31,9 @@
 
 <style scoped lang="scss">
   .g-tf-wrapper::v-deep {
+    display: inline-flex;
+    width: auto;
+
     fieldset {
       width: auto;
     }
