@@ -80,7 +80,7 @@
 					{{item.title}}
 				</g-btn>
 			</div>
-			<g-scroll-window area="window" :show-arrows="false" v-model="window">
+			<g-scroll-window area="window" :show-arrows="false" v-model="window" elevation="0">
 				<g-scroll-window-item v-for="(items, i) in listItems" :key="i">
 					<g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color" height="100%">{{item.title}}</g-btn>
 				</g-scroll-window-item>
@@ -500,7 +500,6 @@
 				overflow: hidden;
 
 				.g-window {
-					box-shadow: none;
 					width: 100%;
 
 					.g-window__container {
