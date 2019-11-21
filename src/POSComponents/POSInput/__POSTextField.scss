@@ -11,7 +11,7 @@
 
 .bs-tf-label {
   display: inline-block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-size: 13px;
   line-height: 16px;
   font-weight: 400;
@@ -22,7 +22,6 @@
 .bs-tf-input-prepend,
 .bs-tf-input-append {
   display: flex;
-  align-items: center;
 }
 
 .bs-tf-inner-input-group {
@@ -32,6 +31,7 @@
   border: 1px solid #ced4da !important;
   color: #9E9E9E;
   flex-basis: 100%;
+  align-items: center;
 }
 
 .bs-tf-inner-input-group__active {

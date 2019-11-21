@@ -12,6 +12,7 @@ for SVG_FILE in `find $ASSET_DIR -iregex '.*\.\svg' -type f -follow -print|xargs
   echo "  background-image: url(\"${SVG_FILE/src\/assets/assets}\");" >> $STYLE_FILE_PATH
   echo "  background-repeat: no-repeat;" >> $STYLE_FILE_PATH
   echo "  background-size: contain;" >> $STYLE_FILE_PATH
+  echo "  background-position: center;" >> $STYLE_FILE_PATH
   echo "}" >> $STYLE_FILE_PATH
   echo "" >> $STYLE_FILE_PATH
 done

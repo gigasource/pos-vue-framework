@@ -5,7 +5,7 @@
 				<input id="number_key_output" class="number-key-text col-12 self-center bg-transparent fs-large-2 fw-700 pr-2" style="border: none; outline: none; direction: rtl" v-model="computedNumber">
 			</div>
 		</slot>
-		<g-keyboard :items="items" v-model="computedNumber" :template="template" class="flex-grow-1"></g-keyboard>
+		<g-keyboard :items="items" v-model="computedNumber" :template="template" class="flex-grow-1" @submit="$emit('submit')"></g-keyboard>
 	</div>
 </template>
 
@@ -39,7 +39,7 @@
       },
       template: {
         type: String,
-        default: 'grid-template: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 key00 keyX" "keyC Enter Enter"/ 1fr 1fr 1fr; grid-template-monthData: repeat(5, 1fr)'
+        default: 'grid-template: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 key00 keyX" "keyC Enter Enter"/ 1fr 1fr 1fr'
       }
     },
     computed: {
@@ -52,7 +52,7 @@
             value = '0';
           } else {
             //TODO: bigint > 2^53
-            value = '' + parseInt(value);
+            value = '' + parseFloat(value);
           }
           this.$emit('input', value);
         }
