@@ -83,7 +83,7 @@
               class='g-treeview-action'
               vShow={childrenVNodes}>
               <g-icon>
-                {state.collapse ? 'chevron_right' : 'expand_more'}
+                {state.collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
               </g-icon>
             </span>
           </a>

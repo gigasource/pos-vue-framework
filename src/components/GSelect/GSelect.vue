@@ -85,7 +85,13 @@
       showSearchField: {
         type: Boolean,
         default: true
-      }
+      },
+			appendIcon: {
+        type: String,
+				default: 'arrow_drop_down'
+			},
+			appendSvg: Boolean,
+			required: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -190,7 +196,7 @@
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
-            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {selections.value.length === 0 ?
@@ -216,7 +222,7 @@
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly']),
+                      'rules', 'type', 'disabled', 'readOnly', 'required']),
                     value: textfieldValue.value
                   },
                   on: {
@@ -280,13 +286,8 @@
       span {
         margin: 3px
       }
-
-      .g-tf-wrapper {
-        margin: 16px 0 24px 10px;
-      }
-
-      .g-tf-append__inner {
-        transition: transform 0.4s
+      .g-tf-append__inner .g-icon:last-child {
+        transition: transform 0.4s;
       }
 
       .g-tf-input {
@@ -308,6 +309,7 @@
 
   .g-select__active::v-deep {
     .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
       transform: rotateZ(180deg);
     }
   }

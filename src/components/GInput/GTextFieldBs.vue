@@ -3,7 +3,8 @@
     <label class="bs-tf-label">
       <slot name="label">
 				<template v-if="required">
-					{{label}}<span style="color: red">*</span>
+					{{label}}
+					<span style="color: red">*</span>
 				</template>
 				<template v-else>{{label}}</template>
 			</slot>

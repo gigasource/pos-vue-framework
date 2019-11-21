@@ -3,13 +3,13 @@
   import GMenu from "../GMenu/GMenu"
   import {makeSelectable} from "../../mixins/groupable";
   import {reactive, ref, computed, watch} from "@vue/composition-api";
-  import {getList, getSelections} from "./GSelectFactory";
+  import {getList, getSelections} from "../GSelect/GSelectFactory";
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
   import _ from "lodash"
   import {getLabel, getValidate} from "../GInput/GInputFactory";
-  import GSelect from "./GSelect";
+  import GSelect from "../GSelect/GSelect";
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
@@ -157,9 +157,9 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
       const validateText = computed(() => lazySearch.value || selectionsText.value || state.searchText)
-      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
+      const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
-      const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
+      const {errorMessages} = getValidate(props, isFocused, validateText, isValidInput);
 
       //textfield events
       function clearSelection() {

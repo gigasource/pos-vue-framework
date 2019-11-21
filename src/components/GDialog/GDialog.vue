@@ -215,7 +215,18 @@
         </div>
       }
 
+      function open() {
+        isActive.value = true;
+      }
+
+      function close() {
+        isActive.value = false;
+      }
+
       return {
+        open,
+        close,
+        isActive,
         genDialog
       }
     },
