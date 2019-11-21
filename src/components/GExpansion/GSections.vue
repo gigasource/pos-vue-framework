@@ -1,8 +1,6 @@
 <script>
-  import { convertToUnit } from '../../utils/helpers';
-  import { genHeaderFactory, genContentFactory, getExpansionModel } from './GExpansionFactory';
-  import { ref, computed, provide } from '@vue/composition-api';
-  import GIcon from '../GIcon/GIcon';
+  import { genHeaderFactory, getExpansionModel } from './GExpansionFactory';
+  import { provide } from '@vue/composition-api';
 
   export default {
     name: 'GSections',
@@ -15,13 +13,6 @@
         default: 'header',
         type: [String, Function]
       },
-
-      width: {
-        type: [Number, String]
-			},
-      height: {
-        type: [Number, String]
-      }
     },
     setup(props, context) {
       const { model, toggleItem, isActiveItem } = getExpansionModel(props, context)

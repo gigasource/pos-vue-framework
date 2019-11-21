@@ -1,5 +1,6 @@
 <script>
   import { computed, inject } from '@vue/composition-api';
+  import { convertToUnit } from '../../utils/helpers';
   import { GExpandTransition } from '../transition/transition';
   import GIcon from '../GIcon/GIcon';
 
@@ -9,16 +10,29 @@
       GIcon, GExpandTransition
     },
     props: {
-      item: null
+      item: null,
+
+      width: {
+        type: [Number, String]
+      },
+      height: {
+        type: [Number, String]
+      }
 		},
     setup (props, context) {
       const genHeaderText = inject('genHeaderText')
 			const toggleItem = inject('toggleItem')
 			const isActiveItem = inject('isActiveItem')
 
+			const headerStyles = computed(() => ({
+				width: convertToUnit(props.width),
+				height: convertToUnit(props.height)
+			}))
+
       const genHeader = function () {
         return <div
           class={['g-sections-item-header', { 'g-sections-item-header__active': isActiveItem(props.item) }]}
+					style={headerStyles.value}
           vOn:click={() => toggleItem(props.item)}>
           {genHeaderText.value(props.item)}
           <div class="g-sections-item-header-append">
@@ -99,11 +113,11 @@
 
 			&__active {
 
-				.g-sections-header-prepend > ::v-deep.g-icon {
+				.g-sections-item-header-prepend > ::v-deep.g-icon {
 					transform: rotate(90deg)
 				}
 
-				.g-sections-header-append > ::v-deep.g-icon {
+				.g-sections-item-header-append > ::v-deep.g-icon {
 					transform: rotate(90deg)
 				}
 			}
