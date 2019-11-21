@@ -2,7 +2,7 @@ import { getZIndex } from '../utils/helpers';
 import { ref } from '@vue/composition-api'
 
 export default function stackable(props, context) {
-  const stackMinZIndex = ref(200);
+  const stackMinZIndex = ref(400);
 
   function getMaxZIndex(exclude) {
     //const base = context.refs.el;

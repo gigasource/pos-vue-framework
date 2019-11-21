@@ -52,15 +52,15 @@ button {
   color: rgba(0, 0, 0, 0.87);
 
   &.g-btn__disabled {
-    color: rgba(0, 0, 0, 0.26) !important;
+    //color: rgba(0, 0, 0, 0.26) !important;
+    opacity: 0.54 !important;
+    //.g-icon {
+    //  color: rgba(0, 0, 0, 0.26) !important;
+    //}
 
-    .g-icon {
-      color: rgba(0, 0, 0, 0.26) !important;
-    }
-
-    &:not(.g-btn__flat):not(.g-btn__text):not(.g-btn__outlined) {
-      background-color: rgba(0, 0, 0, 0.12) !important;
-    }
+    //&:not(.g-btn__flat):not(.g-btn__text):not(.g-btn__outlined) {
+    //  background-color: rgba(0, 0, 0, 0.12) !important;
+    //}
   }
 
   &:not(.g-btn__flat):not(.g-btn__text):not(.g-btn__outlined) {
@@ -125,6 +125,12 @@ button {
     font-size: $btn-icon-font-size;
     height: $btn-icon-font-size;
     width: $btn-icon-font-size;
+  }
+
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .g-icon__left {

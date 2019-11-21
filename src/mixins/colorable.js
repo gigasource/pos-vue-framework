@@ -5,7 +5,7 @@
  * @returns {boolean} true if input color is CSS color. Otherwise, false
  */
 export /*public for test only*/ function isCssColor(color) {
-  return !!color && !!color.match(/^(#|(rgb|hsl)a?\()|transparent|currentColor/)
+  return !!color && !!color.match(/^(#|(rgb|hsl)a?\()|transparent|currentColor|inherit/)
 }
 
 /**
