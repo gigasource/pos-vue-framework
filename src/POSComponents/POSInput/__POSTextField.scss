@@ -6,12 +6,12 @@
   display: block;
   cursor: text;
   width: calc(100% - 10px);
-  margin: 4px 5px 8px;
+  margin: 4px 4px 8px;
 }
 
 .bs-tf-label {
   display: inline-block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-size: 13px;
   line-height: 16px;
   font-weight: 400;
@@ -30,6 +30,8 @@
   padding-right: 6px;
   border: 1px solid #ced4da !important;
   color: #9E9E9E;
+  flex-basis: 100%;
+  align-items: center;
 }
 
 .bs-tf-inner-input-group__active {

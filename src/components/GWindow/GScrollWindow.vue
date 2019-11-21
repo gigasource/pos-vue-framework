@@ -90,10 +90,10 @@
 
       watch(internalValue, (val, oldVal) => {
         const currentElement = document.querySelector(`#${data.items[internalValue.value].$el.id}`);
-        currentElement.scrollIntoView({behavior: 'smooth'});
+        currentElement.scrollIntoView({ block: 'center' });
 
         data.isReverse = val < oldVal
-      }, { flush: 'pre', lazy: true });
+      }, { lazy: true });
 
       const computedTransition = computed(() => {
         if (!data.isBooted) {
