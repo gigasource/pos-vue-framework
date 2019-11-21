@@ -6,15 +6,26 @@
 				<g-icon svg size="10" right>icon-path-filter</g-icon>
 			</g-btn>
 		</template>
-		<div style="width: 722px; height: 260px; background-color: #FFFFFF">
-			<pos-range-slider/>
-			<g-btn flat right @click="dialog = false">OK</g-btn>
-		</div>
+		<g-grid-layout class="wrapper" :layout="Layout">
+			<div area="header" class="header">
+				<span>Price range filter</span>
+				<g-icon @click="dialog = false">mdi-close</g-icon>
+			</div>
+			<div area="range">
+				<pos-range-slider min="0" max="431"/>
+			</div>
+			<div area="buttons" class="buttons">
+				<g-btn @click="dialog = false" backgroundColor="#EFEFEF" text-color="#757575" height="36" width="121" style="margin-right: 8px">Cancel</g-btn>
+				<g-btn @click="dialog = false" backgroundColor="#2979FF" text-color="#FFFFFF" height="36" width="121">OK</g-btn>
+			</div>
+		</g-grid-layout>
 	</g-dialog>
 </template>
 
 <script>
     import {ref} from "@vue/composition-api";
+    import GGridLayout from "../../components/GGridGenerator/GGridLayout";
+    import Layout from "./amountLayout";
     import GDialog from "../../components/GDialog/GDialog";
     import GBtn from "../../components/GBtn/GBtn";
     import GIcon from "../../components/GIcon/GIcon";
@@ -22,13 +33,36 @@
 
     export default {
         name: "AmountFilter",
-        components: {GDialog, GBtn, GIcon, PosRangeSlider},
+        components: {GGridLayout, GDialog, GBtn, GIcon, PosRangeSlider},
         setup() {
             const dialog = ref(false)
 
             return {
-                dialog
+                dialog,
+                Layout,
             }
         }
     }
 </script>
+
+<style scoped lang="scss">
+	.wrapper {
+		width: 722px;
+		height: 260px;
+		background-color: #FFFFFF;
+	}
+
+	.header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		padding: 16px;
+	}
+
+	.buttons {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding: 0 16px;
+	}
+</style>

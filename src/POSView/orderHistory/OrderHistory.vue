@@ -8,7 +8,7 @@
 						<th class="text-left"><code-look-up text="Order No."/></th>
 						<th class="text-left"><dialog-picker/></th>
 						<th class="text-left"><code-look-up text="Barcode"/></th>
-						<th class="text-left"></th>
+						<th class="text-left"><amount-filter/></th>
 						<th class="text-left"><code-look-up text="Staff"/></th>
 						<th class="text-left"><code-look-up text="Info"/></th>
 					</tr>
@@ -59,14 +59,14 @@
     //import other components
     import DialogPicker from "./DialogPicker";
     import CodeLookUp from "./CodeLookUp";
-    import PosRangeSlider from "../../POSComponents/POSInput/POSRangeSlider";
+    import AmountFilter from "./AmountFilter";
 
     export default {
         name: "OrderHistory",
         components: {
             DialogPicker,
             CodeLookUp,
-            PosRangeSlider,
+						AmountFilter,
 
             GGridLayout,
             GSimpleTable,
