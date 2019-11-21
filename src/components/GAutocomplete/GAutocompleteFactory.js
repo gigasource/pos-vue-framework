@@ -121,7 +121,7 @@ export function genTextFieldScopedSlot(props, context, selections, onChipCloseCl
 export function genList(props, options, selectedItem, showOptions, context, selections, state) {
   const onClickItem = () => {
     setSearch(props, context, selections, state)
-    showOptions.value = props.multiple
+    // showOptions.value = props.multiple
     console.log('item clicked ' + showOptions.value)
   }
   return <GList

@@ -86,3 +86,25 @@ export function getSelections(props, selectedItem) {
     return list
   })
 }
+export function genMenu(props, context, showOptions, genSearchTextField = null, genTextField, genList, ) {
+  const nudgeBottom = !!props.hint ? '22px' : '2px'
+  return <g-menu vModel={showOptions.value}
+                 {...{
+                   props: {
+                     ...props.menuProps,
+                     nudgeBottom: nudgeBottom
+                   },
+                   scopedSlots: {
+                     activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+                   }
+                 }}
+  >
+    <template slot="default">
+      {genSearchTextField()}
+      {context.slots['prepend-item'] && context.slots['prepend-item']()}
+      {genList(showOptions)}
+      {context.slots['append-item'] && context.slots['append-item']()}
+    </template>
+  </g-menu>
+}
+

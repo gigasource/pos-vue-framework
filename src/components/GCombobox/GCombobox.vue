@@ -76,7 +76,7 @@
         type: Object,
         default: () => ({
           closeOnClick: true,
-          closeOnContentClick: false,
+          // closeOnContentClick: false,
           maxHeight: 300,
           offsetY: true,
           offsetOverflow: true,
@@ -183,6 +183,16 @@
 
       //gen list
       const showOptions = ref(false)
+      const computedMenuProps = computed(() => {
+        if (props.multiple) return {
+          ...props.menuProps,
+          closeOnContentClick: false
+        }
+        return {
+          ...props.menuProps,
+          closeOnContentClick: true
+        }
+      })
 
       function genCombobox() {
         const comboboxSlots = {
@@ -199,8 +209,9 @@
                         ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
                           'shaped', 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label',
                           'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
-                          'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
+                          'allowDuplicates', 'chips', 'items', 'itemText', 'itemValue', 'value',]
                         ),
+                        menuProps: computedMenuProps.value,
                         showSearchField: false,
                         genTextFieldFn: genTextFieldProps,
                         genListFn: () => genList(props, options, selectedItem, showOptions, context, selections, state) ,

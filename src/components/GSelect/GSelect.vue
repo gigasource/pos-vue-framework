@@ -3,7 +3,7 @@
   import GMenu from "../GMenu/GMenu"
   import {makeSelectable} from "../../mixins/groupable";
   import {reactive, ref, computed, toRefs} from "@vue/composition-api";
-  import {getList, getSelections} from "./GSelectFactory";
+  import {genMenu, getList, getSelections} from "./GSelectFactory";
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
@@ -126,6 +126,10 @@
       //genList
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
+      const onItem = () => {
+        console.log('item clicked')
+        showOptions.value = props.multiple
+      }
 
       const genList = (typeof props.genListFn === 'function' && props.genListFn)
           || function (showOptions) {
@@ -141,7 +145,7 @@
                     selectable: true,
                   },
                   on: {
-                    'click:item': () => showOptions.value = props.multiple
+                    'click:item': () => onItem()
                   },
                 }}
                 vModel={selectedItem.value}
