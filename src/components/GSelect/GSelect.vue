@@ -91,6 +91,7 @@
 				default: 'arrow_drop_down'
 			},
 			appendSvg: Boolean,
+			required: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -221,7 +222,7 @@
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly']),
+                      'rules', 'type', 'disabled', 'readOnly', 'required']),
                     value: textfieldValue.value
                   },
                   on: {

@@ -6,22 +6,30 @@
 					Create New Product
 				</div>
 				<div class="input">
-					<p-o-s-text-field label="Name"/>
-					<p-o-s-select label="Tax Category" :items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down"/>
-					<p-o-s-text-field label="Product ID"/>
-					<p-o-s-select label="Product Category":items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down"/>
-					<p-o-s-text-field label="Product Code"/>
+					<p-o-s-text-field label="Name" required placeholder="Fill your number"/>
+					<p-o-s-select label="Tax Category" :items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down" required/>
+					<p-o-s-text-field label="Product ID" placeholder="Auto generate"/>
+					<p-o-s-select label="Product Category":items="items" item-text="value" v-model="selected" append-icon="mdi-chevron-down" required/>
+					<p-o-s-text-field label="Product Code" placeholder="Shortcut Key"/>
 					<p-o-s-select label="Unit" :items="items2" item-text="value" v-model="selected2" append-icon="mdi-chevron-down"/>
 					<div class="row-flex">
 						<div class="col-6">
-							<p-o-s-text-field label="Price"/>
+							<p-o-s-text-field label="Price" required placeholder="Fill your number">
+								<template v-slot:append>
+									<span style="color: #1471ff">€</span>
+								</template>
+							</p-o-s-text-field>
 						</div>
 						<div class="col-6">
-							<p-o-s-text-field label="Barcode"/>
+							<p-o-s-text-field label="Barcode/PLU" placeholder="Fill your number">
+								<template v-slot:append>
+									<g-icon svg>icon-scanning_barcode</g-icon>
+								</template>
+							</p-o-s-text-field>
 						</div>
 					</div>
-					<p-o-s-text-field label="Manual Price Input"/>
-					<p-o-s-select label="Plastic Bottle" placeholder="Select" append-icon="mdi-chevron-down"/>
+					<p-o-s-text-field label="Manual Price Input" placeholder="Fill your number"/>
+					<p-o-s-select label="Plastic Bottle" placeholder="Select" append-icon="mdi-chevron-down" :items="[]"/>
 					<div class="row-flex">
 						<div class="col-6">
 							<pos-switch dense label="Favorite" :input-value="true"/>
@@ -40,7 +48,7 @@
 					</g-expansion>
 				</div>
 				<div class="action">
-					<g-btn flat background-color="#EFEFEF" text-color="#757575" class="mr-2">Cancel</g-btn>
+					<g-btn flat background-color="#EFEFEF" text-color="#757575" class="mr-2" width="120">Cancel</g-btn>
 					<g-btn flat background-color="blue accent 3" text-color="white">Submit</g-btn>
 				</div>
 			</div>
@@ -59,9 +67,10 @@
   import POSSelect from '../../../POSComponents/POSInput/POSSelect';
   import GExpansion from '../../../components/GExpansion/GExpansion';
   import GBtn from '../../../components/GBtn/GBtn';
+  import GIcon from '../../../components/GIcon/GIcon';
   export default {
     name: 'dialogNewProduct',
-    components: { GBtn, GExpansion, POSSelect, PosSwitch, POSTextField, PosKeyboardFull, GDialog },
+    components: { GIcon, GBtn, GExpansion, POSSelect, PosSwitch, POSTextField, PosKeyboardFull, GDialog },
 		data () {
       return {
         selected: null,
@@ -140,6 +149,7 @@
 			.action {
 				display: flex;
 				justify-content: flex-end;
+				padding-right: 48px;
 			}
 		}
 	}
