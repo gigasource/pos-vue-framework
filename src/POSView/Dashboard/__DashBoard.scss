@@ -3,6 +3,8 @@
 }
 
 .sidebar {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+
   .g-sidebar-wrapper {
     height: 100%;
   }
@@ -10,6 +12,7 @@
   &::v-deep .g-sidebar {
     position: relative;
     width: 100%;
+    max-width: 100%;
   }
 
   ul::v-deep {
@@ -21,6 +24,7 @@
       background: linear-gradient(9.78deg, #3949AB 0%, #4FC3F7 100%) !important;
       border-radius: 0px 4px 4px 0px;
       //todo: box-shadow
+      box-shadow: 1px 1px 6px 1px #4FC3F7;
       color: white;
 
       .g-icon {
@@ -59,28 +63,23 @@
 
 .header {
   background: linear-gradient(3.41deg, #3949AB 0%, #4FC3F7 100%);
-
-  font-family: Muli;
+  padding: 12px 10px;
   font-style: normal;
+  font-weight: 100;
+  font-size: 13px;
+  line-height: 16px;
   text-align: right;
   color: #FFFFFF;
-
-  .time {
-    font-weight: 100;
-    font-size: 13px;
-    line-height: 16px;
-  }
 }
 
 
 .content {
   background: #F2F2F2;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  padding: 0 19.5px 0 23px;
 }
 
 .welcome {
   align-self: center;
-  font-family: Muli;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
@@ -89,32 +88,11 @@
   color: #424242;
 }
 
-.line {
-  align-self: center;
-  height: 1px;
-  background-color: #E0E0E0;
-}
-
-.btn {
-  width: 100%;
-}
-
 .btn-text {
   font-size: 16px;
   letter-spacing: 0;
   color: #424242;
   margin-top: 20px;
+  //word-wrap: break-spaces;
+  white-space: pre-wrap;
 }
-
-//h6 {
-//  color: white;
-//  padding-left: 10px;
-//}
-
-//body {
-//  margin: 0;
-//}
-
-//.elevation-4 {
-//  box-shadow: 2px 0 0px -1px rgba(0, 0, 0, 0.2), 1px 0 2px 0px rgba(0, 0, 0, 0.14), 2px 0 5px 0px rgba(0, 0, 0, 0.12);
-//}
