@@ -10,7 +10,12 @@
         </div>
         <div class="textfield-section">
           <p class="introduction-line">Enter your passcode to login</p>
-          <g-text-field class="input-text-field" error hint="Passcode is incorrect" type="password" v-model="password"></g-text-field>
+          <g-text-field class="input-text-field" error type="password" v-model="password">
+            <template v-slot:hint v-if="password.length < 6">
+                <g-icon size="16px" color="red" style="margin-right: 8px">mdi-close-circle</g-icon>
+                <p style="color: #F44336;">Passcode is incorrect</p>
+            </template>
+          </g-text-field>
         </div>
         <div class="input-section">
           <g-btn @click="password += '0'" class="btn btn-0" height="100%" outlined>0</g-btn>
