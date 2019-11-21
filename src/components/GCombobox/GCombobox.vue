@@ -3,16 +3,17 @@
   import GMenu from "../GMenu/GMenu"
   import {makeSelectable} from "../../mixins/groupable";
   import {reactive, ref, computed, watch} from "@vue/composition-api";
-  import {getList, getSelections} from "./GSelectFactory";
+
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
   import _ from "lodash"
   import {getLabel, getValidate} from "../GInput/GInputFactory";
-  import GSelect from "./GSelect";
+  import GSelect from "../GSelect/GSelect";
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
+  import {getList, getSelections} from "../GSelect/GSelectFactory";
 
   export default {
     name: "GCombobox",
@@ -100,6 +101,7 @@
         searchText: '',
         fieldItem: null
       })
+
 
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeSelectable(props, context)
@@ -303,7 +305,7 @@
                 mandatory: props.mandatory,
                 allowDuplicates: props.allowDuplicates,
                 multiple: props.multiple,
-                dense: true,
+                inMenu:true,
                 selectable: true,
               },
               on: {
@@ -366,10 +368,6 @@
       .g-menu--activator {
         span {
           margin: 3px
-        }
-
-        .g-tf-wrapper {
-          margin: 16px 0px 24px 5px
         }
 
         .g-tf-append__inner {

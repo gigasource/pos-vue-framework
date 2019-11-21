@@ -280,13 +280,8 @@
       span {
         margin: 3px
       }
-
-      .g-tf-wrapper {
-        margin: 16px 0 24px 10px;
-      }
-
-      .g-tf-append__inner {
-        transition: transform 0.4s
+      .g-tf-append__inner .g-icon:last-child {
+        transition: transform 0.4s;
       }
 
       .g-tf-input {
@@ -308,6 +303,7 @@
 
   .g-select__active::v-deep {
     .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
       transform: rotateZ(180deg);
     }
   }
