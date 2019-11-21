@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<div :style="[{visibility: showKeyboard ? 'visible' : 'hidden'}]" class="keyboard-wrapper">
-				<g-keyboard :template="templateNp2" :items="numpad_2"/>
+				<pos-numpad/>
 			</div>
 		</div>
 	</g-dialog>
@@ -52,32 +52,17 @@
   import GRadioGroup from '../../components/GRadio/GRadioGroup';
   import GRadio from '../../components/GRadio/GRadio';
   import GBtn from '../../components/GBtn/GBtn';
-  import GKeyboard from '../../components/GKeyboard/GKeyboard';
+  import PosNumpad from '../../POSComponents/PosNumpad';
 
   export default {
     name: 'dialogChangePrice',
-    components: { GKeyboard, GBtn, GRadio, GRadioGroup, GTextField, GDialog },
+    components: { PosNumpad, GBtn, GRadio, GRadioGroup, GTextField, GDialog },
     props: {
       value: Boolean,
       product: null,
     },
     data() {
       return {
-        numpad_2: [
-          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key7' },
-          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key8' },
-          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key9' },
-          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key4' },
-          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key5' },
-          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key6' },
-          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key1' },
-          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key2' },
-          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key3' },
-          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key0' },
-          { content: ['.'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: keyDot' },
-          { content: [''], img: 'delivery/key_delete', classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1), style: 'grid-area: keyX' },
-        ],
-        templateNp2: 'grid-template: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 keyDot keyX"/ 1fr 1fr 1fr',
         changeType: null,
         showKeyboard: false,
         newPrice: 0,
@@ -122,7 +107,6 @@
 </script>
 
 <style lang="scss">
-
 	.dialog-change {
 		border-radius: 6px;
 		display: flex;
