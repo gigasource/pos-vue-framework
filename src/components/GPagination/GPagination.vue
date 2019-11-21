@@ -2,11 +2,16 @@
   import _ from 'lodash'
   import { reactive, computed, watch } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn'
+  import GIcon from '../GIcon/GIcon';
 
+  const viewModeEnum = {
+    grid: 0,
+    list: 1
+  }
 
   export default {
     name: 'Paging',
-    components: { GBtn },
+    components: { GIcon, GBtn },
     props: {
       dataSrc: Array,
       itemsPerPage: Number,
@@ -14,8 +19,11 @@
       renderItems: Function,
     },
     setup(props, context) {
-      const _state = reactive({ selectedIndex: 0 })
-      watch(() => props.dataSrc, () => _state.selectedIndex = 0, { flush: 'pre' })
+      const state = reactive({
+        selectedIndex: 0,
+        viewMode: viewModeEnum.grid
+      })
+      watch(() => props.dataSrc, () => state.selectedIndex = 0, { flush: 'pre' })
 
       const cptTotalPages = computed(() => {
         return Math.floor((props.dataSrc.length + props.itemsPerPage - 1) / props.itemsPerPage)
@@ -27,7 +35,7 @@
           _pages.push({
             index: i,
             items: props.dataSrc.slice(i * props.itemsPerPage, i * props.itemsPerPage + props.itemsPerPage),
-            select: () => _state.selectedIndex = i
+            select: () => state.selectedIndex = i
           })
         }
         return _pages
@@ -38,34 +46,50 @@
         if (cptTotalPages.value <= props.pageIndexesShowInView) {
           return cptPages.value
         } else {
-          if (_state.selectedIndex <= half) {
+          if (state.selectedIndex <= half) {
             return [...cptPages.value.slice(0, props.pageIndexesShowInView), null]
-          } else if (_state.selectedIndex >= cptTotalPages.value - 1 - half) {
+          } else if (state.selectedIndex >= cptTotalPages.value - 1 - half) {
             return [null, ...cptPages.value.slice(cptTotalPages.value - props.pageIndexesShowInView, cptTotalPages.value)]
           } else {
-            const start = _state.selectedIndex - half
-            return [null, ...cptPages.value.slice(start, _state.selectedIndex + half + 1), null]
+            const start = state.selectedIndex - half
+            return [null, ...cptPages.value.slice(start, state.selectedIndex + half + 1), null]
           }
         }
       })
 
-      const cptCanGoBegin = computed(() => _state.selectedIndex > 0)
-      const cptCanGoBack = computed(() => _state.selectedIndex > 0)
-      const cptCanGoNext = computed(() => _state.selectedIndex < cptTotalPages.value - 1)
-      const cptCanGoEnd = computed(() => _state.selectedIndex < cptTotalPages.value - 1)
-      const goBegin = () => _state.selectedIndex = 0
-      const goBack = () => _state.selectedIndex--
-      const goNext = () => _state.selectedIndex++
-      const goEnd = () => _state.selectedIndex = cptTotalPages.value - 1
+      const cptCanGoBegin = computed(() => state.selectedIndex > 0)
+      const cptCanGoBack = computed(() => state.selectedIndex > 0)
+      const cptCanGoNext = computed(() => state.selectedIndex < cptTotalPages.value - 1)
+      const cptCanGoEnd = computed(() => state.selectedIndex < cptTotalPages.value - 1)
+      const goBegin = () => state.selectedIndex = 0
+      const goBack = () => state.selectedIndex--
+      const goNext = () => state.selectedIndex++
+      const goEnd = () => state.selectedIndex = cptTotalPages.value - 1
 
       // custom render
       const _renderItems = props.renderItems || (item => <div>{item}</div>)
 
+      const getViewModeSwitchClass = (viewMode) => ({
+        'g-pagination__view-mode-switch' : true,
+        'g-pagination__view-mode-switch--selected' : viewMode === state.viewMode,
+      })
+
       return () => {
         return (
             <div>
+              <div class="g-pagination__header">
+                <span class="g-pagination__header-title">Displaying {props.dataSrc.length} items</span>
+                <div class="g-pagination__view-mode">
+                  <button class={getViewModeSwitchClass(viewModeEnum.grid)} vOn:click={e => state.viewMode = viewModeEnum.grid}>
+                    <g-icon>mdi-view-module</g-icon>
+                  </button>
+                  <button class={getViewModeSwitchClass(viewModeEnum.list)} vOn:click={e => state.viewMode = viewModeEnum.list}>
+                    <g-icon>mdi-view-list</g-icon>
+                  </button>
+                </div>
+              </div>
               <div class="items">
-                { cptPages.value.length == 0 ? null : _.map(cptPages.value[_state.selectedIndex].items, _renderItems)}
+                { cptPages.value.length == 0 ? null : _.map(cptPages.value[state.selectedIndex].items, _renderItems)}
               </div>
               <div class="page-indexes">
                 <g-btn
@@ -89,7 +113,7 @@
                           width={30}
                           maxWidth={30}
                           maxHeight={30}
-                          active={page.index === _state.selectedIndex}
+                          active={page.index === state.selectedIndex}
                           activeClass="paging__nav--active"
                           vOn:click={() => page.select()}>
                         {page.index + 1}
@@ -117,6 +141,33 @@
   }
 </script>
 <style scoped lang="scss">
+  .g-pagination {
+    &__header {
+      display: flex;
+      flex-direction: row;
+
+      &-title {
+        flex: 1;
+      }
+    }
+
+    &__view-mode-switch {
+      background-color: #fff;
+      outline: none;
+
+      &--selected {
+        background-color: #888;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+
+
+
   .items {
     display: flex;
     flex-direction: row;
