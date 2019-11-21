@@ -17,9 +17,6 @@
     setup(props, context) {
       const { model, toggleItem, isActiveItem } = getExpansionModel(props, context)
 
-      const genHeaderText = genHeaderFactory(props.itemHeader);
-
-      provide ('genHeaderText', genHeaderText)
 			provide ('toggleItem', toggleItem)
 			provide ('isActiveItem', isActiveItem)
 

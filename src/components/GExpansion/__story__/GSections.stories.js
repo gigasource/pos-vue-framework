@@ -17,9 +17,7 @@ export const Demo = () => ({
     itemHeight: {default: number('Item height', 32)}
   },
   setup() {
-    const key = ref(0)
     const activeItem = ref(null)
-    const singleItem = ref({title: 'Section 1'})
     const items = ref([
       {
         title: 'Section 2',
@@ -52,7 +50,6 @@ export const Demo = () => ({
 
     return {
       items,
-      singleItem,
       activeItem,
     }
   },
@@ -60,30 +57,29 @@ export const Demo = () => ({
   <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
       <div style="width: 100%; height: 20%;">
       </div>
-      <g-sections v-model="activeItem" item-header="title">
-        <g-sections-item :item="singleItem" :height="itemHeight">
+      <g-sections v-model="activeItem">       
+        <g-sections-item :item="1" :height="itemHeight" header="Section 1">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
           <g-switch flat label="Auto populate"/>
           <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
         </g-sections-item>
-        <g-sections-item v-for="(item, index) in items" :item="item" :height="itemHeight" :key="index">
+        <g-sections-item v-for="(item, index) in items" :item="item" :header="item.title" :height="itemHeight" :key="index">
           {{item.content}}
         </g-sections-item>
       </g-sections>
   </div>
-  `
+`
 })
 
-export const Madatory = () => ({
+export const Mandatory = () => ({
   components: { GSections, GSectionsItem, GTextField, GSwitch, GBtn },
   props: {
     itemHeight: {default: number('Item height', 32)}
   },
   setup() {
     const activeItem = ref(null)
-    const singleItem = ref({title: 'Section 1'})
     const items = ref([
       {
         title: 'Section 2',
@@ -115,7 +111,6 @@ export const Madatory = () => ({
 
     return {
       items,
-      singleItem,
       activeItem,
     }
   },
@@ -123,20 +118,20 @@ export const Madatory = () => ({
   <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
       <div style="width: 100%; height: 20%;">
       </div>
-      <g-sections v-model="activeItem" item-header="title" mandatory>
-        <g-sections-item :item="singleItem" :height="itemHeight">
+      <g-sections v-model="activeItem" mandatory>       
+        <g-sections-item :item="1" :height="itemHeight" header="Section 1">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
           <g-switch flat label="Auto populate"/>
           <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
         </g-sections-item>
-        <g-sections-item v-for="(item, index) in items" :item="item" :height="itemHeight" :key="index">
+        <g-sections-item v-for="(item, index) in items" :item="item" :header="item.title" :height="itemHeight" :key="index">
           {{item.content}}
         </g-sections-item>
       </g-sections>
   </div>
-  `
+`
 })
 
 export const Multiple = () => ({
@@ -146,7 +141,6 @@ export const Multiple = () => ({
   },
   setup() {
     const activeItem = ref(null)
-    const singleItem = ref({title: 'Section 1'})
     const items = ref([
       {
         title: 'Section 2',
@@ -178,7 +172,6 @@ export const Multiple = () => ({
 
     return {
       items,
-      singleItem,
       activeItem,
     }
   },
@@ -186,18 +179,18 @@ export const Multiple = () => ({
   <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
       <div style="width: 100%; height: 20%;">
       </div>
-      <g-sections v-model="activeItem" item-header="title" multiple>
-        <g-sections-item :item="singleItem" :height="itemHeight">
+      <g-sections v-model="activeItem" multiple>       
+        <g-sections-item :item="1" :height="itemHeight" header="Section 1">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
           <g-switch flat label="Auto populate"/>
           <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
         </g-sections-item>
-        <g-sections-item v-for="(item, index) in items" :item="item" :height="itemHeight" :key="index">
+        <g-sections-item v-for="(item, index) in items" :item="item" :header="item.title" :height="itemHeight" :key="index">
           {{item.content}}
         </g-sections-item>
       </g-sections>
   </div>
-  `
+`
 })

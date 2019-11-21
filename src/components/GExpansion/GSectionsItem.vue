@@ -12,6 +12,8 @@
     props: {
       item: null,
 
+			header: String,
+
       width: {
         type: [Number, String]
       },
@@ -20,7 +22,6 @@
       }
 		},
     setup (props, context) {
-      const genHeaderText = inject('genHeaderText')
 			const toggleItem = inject('toggleItem')
 			const isActiveItem = inject('isActiveItem')
 
@@ -34,7 +35,7 @@
           class={['g-sections-item-header', { 'g-sections-item-header__active': isActiveItem(props.item) }]}
 					style={headerStyles.value}
           vOn:click={() => toggleItem(props.item)}>
-          {genHeaderText.value(props.item)}
+          {props.header}
           <div class="g-sections-item-header-append">
             <g-icon small svg>icon-arrow-right</g-icon>
           </div>
