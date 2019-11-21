@@ -35,7 +35,6 @@ const routes = [
   { path: '/order', name: 'Order', component: Order},
   { path: '/payment', name: 'Payment', component: Payment},
   { path: '/login', name: 'Login', component: Login },
-  { path: '/order', name: 'Order', component: Order },
   { path: '/article', name: 'Article', component: Article },
   { path: '/function-button', name: 'Function Button', component: FunctionButton },
 
