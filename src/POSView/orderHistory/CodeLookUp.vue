@@ -4,7 +4,7 @@
 			<template v-slot:activator="{ toggleDialog }">
 				<g-btn flat text-color="#1271FF" @click="toggleDialog">
 					<p>{{text}}</p>
-					<g-icon>{{LookUpIcon}}</g-icon>
+					<g-icon svg size="10" right>icon-zoom</g-icon>
 				</g-btn>
 			</template>
 			<g-grid-layout :layout="Layout" :displayPreviewColor="false" style="height: 443px; width: 522px">
@@ -51,7 +51,6 @@
     import GTextField from "../../components/GInput/GTextField";
     import GBtn from "../../components/GBtn/GBtn";
     import GIcon from "../../components/GIcon/GIcon";
-    import LookUpIcon from "./lookup.svg"
 
     export default {
         name: "CodeLookUp",
@@ -86,7 +85,6 @@
             return {
                 Layout,
                 dialog,
-                LookUpIcon,
                 btns,
                 input,
                 //handler
@@ -98,5 +96,4 @@
 </script>
 
 <style scoped>
-
 </style>

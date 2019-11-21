@@ -4,7 +4,7 @@
       <template v-slot:activator="{ toggleDialog }">
         <g-btn flat text-color="#1271FF" @click="toggleDialog">
           <p>Date Time</p>
-          <g-icon>{{FilterIcon}}</g-icon>
+          <g-icon svg size="10" right>icon-path-filter</g-icon>
         </g-btn>
       </template>
       <div style="background-color: #FFFFFF">
@@ -24,7 +24,6 @@
     import GDatePicker from "../../components/GDatePicker/GDatePicker";
     import GBtn from "../../components/GBtn/GBtn";
     import GIcon from "../../components/GIcon/GIcon";
-    import FilterIcon from "./filter.svg"
 
     export default {
         name: "DialogPicker",
@@ -33,8 +32,7 @@
             const dialog = ref(false)
 
             return {
-                dialog,
-                FilterIcon,
+                dialog
             }
         }
     }
