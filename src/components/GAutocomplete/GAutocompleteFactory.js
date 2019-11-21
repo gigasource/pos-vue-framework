@@ -58,15 +58,10 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   const inputAddSelection = () => {
     if (state.searchText.trim().length > 0) {
-      let inputAddedItem
-      props.itemValue
-          ? inputAddedItem = {
-            [props.itemText]: state.searchText,
-            [props.itemValue]: state.searchText
-          } :
-          inputAddedItem = {
-            [props.itemText]: state.searchText
-          }
+      let inputAddedItem = props.itemValue ? {
+        [props.itemText]: state.searchText,
+        [props.itemValue]: state.searchText
+      } : {[props.itemText]: state.searchText}
       toggleItem(inputAddedItem)
       setSearch(props, context, selections, state)
     }
@@ -89,7 +84,7 @@ export function genTextFieldScopedSlot(props, context, selections, onChipCloseCl
         <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
           {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
         </div>,
-    label: () => <label htmlFor="input" class={["g-tf-label", labelClasses.value]}
+    label: () => <label for="input" class={["g-tf-label", labelClasses.value]}
                         style={labelStyles.value}>{props.label}</label>,
     inputMessage: () => [<div v-show={props.counter} class={{
       'g-tf-counter': true,
@@ -154,7 +149,7 @@ export function resetSelectionsDisplay(state, pressDeleteTimes) {
 
   pressDeleteTimes = 0
   state.lastItemColor = '#1d1d1d'
-  console.log('reset: '+ pressDeleteTimes)
+  console.log('reset: ' + pressDeleteTimes)
 }
 
 export function setSearch(props, context, selections, state) {

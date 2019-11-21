@@ -173,9 +173,7 @@
                     delete: onInputDelete,
                     enter: inputAddSelection,
                     keydown: (e) => onInputKeyDown(e),
-                    input: (e) => {
-                      state.searchText = e
-                    },
+                    input: (e) => state.searchText = e ,
                   },
                   scopedSlots: textFieldScopedSlots
                 }}
@@ -217,6 +215,7 @@
 
       return {
         genCombobox,
+        labelClasses,
         state,
         options,
         showOptions,
