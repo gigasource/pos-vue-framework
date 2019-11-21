@@ -120,7 +120,8 @@
       function genSearchTextField() {
         if (props.searchable && props.showSearchField) {
           return <GTextField placeholder="Search"
-                             vModel={state.searchText}
+                             vOn:input={e => state.searchText = e}
+                             value={state.searchText}
                              clearable
                              ref="searchText"
                              autofocus={searchFocused.value}
@@ -145,12 +146,13 @@
                     multiple: props.multiple,
                     inMenu: true,
                     selectable: true,
+                    value: selectedItem.value,
                   },
                   on: {
-                    'click:item': () => showOptions.value = props.multiple
+                    'click:item': () => showOptions.value = props.multiple,
+                    input: e => selectedItem.value = e,
                   },
                 }}
-                vModel={selectedItem.value}
                 ref="list"
             />
           }
@@ -241,14 +243,17 @@
       //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
-        return <g-menu vModel={showOptions.value}
-                       {...{
+        return <g-menu {...{
                          props: {
                            ...props.menuProps,
-                           nudgeBottom: nudgeBottom.value
+                           nudgeBottom: nudgeBottom.value,
+                           value: showOptions.value,
                          },
                          scopedSlots: {
                            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+                         },
+                         on: {
+                           input: e => showOptions.value = e,
                          }
                        }}
         >

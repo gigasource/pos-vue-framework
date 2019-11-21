@@ -198,7 +198,7 @@
           }
         }
 
-        return <g-overlay vModel={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
+        return <g-overlay vOn:input={e => isActive.value = e} value={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
       }
 
       function genActivator() {

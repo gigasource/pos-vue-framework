@@ -183,7 +183,8 @@ export const treeView = () => ({
         <g-side-bar-tree-view
           data={data.value}
           rounded
-          vModel={state.value}/>
+          vOn:input={e => state.value = e}
+          value={state.value}/>
       </g-sidebar>
   }
 });

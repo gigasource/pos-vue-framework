@@ -307,13 +307,14 @@
                 multiple: props.multiple,
                 inMenu:true,
                 selectable: true,
+                value: selectedItem.value,
               },
               on: {
-                'click:item': onClickItem
+                'click:item': onClickItem,
+                input: e => selectedItem.value = e,
               },
             }
             }
-            vModel={selectedItem.value}
             ref="list"
         />
       }
