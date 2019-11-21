@@ -59,7 +59,7 @@
               name: 'intersect',
               arg: {
                 root: context.parent.$el,
-                threshold: 1.0
+                threshold: 0.99
               },
               value: () => {
                 internalValue.value = data.value

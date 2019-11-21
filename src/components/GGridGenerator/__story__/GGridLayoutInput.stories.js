@@ -11,7 +11,7 @@ export const index = () => ({
   components: { GGridGeneratorInput },
   setup() {
     const state = reactive({
-      model: {},
+      model: { layout: undefined },
       field: { key: 'layout' }
     })
     const render = () => <g-grid-generator-input {...{ props: { model: state.model } }} field={state.field}></g-grid-generator-input>

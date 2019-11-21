@@ -26,7 +26,7 @@ export const POSTextField = () => ({
                                  <template v-slot:append="{onClick}">
                                    <g-icon color="red">mdi-pen</g-icon>
                                  </template>
-                                 <template #apendContent>
+                                 <template #appendContent>
                                    Append
                                  </template>
                                </pos-text-field>

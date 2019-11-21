@@ -20,6 +20,20 @@ export default class GridModel extends AreaModel {
     super({area, parent})
   }
 
+  toJSON() {
+    const output = super.toJSON()
+    output.alignItems = this.alignItems
+    output.alignContent = this.alignContent
+    output.justifyItems = this.justifyItems
+    output.justifyContent = this.justifyContent
+    output.columns = _.map(this.columns, refVal => refVal.value)
+    output.rows = _.map(this.rows, refVal => refVal.value)
+    output.columnGap = this.columnGap
+    output.rowGap = this.rowGap
+    output.subAreas = _.map(this.subAreas, subArea => subArea.toJSON())
+    return output
+  }
+
   // columns
   insertColumnLeft(index) {
     this.columns.splice(index, 0, ref('1fr'))

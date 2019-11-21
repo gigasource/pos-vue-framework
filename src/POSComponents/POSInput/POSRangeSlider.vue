@@ -61,20 +61,15 @@
     .g-slider-thumb-label {
       transform: translateY(-20%) translateY(-12px) translateX(-50%) !important;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: row;
       width: 58px !important;
       height: 30px !important;
+      border-radius: 8px;
+      position: absolute;
+      transition: 0.3s;
+
       font-size: 15px;
       font-weight: normal;
       letter-spacing: 1px;
-      border-radius: 8px;
-      position: absolute;
-      left: 0;
-      bottom: 100%;
-      user-select: none;
-      transition: 0.3s;
 
       > * {
         transform: none;
