@@ -235,10 +235,10 @@ export const tab = () => ({
       :slider-size="sliderSize"
       :slider-color="sliderColor"
       >
-      <g-tab-item-web-animation v-for="tabItem in items" :item="tabItem">
+      <g-tab-item-vue-animation v-for="tabItem in items" :item="tabItem">
         <g-list-custom :items="tabItem.list" :subheader="tabItem.subheader">
         </g-list-custom>
-      </g-tab-item-web-animation>
+      </g-tab-item-vue-animation>
     </ios-tab>
   `,
 });
