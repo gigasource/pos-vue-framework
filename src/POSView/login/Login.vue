@@ -13,23 +13,7 @@
           <g-text-field class="input-text-field" error hint="Passcode is incorrect" type="password" v-model="password"></g-text-field>
         </div>
         <div class="input-section">
-          <g-btn @click="password += '0'" class="btn btn-0" height="100%" outlined>0</g-btn>
-          <g-btn @click="password += '1'" class="btn btn-1" height="100%" outlined>1</g-btn>
-          <g-btn @click="password += '2'" class="btn btn-2" height="100%" outlined>2</g-btn>
-          <g-btn @click="password += '3'" class="btn btn-3" height="100%" outlined>3</g-btn>
-          <g-btn @click="password += '4'" class="btn btn-4" height="100%" outlined>4</g-btn>
-          <g-btn @click="password += '5'" class="btn btn-5" height="100%" outlined>5</g-btn>
-          <g-btn @click="password += '6'" class="btn btn-6" height="100%" outlined>6</g-btn>
-          <g-btn @click="password += '7'" class="btn btn-7" height="100%" outlined>7</g-btn>
-          <g-btn @click="password += '8'" class="btn btn-8" height="100%" outlined>8</g-btn>
-          <g-btn @click="password += '9'" class="btn btn-9" height="100%" outlined>9</g-btn>
-          <g-btn @click="password = ''" class="btn btn-clear" height="100%" outlined>
-            Clear
-          </g-btn>
-          <g-btn @click="password = password.substring(0, password.length-1)" class="btn btn-back" height="100%" outlined>
-            <g-icon>mdi-backspace</g-icon>
-          </g-btn>
-          <g-btn background-color="blue" class="btn-login" elevation="0" height="100%" style="font-size: 16px;" text-color="white">LOGIN</g-btn>
+          <pos-login-keyboard v-model="password" style="height: 100%"></pos-login-keyboard>
         </div>
         <div class="footer-section">
           <g-btn text>Version</g-btn>
@@ -84,10 +68,11 @@
   import loginSupportDialog from '../login/loginSupportDialog'
   import GGridLayout from '../../components/GGridGenerator/GGridLayout';
   import PosKeyboardFull from '../../POSComponents/PosKeyboardFull';
+  import PosLoginKeyboard from '../../POSComponents/POSInput/PosLoginKeyboard';
 
   export default {
     name: 'Login',
-    components: { PosKeyboardFull, GGridLayout, GBtn, GTextField, GImg, GIcon, GDndDialog, GDialog, GCard, GCardText, GCardActions, GCardSubtitle, },
+    components: { PosLoginKeyboard, PosKeyboardFull, GGridLayout, GBtn, GTextField, GImg, GIcon, GDndDialog, GDialog, GCard, GCardText, GCardActions, GCardSubtitle, },
     data: () => ({
       password: '',
       keyboardOn: false,
@@ -205,12 +190,12 @@
   }
 
   .input-section {
-    display: grid;
+    /*display: grid;*/
     width: 70%;
-    grid-template-rows: 25% 25% 25% 25%;
-    grid-template-columns: 25% 25% 25% 25%;
-    justify-items: stretch;
-    grid-gap: 10px;
+    /*grid-template-rows: 25% 25% 25% 25%;*/
+    /*grid-template-columns: 25% 25% 25% 25%;*/
+    /*justify-items: stretch;*/
+    /*grid-gap: 10px;*/
   }
 
   .footer-section {
@@ -224,70 +209,4 @@
     border-color: rgba(0, 0, 0, 0.43);
     font-size: 20px !important;
   }
-
-  .btn-clear {
-    grid-row: 4/ span 1;
-    grid-column: 1/ span 1;
-  }
-
-  .btn-0 {
-    grid-row: 4/ span 1;
-    grid-column: 2/ span 1;
-  }
-
-  .btn-back {
-    grid-row: 4/ span 1;
-    grid-column: 3/ span 1;
-  }
-
-  .btn-1 {
-    grid-row: 3/ span 1;
-    grid-column: 1/ span 1;
-  }
-
-  .btn-2 {
-    grid-row: 3/ span 1;
-    grid-column: 2/ span 1;
-  }
-
-  .btn-3 {
-    grid-row: 3/ span 1;
-    grid-column: 3/ span 1;
-  }
-
-  .btn-4 {
-    grid-row: 2/ span 1;
-    grid-column: 1/ span 1;
-  }
-
-  .btn-5 {
-    grid-row: 2/ span 1;
-    grid-column: 2/ span 1;
-  }
-
-  .btn-6 {
-    grid-row: 2/ span 1;
-    grid-column: 3/ span 1;
-  }
-
-  .btn-7 {
-    grid-row: 1/ span 1;
-    grid-column: 1/ span 1;
-  }
-
-  .btn-8 {
-    grid-row: 1/ span 1;
-    grid-column: 2/ span 1;
-  }
-
-  .btn-9 {
-    grid-row: 1/ span 1;
-    grid-column: 3/ span 1;
-  }
-
-  .btn-login {
-    grid-row: 1 / span 4;
-    grid-column: 4 / span 1;
-  }
-
 </style>
