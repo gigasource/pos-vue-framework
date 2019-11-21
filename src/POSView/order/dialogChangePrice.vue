@@ -3,7 +3,7 @@
 		<div class="dialog-change w-100" :style="[{background: showKeyboard ? 'white' : 'transparent'}]">
 			<div class="dialog-change-content">
 				<div class="header">
-					<div class="col-5 ml-5">
+					<div class="col-5">
 						<p>Original Price</p>
 						<g-text-field read-only outlined value="€ 50"/>
 					</div>
@@ -14,24 +14,24 @@
 				</div>
 				<g-radio-group name="basic" v-model="changeType">
 					<g-radio color="#1271ff" value="percentage" label="Discount by %"></g-radio>
-					<div class="row-flex ml-5 col-10 pr-2">
+					<div class="row-flex col-10 m-auto">
 						<g-btn outlined :disabled="disabledPercent">- 5%</g-btn>
 						<g-btn outlined :disabled="disabledPercent">- 10%</g-btn>
 						<g-btn outlined :disabled="disabledPercent">- 15%</g-btn>
 						<g-btn outlined :disabled="disabledPercent">- 20%</g-btn>
-						<g-text-field outlined :disabled="disabledPercent" v-model="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
+						<g-text-field dense outlined :disabled="disabledPercent" v-model="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
 					</div>
-					<g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
-					<div class="row-flex ml-5 col-10 pr-2">
+					<g-radio color="#1271ff" value="amount" label="Discount by €" ></g-radio>
+					<div class="row-flex col-10 m-auto">
 						<g-btn outlined :disabled="disabledAmount">- € 5</g-btn>
 						<g-btn outlined :disabled="disabledAmount">- € 10</g-btn>
 						<g-btn outlined :disabled="disabledAmount">- € 15</g-btn>
 						<g-btn outlined :disabled="disabledAmount">- € 20</g-btn>
-						<g-text-field outlined :disabled="disabledAmount" v-model="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
+						<g-text-field dense outlined :disabled="disabledAmount" v-model="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
 					</div>
 					<g-radio color="#1271ff" value="new" label="New Price"></g-radio>
-					<div class="ml-5 col-10">
-						<g-text-field outlined placeholder="New Price" v-model="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
+					<div class="m-auto col-10">
+						<g-text-field dense outlined placeholder="New Price" v-model="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
 					</div>
 				</g-radio-group>
 				<div class="action">
@@ -117,13 +117,14 @@
 			flex-direction: column;
 			background: white;
 			border-radius: inherit;
-			padding: 32px;
+			padding: 24px 48px;
 
 			.header {
 				display: flex;
 				margin-bottom: 16px;
 				font-size: 13px;
 				font-weight: 700;
+				justify-content: center;
 
 				.g-tf-wrapper {
 					&.tf__effective input {
@@ -157,7 +158,7 @@
 			}
 
 			div:not(.action) .g-btn {
-				height: 50px !important;
+				height: 44px !important;
 			}
 
 			.g-btn:not(:last-child) {
@@ -166,9 +167,15 @@
 
 			.g-radio-wrapper {
 				line-height: 12px;
+				margin: 16px 24px;
 
 				.g-radio {
 					display: inline-flex;
+				}
+
+				.g-radio-label {
+					font-size: 13px;
+					line-height: 16px;
 				}
 			}
 
