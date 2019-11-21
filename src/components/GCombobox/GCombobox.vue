@@ -14,7 +14,7 @@
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
   import {getList, getSelections} from "../GSelect/GSelectFactory";
-  import {genTextFieldScopedSlot, getInputEventHandlers, genList} from "../GAutocomplete/GAutocompleteFactory";
+  import {genTextFieldScopedSlot, getInputEventHandlers, genList, genMenu} from "../GAutocomplete/GAutocompleteFactory";
 
   export default {
     name: "GCombobox",
@@ -135,7 +135,8 @@
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
-      let pressDeleteTimes = 0
+
+      const showOptions = ref(true)
       //textfield event handlers
       const {
         onChipCloseClick,
@@ -152,7 +153,7 @@
 
       const tfValue = computed(() =>
           (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
-          state.lazySearch)
+              state.lazySearch)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
@@ -160,7 +161,8 @@
             <GTextField
                 {...{
                   props: {
-                    ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
+                    ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded',
+                      'shaped', 'label',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                       'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
                     value: tfValue.value
@@ -173,7 +175,7 @@
                     delete: onInputDelete,
                     enter: inputAddSelection,
                     keydown: (e) => onInputKeyDown(e),
-                    input: (e) => state.searchText = e ,
+                    input: (e) => state.searchText = e,
                   },
                   scopedSlots: textFieldScopedSlots
                 }}
@@ -182,17 +184,6 @@
       }
 
       //gen list
-      const showOptions = ref(false)
-      const computedMenuProps = computed(() => {
-        if (props.multiple) return {
-          ...props.menuProps,
-          closeOnContentClick: false
-        }
-        return {
-          ...props.menuProps,
-          closeOnContentClick: true
-        }
-      })
 
       function genCombobox() {
         const comboboxSlots = {
@@ -211,10 +202,9 @@
                           'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
                           'allowDuplicates', 'chips', 'items', 'itemText', 'itemValue', 'value',]
                         ),
-                        menuProps: computedMenuProps.value,
                         showSearchField: false,
                         genTextFieldFn: genTextFieldProps,
-                        genListFn: () => genList(props, options, selectedItem, showOptions, context, selections, state) ,
+                        genListFn: () => genList(props, options, selectedItem, showOptions, context, selections, state),
                       },
                       scopedSlots: {...comboboxSlots}
                     }}

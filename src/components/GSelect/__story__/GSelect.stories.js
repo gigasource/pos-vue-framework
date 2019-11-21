@@ -152,7 +152,7 @@ export const GSelectMultiple = () => ({
       :clearable="clearable"
        multiple 
       :allow-duplicates="allowDuplicates"
-      :menuProps="{closeOnContentClick : true}"
+     
       v-model="selected">
       </g-select>
     </div>`
