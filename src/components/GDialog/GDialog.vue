@@ -66,7 +66,7 @@
       const renderContent = computed(() => isBooted.value || !props.lazy);
 
       function initComponent() {
-				attachToRoot(context.refs.overlay.$el);
+        attachToRoot(context.refs.overlay.$el);
         attachToRoot(context.refs.wrapper);
       }
 
@@ -212,7 +212,18 @@
         </div>
       }
 
+      function open() {
+        isActive.value = true;
+      }
+
+      function close() {
+        isActive.value = false;
+      }
+
       return {
+        open,
+        close,
+        isActive,
         genDialog
       }
     },
@@ -222,94 +233,94 @@
   }
 </script>
 <style scoped lang="scss">
-	.g-dialog {
-		pointer-events: auto;
-		overflow-y: hidden;
-		display: inline;
-		position: relative;
+  .g-dialog {
+    pointer-events: auto;
+    overflow-y: hidden;
+    display: inline;
+    position: relative;
 
-		&-wrapper {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			position: fixed;
-			pointer-events: none;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
-			z-index: 6;
-			outline: none;
-		}
+    &-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 6;
+      outline: none;
+    }
 
-		&-content {
-			display: flex;
-			transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
+    &-content {
+      display: flex;
+      transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
 
-			&:not(.g-dialog-content__fullscreen) {
-				max-width: 90%;
-				max-height: 90%;
-			}
+      &:not(.g-dialog-content__fullscreen) {
+        max-width: 90%;
+        max-height: 90%;
+      }
 
-			> * {
-				width: 100%
-			}
+      > * {
+        width: 100%
+      }
 
-			> ::v-deep.g-card {
-				height: auto;
-				overflow-y: auto;
+      > ::v-deep.g-card {
+        height: auto;
+        overflow-y: auto;
 
-				> .g-card-title {
-					font-size: 2em;
-					font-weight: 500;
-				}
+        > .g-card-title {
+          font-size: 2em;
+          font-weight: 500;
+        }
 
-				> .g-card-actions {
-					justify-content: flex-end;
-				}
-			}
-		}
+        > .g-card-actions {
+          justify-content: flex-end;
+        }
+      }
+    }
 
-		&-content__active {
-			pointer-events: auto;
-		}
+    &-content__active {
+      pointer-events: auto;
+    }
 
-		&-content__scrollable {
-			> ::v-deep.g-card {
-				display: flex;
-				flex: 1 1 100%;
-				flex-direction: column;
-				max-height: 100%;
-				max-width: 100%;
+    &-content__scrollable {
+      > ::v-deep.g-card {
+        display: flex;
+        flex: 1 1 100%;
+        flex-direction: column;
+        max-height: 100%;
+        max-width: 100%;
 
-				> .g-card-title, .g-card-actions {
-					flex: 0 0 auto
-				}
+        > .g-card-title, .g-card-actions {
+          flex: 0 0 auto
+        }
 
-				> .g-card-text {
-					backface-visibility: hidden;
-					flex: 1 1 auto;
-					overflow-y: auto;
-				}
-			}
-		}
+        > .g-card-text {
+          backface-visibility: hidden;
+          flex: 1 1 auto;
+          overflow-y: auto;
+        }
+      }
+    }
 
-		&-content__fullscreen {
-			border-radius: 0;
-			margin: 0;
-			width: 100%;
-			height: 100%;
-			position: fixed;
-			overflow-y: auto;
-			top: 0;
-			left: 0;
+    &-content__fullscreen {
+      border-radius: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      overflow-y: auto;
+      top: 0;
+      left: 0;
 
-			> .g-card {
-				min-height: 100%;
-				min-width: 100%;
-				margin: 0 !important;
-				padding: 0 !important;
-			}
-		}
-	}
+      > .g-card {
+        min-height: 100%;
+        min-width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    }
+  }
 </style>
