@@ -2,8 +2,9 @@ import GList from "../GList/GList";
 import GIcon from "../GIcon/GIcon";
 import {keyCodes} from "../../utils/helpers";
 import GChip from "../GChip/GChip";
+import {getLabel} from "../GInput/GInputFactory";
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused, pressDeleteTimes, lastItemColor, toggleItem) {
+export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, pressDeleteTimes) {
   function onChipCloseClick(index = null) {
     if (props.multiple) {
       selectedItem.value.splice(index, 1);
@@ -14,11 +15,11 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   function clearSelection() {
     selectedItem.value = props.multiple ? [] : ''
-    setSearch(props, context, lazySearch, selections, state)
+    setSearch(props, context, selections, state)
   }
 
   function onInputKeyDown(e) {
-    resetSelectionsDisplay(pressDeleteTimes, lastItemColor)
+    resetSelectionsDisplay(state, pressDeleteTimes)
     if (e.keyCode === keyCodes.down) {
       const listRef = context.refs.select.$refs.list
       listRef.$el.getElementsByClassName('g-list-item')[0].focus()
@@ -26,24 +27,24 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputClick() {
-    resetSelectionsDisplay(pressDeleteTimes, lastItemColor)
+    resetSelectionsDisplay(state, pressDeleteTimes)
     isFocused.value = true
-    lazySearch.value ? state.searchText = '' : null
+    state.lazySearch ? state.searchText = '' : null
   }
 
   function onInputBlur() {
     isFocused.value = false
-    resetSelectionsDisplay(pressDeleteTimes, lastItemColor)
+    resetSelectionsDisplay(state, pressDeleteTimes)
   }
 
   function onInputDelete() {
     if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) return
-    console.log('delete')
+    console.log(pressDeleteTimes)
     if (state.searchText) return pressDeleteTimes = 0
     else {
       if (pressDeleteTimes === 0) {
         pressDeleteTimes++
-        lastItemColor.value = '#1867c0 '
+        state.lastItemColor = '#1867c0 '
       }
       if (pressDeleteTimes === 1) {
         return pressDeleteTimes++
@@ -54,6 +55,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
       }
     }
   }
+
   const inputAddSelection = () => {
     if (state.searchText.trim().length > 0) {
       let inputAddedItem
@@ -66,7 +68,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
             [props.itemText]: state.searchText
           }
       toggleItem(inputAddedItem)
-      setSearch(props, context, lazySearch, selections, state)
+      setSearch(props, context, selections, state)
     }
   }
 
@@ -76,7 +78,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
 }
 
-export function genTextFieldScopedSlot(props, context, selections, onChipCloseClick, lastItemColor, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection) {
+export function genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, isValidInput, labelClasses, labelStyles, validateText, state, hintClasses, errorMessages, clearSelection) {
   const textFieldScopedSlots = {
     clearableSlot: ({iconColor}) =>
         <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
@@ -88,7 +90,7 @@ export function genTextFieldScopedSlot(props, context, selections, onChipCloseCl
           {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
         </div>,
     label: () => <label htmlFor="input" class={["g-tf-label", labelClasses.value]}
-                        style={labelStyles}>{props.label}</label>,
+                        style={labelStyles.value}>{props.label}</label>,
     inputMessage: () => [<div v-show={props.counter} class={{
       'g-tf-counter': true,
       'g-tf-counter__error': !isValidInput.value
@@ -107,7 +109,7 @@ export function genTextFieldScopedSlot(props, context, selections, onChipCloseCl
 
     return selections.value.map(function (item, index) {
           if (index === selections.value.length - 1) return <div
-              style={{'color': lastItemColor.value, 'padding-right': '5px'}}>{item}</div>
+              style={{'color': state.lastItemColor, 'padding-right': '5px'}}>{item}</div>
           return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
         }
     )
@@ -122,10 +124,9 @@ export function genTextFieldScopedSlot(props, context, selections, onChipCloseCl
 
 }
 
-export function genList(props, options, selectedItem, showOptions, context, lazySearch, selections, state) {
+export function genList(props, options, selectedItem, context, selections, state) {
   const onClickItem = () => {
-    setSearch(props, context, lazySearch, selections, state)
-    showOptions.value = props.multiple
+    setSearch(props, context, selections, state)
   }
   return <GList
       {...{
@@ -149,14 +150,16 @@ export function genList(props, options, selectedItem, showOptions, context, lazy
 
 }
 
-export function resetSelectionsDisplay(pressDeleteTimes, lastItemColor) {
+export function resetSelectionsDisplay(state, pressDeleteTimes) {
+
   pressDeleteTimes = 0
-  lastItemColor.value = '#1d1d1d'
+  state.lastItemColor = '#1d1d1d'
+  console.log('reset: '+ pressDeleteTimes)
 }
 
-export function setSearch(props, context, lazySearch, selections, state) {
+export function setSearch(props, context, selections, state) {
   context.root.$nextTick(() => {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) lazySearch.value = selections.value
+    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) state.lazySearch = selections.value
     state.searchText = ''
   })
 }

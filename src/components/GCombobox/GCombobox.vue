@@ -100,7 +100,9 @@
     setup: function (props, context) {
       const state = reactive({
         searchText: '',
-        fieldItem: null
+        fieldItem: null,
+        lazySearch: '',
+        lastItemColor: '#1d1d1d',
       })
 
 
@@ -120,7 +122,6 @@
       const options = getList(props, selectedItem, state)
 
       //textfield values
-      const lazySearch = ref('')
       const selectionsText = computed(() => {
         return props.multiple ? selections.value.join('') : selections.value
       })
@@ -128,14 +129,12 @@
       //textfield logic, styles, classes computed
       const isValidInput = ref(true)
       const isFocused = ref(false);
-      const validateText = computed(() => lazySearch.value || selectionsText.value || state.searchText)
+      const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
       const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
-
       let pressDeleteTimes = 0
-      const lastItemColor = ref('#1d1d1d')
       //textfield event handlers
       const {
         onChipCloseClick,
@@ -145,16 +144,15 @@
         onInputBlur,
         onInputDelete,
         inputAddSelection
-      } = getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused,
-          pressDeleteTimes, lastItemColor, toggleItem)
+      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, pressDeleteTimes)
 
 
       //textfield scoped slot
-      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, lastItemColor, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection)
+      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection)
 
       const tfValue = computed(() =>
           (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
-          lazySearch.value)
+          state.lazySearch)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
@@ -187,7 +185,7 @@
 
       //gen list
       const showOptions = ref(false)
-
+      showOptions.value = props.multiple //change to computed
 
       function genCombobox() {
         const comboboxSlots = {
@@ -208,7 +206,7 @@
                         ),
                         showSearchField: false,
                         genTextFieldFn: genTextFieldProps,
-                        genListFn: () => genList(props, options, selectedItem, showOptions, context, lazySearch, selections, state),
+                        genListFn: () => genList(props, options, selectedItem, context, selections, state),
                       },
                       scopedSlots: {...comboboxSlots}
                     }}
@@ -224,7 +222,6 @@
         showOptions,
         selectedItem,
         selections,
-        lazySearch,
       }
     },
     render() {

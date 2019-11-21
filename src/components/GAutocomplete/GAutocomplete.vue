@@ -105,7 +105,9 @@
     setup: function (props, context) {
       const state = reactive({
         searchText: '',
-        fieldItem: null
+        fieldItem: null,
+        lazySearch: '',
+        lastItemColor: '#1d1d1d',
       })
 
       //list selections
@@ -122,7 +124,6 @@
       })
       const options = getList(props, selectedItem, state, props.filter)
 
-      const lazySearch = ref('')
       const selectionsText = computed(() => {
         return props.multiple ? selections.value.join('') : selections.value
       })
@@ -130,14 +131,13 @@
       //textfield logic, styles, classes computed
       const isValidInput = ref(true)
       const isFocused = ref(false);
-      const validateText = computed(() => lazySearch.value || selectionsText.value || state.searchText)
+      const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
       const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
 
       let pressDeleteTimes = 0
-      const lastItemColor = ref('#1d1d1d')
 
       //textfield events
       const {
@@ -147,13 +147,13 @@
         onInputClick,
         onInputBlur,
         onInputDelete
-      } = getInputEventHandlers(props, context, state, selections, selectedItem, lazySearch, isFocused, pressDeleteTimes,lastItemColor)
+      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, pressDeleteTimes)
       //textfield scoped slot
-      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, lastItemColor, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection)
+      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, isValidInput, labelClasses, labelStyles, validateText, state, hintClasses, errorMessages, clearSelection)
 
       const tfValue = computed(() =>
           (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
-              lazySearch.value)
+              state.lazySearch)
 
       const genTextFieldProps = function (toggleContent) {
 
@@ -167,15 +167,13 @@
                     value: tfValue.value
                   },
                   on: {
-                    'click:clearIcon': () => clearSelection(),
-                    focus: () => onInputClick(),
-                    blur: () => onInputBlur(),
+                    'click:clearIcon': clearSelection,
+                    focus: onInputClick,
+                    blur: onInputBlur,
                     click: toggleContent,
                     delete: onInputDelete,
                     keydown: (e) => onInputKeyDown(e),
-                    input: (e) => {
-                      state.searchText = e
-                    },
+                    input: (e) => state.searchText = e,
                   },
                   scopedSlots: textFieldScopedSlots
                 }}
@@ -185,6 +183,7 @@
 
       //gen list
       const showOptions = ref(false)
+      showOptions.value = props.multiple
 
       function genAutocomplete() {
         return <div class="g-autocomplete">
@@ -198,7 +197,7 @@
                   ),
                   showSearchField: false,
                   genTextFieldFn: genTextFieldProps,
-                  genListFn: () => genList(props, options, selectedItem, showOptions, context, lazySearch, selections, state),
+                  genListFn: () => genList(props, options, selectedItem, context, selections, state),
                 },
               }}
               ref="select"
@@ -214,7 +213,7 @@
         showOptions,
         selectedItem,
         selections,
-        lazySearch,
+        pressDeleteTimes,
       }
     },
     render() {
