@@ -76,12 +76,12 @@
     align-items: center;
   }
   ::v-deep .g-tab-items {
-    margin: 20px 0;
-    width: 300px;
+    margin: 17px 0;
+    width: auto;
   }
   ::v-deep .g-tabs-bar {
     mix-blend-mode: normal;
-    width: auto;
+    width: 261px;
     min-height: 32px;
     border-radius: 29px;
     font-family: "Muli", sans-serif;

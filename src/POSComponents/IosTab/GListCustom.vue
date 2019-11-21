@@ -37,7 +37,7 @@
       itemTitle: {
         type: String,
         default: 'title'
-      }
+      },
     },
     setup(props, context) {
       return () => (
@@ -66,6 +66,12 @@
   ::v-deep .g-list-item-content {
     margin-left: 0;
     align-self: flex-start;
+    .g-list-item-text__sub {
+      font-family: "Muli", sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+    }
   }
 
   ::v-deep .g-list-item-action {
@@ -74,7 +80,7 @@
   }
 
   ::v-deep .g-list-item {
-    padding: 18px 26px 18px 26px;
+    padding: 18px 27px 18px 27px;
   }
 
   ::v-deep .g-list-header {

@@ -120,58 +120,6 @@ export const tab = () => ({
             }
           ]
         },
-        {
-          title: 'By Week',
-          icon: 'day',
-          subheader: '2019',
-          list: [
-            {
-              title: 'September',
-              subtitle: '25 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'August',
-              subtitle: '32 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'July',
-              subtitle: '52 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'June',
-              subtitle: '72 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'May',
-              subtitle: '35 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'April',
-              subtitle: '73 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'March',
-              subtitle: '43 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'February',
-              subtitle: '45 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'January',
-              subtitle: '15 Sales',
-              append: '€ 542.742,06'
-            }
-          ]
-        },
       ],
       model: null,
     }
@@ -301,7 +249,7 @@ export const tabVueAnimation = () => ({
           ]
         },
         {
-          title: 'By Day',
+          title: 'By day',
           icon: 'day',
           subheader: '2019',
           list: [
@@ -312,58 +260,6 @@ export const tabVueAnimation = () => ({
             },
             {
               title: 'September',
-              subtitle: '32 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'July',
-              subtitle: '52 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'June',
-              subtitle: '72 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'May',
-              subtitle: '35 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'April',
-              subtitle: '73 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'March',
-              subtitle: '43 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'February',
-              subtitle: '45 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'January',
-              subtitle: '15 Sales',
-              append: '€ 542.742,06'
-            }
-          ]
-        },
-        {
-          title: 'By Week',
-          icon: 'day',
-          subheader: '2019',
-          list: [
-            {
-              title: 'September',
-              subtitle: '25 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'August',
               subtitle: '32 Sales',
               append: '€ 542.742,06'
             },
@@ -580,48 +476,6 @@ export const tabWebAnimation = () => ({
             {
               title: 'January',
               subtitle: '15 Sales',
-              append: '€ 542.742,06'
-            }
-          ]
-        },
-        {
-          title: 'By Week',
-          icon: 'day',
-          subheader: '2019',
-          list: [
-            {
-              title: 'September',
-              subtitle: '25 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'August',
-              subtitle: '32 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'July',
-              subtitle: '52 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'June',
-              subtitle: '72 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'May',
-              subtitle: '35 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'April',
-              subtitle: '73 Sales',
-              append: '€ 542.742,06'
-            },
-            {
-              title: 'March',
-              subtitle: '43 Sales',
               append: '€ 542.742,06'
             },
             {
