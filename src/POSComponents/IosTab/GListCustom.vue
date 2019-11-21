@@ -44,8 +44,8 @@
           <g-list {...{
             props,
             scopedSlots: {
-              tab: ({item, index}) => (
-                  <g-list-item-action item={item}>{item.append}</g-list-item-action>
+              append: ({item, index}) => (
+                  <g-list-item-action class="g-list-item-action" item={item}>{item.append}</g-list-item-action>
               )
             }
           }
