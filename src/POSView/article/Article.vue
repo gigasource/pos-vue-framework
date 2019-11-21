@@ -51,8 +51,8 @@
       </g-grid-select>
     </div>
     <div area="sorting-title" class="title" style="padding: 5px 5px 5px 17px"><p>Sorting</p></div>
-    <div area="sorting-content" style="padding: 5px; display: flex; justify-content: center">
-      <div style="position: relative; left: -40px; display: grid; grid-template-columns: 53px 62px 53px; grid-template-rows: 35px 46px 35px; grid-gap: 17px; width: 202px; height: 150px;">
+    <div area="sorting-content" style="padding: 5px; display: flex;">
+      <div style="position: relative; left: 70px; display: grid; grid-template-columns: 53px 62px 53px; grid-template-rows: 35px 46px 35px; grid-gap: 17px; width: 202px; height: 150px;">
         <div style="grid-column: 2 / 3; grid-row: 1 / 2; width: 62px; height: 35px;">
           <g-btn height="35" outlined style="color: #979797" width="62">
             <g-icon size="34">mdi-menu-up</g-icon>
