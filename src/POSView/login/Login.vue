@@ -37,8 +37,8 @@
           <g-btn background-color="blue" class="btn-login" elevation="0" height="100%" style="font-size: 16px;" text-color="white">LOGIN</g-btn>
         </div>
         <div class="footer-section">
-          <g-btn text>Version</g-btn>
-          <g-btn @click="keyboardOn = !keyboardOn" text>
+          <g-btn text height="60px" style="margin-right: 20px">Version</g-btn>
+          <g-btn @click="keyboardOn = !keyboardOn" text height="60px" style="margin-right: 20px">
             <g-icon class="g-icon__left">
               mdi-comment-question-outline
             </g-icon>
