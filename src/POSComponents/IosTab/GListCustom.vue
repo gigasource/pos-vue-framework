@@ -1,9 +1,9 @@
 <script>
   import GList from "../../components/GList/GList";
-
+  import { GListItemAction } from "../../components/GList/GListFunctionalComponent"
   export default {
     name: 'GListCustom',
-    components: {GList},
+    components: {GList, GListItemAction},
     props: {
       height: String,
       width: String,
@@ -41,7 +41,15 @@
     },
     setup(props, context) {
       return () => (
-          <g-list {...{props}}>
+          <g-list {...{
+            props,
+            scopedSlots: {
+              tab: ({item, index}) => (
+                  <g-list-item-action item={item}>{item.append}</g-list-item-action>
+              )
+            }
+          }
+          }>
           </g-list>
       )
     }
