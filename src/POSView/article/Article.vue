@@ -10,11 +10,11 @@
         <p style="font-size: 15px; line-height: 19px">{{productName}}</p>
         <p class="product-info">{{productId}}</p>
       </div>
-      <div style="display: block;">
+      <div style="display: block; margin-top: 5px;">
         <p class="sub-title">Unit </p>
         <p class="product-info">{{productUnit}}</p>
       </div>
-      <div>
+      <div style="margin-top: 5px;">
         <p class="sub-title">Price </p>
         <p class="product-info">{{productPriceUnit}} {{productPrice}}</p>
       </div>
@@ -24,7 +24,7 @@
         <p class="sub-title">Barcode: </p>
         <p class="product-info">{{productBarcode}}</p>
       </div>
-      <div>
+      <div style="margin-top: 5px;">
         <span class="sub-title">Attribute:</span>
         <div class="product-info" :key="index" v-for="(attribute, index) in productAttributes">
           <span class="product-info">{{attribute.attribute}}: </span>
