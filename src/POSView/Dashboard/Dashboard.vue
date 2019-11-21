@@ -2,37 +2,41 @@
 	<g-grid-layout class="wrapper" :layout="Layout" :displayPreviewColor="false">
 		<div area="sidebar">
 			<g-sidebar>
-        <template slot="header">
-          <div class="sidebar-header">
-            <g-avatar size="40px">
-              <g-img src="https://carlisletheacarlisletheatre.org/images/person-icon-flat-7.png"/>
-            </g-avatar>
-            <span>Admin</span>
-          </div>
-        </template>
+				<template slot="header">
+					<div class="sidebar-header">
+						<g-avatar size="40px">
+							<g-img src="https://carlisletheacarlisletheatre.org/images/person-icon-flat-7.png"/>
+						</g-avatar>
+						<span>Admin</span>
+					</div>
+				</template>
 				<g-side-bar-tree-view :data="sidebarData.data" v-model="sidebarData.value"/>
 				<g-spacer/>
 				<div class="sidebar-footer waves-effect">
-          <g-icon svg>icon-logout</g-icon>
+					<g-icon svg>icon-logout</g-icon>
 					<span>Log Out</span>
 				</div>
 			</g-sidebar>
 		</div>
 		<div area="header" class="header">
-					<div>2:28 PM</div>
-					<div>14/11/2019</div>
+			<div>2:28 PM</div>
+			<div>14/11/2019</div>
 		</div>
 		<div area="content">
 			<div area="welcome"><span class="welcome">Welcome !</span></div>
 			<div area="buttons">
-				<div area="line"><g-divider/></div>
+				<div area="line">
+					<g-divider/>
+				</div>
 				<div v-for="btn in btnData" :area="btn.area">
-					<g-btn height="100%" width="100%" backgroundColor="#FFFFFF">
-						<div>
-							<g-icon size="60" svg>{{btn.icon}}</g-icon>
-							<div class="btn-text">{{btn.text}}</div>
-						</div>
-					</g-btn>
+					<router-link :to="btn.router">
+						<g-btn height="100%" width="100%" backgroundColor="#FFFFFF">
+							<div>
+								<g-icon size="60" svg>{{btn.icon}}</g-icon>
+								<div class="btn-text">{{btn.text}}</div>
+							</div>
+						</g-btn>
+					</router-link>
 				</div>
 			</div>
 		</div>
@@ -69,13 +73,13 @@
             })
 
             const btnData = [
-                {area: 'btn1', icon:'icon-code' , router: '/dashboard/cash-register', text: 'Cash Register'},
-                {area: 'btn2', icon:'icon-history' , router: '/dashboard/order-history', text: 'Order History'},
-                {area: 'btn3', icon:'icon-report' , router: '/dashboard/staff-report', text: 'Staff Report'},
-                {area: 'btn4', icon:'icon-gear' , router: '/dashboard/setting', text: 'Setting'},
-                {area: 'btn5', icon:'icon-dashboard' , router: '/dashboard/admin-dashboard', text: 'Admin Dashboard'},
-                {area: 'btn6', icon:'icon-calendar' , router: '/dashboard/end-of-day', text: 'End of Day'},
-                {area: 'btn7', icon:'icon-info' , router: '/dashboard/support', text: 'Support'}
+                {area: 'btn1', icon: 'icon-code', router: '/dashboard/cash-register', text: 'Cash Register'},
+                {area: 'btn2', icon: 'icon-history', router: '/dashboard/order-history', text: 'Order History'},
+                {area: 'btn3', icon: 'icon-report', router: '/dashboard/staff-report', text: 'Staff Report'},
+                {area: 'btn4', icon: 'icon-gear', router: '/dashboard/setting', text: 'Setting'},
+                {area: 'btn5', icon: 'icon-dashboard', router: '/dashboard/admin-dashboard', text: 'Admin Dashboard'},
+                {area: 'btn6', icon: 'icon-calendar', router: '/dashboard/end-of-day', text: 'End of Day'},
+                {area: 'btn7', icon: 'icon-info', router: '/dashboard/support', text: 'Support'}
             ]
 
             return {

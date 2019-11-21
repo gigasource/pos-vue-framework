@@ -23,7 +23,6 @@
     .g-treeview__active {
       background: linear-gradient(9.78deg, #3949AB 0%, #4FC3F7 100%) !important;
       border-radius: 0px 4px 4px 0px;
-      //todo: box-shadow
       box-shadow: 1px 1px 6px 1px #4FC3F7;
       color: white;
 
@@ -93,6 +92,5 @@
   letter-spacing: 0;
   color: #424242;
   margin-top: 20px;
-  //word-wrap: break-spaces;
   white-space: pre-wrap;
 }
