@@ -267,6 +267,7 @@
         state,
         selectedItem,
         selections,
+        showOptions
       }
     },
     render() {

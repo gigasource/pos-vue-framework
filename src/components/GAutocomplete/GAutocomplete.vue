@@ -147,7 +147,8 @@
         onInputClick,
         onInputBlur,
         onInputDelete
-      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, pressDeleteTimes)
+      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
+
       //textfield scoped slot
       const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, isValidInput, labelClasses, labelStyles, validateText, state, hintClasses, errorMessages, clearSelection)
 
@@ -183,7 +184,6 @@
 
       //gen list
       const showOptions = ref(false)
-      showOptions.value = props.multiple
 
       function genAutocomplete() {
         return <div class="g-autocomplete">
@@ -197,7 +197,7 @@
                   ),
                   showSearchField: false,
                   genTextFieldFn: genTextFieldProps,
-                  genListFn: () => genList(props, options, selectedItem, context, selections, state),
+                  genListFn: () => genList(props, options, selectedItem, showOptions, context, selections, state),
                 },
               }}
               ref="select"
@@ -213,7 +213,6 @@
         showOptions,
         selectedItem,
         selections,
-        pressDeleteTimes,
       }
     },
     render() {

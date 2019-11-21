@@ -103,6 +103,7 @@
         fieldItem: null,
         lazySearch: '',
         lastItemColor: '#1d1d1d',
+        pressDeleteTimes: 0,
       })
 
 
@@ -130,7 +131,7 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
       const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
-      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
+      const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
@@ -144,11 +145,10 @@
         onInputBlur,
         onInputDelete,
         inputAddSelection
-      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, pressDeleteTimes)
-
+      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
 
       //textfield scoped slot
-      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, labelClasses, labelStyles, validateText, isValidInput, hintClasses, errorMessages, clearSelection)
+      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, isValidInput, labelClasses, labelStyles, validateText, state, hintClasses, errorMessages, clearSelection)
 
       const tfValue = computed(() =>
           (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
@@ -183,7 +183,6 @@
 
       //gen list
       const showOptions = ref(false)
-      showOptions.value = props.multiple //change to computed
 
       function genCombobox() {
         const comboboxSlots = {
@@ -204,7 +203,7 @@
                         ),
                         showSearchField: false,
                         genTextFieldFn: genTextFieldProps,
-                        genListFn: () => genList(props, options, selectedItem, context, selections, state),
+                        genListFn: () => genList(props, options, selectedItem, showOptions, context, selections, state) ,
                       },
                       scopedSlots: {...comboboxSlots}
                     }}
