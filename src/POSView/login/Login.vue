@@ -54,8 +54,8 @@
             <p area="ip" class="support-item"><b>IP: </b>{{this.ip}}</p>
 
             <div area="keyboard_input" class="text-field-section" style="position: relative;height: 70px">
-              <g-text-field class="w-95" clear-icon="cancel" clearable outlined style="color: #1d1d26" v-model="supportMessage"></g-text-field>
-              <g-btn background-color="blue" class="send-btn" elevation="0" height="100%" text-color="white" width="5%">SEND</g-btn>
+              <g-text-field class="w-85" clear-icon="cancel" clearable outlined style="color: #1d1d26" v-model="supportMessage"></g-text-field>
+              <g-btn background-color="blue" class="send-btn" elevation="0" style="height: calc(100% + 1px)" text-color="white" width="15%">SEND</g-btn>
             </div>
 
             <div area="keyboard" class="keyboard-wrapper">
@@ -195,11 +195,12 @@
   }
 
   .support-item {
-    padding: 10px;
+    //padding: 34px;
+    margin-top: 34px;
+    margin-left: 17px;
   }
 
   .send-btn {
-    margin: 0 0 0 10px;
     height: 100%;
   }
 
