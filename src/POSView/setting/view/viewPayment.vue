@@ -13,20 +13,20 @@
 			</g-simple-table>
 		</div>
 		<g-toolbar absolute bottom color="grey lighten 3">
-			<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
+			<g-btn background-color="white" text-color="#1d1d26" class="mr-2">
 				<g-icon class="mr-2" svg>
 					icon-back
 				</g-icon>
 				Back
 			</g-btn>
 			<g-spacer/>
-			<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
+			<g-btn background-color="white" text-color="#1d1d26" class="mr-2">
 				<g-icon class="mr-2" color="red" @click="dialogNewPayment = true">
 					edit
 				</g-icon>
 				Edit
 			</g-btn>
-			<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
+			<g-btn background-color="white" text-color="#1d1d26">
 				<g-icon class="mr-2" svg @click="dialogDeletePayment = true">
 					icon-trash
 				</g-icon>
