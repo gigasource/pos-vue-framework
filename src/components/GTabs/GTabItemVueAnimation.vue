@@ -31,14 +31,14 @@
           setTimeout(() => {
             el.style.transform = 'translateX(0)';
             done();
-          }, 300);
+          }, 30);
         } else {
           el.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
           el.style.transitionDuration = '0.3s';
           setTimeout(() => {
             el.style.transform = 'translateX(0)';
             done();
-          }, 300);
+          }, 30);
         }
       }
 
