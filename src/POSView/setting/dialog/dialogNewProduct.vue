@@ -35,12 +35,12 @@
 							<pos-switch dense label="Favorite" :input-value="true"/>
 						</div>
 						<div class="col-6">
-							<pos-switch dense label="Non Refundable" :input-value="true"/>
+							<pos-switch dense label="Non-Refundable" :input-value="true"/>
 						</div>
 					</div>
 					<div class="row-flex justify-between">
 						<pos-switch dense label="Active" :input-value="true"/>
-						<pos-switch dense label="Show on 'Order Screen'" :input-value="true"/>
+						<pos-switch dense label='Show on "Order Screen"' :input-value="true"/>
 					</div>
 				</div>
 				<div class="accordion">
@@ -130,6 +130,10 @@
 				grid-template-columns: 39.6% 30.2% 30.2%;
 				grid-template-rows: auto auto auto auto;
 				padding: 0 48px;
+
+				.g-switch-wrapper {
+					margin-top: 0;
+				}
 			}
 
 			.g-expansion-group {
@@ -138,6 +142,16 @@
 				::v-deep .g-expansion,
 				::v-deep .g-expansion > .g-expansion-header {
 					border: none;
+					padding: 0;
+					font-size: 16px;
+					line-height: 20px;
+					min-height: 42px;
+					font-weight: 700;
+
+					.g-expansion-header-prepend {
+						width: 16px;
+						color: #919191;
+					}
 				}
 
 				::v-deep .g-expansion .g-expansion-content {
