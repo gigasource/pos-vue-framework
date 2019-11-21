@@ -73,5 +73,9 @@
 		th:first-child, td:first-child {
 			width: 200px;
 		}
+
+		td {
+			height: 32px
+		}
 	}
 </style>

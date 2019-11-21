@@ -85,7 +85,12 @@
       showSearchField: {
         type: Boolean,
         default: true
-      }
+      },
+			appendIcon: {
+        type: String,
+				default: 'arrow_drop_down'
+			},
+			appendSvg: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -190,7 +195,7 @@
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
-            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {selections.value.length === 0 ?

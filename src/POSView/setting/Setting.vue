@@ -33,7 +33,7 @@
 					  title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, badge: '3', badgeColor: '#FF9529',
 						items: [
               { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/article'},
-              { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small'},
+              { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/category'},
               { title: 'Layout', icon: 'radio_button_unchecked', iconType: 'small'},
 						]
 					},

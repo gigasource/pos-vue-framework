@@ -15,7 +15,7 @@
       }
 
       .g-tf-wrapper {
-        margin: 16px 0px 24px;
+        margin: 32px 4px 12px;
       }
 
       .g-tf {
@@ -32,6 +32,10 @@
         display: flex;
       }
 
+			.g-tf-input.selections div {
+				color: #1d1d26 !important;
+			}
+
       .input {
         height: 40px;
         display: flex;
@@ -43,7 +47,7 @@
       }
 
       .g-tf-label {
-        top: -28px;
+        top: -24px;
         font-size: 13px;
         line-height: 16px;
         color: #1D1D26;
