@@ -20,6 +20,7 @@
     components: { GOverlay },
     props: {
       absolute: Boolean,
+      fixed: Boolean,
       bottom: Boolean,
       right: Boolean,
       clipped: Boolean,
@@ -33,6 +34,8 @@
       overlayColor: String,
       overlayOpacity: [Number, String],
       width: [Number, String],
+      small: Boolean,
+      medium: Boolean,
     },
     setup(props) {
       const { getColorType, convertColorClass } = colorHandler();
@@ -40,7 +43,10 @@
       const classes = computed(() => ({
         'g-sidebar': true,
         'g-sidebar__absolute': props.absolute,
+        'g-sidebar__fixed': props.fixed,
         'g-sidebar__collapsed': props.collapsed,
+        'g-sidebar__small': props.small,
+        'g-sidebar__medium': props.medium,
         [convertColorClass(props.color, 'background')]: props.color && getColorType(props.color) === 'class'
       }));
 
