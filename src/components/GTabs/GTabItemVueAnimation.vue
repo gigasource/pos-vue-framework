@@ -12,10 +12,8 @@
       const transitionDirection = inject('transition');
 
       function onBeforeEnter(el) {
-        console.log('onBeforeEnter');
         el.style.width = '100%';
         if(transitionDirection.value.includes('reverse')){
-          console.log('reverse');
           el.style.transform = 'translateX(-101%)';
         } else {
           el.style.transform = 'translateX(101%)';
@@ -23,37 +21,22 @@
       }
 
       function onEnter(el, done) {
-        console.log('onEnter');
-        if(transitionDirection.value.includes('reverse')) {
-          console.log('reverse');
-          el.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
-          el.style.transitionDuration = '0.3s';
-          setTimeout(() => {
-            el.style.transform = 'translateX(0)';
-            done();
-          }, 30);
-        } else {
-          el.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
-          el.style.transitionDuration = '0.3s';
-          setTimeout(() => {
-            el.style.transform = 'translateX(0)';
-            done();
-          }, 30);
-        }
+        el.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)';
+        el.style.transitionDuration = '0.3s';
+        setTimeout(() => {
+          el.style.transform = 'translateX(0)';
+          done();
+        }, 30);
       }
 
       function onBeforeLeave(el) {
-        console.log('onBeforeLeave');
         el.style.transform = 'translateX(0)';
       }
 
       function onLeave(el, done) {
-        console.log('onLeave');
         el.style.width = '100%';
         if(transitionDirection.value.includes('reverse')) {
-          console.log('reverse');
           el.style.transform = 'translateX(100%)';
-
         } else {
           el.style.transform = 'translateX(-100%)';
         }
