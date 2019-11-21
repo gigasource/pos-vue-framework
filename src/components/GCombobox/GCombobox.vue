@@ -122,7 +122,7 @@
       })
       const options = getList(props, selectedItem, state)
 
-      //textfield values
+      //selections text
       const selectionsText = computed(() => {
         return props.multiple ? selections.value.join('') : selections.value
       })
@@ -135,8 +135,6 @@
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
 
-
-      const showOptions = ref(true)
       //textfield event handlers
       const {
         onChipCloseClick,
@@ -150,7 +148,7 @@
 
       //textfield scoped slot
       const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, isValidInput, labelClasses, labelStyles, validateText, state, hintClasses, errorMessages, clearSelection)
-
+      //textfield value
       const tfValue = computed(() =>
           (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
               state.lazySearch)
@@ -161,8 +159,7 @@
             <GTextField
                 {...{
                   props: {
-                    ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded',
-                      'shaped', 'label',
+                    ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                       'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
                     value: tfValue.value
@@ -183,7 +180,7 @@
         )
       }
 
-      //gen list
+      //gen Combobox
 
       function genCombobox() {
         const comboboxSlots = {
@@ -204,7 +201,7 @@
                         ),
                         showSearchField: false,
                         genTextFieldFn: genTextFieldProps,
-                        genListFn: () => genList(props, options, selectedItem, showOptions, context, selections, state),
+                        genListFn: (showOptions) => genList(props, options, selectedItem, showOptions, context, selections, state),
                       },
                       scopedSlots: {...comboboxSlots}
                     }}
@@ -218,7 +215,6 @@
         labelClasses,
         state,
         options,
-        showOptions,
         selectedItem,
         selections,
       }

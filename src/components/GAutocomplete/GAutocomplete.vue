@@ -108,6 +108,7 @@
         fieldItem: null,
         lazySearch: '',
         lastItemColor: '#1d1d1d',
+        pressDeleteTimes: 0,
       })
 
       //list selections
@@ -124,6 +125,7 @@
       })
       const options = getList(props, selectedItem, state, props.filter)
 
+      //selections text
       const selectionsText = computed(() => {
         return props.multiple ? selections.value.join('') : selections.value
       })
@@ -135,9 +137,6 @@
       const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages} = getValidate(props, isFocused, validateText, isValidInput);
-
-
-      let pressDeleteTimes = 0
 
       //textfield events
       const {
@@ -182,8 +181,7 @@
         )
       }
 
-      //gen list
-      const showOptions = ref(false)
+      //gen Autocomplete
 
       function genAutocomplete() {
         return <div class="g-autocomplete">
@@ -197,7 +195,8 @@
                   ),
                   showSearchField: false,
                   genTextFieldFn: genTextFieldProps,
-                  genListFn: () => genList(props, options, selectedItem, showOptions, context, selections, state),
+                  genListFn: (showOptions) => genList(props, options, selectedItem, showOptions, context, selections,
+                      state),
                 },
               }}
               ref="select"
@@ -210,7 +209,6 @@
         genAutocomplete,
         state,
         options,
-        showOptions,
         selectedItem,
         selections,
       }
