@@ -1,13 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="24px" height="18px" viewBox="0 0 24 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
-    <title>delete</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="delete_boarder_light" transform="translate(-27.000000, -24.000000)" fill="#7B868B">
-            <g id="Group">
-                <path d="M49,24 L34.1,24 C33.4,24 32.8,24.3 32.4,24.9 L27,33 L32.4,41.1 C32.8,41.6 33.4,42 34.1,42 L49,42 C50.1,42 51,41.1 51,40 L51,26 C51,24.9 50.1,24 49,24 L49,24 Z M46,36.6 L44.6,38 L41,34.4 L37.4,38 L36,36.6 L39.6,33 L36,29.4 L37.4,28 L41,31.6 L44.6,28 L46,29.4 L42.4,33 L46,36.6 L46,36.6 Z" id="delete"></path>
-            </g>
-        </g>
-    </g>
+<svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M22 0H7.1C6.4 0 5.8 0.3 5.4 0.9L0 9L5.4 17.1C5.8 17.6 6.4 18 7.1 18H22C23.1 18 24 17.1 24 16V2C24 0.9 23.1 0 22 0ZM19 12.6L17.6 14L14 10.4L10.4 14L9 12.6L12.6 9L9 5.4L10.4 4L14 7.6L17.6 4L19 5.4L15.4 9L19 12.6Z" fill="#1C1C1C"/>
 </svg>

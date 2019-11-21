@@ -1,5 +1,5 @@
 <template>
-	<g-layout>
+	<g-layout class="g-item-group">
 		<slot :toggle="toggleItem" :active="isActiveItem">
 			<template v-for="(item, index) in items">
 				<g-item :item="item" :is-active="isActiveItem(item)" @toggle="toggleItem" :key="index">
@@ -23,14 +23,17 @@
       mandatory: Boolean,
       multiple: Boolean,
       //todo: return item/index
-      returnItem: Boolean,
+			returnObject: {
+      	type: Boolean,
+				default: true
+			},
       value: null,
       items: Array
     },
     setup(props, context) {
       const model = computed({
         get: () => {
-          if (props.value) {
+          if (props.value !== undefined) {
             if (props.multiple && !Array.isArray(props.value)) {
               props.value = [props.value];
             }

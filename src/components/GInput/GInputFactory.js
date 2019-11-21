@@ -30,8 +30,8 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
     if (isLabelActive.value && prefixWidth.value) {
       if (props.outlined) {
         if (props.filled) {
-          if (props.rounded) return {'transform': `translateY(-${props.dense ? 30 : 38}px) translateX(${-prefixWidth.value}px)  scale(0.75)`}
-          return {'transform': `translateY(-${props.dense ? 30 : 38}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
+          if (props.rounded) return {'transform': `translateY(-28px) translateX(${-prefixWidth.value}px)  scale(0.75)`}
+          return {'transform': `translateY(-${props.dense ? 26 : 28}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
         } else {
           return {'transform': `translateY(-${props.dense ? 22 : 26}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)`}
         }
@@ -53,11 +53,14 @@ import {convertToUnit, keyCodes} from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
+
   function validate(value) {
     const errorBucket = []
-    if (props.rules) {
-      for (let i = 0; i < props.rules.length; i++) {
-        const rule = props.rules[i]
+    if (props.rules ||props.required  ) {
+      let rules = props.rules || []
+      props.required ? rules.push(function(value){ return !!value||' ' }) : rules
+      for (let i = 0; i < rules.length; i++) {
+        const rule = rules[i]
         const validatedValue = typeof rule === 'function' ? rule(value) : rule
         if (typeof validatedValue == 'string') {
           errorBucket.push(validatedValue)
@@ -66,7 +69,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
         }
       }
 
-      errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}.`
+      errorMessages.value = errorBucket && `${errorBucket.slice(0, props.errorCount).join(' ')}`
       errorBucket.length ? isValid.value = false : isValid.value = true
       return isValid
     } else {
