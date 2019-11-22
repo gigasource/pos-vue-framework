@@ -71,7 +71,7 @@
 
 
   export default {
-    name: 'DialogPicker',
+    name: 'DatePickerDialog',
     components: { GGridSelect, GSpacer, PosDatetimePicker, POSSelect, GCard, GGridLayout, GDialog, GDatePicker, GBtn, GIcon },
     data: () => ({
       layout: datepickerLayout,

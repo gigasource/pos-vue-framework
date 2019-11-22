@@ -6,7 +6,7 @@
 					<thead class="table-header">
 					<tr height="60">
 						<th class="text-left"><code-look-up text="Order No."/></th>
-						<th class="text-left"><dialog-picker/></th>
+						<th class="text-left"><date-picker-dialog/></th>
 						<th class="text-left"><code-look-up text="Barcode"/></th>
 						<th class="text-left"><amount-filter/></th>
 						<th class="text-left"><code-look-up text="Staff"/></th>
@@ -57,14 +57,14 @@
     import GBtn from "../../components/GBtn/GBtn";
     import GIcon from "../../components/GIcon/GIcon";
     //import other components
-    import DialogPicker from "./DialogPicker";
+    import DatePickerDialog from "./DatePickerDialog";
     import CodeLookUp from "./CodeLookUp";
     import AmountFilter from "./AmountFilter";
 
     export default {
         name: "OrderHistory",
         components: {
-            DialogPicker,
+            DatePickerDialog,
             CodeLookUp,
 						AmountFilter,
 

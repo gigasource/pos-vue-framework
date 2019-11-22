@@ -47,7 +47,7 @@
     import {reactive, ref} from "@vue/composition-api";
     import GDialog from "../../components/GDialog/GDialog";
     import GGridLayout from "../../components/GGridGenerator/GGridLayout";
-    import Layout from "./codeSearch"
+    import Layout from "./codelookupLayout"
     import GTextField from "../../components/GInput/GTextField";
     import GBtn from "../../components/GBtn/GBtn";
     import GIcon from "../../components/GIcon/GIcon";
