@@ -28,6 +28,7 @@
     },
     setup(props, context) {
       const attrs = Object.keys(context.attrs);
+      const bps = ['xs', 'sm', 'md', 'lg', 'xl'];
       const breakpoints = reactive({
         xs: 0,
         sm: 0,
@@ -36,20 +37,51 @@
         xl: 0,
       });
 
+      let only = '';
+
       for (const attr of attrs) {
         if (!attr || attr.length < 3 || attr.length > 4) {
           continue
         }
         const bp = attr.substr(0, 2);
-        breakpoints[bp] = attr.length === 3 ? attr.substr(2, 1) : attr.substr(2, 2);
+        if (bps.includes(bp)) {
+					only += bp;
+          breakpoints[bp] = attr.length === 3 ? attr.substr(2, 1) : attr.substr(2, 2);
+        }
       }
 
+      if (bps.includes(only)) {
+        for (const bp of bps) {
+          breakpoints[bp] = breakpoints[only];
+        }
+			}
+
       watch(() => [props.xs, props.sm, props.md, props.lg, props.xl], () => {
-        if (props.xs) breakpoints.xs = props.xs;
-        if (props.sm) breakpoints.sm = props.sm;
-        if (props.md) breakpoints.md = props.md;
-        if (props.lg) breakpoints.lg = props.lg;
-        if (props.xl) breakpoints.xl = props.xl;
+        if (props.xs) {
+          breakpoints.xs = props.xs;
+          only += 'xs';
+        }
+        if (props.sm) {
+          breakpoints.sm = props.sm;
+          only += 'sm';
+        }
+        if (props.md) {
+          breakpoints.md = props.md;
+          only += 'md';
+        }
+        if (props.lg) {
+          breakpoints.lg = props.lg;
+          only += 'lg';
+        }
+        if (props.xl) {
+          breakpoints.xl = props.xl;
+          only += 'xl';
+        }
+        if (props[only]) {
+          for (const bp of bps) {
+            breakpoints[bp] = props[only];
+          }
+        }
       })
 
       const classes = computed(() => ({
