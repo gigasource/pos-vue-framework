@@ -332,12 +332,11 @@
         return ([
           <div style={gridStyles} class="grid-gen__editor__field">{gridItems}</div>,
           <div style={selectedAreaContainerStyle}>
-            {renderGridAreas(grid)}
+            {renderGridAreas(grid, state.viewMode)}
             {renderHoveringArea()}
           </div>
         ])
       }
-
       function getAreaClass(area) {
         return {
           'grid-gen__editor__field__area': true,
@@ -345,10 +344,8 @@
           'grid-gen__editor__field__area--editing': area == state.editingArea,
         }
       }
-
       const actionWrapperClass = 'grid-gen__editor__field__area__actions'
       const actionClass = 'area-action'
-
       function areaHit(e) {
         for (let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
           const area = actionWrapperElement.parentNode
@@ -363,7 +360,6 @@
           }
         }
       }
-
       function tryToExecuteActionIfHit(e) {
         let actionExecuted = false
         _.each(context.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
@@ -410,7 +406,6 @@
           </span>
         </div>
       }
-
       /**
        * @param grid {GridModel}
        */
@@ -427,7 +422,7 @@
                 'grid-template-rows': joinRefArrayValue(grid.rows),
                 'gap': `${grid.rowGap}px ${grid.columnGap}px`,
               }}>
-            {renderGridAreas(grid)}
+            {renderGridAreas(grid, true)}
           </div>
         } else {
           return <div
@@ -441,25 +436,23 @@
           </div>
         }
       }
-
-      //
       /**
        * render area
        * @param grid {GridModel | AreaModel}
+       * @param viewMode
        * @returns {*}
        */
-      function renderGridAreas(grid) {
+      function renderGridAreas(grid, viewMode) {
         if (grid instanceof GridModel) {
           return grid.subAreas.map(gridItem => {
             return !gridItem.visible
                 ? null
-                : state.viewMode
+                : viewMode
                     ? renderGridAreaInViewMode(gridItem)
                     : renderGridAreaInEditMode(gridItem)
           })
         }
       }
-
       // render hovering area
       function renderHoveringArea() {
         return state.hovering ? <div style={{
@@ -467,6 +460,39 @@
           'grid-area': getCssArea(state.hoveringArea)
         }}></div> : null
       }
+
+
+      // render mini map (view mode)
+      function renderMiniMap() {
+        const gridItems = []
+        for (let i = 0, rowLen = state.layout.rows.length; i < rowLen; ++i) {
+          for (let j = 0, colLen = state.layout.length; j < colLen; ++j) {
+            gridItems.push(<div class={cptGridContainerClass.value}></div>)
+          }
+        }
+
+        const selectedAreaContainerStyle = {
+          display: 'grid',
+          'grid-template-columns': joinRefArrayValue(state.layout.columns),
+          'grid-template-rows': joinRefArrayValue(state.layout.rows),
+          'gap': `${state.layout.rowGap}px ${state.layout.columnGap}px`,
+          //
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          'pointer-events': 'none',
+          //
+        }
+
+        return ([
+          <div style={selectedAreaContainerStyle}>
+            {renderGridAreas(state.layout, true)}
+          </div>
+        ])
+      }
+
 
       // render confirm dialog
       const refIdNewItemNameInput = 'txtItemName'
@@ -775,6 +801,19 @@
                   {renderGridRowHeightSetting(state.selectedGrid)}
                   {renderGridContainer(state.selectedGrid)}
                 </div>
+                <div style="height: 10px"></div>
+                <div style={{
+                  position: 'relative',
+                  width: `${state.fieldWidth}px`,
+                  height: `${state.fieldHeight}px`,
+                  backgroundColor: '#fff',
+                  margin: '0 auto'
+                }}>
+                  {renderMiniMap()}
+                </div>
+              </div>
+              <div>
+
               </div>
               <div class="grid-gen__settings">
                 {renderGridGeneratorOutput()}
