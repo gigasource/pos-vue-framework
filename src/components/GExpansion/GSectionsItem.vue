@@ -1,6 +1,5 @@
 <script>
-  import { computed, inject } from '@vue/composition-api';
-  import { convertToUnit } from '../../utils/helpers';
+  import { inject } from '@vue/composition-api';
   import { GExpandTransition } from '../transition/transition';
   import GIcon from '../GIcon/GIcon';
 
@@ -13,13 +12,6 @@
       item: null,
 
 			header: String,
-
-      width: {
-        type: [Number, String]
-      },
-      height: {
-        type: [Number, String]
-      }
 		},
     setup (props, context) {
 			const isActiveItem = inject('isActiveItem')

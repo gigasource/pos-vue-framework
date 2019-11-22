@@ -13,7 +13,7 @@ export default {
   decorators: [withKnobs]
 }
 
-export const Demo = () => ({
+export const DemoAPI1 = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
   props: {
     itemHeight: {default: number('Item height', 32)}
@@ -21,44 +21,18 @@ export const Demo = () => ({
   setup() {
     const activeItem = ref(null)
     const items = ref([
-      {
-        title: 'Section 2',
-        content: '2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 3',
-        content: '3 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 4',
-        content: '4 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 5',
-        content: '5 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 6',
-        content: '6 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 7',
-        content: '7 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      }
+      { title: 'Section 1' },
+      { title: 'Section 2' },
+      { title: 'Section 3' },
+      { title: 'Section 4' },
+      { title: 'Section 5' },
+      { title: 'Section 6' },
+      { title: 'Section 7' },
     ])
-
-    const updateItems = function () {
-      // items.value[4] = {
-      //   title: 'Section 6 Updated',
-      //   content: 'Updated'
-      // }
-      items.value[4].content = 'updated'
-    }
 
     return {
       items,
       activeItem,
-      updateItems
     }
   },
   template: `
@@ -66,189 +40,116 @@ export const Demo = () => ({
       <div style="width: 100%; height: 20%;">
       </div>
       <g-sections v-model="activeItem">       
-        <g-sections-item :item="1" :height="itemHeight" header="Section 1">
+        <g-sections-item v-for="(item, index) in items" :header="item.title" :height="itemHeight" :key="index">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
           <g-switch flat label="Auto populate"/>
           <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
-        </g-sections-item>
-        <g-sections-item v-for="(item, index) in items" :item="item" :header="item.title" :height="itemHeight" :key="index">
-          {{item.content}}
         </g-sections-item>
       </g-sections>
   </div>
 `
 })
 
-// export const Mandatory = () => ({
-//   components: { GSections, GSectionsItem, GTextField, GSwitch, GBtn },
-//   props: {
-//     itemHeight: {default: number('Item height', 32)}
-//   },
-//   setup() {
-//     const activeItem = ref(null)
-//     const items = ref([
-//       {
-//         title: 'Section 2',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 3',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 4',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 5',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 6',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 7',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       }
-//     ])
-//
-//     const multiple = ref(false)
-//
-//     return {
-//       items,
-//       activeItem,
-//     }
-//   },
-//   template: `
-//   <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
-//       <div style="width: 100%; height: 20%;">
-//       </div>
-//       <g-sections v-model="activeItem" mandatory>
-//         <g-sections-item :item="1" :height="itemHeight" header="Section 1">
-//           <g-text-field label="Key" dense/>
-//           <g-text-field label="Default" dense/>
-//           <g-text-field label="Ref" dense/>
-//           <g-switch flat label="Auto populate"/>
-//           <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
-//         </g-sections-item>
-//         <g-sections-item v-for="(item, index) in items" :item="item" :header="item.title" :height="itemHeight" :key="index">
-//           {{item.content}}
-//         </g-sections-item>
-//       </g-sections>
-//   </div>
-// `
-// })
-//
-// export const Multiple = () => ({
-//   components: { GSections, GSectionsItem, GTextField, GSwitch, GBtn },
-//   props: {
-//     itemHeight: {default: number('Item height', 32)}
-//   },
-//   setup() {
-//     const activeItem = ref(null)
-//     const items = ref([
-//       {
-//         title: 'Section 2',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 3',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 4',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 5',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 6',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       },
-//       {
-//         title: 'Section 7',
-//         content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-//       }
-//     ])
-//
-//     const multiple = ref(false)
-//
-//     return {
-//       items,
-//       activeItem,
-//     }
-//   },
-//   template: `
-//   <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
-//       <div style="width: 100%; height: 20%;">
-//       </div>
-//       <g-sections v-model="activeItem" multiple>
-//         <g-sections-item :item="1" :height="itemHeight" header="Section 1">
-//           <g-text-field label="Key" dense/>
-//           <g-text-field label="Default" dense/>
-//           <g-text-field label="Ref" dense/>
-//           <g-switch flat label="Auto populate"/>
-//           <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
-//         </g-sections-item>
-//         <g-sections-item v-for="(item, index) in items" :item="item" :header="item.title" :height="itemHeight" :key="index">
-//           {{item.content}}
-//         </g-sections-item>
-//       </g-sections>
-//   </div>
-// `
-// })
+export const DemoAPI1Mandatory = () => ({
+  components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
+  props: {
+    itemHeight: {default: number('Item height', 32)}
+  },
+  setup() {
+    const activeItem = ref(null)
+    const items = ref([
+      { title: 'Section 1' },
+      { title: 'Section 2' },
+      { title: 'Section 3' },
+      { title: 'Section 4' },
+      { title: 'Section 5' },
+      { title: 'Section 6' },
+      { title: 'Section 7' },
+    ])
+
+    return {
+      items,
+      activeItem,
+    }
+  },
+  template: `
+  <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
+      <div style="width: 100%; height: 20%;">
+      </div>
+      <g-sections v-model="activeItem" mandatory>       
+        <g-sections-item v-for="(item, index) in items" :header="item.title" :height="itemHeight" :key="index">
+          <g-text-field label="Key" dense/>
+          <g-text-field label="Default" dense/>
+          <g-text-field label="Ref" dense/>
+          <g-switch flat label="Auto populate"/>
+          <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
+        </g-sections-item>
+      </g-sections>
+  </div>
+`
+})
+
+export const DemoAPI1Multiple = () => ({
+  components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
+  props: {
+    itemHeight: {default: number('Item height', 32)}
+  },
+  setup() {
+    const activeItem = ref(null)
+    const items = ref([
+      { title: 'Section 1' },
+      { title: 'Section 2' },
+      { title: 'Section 3' },
+      { title: 'Section 4' },
+      { title: 'Section 5' },
+      { title: 'Section 6' },
+      { title: 'Section 7' },
+    ])
+
+    return {
+      items,
+      activeItem,
+    }
+  },
+  template: `
+  <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
+      <div style="width: 100%; height: 20%;">
+      </div>
+      <g-sections v-model="activeItem" multiple>       
+        <g-sections-item v-for="(item, index) in items" :header="item.title" :height="itemHeight" :key="index">
+          <g-text-field label="Key" dense/>
+          <g-text-field label="Default" dense/>
+          <g-text-field label="Ref" dense/>
+          <g-switch flat label="Auto populate"/>
+          <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
+        </g-sections-item>
+      </g-sections>
+  </div>
+`
+})
 
 export const DemoAPI2 = () => ({
-  components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
+  components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn, GIcon },
   props: {
     itemHeight: { default: number('Item height', 32) }
   },
   setup() {
     const activeItem = ref(null)
     const items = ref([
-      {
-        title: 'Section 2',
-        content: '2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 3',
-        content: '3 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 4',
-        content: '4 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 5',
-        content: '5 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 6',
-        content: '6 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      },
-      {
-        title: 'Section 7',
-        content: '7 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      }
+      { title: 'Section 1' },
+      { title: 'Section 2' },
+      { title: 'Section 3' },
+      { title: 'Section 4' },
+      { title: 'Section 5' },
+      { title: 'Section 6' },
+      { title: 'Section 7' },
     ])
-
-    const updateItems = function () {
-      // items.value[4] = {
-      //   title: 'Section 6 Updated',
-      //   content: 'Updated'
-      // }
-      items.value[4].content = 'updated'
-    }
 
     return {
       items,
       activeItem,
-      updateItems
     }
   },
   template: `
@@ -256,19 +157,49 @@ export const DemoAPI2 = () => ({
       <div style="width: 100%; height: 20%;">
       </div>
       <g-sections v-model="activeItem">       
-        <g-sections-header v-for="i in 7">
-          Section {{i}}   
+        <g-sections-header v-for="(item, index) in items">
+          <g-icon>fas fa-hand-point-right</g-icon>
+          {{item.title}}
         </g-sections-header>
-        <g-sections-item :item="1" :height="itemHeight">
+        <g-sections-item v-for="(item, index) in items" :height="itemHeight" :key="index">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
           <g-switch flat label="Auto populate"/>
           <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
         </g-sections-item>
-        <g-sections-item v-for="(item, index) in items" :item="item" :height="itemHeight" :key="index">
-          {{item.content}}
-        </g-sections-item>
+      </g-sections>
+  </div>
+`
+})
+
+export const DemoAPI3 = () => ({
+  components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
+  props: {
+    itemHeight: {default: number('Item height', 32)}
+  },
+  setup() {
+    const activeItem = ref(null)
+
+    const itemHeaders = ['Section 1', 'Section 2','Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7']
+
+    return {
+      activeItem,
+      itemHeaders
+    }
+  },
+  template: `
+  <div style="width: 300px; height: 600px; padding-top: 10px; border: 1px solid #E0E0E0; overflow: auto">
+      <div style="width: 100%; height: 20%;">
+      </div>
+      <g-sections v-model="activeItem" :item-headers="itemHeaders">       
+        <template v-for="header in itemHeaders" v-slot:[header]>
+          <g-text-field label="Key" dense/>
+          <g-text-field label="Default" dense/>
+          <g-text-field label="Ref" dense/>
+          <g-switch flat label="Auto populate"/>
+          <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
+        </template>
       </g-sections>
   </div>
 `

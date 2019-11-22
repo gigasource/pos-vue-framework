@@ -7,13 +7,17 @@
     name: 'GSectionsHeader',
 		components: { GIcon },
     props: {
-      width: Number,
+      height: Number,
 			item: null,
 			headerText: String
 		},
     setup(props, context) {
       const toggleItem = inject('toggleItem')
       const isActiveItem = inject('isActiveItem')
+
+			const headerStyles = computed(() => ({
+			  height: convertToUnit(props.height)
+			}))
 
 			const genDefaultHeader = function () {
         return [
@@ -27,7 +31,8 @@
       const genHeader = function () {
         return <div
           class={['g-sections-header', { 'g-sections-header__active': isActiveItem(props.item) }]}
-          vOn:click={() => toggleItem(props.item)}>
+          vOn:click={() => toggleItem(props.item)}
+					style={headerStyles.value}>
 					{context.slots.default ? context.slots.default() : genDefaultHeader()}
         </div>
       }
@@ -45,12 +50,6 @@
 	@import './variable';
 
 	.g-sections {
-		flex: 1 0 100%;
-		max-width: 100%;
-		position: relative;
-		background-color: #FFFFFF;
-		transition: .3s map-get($transition, 'swing');
-
 		&-header {
 			align-items: center;
 			display: flex;

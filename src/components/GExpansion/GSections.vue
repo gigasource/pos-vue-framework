@@ -1,21 +1,20 @@
 <script>
 	import _ from 'lodash'
-	import { VNode } from 'vue'
-  import { genHeaderFactory, getExpansionModel } from './GExpansionFactory';
+  import { getExpansionModel } from './GExpansionFactory';
   import { provide } from '@vue/composition-api';
   import GSectionsHeader from './GSectionsHeader';
+  import GSectionsItem from './GSectionsItem';
 
   export default {
     name: 'GSections',
-    components: { GSectionsHeader },
+    components: { GSectionsHeader, GSectionsItem },
     props: {
       mandatory: Boolean,
       multiple: Boolean,
       value: null,
 
-      itemHeader: {
-        default: 'header',
-        type: [String, Function]
+      itemHeaders: {
+        type: Array
       },
     },
     setup(props, context) {
@@ -24,19 +23,18 @@
 			provide ('toggleItem', toggleItem)
 			provide ('isActiveItem', isActiveItem)
 
-
-			const genContent = (slotsNodes) => {
+			const genContentSlotDefault = (slotsNodes) => {
 				const headerNodes = _.filter(slotsNodes, node => node.tag && node.tag.indexOf('GSectionsHeader') > -1)
         const itemNodes = _.filter(slotsNodes, node => node.tag && node.tag.indexOf('GSectionsItem') > -1)
 
 				for (let i = 0; i < itemNodes.length; i++) {
 					if (headerNodes[i]) {
-					  headerNodes[i].componentOptions.propsData.item = itemNodes[i].componentOptions.propsData.item
+            itemNodes[i].componentOptions.propsData.item = i + 1
+					  headerNodes[i].componentOptions.propsData.item = i + 1
 					} else {
+            itemNodes[i].componentOptions.propsData.item = i + 1
             headerNodes.push(
-              <g-sections-header item={itemNodes[i].componentOptions.propsData.item} header-text={itemNodes[i].componentOptions.propsData.header}>
-
-              </g-sections-header>
+              <g-sections-header item={i + 1} header-text={itemNodes[i].componentOptions.propsData.header}/>
             )
           }
 				}
@@ -44,10 +42,28 @@
 				return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
 			}
 
+			const genContentItemHeader = () => {
+				const headerNodes = []
+				const itemNodes = []
+
+				props.itemHeaders.map((header, index) => {
+				  headerNodes.push(
+            <g-sections-header item={index + 1} header-text={header}/>
+					)
+					itemNodes.push(
+            <g-sections-item item={index + 1}>
+              {context.slots[header] ? context.slots[header]() : undefined}
+            </g-sections-item>
+					)
+				})
+
+        return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
+			}
+
       const genSections = () => {
-        return <div class='g-sections'>
-          {context.slots.default ? genContent(context.slots.default()) : undefined}
-        </div>
+				return <div class='g-sections'>
+					{context.slots.default ? genContentSlotDefault(context.slots.default()) : props.itemHeaders ? genContentItemHeader() : undefined}
+				</div>
       }
 
       return {
