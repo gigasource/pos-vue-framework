@@ -33,7 +33,7 @@
   import minimizeIcon from '../../assets/dnddialog/minimize.svg'
   import maximize1Icon from '../../assets/dnddialog/maximize1.svg'
   import maximize2Icon from '../../assets/dnddialog/maximize2.svg'
-  import closeIcon from '../../assets/dnddialog/close.svg'
+  import closeIcon from '../../assets/dnddialog/close-small.svg'
 
   export default {
     name: 'GDndDialog',

@@ -9,10 +9,14 @@
 		<g-grid-layout class="wrapper" :layout="Layout">
 			<div area="header" class="header">
 				<span>Price range filter</span>
-				<g-icon @click="dialog = false">mdi-close</g-icon>
+				<g-icon @click="dialog = false" svg>icon-close</g-icon>
 			</div>
 			<div area="range">
 				<pos-range-slider min="0" max="431"/>
+				<div class="range-value">
+					<span>0</span>
+					<span>€ 431</span>
+				</div>
 			</div>
 			<div area="buttons" class="buttons">
 				<g-btn @click="dialog = false" backgroundColor="#EFEFEF" text-color="#757575" height="36" width="121" style="margin-right: 8px">Cancel</g-btn>
@@ -56,7 +60,17 @@
 		display: flex;
 		align-items: flex-start;
 		justify-content: space-between;
-		padding: 16px;
+		padding: 16px 17px 0 28px;
+		font-weight: bold;
+		font-size: 16px;
+		line-height: 20px;
+	}
+
+	.range-value {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		padding: 0px 34px 0 28px;
 	}
 
 	.buttons {
