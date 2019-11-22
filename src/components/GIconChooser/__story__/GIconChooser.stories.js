@@ -1,6 +1,7 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 import GIconChooser from '../GIconChooser'
+import GIconSearch from '../GIconSearch'
 //
 export default {
   title: 'GIconChooser',
@@ -13,5 +14,12 @@ export const test2 = () => ({
     return () => (
         <g-icon-chooser/>
     )
+  }
+})
+
+export const search = () => ({
+  components: { GIconSearch },
+  setup() {
+    return () => <div style='background-color: red; padding: 50px;'> <g-icon-search/></div>
   }
 })

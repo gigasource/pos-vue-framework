@@ -4,7 +4,7 @@
   import GBtn from '../GBtn/GBtn'
   import GIcon from '../GIcon/GIcon';
 
-  const viewModeEnum = {
+  export const viewModeEnum = {
     grid: 0,
     list: 1
   }
@@ -80,16 +80,27 @@
               <div class="g-pagination__header">
                 <span class="g-pagination__header-title">Displaying {props.dataSrc.length} items</span>
                 <div class="g-pagination__view-mode">
-                  <button class={getViewModeSwitchClass(viewModeEnum.grid)} vOn:click={e => state.viewMode = viewModeEnum.grid}>
+                  <button class={getViewModeSwitchClass(viewModeEnum.grid)} vOn:click={e => {
+                    state.viewMode = viewModeEnum.grid
+                    context.emit('viewmode', viewModeEnum.grid)
+                  }}>
                     <g-icon>mdi-view-module</g-icon>
                   </button>
-                  <button class={getViewModeSwitchClass(viewModeEnum.list)} vOn:click={e => state.viewMode = viewModeEnum.list}>
+                  <button class={getViewModeSwitchClass(viewModeEnum.list)} vOn:click={e => {
+                    state.viewMode = viewModeEnum.list
+                    context.emit('viewmode', viewModeEnum.list)
+                  }}>
                     <g-icon>mdi-view-list</g-icon>
                   </button>
                 </div>
               </div>
-              <div class="items">
-                { cptPages.value.length == 0 ? null : _.map(cptPages.value[state.selectedIndex].items, _renderItems)}
+              <div class="page-content">
+                <div class={["page-content__items", {
+                  "page-content__items--list": state.viewMode === viewModeEnum.list,
+                  "page-content__items--grid": state.viewMode === viewModeEnum.grid,
+                }]}>
+                  { cptPages.value.length == 0 ? null : _.map(cptPages.value[state.selectedIndex].items, _renderItems)}
+                </div>
               </div>
               <div class="page-indexes">
                 <g-btn
@@ -165,18 +176,32 @@
     }
   }
 
+  .page-content {
+    min-height: 200px;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
-
-
-  .items {
+  .page-content__items {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    min-height: 400px;
+
+    &--grid {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    &--list {
+      flex-direction: column;
+
+      &>* {
+        width: 100% !important;
+      }
+    }
   }
 
   .page-indexes {
-    margin-top: 20px;
+    padding: 15px 0;
     display: flex;
     justify-content: center;
     transition: width 2s;
