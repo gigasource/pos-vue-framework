@@ -478,8 +478,8 @@
           'gap': `${state.layout.rowGap}px ${state.layout.columnGap}px`,
           //
           position: 'absolute',
-          top: widthUnitSettingColumnHeight,
-          left: heightUnitSettingRowWidth,
+          top: 0,
+          left: 0,
           bottom: 0,
           right: 0,
           'pointer-events': 'none',
