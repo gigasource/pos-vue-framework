@@ -9,7 +9,7 @@
               <code-look-up text="Order No."/>
             </th>
             <th class="text-left">
-              <dialog-picker/>
+              <date-picker-dialog text="Date Time"/>
             </th>
             <th class="text-left">
               <code-look-up text="Barcode"/>
@@ -128,18 +128,17 @@
   import GBtn from '../../components/GBtn/GBtn';
   import GIcon from '../../components/GIcon/GIcon';
   //import other components
-  import DialogPicker from './DialogPicker';
   import CodeLookUp from './CodeLookUp';
   import GDivider from '../../components/GLayout/GDivider';
   import GSpacer from '../../components/GLayout/GSpacer';
   import AmountFilter from './AmountFilter';
+  import DatePickerDialog from './DatePickerDialog';
 
   export default {
     name: 'OrderHistory',
     components: {
       GSpacer,
       GDivider,
-      DialogPicker,
       DatePickerDialog,
       CodeLookUp,
       AmountFilter,
