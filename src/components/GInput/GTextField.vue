@@ -70,7 +70,8 @@
 
 <script>
   import { ref, computed } from '@vue/composition-api';
-  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';import VueTheMask from 'vue-the-mask'
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';
+  import VueTheMask from 'vue-the-mask'
   import GIcon from '../GIcon/GIcon';
 
   export default {
