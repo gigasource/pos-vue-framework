@@ -179,7 +179,7 @@
           },
           slot: 'tabs'
         }
-        return <g-slide-group {...slideGroupData} vModel={model.value} dense>
+        return <g-slide-group {...slideGroupData} vOn:input={e => model.value = e} value={model.value} dense>
           {genTabs()}
           {genTabSlider()}
         </g-slide-group>

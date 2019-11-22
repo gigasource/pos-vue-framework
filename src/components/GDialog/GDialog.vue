@@ -1,5 +1,5 @@
 <script>
-  import getVModel from '../../mixins/getVModel';
+  import getVModel, { getInternalValue } from '../../mixins/getVModel';
   import { getZIndex, convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import stackable from '../../mixins/stackable';
@@ -41,10 +41,12 @@
 
       // Overlay styling
       overlayColor: String,
-      overlayOpacity: [Number, String]
+      overlayOpacity: [Number, String],
+
+			bottom: Boolean,
     },
     setup(props, context) {
-      const isActive = getVModel(props, context);
+      const isActive = getInternalValue(props, context);
       const { attachToRoot, attachToParent, detach } = detachable(props, context);
       const { getMaxZIndex } = stackable(props, context);
 
@@ -137,7 +139,8 @@
           ref: 'wrapper',
           staticClass: 'g-dialog-wrapper',
           class: {
-            'g-dialog-wrapper__active': isActive.value
+            'g-dialog-wrapper__active': isActive.value,
+						'g-dialog-wrapper__bottom': props.bottom,
           },
           style: {
             zIndex: wrapperZIndex.value
@@ -195,7 +198,7 @@
           }
         }
 
-        return <g-overlay vModel={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
+        return <g-overlay vOn:input={e => isActive.value = e} value={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
       }
 
       function genActivator() {
@@ -212,7 +215,18 @@
         </div>
       }
 
+      function open() {
+        isActive.value = true;
+      }
+
+      function close() {
+        isActive.value = false;
+      }
+
       return {
+        open,
+        close,
+        isActive,
         genDialog
       }
     },
@@ -297,12 +311,12 @@
 		&-content__fullscreen {
 			border-radius: 0;
 			margin: 0;
-			width: 100%;
 			height: 100%;
 			position: fixed;
 			overflow-y: auto;
 			top: 0;
 			left: 0;
+			right: 0;
 
 			> .g-card {
 				min-height: 100%;
@@ -310,6 +324,10 @@
 				margin: 0 !important;
 				padding: 0 !important;
 			}
+		}
+
+		&-wrapper__bottom {
+			align-items: flex-end;
 		}
 	}
 </style>

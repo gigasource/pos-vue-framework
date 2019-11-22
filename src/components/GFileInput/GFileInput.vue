@@ -15,6 +15,7 @@
       //display props
       ...{
         label: String,
+				svgIcon: Boolean,
         prependIcon: String,
         prependInnerIcon: {
           type: String,
@@ -225,7 +226,7 @@
 
       function genPrependInner() {
         return <div class="g-tf-prepend__inner">
-          <g-icon>{props.prependInnerIcon}</g-icon>
+          <g-icon svg={props.svgIcon}>{props.prependInnerIcon}</g-icon>
         </div>
       }
 
@@ -244,7 +245,7 @@
                 <g-icon vOn:click_stop={onClearIconClick} style="cursor: pointer">mdi-close</g-icon>
               </div>
           )}
-          <g-icon>{props.appendIcon}</g-icon>
+          <g-icon svg={props.svgIcon}>{props.appendIcon}</g-icon>
         </div>
       } // todo remake icon div after g-icon is fixed
 

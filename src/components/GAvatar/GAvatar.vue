@@ -51,7 +51,7 @@
 
       function genAvatar() {
         return <div class={classes.value} style={styles.value}>
-          {context.slots.default()}
+          {context.slots.default && context.slots.default()}
         </div>
       }
 

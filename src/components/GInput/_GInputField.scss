@@ -193,7 +193,6 @@ input[type=text] {
 .g-tf-append__inner {
   display: inline-flex;
   align-items: center;
-  margin-top: 4px;
   line-height: 1;
   user-select: none;
 
@@ -385,7 +384,7 @@ input[type=text] {
     display: none;
   }
 
-  &:focus-within fieldset {
+  &.g-tf-wrapper:focus-within fieldset {
     border: 2px solid #1867c0;
   }
 
@@ -395,12 +394,16 @@ input[type=text] {
 
   &:focus-within legend {
     width: auto;
-    padding: 1px;
     margin-left: 5px;
   }
 
   .g-tf-input {
     padding: 12px 0 12px 6px;
+  }
+
+  .g-tf-input:focus {
+    padding-top: 11px;
+    padding-left: 11px;
   }
 
   .g-tf-label {
@@ -430,6 +433,10 @@ input[type=text] {
 
   &:not(.g-tf__rounded) .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
     left: -28px;
+  }
+
+  &:not(.g-tf__rounded) .g-tf-prepend__inner ~ .g-tf-affix ~ .inputGroup .g-tf-label__active {
+    left: -40px;
   }
 
   &:focus-within .g-tf-prepend__inner.g-tf-icon__active ~ .g-tf-label {
@@ -816,6 +823,11 @@ input[type=text] {
       padding: 10px 6px;
     }
 
+    .g-tf-input:focus {
+      padding-top: 9px;
+      padding-left: 9px;
+    }
+
     .g-tf-affix {
       padding-top: 10px;
     }
@@ -827,6 +839,10 @@ input[type=text] {
 
     .g-tf-label {
       top: 8px;
+    }
+
+    .g-tf-label.g-tf-label__active {
+      top: 12px;
     }
 
     .g-tf-label__active {
@@ -843,6 +859,10 @@ input[type=text] {
       }
 
       .g-tf-prepend__inner ~ .inputGroup .g-tf-label.g-tf-label__active {
+        left: -24px;
+      }
+
+      .g-tf-prepend__inner ~ .g-tf-affix ~ .inputGroup .g-tf-label.g-tf-label__active {
         left: -28px;
       }
 
