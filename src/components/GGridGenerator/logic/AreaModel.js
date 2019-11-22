@@ -3,21 +3,20 @@ import { generateRandomCssColor } from '../../../utils/colors'
 import { getCssArea, normalizeArea } from './utils';
 
 export default class AreaModel {
-  // public fields
-  name = ''
-  top = -1
-  left = -1
-  width = 0
-  height = 0
-  margin = ''
-  padding = ''
-  bgColor = generateRandomCssColor()
-  alignSelf = ''
-  justifySelf = ''
-  wrapInDiv = false
-
   constructor({area, parent}) {
     this._visible = true
+    // public fields
+    this.name = ''
+    this.top = -1
+    this.left = -1
+    this.width = 0
+    this.height = 0
+    this.margin = ''
+    this.padding = ''
+    this.bgColor = generateRandomCssColor()
+    this.alignSelf = ''
+    this.justifySelf = ''
+    this.wrapInDiv = false
 
     if (area) {
       this.name = area.name

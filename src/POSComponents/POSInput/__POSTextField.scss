@@ -31,6 +31,7 @@
   border: 1px solid #ced4da !important;
   color: #9E9E9E;
   flex-basis: 100%;
+  width: 100%;
   align-items: center;
 }
 
@@ -74,12 +75,13 @@
   white-space: nowrap;
   text-align: center;
   border: 1px solid #ced4da;
+  width: 100%;
 }
 
 .bs-tf-input {
   display: block;
-  flex: 1 1 auto;
-  padding: 8px;
+  width: 100%;
+  padding: 6px 8px;
   line-height: 24px;
   font-size: 14px;
   background-color: #F0F0F0;

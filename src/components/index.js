@@ -1,3 +1,5 @@
+import GAutocomplete from "./GAutocomplete/GAutocomplete";
+
 import GAvatar from './GAvatar/GAvatar';
 
 import GBadge from './GBadge/GBadge';
@@ -20,6 +22,8 @@ import GCheckbox from './GCheckbox/GCheckbox';
 import GChip from './GChip/GChip';
 
 import GChipGroup from './GChipGroup/GChipGroup';
+
+import GCombobox from './GCombobox/GCombobox';
 
 import GConnector from './GConnector/GConnector';
 import GDiagram from './GConnector/GDiagram';
@@ -91,7 +95,6 @@ import GRadioGroup from './GRadio/GRadioGroup';
 import GRangeSlider from './GRangeSlider/GRangeSlider.vue';
 
 import GSelect from './GSelect/GSelect';
-import GCombobox from './GSelect/GCombobox';
 
 import GSidebar from './GSidebar/GSidebar';
 import GSideBarTreeView from './GSidebar/GSideBarTreeView';
@@ -182,6 +185,7 @@ import {
 } from './transition/transition';
 
 export {
+  GAutocomplete,
   GAvatar,
   GBadge,
   GBreadcrumbs,

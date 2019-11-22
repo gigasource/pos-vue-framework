@@ -1,5 +1,5 @@
 <script>
-  import getVModel from '../../mixins/getVModel';
+  import getVModel, { getInternalValue } from '../../mixins/getVModel';
   import { getZIndex, convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import stackable from '../../mixins/stackable';
@@ -46,7 +46,7 @@
 			bottom: Boolean,
     },
     setup(props, context) {
-      const isActive = getVModel(props, context);
+      const isActive = getInternalValue(props, context);
       const { attachToRoot, attachToParent, detach } = detachable(props, context);
       const { getMaxZIndex } = stackable(props, context);
 
@@ -198,7 +198,7 @@
           }
         }
 
-        return <g-overlay vModel={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
+        return <g-overlay vOn:input={e => isActive.value = e} value={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
       }
 
       function genActivator() {
@@ -215,7 +215,18 @@
         </div>
       }
 
+      function open() {
+        isActive.value = true;
+      }
+
+      function close() {
+        isActive.value = false;
+      }
+
       return {
+        open,
+        close,
+        isActive,
         genDialog
       }
     },

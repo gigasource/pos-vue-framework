@@ -1,17 +1,16 @@
 <template>
-	<g-dialog v-model="dialogNewPayment" fullscreen>
+	<g-dialog v-model="dialogNewCategory" fullscreen>
 		<div class="dialog-payment w-100">
 			<div class="form">
-				<p class="ml-1 mb-3">Create New Payment</p>
-				<p-o-s-text-field style="width: 268px" label="Name" placeholder="Payment name" v-model="name"/>
-				<p-o-s-file-input label="Icon"/>
+				<p class="ml-1 mb-3">Create New Category</p>
+				<p-o-s-text-field style="width: 268px" label="Name" placeholder="Category name" v-model="name"/>
 			</div>
 			<div class="keyboard-wrapper">
 				<pos-keyboard-full v-model="name"/>
 			</div>
 			<g-toolbar bottom color="grey lighten 3">
 				<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
-					<g-icon class="mr-2" svg @click="dialogNewPayment = false">
+					<g-icon class="mr-2" svg @click="dialogNewCategory = false">
 						icon-back
 					</g-icon>
 					Back
@@ -33,7 +32,7 @@
   import PosKeyboardFull from '../../../POSComponents/PosKeyboardFull';
 
   export default {
-    name: 'dialogNewPayment',
+    name: 'dialogNewCategory',
     components: { PosKeyboardFull, GSpacer, GIcon, GBtn, GToolbar, GKeyboard, POSFileInput, POSTextField, GDialog },
     data() {
       return {
@@ -44,7 +43,7 @@
       value: null,
     },
     computed: {
-      dialogNewPayment: {
+      dialogNewCategory: {
         get() {
           return this.value;
         },
