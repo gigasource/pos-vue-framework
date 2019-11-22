@@ -23,8 +23,6 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   watch(() => props.prefix, () => {
     context.root.$nextTick(() => {
       prefixWidth.value = prefixRef.value && prefixRef.value.offsetWidth
-      console.log(prefixRef.value && prefixRef.value.offsetWidth)
-      console.log(prefixRef.value && prefixRef.value.clientWidth)
     })
   })
 
