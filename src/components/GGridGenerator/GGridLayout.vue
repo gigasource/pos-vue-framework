@@ -111,7 +111,7 @@
       function renderEditDialog() {
         return <div ref={refIdEditor}>
           <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
-          <g-dialog value={dialogState.show} fullscreen>
+          <g-dialog value={dialogState.show} vOn:input={v => dialogState.show = v} fullscreen>
             <div class="editor-dialog">
               <div class='editor-dialog__title-bar'>
                 <span class='editor-dialog__title-bar__title'>Grid Layout Editor</span>
