@@ -4,7 +4,7 @@
   import GTextField from '../GInput/GTextField'
   import GIcon from '../GIcon/GIcon';
   import { enterPressed } from '../../utils/keyboardHelper';
-  import GPagination from '../GPagination/GPagination'
+  import GPagination from './GIconPagination'
 
   export default {
     name: 'GIconSearch',

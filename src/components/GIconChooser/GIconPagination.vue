@@ -183,7 +183,7 @@
 
   .page-content {
     min-height: 200px;
-    max-height: 400px;
+    max-height: 200px;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #eee;

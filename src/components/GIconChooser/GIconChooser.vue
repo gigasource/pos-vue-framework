@@ -3,7 +3,7 @@
   import { getIconSources } from './logic/Utils'
   import { reactive, computed } from '@vue/composition-api'
   import GIcon from '../GIcon/GIcon';
-  import GPagination, { pagingModeEnum } from '../GPagination/GPagination'
+  import GPagination, { pagingModeEnum } from './GIconPagination'
   import GIconSearch from './GIconSearch'
   import GBtn from '../GBtn/GBtn'
   import GDndDialog from '../GDndDialog/GDndDialog';
