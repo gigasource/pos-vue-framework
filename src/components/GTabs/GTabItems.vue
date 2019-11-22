@@ -38,7 +38,6 @@
 	.g-tab-items {
 		contain: layout;
 		flex: 1 1 auto;
-		z-index: -1;
 		overflow: hidden;
 	}
 </style>

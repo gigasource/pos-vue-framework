@@ -193,7 +193,6 @@ input[type=text] {
 .g-tf-append__inner {
   display: inline-flex;
   align-items: center;
-  margin-top: 4px;
   line-height: 1;
   user-select: none;
 
@@ -385,7 +384,7 @@ input[type=text] {
     display: none;
   }
 
-  &:focus-within fieldset {
+  &.g-tf-wrapper:focus-within fieldset {
     border: 2px solid #1867c0;
   }
 
@@ -395,7 +394,6 @@ input[type=text] {
 
   &:focus-within legend {
     width: auto;
-    padding: 1px;
     margin-left: 5px;
   }
 

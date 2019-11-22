@@ -172,7 +172,7 @@ export const treeView = () => ({
                  collapsed={props.collapsed}
                  overlay={props.overlay}
                  overlay-color={props.overlayColor}
-                 overlay-opacity={props.overlayOpacity}>
+                 overlay-opacity={props.overlayOpacity} small fixed>
         <template slot="header">
           <div class="elevation-2 bg-purple-darken-1 white" style="display: flex; align-items: center; padding: 16px">
             <img alt={''} src={'/materialize-logo.png'} style="width: 40px; margin-right: 16px"/>
@@ -183,7 +183,8 @@ export const treeView = () => ({
         <g-side-bar-tree-view
           data={data.value}
           rounded
-          vModel={state.value}/>
+          vOn:input={e => state.value = e}
+          value={state.value}/>
       </g-sidebar>
   }
 });

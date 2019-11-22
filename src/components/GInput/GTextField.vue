@@ -33,7 +33,10 @@
 									 @keydown="onKeyDown">
 					</div>
 					<slot name="label">
-						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
+						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">
+							{{label}}
+							<span v-if="required" style="color: red">*</span>
+						</label>
 					</slot>
 
 				</div>

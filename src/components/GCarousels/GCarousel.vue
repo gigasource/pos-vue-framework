@@ -132,7 +132,7 @@
           }
         };
 
-        return <g-window {...nodeData} vModel={internalValue.value}>
+        return <g-window {...nodeData} vOn:input={e => internalValue.value = e} value={internalValue.value}>
           {context.slots.default && context.slots.default()}
         </g-window>
       }

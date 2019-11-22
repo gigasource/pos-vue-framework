@@ -12,7 +12,7 @@
 
   &.g-data-table__fixed-header {
     thead th {
-      background: #FFFFFF;
+      //background: #FFFFFF;
       box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
     }
   }
@@ -120,7 +120,7 @@
 }
 
 .g-data-table__striped {
-  tr:nth-child(even) {
+  ::v-deep tr:nth-child(even) {
     background-color: #f2f2f2;
   }
 }
