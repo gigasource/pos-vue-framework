@@ -46,7 +46,6 @@
       })
 
       const iconSources = getIconSources()
-
       function initIconPickerDialogState() {
         state.currentView = viewStateEnum.sourceList
         state.selectedIconSource = iconSources[0]
@@ -79,7 +78,21 @@
       })
 
       // source list view
-      function renderIconSrc(iconSrc) {
+      const iconSrcColors = [{
+        color: 'rgb(27, 105, 168)',
+        shadeColor: 'rgb(21, 84, 134)',
+      }, {
+        color: 'rgb(151, 42, 169)',
+        shadeColor: 'rgb(119, 33, 133)',
+      }, {
+        color: 'rgb(8, 144, 103)',
+        shadeColor: 'rgb(5, 90, 82)',
+      }]
+      function getIconSrcColor(index) {
+        return iconSrcColors[index % iconSrcColors.length]
+      }
+      function renderIconSrc(iconSrc, id) {
+        const color = getIconSrcColor(id)
         return (
             <span class='g-icon-source'
                   vOn:click={() => {
@@ -89,17 +102,17 @@
                     state.currentView = viewStateEnum.sourceDetail
                   }}>
               <div class="g-icon-source__icon-info">
-                <div style={{ backgroundColor: iconSrc.color }}>
+                <div style={{ backgroundColor: color.color }}>
                   <g-icon small>{iconSrc.categories[0].icons[0].value}</g-icon>
                   <g-icon small>{iconSrc.categories[0].icons[1].value}</g-icon>
                   <g-icon small>{iconSrc.categories[0].icons[0].value}</g-icon>
                 </div>
-                <div style={{ backgroundColor: iconSrc.shadeColor }}>
+                <div style={{ backgroundColor: color.shadeColor }}>
                   <small>{iconSrc.totalIcons}</small>
                 </div>
               </div>
               <div class="g-icon-source__name-author">
-                <div style={{ color: iconSrc.color }}>{iconSrc.name}</div>
+                <div style={{ color: color.color }}>{iconSrc.name}</div>
                 <div>
                   <small style={{ color: '#999' }}> by {iconSrc.source.substr(0, 30)}...</small>
                 </div>
@@ -110,9 +123,8 @@
       // source detail view
       const cateColors = ['rgb(151, 42, 169)', 'rgb(8, 114, 103)', 'rgb(147, 89, 18)', 'rgb(81, 104, 116)', 'rgb(52, 115, 55)', 'rgb(62, 79, 173)',
         'rgb(115, 82, 70)', 'rgb(102, 58, 179)', 'rgb(195, 33, 68)', 'rgb(9, 113, 126)', 'rgb(81, 112, 46)', 'rgb(11, 108, 154)']
-      const getCategoryBgColor = (cate, id) => ({ backgroundColor: (state.selectedCategory == cate) ? cateColors[id % cateColors.length] : 'rgb(175, 175, 175)' })
-      const addRemoveCategory = cate => state.selectedIcon = (state.selectedCategory == cate) ? null : cate
-
+      const getCategoryBgColor = (cate, id) => ({ backgroundColor: (state.selectedCategory == null || state.selectedCategory == cate) ? cateColors[id % cateColors.length] : 'rgb(175, 175, 175)' })
+      const addRemoveCategory = cate => state.selectedCategory = (state.selectedCategory == cate) ? null : cate
       function renderCategoryName(category, index) {
         return (category.icons.length == 0 ? null :
             <span class="category-name" style={getCategoryBgColor(category, index)}
@@ -146,14 +158,14 @@
         flipHorizontal: state.flipHorizontal,
         flipVertical: state.flipVertical,
         rotate: state.rotate,
-        icon: state.icon
+        color: state.color
       })
 
       function renderIconDetail() {
         return <div class="icon-detail">
           <div class="icon-detail__content">
             <div class="icon-detail__content__preview">
-              <g-icon large>{state.selectedIcon.value}</g-icon>
+              <g-icon>{state.selectedIcon.value}</g-icon>
             </div>
 
             <div class="icon-detail__content__custom-panel">
