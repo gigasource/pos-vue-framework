@@ -195,7 +195,7 @@ export const layoutWithAttributeAndOffsetBreakpoint = () => ({
 export const layoutOnlyBreakpoint = () => ({
   components: { GRow, GCol},
   template: `<g-row no-gutters>
-  <g-col sm="10">
+  <g-col sm="10" sm5>
   <div style="border: 1px solid black; padding: 8px; height: 100%">
           10 cols in every breakpoints
       </div>

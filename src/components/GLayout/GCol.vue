@@ -57,6 +57,7 @@
 			}
 
       watch(() => [props.xs, props.sm, props.md, props.lg, props.xl], () => {
+        only = '';
         if (props.xs) {
           breakpoints.xs = props.xs;
           only += 'xs';
