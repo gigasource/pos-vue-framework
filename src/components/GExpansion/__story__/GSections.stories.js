@@ -13,7 +13,7 @@ export default {
   decorators: [withKnobs]
 }
 
-export const DemoAPI1 = () => ({
+export const DemoAPI1UsingHeaderPropOfGSectionsItem = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
   props: {
 
@@ -127,7 +127,7 @@ export const DemoAPI1Multiple = () => ({
 `
 })
 
-export const DemoAPI2 = () => ({
+export const DemoAPI2UsingGSectionsHeaderComponent = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn, GIcon },
   props: {
     headerHeight: { default: number('Header height', 32) }
@@ -170,7 +170,7 @@ export const DemoAPI2 = () => ({
 `
 })
 
-export const DemoAPI3 = () => ({
+export const DemoAPI3UsingItemheaderPropsOfGSections = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
   props: {
     itemHeight: {default: number('Item height', 32)}
