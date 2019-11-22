@@ -4,7 +4,7 @@
   import GBtn from '../GBtn/GBtn'
   import GIcon from '../GIcon/GIcon';
 
-  export const viewModeEnum = {
+  export const pagingModeEnum = {
     grid: 0,
     list: 1
   }
@@ -21,7 +21,7 @@
     setup(props, context) {
       const state = reactive({
         selectedIndex: 0,
-        viewMode: viewModeEnum.grid
+        viewMode: pagingModeEnum.grid
       })
       watch(() => props.dataSrc, () => state.selectedIndex = 0, { flush: 'pre' })
 
@@ -76,19 +76,19 @@
 
       return () => {
         return (
-            <div>
+            <div class="g-pagination">
               <div class="g-pagination__header">
                 <span class="g-pagination__header-title">Displaying {props.dataSrc.length} items</span>
                 <div class="g-pagination__view-mode">
-                  <button class={getViewModeSwitchClass(viewModeEnum.grid)} vOn:click={e => {
-                    state.viewMode = viewModeEnum.grid
-                    context.emit('viewmode', viewModeEnum.grid)
+                  <button class={getViewModeSwitchClass(pagingModeEnum.grid)} vOn:click={e => {
+                    state.viewMode = pagingModeEnum.grid
+                    context.emit('viewmode', pagingModeEnum.grid)
                   }}>
                     <g-icon>mdi-view-module</g-icon>
                   </button>
-                  <button class={getViewModeSwitchClass(viewModeEnum.list)} vOn:click={e => {
-                    state.viewMode = viewModeEnum.list
-                    context.emit('viewmode', viewModeEnum.list)
+                  <button class={getViewModeSwitchClass(pagingModeEnum.list)} vOn:click={e => {
+                    state.viewMode = pagingModeEnum.list
+                    context.emit('viewmode', pagingModeEnum.list)
                   }}>
                     <g-icon>mdi-view-list</g-icon>
                   </button>
@@ -96,8 +96,8 @@
               </div>
               <div class="page-content">
                 <div class={["page-content__items", {
-                  "page-content__items--list": state.viewMode === viewModeEnum.list,
-                  "page-content__items--grid": state.viewMode === viewModeEnum.grid,
+                  "page-content__items--list": state.viewMode === pagingModeEnum.list,
+                  "page-content__items--grid": state.viewMode === pagingModeEnum.grid,
                 }]}>
                   { cptPages.value.length == 0 ? null : _.map(cptPages.value[state.selectedIndex].items, _renderItems)}
                 </div>
@@ -181,6 +181,8 @@
     max-height: 400px;
     overflow-x: hidden;
     overflow-y: auto;
+    background-color: #eee;
+    border: 1px solid #aaa;
   }
 
   .page-content__items {
@@ -201,7 +203,7 @@
   }
 
   .page-indexes {
-    padding: 15px 0;
+    padding: 5px 0;
     display: flex;
     justify-content: center;
     transition: width 2s;
