@@ -2,7 +2,7 @@ const GComponents = require('./src/components');
 
 const GigaComponents = {
   install(Vue, args) {
-   Object.keys(GComponents).forEach(key => Vue.component(key, GComponents[key]));
+    Object.keys(GComponents).forEach(key => Vue.component(key, GComponents[key]));
   }
 };
 
