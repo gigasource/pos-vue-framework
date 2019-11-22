@@ -85,7 +85,13 @@
       showSearchField: {
         type: Boolean,
         default: true
-      }
+      },
+      appendIcon: {
+        type: String,
+        default: 'arrow_drop_down'
+      },
+      appendSvg: Boolean,
+      required: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -114,7 +120,8 @@
       function genSearchTextField() {
         if (props.searchable && props.showSearchField) {
           return <GTextField placeholder="Search"
-                             vModel={state.searchText}
+                             vOn:input={e => state.searchText = e}
+                             value={state.searchText}
                              clearable
                              ref="searchText"
                              autofocus={searchFocused.value}
@@ -139,12 +146,13 @@
                     multiple: props.multiple,
                     inMenu: true,
                     selectable: true,
+                    value: selectedItem.value,
                   },
                   on: {
-                    'click:item': () => showOptions.value = props.multiple
+                    'click:item': () => showOptions.value = props.multiple,
+                    input: e => selectedItem.value = e,
                   },
                 }}
-                vModel={selectedItem.value}
                 ref="list"
             />
           }
@@ -190,7 +198,7 @@
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
-            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {selections.value.length === 0 ?
@@ -216,7 +224,7 @@
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly']),
+                      'rules', 'type', 'disabled', 'readOnly', 'required']),
                     value: textfieldValue.value
                   },
                   on: {
@@ -235,16 +243,19 @@
       //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
-        return <g-menu vModel={showOptions.value}
-                       {...{
-                         props: {
-                           ...props.menuProps,
-                           nudgeBottom: nudgeBottom.value
-                         },
-                         scopedSlots: {
-                           activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
-                         }
-                       }}
+        return <g-menu {...{
+          props: {
+            ...props.menuProps,
+            nudgeBottom: nudgeBottom.value,
+            value: showOptions.value,
+          },
+          scopedSlots: {
+            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+          },
+          on: {
+            input: e => showOptions.value = e,
+          }
+        }}
         >
           <template slot="default">
             {genSearchTextField()}
@@ -267,6 +278,7 @@
         state,
         selectedItem,
         selections,
+        showOptions
       }
     },
     render() {
@@ -280,13 +292,8 @@
       span {
         margin: 3px
       }
-
-      .g-tf-wrapper {
-        margin: 16px 0 24px 10px;
-      }
-
-      .g-tf-append__inner {
-        transition: transform 0.4s
+      .g-tf-append__inner .g-icon:last-child {
+        transition: transform 0.4s;
       }
 
       .g-tf-input {
@@ -308,6 +315,7 @@
 
   .g-select__active::v-deep {
     .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
       transform: rotateZ(180deg);
     }
   }

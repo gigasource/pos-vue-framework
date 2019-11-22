@@ -33,7 +33,10 @@
 									 @keydown="onKeyDown">
 					</div>
 					<slot name="label">
-						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">{{label}}</label>
+						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">
+							{{label}}
+							<span v-if="required" style="color: red">*</span>
+						</label>
 					</slot>
 
 				</div>
@@ -67,7 +70,8 @@
 
 <script>
   import { ref, computed } from '@vue/composition-api';
-  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';import VueTheMask from 'vue-the-mask'
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';
+  import VueTheMask from 'vue-the-mask'
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -162,10 +166,7 @@
             'padding': '0 2px',
             'margin-left': margin,
           }
-        } else
-          return {
-          	'padding-top': '3px'
-					}
+        }
       });
 			const iconColor = computed(() => {
 			  if(isFocused.value) {

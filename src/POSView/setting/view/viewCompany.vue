@@ -31,11 +31,11 @@
 					</p-o-s-text-field>
 				</div>
 				<div class="main__item">
-					<p>Logo</p>
+					<p class="ml-2">Logo</p>
 					<g-file-input outlined filled dense prependInnerIcon="icon-upload" svg-icon></g-file-input>
 				</div>
 				<div>
-					<p>Logo size</p>
+					<p class="ml-2">Logo size</p>
 					<div class="logo">
 						<div v-for="i in 6" class="item">
 							{{i}}
@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<g-toolbar absolute bottom color="grey lighten 3">
-			<g-btn background-color="white" text-color="#1d1d26" class="ma-2">
+			<g-btn background-color="white" text-color="#1d1d26">
 				<g-icon class="mr-2" svg>
 					icon-back
 				</g-icon>
@@ -82,7 +82,7 @@
 		grid-template-rows: 1fr 1fr 1fr 1fr;
 		grid-auto-columns: 1fr 1fr;
 		grid-auto-flow: column;
-		grid-gap: 32px;
+		grid-gap: 24px;
 		padding: 32px;
 		height: 44%;
 	}
@@ -127,6 +127,7 @@
 
 	.logo {
 		display: flex;
+		margin-left: 8px;
 
 		.item {
 			background: #F0F0F0;
