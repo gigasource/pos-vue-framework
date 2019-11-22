@@ -247,7 +247,6 @@
 
                 <g-pagination
                     vShow={state.iconInCategorySearchText === ''}
-                    class="category-icons"
                     dataSrc={cptIcons.value}
                     itemsPerPage={30}
                     pageIndexesShowInView={7}
@@ -267,7 +266,6 @@
             initIconPickerDialogState()
           }}>Open Icon Picker
           </button>
-
           <g-dnd-dialog
               value={state.showDialog} vOn:input={v => state.showDialog = v}
               scopedSlots={{ title: () => 'Icon Picker' }}
@@ -371,12 +369,6 @@
 
   /* icon paging */
   $size: 40px;
-  .category-icons {
-    padding: 5px;
-    background-color: #fff;
-    border: 1px dashed #aaa;
-    border-radius: 5px;
-  }
 
   ::v-deep .icon {
     display: inline-block;

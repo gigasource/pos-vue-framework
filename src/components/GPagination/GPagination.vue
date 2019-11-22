@@ -153,6 +153,11 @@
 </script>
 <style scoped lang="scss">
   .g-pagination {
+    padding: 5px;
+    background-color: #fff;
+    border: 1px dashed #aaa;
+    border-radius: 5px;
+
     &__header {
       display: flex;
       flex-direction: row;

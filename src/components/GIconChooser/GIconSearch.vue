@@ -4,10 +4,11 @@
   import GTextField from '../GInput/GTextField'
   import GIcon from '../GIcon/GIcon';
   import { enterPressed } from '../../utils/keyboardHelper';
+  import GPagination from '../GPagination/GPagination'
 
   export default {
     name: 'GIconSearch',
-    components: { GIcon, GTextField },
+    components: { GIcon, GTextField, GPagination },
     props: {
       icons: Array,
       value: String,
@@ -39,18 +40,20 @@
                   }
                 }}></input>
           </div>
-          <div vShow={cptFilteredResult.value.length > 0}>
-            {_.map(cptFilteredResult.value, props.renderResultItem)}
-          </div>
+          <g-pagination
+              vShow={cptFilteredResult.value.length > 0}
+              dataSrc={cptFilteredResult.value}
+              itemsPerPage={30}
+              pageIndexesShowInView={7}
+              renderItems={props.renderResultItem}
+              vOn:viewmode={viewMode => state.pagingViewMode = viewMode}/>
         </div>
       }
     }
   }
 </script>
 <style scoped lang="scss">
-
   $height: 36px;
-
   .g-icon-search {
     display: flex;
     margin: 0 10px;
