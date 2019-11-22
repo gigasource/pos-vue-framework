@@ -5,19 +5,18 @@ import { createRange } from '../../../utils/helpers'
 import AreaModel from './AreaModel'
 
 export default class GridModel extends AreaModel {
-  // public field
-  alignItems = ''
-  alignContent = ''
-  justifyItems = ''
-  justifyContent = ''
-  columns = createRange(5, () => ref('1fr'))
-  rows = createRange(5, () => ref('1fr'))
-  columnGap = 0
-  rowGap = 0
-  subAreas = []
-
   constructor({area, parent}) {
     super({area, parent})
+    // public field
+    this.alignItems = ''
+    this.alignContent = ''
+    this.justifyItems = ''
+    this.justifyContent = ''
+    this.columns = createRange(5, () => ref('1fr'))
+    this.rows = createRange(5, () => ref('1fr'))
+    this.columnGap = 0
+    this.rowGap = 0
+    this.subAreas = []
   }
 
   toJSON() {
