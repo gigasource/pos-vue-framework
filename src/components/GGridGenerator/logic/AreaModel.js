@@ -88,7 +88,8 @@ export default class AreaModel {
 
   getFullCssModelName(uid, genOptions) {
     if (this._parent == null) {
-      return `${genOptions.prefix}${this.name}[${uid}]`
+      const uidAttr = (uid == null || uid == '') ? '' : `[${uid}]`
+      return `${genOptions.prefix}${this.name}${uidAttr}`
     } else {
       return `${this._parent.getFullCssModelName(uid, genOptions)}>.${genOptions.prefix}${this.name}`
     }
