@@ -1,6 +1,8 @@
+const GComponents = require('./src/components');
+
 const GigaComponents = {
   install(Vue, args) {
-    // Add logic later
+    Object.keys(GComponents).forEach(key => Vue.component(key, GComponents[key]));
   }
 };
 

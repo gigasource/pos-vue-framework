@@ -460,6 +460,11 @@ input[type=text] {
 
 .g-tf__outlined.g-tf__filled {
 
+  .g-tf-input:focus {
+    padding-top: 11px;
+    padding-bottom: 11px;
+  }
+
   .g-tf-label {
     left: 6px;
     top: 16px;
@@ -690,10 +695,6 @@ input[type=text] {
 
   &.g-tf__outlined .g-tf-label {
     top: 12px;
-    left: 8px;
-  }
-
-  &.g-tf__outlined:focus-within .g-tf-label {
     left: 8px;
   }
 
