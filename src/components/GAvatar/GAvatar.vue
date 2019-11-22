@@ -67,7 +67,6 @@
 
 <style lang="scss" scoped>
   .g-avatar {
-    background-color: #f5f5f5;
     align-items: center;
     border-radius: 50%;
     display: inline-flex;

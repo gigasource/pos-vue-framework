@@ -86,12 +86,12 @@
         type: Boolean,
         default: true
       },
-			appendIcon: {
+      appendIcon: {
         type: String,
-				default: 'arrow_drop_down'
-			},
-			appendSvg: Boolean,
-			required: Boolean,
+        default: 'arrow_drop_down'
+      },
+      appendSvg: Boolean,
+      required: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -244,18 +244,18 @@
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
         return <g-menu {...{
-                         props: {
-                           ...props.menuProps,
-                           nudgeBottom: nudgeBottom.value,
-                           value: showOptions.value,
-                         },
-                         scopedSlots: {
-                           activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
-                         },
-                         on: {
-                           input: e => showOptions.value = e,
-                         }
-                       }}
+          props: {
+            ...props.menuProps,
+            nudgeBottom: nudgeBottom.value,
+            value: showOptions.value,
+          },
+          scopedSlots: {
+            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+          },
+          on: {
+            input: e => showOptions.value = e,
+          }
+        }}
         >
           <template slot="default">
             {genSearchTextField()}
@@ -278,6 +278,7 @@
         state,
         selectedItem,
         selections,
+        showOptions
       }
     },
     render() {
