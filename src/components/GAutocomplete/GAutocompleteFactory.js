@@ -132,14 +132,15 @@ export function genList(props, options, selectedItem, showOptions, context, sele
           allowDuplicates: props.allowDuplicates,
           multiple: props.multiple,
           selectable: true,
-          inMenu: true
+          inMenu: true,
+          value: selectedItem.value,
         },
         on: {
-          'click:item': onClickItem
+          'click:item': onClickItem,
+          input: e => selectedItem.value = e,
         },
       }
       }
-      vModel={selectedItem.value}
       ref="list"
   />
 
