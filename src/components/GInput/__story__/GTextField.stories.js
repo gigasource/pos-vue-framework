@@ -494,6 +494,21 @@ export const TextFieldLabelSlot = () => ({
               </g-container>
 `,
 });
+
+export const TextFieldAppendSlot = () => ({
+  components: { GTextField, GContainer , GIcon},
+  template: `
+              <g-container>
+                <g-text-field >
+                 <template v-slot:appendOuter>
+                 <div class="g-tf-append__outer">
+                 <g-icon>check</g-icon>
+                 </div>
+                </template>
+                </g-text-field>
+              </g-container>
+`,
+});
 //todo: validate
 export const TextFieldValidate = () => ({
   components: { GTextField, GIcon },

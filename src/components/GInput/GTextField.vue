@@ -59,11 +59,13 @@
 				</slot>
 			</div>
 		</fieldset>
-		<div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
+
 			<slot name="appendOuter">
+				<div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
 				<g-icon :color=iconColor>{{appendIcon}}</g-icon>
+				</div>
 			</slot>
-		</div>
+
 
 	</div>
 </template>
