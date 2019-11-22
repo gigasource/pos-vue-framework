@@ -41,14 +41,14 @@ export const GSelectSingle = () => ({
   },
   template: `
 <div data-app>
- <g-select
- width="100%" 
- :items="items" 
- v-model="selected" 
-  >
-   </g-select>
+	<g-select
+			width="100%"
+			:items="items"
+			v-model="selected"
+	>
+	</g-select>
 </div>
-  `,
+`,
 })
 export const GSelectSingleWithValidate = () => ({
   components: {GSelect},
@@ -92,30 +92,30 @@ export const GSelectSingleWithValidate = () => ({
   },
   template: `
 <div data-app>
- <g-select
- width="100%" 
- :items="items" 
- :item-text="itemText" 
- :item-value="itemValue"  
- :label="label"
- :clearable="clearable"
- :filled="filled"
- :solo="solo"
- :outlined="outlined"
- :flat="flat"
- :rounded="rounded"
- :shaped="shaped"
- :hint="hint"
- :persistent="persistent"
- :counter="counter"
- :placeholder="placeholder"
- :chips="chips"
- :rules="[rules.required, rules.counter, rules.max]"
- v-model="selected" 
-  >
-   </g-select>
+	<g-select
+			width="100%"
+			:items="items"
+			:item-text="itemText"
+			:item-value="itemValue"
+			:label="label"
+			:clearable="clearable"
+			:filled="filled"
+			:solo="solo"
+			:outlined="outlined"
+			:flat="flat"
+			:rounded="rounded"
+			:shaped="shaped"
+			:hint="hint"
+			:persistent="persistent"
+			:counter="counter"
+			:placeholder="placeholder"
+			:chips="chips"
+			:rules="[rules.required, rules.counter, rules.max]"
+			v-model="selected"
+	>
+	</g-select>
 </div>
-  `,
+`,
 })
 
 export const GSelectMultiple = () => ({
@@ -141,21 +141,21 @@ export const GSelectMultiple = () => ({
     }
   },
   template: `
-   <div data-app>
-      <g-select 
-      :items="items" 
-      :item-text="itemText" 
-      :item-value="itemValue" 
-      :chips="chips"
-      :label="label" 
-      :placeholder="placeholder" 
-      :clearable="clearable"
-       multiple 
-      :allow-duplicates="allowDuplicates"
-      :menuProps="{closeOnContentClick : true}"
-      v-model="selected">
-      </g-select>
-    </div>`
+<div data-app>
+	<g-select
+			:items="items"
+			:item-text="itemText"
+			:item-value="itemValue"
+			:chips="chips"
+			:label="label"
+			:placeholder="placeholder"
+			:clearable="clearable"
+			multiple
+			:allow-duplicates="allowDuplicates"
+			:menuProps="{closeOnContentClick : true}"
+			v-model="selected">
+	</g-select>
+</div>`
 })
 export const GSelectMultipleNotAllowDuplicates = () => ({
   components: {GSelect},
@@ -181,21 +181,21 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
     }
   },
   template: `
-   <div data-app>
-      <g-select 
-      :items="items" 
-      :item-text="itemText" 
-      :item-value="itemValue" 
-      :chips="chips"
-      :smallChips="smallChips"
-      :label="label" 
-      :placeholder="placeholder" 
-      :clearable="clearable"
-       multiple 
-      :allow-duplicates="allowDuplicates"
-      v-model="selected">
-      </g-select>
-    </div>`
+<div data-app>
+	<g-select
+			:items="items"
+			:item-text="itemText"
+			:item-value="itemValue"
+			:chips="chips"
+			:smallChips="smallChips"
+			:label="label"
+			:placeholder="placeholder"
+			:clearable="clearable"
+			multiple
+			:allow-duplicates="allowDuplicates"
+			v-model="selected">
+	</g-select>
+</div>`
 })
 export const GSelectSearchableSingleSelect = () => ({
   components: {GSelect},
@@ -221,18 +221,18 @@ export const GSelectSearchableSingleSelect = () => ({
     }
   },
   template: `
-   <div data-app><g-select 
-   :items="items" 
-   :item-text="itemText" 
-   :item-value="itemValue" 
-   :label="label" 
-   :chips="chips"
-   :smallChips="smallChips"
-   :mandatory="mandatory"
-   :clearable="clearable"
-   v-model="selected" 
-   searchable>
-   </g-select></div>`,
+<div data-app><g-select
+		:items="items"
+		:item-text="itemText"
+		:item-value="itemValue"
+		:label="label"
+		:chips="chips"
+		:smallChips="smallChips"
+		:mandatory="mandatory"
+		:clearable="clearable"
+		v-model="selected"
+		searchable>
+</g-select></div>`,
 })
 export const GSelectSearchableMultipleSelect = () => ({
   components: {GSelect},
@@ -257,18 +257,18 @@ export const GSelectSearchableMultipleSelect = () => ({
     }
   },
   template: `
-   <div data-app><g-select 
-   :items="items" 
-   :item-text="itemText" 
-   :item-value="itemValue" 
-   :label="label" 
-   :clearable="clearable"
-   :chips="chips"
-   :smallChips="smallChips"
-   v-model="selected" 
-   multiple
-   searchable>
-   </g-select></div>`,
+<div data-app><g-select
+		:items="items"
+		:item-text="itemText"
+		:item-value="itemValue"
+		:label="label"
+		:clearable="clearable"
+		:chips="chips"
+		:smallChips="smallChips"
+		v-model="selected"
+		multiple
+		searchable>
+</g-select></div>`,
 })
 export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
   components: {GSelect},
@@ -292,18 +292,18 @@ export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
     }
   },
   template: `
-   <div data-app><g-select 
-   :items="items" 
-   :item-text="itemText" 
-   :item-value="itemValue" 
-   :label="label" 
-   :clearable="clearable"
-   :smallChips="smallChips"
-   allow-duplicates
-   v-model="selected" 
-   multiple
-   searchable>
-   </g-select></div>`,
+<div data-app><g-select
+		:items="items"
+		:item-text="itemText"
+		:item-value="itemValue"
+		:label="label"
+		:clearable="clearable"
+		:smallChips="smallChips"
+		allow-duplicates
+		v-model="selected"
+		multiple
+		searchable>
+</g-select></div>`,
 })
 export const GSelectPrependAndAppendItem = () => ({
   components: {GSelect, GListItem, GListItemContent, GListItemText},
@@ -319,23 +319,23 @@ export const GSelectPrependAndAppendItem = () => ({
     }
   },
   template: `
-   <div data-app><g-select :items="items" item-text="title" item-value="title" label="Display list" return-object v-model="selected">
-   <template v-slot:prepend-item>
-    <g-list-item>
-      <g-list-item-content>
-        <g-list-item-text>Prepend Item</g-list-item-text>
-      </g-list-item-content>
-    </g-list-item>
-   </template>
-   <template v-slot:append-item>
-    <g-list-item>
-      <g-list-item-content>
-        <g-list-item-text>Append Item</g-list-item-text>
-      </g-list-item-content>
-    </g-list-item>
-   </template>
- 
-   </g-select></div>`
+<div data-app><g-select :items="items" item-text="title" item-value="title" label="Display list" return-object v-model="selected">
+	<template v-slot:prepend-item>
+		<g-list-item>
+			<g-list-item-content>
+				<g-list-item-text>Prepend Item</g-list-item-text>
+			</g-list-item-content>
+		</g-list-item>
+	</template>
+	<template v-slot:append-item>
+		<g-list-item>
+			<g-list-item-content>
+				<g-list-item-text>Append Item</g-list-item-text>
+			</g-list-item-content>
+		</g-list-item>
+	</template>
+
+</g-select></div>`
 })
 export const GSelectItemSlot = () => ({
   components: {GSelect},
@@ -351,14 +351,14 @@ export const GSelectItemSlot = () => ({
     }
   },
   template: `
-   <div data-app>
-      <g-select :items="items" item-text="name" item-value="prepend" label="Display list" multiple clearable
-               v-model="selected">
-          <template v-slot:item="{item, isSelected}">
-        <p>slot item</p>
-          </template>
-      </g-select>
-    </div>`
+<div data-app>
+	<g-select :items="items" item-text="name" item-value="prepend" label="Display list" multiple clearable
+						v-model="selected">
+		<template v-slot:item="{item, isSelected}">
+			<p>slot item</p>
+		</template>
+	</g-select>
+</div>`
 })
 
 export const test2 = () => ({
@@ -383,6 +383,6 @@ import GSelect from "../GSelect";
 describe('test', function () {
   it('should', function () {
     const vm = new Vue(test1()).$mount();
-    // your expect here
+// your expect here
   })
 })
