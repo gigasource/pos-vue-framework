@@ -167,10 +167,7 @@
             'padding': '0 2px',
             'margin-left': margin,
           }
-        } else
-          return {
-          	'padding-top': '3px'
-					}
+        }
       });
 			const iconColor = computed(() => {
 			  if(isFocused.value) {
