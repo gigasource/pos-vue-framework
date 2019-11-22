@@ -18,6 +18,7 @@ export const Basic = () => ({
     overlayOpacity: {default: number('Overlay Opacity', 0.46)},
     persistent: {default: boolean('Persistent', false)},
     hideOverlay: {default: boolean('Hide Overlay', false)},
+    bottom: {default: boolean('Bottom', false)},
     fullscreen: {default: boolean('Fullscreen', false)},
   },
   data() {
@@ -27,7 +28,7 @@ export const Basic = () => ({
   },
   template: `
   <div data-app>
-    <g-dialog v-model="dialog" :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :hideOverlay="hideOverlay" :persistent="persistent" :fullscreen="fullscreen">
+    <g-dialog v-model="dialog" lazy :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :hideOverlay="hideOverlay" :persistent="persistent" :bottom="bottom" :fullscreen="fullscreen">
       <template v-slot:activator="{ toggleDialog }">
         <g-btn width="150" height="50" @click="toggleDialog">Open Dialog</g-btn>
       </template>
@@ -60,6 +61,7 @@ export const OverflowContent = () => ({
     overlayOpacity: {default: number('Overlay Opacity', 0.46)},
     persistent: {default: boolean('Persistent', false)},
     hideOverlay: {default: boolean('Hide Overlay', false)},
+    bottom: {default: boolean('Bottom', false)},
     fullscreen: {default: boolean('Fullscreen', false)},
     scrollable: {default: boolean('Scrollable', false)},
   },
@@ -70,7 +72,7 @@ export const OverflowContent = () => ({
   },
   template: `
   <div data-app>
-    <g-dialog v-model="dialog" :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :persistent="persistent"  :hideOverlay="hideOverlay" :scrollable="scrollable" :fullscreen="fullscreen">
+    <g-dialog v-model="dialog" lazy :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :persistent="persistent"  :hideOverlay="hideOverlay" :scrollable="scrollable" :bottom="bottom" :fullscreen="fullscreen">
       <template v-slot:activator="{ toggleDialog }">
         <g-btn width="150" height="50" @click="toggleDialog">Open Dialog</g-btn>
       </template>
