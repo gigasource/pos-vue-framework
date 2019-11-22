@@ -56,7 +56,7 @@
   $height: 36px;
   .g-icon-search {
     display: flex;
-    margin: 0 10px;
+    margin: 10px 10px;
     position: relative;
     background-color: white;
     height: 36px;

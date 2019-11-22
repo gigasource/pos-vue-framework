@@ -208,9 +208,8 @@
       // render function
       function renderIconChooserDialogContent() {
         return (
-            <div class="g-icon-chooser__dialog-content" tabIndex="1">
+            <div class="g-icon-chooser__dialog-content">
               <g-icon-search
-                  class="g-icon-chooser__dialog-content__search-box"
                   icons={cptAllIcons.value}
                   renderResultItem={renderIcon}
                   value={state.iconSearchText}
@@ -244,7 +243,6 @@
                 </div>
 
                 <g-icon-search
-                    class="g-icon-chooser__dialog-content__search-box"
                     icons={cptIcons.value}
                     renderResultItem={renderIcon}
                     value={state.iconInCategorySearchText}
@@ -297,10 +295,6 @@
     padding: 15px 5px;
     width: 630px;
     background-color: rgb(230, 230, 230);
-
-    &__search-box {
-      margin: 10px 5px;
-    }
   }
 
   /* source list view */
