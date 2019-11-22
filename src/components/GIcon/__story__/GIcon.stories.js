@@ -65,6 +65,33 @@ export const iconInButton = () => ({
   template: `<div><g-btn>Buy-this-<b>{{color}}</b>-car<g-icon :right="right" :left="left" :color="color" :dense="dense" :disabled="disabled" >fas fa-car</g-icon></g-btn></div>`,
 })
 
-
-// import Vue from 'vue/dist/vue.common.js'
+export const reactiveIcon = () => ({
+  components: {GIcon},
+  props: {
+    color: {default: text('color', '#DC143C')},
+    xSmall: {default: boolean('xSmall', false)},
+    small: {default: boolean('small', false)},
+    medium: {default: boolean('medium', false)},
+    large: {default: boolean('large', false)},
+    xLarge: {default: boolean('xLarge', false)},
+    disabled: {default: boolean('disabled', false)},
+    dense: {default: boolean('dense', false)},
+  },
+  data () {
+    return {
+      i: 0,
+      icons: ['fab fa-accusoft', 'fab fa-atlassian', 'fab fa-audible']
+    }
+  },
+  methods: {
+    s() {
+      this.i++;
+      console.log(this.icons[this.i % this.icons.length])
+    }
+  },
+  template: `<div>
+<button @click="s()">Switch icon</button>
+  <g-icon :color="color" :xSmall="xSmall" :small="small" :meidum="medium" :large="large" :xLarge="xLarge" :disabled="disabled">{{icons[i%icons.length]}}</g-icon>
+</div>`,
+})
 
