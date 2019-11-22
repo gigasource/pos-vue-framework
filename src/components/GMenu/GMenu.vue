@@ -115,7 +115,7 @@
       })
 
       onBeforeUnmount(() => {
-        if (el.value) detach(el.value)
+        if (activator.value) detach(activator.value)
       })
 
       function toggleContent(event) {
