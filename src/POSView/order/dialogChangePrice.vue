@@ -3,7 +3,7 @@
 		<div class="dialog-change w-100" :style="[{background: showKeyboard ? 'white' : 'transparent'}]">
 			<div class="dialog-change-content">
 				<div class="header">
-					<div class="col-5 ml-5">
+					<div class="col-5">
 						<p>Original Price</p>
 						<g-text-field read-only outlined value="€ 50"/>
 					</div>
@@ -14,24 +14,24 @@
 				</div>
 				<g-radio-group name="basic" v-model="changeType">
 					<g-radio color="#1271ff" value="percentage" label="Discount by %"></g-radio>
-					<div class="row-flex ml-5 col-10 pr-2">
+					<div class="row-flex col-10 m-auto">
 						<g-btn outlined :disabled="disabledPercent">- 5%</g-btn>
 						<g-btn outlined :disabled="disabledPercent">- 10%</g-btn>
 						<g-btn outlined :disabled="disabledPercent">- 15%</g-btn>
 						<g-btn outlined :disabled="disabledPercent">- 20%</g-btn>
-						<g-text-field outlined :disabled="disabledPercent" v-model="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
+						<g-text-field dense outlined :disabled="disabledPercent" v-model="newPercent" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false" :rules="[rulePercent.percent]"></g-text-field>
 					</div>
-					<g-radio color="#1271ff" value="amount" label="Discount by €"></g-radio>
-					<div class="row-flex ml-5 col-10 pr-2">
+					<g-radio color="#1271ff" value="amount" label="Discount by €" ></g-radio>
+					<div class="row-flex col-10 m-auto">
 						<g-btn outlined :disabled="disabledAmount">- € 5</g-btn>
 						<g-btn outlined :disabled="disabledAmount">- € 10</g-btn>
 						<g-btn outlined :disabled="disabledAmount">- € 15</g-btn>
 						<g-btn outlined :disabled="disabledAmount">- € 20</g-btn>
-						<g-text-field outlined :disabled="disabledAmount" v-model="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
+						<g-text-field dense outlined :disabled="disabledAmount" v-model="newAmount" style="flex-grow: 1" placeholder="Other" @focus="showKeyboard = true" @blur="showKeyboard = false"></g-text-field>
 					</div>
 					<g-radio color="#1271ff" value="new" label="New Price"></g-radio>
-					<div class="ml-5 col-10">
-						<g-text-field outlined placeholder="New Price" v-model="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
+					<div class="m-auto col-10">
+						<g-text-field dense outlined placeholder="New Price" v-model="newPrice" @focus="showKeyboard = true" @blur="showKeyboard = false" :disabled="disabledNew"></g-text-field>
 					</div>
 				</g-radio-group>
 				<div class="action">
@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<div :style="[{visibility: showKeyboard ? 'visible' : 'hidden'}]" class="keyboard-wrapper">
-				<g-keyboard :template="templateNp2" :items="numpad_2"/>
+				<pos-numpad/>
 			</div>
 		</div>
 	</g-dialog>
@@ -52,32 +52,17 @@
   import GRadioGroup from '../../components/GRadio/GRadioGroup';
   import GRadio from '../../components/GRadio/GRadio';
   import GBtn from '../../components/GBtn/GBtn';
-  import GKeyboard from '../../components/GKeyboard/GKeyboard';
+  import PosNumpad from '../../POSComponents/PosNumpad';
 
   export default {
     name: 'dialogChangePrice',
-    components: { GKeyboard, GBtn, GRadio, GRadioGroup, GTextField, GDialog },
+    components: { PosNumpad, GBtn, GRadio, GRadioGroup, GTextField, GDialog },
     props: {
       value: Boolean,
       product: null,
     },
     data() {
       return {
-        numpad_2: [
-          { content: ['7'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key7' },
-          { content: ['8'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key8' },
-          { content: ['9'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key9' },
-          { content: ['4'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key4' },
-          { content: ['5'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key5' },
-          { content: ['6'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key6' },
-          { content: ['1'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key1' },
-          { content: ['2'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key2' },
-          { content: ['3'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key3' },
-          { content: ['0'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: key0' },
-          { content: ['.'], classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value, append) => (value + append), style: 'grid-area: keyDot' },
-          { content: [''], img: 'delivery/key_delete', classes: 'key-number bg-white ba-blue-9 ba-thin', action: (value) => value.substring(0, value.length - 1), style: 'grid-area: keyX' },
-        ],
-        templateNp2: 'grid-template: "key7 key8 key9" "key4 key5 key6" "key1 key2 key3" "key0 keyDot keyX"/ 1fr 1fr 1fr',
         changeType: null,
         showKeyboard: false,
         newPrice: 0,
@@ -122,7 +107,6 @@
 </script>
 
 <style lang="scss">
-
 	.dialog-change {
 		border-radius: 6px;
 		display: flex;
@@ -133,13 +117,14 @@
 			flex-direction: column;
 			background: white;
 			border-radius: inherit;
-			padding: 32px;
+			padding: 24px 48px;
 
 			.header {
 				display: flex;
 				margin-bottom: 16px;
 				font-size: 13px;
 				font-weight: 700;
+				justify-content: center;
 
 				.g-tf-wrapper {
 					&.tf__effective input {
@@ -173,7 +158,7 @@
 			}
 
 			div:not(.action) .g-btn {
-				height: 50px !important;
+				height: 44px !important;
 			}
 
 			.g-btn:not(:last-child) {
@@ -182,9 +167,15 @@
 
 			.g-radio-wrapper {
 				line-height: 12px;
+				margin: 16px 24px;
 
 				.g-radio {
 					display: inline-flex;
+				}
+
+				.g-radio-label {
+					font-size: 13px;
+					line-height: 16px;
 				}
 			}
 

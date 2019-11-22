@@ -110,8 +110,22 @@
   background-position: center;
 }
 
+.icon-scanning_barcode {
+  background-image: url("../assets/config/scanning_barcode.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
 .icon-setting {
   background-image: url("../assets/config/setting.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.icon-sort {
+  background-image: url("../assets/config/sort.svg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -168,62 +182,6 @@
 
 .icon-wifi_printer {
   background-image: url("../assets/config/wifi_printer.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-calendar {
-  background-image: url("../assets/dashboard/calendar.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-code {
-  background-image: url("../assets/dashboard/code.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-dashboard {
-  background-image: url("../assets/dashboard/dashboard.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-gear {
-  background-image: url("../assets/dashboard/gear.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-history {
-  background-image: url("../assets/dashboard/history.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-info {
-  background-image: url("../assets/dashboard/info.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-logout {
-  background-image: url("../assets/dashboard/logout.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-report {
-  background-image: url("../assets/dashboard/report.svg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -460,8 +418,8 @@
   background-position: center;
 }
 
-.icon-close-small {
-  background-image: url("../assets/dnddialog/close-small.svg");
+.icon-close {
+  background-image: url("../assets/dnddialog/close.svg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -838,13 +796,6 @@
   background-position: center;
 }
 
-.icon-path-filter {
-  background-image: url("../assets/order/path-filter.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
 .icon-prev {
   background-image: url("../assets/order/prev.svg");
   background-repeat: no-repeat;
@@ -859,13 +810,6 @@
   background-position: center;
 }
 
-.icon-print2 {
-  background-image: url("../assets/order/print2.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
 .icon-promotion {
   background-image: url("../assets/order/promotion.svg");
   background-repeat: no-repeat;
@@ -875,13 +819,6 @@
 
 .icon-refresh {
   background-image: url("../assets/order/refresh.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-remove-square {
-  background-image: url("../assets/order/remove-square.svg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -945,13 +882,6 @@
 
 .icon-split_checked {
   background-image: url("../assets/order/split_checked.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.icon-zoom {
-  background-image: url("../assets/order/zoom.svg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;

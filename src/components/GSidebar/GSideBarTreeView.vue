@@ -83,7 +83,7 @@
               class='g-treeview-action'
               vShow={childrenVNodes}>
               <g-icon>
-                {state.collapse ? 'chevron_right' : 'expand_more'}
+                {state.collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
               </g-icon>
             </span>
           </a>
@@ -156,7 +156,6 @@
 			contain: layout;
 			transition: none;
 			color: rgba(0, 0, 0, .87);
-			margin-right: 8px;
 
 			&:not(.g-treeview-subheader):hover {
 				background: rgba(0, 0, 0, 0.035);

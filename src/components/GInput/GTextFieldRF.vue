@@ -107,7 +107,8 @@
                  class="g-tf--input"
 								style={inputErrStyles}
 								label={props.label}
-								vModel={internalValue.value}
+								vOn:input={e => internalValue.value = e}
+								value={internalValue.value}
 								placeholder={props.placeholder}
 								readonly={props.readOnly}
 								ref='input'

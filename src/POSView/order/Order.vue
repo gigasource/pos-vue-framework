@@ -56,11 +56,11 @@
 				<g-btn outlined height="100%">F4</g-btn>
 			</div>
 			<g-toolbar area="toolbar" color="#eee" elevation="0" fill-height>
-				<g-btn background-color="white" class="mr-2">
+				<g-btn background-color="white" class="mr-3" style="margin-left: -4px">
 					<g-icon class="mr-2" svg>icon-back</g-icon>
 					Back
 				</g-btn>
-				<g-btn background-color="white" class="mr-2">
+				<g-btn background-color="white" class="mr-3">
 					<g-icon class="mr-2" svg>icon-menu</g-icon>
 					More
 				</g-btn>
@@ -80,7 +80,7 @@
 					{{item.title}}
 				</g-btn>
 			</div>
-			<g-scroll-window area="window" :show-arrows="false" v-model="window">
+			<g-scroll-window area="window" :show-arrows="false" v-model="window" elevation="0">
 				<g-scroll-window-item v-for="(items, i) in listItems" :key="i">
 					<g-btn v-for="(item, i) in items" :key="i" flat :background-color="item.color" height="100%">{{item.title}}</g-btn>
 				</g-scroll-window-item>
@@ -453,7 +453,7 @@
 		overflow-x: auto;
 		display: grid;
 		grid-template-rows: 1fr 1fr;
-		grid-auto-columns: 31.25%;
+		grid-auto-columns: 32%;
 		grid-gap: 6px;
 		grid-auto-flow: column;
 		padding: 6px;
@@ -500,7 +500,6 @@
 				overflow: hidden;
 
 				.g-window {
-					box-shadow: none;
 					width: 100%;
 
 					.g-window__container {

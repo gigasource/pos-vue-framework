@@ -25,26 +25,26 @@
   export default {
     name: 'Setting',
     components: { GBtn, GImg, GAvatar, GSidebar, GSideBarTreeView },
-		data() {
+    data() {
       return {
         nav: null,
         data: [
-					{
-					  title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, badge: '3', badgeColor: '#FF9529',
-						items: [
-              { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/article'},
-              { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small'},
-              { title: 'Layout', icon: 'radio_button_unchecked', iconType: 'small'},
-						]
-					},
+          {
+            title: 'Product', icon: 'icon-liefer_packet', svgIcon: true, badge: '3', badgeColor: '#FF9529',
+            items: [
+              { title: 'Articles', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/article' },
+              { title: 'Category', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/category' },
+              { title: 'Layout', icon: 'radio_button_unchecked', iconType: 'small' },
+            ]
+          },
           { title: 'Reporring', icon: 'icon-bar_chart', svgIcon: true },
           { title: 'User', icon: 'person', href: '/setting/user' },
           {
-            title: 'Settings', icon: 'icon-cog', svgIcon: true , badge: '3', badgeColor: '#9C24AC',
+            title: 'Settings', icon: 'icon-cog', svgIcon: true, badge: '3', badgeColor: '#9C24AC',
             items: [
-              { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/general'},
-              { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small'},
-              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small'},
+              { title: 'General', icon: 'radio_button_unchecked', iconType: 'small', href: '/setting/general' },
+              { title: 'Order Screen', icon: 'radio_button_unchecked', iconType: 'small' },
+              { title: 'Print Template', icon: 'radio_button_unchecked', iconType: 'small' },
             ]
           },
           {
@@ -55,16 +55,19 @@
               { title: 'License', icon: 'radio_button_unchecked', iconType: 'small' },
             ]
           },
-				],
-			}
-		},
-		methods: {
-		}
+        ],
+      }
+    },
+    methods: {}
   }
 </script>
 
-<style scoped>
- .g-treeview-wrapper ::v-deep .g-treeview__active {
-	 background: linear-gradient(9.78deg, #3949AB 0%, #4FC3F7 100%) !important;
- }
+<style scoped lang="scss">
+	.g-treeview-wrapper ::v-deep .g-treeview__active {
+		background: linear-gradient(9.78deg, #3949AB 0%, #4FC3F7 100%) !important;
+		box-shadow: 0 1px 8px 1px rgba(28, 144, 196, 0.5);
+		border-top-right-radius: 4px;
+		border-bottom-right-radius: 4px;
+		margin-right: 8px;
+	}
 </style>
