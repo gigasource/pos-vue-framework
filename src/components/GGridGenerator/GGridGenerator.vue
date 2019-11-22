@@ -252,11 +252,6 @@
       }
 
       // render grid editor
-      const cptGridContainerClass = computed(() => ({
-        'grid-gen__editor__field__item': true,
-        'grid-gen__editor__field__item--view-only': state.viewMode,
-      }))
-
       /**
        *
        * @param grid {GridModel}
@@ -267,11 +262,8 @@
         for (let i = 0, rowLen = grid.rows.length; i < rowLen; ++i) {
           for (let j = 0, colLen = grid.columns.length; j < colLen; ++j) {
             gridItems.push(<div
-                class={cptGridContainerClass.value}
+                class='grid-gen__editor__field__item'
                 vOn:mousedown={(e) => {
-                  // view mode
-                  if (state.viewMode) return
-
                   // check and execute if area hit
                   if (e.ctrlKey && areaHit(e)) return
 
@@ -332,11 +324,12 @@
         return ([
           <div style={gridStyles} class="grid-gen__editor__field">{gridItems}</div>,
           <div style={selectedAreaContainerStyle}>
-            {renderGridAreas(grid, state.viewMode)}
+            {renderGridAreas(grid, false)}
             {renderHoveringArea()}
           </div>
         ])
       }
+
       function getAreaClass(area) {
         return {
           'grid-gen__editor__field__area': true,
@@ -344,8 +337,10 @@
           'grid-gen__editor__field__area--editing': area == state.editingArea,
         }
       }
+
       const actionWrapperClass = 'grid-gen__editor__field__area__actions'
       const actionClass = 'area-action'
+
       function areaHit(e) {
         for (let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
           const area = actionWrapperElement.parentNode
@@ -360,6 +355,7 @@
           }
         }
       }
+
       function tryToExecuteActionIfHit(e) {
         let actionExecuted = false
         _.each(context.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
@@ -406,6 +402,7 @@
           </span>
         </div>
       }
+
       /**
        * @param grid {GridModel}
        */
@@ -428,7 +425,7 @@
           return <div
               class="grid-gen__editor__field__area"
               style={{
-                border: '2px solid #0008',
+                border: '1px solid #0008',
                 backgroundColor: grid.bgColor,
                 gridArea: grid.gridAreaCss()
               }}>
@@ -436,6 +433,7 @@
           </div>
         }
       }
+
       /**
        * render area
        * @param grid {GridModel | AreaModel}
@@ -453,6 +451,7 @@
           })
         }
       }
+
       // render hovering area
       function renderHoveringArea() {
         return state.hovering ? <div style={{
@@ -467,7 +466,7 @@
         const gridItems = []
         for (let i = 0, rowLen = state.layout.rows.length; i < rowLen; ++i) {
           for (let j = 0, colLen = state.layout.length; j < colLen; ++j) {
-            gridItems.push(<div class={cptGridContainerClass.value}></div>)
+            gridItems.push(<div class='grid-gen__editor__field__item'></div>)
           }
         }
 
@@ -478,8 +477,8 @@
           'gap': `${state.layout.rowGap}px ${state.layout.columnGap}px`,
           //
           position: 'absolute',
-          top: 0,
-          left: 0,
+          top: widthUnitSettingColumnHeight,
+          left: heightUnitSettingRowWidth,
           bottom: 0,
           right: 0,
           'pointer-events': 'none',
@@ -487,7 +486,7 @@
         }
 
         return ([
-          <div style={selectedAreaContainerStyle}>
+          <div style={selectedAreaContainerStyle} class="grid-gen__editor__field">
             {renderGridAreas(state.layout, true)}
           </div>
         ])
@@ -584,7 +583,7 @@
               </div>
             </div>
             <div class="grid-gen__dialog__confirm__action-btn">
-              <button  ref={refIdBtnCreateSubGrid} class='simple-btn' vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
+              <button ref={refIdBtnCreateSubGrid} class='simple-btn' vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
               &nbsp;
               <button ref={refIdBtnCreateSubItem} class='simple-btn' vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
               &nbsp;
@@ -607,7 +606,7 @@
             <g-inc-dec-number-input min={400} value={state.fieldHeight} vOn:input={v => state.fieldHeight = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
-            <label>View mode: </label>
+            <label>Preview: </label>
             <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}/>
           </div>,
         ]
@@ -802,13 +801,15 @@
                   {renderGridContainer(state.selectedGrid)}
                 </div>
                 <div style="height: 10px"></div>
-                <div style={{
-                  position: 'relative',
-                  width: `${state.fieldWidth}px`,
-                  height: `${state.fieldHeight}px`,
-                  backgroundColor: '#fff',
-                  margin: '0 auto'
-                }}>
+                <div
+                    vShow={state.viewMode}
+                    style={{
+                      position: 'relative',
+                      width: `${state.fieldWidth}px`,
+                      height: `${state.fieldHeight}px`,
+                      backgroundColor: '#fff',
+                      margin: '0 auto'
+                    }}>
                   {renderMiniMap()}
                 </div>
               </div>
@@ -946,6 +947,7 @@
 
       & > input {
         width: 100%;
+        border: 1px solid gray;
 
         &:focus {
           outline: none;
@@ -969,10 +971,6 @@
         &__item {
           cursor: pointer;
           border: 1px dotted #666;
-
-          &--view-only {
-            border: 1px dotted transparent;
-          }
 
           &--disabled {
             pointer-events: none;
@@ -1052,8 +1050,19 @@
           font-size: small;
         }
 
+        & > button {
+          padding: 5px;
+        }
+
         & > input, select, div {
           width: 102px;
+        }
+
+        & > select {
+          border: solid 1px gray;
+          border-radius: 2px;
+          padding-left: 5px;
+          outline: none;
         }
       }
     }
