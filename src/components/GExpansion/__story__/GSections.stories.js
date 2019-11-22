@@ -16,7 +16,7 @@ export default {
 export const DemoAPI1 = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
   props: {
-    itemHeight: {default: number('Item height', 32)}
+
   },
   setup() {
     const activeItem = ref(null)
@@ -40,7 +40,7 @@ export const DemoAPI1 = () => ({
       <div style="width: 100%; height: 20%;">
       </div>
       <g-sections v-model="activeItem">       
-        <g-sections-item v-for="(item, index) in items" :header="item.title" :height="itemHeight" :key="index">
+        <g-sections-item v-for="(item, index) in items" :header="item.title" :key="index">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
@@ -55,7 +55,7 @@ export const DemoAPI1 = () => ({
 export const DemoAPI1Mandatory = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
   props: {
-    itemHeight: {default: number('Item height', 32)}
+
   },
   setup() {
     const activeItem = ref(null)
@@ -79,7 +79,7 @@ export const DemoAPI1Mandatory = () => ({
       <div style="width: 100%; height: 20%;">
       </div>
       <g-sections v-model="activeItem" mandatory>       
-        <g-sections-item v-for="(item, index) in items" :header="item.title" :height="itemHeight" :key="index">
+        <g-sections-item v-for="(item, index) in items" :header="item.title" :key="index">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
@@ -93,9 +93,6 @@ export const DemoAPI1Mandatory = () => ({
 
 export const DemoAPI1Multiple = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn },
-  props: {
-    itemHeight: {default: number('Item height', 32)}
-  },
   setup() {
     const activeItem = ref(null)
     const items = ref([
@@ -118,7 +115,7 @@ export const DemoAPI1Multiple = () => ({
       <div style="width: 100%; height: 20%;">
       </div>
       <g-sections v-model="activeItem" multiple>       
-        <g-sections-item v-for="(item, index) in items" :header="item.title" :height="itemHeight" :key="index">
+        <g-sections-item v-for="(item, index) in items" :header="item.title" :key="index">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
@@ -133,7 +130,7 @@ export const DemoAPI1Multiple = () => ({
 export const DemoAPI2 = () => ({
   components: { GSections, GSectionsHeader, GSectionsItem, GTextField, GSwitch, GBtn, GIcon },
   props: {
-    itemHeight: { default: number('Item height', 32) }
+    headerHeight: { default: number('Header height', 32) }
   },
   setup() {
     const activeItem = ref(null)
@@ -157,11 +154,11 @@ export const DemoAPI2 = () => ({
       <div style="width: 100%; height: 20%;">
       </div>
       <g-sections v-model="activeItem">       
-        <g-sections-header v-for="(item, index) in items">
+        <g-sections-header v-for="(item, index) in items" :height="headerHeight">
           <g-icon>fas fa-hand-point-right</g-icon>
           {{item.title}}
         </g-sections-header>
-        <g-sections-item v-for="(item, index) in items" :height="itemHeight" :key="index">
+        <g-sections-item v-for="(item, index) in items" :key="index">
           <g-text-field label="Key" dense/>
           <g-text-field label="Default" dense/>
           <g-text-field label="Ref" dense/>
