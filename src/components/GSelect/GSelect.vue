@@ -104,10 +104,10 @@
       const selections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return item ? (item['text'] || item['value'] || item) : ''
+            return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         }
-        return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
+        return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
       })
 
       //gen SearchText
@@ -278,6 +278,7 @@
         state,
         selectedItem,
         selections,
+				fieldItem,
       }
     },
     render() {

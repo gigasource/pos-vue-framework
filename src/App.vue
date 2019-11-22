@@ -9,6 +9,8 @@
       <router-link to="/login">Login</router-link>
 			<router-link to="/article">Article</router-link>
 			<router-link to="/function-button">Function Button</router-link>
+			<router-link to="/select-form">Select Form</router-link>
+			<router-link to="/transform-form">Transform Form</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>

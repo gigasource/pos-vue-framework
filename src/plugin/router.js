@@ -14,6 +14,8 @@ import CompanySetting from '../POSView/setting/view/viewCompany';
 import GeneralSetting from '../POSView/setting/view/viewGeneral';
 import PaymentSetting from '../POSView/setting/view/viewPayment';
 import CategorySetting from '../POSView/setting/view/viewCategory';
+import SelectForm from '../POSView/accordion2/SelectForm';
+import TransformForm from '../POSView/accordion2/TransformForm';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -37,6 +39,8 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/article', name: 'Article', component: Article },
   { path: '/function-button', name: 'Function Button', component: FunctionButton },
+  { path: '/select-form', name: 'Select Form', component: SelectForm },
+  { path: '/transform-form', name: 'Transform Form', component: TransformForm },
 
 ];
 
