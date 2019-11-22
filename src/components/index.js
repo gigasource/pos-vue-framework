@@ -184,7 +184,7 @@ import {
   GExpandXTransition,
 } from './transition/transition';
 
-export {
+export default {
   GAutocomplete,
   GAvatar,
   GBadge,
