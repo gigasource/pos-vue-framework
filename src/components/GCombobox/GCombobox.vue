@@ -76,7 +76,7 @@
         type: Object,
         default: () => ({
           closeOnClick: true,
-          // closeOnContentClick: false,
+          closeOnContentClick: false,
           maxHeight: 300,
           offsetY: true,
           offsetOverflow: true,

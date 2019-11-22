@@ -3,7 +3,7 @@
   import GMenu from "../GMenu/GMenu"
   import {makeSelectable} from "../../mixins/groupable";
   import {reactive, ref, computed, toRefs} from "@vue/composition-api";
-  import {genMenu, getList, getSelections} from "./GSelectFactory";
+  import {getList, getSelections} from "./GSelectFactory";
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
@@ -85,7 +85,13 @@
       showSearchField: {
         type: Boolean,
         default: true
-      }
+      },
+			appendIcon: {
+        type: String,
+				default: 'arrow_drop_down'
+			},
+			appendSvg: Boolean,
+			required: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -114,7 +120,8 @@
       function genSearchTextField() {
         if (props.searchable && props.showSearchField) {
           return <GTextField placeholder="Search"
-                             vModel={state.searchText}
+                             vOn:input={e => state.searchText = e}
+                             value={state.searchText}
                              clearable
                              ref="searchText"
                              autofocus={searchFocused.value}
@@ -126,10 +133,6 @@
       //genList
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
-      const onItem = () => {
-        console.log('item clicked')
-        showOptions.value = props.multiple
-      }
 
       const genList = (typeof props.genListFn === 'function' && props.genListFn)
           || function (showOptions) {
@@ -143,12 +146,13 @@
                     multiple: props.multiple,
                     inMenu: true,
                     selectable: true,
+                    value: selectedItem.value,
                   },
                   on: {
-                    'click:item': () => onItem()
+                    'click:item': () => showOptions.value = props.multiple,
+                    input: e => selectedItem.value = e,
                   },
                 }}
-                vModel={selectedItem.value}
                 ref="list"
             />
           }
@@ -194,7 +198,7 @@
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
-            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {selections.value.length === 0 ?
@@ -220,7 +224,7 @@
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly']),
+                      'rules', 'type', 'disabled', 'readOnly', 'required']),
                     value: textfieldValue.value
                   },
                   on: {
@@ -239,14 +243,17 @@
       //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
-        return <g-menu vModel={showOptions.value}
-                       {...{
+        return <g-menu {...{
                          props: {
                            ...props.menuProps,
-                           nudgeBottom: nudgeBottom.value
+                           nudgeBottom: nudgeBottom.value,
+                           value: showOptions.value,
                          },
                          scopedSlots: {
                            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+                         },
+                         on: {
+                           input: e => showOptions.value = e,
                          }
                        }}
         >
