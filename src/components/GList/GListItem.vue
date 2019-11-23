@@ -5,55 +5,65 @@
 </template>
 
 <script>
-  import { computed, ref } from '@vue/composition-api';
-	import {getInternalValue} from "../../utils/helpers";
+  import { computed, ref, inject } from '@vue/composition-api';
+  import { getInternalValue } from '../../utils/helpers';
+  import groupable, { makeSelectable } from '../../mixins/groupable';
+  import { isSelected } from '../GDatePicker/logic/TableUtil';
 
   export default {
     name: 'GListItem',
     props: {
-			height: String,
-			disabled: Boolean,
-			selectable: Boolean,
+      height: String,
+      disabled: Boolean,
+      selectable: Boolean,
       twoLine: Boolean,
       threeLine: Boolean,
-			isSelected: Boolean,
-		},
-		setup(props, context) {
+      value: [String, Number, Object]
+    },
+    setup(props, context) {
       const classes = computed(() => {
         const defaultClasses = {
           'g-list-item': true,
-					'waves-effect': true
-				};
+          'waves-effect': true
+        };
         return {
           ...defaultClasses,
-					'g-list-item__disabled': props.disabled,
-					'g-list-item__selectable': props.selectable,
+          'g-list-item__disabled': props.disabled,
+          'g-list-item__selectable': props.selectable,
           'g-list-item__two-line': props.twoLine,
           'g-list-item__three-line': props.threeLine,
-					'g-list-item__active': props.isSelected,
-				}
-			});
+          'g-list-item__active': isActiveItem(props.value),
+        }
+      });
       const styles = computed(() => {
-        if(props.height) {
+        if (props.height) {
           return {
             'height': props.height
-					}
-				}
-			});
+          }
+        }
+      });
+      const selectedItems = inject('selectedItems')
+			const multiple = inject('multiple')
+			const mandatory = inject('mandatory')
+			const selectable = inject('selectable')
+      const { toggleItem, isActiveItem } = groupable({multiple, mandatory}, selectedItems)
+
       const onSelectItem = () => {
+        selectable ? toggleItem(props.value) : null
         context.emit('singleItemClick')
-			}
-			const onKeyDown = (e) => {
-      	context.emit('keydown', e)
-			}
+      }
+      const onKeyDown = (e) => {
+        context.emit('keydown', e)
+      }
 
       return {
         classes,
-				styles,
-				onSelectItem,
-				onKeyDown,
-			}
-		}
+        styles,
+        onSelectItem,
+        onKeyDown,
+				selectedItems
+      }
+    }
   }
 </script>
 

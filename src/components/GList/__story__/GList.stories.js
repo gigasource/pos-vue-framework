@@ -255,10 +255,10 @@ export const gListNav = () => ({
   data() {
     return {
       items: [
-        {title: 'Jason Oner', subtitle: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        { title: 'Jason Oner', subtitle: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
       ]
     }
   },
@@ -460,7 +460,7 @@ export const gListMultiSection = () => ({
 })
 
 export const gListSingleSectionSelect = () => ({
-  components: {GList},
+  components: { GList },
   data() {
     return {
       items: [
@@ -559,7 +559,7 @@ export const gListMultiSelect = () => ({
     allowDuplicates: { default: boolean('allowDuplicates', false) },
   },
   template:
-      `
+    `
       <div>
         selectedItem: {{testValue}}
         <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense" :subheader="subheader" :divider="divider" selectable multiple :allowDuplicates="allowDuplicates">
@@ -568,7 +568,7 @@ export const gListMultiSelect = () => ({
       `,
 })
 export const gListSelectMandatory = () => ({
-  components: {GList},
+  components: { GList },
   data() {
     return {
       items: [
@@ -627,7 +627,7 @@ export const gListAsMenuContent = () => ({
         { title: 'Lock', prepend: 'lock' },
         { title: 'Log out', prepend: 'keyboard_tab' },
       ],
-      list2:[
+      list2: [
         { title: ' A new order has been placed!', subtitle: '2 hours ago', prepend: 'add_shopping_cart', color: 'cyan' },
         { title: '  Completed the task', subtitle: '3 days ago', prepend: 'star', color: 'red' },
         { title: '  Settings updated', subtitle: '4 days ago', prepend: 'settings', color: 'teal' },
@@ -667,6 +667,32 @@ export const gListAsMenuContent = () => ({
         </g-list>
         </g-row>
         </g-container>
+      </div>`,
+})
+export const gListFreeRender = () => ({
+  components: { GList, GIcon, GListItemIcon, GContainer, GDivider, GRow, GBtn, GListItem, GListItemContent },
+  data() {
+    return {
+      testValue: null
+    }
+  },
+
+  template:
+    `
+      <div>
+        <template>
+        <g-list multiple>
+        <g-list-item value="item1">
+        <g-list-item-content>Item 1</g-list-item-content>
+        </g-list-item>
+        <g-list-item value="item2">
+        <g-list-item-content>Item 2</g-list-item-content>
+        </g-list-item>
+        <g-list-item value="item3">
+        <g-list-item-content>Item 3</g-list-item-content>
+        </g-list-item>
+        </g-list>
+        </template>
       </div>`,
 })
 import Vue from 'vue/dist/vue.common.js'
