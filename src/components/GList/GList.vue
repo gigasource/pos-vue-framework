@@ -135,10 +135,7 @@
       mandatory: Boolean,
       allowDuplicates: Boolean,
       itemValue: String,
-      itemTitle: {
-        type: String,
-        default: 'title'
-      },
+      itemTitle: String,
       activeClass: String,
        inMenu: Boolean,
     },
@@ -176,7 +173,7 @@
         return `g-list-item-${props.prependType}`;
       })
 
-      const renderList = computed(() => props.items.filter(item => item[props.itemTitle]))
+      const renderList = computed(() => props.itemTitle ? props.items.filter(item => item[props.itemTitle]) : props.items)
 
       //Select
       function onClick(event) {
