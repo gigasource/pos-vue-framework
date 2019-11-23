@@ -35,7 +35,7 @@
               </div>
               <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
             </div>
-              <slot name="append" :item="item">
+              <slot name="append" :item="item" :isSelected="isActiveItem(item)">
                 <template v-if="item.append">{{item.append}}</template>
               </slot>
 					</div>

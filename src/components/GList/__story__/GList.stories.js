@@ -362,9 +362,9 @@ export const gListAppendWithSlot = () => ({
   },
   template:
     `
-      <g-list :items="items"  subheader="subheader"  >
-        <template v-slot:append="{item}">
-        <g-icon color="indigo">mdi-mail</g-icon>
+      <g-list :items="items"  subheader="subheader" selectable >
+        <template v-slot:append="{item, isSelected}">
+        <g-icon v-show="isSelected" color="indigo">mdi-mail</g-icon>
         </template>
       </g-list>
       `,

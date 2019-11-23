@@ -152,6 +152,9 @@
                     'click:item': () => showOptions.value = props.multiple,
                     input: e => selectedItem.value = e,
                   },
+									scopedSlots:{
+										listItem: ({item}) => context.slots.itemInList && context.slots.itemInList()
+                  }
                 }}
                 ref="list"
             />

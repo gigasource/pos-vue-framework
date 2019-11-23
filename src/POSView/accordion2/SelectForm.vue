@@ -10,11 +10,14 @@
 		<template v-for="i in type.length">
 			<tr>
 				<td>
-					<p-o-s-select  v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text" :items="type[i-1].items" itemText="text" item-value="">
+					<p-o-s-select v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text" :items="type[i-1].items" itemText="text" item-value="">
+						<template v-slot:append="{item, isSelected}" >
+							<g-icon v-show="isSelected" color="indigo">check</g-icon>
+						</template>
 					</p-o-s-select>
 				</td>
 				<td>
-					<p-o-s-select  v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text" :items="scopedSlots[i-1].items" itemText="text" item-value="" >
+					<p-o-s-select v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text" :items="scopedSlots[i-1].items" itemText="text" item-value="">
 					</p-o-s-select>
 				</td>
 				<td>
@@ -44,29 +47,29 @@
 
         type: [
           { text: 'prop', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-					{ text: 'emit', items:[{ text: 'click' }, { text: 'block' }, { text: 'inline' }], },
-					{ text: 'emit2', items:[{ text: 'input' }, { text: 'block' }, { text: 'inline' }] }],
+          { text: 'emit', items: [{ text: 'click' }, { text: 'block' }, { text: 'inline' }], },
+          { text: 'emit2', items: [{ text: 'input' }, { text: 'block' }, { text: 'inline' }] }],
         scopedSlots: [
           { text: 'File', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-					{ text: 'abc', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-					{ text: 'remove', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
+          { text: 'abc', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
+          { text: 'remove', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
         local: [
           { text: 'Home', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-					{ text: 'Park', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-					{ text: 'River', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
+          { text: 'Park', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
+          { text: 'River', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
 
-        selectedType: [{prop: null}, {emit1: null}, {emit2: null}],
-        selectedScopedSlot: [{File: null}, {abc: null}, {remove: null}],
-        selectedLocal: [{Home: null}, {Park: null}, {River: null}]
+        selectedType: [{ prop: null }, { emit1: null }, { emit2: null }],
+        selectedScopedSlot: [{ File: null }, { abc: null }, { remove: null }],
+        selectedLocal: [{ Home: null }, { Park: null }, { River: null }]
       }
 
     },
     setup: function (props, context) {
-      const deleteSelection = (i, list1, list2, list3 ) => {
-        list1[i-1][Object.keys(list1[i-1])[0]] = null
-        list2[i-1][Object.keys(list2[i-1])[0]] = null
-        list3[i-1][Object.keys(list3[i-1])[0]] = null
-			}
+      const deleteSelection = (i, list1, list2, list3) => {
+        list1[i - 1][Object.keys(list1[i - 1])[0]] = null
+        list2[i - 1][Object.keys(list2[i - 1])[0]] = null
+        list3[i - 1][Object.keys(list3[i - 1])[0]] = null
+      }
       return {
         deleteSelection
       }
@@ -74,12 +77,22 @@
   }
 </script>
 <style lang="scss" scoped>
-	.g-table::v-deep{
-		td{
+	.g-table::v-deep {
+		position: absolute;
+		left: 443px;
+		top: 48px;
+
+		background: #FFFFFF;
+	padding: 16px 0 0 16px;
+		border: 1px solid #E0E0E0;
+		box-sizing: border-box;
+
+		td {
 			padding: 0;
 			height: 22px
 		}
-		th{
+
+		th {
 			height: 22px;
 			padding-top: 16px;
 			padding-left: 16px;
@@ -88,47 +101,64 @@
 			font-weight: bold;
 			font-size: 12px;
 			line-height: 22px;
+			text-align: left;
 		}
 	}
-.g-select::v-deep{
-	.g-menu--activator{
-		.g-tf-wrapper{
-			margin: 0;
+	.g-menu__content::v-deep{
+		min-width: 0;
+	}
+	.g-select::v-deep {
 
-		}
-		.g-tf{
-			.input{
-				padding: 0 0 0 16px;
-			}
-			&-input {
-				font-size: 12px;
-				line-height: 22px;
-				font-family: Roboto;
-				font-style: normal;
-				font-weight: normal;
-				align-self: center;
+		.g-menu--activator {
+			.g-tf-wrapper {
+				fieldset{
+					min-inline-size: fit-content;
+				}
+				margin: 0;
 
 			}
-			background-color: transparent;
-			box-sizing: border-box;
-			&:hover{
-				border: 1px solid #1d1d1d;
+
+			.g-tf {
+				padding: 2px;
+				height: 24px;
+				.input {
+					padding: 0;
+					height: 22px;
+				}
+
+				&-input {
+					font-size: 12px;
+					line-height: 22px;
+					font-family: Roboto;
+					font-style: normal;
+					font-weight: normal;
+					align-self: center;
+
+				}
+
+				background-color: transparent;
+
+				&:hover {
+					padding: 1px;
+					border: 1px solid #E0E0E0 ;
+				}
 			}
 		}
+
 	}
 
-}
-.g-select__active::v-deep{
-	.g-menu--activator{
-		.g-tf{
-			background-color: transparent;
-			box-sizing: border-box;
-			border: 2px solid #0e5bad;
-			&:hover{
-				border: 2px solid #0e5bad;
+	.g-select__active::v-deep {
+		.g-menu--activator {
+			.g-tf {
+				padding: 1px;
+				background-color: transparent;
+				border: 1px solid #1080EC;
+
+				&:hover {
+					border: 1px solid #1080EC;
+				}
 			}
 		}
-	}
 
-}
+	}
 </style>

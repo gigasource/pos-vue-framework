@@ -354,9 +354,9 @@ export const GSelectItemSlot = () => ({
    <div data-app>
       <g-select :items="items" item-text="name" item-value="prepend" label="Display list" multiple clearable
                v-model="selected">
-          <template v-slot:item="{item, isSelected}">
-        <p>slot item</p>
-          </template>
+         <template v-slot:itemInList>
+         <div>ajsdfhhkads</div>
+</template>
       </g-select>
     </div>`
 })
