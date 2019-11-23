@@ -12,7 +12,8 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
         'g-tf-label__disabled': props.disabled,
         'g-tf-label__readOnly': props.readOnly,
         'g-tf-label__active': isLabelActive.value,
-        'g-tf-label__error': !isValidInput.value
+        'g-tf-label__error': !isValidInput.value,
+        'g-tf-label__focused': isFocused.value,
       }
     }
   )
