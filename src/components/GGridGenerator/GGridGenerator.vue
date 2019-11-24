@@ -4,7 +4,9 @@
   import { saveFile, openFile } from '../../utils/helpers'
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
-  import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName } from './logic/utils'
+  import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName,
+    _flexJustifyContentOptions, _flexAlignItemOptions, _flexAlignContentOptions, _flexBasis, _flexWraps, _flexAlignSelf, _flexDirection
+  } from './logic/utils'
   import { fromJSON, toJSONStr, toJSON } from './logic/modelParser'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
@@ -740,6 +742,69 @@
           <div class="grid-gen__settings-prop">
             <label>Margin:</label>
             <input value={gridItem.margin} vOn:keyup={e => enterPressed(e) && (gridItem.margin = e.target.value)}/>
+          </div>,
+          // flex
+          <div vShow={gridItem.wrapInDiv}>
+            <div class="grid-gen__settings-section">Flex</div>
+            <div class="grid-gen__settings-prop">
+              <label>Flex: </label>
+              <input type="checkbox" checked={gridItem.displayFlex} vOn:change={e => gridItem.displayFlex = e.target.checked}/>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label>Direction: </label>
+              <select vOn:change_stop={e => gridItem.flexDirection = e.target.value}>
+                {_.map(_flexDirection, direction =>
+                    <option key={direction} selected={gridItem.flexDirection === direction} value={direction}>{direction}</option>)}
+              </select>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label>Wrap: </label>
+              <select vOn:change_stop={e => gridItem.flexWrap = e.target.value}>
+                {_.map(_flexWraps, v => <option key={v} selected={gridItem.flexWrap === v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content">Justify content: </a></label>
+              <select vOn:change_stop={e => gridItem.flexJustifyContent = e.target.value}>
+                {_.map(_flexJustifyContentOptions, v => <option key={v} selected={gridItem.flexJustifyContent === v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/align-items">Align items:</a></label>
+              <select vOn:change_stop={e => gridItem.flexAlignItems = e.target.value}>
+                {_.map(_flexAlignItemOptions, v => <option key={v} selected={gridItem.flexAlignItems === v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/align-content">Align content:</a></label>
+              <select vOn:change_stop={e => gridItem.flexAlignContent = e.target.value}>
+                {_.map(_flexAlignContentOptions, v => <option key={v} selected={gridItem.flexAlignContent === v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/order">Order:</a></label>
+              <input type="input" value={gridItem.flexOrder} vOn:keypress={e => enterPressed(e) && (gridItem.flexOrder = e.target.value)}/>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label>Grow: </label>
+              <input type="input" value={gridItem.flexGrow} vOn:keypress={e => enterPressed(e) && (gridItem.flexGrow = e.target.value)}/>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label>Shrink: </label>
+              <input type="input" value={gridItem.flexShrink} vOn:keypress={e => enterPressed(e) && (gridItem.flexShrink = e.target.value)}/>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis">Basis:</a></label>
+              <select vOn:change_stop={e => gridItem.flexBasis = e.target.value}>
+                {_.map(_flexBasis, v => <option key={v} selected={gridItem.flexBasis === v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div class="grid-gen__settings-prop">
+              <label>Align self: </label>
+              <select vOn:change_stop={e => gridItem.flexAlignSelf = e.target.value}>
+                {_.map(_flexAlignSelf, v => <option key={v} selected={gridItem.flexAlignSelf === v} value={v}>{v}</option>)}
+              </select>
+            </div>
           </div>,
         ] : null
       }
