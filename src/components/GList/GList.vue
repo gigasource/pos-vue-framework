@@ -1,10 +1,10 @@
 <template>
-  <div :class="classes"
-       class="g-list"
-       :style="styles"
-       @click="onClick"
-       ref="list"
-  >
+	<div :class="classes"
+			 :style="styles"
+			 @click="onClick"
+			 class="g-list"
+			 ref="list"
+	>
 		<slot>
 			<template v-if="!multiSection">
 				<slot name="subheader">
@@ -21,7 +21,7 @@
 						>
 							<slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
 								<div :class="prependClasses" v-if="item.prepend &&  prependType">
-                <g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
+									<g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
 									<g-avatar v-else-if="prependType==='avatar'">
 										<g-img :src="item.prepend"/>
 									</g-avatar>
@@ -36,7 +36,7 @@
 								</div>
 								<div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtitle2||'&nbsp;'}}</div>
 							</div>
-              <slot name="append" :item="item" :isSelected="isActiveItem(item)">
+							<slot :isSelected="isActiveItem(item)" :item="item" name="append">
 								<template v-if="item.append">{{item.append}}</template>
 							</slot>
 						</div>
@@ -93,13 +93,13 @@
 			</template>
 		</slot>
 
-  </div>
+	</div>
 </template>
 
 <script>
   import { computed, provide, ref } from '@vue/composition-api';
-  import GDivider from "../GLayout/GDivider";
-  import {makeSelectable} from "../../mixins/groupable";
+  import GDivider from '../GLayout/GDivider';
+  import { makeSelectable } from '../../mixins/groupable';
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
@@ -108,7 +108,7 @@
 
   export default {
     name: 'GList',
-    components: {GImg, GAvatar, GIcon, GDivider},
+    components: { GImg, GAvatar, GIcon, GDivider },
     props: {
       height: String,
       width: String,
@@ -141,15 +141,21 @@
       itemValue: String,
       itemTitle: String,
       activeClass: String,
-       inMenu: Boolean,
+      inMenu: Boolean,
     },
     setup: function (props, context) {
       //G list computed class
       //Computed subtitle
       const lineNumber = computed(() => {
-        if (!props.items) return
-        if (!props.items.find(i => i.subtitle)) return 1;
-        if (props.items.find(i => i.subtitle2)) return 3;
+        if (!props.items) {
+          return
+        }
+        if (!props.items.find(i => i.subtitle)) {
+          return 1;
+        }
+        if (props.items.find(i => i.subtitle2)) {
+          return 3;
+        }
         return 2;
       })
 
@@ -168,8 +174,8 @@
       }));
 
       const styles = computed(() => ({
-        ...props.height && {'height': props.height},
-        ...props.width && {'width': props.width}
+        ...props.height && { 'height': props.height },
+        ...props.width && { 'width': props.width }
       }));
       const prependClasses = computed(() => {
         if (!['icon', 'avatar', 'image'].includes(props.prependType)) {
@@ -182,7 +188,7 @@
 
       //Events in list
 
-			//when no props.items provided
+      //when no props.items provided
       const itemsInList = ref([])
       provide('itemsInList', itemsInList)
 
@@ -195,22 +201,25 @@
         let index = renderList.length ?
           renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
           : itemsInList.value.findIndex(i => _.isEqual(i, item))
-        index < ( (renderList.value && renderList.value.length) || (itemsInList.value && itemsInList.value.length) - 1) ? index += 1 : index = 0
+        index < ((renderList.value && renderList.value.length) || (itemsInList.value && itemsInList.value.length) - 1) ? index += 1 : index = 0
 
         context.refs.list.getElementsByClassName('g-list-item')[index].focus()
         context.emit('keydown:down')
       }
+
       function onArrowUp(item) {
         let index = renderList.length ?
-					renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
-					: itemsInList.value.findIndex(i => _.isEqual(i, item))
+          renderList.value.findIndex(i => i[props.itemTitle] === item[props.itemTitle] && i.subtitle === item.subtitle && i.prepend === item.prepend)
+          : itemsInList.value.findIndex(i => _.isEqual(i, item))
         index > 0 ? index -= 1 : index = (renderList.value && renderList.value.length) || (itemsInList.value && itemsInList.value.length) - 1
         context.refs.list.getElementsByClassName('g-list-item')[index].focus()
         context.emit('keydown:up')
       }
 
       function onSelect(item) {
-        if (!props.selectable) return;
+        if (!props.selectable) {
+          return;
+        }
         toggleItem(item)
         context.emit('click:item')
       }
@@ -219,28 +228,27 @@
 
       //handler list items in list
 
-			provide('selectedItems', internalValue)
-			provide('multiple', props.multiple)
-			provide('mandatory', props.mandatory)
-			provide('selectable', props. selectable)
-			provide('allowDuplicates', props.allowDuplicates)
+      provide('selectedItems', internalValue)
+      provide('multiple', props.multiple)
+      provide('mandatory', props.mandatory)
+      provide('selectable', props.selectable)
+      provide('allowDuplicates', props.allowDuplicates)
       const getListEvents = (item) => {
-       let listListeners ={}
-        return listListeners = {
-         click: () => onSelect(item),
-         keydown: (e) => {
-           switch (e.keyCode) {
-             case keyCodes.down:
-               onArrowDown(item)
-               break
-             case keyCodes.up:
-               onArrowUp(item)
-               break
-             case keyCodes.enter:
-               onSelect(item)
-               break
-           }
-         }
+        return {
+          click: () => onSelect(item),
+          keydown: (e) => {
+            switch (e.keyCode) {
+              case keyCodes.down:
+                onArrowDown(item)
+                break
+              case keyCodes.up:
+                onArrowUp(item)
+                break
+              case keyCodes.enter:
+                onSelect(item)
+                break
+            }
+          }
         }
       }
       provide('getListEvents', getListEvents)
