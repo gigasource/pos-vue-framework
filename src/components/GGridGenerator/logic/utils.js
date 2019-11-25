@@ -11,7 +11,7 @@ export const _flexAlignContentOptions = ['', "flex-start" , "flex-end" , "center
 export const _flexBasis = ['', 'auto', 'fill', 'max-content', 'min-content', 'fit-content', 'content', ]
 export const _flexWraps = ['', 'nowrap' , 'wrap' , 'wrap-reverse']
 export const _flexDirection = ['', 'row', 'column']
-export const _flexAlignSelf = ["auto" , "flex-start" , "flex-end" , "center" , "baseline" , "stretch"]
+export const _flexAlignSelf = ['', "auto" , "flex-start" , "flex-end" , "center" , "baseline" , "stretch"]
 
 
 /**

@@ -781,30 +781,6 @@
                 {_.map(_flexAlignContentOptions, v => <option key={v} selected={gridItem.flexAlignContent === v} value={v}>{v}</option>)}
               </select>
             </div>
-            <div class="grid-gen__settings-prop">
-              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/order">Order:</a></label>
-              <input type="input" value={gridItem.flexOrder} vOn:keypress={e => enterPressed(e) && (gridItem.flexOrder = e.target.value)}/>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label>Grow: </label>
-              <input type="input" value={gridItem.flexGrow} vOn:keypress={e => enterPressed(e) && (gridItem.flexGrow = e.target.value)}/>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label>Shrink: </label>
-              <input type="input" value={gridItem.flexShrink} vOn:keypress={e => enterPressed(e) && (gridItem.flexShrink = e.target.value)}/>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis">Basis:</a></label>
-              <select vOn:change_stop={e => gridItem.flexBasis = e.target.value}>
-                {_.map(_flexBasis, v => <option key={v} selected={gridItem.flexBasis === v} value={v}>{v}</option>)}
-              </select>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label>Align self: </label>
-              <select vOn:change_stop={e => gridItem.flexAlignSelf = e.target.value}>
-                {_.map(_flexAlignSelf, v => <option key={v} selected={gridItem.flexAlignSelf === v} value={v}>{v}</option>)}
-              </select>
-            </div>
           </div>,
         ] : null
       }
@@ -839,6 +815,8 @@
       onUpdated(() => {
         if (state.showConfirmDialog) {
           context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
+          // Known issue: Input doesn't focus automatically
+          // Work-around: Press Tab to focus
           context.refs[refIdNewItemNameInput].focus()
         }
       })
