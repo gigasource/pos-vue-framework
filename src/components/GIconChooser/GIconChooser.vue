@@ -27,6 +27,9 @@
   export default {
     name: 'GIconChooser',
     components: { GTextField, GDndDialog, GPagination, GIcon, GIconSearch, GBtn },
+    props: {
+      label: String
+    },
     setup(props, context) {
       const state = reactive({
         // dialog state
@@ -294,6 +297,7 @@
       return () => {
         return <div class="g-icon-chooser">
           <g-text-field
+              label={props.label}
               placeholder="select icon"
               prependIcon="search"
               value={state.value}

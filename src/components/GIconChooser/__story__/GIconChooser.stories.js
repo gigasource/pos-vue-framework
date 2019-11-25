@@ -12,7 +12,7 @@ export const gIconChooser = () => ({
   components: { GIconChooser },
   setup(props) {
     return () => (
-        <g-icon-chooser/>
+        <g-icon-chooser label={'avatar'}/>
     )
   }
 })
