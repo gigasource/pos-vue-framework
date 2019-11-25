@@ -235,7 +235,7 @@
         const itemsLength = state.activeTimePicker.hour ?  12: 60;
         let targetPos
         if (e instanceof TouchEvent) {
-          if (e.touches.length == 0)
+          if (e.touches.length === 0)
             return
           targetPos = { x: e.touches[0].clientX - left, y: e.touches[0].clientY - top }
         } else {
