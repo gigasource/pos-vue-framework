@@ -51,6 +51,4 @@
       font-weight: normal;
     }
   }
-
-  }
 </style>
