@@ -16,10 +16,3 @@ export const test2 = () => ({
     )
   }
 })
-
-export const search = () => ({
-  components: { GIconSearch },
-  setup() {
-    return () => <div style='background-color: red; padding: 50px;'> <g-icon-search/></div>
-  }
-})
