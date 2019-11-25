@@ -10,6 +10,7 @@ export default function stackable(props, context) {
 
     const activeElements = [
       ...document.getElementsByClassName('g-dialog-wrapper__active'),
+      ...document.getElementsByClassName('g-menu--content'),
     ];
 
     for (let index = 0; index < activeElements.length; index++) {

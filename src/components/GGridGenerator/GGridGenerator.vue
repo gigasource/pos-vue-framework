@@ -252,11 +252,6 @@
       }
 
       // render grid editor
-      const cptGridContainerClass = computed(() => ({
-        'grid-gen__editor__field__item': true,
-        'grid-gen__editor__field__item--view-only': state.viewMode,
-      }))
-
       /**
        *
        * @param grid {GridModel}
@@ -267,11 +262,8 @@
         for (let i = 0, rowLen = grid.rows.length; i < rowLen; ++i) {
           for (let j = 0, colLen = grid.columns.length; j < colLen; ++j) {
             gridItems.push(<div
-                class={cptGridContainerClass.value}
+                class='grid-gen__editor__field__item'
                 vOn:mousedown={(e) => {
-                  // view mode
-                  if (state.viewMode) return
-
                   // check and execute if area hit
                   if (e.ctrlKey && areaHit(e)) return
 
@@ -332,7 +324,7 @@
         return ([
           <div style={gridStyles} class="grid-gen__editor__field">{gridItems}</div>,
           <div style={selectedAreaContainerStyle}>
-            {renderGridAreas(grid)}
+            {renderGridAreas(grid, false)}
             {renderHoveringArea()}
           </div>
         ])
@@ -427,13 +419,13 @@
                 'grid-template-rows': joinRefArrayValue(grid.rows),
                 'gap': `${grid.rowGap}px ${grid.columnGap}px`,
               }}>
-            {renderGridAreas(grid)}
+            {renderGridAreas(grid, true)}
           </div>
         } else {
           return <div
               class="grid-gen__editor__field__area"
               style={{
-                border: '2px solid #0008',
+                border: '1px solid #0008',
                 backgroundColor: grid.bgColor,
                 gridArea: grid.gridAreaCss()
               }}>
@@ -442,18 +434,18 @@
         }
       }
 
-      //
       /**
        * render area
        * @param grid {GridModel | AreaModel}
+       * @param viewMode
        * @returns {*}
        */
-      function renderGridAreas(grid) {
+      function renderGridAreas(grid, viewMode) {
         if (grid instanceof GridModel) {
           return grid.subAreas.map(gridItem => {
             return !gridItem.visible
                 ? null
-                : state.viewMode
+                : viewMode
                     ? renderGridAreaInViewMode(gridItem)
                     : renderGridAreaInEditMode(gridItem)
           })
@@ -467,6 +459,39 @@
           'grid-area': getCssArea(state.hoveringArea)
         }}></div> : null
       }
+
+
+      // render mini map (view mode)
+      function renderMiniMap() {
+        const gridItems = []
+        for (let i = 0, rowLen = state.layout.rows.length; i < rowLen; ++i) {
+          for (let j = 0, colLen = state.layout.length; j < colLen; ++j) {
+            gridItems.push(<div class='grid-gen__editor__field__item'></div>)
+          }
+        }
+
+        const selectedAreaContainerStyle = {
+          display: 'grid',
+          'grid-template-columns': joinRefArrayValue(state.layout.columns),
+          'grid-template-rows': joinRefArrayValue(state.layout.rows),
+          'gap': `${state.layout.rowGap}px ${state.layout.columnGap}px`,
+          //
+          position: 'absolute',
+          top: widthUnitSettingColumnHeight,
+          left: heightUnitSettingRowWidth,
+          bottom: 0,
+          right: 0,
+          'pointer-events': 'none',
+          //
+        }
+
+        return ([
+          <div style={selectedAreaContainerStyle} class="grid-gen__editor__field">
+            {renderGridAreas(state.layout, true)}
+          </div>
+        ])
+      }
+
 
       // render confirm dialog
       const refIdNewItemNameInput = 'txtItemName'
@@ -558,7 +583,7 @@
               </div>
             </div>
             <div class="grid-gen__dialog__confirm__action-btn">
-              <button  ref={refIdBtnCreateSubGrid} class='simple-btn' vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
+              <button ref={refIdBtnCreateSubGrid} class='simple-btn' vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
               &nbsp;
               <button ref={refIdBtnCreateSubItem} class='simple-btn' vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
               &nbsp;
@@ -581,7 +606,7 @@
             <g-inc-dec-number-input min={400} value={state.fieldHeight} vOn:input={v => state.fieldHeight = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
-            <label>View mode: </label>
+            <label>Preview: </label>
             <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}/>
           </div>,
         ]
@@ -775,6 +800,21 @@
                   {renderGridRowHeightSetting(state.selectedGrid)}
                   {renderGridContainer(state.selectedGrid)}
                 </div>
+                <div style="height: 10px"></div>
+                <div
+                    vShow={state.viewMode}
+                    style={{
+                      position: 'relative',
+                      width: `${state.fieldWidth}px`,
+                      height: `${state.fieldHeight}px`,
+                      backgroundColor: '#fff',
+                      margin: '0 auto'
+                    }}>
+                  {renderMiniMap()}
+                </div>
+              </div>
+              <div>
+
               </div>
               <div class="grid-gen__settings">
                 {renderGridGeneratorOutput()}
@@ -907,6 +947,7 @@
 
       & > input {
         width: 100%;
+        border: 1px solid gray;
 
         &:focus {
           outline: none;
@@ -930,10 +971,6 @@
         &__item {
           cursor: pointer;
           border: 1px dotted #666;
-
-          &--view-only {
-            border: 1px dotted transparent;
-          }
 
           &--disabled {
             pointer-events: none;
@@ -1013,8 +1050,19 @@
           font-size: small;
         }
 
+        & > button {
+          padding: 5px;
+        }
+
         & > input, select, div {
           width: 102px;
+        }
+
+        & > select {
+          border: solid 1px gray;
+          border-radius: 2px;
+          padding-left: 5px;
+          outline: none;
         }
       }
     }

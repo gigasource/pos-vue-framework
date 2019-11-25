@@ -26,7 +26,6 @@ input[type=text] {
   width: 100%;
   margin: 16px 0 24px 0;
   position: relative;
-  color: rgba(0, 0, 0, 0.32);
 
   &__error {
     color: red;
@@ -116,13 +115,16 @@ input[type=text] {
     top: 4px;
     left: 0;
     transform-origin: top left;
-    transition: 0.4s ease-out;
+    transition: 0.3s;
     pointer-events: none;
-    color: #1867c0;
     font-size: 16px;
 
     &__active {
       transform: translateY(-18px) scale(0.75);
+    }
+
+    &__focused {
+      color: #1867c0;
     }
 
     &__error {
