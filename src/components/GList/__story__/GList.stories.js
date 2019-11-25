@@ -669,6 +669,52 @@ export const gListAsMenuContent = () => ({
         </g-container>
       </div>`,
 })
+
+export const gListPrimitiveItems = () => ({
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  data() {
+    return {
+      items: ['Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors']
+    }
+  },
+  props: {
+    disabled: { default: boolean('disabled', false) },
+    rounded: { default: boolean('rounded', false) },
+    shaped: { default: boolean('shaped', false) },
+    elevation: { type: [Number, String], default: number('elevation', 2) },
+    dense: { default: boolean('dense', false) },
+    nav: { default: boolean('nav', false) },
+    multiSection: { default: boolean('multiSection', false) },
+    subheader: { default: text('subheader', 'subheader') },
+    divider: { type: [String, Boolean], default: boolean('divider', false) },
+    prependType: { default: text('prependType', 'avatar') },
+    subtitleWrap: { default: boolean('subtitleWrap', false) },
+    selectable: { default: boolean('selectable', false) },
+    multiple: { default: boolean('multiple', false) },
+    mandatory: { default: boolean('mandatory', false) },
+    allowDuplicates: { default: boolean('allowDuplicates', false) },
+    itemValue: { default: text('itemValue', '') },
+    itemTitle: { default: text('itemTitle', 'title') },
+    activeClass: { default: text('activeClass', '') },
+  },
+  template:
+      `
+      <g-list :items="items"
+        :disabled="disabled"
+        :rounded="rounded"
+        :shaped="shaped"
+        :elevation="elevation"
+        :dense="dense"
+        :nav="nav"
+        :multiSection="multiSection"
+        :subheader="subheader"
+        :divider="divider"
+        :prependType="prependType"
+        :subtitleWrap="subtitleWrap"
+      />
+      `,
+})
+
 import Vue from 'vue/dist/vue.common.js'
 import GContainer from '../../GLayout/GContainer';
 import GRow from '../../GLayout/GRow';
