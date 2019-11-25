@@ -120,9 +120,7 @@
       }));
       const deleteSelection = (i) => {
         for (let key of _.keys(internalValue.value)) {
-          let value = _.cloneDeep(internalValue.value[key])
-          value[i - 1] = ''
-          internalValue.value[key] = value
+          internalValue.value[key][i - 1] && internalValue.value[key].splice(i - 1, 0, '')
         }
       }
       const internalValue = getInternalValue(props, context)

@@ -70,8 +70,6 @@
 		height: 146px;
 
 		background: #FFFFFF;
-		/* Grey/grey lighten-2 */
-
 		border: 1px solid #E0E0E0;
 		box-sizing: border-box;
 		display: grid;
@@ -88,7 +86,6 @@
 		font-weight: bold;
 		font-size: 12px;
 		line-height: 22px;
-		/* identical to box height, or 183% */
 
 		display: flex;
 		align-items: center;
