@@ -2,6 +2,7 @@
 //
 
 import { computed, reactive } from '@vue/composition-api'
+import _ from 'lodash'
 import dayjs from 'dayjs';
 
 // Hour convention
@@ -74,9 +75,10 @@ function getShowPeriodPickerMethods(state, context) {
  * @param state
  * @param context
  */
-function getSetTimeMethods(state, context) {
+function getSetTimeMethods(props, state, context) {
   function emitInput() {
-    context.emit('input', `${state.selectedTime.hours}:${state.selectedTime.minutes}:${state.selectedTime.seconds}`)
+    const seconds = props.useSeconds ? `:${_.padStart(state.selectedTime.seconds, 2, '0')}` : ''
+    context.emit('input', `${_.padStart(state.selectedTime.hours, 2, '0')}:${_.padStart(state.selectedTime.minutes, 2, '0')}${seconds}`)
   }
 
   // events
@@ -153,7 +155,7 @@ export default function (props, context) {
 
   const { showHoursPicker, showMinutesPicker, showSecondsPicker } = getShowTimePickerMethods(state)
   const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state, context)
-  const { setHours, setMinutes, setSeconds } = getSetTimeMethods(state, context)
+  const { setHours, setMinutes, setSeconds } = getSetTimeMethods(props, state, context)
   const { adjustHours, adjustMinutes, adjustSeconds } = getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, cptIs12HoursConvention})
 
   const hoursModel = computed(() => {
