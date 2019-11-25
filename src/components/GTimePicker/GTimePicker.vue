@@ -392,7 +392,7 @@
             <g-picker
                 disabled={props.disabled}
                 landscape={props.landscape}
-                width={props.width && props.width >= 300 ? props.width : MINIMUM_WIDTH}
+                width={props.width && props.width >= MINIMUM_WIDTH ? props.width : MINIMUM_WIDTH}
                 color={props.titleBgColor || DEFAULT_COLOR}>
               <template slot="title">
                 {titleRenderFn()}

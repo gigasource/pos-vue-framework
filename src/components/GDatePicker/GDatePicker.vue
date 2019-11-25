@@ -379,7 +379,7 @@
                 color={props.headerColor || props.color || DEFAULT_COLOR}
                 fullWidth={props.fullWidth}
                 landscape={props.landscape}
-                width={props.width >= 300 ? props.width : MINIMUM_WIDTH}
+                width={props.width >= MINIMUM_WIDTH ? props.width : MINIMUM_WIDTH}
                 noTitle={props.noTitle}
                 disabled={props.disabled}>
               <template slot="title">
