@@ -61,11 +61,11 @@ function getShowPeriodPickerMethods(state, context) {
   return {
     showAMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.AM
-      context.emit('update:period', 'am')
+      context.emit('update_period', 'am')
     },
     showPMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.PM
-      context.emit('update:period', 'pm')
+      context.emit('update_period', 'pm')
     }
   }
 }
@@ -84,19 +84,19 @@ function getSetTimeMethods(props, state, context) {
   // events
   function setHours(hours) {
     state.selectedTime.hours = hours
-    context.emit('update:hours', hours)
+    context.emit('update_hours', hours)
     emitInput()
   }
 
   function setMinutes(minutes) {
     state.selectedTime.minutes = minutes
-    context.emit('update:minutes', minutes)
+    context.emit('update_minutes', minutes)
     emitInput()
   }
 
   function setSeconds(seconds) {
     state.selectedTime.seconds = seconds
-    context.emit('update:seconds', seconds)
+    context.emit('update_seconds', seconds)
     emitInput()
   }
 
