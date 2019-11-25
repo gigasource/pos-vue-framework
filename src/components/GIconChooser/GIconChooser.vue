@@ -3,7 +3,7 @@
   import { getIconSources } from './logic/Utils'
   import { reactive, computed } from '@vue/composition-api'
   import GIcon from '../GIcon/GIcon';
-  import GPagination, { pagingModeEnum } from './GIconPagination'
+  import GPagination from './GIconPagination'
   import GIconSearch from './GIconSearch'
   import GBtn from '../GBtn/GBtn'
   import GDndDialog from '../GDndDialog/GDndDialog';
@@ -41,7 +41,9 @@
         flipHorizontal: false,
         rotate: 0,
         flipVertical: false,
-        color: null
+        color: null,
+        //
+        value: 'fab fa-vuejs'
       })
 
       const iconSources = getIconSources()
@@ -160,13 +162,33 @@
         color: state.color
       })
 
+      function renderIconDetailSimple() {
+        return <div class="icon-detail">
+          <div class="icon-detail__content">
+            <div class="icon-detail__content__preview">
+              <g-icon>{state.selectedIcon.value}</g-icon>
+            </div>
+            <div class="icon-detail__content__custom-panel">
+              <span class="icon-detail__content__value">{state.selectedIcon.name}</span>
+              <div class="icon-detail__action-btn">
+                <g-btn outlined vOn:click={() => {
+                  state.value = state.selectedIcon.value
+                  state.showDialog = false
+                }}>Add
+                </g-btn>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      // Customize
       function renderIconDetail() {
         return <div class="icon-detail">
           <div class="icon-detail__content">
             <div class="icon-detail__content__preview">
               <g-icon>{state.selectedIcon.value}</g-icon>
             </div>
-
             <div class="icon-detail__content__custom-panel">
               <span class="icon-detail__content__value">{state.selectedIcon.name}</span>
               <div class="icon-detail__content__shape-setting">
@@ -265,18 +287,20 @@
                     renderItemsList={renderIconInList}/>
               </div>
 
-              {state.selectedIcon && renderIconDetail()}
+              {state.selectedIcon && renderIconDetailSimple()}
             </div>
         )
       }
 
       return () => {
         return <div class="g-icon-chooser">
-          <button vOn:click={() => {
-            state.showDialog = true
-            initIconPickerDialogState()
-          }}>Open Icon Picker
-          </button>
+          <div class="g-icon-chooser__activator">
+            <input class="g-icon-chooser__activator__input" value={state.value}/>
+            <g-icon class="g-icon-chooser__activator__preview" vOn:click={() => {
+              state.showDialog = true
+              initIconPickerDialogState()
+            }}>{state.value}</g-icon>
+          </div>
           <g-dnd-dialog
               value={state.showDialog} vOn:input={v => state.showDialog = v}
               scopedSlots={{ title: () => 'Icon Picker' }}
@@ -291,10 +315,40 @@
   }
 </script>
 <style scoped lang="scss">
+  .g-icon-chooser {
+    &__activator {
+      height: 40px;
+      display: inline-flex;
+      border: 1px solid #0003;
+      border-radius: 5px;
+      padding-left: 5px;
+
+      &:hover {
+        cursor: pointer;
+        border-color: #0006;
+      }
+
+      &__input {
+        padding: 5px;
+        border: none;
+        outline: none;
+        text-overflow: ellipsis;
+        border-right: 1px solid #0003;
+      }
+
+      &__preview {
+        padding: 0 5px;
+
+        &:hover {
+          background-color: #aaa;
+        }
+      }
+    }
+  }
+
   .g-icon-chooser__dialog-content {
     padding: 5px 5px;
     width: calc(100%);
-
   }
 
   /* source list view */
