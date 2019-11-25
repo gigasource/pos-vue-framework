@@ -8,9 +8,9 @@ export default {
   decorators: [withKnobs],
 }
 
-export const test2 = () => ({
+export const gIconChooser = () => ({
   components: { GIconChooser },
-  setup() {
+  setup(props) {
     return () => (
         <g-icon-chooser/>
     )

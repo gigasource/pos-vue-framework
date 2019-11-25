@@ -7,6 +7,7 @@
   import GIconSearch from './GIconSearch'
   import GBtn from '../GBtn/GBtn'
   import GDndDialog from '../GDndDialog/GDndDialog';
+  import GTextField from '../GInput/GTextField'
 
   GPagination.components['GIcon'] = GIcon
   GIconSearch.components['GIcon'] = GIcon
@@ -25,8 +26,7 @@
 
   export default {
     name: 'GIconChooser',
-    components: { GDndDialog, GPagination, GIcon, GIconSearch, GBtn },
-    props: {},
+    components: { GTextField, GDndDialog, GPagination, GIcon, GIconSearch, GBtn },
     setup(props, context) {
       const state = reactive({
         // dialog state
@@ -43,7 +43,7 @@
         flipVertical: false,
         color: null,
         //
-        value: 'fab fa-vuejs'
+        value: ''
       })
 
       const iconSources = getIconSources()
@@ -291,20 +291,21 @@
             </div>
         )
       }
-
       return () => {
         return <div class="g-icon-chooser">
-          <div class="g-icon-chooser__activator">
-            <input class="g-icon-chooser__activator__input" value={state.value} vOn:input={e => state.value = e.target.value}/>
-            <g-icon class="g-icon-chooser__activator__preview" vOn:click={() => {
-              state.showDialog = true
-              initIconPickerDialogState()
-            }}>{state.value}</g-icon>
-          </div>
+          <g-text-field
+              placeholder="select icon"
+              prependIcon="search"
+              value={state.value}
+              appendInnerIcon={state.value}
+              vOn:click={() => {
+                state.showDialog = true
+                initIconPickerDialogState()
+              }}/>
           <g-dnd-dialog
               value={state.showDialog} vOn:input={v => state.showDialog = v}
               scopedSlots={{ title: () => 'Icon Picker' }}
-              minHeight={300} height={500}
+              minHeight={710} height={710}
               minWidth={630} width={630}
               lazy>
             {renderIconChooserDialogContent()}
@@ -415,7 +416,7 @@
     display: flex;
     width: 100%;
     flex-wrap: wrap;
-    max-height: 200px;
+    max-height: 150px;
     overflow-y: auto;
   }
 
