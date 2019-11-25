@@ -9,25 +9,41 @@
   import getGradientRenderFn from './gradientColors'
   import getColorPickerRenderFn from './colorPicker'
   import { tabIndexes } from './commonUI';
+  import GTextField from '../GInput/GTextField';
+
+  GMenu.components['GTextField'] = GTextField
 
   export default {
     name: 'GColorPicker',
-    components: { GSlider, GMenu, GToolTip },
+    components: { GTextField, GSlider, GMenu, GToolTip },
     props: {
       disabled: Boolean,
       width: {
         type: [String, Number],
         default: 300
-      }
+      },
+      label: String,
     },
     setup(props, context) {
-      const emitColor = color => context.emit('input', color)
-
+      const state = reactive({
+        value: null,
+        showMenu: false
+      })
+      const colorSelectedHandler = color => {
+        if (color.angle) {
+          state.value = `linear-gradient(${color.angle}, ${color.colorStop1}, ${color.colorStop2})`
+        } else if (color.value) {
+          state.value = color.value
+        } else {
+          state.value = color
+        }
+        state.showMenu = false
+      }
       // color picker require tabState to activate updateCanvas function
       const tabState = reactive({ selectedTab: tabIndexes.swatches })
-      const renderColorPicker = getColorPickerRenderFn(props, context, tabState, emitColor)
-      const renderSwatches = getSwatchesRenderFn(emitColor)
-      const renderGradientColors = getGradientRenderFn(emitColor)
+      const renderColorPicker = getColorPickerRenderFn(props, context, tabState, colorSelectedHandler)
+      const renderSwatches = getSwatchesRenderFn(colorSelectedHandler)
+      const renderGradientColors = getGradientRenderFn(colorSelectedHandler)
 
       //
       const deactiveTabColor = '#78909c'
@@ -55,11 +71,26 @@
       }
 
       //// Color picker dialog
-      const dialogState = reactive({ showMenu: false })
+      const previewStyle = {
+        width: '30px',
+        height: '20px',
+        margin: '16px 0px 24px -40px',
+        border: '1px solid #0003'
+      }
+
       return function renderFn() {
         return (
-            <g-menu value={dialogState.showMenu} vOn:input={v => dialogState.showMenu = v}
-                    scopedSlots={{ activator: gMenuScope => context.slots.default(gMenuScope) }}
+            <g-menu value={state.showMenu} vOn:input={v => state.showMenu = v}
+                    scopedSlots={{ activator: gMenuScope =>
+                          <div style='display: flex; align-items: center;'>
+                            <g-text-field
+                                label={props.label}
+                                value={state.value}
+                                prependIcon="fas fa-palette"
+                                vOn:click={gMenuScope.toggleContent}/>
+                            <span style={{...previewStyle, background: state.value}}></span>
+                          </div>
+                    }}
                     minWidth={320}
                     maxWidth={320}
                     contentFillWidth={false}
