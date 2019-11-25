@@ -61,11 +61,11 @@ function getShowPeriodPickerMethods(state, context) {
   return {
     showAMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.AM
-      context.emit('update_period', 'am')
+      context.emit('updateperiod', 'AM')
     },
     showPMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.PM
-      context.emit('update_period', 'pm')
+      context.emit('updateperiod', 'PM')
     }
   }
 }
@@ -78,25 +78,33 @@ function getShowPeriodPickerMethods(state, context) {
 function getSetTimeMethods(props, state, context) {
   function emitInput() {
     const seconds = props.useSeconds ? `:${_.padStart(state.selectedTime.seconds, 2, '0')}` : ''
-    context.emit('input', `${_.padStart(state.selectedTime.hours, 2, '0')}:${_.padStart(state.selectedTime.minutes, 2, '0')}${seconds}`)
+    const time = `${_.padStart(state.selectedTime.hours, 2, '0')}:${_.padStart(state.selectedTime.minutes, 2, '0')}${seconds}`
+    let period = ''
+    if (props.hourConvention === HourConvention._12HRS) {
+      if (state.activePeriodPicker === ActivePeriodPicker.AM)
+        period = 'AM'
+      else
+        period = 'PM'
+    }
+    context.emit('input', { time, period })
   }
 
   // events
   function setHours(hours) {
     state.selectedTime.hours = hours
-    context.emit('update_hours', hours)
+    context.emit('updatehours', hours)
     emitInput()
   }
 
   function setMinutes(minutes) {
     state.selectedTime.minutes = minutes
-    context.emit('update_minutes', minutes)
+    context.emit('updateminutes', minutes)
     emitInput()
   }
 
   function setSeconds(seconds) {
     state.selectedTime.seconds = seconds
-    context.emit('update_seconds', seconds)
+    context.emit('updateseconds', seconds)
     emitInput()
   }
 
