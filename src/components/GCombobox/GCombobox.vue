@@ -14,7 +14,7 @@
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
   import {getList, getSelections} from "../GSelect/GSelectFactory";
-  import {genTextFieldScopedSlot, getInputEventHandlers, genList, genMenu} from "../GAutocomplete/GAutocompleteFactory";
+  import { getInputEventHandlers, setSearch} from "../GAutocomplete/GAutocompleteFactory";
 
   export default {
     name: "GCombobox",
@@ -122,6 +122,35 @@
       })
       const options = getList(props, selectedItem, state)
 
+			//genList
+      function genList(showOptions) {
+        const onClickItem = () => {
+          setSearch(props, context, selections, state)
+          showOptions.value = props.multiple
+        }
+        return <GList
+          {...{
+            props: {
+              items: options.value,
+              'item-title': props.itemText,
+              mandatory: true,
+              allowDuplicates: props.allowDuplicates,
+              multiple: props.multiple,
+              selectable: true,
+              inMenu: true,
+              value: selectedItem.value,
+            },
+            on: {
+              'click:item': onClickItem,
+              input: e => selectedItem.value = e,
+            },
+          }
+          }
+          ref="list"
+        />
+
+      }
+
       //selections text
       const selectionsText = computed(() => {
         return props.multiple ? selections.value.join('') : selections.value
@@ -147,7 +176,48 @@
       } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
 
       //textfield scoped slot
-      const textFieldScopedSlots = genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, isValidInput, labelClasses, labelStyles, validateText, state, hintClasses, errorMessages, clearSelection)
+      const genMultiSelectionsSlot = () => {
+        if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) {
+          return selections.value.map((item, index) => <GChip small={props.smallChips}
+                                                              close={props.deletableChips}
+                                                              vOn:close={() => onChipCloseClick(index)}>{item}
+          </GChip>)
+        }
+
+        return selections.value.map(function (item, index) {
+            if (index === selections.value.length - 1) return <div
+              style={{'color': state.lastItemColor, 'padding-right': '5px'}}>{item}</div>
+            return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
+          }
+        )
+      }
+      const genSingleSelectionSlot = () => {
+        if ((props.chips || props.smallChips || props.deletableChips) && selections.value) {
+          return <GChip small={props.smallChips} close={props.deletableChips}
+                        vOn:close={() => onChipCloseClick()}>{selections.value}</GChip>
+        }
+      }
+
+      const textFieldScopedSlots = {
+        clearableSlot: ({iconColor}) =>
+          <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
+                 color={iconColor}>{props.clearIcon}</GIcon>,
+        appendInner: ({iconColor}) =>
+          <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+        inputSlot: ({inputErrStyles}) =>
+          <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
+            {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
+          </div>,
+        label: () => <label for="input" class={["g-tf-label", labelClasses.value]}
+                            style={labelStyles.value}>{props.label}</label>,
+        inputMessage: () => [<div v-show={props.counter} class={{
+          'g-tf-counter': true,
+          'g-tf-counter__error': !isValidInput.value
+        }}>{validateText.value.length}/{props.counter}</div>,
+          isValidInput.value ? <div class={["g-tf-hint", hintClasses.value]}>{props.hint}</div>
+            : <div class="g-tf-error">{errorMessages.value}</div>
+        ]
+      }
       //textfield value
       const tfValue = computed(() =>
           (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
@@ -201,7 +271,7 @@
                         ),
                         showSearchField: false,
                         genTextFieldFn: genTextFieldProps,
-                        genListFn: (showOptions) => genList(props, options, selectedItem, showOptions, context, selections, state),
+                        genListFn: (showOptions) => genList(showOptions),
                       },
                       scopedSlots: {...comboboxSlots}
                     }}
