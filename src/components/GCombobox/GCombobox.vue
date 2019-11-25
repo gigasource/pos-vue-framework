@@ -87,7 +87,10 @@
       chips: Boolean,
       smallChips: Boolean,
       deletableChips: Boolean,
-      items: Array,
+      items: {
+        type: Array,
+        default: () => []
+      },
       itemText: {
         type: String,
         default: 'text'
