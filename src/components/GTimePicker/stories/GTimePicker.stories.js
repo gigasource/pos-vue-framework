@@ -1,6 +1,7 @@
 import { boolean, text, withKnobs, select, array, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import GTimePicker from '../GTimePicker'
+import GTimePickerInput from '../GTimePickerInput'
 import { HourConvention } from '../logic/GTimePickerUtil';
 
 //
@@ -121,5 +122,12 @@ export const Index = () => ({
           </div>
         </div>
     )
+  }
+})
+
+export const gTimePickerInput = () => ({
+  components: { GTimePicker, GTimePickerInput },
+  setup(props, context) {
+    return () => <g-time-picker-input label='arrived in'/>
   }
 })
