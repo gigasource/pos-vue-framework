@@ -1,8 +1,8 @@
-import GList from "../GList/GList";
-import GIcon from "../GIcon/GIcon";
-import {keyCodes} from "../../utils/helpers";
-import GChip from "../GChip/GChip";
-import {getLabel} from "../GInput/GInputFactory";
+import GList from '../GList/GList';
+import GIcon from '../GIcon/GIcon';
+import { keyCodes } from '../../utils/helpers';
+import GChip from '../GChip/GChip';
+import { getLabel } from '../GInput/GInputFactory';
 
 export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
   function onChipCloseClick(index = null) {
@@ -38,9 +38,12 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputDelete() {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) return
-    if (state.searchText) return state.pressDeleteTimes = 0
-    else {
+    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
+      return
+    }
+    if (state.searchText) {
+      return state.pressDeleteTimes = 0
+    } else {
       if (state.pressDeleteTimes === 0) {
         state.pressDeleteTimes++
         state.lastItemColor = '#1867c0 '
@@ -60,7 +63,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
       let inputAddedItem = props.itemValue ? {
         [props.itemText]: state.searchText,
         [props.itemValue]: state.searchText
-      } : {[props.itemText]: state.searchText}
+      } : { [props.itemText]: state.searchText }
       toggleItem(inputAddedItem)
       setSearch(props, context, selections, state)
     }
@@ -72,80 +75,6 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
 }
 
-export function genTextFieldScopedSlot(props, context, selections, onChipCloseClick, isDirty, isValidInput, labelClasses, labelStyles, validateText, state, hintClasses, errorMessages, clearSelection) {
-  const textFieldScopedSlots = {
-    clearableSlot: ({iconColor}) =>
-        <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
-               color={iconColor}>{props.clearIcon}</GIcon>,
-    appendInner: ({iconColor}) =>
-        <GIcon color={iconColor}>arrow_drop_down</GIcon>,
-    inputSlot: ({inputErrStyles}) =>
-        <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-          {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-        </div>,
-    label: () => <label for="input" class={["g-tf-label", labelClasses.value]}
-                        style={labelStyles.value}>{props.label}</label>,
-    inputMessage: () => [<div v-show={props.counter} class={{
-      'g-tf-counter': true,
-      'g-tf-counter__error': !isValidInput.value
-    }}>{validateText.value.length}/{props.counter}</div>,
-      isValidInput.value ? <div class={["g-tf-hint", hintClasses.value]}>{props.hint}</div>
-          : <div class="g-tf-error">{errorMessages.value}</div>
-    ]
-  }
-  const genMultiSelectionsSlot = () => {
-    if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) {
-      return selections.value.map((item, index) => <GChip small={props.smallChips}
-                                                          close={props.deletableChips}
-                                                          vOn:close={() => onChipCloseClick(index)}>{item}
-      </GChip>)
-    }
-
-    return selections.value.map(function (item, index) {
-          if (index === selections.value.length - 1) return <div
-              style={{'color': state.lastItemColor, 'padding-right': '5px'}}>{item}</div>
-          return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
-        }
-    )
-  }
-  const genSingleSelectionSlot = () => {
-    if ((props.chips || props.smallChips || props.deletableChips) && selections.value) {
-      return <GChip small={props.smallChips} close={props.deletableChips}
-                    vOn:close={() => onChipCloseClick()}>{selections.value}</GChip>
-    }
-  }
-  return textFieldScopedSlots
-
-}
-
-export function genList(props, options, selectedItem, showOptions, context, selections, state) {
-  const onClickItem = () => {
-    setSearch(props, context, selections, state)
-    showOptions.value = props.multiple
-  }
-  return <GList
-      {...{
-        props: {
-          items: options.value,
-          'item-title': props.itemText,
-          mandatory: true,
-          allowDuplicates: props.allowDuplicates,
-          multiple: props.multiple,
-          selectable: true,
-          inMenu: true,
-          value: selectedItem.value,
-        },
-        on: {
-          'click:item': onClickItem,
-          input: e => selectedItem.value = e,
-        },
-      }
-      }
-      ref="list"
-  />
-
-}
-
 export function resetSelectionsDisplay(state) {
 
   state.pressDeleteTimes = 0
@@ -154,7 +83,9 @@ export function resetSelectionsDisplay(state) {
 
 export function setSearch(props, context, selections, state) {
   context.root.$nextTick(() => {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) state.lazySearch = selections.value
+    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
+      state.lazySearch = selections.value
+    }
     state.searchText = ''
   })
 }
