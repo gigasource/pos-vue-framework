@@ -1,0 +1,89 @@
+@import "../../style/variables";
+
+.g-tabs {
+  position: relative;
+  display: flex;
+
+  &-wrapper {
+    width: 100%;
+  }
+
+  &-bar {
+    display: flex;
+    min-height: 48px;
+    width: 100%;
+  }
+
+  &-slider {
+    position: absolute;
+    bottom: 0;
+    margin: 0 !important;
+    transition-timing-function: map_get($transition, 'swing');
+    z-index: 1;
+    background-color: currentColor;
+  }
+
+  &__grow {
+    .g-tab {
+      flex: 1 0 auto;
+    }
+  }
+
+  &__icon {
+    min-height: 72px;
+
+    &.g-tabs__vertical {
+      min-height: 48px;
+    }
+  }
+
+  &__vertical {
+    > .g-tabs-bar {
+      flex-direction: column;
+      width: auto;
+    }
+
+    ::v-deep .g-tab {
+      height: 48px;
+      flex-direction: row;
+
+      > i,
+      > ::v-deep .g-icon {
+        margin-right: 8px;
+      }
+    }
+
+    .g-tabs-slider {
+      transition-property: top;
+    }
+
+    ::v-deep .g-slide-group__content {
+      flex-direction: column;
+    }
+  }
+
+  &__right {
+    ::v-deep .g-tab:first-child {
+      margin-left: auto;
+    }
+  }
+
+  &__center {
+    ::v-deep .g-slide-group__content {
+      justify-content: center;
+    }
+  }
+
+  &__align-title {
+    ::v-deep .g-tab:first-child {
+      margin-left: 42px;
+    }
+  }
+}
+
+
+
+
+
+
+

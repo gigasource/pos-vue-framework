@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<slot :active="isActive" :disabled="disabled" :toggle="toggle" :item="item" :class="itemClass"></slot>
+	<div class="g-item" :class="itemClass">
+		<slot :active="isActive" :disabled="disabled" :toggle="toggle" :item="item" ></slot>
 	</div>
 </template>
 
@@ -13,16 +13,21 @@
       disabled: Boolean,
 			item: null,
       isActive: Boolean,
+      activeClass: {
+        type: String,
+				default: 'g-item__active'
+			}
     },
 		setup(props, {emit}) {
-      const {disabled, activeClass, isActive, item} = props;
-      const itemClass = computed(() => ({
-				[activeClass]: isActive
-			}));
+      const itemClass = computed(() => {
+      	return {
+					[props.activeClass]: props.isActive
+				}
+			});
 
 			const toggle = () => {
-        if (disabled) return;
-        emit('toggle', item);
+        if (props.disabled) return;
+        emit('toggle', props.item);
 			};
 
 			return {
@@ -33,6 +38,6 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+ @import "GItemGroup";
 </style>
