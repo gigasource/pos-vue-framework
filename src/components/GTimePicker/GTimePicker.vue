@@ -69,6 +69,7 @@
         default: DEFAULT_COLOR
       },
 
+      timeSelected: Function
       // ROADMAP
       // events: [Function, Array], // (() => [] || []) of { hour: Number, minute: Number, second: Number, eventName: String, eventContent: String] }
       // allowedHours: [Function, Array],
@@ -284,6 +285,8 @@
           showMinutesPicker()
         else if (state.activeTimePicker.minute && props.useSeconds)
           showSecondsPicker()
+        else if (props.timeSelected)
+          props.timeSelected()
       }
 
       function addNumberClass(numbers) {
