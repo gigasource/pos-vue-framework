@@ -13,7 +13,8 @@
       icons: Array,
       value: String,
       placeHolder: String,
-      renderResultItem: Function
+      renderItems: Function,
+      renderItemsList: Function
     },
     setup(props, context) {
       return () => {
@@ -45,8 +46,8 @@
               dataSrc={cptFilteredResult.value}
               itemsPerPage={30}
               pageIndexesShowInView={7}
-              renderItems={props.renderResultItem}
-              vOn:viewmode={viewMode => state.pagingViewMode = viewMode}/>
+              renderItems={props.renderItems}
+              renderItemsList={props.renderItemsList}/>
         </div>
       }
     }
@@ -55,39 +56,12 @@
 <style scoped lang="scss">
   $height: 36px;
   .g-icon-search {
+    border: 1px solid #0003;
     display: flex;
-    margin: 10px 10px;
+    margin: 5px;
     position: relative;
     background-color: white;
     height: 36px;
-
-    &:before{
-      position: absolute;
-      content: '';
-      top:0;
-      left: 0;
-      transform: translateX(-100%);
-      width: 0;
-      height: 0;
-      border-width: $height/2 10px $height/2 10px;
-      border-color: transparent;
-      border-style: solid;
-      border-right-color: white;
-    }
-
-    &:after{
-      position: absolute;
-      content: '';
-      top:0;
-      right: 0;
-      transform: translateX(100%);
-      width: 0;
-      height: 0;
-      border-width: $height/2 10px $height/2 10px;
-      border-color: transparent;
-      border-style: solid;
-      border-left-color: white;
-    }
 
     & > input {
       flex: 1;

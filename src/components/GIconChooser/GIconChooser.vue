@@ -34,7 +34,6 @@
         // dialog content
         currentView: null,
         selectedIconSource: null,
-        pagingViewMode: null,
         selectedCategory: null,
         selectedIcon: null,
         iconSearchText: null,
@@ -49,7 +48,6 @@
       function initIconPickerDialogState() {
         state.currentView = viewStateEnum.sourceList
         state.selectedIconSource = iconSources[0]
-        state.pagingViewMode = pagingModeEnum.grid
         state.selectedCategory = []
         state.selectedIcon = null
         state.iconSearchText = ''
@@ -121,13 +119,14 @@
       }
 
       // source detail view
-      const cateColors = ['rgb(151, 42, 169)', 'rgb(8, 114, 103)', 'rgb(147, 89, 18)', 'rgb(81, 104, 116)', 'rgb(52, 115, 55)', 'rgb(62, 79, 173)',
-        'rgb(115, 82, 70)', 'rgb(102, 58, 179)', 'rgb(195, 33, 68)', 'rgb(9, 113, 126)', 'rgb(81, 112, 46)', 'rgb(11, 108, 154)']
-      const getCategoryBgColor = (cate, id) => ({ backgroundColor: (state.selectedCategory == null || state.selectedCategory == cate) ? cateColors[id % cateColors.length] : 'rgb(175, 175, 175)' })
+      const getCategoryClass = category => ({
+        "category-name" : true,
+        "category-name--selected": state.selectedCategory == category
+      })
       const addRemoveCategory = cate => state.selectedCategory = (state.selectedCategory == cate) ? null : cate
-      function renderCategoryName(category, index) {
+      function renderCategoryName(category) {
         return (category.icons.length == 0 ? null :
-            <span class="category-name" style={getCategoryBgColor(category, index)}
+            <span class={getCategoryClass(category)}
                   vOn:click={() => addRemoveCategory(category)}>
               {_.startCase(category.name)}
             </span>)
@@ -135,20 +134,20 @@
 
       /*render icon*/
       const toggleIcon = icon => state.selectedIcon = (state.selectedIcon == icon) ? null : icon
-
-      function renderIcon(icon) {
-        return (
-            state.pagingViewMode == pagingModeEnum.grid
-                ? <span class="icon" key={icon.value} vOn:click={() => toggleIcon(icon)}>
-                  <g-icon>{icon.value}</g-icon>
-                </span>
-                : <div class="icon-wrapper" key={icon.value} vOn:click={() => toggleIcon(icon)}>
-                  <span class="icon">
-                    <g-icon>{icon.value}</g-icon>
-                  </span>
-                  <span class="icon-name">{icon.value}</span>
-                </div>
-        )
+      const getIconClass = (icon) => ({
+        "icon": true,
+        "icon--selected": icon == state.selectedIcon
+      })
+      function renderIconInGrid(icon) {
+        return <span class={getIconClass(icon)} key={icon.value} vOn:click={() => toggleIcon(icon)}>
+          <g-icon>{icon.value}</g-icon>
+        </span>
+      }
+      function renderIconInList(icon) {
+        return <div class="icon-wrapper" key={icon.value} vOn:click={() => toggleIcon(icon)}>
+          {renderIconInGrid(icon)}
+          <span class="icon-name">{icon.value}</span>
+        </div>
       }
 
       // icon detail view
@@ -211,7 +210,8 @@
             <div class="g-icon-chooser__dialog-content">
               <g-icon-search
                   icons={cptAllIcons.value}
-                  renderResultItem={renderIcon}
+                  renderItems={renderIconInGrid}
+                  renderItemsList={renderIconInList}
                   value={state.iconSearchText}
                   placeHolder="Search all icons..."
                   vOn:input={v => {
@@ -244,7 +244,8 @@
 
                 <g-icon-search
                     icons={cptIcons.value}
-                    renderResultItem={renderIcon}
+                    renderItems={renderIconInGrid}
+                    renderItemsList={renderIconInList}
                     value={state.iconInCategorySearchText}
                     placeHolder={`Search ${state.selectedIconSource.name}...`}
                     vOn:input={v => {
@@ -260,8 +261,8 @@
                     dataSrc={cptIcons.value}
                     itemsPerPage={30}
                     pageIndexesShowInView={7}
-                    renderItems={renderIcon}
-                    vOn:viewmode={viewMode => state.pagingViewMode = viewMode}/>
+                    renderItems={renderIconInGrid}
+                    renderItemsList={renderIconInList}/>
               </div>
 
               {state.selectedIcon && renderIconDetail()}
@@ -279,8 +280,8 @@
           <g-dnd-dialog
               value={state.showDialog} vOn:input={v => state.showDialog = v}
               scopedSlots={{ title: () => 'Icon Picker' }}
-              minHeight={500} height={500}
-              minWidth={662} width={662}
+              minHeight={300} height={500}
+              minWidth={630} width={630}
               lazy>
             {renderIconChooserDialogContent()}
           </g-dnd-dialog>
@@ -291,10 +292,9 @@
 </script>
 <style scoped lang="scss">
   .g-icon-chooser__dialog-content {
-    min-height: 400px;
-    padding: 15px 5px;
-    width: 630px;
-    background-color: rgb(230, 230, 230);
+    padding: 5px 5px;
+    width: calc(100%);
+
   }
 
   /* source list view */
@@ -364,12 +364,20 @@
   }
 
   .category-name {
+    $categoryNameColor: rgb(62, 62, 62);
     margin: 5px;
     padding: 5px 10px;
-    color: #fff;
+    border: 1px solid $categoryNameColor;
+    color: $categoryNameColor;
+    background-color: transparent;
 
     &:hover {
       cursor: pointer;
+    }
+
+    &--selected {
+      background-color: $categoryNameColor;
+      color: #fff;
     }
   }
 
@@ -377,17 +385,21 @@
   $size: 40px;
 
   ::v-deep .icon {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
     margin: 4px;
     padding: 3px;
     width: 42px;
     height: 42px;
     text-align: center;
-    transition: background-color 0.25s;
 
     &:hover {
-      background-color: #ccc;
       cursor: pointer;
+    }
+
+    &--selected {
+      background-color: rgb(62, 62, 62);
+      color: #aaa;
     }
   }
 
@@ -395,13 +407,13 @@
     display: flex;
     width: 100%;
     text-align: left;
+    align-items: center;
 
     & > .icon-name {
       flex: 1;
     }
 
     &:hover {
-      background-color: #ccc;
       cursor: pointer;
     }
   }
@@ -413,7 +425,6 @@
     margin-top: 5px;
     border: 1px dashed #aaa;
     border-radius: 5px;
-    background-color: #fff;
 
     & button {
       margin: 3px;
@@ -432,7 +443,8 @@
         background-color: #eee;
         text-align: center;
         margin-right: 5px;
-        padding: 20px;
+        display: flex;
+        justify-content: center;
       }
 
       &__value {
@@ -455,7 +467,7 @@
 
       .setting-prop--active {
         color: #fff;
-        background-color: #0D47A1;
+        background-color: rgb(62, 62, 62);
       }
 
       &__custom-panel {

@@ -16,7 +16,10 @@
       dataSrc: Array,
       itemsPerPage: Number,
       pageIndexesShowInView: Number,
+      // renderItem in grid view mode
       renderItems: Function,
+      // render item in list view mode
+      renderItemsList: Function,
     },
     setup(props, context) {
       const state = reactive({
@@ -67,7 +70,13 @@
       const goEnd = () => state.selectedIndex = cptTotalPages.value - 1
 
       // custom render
-      const _renderItems = props.renderItems || (item => <div>{item}</div>)
+      const cptRenderItems = computed(() => {
+        if (state.viewMode == pagingModeEnum.grid) {
+          return props.renderItems || (item => <div>{item}</div>)
+        } else {
+          return props.renderItemsList || (item => <div>{item}</div>)
+        }
+      })
 
       const getViewModeSwitchClass = (viewMode) => ({
         'g-pagination__view-mode-switch' : true,
@@ -80,16 +89,10 @@
               <div class="g-pagination__header">
                 <span class="g-pagination__header-title">Displaying {props.dataSrc.length} items</span>
                 <div class="g-pagination__view-mode">
-                  <button class={getViewModeSwitchClass(pagingModeEnum.grid)} vOn:click={e => {
-                    state.viewMode = pagingModeEnum.grid
-                    context.emit('viewmode', pagingModeEnum.grid)
-                  }}>
+                  <button class={getViewModeSwitchClass(pagingModeEnum.grid)} vOn:click={e => state.viewMode = pagingModeEnum.grid}>
                     <g-icon>mdi-view-module</g-icon>
                   </button>
-                  <button class={getViewModeSwitchClass(pagingModeEnum.list)} vOn:click={e => {
-                    state.viewMode = pagingModeEnum.list
-                    context.emit('viewmode', pagingModeEnum.list)
-                  }}>
+                  <button class={getViewModeSwitchClass(pagingModeEnum.list)} vOn:click={e => state.viewMode = pagingModeEnum.list}>
                     <g-icon>mdi-view-list</g-icon>
                   </button>
                 </div>
@@ -99,7 +102,7 @@
                   "page-content__items--list": state.viewMode === pagingModeEnum.list,
                   "page-content__items--grid": state.viewMode === pagingModeEnum.grid,
                 }]}>
-                  { cptPages.value.length == 0 ? null : _.map(cptPages.value[state.selectedIndex].items, _renderItems)}
+                  { cptPages.value.length == 0 ? null : _.map(cptPages.value[state.selectedIndex].items, cptRenderItems.value)}
                 </div>
               </div>
               <div class="page-indexes">
