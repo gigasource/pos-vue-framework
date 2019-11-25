@@ -9,6 +9,7 @@
     props: {
       //classes
       ...{
+        ripple: { type: Boolean, default: true},
         raised: Boolean,
         depressed: Boolean,
         disabled: Boolean,
@@ -47,7 +48,6 @@
         height: [String, Number],
         block: Boolean,
         textColor: String,
-        color: String,
         backgroundColor: String,
         gradient: String,
         gradientAngle: { type: String, default: '45deg' },
@@ -63,9 +63,14 @@
       }
 
       function genBtn() {
-        return <button ref="btn" id="btn" v-ripple class={classes.value} style={styles.value} vOn:click={(event) => {
+        const nodeData = {
+          class: classes.value,
+          style: styles.value,
+          directives: props.ripple ? [{ name: 'ripple', value: undefined }] : []
+        };
+
+        return <button {...nodeData} vOn:click={(event) => {
           context.emit('click', event);
-          context.refs.btn.blur();
         }}>
           {genBtnContent()}
         </button>
@@ -81,6 +86,6 @@
   }
 </script>
 
-<style scoped lang="scss">
-	@import "GBtn";
+<style lang="scss" scoped>
+  @import "GBtn";
 </style>

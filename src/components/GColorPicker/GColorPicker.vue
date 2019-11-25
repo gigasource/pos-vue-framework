@@ -2,7 +2,7 @@
   import _ from 'lodash'
   import { reactive } from '@vue/composition-api'
   // slider used in colorPicker/adjustPreview
-  import GSlider from '../GInput/GSlider'
+  import GSlider from '../GSliderRemake/GSlider'
   import GMenu from '../../components/GMenu/GMenu'
   import GToolTip from '../../components/GToolTip/GToolTip'
   import getSwatchesRenderFn from './swatches'
@@ -58,7 +58,7 @@
       const dialogState = reactive({ showMenu: false })
       return function renderFn() {
         return (
-            <g-menu vModel={dialogState.showMenu}
+            <g-menu value={dialogState.showMenu} vOn:input={v => dialogState.showMenu = v}
                     scopedSlots={{ activator: gMenuScope => context.slots.default(gMenuScope) }}
                     minWidth={320}
                     maxWidth={320}

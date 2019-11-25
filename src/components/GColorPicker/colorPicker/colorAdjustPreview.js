@@ -20,6 +20,8 @@ export default function getRenderAdjustPreview(state, updateColor) {
           <div class='g-color-picker__adjust'>
             <div class='g-color-picker__adjust__hue'>
               <g-slider
+                  height="10"
+                  trackColor='red'
                   value={state.color ? state.color.hue : 0}
                   step={1} min={0} max={360}
                   vOn:input={val => state.color.hue !== val && updateColor(fromHSVA({ ...state.color.hsva, h: val }))}

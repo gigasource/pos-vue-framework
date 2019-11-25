@@ -39,6 +39,16 @@ export function getCssColor(color) {
 }
 
 /**
+ * Create random color
+ * @returns {string}
+ * @private
+ */
+export function generateRandomCssColor(opacity = '50%') {
+  return `hsl(${Math.round(Math.random() * 360)}, 100%, 50%, ${opacity})`
+}
+
+
+/**
  * Converts HSVA to RGBA. Based on formula from https://en.wikipedia.org/wiki/HSL_and_HSV
  *
  * @param hsva HSVA color as an array [0-360, 0-1, 0-1, 0-1]

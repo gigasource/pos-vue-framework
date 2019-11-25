@@ -2,12 +2,14 @@ import { configure, addParameters } from '@storybook/vue';
 import { themes } from '@storybook/theming';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import PortalVue from 'portal-vue';
 import VueCompositionAPI from '@vue/composition-api';
 //import 'github-markdown-css';
 import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
 //import './style.css';
 import '../src/plugin/waves'
+import '@fortawesome/fontawesome-free/css/all.css'
 
 addParameters({
   options: {
@@ -19,6 +21,7 @@ addParameters({
 });
 
 Vue.use(VueRouter);
+Vue.use(PortalVue);
 Vue.use(VueCompositionAPI);
 
 import {

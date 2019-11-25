@@ -1,60 +1,61 @@
 <script>
   import _ from 'lodash'
   import { reactive, ref, computed, onUpdated } from '@vue/composition-api'
-  import { saveFile, openFile } from '../../utils/helpers';
+  import { saveFile, openFile } from '../../utils/helpers'
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
-  import {
-    _gridItemOptions, _gridContentOptions,
-    changeAlignSelf, changeAlignItems, changeAlignContent, changeJustifySelf, changeJustifyItems, changeJustifyContent,
-    isActiveAlignSelf, isActiveAlignItems, isActiveAlignContent, isActiveJustifySelf, isActiveJustifyItems, isActiveJustifyContent,
-    joinRefArrayValue,
-    getGridAreaCss,
-    addSubGridArea,
-    addSubItemArea,
-    deleteGridItem, createEmptyArea, createGridArea,
-    isGridAreaNameValid, getGridList, isAreaOverflowed,
-    insertRowAbove, insertRowBelow, insertColumnLeft, insertColumnRight, deleteColumn, deleteRow,
-    generateRandomColor, adjustRowColNumbers, generateLayoutJson, parseLayoutStr, parseLayoutJsonObject
-  } from './logic/GGridGeneratorUtil'
+  import copy from 'copy-to-clipboard'
+  import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName } from './logic/utils'
+  import { fromJSON, toJSONStr, toJSON } from './logic/modelParser'
   import GDialog from '../GDialog/GDialog'
   import GIcon from '../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
   import GEditViewInput from './GEditViewInput'
   import GFileInputJSX from '../GFileInput/GFileInput'
+  import GridModel from './logic/GridModel';
+
+  const selectedSettingEnum = {
+    grid: 0,
+    area: 1
+  }
+
+  /**
+   * Return all grid/sub-grid item
+   * skip single item
+   * @param grid {GridModel}
+   * @returns {null}
+   */
+  function getGridList(grid) {
+    let gridList = null
+    if (grid.subAreas) {
+      gridList = [grid]
+      _.each(grid.subAreas, area => {
+        gridList.push(...(getGridList(area) || []).filter(i => i != null))
+      })
+    }
+    return gridList
+  }
+
+  function createEmptySelectingArea() {
+    return {
+      name: 'div',
+      rowStart: -1,
+      columnStart: -1,
+      rowEnd: -1,
+      columnEnd: -1
+    }
+  }
 
   export default {
     name: 'GGridGenerator',
     components: { GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
-      // layout can be:
-      // - json string
-      // - json object (column, rows items are string
-      // - layout object (columns, rows items are ref(string))
       layout: {
-        type: [String, Object]
+        type: Object
       }
     },
     setup(props, context) {
       // initialize layout
-      let initLayout = null
-      if (typeof (props.layout) === 'string') {
-        initLayout = parseLayoutStr(props.layout)
-      } else {
-        initLayout = parseLayoutJsonObject(props.layout || {
-          name: 'app',
-          columns: ['1fr', '1fr', '1fr', '1fr', '1fr'],
-          rows: ['1fr', '1fr', '1fr', '1fr', '1fr'],
-          columnGap: 0,
-          rowGap: 0,
-          subAreas: []
-        })
-      }
-
-      const selectedSetting = {
-        grid: 0,
-        area: 1
-      }
-
+      let initLayout = fromJSON(props.layout)
       const state = reactive({
         layout: initLayout,
         //// view settings
@@ -74,7 +75,7 @@
         },
 
         //
-        selectedSetting: selectedSetting.grid,
+        selectedSetting: selectedSettingEnum.grid,
         // a value hold the selected grid/sub-grid
         selectedGrid: initLayout,
         // a value hold the selected area
@@ -84,31 +85,27 @@
 
         // A value hold selected index of row unit
         // Base 0
-        selectedRowUnitIndex: 0,
+        selectedRowId: 0,
         // A value hold selected index of column unit
         // Base 0
-        selectedColumnUnitIndex: 0,
+        selectedColumnId: 0,
 
         // a value indicate whether a confirm dialog will be shown or not
         // the confirm dialog should be show when user create new sub-grid/single item
         showConfirmDialog: false,
+        confirmDialogErrorMsg: '',
         // a value indicate whether an output dialog will be shown or not
         // the output dialog should be shown when user click to generate output button
         showOutputDialog: false,
         // a value which hold generated css
         generatedCss: ''
       })
-
       // store selecting area temporary information
       // similar to state.hoveringArea but store raw grid index base 0
       // state.hoveringArea contain modified area and only used for display hovering area
-      let _selectingArea = createEmptyArea()
+      let _selectingArea = createEmptySelectingArea()
 
       // 1) List
-      function changeItemName(item, newName) {
-        item.name = newName
-      }
-
       // list all grid item is grid or sub-grid (not for single item)
       function getGridListItemClass(grid) {
         return {
@@ -119,20 +116,20 @@
 
       function setSelectedGrid(grid) {
         state.selectedGrid = grid
-        state.selectedSetting = selectedSetting.grid
+        state.selectedSetting = selectedSettingEnum.grid
       }
 
       function renderGridList() {
         return <div class="grid-gen__sub-list">
-          <div class="grid-gen__sub-list__section">GRID</div>
+          <div class="grid-gen__sub-list__section">Grid</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(getGridList(state.layout), grid =>
-                <li class={getGridListItemClass(grid)}>
+                <li class={getGridListItemClass(grid)} key={grid.name}>
                   <g-edit-view-input
                       width="100%"
                       value={grid.name}
                       vOn:click={() => setSelectedGrid(grid)}
-                      vOn:input={newName => changeItemName(grid, newName)}/>
+                      vOn:input={newName => grid.name = newName}/>
                 </li>
             )}
           </ul>
@@ -144,32 +141,27 @@
         return {
           'grid-gen__sub-list__item': true,
           'grid-gen__sub-list__item--selected': area === state.selectedArea,
-          'grid-gen__sub-list__item--overflowed': isAreaOverflowed(area)
+          'grid-gen__sub-list__item--overflowed': area.isOverflowed()
         }
       }
 
       function setSelectedArea(area) {
         state.selectedArea = area
-        state.selectedSetting = selectedSetting.area
-      }
-
-      function toggleAreaHideShow(area) {
-        area.hide = !area.hide
+        state.selectedSetting = selectedSettingEnum.area
       }
 
       function renderAreaList() {
         return <div class="grid-gen__sub-list">
-          <div class="grid-gen__sub-list__section">AREA</div>
+          <div class="grid-gen__sub-list__section">Area</div>
           <ul class="grid-gen__sub-list__items">
             {_.map(state.selectedGrid.subAreas, area =>
-                <li class={getAreaListItemClass(area)}>
+                <li class={getAreaListItemClass(area)} key={area.name}>
                   <g-edit-view-input
                       width="100%"
-                      value={area.name}
-                      vOn:click={() => setSelectedArea(area)}
-                      vOn:input={newName => changeItemName(area, newName)}/>
-                  <span style="line-height: 16px" vOn:click={() => toggleAreaHideShow(area)}>
-                    <g-icon small>{area.hide ? 'visibility' : 'visibility_off'}</g-icon>
+                      value={area.name} vOn:input={v => area.name = v}
+                      vOn:click={() => setSelectedArea(area)}/>
+                  <span style="line-height: 16px" vOn:click={() => area.toggleVisible()}>
+                    <g-icon small>{area.visible ? 'visibility' : 'visibility_off'}</g-icon>
                   </span>
                 </li>
             )}
@@ -179,15 +171,20 @@
 
       // 2) Editor
       // render row, column unit editor
-      const heightUnitSettingRowWidth = '60px' // define the width of row height setting section
+      const heightUnitSettingRowWidth = '150px' // define the width of row height setting section
       const widthUnitSettingColumnHeight = '30px' // define the height of column width setting section
       function getColumnUnitClass(id) {
         return {
           'grid-gen__column-unit': true,
-          'grid-gen__column-unit--selected': id === state.selectedColumnUnitIndex,
+          'grid-gen__column-unit--selected': id === state.selectedColumnId,
         }
       }
 
+      /**
+       *
+       * @param grid {GridModel}
+       * @returns {*}
+       */
       function renderGridColumnWidthSetting(grid) {
         const colStyle = {
           display: 'grid',
@@ -204,11 +201,11 @@
         }
         return <div style={colStyle}> {
           _.map(grid.columns, (col, id) =>
-              <div class={getColumnUnitClass(id)}>
+              <div class={getColumnUnitClass(id)} key={`${col.value}_${id}`}>
                 <input
                     value={col.value}
-                    vOn:keypress={e => enterPressed(e) && (grid.columns[id].value = e.target.value)}
-                    vOn:focus_stop={() => state.selectedColumnUnitIndex = id}/>
+                    vOn:keypress={e => enterPressed(e) && grid.setColumnUnit(id, e.target.value)}
+                    vOn:focus_stop={() => state.selectedColumnId = id}/>
               </div>
           )
         }
@@ -218,10 +215,15 @@
       function getRowUnitClass(id) {
         return {
           'grid-gen__row-unit': true,
-          'grid-gen__row-unit--selected': id === state.selectedRowUnitIndex
+          'grid-gen__row-unit--selected': id === state.selectedRowId
         }
       }
 
+      /**
+       *
+       * @param grid {GridModel}
+       * @returns {*}
+       */
       function renderGridRowHeightSetting(grid) {
         const rowUnitStyles = {
           display: 'grid',
@@ -237,11 +239,11 @@
         }
         return <div style={rowUnitStyles}> {
           _.map(grid.rows, (row, id) =>
-              <div class={getRowUnitClass(id)}>
+              <div class={getRowUnitClass(id)} key={`${row.value}_${id}`}>
                 <input
                     value={row.value}
-                    vOn:keypress={e => enterPressed(e) && (grid.rows[id].value = e.target.value)}
-                    vOn:focus_stop={() => state.selectedRowUnitIndex = id}
+                    vOn:keypress={e => enterPressed(e) && grid.setRowUnit(id, e.target.value)}
+                    vOn:focus_stop={() => state.selectedRowId = id}
                 />
               </div>
           )
@@ -250,53 +252,46 @@
       }
 
       // render grid editor
-      const cptGridContainerClass = computed(() => ({
-        'grid-gen__editor__field__item': true,
-        'grid-gen__editor__field__item--view-only': state.viewMode,
-      }))
-
+      /**
+       *
+       * @param grid {GridModel}
+       * @returns {*}
+       */
       function renderGridContainer(grid) {
         const gridItems = []
         for (let i = 0, rowLen = grid.rows.length; i < rowLen; ++i) {
           for (let j = 0, colLen = grid.columns.length; j < colLen; ++j) {
             gridItems.push(<div
-                class={cptGridContainerClass.value}
+                class='grid-gen__editor__field__item'
                 vOn:mousedown={(e) => {
-                  // view mode
-                  if (state.viewMode) return
+                  // check and execute if area hit
+                  if (e.ctrlKey && areaHit(e)) return
 
-                  // execute action
-                  const actionExecuted = tryToExecuteActionIfHit(e)
-                  if (actionExecuted) {
-                    return
-                  }
+                  // check and execute if area's action hit
+                  if (tryToExecuteActionIfHit(e)) return
 
                   // create or modify existing item
                   _selectingArea = {
-                    name: _selectingArea.name,
+                    name: state.editingArea ? state.editingArea.name : getUniqueAreaName('div', state.selectedGrid.subAreas),
                     rowStart: i,
                     columnStart: j,
                     rowEnd: i,
                     columnEnd: j
                   }
-                  state.hoveringArea = createGridArea(_selectingArea)
+                  state.hoveringArea = normalizeArea(_selectingArea)
                   state.hovering = true
                 }}
                 vOn:mouseenter={() => {
-                  if (state.viewMode) return
                   if (state.hovering) {
                     _selectingArea = { ..._selectingArea, rowEnd: i, columnEnd: j }
-                    state.hoveringArea = createGridArea(_selectingArea)
+                    state.hoveringArea = normalizeArea(_selectingArea)
                   }
                 }}
                 vOn:mouseup={() => {
-                  if (state.viewMode) return
-
-                  // checking hovering in mouseup to prevent action mouse up
                   if (state.hovering) {
                     state.hovering = false
                     if (state.editingArea) {
-                      state.editingArea.area = state.hoveringArea
+                      state.editingArea.setArea(_selectingArea)
                       state.hoveringArea = null
                       state.editingArea = null
                     } else {
@@ -329,13 +324,12 @@
         return ([
           <div style={gridStyles} class="grid-gen__editor__field">{gridItems}</div>,
           <div style={selectedAreaContainerStyle}>
-            {renderGridAreas(grid)}
+            {renderGridAreas(grid, false)}
             {renderHoveringArea()}
           </div>
         ])
       }
 
-      // render area in edit mode
       function getAreaClass(area) {
         return {
           'grid-gen__editor__field__area': true,
@@ -346,6 +340,21 @@
 
       const actionWrapperClass = 'grid-gen__editor__field__area__actions'
       const actionClass = 'area-action'
+
+      function areaHit(e) {
+        for (let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
+          const area = actionWrapperElement.parentNode
+          const { top, left, width, height } = area.getBoundingClientRect()
+          const pageTop = top + window.scrollY
+          const pageLeft = left + window.scrollX
+          const pageBottom = pageTop + height
+          const pageRight = pageLeft + width
+          if ((pageLeft <= e.pageX && e.pageX <= pageRight) && (pageTop <= e.pageY && e.pageY <= pageBottom)) {
+            area.click()
+            return true
+          }
+        }
+      }
 
       function tryToExecuteActionIfHit(e) {
         let actionExecuted = false
@@ -365,12 +374,19 @@
         return actionExecuted
       }
 
+      /**
+       * @param gridItem {GridModel}
+       */
       function renderGridAreaInEditMode(gridItem) {
-        return <div class={getAreaClass(gridItem)}
-                    style={{ backgroundColor: gridItem.bgColor, gridArea: getGridAreaCss(gridItem) }}>
+        return <div
+            class={getAreaClass(gridItem)}
+            style={{ backgroundColor: gridItem.bgColor, gridArea: gridItem.gridAreaCss() }}
+            vOn:click={() => {
+              setSelectedArea(gridItem)
+            }}>
           <span>{gridItem.name}</span>
           <span class={actionWrapperClass}>
-            <span class={actionClass} vOn:click={() => gridItem.bgColor = generateRandomColor()}>
+            <span class={actionClass} vOn:click={() => gridItem.changeBgColor()}>
               <g-icon small>autorenew</g-icon>
             </span>
             <span class={actionClass}
@@ -380,60 +396,102 @@
                   }}>
               <g-icon small>edit</g-icon>
             </span>
-            <span class={actionClass} vOn:click={() => deleteGridItem(gridItem)}>
+            <span class={actionClass} vOn:click={() => gridItem.destroy()}>
               <g-icon small>delete</g-icon>
             </span>
           </span>
         </div>
       }
 
-      // render area in view mode
-      function renderGridAreaInViewMode(gridItem) {
-        if (gridItem.subAreas) {
+      /**
+       * @param grid {GridModel}
+       */
+      function renderGridAreaInViewMode(grid) {
+        if (grid instanceof GridModel && grid.subAreas.length > 0) {
           return <div
               class="grid-gen__editor__field__area"
               style={{
-                border: '1px dashed #0008',
-                backgroundColor: gridItem.bgColor,
-                gridArea: getGridAreaCss(gridItem),
+                border: '1px solid #0008',
+                backgroundColor: grid.bgColor,
+                gridArea: grid.gridAreaCss(),
                 display: 'grid',
-                'grid-template-columns': joinRefArrayValue(gridItem.columns),
-                'grid-template-rows': joinRefArrayValue(gridItem.rows),
-                'gap': `${gridItem.rowGap}px ${gridItem.columnGap}px`,
+                'grid-template-columns': joinRefArrayValue(grid.columns),
+                'grid-template-rows': joinRefArrayValue(grid.rows),
+                'gap': `${grid.rowGap}px ${grid.columnGap}px`,
               }}>
-            {renderGridAreas(gridItem)}
+            {renderGridAreas(grid, true)}
           </div>
         } else {
           return <div
               class="grid-gen__editor__field__area"
               style={{
-                border: '1px dashed #0008',
-                backgroundColor: gridItem.bgColor,
-                gridArea: getGridAreaCss(gridItem)
+                border: '1px solid #0008',
+                backgroundColor: grid.bgColor,
+                gridArea: grid.gridAreaCss()
               }}>
-            {gridItem.name}
+            {grid.name}
           </div>
         }
       }
 
-      // render area
-      function renderGridAreas(targetGrid) {
-        return (targetGrid.subAreas || []).map((gridItem, index) =>
-            gridItem.hide
+      /**
+       * render area
+       * @param grid {GridModel | AreaModel}
+       * @param viewMode
+       * @returns {*}
+       */
+      function renderGridAreas(grid, viewMode) {
+        if (grid instanceof GridModel) {
+          return grid.subAreas.map(gridItem => {
+            return !gridItem.visible
                 ? null
-                : state.viewMode
-                ? renderGridAreaInViewMode(gridItem, index)
-                : renderGridAreaInEditMode(gridItem, index)
-        )
+                : viewMode
+                    ? renderGridAreaInViewMode(gridItem)
+                    : renderGridAreaInEditMode(gridItem)
+          })
+        }
       }
 
       // render hovering area
       function renderHoveringArea() {
         return state.hovering ? <div style={{
           border: '3px dashed #000',
-          'grid-area': getGridAreaCss({ area: state.hoveringArea })
+          'grid-area': getCssArea(state.hoveringArea)
         }}></div> : null
       }
+
+
+      // render mini map (view mode)
+      function renderMiniMap() {
+        const gridItems = []
+        for (let i = 0, rowLen = state.layout.rows.length; i < rowLen; ++i) {
+          for (let j = 0, colLen = state.layout.length; j < colLen; ++j) {
+            gridItems.push(<div class='grid-gen__editor__field__item'></div>)
+          }
+        }
+
+        const selectedAreaContainerStyle = {
+          display: 'grid',
+          'grid-template-columns': joinRefArrayValue(state.layout.columns),
+          'grid-template-rows': joinRefArrayValue(state.layout.rows),
+          'gap': `${state.layout.rowGap}px ${state.layout.columnGap}px`,
+          //
+          position: 'absolute',
+          top: widthUnitSettingColumnHeight,
+          left: heightUnitSettingRowWidth,
+          bottom: 0,
+          right: 0,
+          'pointer-events': 'none',
+          //
+        }
+
+        return ([
+          <div style={selectedAreaContainerStyle} class="grid-gen__editor__field">
+            {renderGridAreas(state.layout, true)}
+          </div>
+        ])
+      }
+
 
       // render confirm dialog
       const refIdNewItemNameInput = 'txtItemName'
@@ -453,30 +511,41 @@
         }
       }
 
+      function newAreaNameIsAvailable(grid) {
+        if (grid.isSubAreaNameExisted(_selectingArea.name)) {
+          state.confirmDialogErrorMsg = `"${_selectingArea.name.substr(0, 30)}" existed!`
+          return false
+        }
+        return true
+      }
+
+      /**
+       * @param grid {GridModel}
+       */
       function onSubGridBtnClicked(grid) {
-        if (isGridAreaNameValid(_selectingArea.name)) {
-          // can use state.hoveringArea directly instead of _selectingArea
-          addSubGridArea(grid, _selectingArea)
+        if (newAreaNameIsAvailable(grid) && grid.addSubGrid(_selectingArea)) {
           state.showConfirmDialog = false
-          _selectingArea = createEmptyArea()
+          _selectingArea = createEmptySelectingArea()
         }
       }
 
+      /**
+       * @param grid {GridModel}
+       */
       function onSubItemBtnClicked(grid) {
-        if (isGridAreaNameValid(_selectingArea.name)) {
-          addSubItemArea(grid, _selectingArea)
+        if (newAreaNameIsAvailable(grid) && grid.addSubItem(_selectingArea)) {
           state.showConfirmDialog = false
-          _selectingArea = createEmptyArea()
+          _selectingArea = createEmptySelectingArea()
         }
       }
 
       function onCancelBtnClick() {
         state.showConfirmDialog = false
-        _selectingArea = createEmptyArea()
+        _selectingArea = createEmptySelectingArea()
       }
 
       function renderConfirmDialog(grid) {
-        return <g-dialog vModel={state.showConfirmDialog} width="600px" persistent>
+        return <g-dialog value={state.showConfirmDialog} width="600px" persistent>
           <div class="grid-gen__dialog__confirm" vOn:keydown={onOnConfirmDialogKeyDown}>
             <span class="grid-gen__dialog__confirm__header">Create new area</span>
             <div class="grid-gen__dialog__confirm__content">
@@ -493,7 +562,15 @@
                 <input class="grid-gen__dialog__confirm__item-name"
                        type="text"
                        ref={refIdNewItemNameInput}
-                       vModel={_selectingArea.name}/>
+                       value={_selectingArea.name}
+                       vOn:input={e => {
+                         _selectingArea.name = e.target.value
+                         if (state.confirmDialogErrorMsg !== '') {
+                           state.confirmDialogErrorMsg = ''
+                         }
+                       }}
+                />
+                <span class="grid-gen__dialog__confirm__error-msg">{state.confirmDialogErrorMsg}</span>
               </div>
               <div>
                 <small>
@@ -506,11 +583,11 @@
               </div>
             </div>
             <div class="grid-gen__dialog__confirm__action-btn">
-              <button ref={refIdBtnCreateSubGrid} vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
+              <button ref={refIdBtnCreateSubGrid} class='simple-btn' vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
               &nbsp;
-              <button ref={refIdBtnCreateSubItem} vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
+              <button ref={refIdBtnCreateSubItem} class='simple-btn' vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
               &nbsp;
-              <button ref={refIdBtnCancel} vOn:click={onCancelBtnClick}>Cancel</button>
+              <button ref={refIdBtnCancel} class='simple-btn' vOn:click={onCancelBtnClick}>Cancel</button>
             </div>
           </div>
         </g-dialog>
@@ -529,26 +606,28 @@
             <g-inc-dec-number-input min={400} value={state.fieldHeight} vOn:input={v => state.fieldHeight = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
-            <label>View mode: </label>
-            <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}>Overview</input>
+            <label>Preview: </label>
+            <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}/>
           </div>,
         ]
       }
 
       // a helper method adjust row, col number
 
-
+      /**
+       * @param grid {GridModel}
+       */
       function renderGridSettings(grid) {
-        return state.selectedSetting === selectedSetting.grid ? [
+        return state.selectedSetting === selectedSettingEnum.grid ? [
           // columns number, rows number, gap pixel setting
           <div class="grid-gen__settings-section">Grid Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Columns: </label>
-            <g-inc-dec-number-input min={1} value={grid.columns.length} vOn:input={v => adjustRowColNumbers(grid.columns, v)}/>
+            <g-inc-dec-number-input min={1} value={grid.columns.length} vOn:input={v => grid.setColumnNumbers(v)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Rows: </label>
-            <g-inc-dec-number-input min={1} value={grid.rows.length} vOn:input={v => adjustRowColNumbers(grid.rows, v)}/>
+            <g-inc-dec-number-input min={1} value={grid.rows.length} vOn:input={v => grid.setRowNumbers(v)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Column Gap(px): </label>
@@ -562,102 +641,105 @@
           // justify/align items
           <div class="grid-gen__settings-prop">
             <label>Align Items:</label>
-            <select vOn:change={e => changeAlignItems(grid, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveAlignItems(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => grid.alignItems = e.target.value}>
+              {_.map(_gridItemOptions, value => <option key={value} selected={grid.alignItems === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align content:</label>
-            <select vOn:change={e => changeAlignContent(grid, e.target.value)}>
-              { _.map(_gridContentOptions, value => <option selected={isActiveAlignContent(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => grid.alignContent = e.target.value}>
+              {_.map(_gridContentOptions, value => <option key={value} selected={grid.alignContent === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify Items:</label>
-            <select vOn:change={e => changeJustifyItems(grid, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveJustifyItems(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => grid.justifyItems = e.target.value}>
+              {_.map(_gridItemOptions, value => <option key={value} selected={grid.justifyItems === value} value={value}>{value}</option>)}
             </select>
           </div>,
 
           // justify/alignment contents
           <div class="grid-gen__settings-prop">
             <label>Justify content:</label>
-            <select vOn:change={e => changeJustifyContent(grid, e.target.value)}>
-              { _.map(_gridContentOptions, value => <option selected={isActiveJustifyContent(grid, value)} value={value}>{value}</option>) }
+            <select vOn:change={e => grid.justifyContent = e.target.value}>
+              {_.map(_gridContentOptions, value => <option key={value} selected={grid.justifyContent === value} value={value}>{value}</option>)}
             </select>
           </div>,
 
-            // Insert/delete row/column
+          // Insert/delete row/column
           <div class="grid-gen__settings-section">Insert/Delete</div>,
           <div class="grid-gen__settings-prop">
             <label>Rows:</label>
-            <span>
-              <button vOn:click={() => insertRowAbove(grid, state.selectedRowUnitIndex)}>Above</button>
-              <button vOn:click={() => insertRowBelow(grid, state.selectedRowUnitIndex)}>Below</button>
-              <button vOn:click={() => deleteRow(grid, state.selectedRowUnitIndex)}>Delete</button>
-            </span>
+            <div>
+              <button class='simple-btn' vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button>
+              <br/>
+              <button class='simple-btn' vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button>
+              <br/>
+              <button class='simple-btn' vOn:click={() => grid.deleteRow(state.selectedRowId)}>Delete</button>
+            </div>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Columns:</label>
             <span>
-              <button vOn:click={() => insertColumnLeft(grid, state.selectedColumnUnitIndex)}>Left</button>
-              <button vOn:click={() => insertColumnRight(grid, state.selectedColumnUnitIndex)}>Right</button>
-              <button vOn:click={() => deleteColumn(grid, state.selectedColumnUnitIndex)}>Delete</button>
+              <button class='simple-btn' vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button>
+              <br/>
+              <button class='simple-btn' vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button>
+              <br/>
+              <button class='simple-btn' vOn:click={() => grid.deleteColumn(state.selectedColumnId)}>Delete</button>
             </span>
           </div>,
         ] : null
       }
 
+      /**
+       *
+       * @param gridItem {GridModel}
+       * @returns {*}
+       */
       function renderAreaSettings(gridItem) {
-        return gridItem != null && (gridItem.parent === state.selectedGrid) && state.selectedSetting === selectedSetting.area ? [
+        return gridItem != null && (gridItem._parent === state.selectedGrid) && state.selectedSetting === selectedSettingEnum.area ? [
           <div class="grid-gen__settings-section">Area Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Top: </label>
-            <g-inc-dec-number-input
-                min={1}
-                value={gridItem.area.rowStart}
-                vOn:input={newRowStart => {
-                  const topChanged = newRowStart - gridItem.area.rowStart
-                  gridItem.area.rowStart = newRowStart
-                  gridItem.area.rowEnd += topChanged
-                }}/>
+            <g-inc-dec-number-input min={1} value={gridItem.top} vOn:input={v => gridItem.top = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Left: </label>
-            <g-inc-dec-number-input
-                min={1}
-                value={gridItem.area.columnStart}
-                vOn:input={newColumnStart => {
-                  const leftChanged = newColumnStart - gridItem.area.columnStart
-                  gridItem.area.columnStart = newColumnStart
-                  gridItem.area.columnEnd += leftChanged
-                }}/>
+            <g-inc-dec-number-input min={1} value={gridItem.left} vOn:input={v => gridItem.left = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Width: </label>
-            <g-inc-dec-number-input
-                min={1}
-                value={gridItem.area.columnEnd - gridItem.area.columnStart}
-                vOn:input={v => gridItem.area.columnEnd = gridItem.area.columnStart + v}/>
+            <g-inc-dec-number-input min={1} value={gridItem.width} vOn:input={v => gridItem.width = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Height: </label>
-            <g-inc-dec-number-input
-                min={1}
-                value={gridItem.area.rowEnd - gridItem.area.rowStart}
-                vOn:input={v => gridItem.area.rowEnd = gridItem.area.rowStart + v}/>
+            <g-inc-dec-number-input min={1} value={gridItem.height} vOn:input={v => gridItem.height = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align self:</label>
-            <select vOn:change_stop={e => changeAlignSelf(gridItem, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveAlignSelf(gridItem, value)} value={value}>{value}</option>) }
+            <select vOn:change_stop={e => gridItem.alignSelf = e.target.value}>
+              {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.alignSelf === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify self:</label>
-            <select vOn:change_stop={e => changeJustifySelf(gridItem, e.target.value)}>
-              { _.map(_gridItemOptions, value => <option selected={isActiveJustifySelf(gridItem, value)} value={value}>{value}</option>) }
+            <select vOn:change_stop={e => gridItem.justifySelf = e.target.value}>
+              {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.justifySelf === value} value={value}>{value}</option>)}
             </select>
+          </div>,
+          // padding/margin
+          <div class="grid-gen__settings-section">Wrapper</div>,
+          <div class="grid-gen__settings-prop">
+            <label>Wrap in div:</label>
+            <input type="checkbox" checked={gridItem.wrapInDiv} vOn:change={e => gridItem.wrapInDiv = e.target.checked}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Padding:</label>
+            <input value={gridItem.padding} vOn:keyup={e => enterPressed(e) && (gridItem.padding = e.target.value)}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Margin:</label>
+            <input value={gridItem.margin} vOn:keyup={e => enterPressed(e) && (gridItem.margin = e.target.value)}/>
           </div>,
         ] : null
       }
@@ -666,28 +748,30 @@
       function loadLayoutFile() {
         openFile({ multiple: false, mimeType: 'application/json' }, files => {
           files[0].text().then(content => {
-            state.layout = parseLayoutStr(content)
+            state.layout = fromJSON(JSON.parse(content))
             state.selectedGrid = state.layout
           })
         })
       }
 
       function saveLayoutFile() {
-        saveFile('layout.json', generateLayoutJson(state.layout), 'application/json')
+        saveFile('layout.json', toJSONStr(state.layout), 'application/json')
+      }
+
+      function copyLayoutStrToClipBoard() {
+        copy(toJSONStr(state.layout))
       }
 
       function renderGridGeneratorOutput() {
         return [
           <div class="grid-gen__settings-section">Files</div>,
-          <button vOn:click_stop_prevent={loadLayoutFile}>Import</button>,
-          <button vOn:click_stop_prevent={saveLayoutFile}>Export</button>,
+          <button class='simple-btn' vOn:click_stop_prevent={loadLayoutFile}>Import</button>,
+          <button class='simple-btn' vOn:click_stop_prevent={saveLayoutFile}>Export</button>,
+          <button class='simple-btn' vOn:click_stop_prevent={copyLayoutStrToClipBoard}>Copy To Clipboard</button>,
         ]
       }
 
-      // do stuff after vue rendered
       onUpdated(() => {
-        // if confirm showed, select all text of new item name input
-        // then focus on it
         if (state.showConfirmDialog) {
           context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
           context.refs[refIdNewItemNameInput].focus()
@@ -695,14 +779,15 @@
       })
 
       // 0) Entire render
+      // event handler doesn't invoke
       function renderGridGenerator() {
         return (
-            <div class="grid-gen" ref="el">
+            <div class="grid-gen" ref="el" tabIndex="0"
+                 vOn:contextmenu_prevent={e => false}>
               <div class="grid-gen__list">
                 {renderGridList()}
                 {renderAreaList()}
               </div>
-
               <div class="grid-gen__editor">
                 <div style={{
                   position: 'relative',
@@ -715,6 +800,21 @@
                   {renderGridRowHeightSetting(state.selectedGrid)}
                   {renderGridContainer(state.selectedGrid)}
                 </div>
+                <div style="height: 10px"></div>
+                <div
+                    vShow={state.viewMode}
+                    style={{
+                      position: 'relative',
+                      width: `${state.fieldWidth}px`,
+                      height: `${state.fieldHeight}px`,
+                      backgroundColor: '#fff',
+                      margin: '0 auto'
+                    }}>
+                  {renderMiniMap()}
+                </div>
+              </div>
+              <div>
+
               </div>
               <div class="grid-gen__settings">
                 {renderGridGeneratorOutput()}
@@ -728,8 +828,19 @@
         )
       }
 
+      function save() {
+        context.emit('json', toJSON(state.layout))
+      }
+
+      function cancel() {
+        state.layout = fromJSON(props.layout)
+        state.selectedGrid = state.layout
+      }
+
       return {
         state,
+        save,
+        cancel,
         renderGridGenerator
       }
     },
@@ -745,6 +856,10 @@
     flex-direction: row;
     align-items: stretch;
 
+    &:focus {
+      outline: none;
+    }
+
     button {
       border-radius: 0;
     }
@@ -752,16 +867,26 @@
     &__list {
       background-color: #fff;
       border-right: 2px solid #888;
-      padding: 0 20px;
+      padding: 0 15px;
     }
 
     &__sub-list {
       margin-bottom: 20px;
 
       &__section {
-        font-size: larger;
-        border-top: 2px solid #888;
+        position: relative;
         color: #888;
+        overflow: hidden;
+
+        &:after {
+          width: 100%;
+          height: 100%;
+          content: "";
+          border-top: 1px solid #888;
+          margin-left: 5px;
+          position: absolute;
+          transform: translateY(50%);
+        }
       }
 
       &__items {
@@ -821,7 +946,8 @@
       text-align: center;
 
       & > input {
-        width: 80%;
+        width: 100%;
+        border: 1px solid gray;
 
         &:focus {
           outline: none;
@@ -837,7 +963,7 @@
       flex: 1;
       overflow: auto;
       border: 1px solid #0003;
-      background-color: #ddd;
+      background: #444;
 
       &__field {
         background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='8' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%239C92AC' fill-opacity='.4' fill-rule='evenodd'/%3E%3C/svg%3E");
@@ -845,10 +971,6 @@
         &__item {
           cursor: pointer;
           border: 1px dotted #666;
-
-          &--view-only {
-            border: 1px dotted transparent;
-          }
 
           &--disabled {
             pointer-events: none;
@@ -888,17 +1010,29 @@
     }
 
     &__settings {
-      padding: 0 20px;
+      padding: 0 15px;
       background-color: #fff;
       border-left: 2px solid #888;
-      min-width: 265px;
+      min-width: 220px;
       top: 0;
       right: 0;
 
+
       &-section {
         font-size: larger;
-        border-top: 2px solid #888;
         color: #888;
+        position: relative;
+        overflow: hidden;
+
+        &:after {
+          width: 100%;
+          height: 100%;
+          content: "";
+          border-top: 1px solid #888;
+          margin-left: 5px;
+          position: absolute;
+          transform: translateY(50%);
+        }
 
         &:nth-of-type(n+2) {
           margin-top: 20px;
@@ -906,14 +1040,29 @@
       }
 
       &-prop {
+        display: flex;
+        flex-direction: row;
+        margin-top: 5px;
+
         & > label {
           width: 110px;
           display: inline-block;
           font-size: small;
         }
 
-        & > input {
-          width: 40px;
+        & > button {
+          padding: 5px;
+        }
+
+        & > input, select, div {
+          width: 102px;
+        }
+
+        & > select {
+          border: solid 1px gray;
+          border-radius: 2px;
+          padding-left: 5px;
+          outline: none;
         }
       }
     }
@@ -943,6 +1092,12 @@
           padding: 5px;
         }
 
+        &__error-msg {
+          font-size: small;
+          color: red;
+          padding-left: 10px;
+        }
+
         &__action-btn {
           padding: 20px;
           display: flex;
@@ -967,6 +1122,19 @@
           padding: 5px;
         }
       }
+    }
+  }
+
+  .simple-btn {
+    height: 18px;
+    border: 1px solid #0003;
+    margin: 2px;
+    color: #333;
+
+    &:hover {
+      background-color: #888;
+      color: #fff;
+      cursor: pointer;
     }
   }
 </style>

@@ -184,6 +184,18 @@ export function saveFile(fileName, content, type) {
   link.click()
 }
 
+// Return rendered element position
+export function getElementPosition(el) {
+  const rect = el.getBoundingClientRect(),
+    offsetX = window.scrollX || document.documentElement.scrollLeft,
+    offsetY = window.scrollY || document.documentElement.scrollTop;
+  return {
+    top: rect.top + offsetY,
+    left: rect.left + offsetX,
+    bottom: rect.bottom + offsetY,
+    right: rect.right + offsetX
+  }
+}
 export function padEnd (str, length, char = '0') {
   return str + char.repeat(Math.max(0, length - str.length))
 }
