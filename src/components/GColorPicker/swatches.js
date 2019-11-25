@@ -101,6 +101,7 @@ export default function getSwatchesRenderFn(onColorSelected) {
                         scopedSlots={scopedSlots}
                         color={tooltipBackgroundColor}
                         transition='none'
+                        lazy
                     >
                       <div style='display: flex; align-items: center;'>
                         <div style={{

@@ -110,7 +110,8 @@ export default function getGradientRenderFn(onGradientSelected) {
                 open-on-hover
                 color={tooltipBackgroundColor}
                 transition='none'
-                scopedSlots={scopedSlot}>
+                scopedSlots={scopedSlot}
+                lazy>
               <div style={'display: flex; align-items: center'}>
                 <div>
                   <div style={{ ...tooltipContentStyleObj, ...createLinearGradientBackground(gradient) }}></div>

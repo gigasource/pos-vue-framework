@@ -142,7 +142,7 @@
     &__tab-body {
       &__content {
         padding: 0 10px;
-        height: 280px;
+        height: 310px;
         overflow: auto;
         background-color: $tabContentBgColor;
       }
