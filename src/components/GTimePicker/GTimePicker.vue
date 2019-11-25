@@ -3,7 +3,7 @@
   import { computed } from '@vue/composition-api'
   import GPicker from '../GPicker/GPicker'
   import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil'
-  import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_23PositionStyle1, range0_59PositionStyle } from './logic/GTimePickerUIHelper';
+  import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_59PositionStyle } from './logic/GTimePickerUIHelper';
   import { pad } from '../GDatePicker/logic/utils';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 
@@ -233,7 +233,14 @@
       function updateTime(e) {
         const {width, height, left, top} = e.target.getBoundingClientRect()
         const itemsLength = state.activeTimePicker.hour ?  12: 60;
-        const targetPos = { x: e.clientX - left, y: e.clientY - top }
+        let targetPos
+        if (e instanceof TouchEvent) {
+          if (e.touches.length == 0)
+            return
+          targetPos = { x: e.touches[0].clientX - left, y: e.touches[0].clientY - top }
+        } else {
+          targetPos = { x: e.clientX - left, y: e.clientY - top }
+        }
         let index = getSelectedIndex({width, height}, targetPos, itemsLength)
         if (index !== -1) {
           if (state.activeTimePicker.hour) {
@@ -252,25 +259,32 @@
       }
 
       let mouseDownState = false
+      let touchMoved = false
       function onMouseDown(e) {
         mouseDownState = true
+        touchMoved = false
       }
       function onMouseMove(e) {
         if (mouseDownState) {
+          touchMoved = true
           updateTime(e)
         }
       }
       function onMouseUp(e) {
+        // last update for mouse up, doesn't update when touchend because touchend doesn't contain position
+        if (!(e instanceof TouchEvent))
+          updateTime(e)
+        // touchend doesn't contain touch position => prevent time picker switch to another view (minutes, seconds) when touchmove is not call
+        if (e instanceof TouchEvent && !touchMoved) {
+          return
+        }
+
         mouseDownState = false
         if (state.activeTimePicker.hour)
           showMinutesPicker()
         else if (state.activeTimePicker.minute && props.useSeconds)
           showSecondsPicker()
       }
-      function onClick(e) {
-        updateTime(e)
-      }
-
 
       function addNumberClass(numbers) {
         _.each(numbers, (el) => {
@@ -354,10 +368,12 @@
             <div class={cptClockWrapperClassStyle.value.class} style={cptClockWrapperClassStyle.value.style}>
               <div class={cptClockClassStyle.value.class}
                    style={cptClockClassStyle.value.style}
-                   vOn:click={onClick}
                    vOn:wheel={onWheel}
                    vOn:mousemove={onMouseMove}
+                   vOn:touchmove={onMouseMove}
                    vOn:mouseup={onMouseUp}
+                   vOn:touchend={onMouseUp}
+                   vOn:touchstart={onMouseDown}
                    vOn:mousedown={onMouseDown}>
                 <div class="g-time-picker__clock__inner">
                   <div class={['g-time-picker__clock__inner__hand', cptHandColorStyle.value.class]}
