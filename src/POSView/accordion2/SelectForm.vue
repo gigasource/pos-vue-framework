@@ -235,7 +235,32 @@
 				}
 			}
 		}
-
 	}
 
+	.g-list-item {
+		padding: 0;
+		min-height: auto;
+		display: flex;
+		align-items: center;
+
+		font-weight: normal;
+		font-size: 12px;
+		line-height: 22px;
+
+		&-content {
+			margin-left: 8px !important;
+		}
+
+		&-action {
+			margin: 0 8px 0 0;
+		}
+
+		::before {
+			display: none;
+		}
+	}
+
+	.g-list-item::before {
+		display: none;
+	}
 </style>
