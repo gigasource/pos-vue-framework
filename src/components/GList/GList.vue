@@ -97,9 +97,9 @@
 </template>
 
 <script>
-  import { computed, provide, ref } from '@vue/composition-api';
-  import GDivider from "../GLayout/GDivider";
-  import {makeSelectable} from "../../mixins/groupable";
+  import { computed, provide } from '@vue/composition-api';
+  import GDivider from '../GLayout/GDivider';
+  import { makeSelectable } from '../../mixins/groupable';
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
@@ -219,8 +219,7 @@
 			provide('selectable', props. selectable)
 			provide('allowDuplicates', props.allowDuplicates)
       const getListEvents = (item) => {
-       let listListeners ={}
-        return listListeners = {
+        return {
          click: () => onSelect(item),
          keydown: (e) => {
            switch (e.keyCode) {
