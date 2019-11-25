@@ -1,11 +1,11 @@
 <template>
-	<div tabindex="0" :class="classes" :style="styles" v-on="listEvents(value)">
+	<div :class="classes" :style="styles" tabindex="0" v-on="listItemEvents(value)">
 		<slot></slot>
 	</div>
 </template>
 
 <script>
-  import { computed, ref, inject } from '@vue/composition-api';
+  import { computed, inject } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
 
   export default {
@@ -47,13 +47,25 @@
       const mandatory = inject('mandatory')
       const allowDuplicates = inject('allowDuplicates')
       const {isActiveItem} = groupable({ multiple, mandatory, allowDuplicates }, selectedItems)
-      const listEvents = inject('getListEvents')
+      const selectable = inject('selectable')
+      const inListEvents = inject('getListEvents')
+      const singleItemEvents = () => {
+        return {
+          click: () => {
+            context.emit('singleItemClick')
+          },
+          keydown: (e) => {
+            context.emit('keydown', e)
+          }
+        }
+      }
+      const listItemEvents = selectable ? inListEvents : singleItemEvents()
 
       return {
         itemsInList,
         classes,
         styles,
-				listEvents,
+        listItemEvents,
         selectedItems,
       }
     }

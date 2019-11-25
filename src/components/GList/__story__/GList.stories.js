@@ -1,19 +1,24 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
 import GList from '../GList';
 import GListItem from '../GListItem';
 import GDivider from '../../GLayout/GDivider.vue';
 import {
-  GListItemIcon,
-  GListItemAvatar,
+  GListHeader,
   GListItemAction,
+  GListItemAvatar,
+  GListItemContent,
+  GListItemIcon,
   GListItemImage,
   GListItemImageBig,
-  GListItemContent,
-  GListItemText,
   GListItemSubText,
-  GListHeader
+  GListItemText
 } from '../GListFunctionalComponent'
+import Vue from 'vue/dist/vue.common.js'
+import GContainer from '../../GLayout/GContainer';
+import GRow from '../../GLayout/GRow';
+import GCol from '../../GLayout/GCol';
+import GIcon from '../../GIcon/GIcon';
+import GBtn from '../../GBtn/GBtn';
 
 export default {
   title: 'GList',
@@ -689,7 +694,7 @@ export const gListFreeRender = () => ({
       {{testValue}}
         <template>
         <g-list multiple selectable v-model="testValue">
-        <g-list-item selectable :value="items[0]">
+        <g-list-item :value="items[0]">
         <g-list-item-content>Item 1</g-list-item-content>
         </g-list-item>
         <g-list-item >
@@ -702,12 +707,6 @@ export const gListFreeRender = () => ({
         </template>
       </div>`,
 })
-import Vue from 'vue/dist/vue.common.js'
-import GContainer from '../../GLayout/GContainer';
-import GRow from '../../GLayout/GRow';
-import GCol from '../../GLayout/GCol';
-import GIcon from '../../GIcon/GIcon';
-import GBtn from '../../GBtn/GBtn';
 
 
 describe('GList', function () {
