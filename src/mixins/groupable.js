@@ -1,24 +1,15 @@
 import _ from 'lodash'
-import { computed, ref, watch } from '@vue/composition-api';
+import {computed, ref, watch} from "@vue/composition-api";
 
-function groupable(props, vModel) {
+function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
-  const { returnObject = true, items, mandatory, multiple, allowDuplicates, maxSelection } = props
   const toggleItem = (item) => {
     if (multiple) {
-      if (returnObject) {
-        updateMultiple(item);
-      } else {
-        updateMultiple(items.indexOf(item))
-      }
+      updateMultiple(item);
     } else {
-      if (returnObject) {
-        updateSingle(item);
-      } else {
-        updateSingle(items.indexOf(item))
-      }
+      updateSingle(item);
     }
   };
 
@@ -53,22 +44,15 @@ function groupable(props, vModel) {
     vModel.value = clonedValue;
   };
 
-  const isActiveItem = (item) => {
-    if (multiple) {
-      return returnObject
-        ? vModel.value.some(element => _.isEqual(element, item))
-        : vModel.value.includes(items.indexOf(item))
-    }
-    return returnObject
-      ? _.isEqual(vModel.value, item)
-      : items.indexOf(item) === vModel.value
-  };
+    const isActiveItem = (item) => {
+      return multiple ? vModel.value.some(element => _.isEqual(element, item) ) : _.isEqual(vModel.value, item);
+    };
 
-  return {
-    toggleItem,
-    isActiveItem
+    return {
+      toggleItem,
+      isActiveItem
+    }
   }
-}
 
 export function makeSelectable(props, context) {
   // 1 -> {a: 1, b: 2}

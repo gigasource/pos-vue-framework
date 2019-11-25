@@ -217,6 +217,7 @@
 			provide('multiple', props.multiple)
 			provide('mandatory', props.mandatory)
 			provide('selectable', props. selectable)
+			provide('allowDuplicates', props.allowDuplicates)
       const getListEvents = (item) => {
        let listListeners ={}
         return listListeners = {

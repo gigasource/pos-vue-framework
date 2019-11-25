@@ -76,10 +76,7 @@
           default: 'auto'
         },
         minHeight: [Number, String],
-        contentFillWidth: {
-          type: Boolean,
-          default: true
-        }
+        contentFillWidth: Boolean
       },
       // delay
       ...{
@@ -97,7 +94,7 @@
       const isActive = getVModel(props, context);
       const { attachToRoot, detach } = detachable(props, context);
       const {
-        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow
+        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState: state
       } = menuable(props, context);
 
       function getResizeObserver() {
@@ -134,7 +131,7 @@
       // update dimensions when toggled on
       watch(() => props.value, newVal => {
         if (newVal) updateDimensions(props.activator.value)
-      })
+      }, { flush: 'pre' })
 
       onMounted(() => {
         attachToRoot()
@@ -156,7 +153,8 @@
         return convertToUnit(props.maxWidth) || '0'
       })
       const calculatedMinWidth = computed(() => {
-        if (props.contentFillWidth) return convertToUnit(Math.max(dimensions.activator.width, dimensions.content.width))
+        if (props.contentFillWidth) return convertToUnit(dimensions.activator.width)
+        // if (props.contentFillWidth) return convertToUnit(Math.max(dimensions.activator.width, dimensions.content.width))
         if (props.minWidth) return convertToUnit(props.minWidth) || '0'
 
         const minWidth = Math.min(dimensions.content.width, state.pageWidth);
@@ -219,12 +217,22 @@
         return directives;
       }
 
-      return () => <div style={contentStyles.value}
-                        class="g-menu--content"
-                        ref="content"
-                        {...{ directives: genDirectives(), on: contentListeners }}>
-        {context.slots.default()}
-      </div>
+      function genMenu() {
+        return <div style={contentStyles.value}
+                          class="g-menu--content"
+                          ref="content"
+                          {...{ directives: genDirectives(), on: contentListeners }}>
+          {context.slots.default()}
+        </div>;
+      }
+
+      return {
+        genMenu,
+				contentStyles
+			}
+    },
+		render() {
+      return this.genMenu()
     }
   }
 </script>

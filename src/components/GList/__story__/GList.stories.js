@@ -673,22 +673,28 @@ export const gListFreeRender = () => ({
   components: { GList, GIcon, GListItemIcon, GContainer, GDivider, GRow, GBtn, GListItem, GListItemContent },
   data() {
     return {
-      testValue: null
+      testValue: null,
+      items:[
+        {text: 'item1', value: 1},
+        {text: 'item2', value: 2},
+        {text: 'item3', value: 3},
+      ]
     }
   },
 
   template:
     `
       <div>
+      {{testValue}}
         <template>
-        <g-list multiple>
-        <g-list-item value="item1">
+        <g-list multiple selectable v-model="testValue">
+        <g-list-item :value="items[0]">
         <g-list-item-content>Item 1</g-list-item-content>
         </g-list-item>
-        <g-list-item value="item2">
+        <g-list-item :value="items[1]">
         <g-list-item-content>Item 2</g-list-item-content>
         </g-list-item>
-        <g-list-item value="item3">
+        <g-list-item :value="items[2]">
         <g-list-item-content>Item 3</g-list-item-content>
         </g-list-item>
         </g-list>

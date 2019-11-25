@@ -46,7 +46,8 @@
 			const multiple = inject('multiple')
 			const mandatory = inject('mandatory')
 			const selectable = inject('selectable')
-      const { toggleItem, isActiveItem } = groupable({multiple, mandatory}, selectedItems)
+			const allowDuplicates = inject('allowDuplicates')
+      const { toggleItem, isActiveItem } = groupable({multiple, mandatory, allowDuplicates}, selectedItems)
 
       const onSelectItem = () => {
         selectable ? toggleItem(props.value) : null

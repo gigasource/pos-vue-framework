@@ -1,14 +1,16 @@
 <template>
   <div class="bs-tf-wrapper" :class="wrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-    <label class="bs-tf-label">
+
       <slot name="label">
+				<label v-if="label" class="bs-tf-label">
 				<template v-if="required">
 					{{label}}
 					<span style="color: red">*</span>
 				</template>
 				<template v-else>{{label}}</template>
+				</label>
 			</slot>
-    </label>
+
     <div class="bs-tf-input-group">
       <div class="bs-tf-input-prepend" @click="onClickPrepend" v-if="$slots.prependContent">
 				<span class="bs-tf-input-text">

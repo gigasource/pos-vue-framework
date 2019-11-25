@@ -153,7 +153,7 @@
                     input: e => selectedItem.value = e,
                   },
 									scopedSlots:{
-										listItem: ({item}) => context.slots.itemInList && context.slots.itemInList()
+										listItem: ({item, isSelected}) => context.slots.itemInList && context.slots.itemInList({item, isSelected})
                   }
                 }}
                 ref="list"
@@ -251,6 +251,7 @@
                            ...props.menuProps,
                            nudgeBottom: nudgeBottom.value,
                            value: showOptions.value,
+													 contentFillWidth: true
                          },
                          scopedSlots: {
                            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)

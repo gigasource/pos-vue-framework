@@ -75,10 +75,7 @@
           default: 'auto'
         },
         minHeight: [Number, String],
-        contentFillWidth: {
-          type: Boolean,
-          default: true
-        }
+        contentFillWidth: Boolean
       },
       // delay
       ...{

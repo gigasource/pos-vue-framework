@@ -338,7 +338,7 @@ export const GSelectPrependAndAppendItem = () => ({
    </g-select></div>`
 })
 export const GSelectItemSlot = () => ({
-  components: {GSelect},
+  components: {GSelect, GListItem, GListItemContent, GListItemAction, GIcon},
   data() {
     return {
       items: [
@@ -352,11 +352,19 @@ export const GSelectItemSlot = () => ({
   },
   template: `
    <div data-app>
-      <g-select :items="items" item-text="name" item-value="prepend" label="Display list" multiple clearable
+   {{selected}}
+      <g-select :items="items" item-text="name" item-value="prepend" label="Display list" multiple clearable allowDuplicates
                v-model="selected">
-         <template v-slot:itemInList>
-         <div>ajsdfhhkads</div>
-</template>
+         <template v-slot:itemInList="{item, isSelected}">
+             <g-list-item :value="item" >
+                 <g-list-item-content>
+                 {{item.name}}
+                </g-list-item-content>
+                <g-list-item-action>
+                <g-icon v-show="isSelected">check</g-icon>
+                </g-list-item-action>
+            </g-list-item>
+         </template>
       </g-select>
     </div>`
 })
@@ -379,6 +387,8 @@ import GListItem from "../../GList/GListItem";
 import {GListItemText, GListItemContent, GListItemSubText} from "../../GList/GListFunctionalComponent";
 import GDivider from "../../GLayout/GDivider";
 import GSelect from "../GSelect";
+import { GListItemAction } from '../..';
+import GIcon from '../../GIcon/GIcon';
 
 describe('test', function () {
   it('should', function () {

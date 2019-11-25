@@ -1,46 +1,56 @@
 <template>
-	<g-simple-table dense width="308px" height="146px">
-		<thead>
-		<tr>
-			<th>Type</th>
-			<th>SlotScope</th>
-			<th>Local</th>
-			<th></th>
-		</tr>
-		<template v-for="i in type.length">
+	<div class="select-form">
+		<g-simple-table dense width="100%">
 			<tr>
-				<td>
-					<p-o-s-select v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text" :items="type[i-1].items" itemText="text" item-value="">
-						<template v-slot:append="{item, isSelected}" >
-							<g-icon v-show="isSelected" color="indigo">check</g-icon>
-						</template>
-					</p-o-s-select>
-				</td>
-				<td>
-					<p-o-s-select v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text" :items="scopedSlots[i-1].items" itemText="text" item-value="">
-					</p-o-s-select>
-				</td>
-				<td>
-					<p-o-s-select v-model="selectedLocal[i-1][local[i-1].text]" :placeholder="local[i-1].text" :items="local[i-1].items" itemText="text" item-value="">
-					</p-o-s-select>
-				</td>
-				<td>
-					<g-icon @click="deleteSelection(i, selectedType, selectedLocal, selectedScopedSlot)" svg>icon-trash</g-icon>
-				</td>
+				<th>Type</th>
+				<th>SlotScope</th>
+				<th>Local</th>
+				<th></th>
 			</tr>
-		</template>
-		</thead>
-	</g-simple-table>
+			<template v-for="i in type.length">
+				<tr>
+					<td>
+						<p-o-s-select v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text" :items="type[i-1].items" itemText="text" item-value="">
+							<template v-slot:itemInList="{item, isSelected}" class="listItem">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon v-show="isSelected">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
+						</p-o-s-select>
+					</td>
+					<td>
+						<p-o-s-select v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text" :items="scopedSlots[i-1].items" itemText="text" item-value="">
+						</p-o-s-select>
+					</td>
+					<td>
+						<p-o-s-select v-model="selectedLocal[i-1][local[i-1].text]" :placeholder="local[i-1].text" :items="local[i-1].items" itemText="text" item-value="">
+						</p-o-s-select>
+					</td>
+					<td>
+						<g-icon x-small svg @click="deleteSelection(i, selectedType, selectedLocal, selectedScopedSlot)">icon-trash2</g-icon>
+					</td>
+				</tr>
+			</template>
+		</g-simple-table>
+	</div>
+
 </template>
 <script>
   import GSimpleTable from '../../components/GSimpleTable/GSimpleTable';
   import _ from 'lodash'
   import POSSelect from '../../POSComponents/POSInput/POSSelect';
   import GIcon from '../../components/GIcon/GIcon';
+  import GListItem from '../../components/GList/GListItem';
+  import { GListItemContent, GListItemText, GListItemAction } from '../../components/GList/GListFunctionalComponent';
 
   export default {
     name: 'SelectForm',
-    components: { POSSelect, GSimpleTable, GIcon },
+    components: { GListItem, POSSelect, GSimpleTable, GIcon, GListItemContent, GListItemText, GListItemAction },
     props: {},
     data() {
       return {
@@ -77,43 +87,66 @@
   }
 </script>
 <style lang="scss" scoped>
-	.g-table::v-deep {
+
+	.select-form {
+
 		position: absolute;
-		left: 443px;
+		width: 308px;
+		height: 146px;
+		left: 25px;
 		top: 48px;
 
 		background: #FFFFFF;
-	padding: 16px 0 0 16px;
+		/* Grey/grey lighten-2 */
+
+		border: 1px solid #E0E0E0;
+		box-sizing: border-box;
+	}
+
+	.g-table::v-deep {
+		height: 100%;
+		position: absolute;
+		padding-top: 16px;
+		padding-left: 16px;
+		background: #FFFFFF;
 		border: 1px solid #E0E0E0;
 		box-sizing: border-box;
 
 		td {
 			padding: 0;
-			height: 22px
+			height: 22px;
 		}
 
 		th {
+			padding: 0 0 0 6px;
 			height: 22px;
-			padding-top: 16px;
-			padding-left: 16px;
 			font-family: Roboto;
 			font-style: normal;
 			font-weight: bold;
 			font-size: 12px;
 			line-height: 22px;
 			text-align: left;
+			text-transform: capitalize;
+			color: #424242;
+		}
+
+		tr {
 		}
 	}
-	.g-menu__content::v-deep{
-		min-width: 0;
-	}
+
 	.g-select::v-deep {
+		.g-list {
+			color: #00b0ff;
+		}
 
 		.g-menu--activator {
 			.g-tf-wrapper {
-				fieldset{
+				width: 100%;
+
+				fieldset {
 					min-inline-size: fit-content;
 				}
+
 				margin: 0;
 
 			}
@@ -121,9 +154,11 @@
 			.g-tf {
 				padding: 2px;
 				height: 24px;
+
 				.input {
-					padding: 0;
+					padding: 0 0 0 6px;
 					height: 22px;
+					width: min-content;
 				}
 
 				&-input {
@@ -133,14 +168,22 @@
 					font-style: normal;
 					font-weight: normal;
 					align-self: center;
-
+					color: #424242 !important;
 				}
 
 				background-color: transparent;
 
 				&:hover {
 					padding: 1px;
-					border: 1px solid #E0E0E0 ;
+					border: 1px solid #E0E0E0;
+				}
+
+				&-append__inner {
+					margin: 0;
+				}
+
+				&-append__outer {
+					margin: 0;
 				}
 			}
 		}
@@ -161,4 +204,5 @@
 		}
 
 	}
+
 </style>
