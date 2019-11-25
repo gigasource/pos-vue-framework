@@ -227,7 +227,7 @@
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly', 'required']),
+                      'rules', 'type', 'disabled', 'readOnly', 'required',]),
                     value: textfieldValue.value
                   },
                   on: {

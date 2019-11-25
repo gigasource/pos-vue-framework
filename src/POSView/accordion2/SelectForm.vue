@@ -10,7 +10,7 @@
 			<template v-for="i in type.length">
 				<tr>
 					<td>
-						<p-o-s-select v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text" :items="type[i-1].items" itemText="text" item-value="">
+						<p-o-s-select v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text" :items="type[i-1].items" itemText="text" item-value="" append-svg append-icon="icon-arrow-down">
 							<template v-slot:itemInList="{item, isSelected}" class="listItem">
 								<g-list-item :value="item">
 									<g-list-item-content>
@@ -24,11 +24,31 @@
 						</p-o-s-select>
 					</td>
 					<td>
-						<p-o-s-select v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text" :items="scopedSlots[i-1].items" itemText="text" item-value="">
+						<p-o-s-select v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text" :items="scopedSlots[i-1].items" itemText="text" item-value="" append-svg append-icon="icon-arrow-down">
+							<template v-slot:itemInList="{item, isSelected}" class="listItem">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon v-show="isSelected">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
 						</p-o-s-select>
 					</td>
 					<td>
-						<p-o-s-select v-model="selectedLocal[i-1][local[i-1].text]" :placeholder="local[i-1].text" :items="local[i-1].items" itemText="text" item-value="">
+						<p-o-s-select v-model="selectedLocal[i-1][local[i-1].text]" :placeholder="local[i-1].text" :items="local[i-1].items" itemText="text" item-value=""append-svg append-icon="icon-arrow-down">
+							<template v-slot:itemInList="{item, isSelected}" class="listItem">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon v-show="isSelected">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
 						</p-o-s-select>
 					</td>
 					<td>
@@ -60,7 +80,7 @@
           { text: 'emit', items: [{ text: 'click' }, { text: 'block' }, { text: 'inline' }], },
           { text: 'emit2', items: [{ text: 'input' }, { text: 'block' }, { text: 'inline' }] }],
         scopedSlots: [
-          { text: 'File', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
+          { text: 'Computed File', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
           { text: 'abc', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
           { text: 'remove', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
         local: [
@@ -115,6 +135,10 @@
 		td {
 			padding: 0;
 			height: 22px;
+			&:last-of-type{
+				padding-right: 3px;
+				padding-bottom: 8px
+			}
 		}
 
 		th {
@@ -130,8 +154,6 @@
 			color: #424242;
 		}
 
-		tr {
-		}
 	}
 
 	.g-select::v-deep {
@@ -140,6 +162,7 @@
 		}
 
 		.g-menu--activator {
+			margin-bottom: 8px;
 			.g-tf-wrapper {
 				width: 100%;
 
@@ -170,6 +193,9 @@
 					align-self: center;
 					color: #424242 !important;
 				}
+				.selections{
+					div {width: max-content;}
+				}
 
 				background-color: transparent;
 
@@ -179,7 +205,14 @@
 				}
 
 				&-append__inner {
-					margin: 0;
+					float: right;
+					.g-icon{
+						margin: 0;
+						float: right;
+						width: 6px !important;
+						height: 6px !important;
+					}
+
 				}
 
 				&-append__outer {
