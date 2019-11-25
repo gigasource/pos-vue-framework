@@ -1,8 +1,8 @@
-import GList from "../GList/GList";
-import GIcon from "../GIcon/GIcon";
-import {keyCodes} from "../../utils/helpers";
-import GChip from "../GChip/GChip";
-import {getLabel} from "../GInput/GInputFactory";
+import GList from '../GList/GList';
+import GIcon from '../GIcon/GIcon';
+import { keyCodes } from '../../utils/helpers';
+import GChip from '../GChip/GChip';
+import { getLabel } from '../GInput/GInputFactory';
 
 export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
   function onChipCloseClick(index = null) {
@@ -38,9 +38,12 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputDelete() {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) return
-    if (state.searchText) return state.pressDeleteTimes = 0
-    else {
+    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
+      return
+    }
+    if (state.searchText) {
+      return state.pressDeleteTimes = 0
+    } else {
       if (state.pressDeleteTimes === 0) {
         state.pressDeleteTimes++
         state.lastItemColor = '#1867c0 '
@@ -60,7 +63,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
       let inputAddedItem = props.itemValue ? {
         [props.itemText]: state.searchText,
         [props.itemValue]: state.searchText
-      } : {[props.itemText]: state.searchText}
+      } : { [props.itemText]: state.searchText }
       toggleItem(inputAddedItem)
       setSearch(props, context, selections, state)
     }
@@ -71,6 +74,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
 }
+
 export function resetSelectionsDisplay(state) {
 
   state.pressDeleteTimes = 0
@@ -79,7 +83,9 @@ export function resetSelectionsDisplay(state) {
 
 export function setSearch(props, context, selections, state) {
   context.root.$nextTick(() => {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) state.lazySearch = selections.value
+    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
+      state.lazySearch = selections.value
+    }
     state.searchText = ''
   })
 }
