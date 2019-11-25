@@ -13,9 +13,6 @@ export const getExpansionModel = function (props, context) {
   const model = computed({
     get: () => {
       if (props.value) {
-        if (props.multiple && !Array.isArray(props.value)) {
-          props.value = [props.value];
-        }
         return props.value;
       }
       return props.multiple ? [] : null;
@@ -25,7 +22,7 @@ export const getExpansionModel = function (props, context) {
     }
   });
 
-  const { toggleItem, isActiveItem } = groupable({ mandatory: props.mandatory, multiple: props.multiple }, model);
+  const { toggleItem, isActiveItem } = groupable(props, model);
 
   return {
     model,

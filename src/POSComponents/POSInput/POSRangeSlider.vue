@@ -19,7 +19,7 @@
     },
     data() {
       return {
-        value: [0, 20]
+        value: [0, 0]
       }
     },
   }
@@ -27,7 +27,7 @@
 
 <style scoped lang="scss">
   .g-slider::v-deep {
-    margin: 30px 30px 0;
+    margin: 30px 36px 0 28px;
 
     .g-slider-track-background {
       border-radius: 98px;
@@ -43,13 +43,13 @@
     .g-slider-thumb-container {
       &:hover, &__focused {
         .g-slider-thumb:before {
-          content: none;
+          display: none;
         }
       }
 
       &__active {
         .g-slider-tick {
-          content: none;
+          display: none;
         }
       }
     }

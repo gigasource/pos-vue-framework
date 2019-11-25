@@ -26,7 +26,7 @@
       passThrough: {
         type: Boolean,
         default: false
-      }
+      },
     },
     setup(props, context) {
       let state = reactive({
@@ -70,6 +70,38 @@
         if (props.editable) {
           wrapperEl.parentNode.appendChild(context.refs[refIdEditor])
         }
+
+        if (props.displayPreviewColor)
+          __showPreviewAreaName()
+        else
+          __removePreviewArea()
+      }
+
+      // TODO: Using view reactive instead
+      const __previewAreaNameClassSignature = '__ahoy__matee__'
+      const __createAreaNameElement = (name) => {
+        const el = document.createElement('span')
+        el.style = 'position: absolute; top:0; left:0; text-decoration: underline; font-size: 12px'
+        el.classList.add(__previewAreaNameClassSignature)
+        el.innerText = name
+        return el
+      }
+      const __getAreaName = classList => _.find(classList, clsName => clsName.startsWith('gl-')).substr(3)
+      const __showPreviewAreaName = () => {
+        const wrapperEl = context.refs[refIdWrapperElement]
+        const areaEls = [...wrapperEl.querySelectorAll('[class*="gl-"]')]
+        _.each(areaEls, areaDomNode => {
+          if (areaDomNode.childNodes.length == 0) {
+            areaDomNode.style += areaDomNode.style + '; position: relative; '
+            areaDomNode.appendChild(__createAreaNameElement(__getAreaName(areaDomNode.classList)))
+          }
+        })
+      }
+      const __removePreviewArea = () => {
+        const wrapperEl = context.refs[refIdWrapperElement]
+        const areaEls = [...wrapperEl.querySelectorAll(`[class="${__previewAreaNameClassSignature}"]`)]
+        console.log(areaEls)
+        _.each(areaEls, el => el.parentNode.removeChild(el))
       }
 
       // editor dialog
@@ -79,7 +111,7 @@
       function renderEditDialog() {
         return <div ref={refIdEditor}>
           <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
-          <g-dialog value={dialogState.show} fullscreen>
+          <g-dialog value={dialogState.show} vOn:input={v => dialogState.show = v} fullscreen>
             <div class="editor-dialog">
               <div class='editor-dialog__title-bar'>
                 <span class='editor-dialog__title-bar__title'>Grid Layout Editor</span>
@@ -271,7 +303,6 @@
       outline: none;
     }
   }
-
   .editor-dialog {
     display: flex;
     flex-direction: column;
@@ -314,5 +345,4 @@
       }
     }
   }
-
 </style>

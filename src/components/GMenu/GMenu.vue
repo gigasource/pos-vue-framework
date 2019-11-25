@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { onBeforeUnmount, onMounted, reactive, ref } from '@vue/composition-api';
+  import { onBeforeUnmount, onMounted, reactive, ref, onUnmounted } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import detachable from '../../mixins/detachable';
@@ -112,8 +112,10 @@
       })
 
       onBeforeUnmount(() => {
-        if (el.value) detach(el.value)
+        if (activator.value) detach(activator.value)
       })
+
+      onUnmounted(() => isActive.value = false)
 
       function toggleContent(event) {
         if (props.lazy && state.isFirstRender) state.isFirstRender = false

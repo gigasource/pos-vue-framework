@@ -28,6 +28,7 @@
     },
     setup(props, context) {
       const attrs = Object.keys(context.attrs);
+      const bps = ['xs', 'sm', 'md', 'lg', 'xl'];
       const breakpoints = reactive({
         xs: 0,
         sm: 0,
@@ -41,15 +42,27 @@
           continue
         }
         const bp = attr.substr(0, 2);
-        breakpoints[bp] = attr.length === 3 ? attr.substr(2, 1) : attr.substr(2, 2);
+        if (bps.includes(bp)) {
+          breakpoints[bp] = attr.length === 3 ? attr.substr(2, 1) : attr.substr(2, 2);
+        }
       }
 
       watch(() => [props.xs, props.sm, props.md, props.lg, props.xl], () => {
-        if (props.xs) breakpoints.xs = props.xs;
-        if (props.sm) breakpoints.sm = props.sm;
-        if (props.md) breakpoints.md = props.md;
-        if (props.lg) breakpoints.lg = props.lg;
-        if (props.xl) breakpoints.xl = props.xl;
+        if (props.xs) {
+          breakpoints.xs = props.xs;
+        }
+        if (props.sm) {
+          breakpoints.sm = props.sm;
+        }
+        if (props.md) {
+          breakpoints.md = props.md;
+        }
+        if (props.lg) {
+          breakpoints.lg = props.lg;
+        }
+        if (props.xl) {
+          breakpoints.xl = props.xl;
+        }
       })
 
       const classes = computed(() => ({
@@ -83,7 +96,7 @@
 </script>
 
 <style scoped lang="scss">
-	.g-col:not([class*=col-]) {
+	.g-col:not([class*=col-]):not([class*=xs]):not([class*=sm]):not([class*=md]):not([class*=lg]):not([class*=xl]) {
 		flex-basis: 0;
 		flex-grow: 1;
 		width: 100%;

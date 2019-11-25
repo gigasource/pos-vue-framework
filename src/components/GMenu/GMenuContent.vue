@@ -6,6 +6,7 @@
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
+  import stackable from '../../mixins/stackable';
 
   export default {
     name: 'GMenuContent',
@@ -96,6 +97,7 @@
       const {
         updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState: state
       } = menuable(props, context);
+      const { getMaxZIndex } = stackable(props, context)
 
       function getResizeObserver() {
         let activatorResizeObserver = undefined
@@ -171,6 +173,7 @@
         maxHeight: calculatedMaxHeight.value,
         minWidth: calculatedMinWidth.value,
         maxWidth: calculatedMaxWidth.value,
+        zIndex: isActive.value ? getMaxZIndex() + 2 : 6
       }))
 
       const contentListeners = {

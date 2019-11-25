@@ -43,17 +43,14 @@
 </script>
 
 <style lang="scss" scoped>
-
-  .input-section {
-    .keyboard__template {
-      ::v-deep .key-number {
-        font-size: 20px;
-        line-height: 25px;
-        font-style: normal;
-        font-weight: normal;
-      }
+  .keyboard__template {
+    .key-number {
+      font-size: 20px;
+      line-height: 25px;
+      font-style: normal;
+      font-weight: normal;
     }
   }
 
-
+  }
 </style>
