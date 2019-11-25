@@ -405,6 +405,7 @@
   @import "../../style/colors";
 
   button { outline: none; }
+  table { border-collapse: collapse; }
 
   $textDisabled: #9e9e9e;
 
