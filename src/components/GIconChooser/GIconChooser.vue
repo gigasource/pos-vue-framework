@@ -295,7 +295,7 @@
       return () => {
         return <div class="g-icon-chooser">
           <div class="g-icon-chooser__activator">
-            <input class="g-icon-chooser__activator__input" value={state.value}/>
+            <input class="g-icon-chooser__activator__input" value={state.value} vOn:input={e => state.value = e.target.value}/>
             <g-icon class="g-icon-chooser__activator__preview" vOn:click={() => {
               state.showDialog = true
               initIconPickerDialogState()
@@ -338,6 +338,8 @@
 
       &__preview {
         padding: 0 5px;
+        min-width: 30px;
+        max-width: 30px;
 
         &:hover {
           background-color: #aaa;
