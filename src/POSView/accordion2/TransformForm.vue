@@ -1,39 +1,62 @@
 <template>
-	<div class="container">
+	<div :style="styles" class="container">
 		<div class="header">Transform</div>
 
 		<div class="item" v-for="i in position.length">
-			<p-o-s-text-field :placeholder="position[i-1].placeholder" :prefix="position.prefix">
+			<p-o-s-text-field :placeholder="position[i-1].placeholder" :prefix="position.prefix" v-model="detailPosition[i-1]">
 				<template v-slot:prepend>{{position[i-1].prefix}}</template>
 			</p-o-s-text-field>
 		</div>
 		<div class="item" v-for="i in size.length">
-			<p-o-s-text-field :placeholder="size[i-1].placeholder" :prefix="size.prefix">
+			<p-o-s-text-field :placeholder="size[i-1].placeholder" :prefix="size.prefix" v-model="detailSize[i-1]">
 				<template v-slot:prepend>{{size[i-1].prefix}}</template>
 			</p-o-s-text-field>
 		</div>
-
-
 	</div>
-
-
 </template>
 <script>
   import POSTextField from '../../POSComponents/POSInput/POSTextField';
+  import { computed } from '@vue/composition-api';
 
   export default {
     name: 'TransformForm',
-    components: { POSTextField},
-    data() {
-      return {
-        position: [{ prefix: 'X', placeholder: '41' }, { prefix: 'Y', placeholder: '711' }],
-        size: [{ prefix: 'W', placeholder: '9' }, { prefix: 'H', placeholder: '11' }]
-      }
+    components: { POSTextField },
+    props: {
+      top: { type: String, default: '224px' },
+      left: { type: String, default: '333px' },
+      position: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
+      size: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
+      detailPosition: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
+      detailSize: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
     },
-    props: {},
     setup: function (props, context) {
-
-      return {}
+      const styles = computed(() => ({
+        ...props.top && { 'top': props.top },
+        ...props.left && { 'left': props.left }
+      }));
+      return {
+        styles
+      }
     }
   }
 </script>
@@ -42,8 +65,6 @@
 		position: absolute;
 		width: 131px;
 		height: 146px;
-		left: 333px;
-		top: 244px;
 
 		background: #FFFFFF;
 		/* Grey/grey lighten-2 */
@@ -75,14 +96,17 @@
 		color: #424242;
 		padding-left: 16px;
 	}
-	.item{
-		.bs-tf-wrapper::v-deep{
+
+	.item {
+		.bs-tf-wrapper::v-deep {
 			margin: 0;
 			width: 100%;
-			.bs-tf-input-group{
+
+			.bs-tf-input-group {
 				margin-left: 8px;
 			}
-			.bs-tf-inner-input-group{
+
+			.bs-tf-inner-input-group {
 				margin-left: 0;
 				background-color: white;
 				border: 1px solid white !important;
@@ -95,9 +119,11 @@
 				line-height: 22px;
 				color: #BDBDBD;
 				max-width: 50px;
-				&:hover{
+
+				&:hover {
 					border: 1px solid #E0E0E0 !important;
 				}
+
 				input {
 					background-color: white;
 					padding: 0 0 0 8px;
@@ -109,13 +135,13 @@
 					line-height: 22px;
 					color: #424242;
 				}
-				::placeholder{color:#424242 }
+
+				::placeholder {
+					color: #424242
+				}
 			}
 		}
 	}
-
-
-
 
 
 </style>
