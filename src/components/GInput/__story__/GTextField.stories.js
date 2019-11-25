@@ -249,7 +249,7 @@ export const TextFieldStyles = () => ({
           class="bg-grey-lighten-5">
           <g-col>
             Regular
-            <g-text-field label="Regular"  value="Blahblah"/>
+            <g-text-field type="week" label="Regular"  />
           </g-col>
           <g-col>
             Solo
@@ -506,6 +506,20 @@ export const TextFieldAppendSlot = () => ({
                  </div>
                 </template>
                 </g-text-field>
+              </g-container>
+`,
+});
+export const TextFieldTypes = () => ({
+  components: { GTextField, GContainer , GIcon},
+ props:{
+   type:{ default: text('type', 'text') },
+ }
+ ,
+  template: `
+              <g-container>
+                <g-text-field label="Label" :type="type" >
+                </g-text-field>
+                <div>{{type}}</div>
               </g-container>
 `,
 });
