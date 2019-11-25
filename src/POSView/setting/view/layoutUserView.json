@@ -1,0 +1,77 @@
+{
+  "name": "main",
+  "columns": [
+    "200px",
+    "1fr"
+  ],
+  "rows": [
+    "100%"
+  ],
+  "columnGap": 0,
+  "rowGap": 0,
+  "subAreas": [
+    {
+      "name": "list",
+      "hide": false,
+      "bgColor": "hsl(334, 100%, 50%, 50%)",
+      "area": {
+        "rowStart": 1,
+        "columnStart": 1,
+        "rowEnd": 2,
+        "columnEnd": 2
+      },
+      "justify-self": "",
+      "align-self": ""
+    },
+    {
+      "name": "edit",
+      "hide": false,
+      "bgColor": "hsl(230, 100%, 50%, 50%)",
+      "area": {
+        "rowStart": 1,
+        "columnStart": 2,
+        "rowEnd": 2,
+        "columnEnd": 3
+      },
+      "justify-self": "",
+      "align-self": "",
+      "columns": [
+        "1fr",
+        "1fr"
+      ],
+      "rows": [
+        "56px",
+        "1fr",
+        "1fr",
+        "1fr",
+        "1fr",
+        "1fr",
+        "1fr",
+        "1fr",
+        "1fr",
+        "32px"
+      ],
+      "columnGap": 0,
+      "rowGap": 0,
+      "align-items": "",
+      "align-content": "",
+      "justify-items": "",
+      "justify-content": "",
+      "subAreas": [
+        {
+          "name": "title",
+          "hide": false,
+          "bgColor": "hsl(201, 100%, 50%, 50%)",
+          "area": {
+            "rowStart": 1,
+            "columnStart": 1,
+            "rowEnd": 2,
+            "columnEnd": 3
+          },
+          "justify-self": "",
+          "align-self": ""
+        }
+      ]
+    }
+  ]
+}

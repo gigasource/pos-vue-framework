@@ -1,6 +1,6 @@
 import { text, withKnobs } from '@storybook/addon-knobs'
 import GGridGenerator from '../GGridGenerator'
-import { createLayoutObject, createLayoutStr } from './storyHelper'
+import { createLayoutObject } from './storyHelper'
 //
 export default {
   title: 'GGridGenerator',
@@ -11,14 +11,6 @@ export const useDefaultIfLayoutIsNull = () => ({
   components: {GGridGenerator},
   setup() {
     return () => <g-grid-generator/>
-  }
-})
-
-export const useLayoutStr = () => ({
-  components: {GGridGenerator},
-  setup() {
-    const layoutStr = createLayoutStr()
-    return () => <g-grid-generator layout={layoutStr}/>
   }
 })
 

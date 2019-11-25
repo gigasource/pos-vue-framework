@@ -18,6 +18,14 @@
       overlay: Boolean,
       left: Boolean,
       bottom: Boolean,
+      badgeSize: {
+        type: [String, Number],
+        default: 22
+      },
+      borderRadius: {
+        type: [String, Number],
+        default: 9999
+      },
       color: {
         type: String,
         default: 'blue'
@@ -77,6 +85,12 @@
 
       const styles = computed(() => ({
         ...!props.inline && { transform: transform.value },
+        ...props.badgeSize && {
+          //width: convertToUnit(props.badgeSize),
+          height: convertToUnit(props.badgeSize),
+          minWidth: convertToUnit(props.badgeSize),
+          borderRadius: convertToUnit(props.borderRadius)
+        },
         ...computedNudge.value,
         ...isCssColor(props.color) && { 'background-color': props.color },
       }));

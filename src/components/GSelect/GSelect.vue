@@ -39,10 +39,7 @@
           default: false
         },
         placeholder: String,
-        label: {
-          type: String,
-          default: 'Label'
-        },
+        label: String,
         prefix: String,
         suffix: String,
         rules: Array,
@@ -85,10 +82,16 @@
       value: null,
       genTextFieldFn: Function,
       genListFn: Function,
-      selectOnly: {
+      showSearchField: {
         type: Boolean,
         default: true
-      }
+      },
+      appendIcon: {
+        type: String,
+        default: 'arrow_drop_down'
+      },
+      appendSvg: Boolean,
+      required: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -103,18 +106,26 @@
           return fieldItem.value.map(item => {
             return item ? (item['text'] || item['value'] || item) : ''
           })
-        } else {
-          return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
         }
-
+        return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
       })
 
       //gen SearchText
+      const searchFocused = ref(false)
+      //todo: use ref to avoid query wrong element
+      const onInputClick = () => {
+        searchFocused.value = true
+      }
+
       function genSearchTextField() {
-        if (props.searchable && props.selectOnly) {
+        if (props.searchable && props.showSearchField) {
           return <GTextField placeholder="Search"
-                             vModel={state.searchText}
+                             vOn:input={e => state.searchText = e}
+                             value={state.searchText}
                              clearable
+                             ref="searchText"
+                             autofocus={searchFocused.value}
+                             vOn:keydown={(e) => onInputKeyDown(e)}
                              style="margin-bottom: 0; background-color: transparent"/>
         }
       }
@@ -123,50 +134,34 @@
       const options = getList(props, selectedItem, state)
       const showOptions = ref(false)
 
-      const genListScopedSlots = {
-        listItem: ({item, isSelected, on, onSelect}) =>
-            <GListItem
-                vOn:singleItemClick={() => onSelect(item)}
-                tabindex="0"
-                isSelected={isSelected}
-                style="min-height: 48px"
-                {...{on}}
-            >
-              <GListItemContent>
-                <GListItemText>{item[props.itemText]}</GListItemText>
-              </GListItemContent>
-            </GListItem>
-
-      }
-      const genList = props.genListFn || function (showOptions, slots = genListScopedSlots) {
-        return <GList
-            {...{
-              props: {
-                items: options.value,
-                'item-title': props.itemText,
-                mandatory: props.mandatory,
-                'allow-duplicates': props.allowDuplicates,
-                multiple: props.multiple,
-                dense: true,
-                selectable: true,
-              },
-              on: {
-                'click:item': () => !props.multiple ? showOptions.value = false : null
-              },
-              scopedSlots: {
-                ...slots
-              }
-            }}
-            vModel={selectedItem.value}
-        />
-
-      }
+      const genList = (typeof props.genListFn === 'function' && props.genListFn)
+          || function (showOptions) {
+            return <GList
+                {...{
+                  props: {
+                    items: options.value,
+                    'item-title': props.itemText,
+                    mandatory: props.mandatory,
+                    'allow-duplicates': props.allowDuplicates,
+                    multiple: props.multiple,
+                    inMenu: true,
+                    selectable: true,
+                    value: selectedItem.value,
+                  },
+                  on: {
+                    'click:item': () => showOptions.value = props.multiple,
+                    input: e => selectedItem.value = e,
+                  },
+                }}
+                ref="list"
+            />
+          }
 
 
       //gen Text field
       function onInputKeyDown(e) {
         if (e.keyCode === keyCodes.down) {
-          context.root.$el.getElementsByClassName('g-list-item')[0].focus()
+          context.refs.list.$el.getElementsByClassName('g-list-item')[0].focus()
         }
       }
 
@@ -203,9 +198,11 @@
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
-            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
+              {selections.value.length === 0 ?
+                  <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
       }
@@ -219,20 +216,20 @@
         if (props.multiple) return selections.value.join(', ')
         return selections.value
       })
-      const genTextField = props.genTextFieldFn || function (toggleContent) {
 
+      const genTextField = (typeof props.genTextFieldFn === 'function' && props.genTextFieldFn) || function (toggleContent) {
         return (
             <GTextField
                 {...{
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly']),
+                      'rules', 'type', 'disabled', 'readOnly', 'required']),
                     value: textfieldValue.value
                   },
                   on: {
                     'click:clearIcon': () => clearSelection(),
-                    click: toggleContent,
+                    click: [toggleContent, onInputClick],
                     keydown: (e) => {
                       onInputKeyDown(e)
                     },
@@ -246,21 +243,24 @@
       //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
-        return <g-menu vModel={showOptions.value}
-                       {...{
-                         props: {
-                           ...props.menuProps,
-                           nudgeBottom: nudgeBottom.value
-                         },
-                         scopedSlots: {
-                           activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
-                         }
-                       }}
+        return <g-menu {...{
+          props: {
+            ...props.menuProps,
+            nudgeBottom: nudgeBottom.value,
+            value: showOptions.value,
+          },
+          scopedSlots: {
+            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+          },
+          on: {
+            input: e => showOptions.value = e,
+          }
+        }}
         >
           <template slot="default">
             {genSearchTextField()}
             {context.slots['prepend-item'] && context.slots['prepend-item']()}
-            {genList(showOptions, genListScopedSlots)}
+            {genList(showOptions)}
             {context.slots['append-item'] && context.slots['append-item']()}
           </template>
         </g-menu>
@@ -278,6 +278,7 @@
         state,
         selectedItem,
         selections,
+        showOptions
       }
     },
     render() {
@@ -291,13 +292,8 @@
       span {
         margin: 3px
       }
-
-      .g-tf-wrapper {
-        margin: 16px 0px 24px;
-      }
-
-      .g-tf-append__inner {
-        transition: transform 0.4s
+      .g-tf-append__inner .g-icon:last-child {
+        transition: transform 0.4s;
       }
 
       .g-tf-input {
@@ -311,15 +307,15 @@
       input {
         flex-shrink: 1;
         flex-grow: 1;
-        flex-basis: 0%;
+        flex-basis: 0;
       }
 
     }
   }
 
   .g-select__active::v-deep {
-
     .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
       transform: rotateZ(180deg);
     }
   }

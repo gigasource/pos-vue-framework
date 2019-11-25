@@ -7,13 +7,13 @@
 				</span>
 				<div class="g-dnddialog-action" ref="action">
 					<g-btn v-if="!(isMinimize || isMaximize)" x-small flat tile width="16" height="16" min-width="16" @click="toggleMinimize">
-						<g-icon size="16">{{ minimizeIcon }}</g-icon>
+						<g-icon size="16" svg>icon-minimize</g-icon>
 					</g-btn>
 					<g-btn x-small flat tile width="16" height="16" min-width="16" @click="toggleMaximize">
-						<g-icon size="16">{{ maximizeIcon }}</g-icon>
+						<g-icon size="16" svg>{{ maximizeIcon }}</g-icon>
 					</g-btn>
 					<g-btn x-small flat tile width="16" height="16" min-width="16" @click="toggleDialog">
-						<g-icon size="16">{{ closeIcon }}</g-icon>
+						<g-icon size="16" svg>icon-close2</g-icon>
 					</g-btn>
 				</div>
 			</div>
@@ -30,10 +30,6 @@
   import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
-  import minimizeIcon from '../../assets/dnddialog/minimize.svg'
-  import maximize1Icon from '../../assets/dnddialog/maximize1.svg'
-  import maximize2Icon from '../../assets/dnddialog/maximize2.svg'
-  import closeIcon from '../../assets/dnddialog/close.svg'
 
   export default {
     name: 'GDndDialog',
@@ -100,7 +96,7 @@
 
       onBeforeUnmount(() => {
         if (isRender.value) {
-          detach(context.refs.wrapper);
+          context.refs.wrapper && detach(context.refs.wrapper);
         }
       })
 
@@ -140,7 +136,7 @@
         }
       }
 
-      const maximizeIcon = computed(() => isMaximize.value ? maximize2Icon : maximize1Icon)
+      const maximizeIcon = computed(() => isMaximize.value ? 'icon-maximize2' : 'icon-maximize1')
 
       // Dialog Positions and Dimensions
       const dialogPosition = reactive({
@@ -192,7 +188,6 @@
       const isDrag = ref(false)
 
       function dragStart(e) {
-        e.preventDefault();
         if (isMaximize.value) {
           return;
         }
@@ -209,8 +204,6 @@
       }
 
       function drag(e) {
-        e.preventDefault()
-
         if (isDrag.value) {
           const newTop = dialogStartPosition.top - mouseStartPosition.pageY + e.pageY;
           const newLeft = dialogStartPosition.left - mouseStartPosition.pageX + e.pageX;
@@ -230,8 +223,6 @@
       }
 
       function dragEnd(e) {
-        e.preventDefault()
-
         if (isDrag.value) {
           isDrag.value = false;
           cursor.value = '';
@@ -259,7 +250,6 @@
       const resizeRegionSize = 8;
 
       function resizeStart(e) {
-        e.preventDefault()
         if (resizeMode.value !== '') {
           dialogStartPosition.top = dialogPosition.top;
           dialogStartPosition.left = dialogPosition.left;
@@ -307,7 +297,6 @@
       }
 
       function resize(e) {
-        e.preventDefault()
         if (isDrag.value || isMinimize.value || isMaximize.value) {
           return;
         }
@@ -371,8 +360,6 @@
       }
 
       function resizeEnd(e) {
-        e.preventDefault();
-
         if (isResize.value) {
           isResize.value = false;
           resizeMode.value = '';
@@ -401,9 +388,7 @@
         wrapperClasses,
         wrapperStyles,
         dragStart,
-				minimizeIcon,
 				maximizeIcon,
-				closeIcon
       }
     }
   }
@@ -439,9 +424,6 @@
 		}
 
 		&-title {
-			font-family: Roboto;
-			font-style: normal;
-			font-weight: normal;
 			font-size: 12px;
 			line-height: 22px;
 			white-space: nowrap;
@@ -464,15 +446,11 @@
 
 		&-content {
 			flex: 1 1 auto;
-			font-family: Roboto;
-			font-style: normal;
-			font-weight: normal;
 			font-size: 12px;
 			line-height: 22px;
 			backface-visibility: hidden;
 			overflow-y: auto;
 			background-color: #FFFFFF;
-			padding: 16px;
 			border-radius: 0 0 4px 4px;
 		}
 

@@ -1,15 +1,24 @@
 import _ from 'lodash'
-import {computed, ref, watch} from "@vue/composition-api";
+import { computed, ref, watch } from '@vue/composition-api';
 
-function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vModel) {
+function groupable(props, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
+  const { returnObject = true, items, mandatory, multiple, allowDuplicates, maxSelection } = props
   const toggleItem = (item) => {
     if (multiple) {
-      updateMultiple(item);
+      if (returnObject) {
+        updateMultiple(item);
+      } else {
+        updateMultiple(items.indexOf(item))
+      }
     } else {
-      updateSingle(item);
+      if (returnObject) {
+        updateSingle(item);
+      } else {
+        updateSingle(items.indexOf(item))
+      }
     }
   };
 
@@ -44,15 +53,22 @@ function groupable({ mandatory, multiple, maxSelection, allowDuplicates }, vMode
     vModel.value = clonedValue;
   };
 
-    const isActiveItem = (item) => {
-      return multiple ? vModel.value.some(element => _.isEqual(element, item) ) : _.isEqual(vModel.value, item);
-    };
-
-    return {
-      toggleItem,
-      isActiveItem
+  const isActiveItem = (item) => {
+    if (multiple) {
+      return returnObject
+        ? vModel.value.some(element => _.isEqual(element, item))
+        : vModel.value.includes(items.indexOf(item))
     }
+    return returnObject
+      ? _.isEqual(vModel.value, item)
+      : items.indexOf(item) === vModel.value
+  };
+
+  return {
+    toggleItem,
+    isActiveItem
   }
+}
 
 export function makeSelectable(props, context) {
   // 1 -> {a: 1, b: 2}
@@ -93,7 +109,7 @@ export function makeSelectable(props, context) {
       rawInternalValue.value = convertValueToInternalValue(props.value);
     }
     ignoreWatchInternalValue = true;
-  }, {lazy: true});
+  }, { lazy: true });
 
   watch(() => rawInternalValue.value, () => {
     if (ignoreWatchInternalValue) {
@@ -104,9 +120,9 @@ export function makeSelectable(props, context) {
     ignoreWatchValue = true;
   })
 
-  const {toggleItem, isActiveItem} = groupable(props, rawInternalValue);
+  const { toggleItem, isActiveItem } = groupable(props, rawInternalValue);
 
-  return {toggleItem, isActiveItem, internalValue: rawInternalValue};
+  return { toggleItem, isActiveItem, internalValue: rawInternalValue };
 }
 
 export default groupable
