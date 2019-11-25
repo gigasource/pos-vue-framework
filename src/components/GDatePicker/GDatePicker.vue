@@ -404,6 +404,8 @@
   @import "../../style/variables";
   @import "../../style/colors";
 
+  button { outline: none; }
+
   $textDisabled: #9e9e9e;
 
   /*TITLE*/
