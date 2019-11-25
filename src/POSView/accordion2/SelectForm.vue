@@ -10,29 +10,54 @@
 			<template v-for="i in type.length">
 				<tr>
 					<td>
-						<p-o-s-select v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text" :items="type[i-1].items" itemText="text" item-value="">
+						<p-o-s-select v-model="selectedType[i-1][type[i-1].text]" :placeholder="type[i-1].text"
+													:items="type[i-1].items" itemText="text" item-value="">
 							<template v-slot:itemInList="{item, isSelected}" class="listItem">
 								<g-list-item :value="item">
 									<g-list-item-content>
 										{{item.text}}
 									</g-list-item-content>
 									<g-list-item-action>
-										<g-icon v-show="isSelected">check</g-icon>
+										<g-icon v-show="isSelected" size="12">check</g-icon>
 									</g-list-item-action>
 								</g-list-item>
 							</template>
 						</p-o-s-select>
 					</td>
 					<td>
-						<p-o-s-select v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text" :items="scopedSlots[i-1].items" itemText="text" item-value="">
+						<p-o-s-select v-model="selectedScopedSlot[i-1][scopedSlots[i-1].text]" :placeholder="scopedSlots[i-1].text"
+													:items="scopedSlots[i-1].items" itemText="text" item-value="">
+							<template v-slot:itemInList="{item, isSelected}" class="listItem">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon v-show="isSelected" size="12">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
 						</p-o-s-select>
 					</td>
 					<td>
-						<p-o-s-select v-model="selectedLocal[i-1][local[i-1].text]" :placeholder="local[i-1].text" :items="local[i-1].items" itemText="text" item-value="">
+						<p-o-s-select v-model="selectedLocal[i-1][local[i-1].text]" :placeholder="local[i-1].text"
+													:items="local[i-1].items" itemText="text" item-value="">
+							<template v-slot:itemInList="{item, isSelected}" class="listItem">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon v-show="isSelected" size="12">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
 						</p-o-s-select>
 					</td>
 					<td>
-						<g-icon x-small svg @click="deleteSelection(i, selectedType, selectedLocal, selectedScopedSlot)">icon-trash2</g-icon>
+						<g-icon x-small svg @click="deleteSelection(i, selectedType, selectedLocal, selectedScopedSlot)">
+							icon-trash2
+						</g-icon>
 					</td>
 				</tr>
 			</template>
@@ -41,50 +66,50 @@
 
 </template>
 <script>
-  import GSimpleTable from '../../components/GSimpleTable/GSimpleTable';
-  import _ from 'lodash'
-  import POSSelect from '../../POSComponents/POSInput/POSSelect';
-  import GIcon from '../../components/GIcon/GIcon';
-  import GListItem from '../../components/GList/GListItem';
-  import { GListItemContent, GListItemText, GListItemAction } from '../../components/GList/GListFunctionalComponent';
+    import GSimpleTable from '../../components/GSimpleTable/GSimpleTable';
+    import _ from 'lodash'
+    import POSSelect from '../../POSComponents/POSInput/POSSelect';
+    import GIcon from '../../components/GIcon/GIcon';
+    import GListItem from '../../components/GList/GListItem';
+    import {GListItemContent, GListItemText, GListItemAction} from '../../components/GList/GListFunctionalComponent';
 
-  export default {
-    name: 'SelectForm',
-    components: { GListItem, POSSelect, GSimpleTable, GIcon, GListItemContent, GListItemText, GListItemAction },
-    props: {},
-    data() {
-      return {
+    export default {
+        name: 'SelectForm',
+        components: {GListItem, POSSelect, GSimpleTable, GIcon, GListItemContent, GListItemText, GListItemAction},
+        props: {},
+        data() {
+            return {
 
-        type: [
-          { text: 'prop', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-          { text: 'emit', items: [{ text: 'click' }, { text: 'block' }, { text: 'inline' }], },
-          { text: 'emit2', items: [{ text: 'input' }, { text: 'block' }, { text: 'inline' }] }],
-        scopedSlots: [
-          { text: 'File', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-          { text: 'abc', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-          { text: 'remove', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
-        local: [
-          { text: 'Home', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-          { text: 'Park', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-          { text: 'River', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
+                type: [
+                    {text: 'prop', items: [{text: 'flex'}, {text: 'block'}, {text: 'inline'}],},
+                    {text: 'emit', items: [{text: 'click'}, {text: 'block'}, {text: 'inline'}],},
+                    {text: 'emit2', items: [{text: 'input'}, {text: 'block'}, {text: 'inline'}]}],
+                scopedSlots: [
+                    {text: 'File', items: [{text: 'flex'}, {text: 'block'}, {text: 'inline'}],},
+                    {text: 'abc', items: [{text: 'flex'}, {text: 'block'}, {text: 'inline'}],},
+                    {text: 'remove', items: [{text: 'flex'}, {text: 'block'}, {text: 'inline'}],}],
+                local: [
+                    {text: 'Home', items: [{text: 'flex'}, {text: 'block'}, {text: 'inline'}],},
+                    {text: 'Park', items: [{text: 'flex'}, {text: 'block'}, {text: 'inline'}],},
+                    {text: 'River', items: [{text: 'flex'}, {text: 'block'}, {text: 'inline'}],}],
 
-        selectedType: [{ prop: null }, { emit1: null }, { emit2: null }],
-        selectedScopedSlot: [{ File: null }, { abc: null }, { remove: null }],
-        selectedLocal: [{ Home: null }, { Park: null }, { River: null }]
-      }
+                selectedType: [{prop: null}, {emit1: null}, {emit2: null}],
+                selectedScopedSlot: [{File: null}, {abc: null}, {remove: null}],
+                selectedLocal: [{Home: null}, {Park: null}, {River: null}]
+            }
 
-    },
-    setup: function (props, context) {
-      const deleteSelection = (i, list1, list2, list3) => {
-        list1[i - 1][Object.keys(list1[i - 1])[0]] = null
-        list2[i - 1][Object.keys(list2[i - 1])[0]] = null
-        list3[i - 1][Object.keys(list3[i - 1])[0]] = null
-      }
-      return {
-        deleteSelection
-      }
+        },
+        setup: function (props, context) {
+            const deleteSelection = (i, list1, list2, list3) => {
+                list1[i - 1][Object.keys(list1[i - 1])[0]] = null
+                list2[i - 1][Object.keys(list2[i - 1])[0]] = null
+                list3[i - 1][Object.keys(list3[i - 1])[0]] = null
+            }
+            return {
+                deleteSelection
+            }
+        }
     }
-  }
 </script>
 <style lang="scss" scoped>
 
@@ -202,7 +227,32 @@
 				}
 			}
 		}
-
 	}
 
+	.g-list-item {
+		padding: 0;
+		min-height: auto;
+		display: flex;
+		align-items: center;
+
+		font-weight: normal;
+		font-size: 12px;
+		line-height: 22px;
+
+		&-content {
+			margin-left: 8px !important;
+		}
+
+		&-action {
+			margin: 0 8px 0 0;
+		}
+
+		::before {
+			display: none;
+		}
+	}
+
+	.g-list-item::before {
+		display: none;
+	}
 </style>
