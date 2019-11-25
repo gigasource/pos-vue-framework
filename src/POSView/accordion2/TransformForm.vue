@@ -3,12 +3,12 @@
 		<div class="header">Transform</div>
 
 		<div class="item" v-for="i in position.length">
-			<p-o-s-text-field :placeholder="position[i-1].placeholder" :prefix="position.prefix" v-model="detailPosition[i-1]">
+			<p-o-s-text-field :placeholder="position[i-1].placeholder" :prefix="position.prefix" v-model="internalValue.position[i-1]">
 				<template v-slot:prepend>{{position[i-1].prefix}}</template>
 			</p-o-s-text-field>
 		</div>
 		<div class="item" v-for="i in size.length">
-			<p-o-s-text-field :placeholder="size[i-1].placeholder" :prefix="size.prefix" v-model="detailSize[i-1]">
+			<p-o-s-text-field :placeholder="size[i-1].placeholder" :prefix="size.prefix" v-model="internalValue.size[i-1]">
 				<template v-slot:prepend>{{size[i-1].prefix}}</template>
 			</p-o-s-text-field>
 		</div>
@@ -16,7 +16,8 @@
 </template>
 <script>
   import POSTextField from '../../POSComponents/POSInput/POSTextField';
-  import { computed } from '@vue/composition-api';
+  import { computed, set } from '@vue/composition-api';
+  import { getInternalValue } from '../../utils/helpers';
 
   export default {
     name: 'TransformForm',
@@ -24,6 +25,8 @@
     props: {
       top: { type: String, default: '224px' },
       left: { type: String, default: '333px' },
+      width: String,
+      height: String,
       position: {
         type: Array,
         default: () => {
@@ -36,26 +39,26 @@
           return []
         }
       },
-      detailPosition: {
-        type: Array,
+      value: {
+        type: Object,
         default: () => {
-          return []
-        }
-      },
-      detailSize: {
-        type: Array,
-        default: () => {
-          return []
+          return {}
         }
       },
     },
     setup: function (props, context) {
       const styles = computed(() => ({
+        ...props.height && { 'height': props.height },
+        ...props.width && { 'width': props.width },
         ...props.top && { 'top': props.top },
         ...props.left && { 'left': props.left }
       }));
+      const internalValue = getInternalValue(props, context)
+      set(internalValue.value, 'position', props.position.map(item => ''))
+      set(internalValue.value, 'size', props.size.map(item => ''))
       return {
-        styles
+        styles,
+        internalValue
       }
     }
   }

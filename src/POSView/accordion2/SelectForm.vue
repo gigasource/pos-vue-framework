@@ -1,66 +1,62 @@
 <template>
-	<div>
-		<h2>{{internalValue.type[0]}}</h2>
-		<div :style="styles" class="select-form">
-			<g-simple-table dense width="100%">
+	<div :style="styles" class="select-form">
+		<g-simple-table dense width="100%">
+			<tr>
+				<th>Type</th>
+				<th>SlotScope</th>
+				<th>Local</th>
+				<th></th>
+			</tr>
+			<template v-for="i in Math.max(type.length, scopedSlot.length, local.length)">
 				<tr>
-					<th>Type</th>
-					<th>SlotScope</th>
-					<th>Local</th>
-					<th></th>
+					<td>
+						<p-o-s-select :items="type[i-1].items" :placeholder="type[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text" v-if="i<=type.length" v-model="internalValue.type[i-1]">
+							<template class="listItem" v-slot:itemInList="{item, isSelected}">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon size="8" v-show="isSelected">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
+						</p-o-s-select>
+					</td>
+					<td>
+						<p-o-s-select :items="scopedSlot[i-1].items" :placeholder="scopedSlot[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text" v-if="i<=scopedSlot.length" v-model="internalValue.scopedSlot[i-1]">
+							<template class="listItem" v-slot:itemInList="{item, isSelected}">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon size="8" v-show="isSelected">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
+						</p-o-s-select>
+					</td>
+					<td>
+						<p-o-s-select :items="local[i-1].items" :placeholder="local[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text" v-if="i<=local.length" v-model="internalValue.local[i-1]">
+							<template class="listItem" v-slot:itemInList="{item, isSelected}">
+								<g-list-item :value="item">
+									<g-list-item-content>
+										{{item.text}}
+									</g-list-item-content>
+									<g-list-item-action>
+										<g-icon size="8" v-show="isSelected">check</g-icon>
+									</g-list-item-action>
+								</g-list-item>
+							</template>
+						</p-o-s-select>
+					</td>
+					<td>
+						<g-icon @click="deleteSelection(i)" svg x-small>icon-trash2</g-icon>
+					</td>
 				</tr>
-				<template v-for="i in type.length">
-					<tr>
-						<td>
-							<p-o-s-select :items="type[i-1].items" :placeholder="type[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text" v-model="internalValue.type[i-1]">
-								<template class="listItem" v-slot:itemInList="{item, isSelected}">
-									<g-list-item :value="item">
-										<g-list-item-content>
-											{{item.text}}
-										</g-list-item-content>
-										<g-list-item-action>
-											<g-icon size="8" v-show="isSelected">check</g-icon>
-										</g-list-item-action>
-									</g-list-item>
-								</template>
-							</p-o-s-select>
-						</td>
-						<td>
-							<p-o-s-select :items="scopedSlot[i-1].items" :placeholder="scopedSlot[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text">
-								<template class="listItem" v-slot:itemInList="{item, isSelected}">
-									<g-list-item :value="item">
-										<g-list-item-content>
-											{{item.text}}
-										</g-list-item-content>
-										<g-list-item-action>
-											<g-icon size="8" v-show="isSelected">check</g-icon>
-										</g-list-item-action>
-									</g-list-item>
-								</template>
-							</p-o-s-select>
-						</td>
-						<td>
-							<p-o-s-select :items="local[i-1].items" :placeholder="local[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text">
-								<template class="listItem" v-slot:itemInList="{item, isSelected}">
-									<g-list-item :value="item">
-										<g-list-item-content>
-											{{item.text}}
-										</g-list-item-content>
-										<g-list-item-action>
-											<g-icon size="8" v-show="isSelected">check</g-icon>
-										</g-list-item-action>
-									</g-list-item>
-								</template>
-							</p-o-s-select>
-						</td>
-						<td>
-							<g-icon @click="deleteSelection(i)" svg x-small>icon-trash2</g-icon>
-						</td>
-					</tr>
-				</template>
-			</g-simple-table>
-		</div>
-
+			</template>
+		</g-simple-table>
 	</div>
 
 
@@ -123,33 +119,22 @@
         ...props.left && { 'left': props.left }
       }));
       const deleteSelection = (i) => {
-        set(internalValue.value, 'type', props.type.map(obj => {
-          ''
-        }));
-        internalValue.value.scopedSlots[i - 1] = null
-        internalValue.value.local[i - 1] = null
+        for (let key of _.keys(internalValue.value)) {
+          let value = _.cloneDeep(internalValue.value[key])
+          value[i - 1] = ''
+          internalValue.value[key] = value
+        }
       }
       const internalValue = getInternalValue(props, context)
-      set(internalValue.value, 'type', props.type.map(obj => {
-        ''
-      }));
-      internalValue.value['scopedSlots'] = props.scopedSlot.map(obj => {
-        let rObj = {};
-        rObj[obj.text] = null;
-        return rObj;
-      })
-      internalValue.value['local'] = props.local.map(obj => {
-        let rObj = {};
-        rObj[obj.text] = null;
-        return rObj;
-      })
+      set(internalValue.value, 'type', props.type.map(obj => ''));
+      set(internalValue.value, 'scopedSlot', props.scopedSlot.map(obj => ''));
+      set(internalValue.value, 'local', props.local.map(obj => ''));
 
 
       return {
         styles,
         deleteSelection,
-        internalValue
-
+        internalValue,
       }
     }
   }
@@ -179,7 +164,7 @@
 
 			&:last-of-type {
 				padding-right: 3px;
-				padding-bottom: 8px
+				padding-left: 3px;
 			}
 		}
 

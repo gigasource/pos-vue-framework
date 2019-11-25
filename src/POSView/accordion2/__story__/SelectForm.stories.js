@@ -21,15 +21,16 @@ export const selectform = () => ({
       scopedSlot: [
         { text: 'ComputedFile', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
         { text: 'abc', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
+        { text: 'remove', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
         { text: 'remove', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
       local: [
-        { text: 'Home', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-        { text: 'Park', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
-        { text: 'River', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
+        { text: 'file', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
+        { text: 'folder', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], },
+        { text: 'disk', items: [{ text: 'flex' }, { text: 'block' }, { text: 'inline' }], }],
       value: {}
     }
   },
-  template: `<select-form :type="type" :scopedSlot="scopedSlot" :local="local" v-model="value" >
+  template: `<select-form :type="type" :scopedSlot="scopedSlot" :local="local" v-model="value"  height="270px">
 
 </select-form>
   `,
