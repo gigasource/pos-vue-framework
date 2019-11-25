@@ -28,7 +28,7 @@ export const Demo = () => ({
       <template v-slot:title>
         Title
       </template>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+        <p style="margin: 16px">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
         nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
@@ -38,7 +38,7 @@ export const Demo = () => ({
         nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     </g-dnd-dialog>
     </div>`,
 })

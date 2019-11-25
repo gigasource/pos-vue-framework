@@ -104,7 +104,7 @@
 
             //function genTrack
             const trackStyle = computed(() => ({
-                'background-color': props.trackColor,
+                'background': props.trackColor,
                 'height': props.height
             }))
             const trackBgrStyle = computed(() => {

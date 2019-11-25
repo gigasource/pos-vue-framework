@@ -67,11 +67,15 @@ export const layoutJsonObject = () => ({
     },
     editable: {
       default: boolean('editable', true)
+    },
+    displayPreviewColor: {
+      type: Boolean,
+      default: boolean('displayPreviewColor', false)
     }
   },
   template: `
     <div>
-      <g-grid-layout :layout="layout" :passThrough="passThrough" :editable="editable" style="height: 700px" :displayPreviewColor="true">
+      <g-grid-layout :layout="layout" :passThrough="passThrough" :editable="editable" style="height: 700px" :displayPreviewColor="displayPreviewColor">
         <span slot="s1" class="slot">singleItemSlot</span>
         <span slot="s1" class="slot">singleItemSlot</span>
         <template slot="s2" class="slot">singleItemSlot</template>
@@ -99,16 +103,22 @@ export const layoutJsonObject = () => ({
 
 export const layoutGridGeneratorInput = () => ({
   components: { GGridLayout, GGridGeneratorInput },
+  props: {
+    displayPreviewColor: {
+      type: Boolean,
+      default: boolean('displayPreviewColor', false)
+    }
+  },
   data() {
     return {
       model: { layout: undefined },
-      field: { key: 'layout' }
+      field: { key: 'layout' },
     }
   },
   template: `
     <div>
       <g-grid-generator-input :model="model" :field="field"></g-grid-generator-input>
-      <g-grid-layout :layout="model[field.key]" style="height: 700px" :displayPreviewColor="true">
+      <g-grid-layout :layout="model[field.key]" style="height: 700px" :displayPreviewColor="displayPreviewColor">
         <span slot="s1" class="slot" >s1</span>
         <span slot="s1" class="slot">s1</span>
         <span slot="s2" class="slot">s2</span>

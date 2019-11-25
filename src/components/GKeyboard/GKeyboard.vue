@@ -82,7 +82,7 @@
 		computed: {
       computedValue: {
         get() {
-          return this.value;
+          return this.value || '';
 				},
 				set(value) {
           this.$emit('input', value);
@@ -99,11 +99,12 @@
       click(item) {
         if(item.type === 'shift'){
           this.isShift = item.action(this.isShift);
-				} else if(item.type === 'enter') {
+        } else if(item.type === 'enter') {
           this.$emit('submit', this.value);
 				} else {
           this.computedValue = item.content ? item.action(this.computedValue, item.content[this.index]) : item.action(this.computedValue);
 				}
+
       },
     }
   }

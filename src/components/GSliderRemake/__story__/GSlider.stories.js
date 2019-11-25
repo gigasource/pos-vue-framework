@@ -156,6 +156,7 @@ export const testSlider = () => ({
   },
   template: `<div style="height: 500px; padding-top: 100px">
                <g-slider 
+               trackColor="linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(121,9,55,0.17270658263305327) 11%, rgba(0,212,255,1) 100%)"
                max="30"
                step="10" 
                ticks
