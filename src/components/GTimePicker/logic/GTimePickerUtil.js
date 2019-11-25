@@ -144,7 +144,7 @@ export default function (props, context) {
     // if you want to show all components (hour, minute, second), just ignore this value
     activeTimePicker: ActiveTimePicker.hour,
     // indicate whether AM or PM is active
-    activePeriodPicker: ActivePeriodPicker.AM,
+    activePeriodPicker: parseInt(timeParts[0]) < 12 ?  ActivePeriodPicker.AM : ActivePeriodPicker.PM,
     // storing selected time elements
     selectedTime: initialTime,
     // indicate whether period (AM/PM) should be show
