@@ -803,6 +803,21 @@
         copy(toJSONStr(state.layout))
       }
 
+      function renderGridGenerateSaveCloseButton() {
+        return [
+          <div class="grid-gen__settings-section">Dialog Actions</div>,
+          <button class='simple-btn' vOn:click_stop_prevent={e => {
+            context.emit('json', toJSON(state.layout))
+            context.emit('close')
+          }}>Save</button>,
+          <button class='simple-btn' vOn:click_stop_prevent={e => {
+            state.layout = fromJSON(props.layout)
+            state.selectedGrid = state.layout
+            context.emit('close')
+          }}>Cancel</button>,
+        ]
+      }
+
       function renderGridGeneratorOutput() {
         return [
           <div class="grid-gen__settings-section">Files</div>,
@@ -856,10 +871,8 @@
                   {renderMiniMap()}
                 </div>
               </div>
-              <div>
-
-              </div>
               <div class="grid-gen__settings">
+                {renderGridGenerateSaveCloseButton()}
                 {renderGridGeneratorOutput()}
                 {renderViewportSetting()}
                 {renderGridSettings(state.selectedGrid)}
@@ -871,19 +884,8 @@
         )
       }
 
-      function save() {
-        context.emit('json', toJSON(state.layout))
-      }
-
-      function cancel() {
-        state.layout = fromJSON(props.layout)
-        state.selectedGrid = state.layout
-      }
-
       return {
         state,
-        save,
-        cancel,
         renderGridGenerator
       }
     },
