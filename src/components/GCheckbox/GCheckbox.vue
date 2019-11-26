@@ -46,7 +46,7 @@
       const isSelectedArray = computed(() => Array.isArray(internalValue.value));
       //value return when checkbox checked
       const trueValue = props.value ? (props.value) : true;
-      let isActive = ref(props.inputValue || false);
+      let isActive = ref(false);
       //determinate state
       let isDeterminate = ref(true);
       if (props.indeterminate) {

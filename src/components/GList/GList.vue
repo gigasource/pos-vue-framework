@@ -138,10 +138,7 @@
       multiple: Boolean,
       mandatory: Boolean,
       allowDuplicates: Boolean,
-      itemValue: {
-        type: String,
-        default: 'value'
-      },
+      itemValue: String,
       itemTitle: {
         type: String,
         default: 'title'
@@ -186,7 +183,7 @@
 
       const renderList = computed(() => _.map(props.items, (value) => {
           if (_.isObject(value)) return value
-          else return {[props.itemTitle]: value, [props.itemValue]: value} // when props.items is an array of primitives
+          else return {[props.itemTitle]: value} // when props.items is an array of primitives
         }))
 
       //Select
