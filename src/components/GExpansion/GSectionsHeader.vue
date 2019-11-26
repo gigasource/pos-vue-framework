@@ -1,53 +1,59 @@
 <script>
-  import { computed, inject } from '@vue/composition-api';
-  import { convertToUnit } from '../../utils/helpers';
-  import GIcon from '../GIcon/GIcon';
+    import {computed, inject} from '@vue/composition-api';
+    import {convertToUnit} from '../../utils/helpers';
+    import GIcon from '../GIcon/GIcon';
 
-  export default {
-    name: 'GSectionsHeader',
-		components: { GIcon },
-    props: {
-      height: Number,
-			item: null,
-			headerText: String
-		},
-    setup(props, context) {
-      const toggleItem = inject('toggleItem')
-      const isActiveItem = inject('isActiveItem')
+    export default {
+        name: 'GSectionsHeader',
+        components: {GIcon},
+        props: {
+            height: Number,
+            item: null,
+            headerText: String
+        },
+        setup(props, context) {
+            const toggleItem = inject('toggleItem')
+            const isActiveItem = inject('isActiveItem')
 
-			const headerStyles = computed(() => ({
-			  height: convertToUnit(props.height)
-			}))
+            const headerStyles = computed(() => ({
+                height: convertToUnit(props.height)
+            }))
 
-			const genDefaultHeader = function () {
-        return [
-          props.headerText,
-          <div class="g-sections-item-header-append">
-            <g-icon small svg>icon-arrow-right</g-icon>
-          </div>
-				]
-			}
+            const genDefaultHeader = function () {
+                return [
+                    props.headerText,
+                    <div class="g-sections-item-header-append">
+                        <g-icon small svg>icon-arrow-right</g-icon>
+                    </div>
+                ]
+            }
 
-      const genHeader = function () {
-        return <div
-          class={['g-sections-header', { 'g-sections-header__active': isActiveItem(props.item) }]}
-          vOn:click={() => toggleItem(props.item)}
-					style={headerStyles.value}>
-					{context.slots.default ? context.slots.default() : genDefaultHeader()}
-        </div>
-      }
+            const genHeader = function () {
+                return <div
+                    class={['g-sections-header', {'g-sections-header__active': isActiveItem(props.item)}]}
+                    vOn:click={() => toggleItem(props.item)}
+                    style={headerStyles.value}>
+                    {context.slots.default ? context.slots.default() : genDefaultHeader()}
+                </div>
+            }
 
-      return {
-        genHeader
-			}
-		},
-		render() {
-			return this.genHeader()
-		}
-  }
+            return {
+                genHeader
+            }
+        },
+        render() {
+            return this.genHeader()
+        }
+    }
+
+
 </script>
 <style scoped lang="scss">
 	@import './variable';
+
+	.dragging {
+		border: 1px solid red !important;
+	}
 
 	.g-sections {
 		&-header {
