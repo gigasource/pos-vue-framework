@@ -3,11 +3,13 @@
   import GMenu from '../GMenu/GMenu'
   import GDatePicker from '../GDatePicker/GDatePicker'
   import GTextField from '../GInput/GTextField'
+  import GChip from '../GChip/GChip'
   import dayjs from 'dayjs';
   import _ from 'lodash'
   import GBtn from '../GBtn/GBtn'
 
   // register components
+  GTextField.components['GChip'] = GChip
   GMenu.components['GTextField'] = GTextField
   GDatePicker.components['GBtn'] = GBtn
 
@@ -107,27 +109,12 @@
       multiple: Boolean,
     },
     setup(props, context) {
-      let dateFormat
-      if (props.type === 'date') {
-        dateFormat = 'YYYY-MM-dd'
-      } else {
-        dateFormat = 'YYYY-MM'
-      }
-
+      let dateFormat = props.type === 'date' ? 'YYYY-MM-dd' : 'YYYY-MM'
       let initialDateValue
-      if (!props.multiple && !props.range) {
-        if (props.value) {
-          initialDateValue = props.value
-        } else {
-          initialDateValue = dayjs().format(dateFormat)
-        }
-      } else {
-        if (props.value) {
-          initialDateValue = props.value
-        } else {
-          initialDateValue = []
-        }
-      }
+      if (!props.multiple && !props.range)
+        initialDateValue = props.value ? props.value : dayjs().format(dateFormat)
+      else
+        initialDateValue = props.value ? props.value : []
 
       const state = reactive({
         value: initialDateValue,
@@ -136,17 +123,12 @@
       })
 
       function getValue(val) {
-        // string cpy
-        if (!props.multiple && !props.range) {
-          return val
-        } else {
-          return _.map(val, v => v)
-        }
+        return (!props.multiple && !props.range) ? val : _.map(val, v => v)
       }
 
       const cptTextFieldValue = computed(() => {
         if (props.multiple) {
-          return <span>state.value.join(', ')</span>
+          return state.value.join(', ')
         } else if (props.range) {
           return state.value.join(' ~ ')
         } else {
@@ -154,69 +136,83 @@
         }
       })
 
+      function renderMultipleDates() {
+        return state.tempValue.map((item, index) =>
+            <GChip
+                small={props.smallChips}
+                close={props.deletableChips}
+                vOn:close={() => onChipCloseClick(index)}>
+              {item}
+            </GChip>)
+      }
+
+      function renderSingleOrDateRanges() {
+        return <span style="height: 32px; line-height: 32px; display: block;">{cptTextFieldValue.value}</span>
+      }
+
+      function gTextFieldInputScopedSlots() {
+        return {
+          inputSlot: ({ inputErrStyles }) =>
+              <div style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
+                { props.multiple ? renderMultipleDates() : renderSingleOrDateRanges()}
+              </div>
+        }
+      }
+
+      function gMenuActivatorSlots() {
+        return {
+          activator: gMenuScope =>
+              <g-text-field
+                  label={props.label}
+                  prependIcon="far fa-calendar"
+                  value={cptTextFieldValue.value}
+                  vOn:click={e => {
+                    gMenuScope.toggleContent(e)
+                    state.tempValue = getValue(state.value)
+                  }}
+                  scopedSlots={gTextFieldInputScopedSlots()}/>
+        }
+      }
+
       return () => {
-        return <g-menu
-            contentFillWidth={false}
-            closeOnClick
-            minWidth={300}
-            nudgeBottom={10}
-            scopedSlots={{
-              activator: gMenuScope =>
-                  <g-text-field
-                      label={props.label}
-                      prependIcon="far fa-calendar"
-                      value={cptTextFieldValue.value}
-                      vOn:click={e => {
-                        gMenuScope.toggleContent(e)
-                        state.tempValue = getValue(state.value)
-                      }}/>
-            }}
-            value={state.showMenu}
-            vOn:input={v => state.showMenu = v}>
-          <g-date-picker
-              vShow={state.showMenu}
-              allowedDates={props.allowedDates}
-              max={props.max}
-              min={props.min}
-              events={props.events}
-              value={state.tempValue}
-              vOn:input={v => state.tempValue = v}
-              color={props.color}
-              rangeColor={props.rangeColor}
-              eventColor={props.eventColor}
-              headerColor={props.headerColor}
-              fullWidth={props.fullWidth}
-              width={props.width}
-              dayFormat={props.dayFormat}
-              monthFormat={props.monthFormat}
-              weekdayFormat={props.weekdayFormat}
-              headerDateFormat={props.headerDateFormat}
-              titleDateFormat={props.titleDateFormat}
-              noTitle={props.noTitle}
-              landscape={props.landscape}
-              firstDayOfWeek={props.firstDayOfWeek}
-              showWeek={props.showWeek}
-              showCurrent={props.showCurrent}
-              type={props.type}
-              disabled={props.disabled}
-              readonly={props.readonly}
-              scrollable={props.scrollable}
-              range={props.range}
-              multiple={props.multiple}>
-            <div class="actions-btn">
-              <g-btn flat vOn:click={e => {
-                state.showMenu = false
-              }}>Cancel
-              </g-btn>
-              <g-btn flat vOn:click={e => {
-                state.value = getValue(state.tempValue)
-                state.showMenu = false
-              }}>OK
-              </g-btn>
-              &nbsp;
-            </div>
-          </g-date-picker>
-        </g-menu>
+        return <div>
+          <g-menu
+              contentFillWidth={false}
+              closeOnClick
+              minWidth={300}
+              nudgeBottom={10}
+              value={state.showMenu}
+              vOn:input={v => state.showMenu = v}
+              scopedSlots={gMenuActivatorSlots()}>
+            <g-date-picker
+                vShow={state.showMenu}
+                {...{
+                  props: {
+                    ..._.pick(props, ['allowedDates', 'max', 'min', 'events', 'color', 'rangeColor', 'eventColor', 'headerColor', 'fullWidth',
+                      'width', 'dayFormat', 'monthFormat', 'weekdayFormat', 'headerDateFormat', 'titleDateFormat', 'noTitle', 'landscape', 'firstDayOfWeek',
+                      'showWeek', 'showCurrent', 'type', 'disabled', 'readonly', 'scrollable', 'range', 'multiple'
+                    ]),
+                    value: state.tempValue
+                  },
+                  on: {
+                    input: v => state.tempValue = v
+                  }
+                }}>
+              <div class="actions-btn">
+                <g-btn flat vOn:click={e => {
+                  state.showMenu = false
+                }}>Cancel
+                </g-btn>
+                &nbsp;
+                <g-btn flat vOn:click={e => {
+                  state.value = getValue(state.tempValue);
+                  state.showMenu = false
+                }}>OK
+                </g-btn>
+              </div>
+            </g-date-picker>
+          </g-menu>
+        </div>
       }
     }
   }
@@ -226,5 +222,17 @@
     display: flex;
     flex-direction: row-reverse;
     padding: 0 10px 15px 10px;
+  }
+
+  ::v-deep {
+    .g-menu--activator {
+      span {
+        margin: 3px
+      }
+
+      .g-tf-input {
+        display: none;
+      }
+    }
   }
 </style>
