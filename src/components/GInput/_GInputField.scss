@@ -1,14 +1,16 @@
 @import "../../style/elevation";
-input[type=password], [type=datetime], [type=date],[type=datetime-local], [type=month], [type=time], [type=week] {
-  outline: none;
+input {
   border: transparent;
+}
+
+input[type=password] {
+  outline: none;
   font-family: "Muli", sans-serif;
   background-color: transparent;
 }
 
 input[type=text] {
   outline: none;
-  border: transparent;
   font-family: "Muli", sans-serif;
 }
 
