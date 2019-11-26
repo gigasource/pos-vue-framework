@@ -35,6 +35,17 @@ function _copyAreaInfo(areaModel, inputModel) {
       case 'height':
       case 'bgColor':
       case 'wrapInDiv':
+      case 'displayFlex':
+      case 'flexDirection':
+      case 'flexWrap':
+      case 'flexJustifyContent':
+      case 'flexAlignItems':
+      case 'flexAlignContent':
+      case 'flexOrder':
+      case 'flexGrow':
+      case 'flexShrink':
+      case 'flexBasis':
+      case 'flexAlignSelf':
         areaModel[key] = inputModel[key]
         break
         // compatibility old version
