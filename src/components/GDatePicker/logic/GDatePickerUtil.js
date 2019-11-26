@@ -1,4 +1,4 @@
-import { computed, reactive } from '@vue/composition-api'
+import { computed, reactive, watch } from '@vue/composition-api'
 import { computedTitleModel } from './TitleUtil'
 import { computedHeaderModel } from './HeaderUtil'
 import { computedYearModel } from './YearsUtil'
@@ -70,6 +70,14 @@ export default (props, context) => {
     // array with multiple items if multiple mode is selected
     // array with 1 or 2 items if range mode is selected
     selectedValues: getValidInitialValue(props, cptIsMultiSelect),
+  })
+
+  watch(() => props.value, newVal => {
+    // Update selectedValues state on external change of props.value
+    // compare newVal and state.selectedValues to reduce un-necessary update:
+    // user change date -> state.selectedValues change (1) -> emit input -> props.value change -> watch props.value -> update state.selectedValues (2)
+    if (newVal != state.selectedValues)
+      state.selectedValues = getValidInitialValue(props, cptIsMultiSelect)
   })
 
   // cause we don't support year picker atm so, context will not be used
