@@ -975,10 +975,8 @@
 
       & > input {
         width: 80%;
-
-        &:focus {
-          outline: none;
-        }
+        border: 1px solid black;
+        outline: none;
       }
 
       &--selected > input {
@@ -992,11 +990,8 @@
 
       & > input {
         width: 100%;
-        border: 1px solid gray;
-
-        &:focus {
-          outline: none;
-        }
+        border: 1px solid black;
+        outline: none;
       }
 
       &--selected > input {
@@ -1095,16 +1090,12 @@
           font-size: small;
         }
 
-        & > button {
-          padding: 5px;
-        }
-
         & > input, select, div {
           width: 102px;
         }
 
-        & > select {
-          border: solid 1px gray;
+        & > select, input {
+          border: solid 1px black;
           border-radius: 2px;
           padding-left: 5px;
           outline: none;
