@@ -51,19 +51,21 @@
 					</slot>
 				</div>
 				<slot name="inputMessage">
-					<div class="g-tf-error" v-if="!isValidInput">{{errorMessages}}</div>
-					<div class="g-tf-hint" v-else :class="hintClasses">
+					<div class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</div>
+					<div class="g-tf-hint" v-else-if="isValidInput && hint" :class="hintClasses">
 						<slot name="hint">{{hint}}</slot>
 					</div>
 					<div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">{{internalValue.length}} / {{counter}}</div>
 				</slot>
 			</div>
 		</fieldset>
-		<div class="g-tf-append__outer" @click="onClickAppendOuter">
+
 			<slot name="appendOuter">
+				<div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
 				<g-icon :color=iconColor>{{appendIcon}}</g-icon>
+				</div>
 			</slot>
-		</div>
+
 
 	</div>
 </template>
