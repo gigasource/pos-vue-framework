@@ -1,17 +1,16 @@
 @import "../../style/elevation";
 input {
   border: transparent;
+  font-family: "Muli", sans-serif;
 }
 
 input[type=password] {
   outline: none;
-  font-family: "Muli", sans-serif;
   background-color: transparent;
 }
 
 input[type=text] {
   outline: none;
-  font-family: "Muli", sans-serif;
 }
 
 .inputGroup {
