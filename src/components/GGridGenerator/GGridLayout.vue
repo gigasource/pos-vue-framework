@@ -100,7 +100,6 @@
       const __removePreviewArea = () => {
         const wrapperEl = context.refs[refIdWrapperElement]
         const areaEls = [...wrapperEl.querySelectorAll(`[class="${__previewAreaNameClassSignature}"]`)]
-        console.log(areaEls)
         _.each(areaEls, el => el.parentNode.removeChild(el))
       }
 
@@ -113,24 +112,12 @@
           <button vOn:click={() => dialogState.show = true} class="editor-dialog__open-btn">Open Editor</button>
           <g-dialog value={dialogState.show} vOn:input={v => dialogState.show = v} fullscreen>
             <div class="editor-dialog">
-              <div class='editor-dialog__title-bar'>
-                <span class='editor-dialog__title-bar__title'>Grid Layout Editor</span>
-                <g-btn flat small vOn:click={() => {
-                  context.refs.gridGenerator.save()
-                  dialogState.show = false
-                }}>Save
-                </g-btn>
-                <g-btn flat small vOn:click={() => {
-                  context.refs.gridGenerator.cancel()
-                  dialogState.show = false
-                }}>Cancel
-                </g-btn>
-              </div>
               <g-grid-generator
                   ref="gridGenerator"
                   layout={toJSON(state.layout)}
                   style="flex: 1"
-                  vOn:json={json => state.layout = fromJSON(json)}/>
+                  vOn:json={json => state.layout = fromJSON(json)}
+                  vOn:close={() => dialogState.show = false}/>
             </div>
           </g-dialog>
         </div>
@@ -210,6 +197,7 @@
        */
       function _findDeclaredVNodes(name) {
         // no duplicated named slots => return array
+        // assume that slot name and area name are not duplicate
         if (_.has(namedSlotVNodes, name)) {
           return namedSlotVNodes[name]
         } else if (_.has(namedAreaVNodes, name)) {
@@ -219,13 +207,27 @@
         }
       }
 
+      function attachAreaAttribute(vNode, name) {
+        // try to attach area into slot vnode which is not clear text vnode and not wrap in div
+        if (!vNode) return
+        if (!vNode.data) vNode.data = {}
+        if (!vNode.data.attrs) vNode.data.attrs = {}
+        vNode.data.attrs.area = name
+      }
+
       function processLayout(model) {
         const cssClassName = getAreaClass(model.name)
         let vNode = _findDeclaredVNodes(model.name)
         if (vNode.length > 1) {
-          // multiple slot with the same area name
-          // slot with multiple children
-          vNode = <div key={model.name} class={cssClassName}>{vNode}</div>
+          if (model.wrapInDiv) {
+            vNode = <div key={model.name} class={`${cssClassPrefix}${model.name}`}>{vNode}</div>
+          } else if (_.has(namedSlotVNodes, model.name)) {
+            // check for v-slot only
+            // get vnode which is not clear text
+            vNode = _.filter(vNode, node => node.tag)
+            // then to attach area into slot vnode which is not wrap in div
+            _.each(vNode, node => attachAreaAttribute(node, model.name))
+          }
         } else if (vNode.length === 1) {
           // single slot with area name or scopedSlot
           if (model.wrapInDiv) {
@@ -235,9 +237,7 @@
             vNode = null
           } else if (_.has(namedSlotVNodes, model.name)) {
             // try to attach area into slot vnode which is not clear text vnode and not wrap in div
-            if (!vNode[0].data) vNode[0].data = {}
-            if (!vNode[0].data.attrs) vNode[0].data.attrs = {}
-            vNode[0].data.attrs.area = model.name
+            attachAreaAttribute(vNode[0], model.name)
           } else {
             // area vNode, no wrap in div, not clear text vNode
             vNode = vNode[0]
