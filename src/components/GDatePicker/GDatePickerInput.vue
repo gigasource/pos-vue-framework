@@ -7,6 +7,7 @@
   import _ from 'lodash'
   import GBtn from '../GBtn/GBtn'
 
+  // register components
   GMenu.components['GTextField'] = GTextField
   GDatePicker.components['GBtn'] = GBtn
 
@@ -14,6 +15,8 @@
     name: 'GDatePickerInput',
     components: { GMenu, GDatePicker, GTextField, GBtn },
     props: {
+      label: String,
+
       // A predicate function which validate date value and return true if input date is valid, otherwise false
       allowedDates: [Function, null],
       // Date value in ISO format 'YYYY-MM-dd' indicate the maximum selectable date boundary
@@ -126,18 +129,24 @@
         }
       }
 
-      console.log(initialDateValue)
-
       const state = reactive({
         value: initialDateValue,
+        tempValue: _.cloneDeep(initialDateValue),
         showMenu: false,
       })
 
-      let tempValue = _.cloneDeep(initialDateValue)
+      function getValue(val) {
+        // string cpy
+        if (!props.multiple && !props.range) {
+          return val
+        } else {
+          return _.map(val, v => v)
+        }
+      }
 
       const cptTextFieldValue = computed(() => {
         if (props.multiple) {
-          return state.value.join(', ')
+          return <span>state.value.join(', ')</span>
         } else if (props.range) {
           return state.value.join(' ~ ')
         } else {
@@ -155,11 +164,11 @@
               activator: gMenuScope =>
                   <g-text-field
                       label={props.label}
-                      prependIcon="access_time"
+                      prependIcon="far fa-calendar"
                       value={cptTextFieldValue.value}
                       vOn:click={e => {
-                        tempValue = _.cloneDeep(initialDateValue)
                         gMenuScope.toggleContent(e)
+                        state.tempValue = getValue(state.value)
                       }}/>
             }}
             value={state.showMenu}
@@ -170,8 +179,8 @@
               max={props.max}
               min={props.min}
               events={props.events}
-              value={tempValue}
-              vOn:input={v => tempValue = v}
+              value={state.tempValue}
+              vOn:input={v => state.tempValue = v}
               color={props.color}
               rangeColor={props.rangeColor}
               eventColor={props.eventColor}
@@ -194,15 +203,17 @@
               scrollable={props.scrollable}
               range={props.range}
               multiple={props.multiple}>
-            <div style="display: flex; flex-direction: row-reverse; padding: 0 10px 15px 10px;">
-              <g-btn vOn:click={e => {
-                state.value = tempValue
-                state.showMenu = false
-              }}>OK</g-btn>&nbsp;
-              <g-btn vOn:click={e => {
+            <div class="actions-btn">
+              <g-btn flat vOn:click={e => {
                 state.showMenu = false
               }}>Cancel
               </g-btn>
+              <g-btn flat vOn:click={e => {
+                state.value = getValue(state.tempValue)
+                state.showMenu = false
+              }}>OK
+              </g-btn>
+              &nbsp;
             </div>
           </g-date-picker>
         </g-menu>
@@ -210,5 +221,10 @@
     }
   }
 </script>
-<style scoped>
+<style scoped lang="scss">
+  .actions-btn {
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 0 10px 15px 10px;
+  }
 </style>

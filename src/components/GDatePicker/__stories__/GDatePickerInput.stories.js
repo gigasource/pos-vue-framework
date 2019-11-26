@@ -32,6 +32,7 @@ export const SingleValueDatePicker = () => ({
   setup(props) {
     return () =>
       <g-date-picker-input
+          label={'Due date'}
         max={props.max}
         min={props.min}
         value={props.value}
@@ -74,6 +75,7 @@ export const MultipleValueDatePicker = () => ({
   setup(props) {
     return () =>
         <g-date-picker-input
+            label={'Due date'}
             max={props.max}
             min={props.min}
             value={props.value}
@@ -119,6 +121,7 @@ export const RangeValueDatePicker = () => ({
   setup(props) {
     return () =>
         <g-date-picker-input
+            label={'Due date'}
             max={props.max}
             min={props.min}
             value={props.value}
@@ -162,6 +165,7 @@ export const SingleValueMonthPicker = () => ({
     return () =>
         <div>
           <g-date-picker-input
+              label={'Due date'}
               value={props.value}
               color={props.color}
               header-color={props.headerColor}
@@ -205,6 +209,7 @@ export const MultipleValueMonthPicker = () => ({
     return () =>
         <div>
           <g-date-picker-input
+              label={'Due date'}
               value={props.value}
               color={props.color}
               header-color={props.headerColor}
