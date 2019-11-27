@@ -78,6 +78,16 @@ export default (props, context) => {
     // user change date -> state.selectedValues change (1) -> emit input -> props.value change -> watch props.value -> update state.selectedValues (2)
     if (newVal != state.selectedValues)
       state.selectedValues = getValidInitialValue(props, cptIsMultiSelect)
+
+    // update viewport
+    state.viewportDate = (props.range
+        ? props.value.length === 0
+                ? dayjs().format( props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM')
+                : props.focusOnFirstItem
+                    ? props.value[0]
+                    : props.value[props.value.length - 1]
+        : props.value
+    )
   })
 
   // cause we don't support year picker atm so, context will not be used

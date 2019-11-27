@@ -30,7 +30,7 @@ import GDiagram from './GConnector/GDiagram';
 
 import GDatePicker from './GDatePicker/GDatePicker';
 
-import GDateRangePicker from './GDateRangePicker/GDateRangePicker';
+import GDateRangePicker from './GDatePicker/GDateRangePicker';
 
 import GDialog from './GDialog/GDialog';
 
