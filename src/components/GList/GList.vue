@@ -14,7 +14,7 @@
 					<slot :isSelected="isActiveItem(item)" :item="item" :on="getListEvents(item, index)" name="listItem"
 								:onSelect="onSelect">
 						<div
-								:class="{'g-list-item__active': isSelected(item, index), [activeClass]: isSelected(item, index), 'waves-effect': true, 'waves-auto': true}"
+								:class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
 								class="g-list-item"
 								tabindex="0"
 								v-on="getListEvents(item, index)"

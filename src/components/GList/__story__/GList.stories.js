@@ -730,7 +730,7 @@ export const gListPrimitiveItems = () => ({
         :multiple="multiple"
         allowDuplicates
         v-model="selectedValue"
-        returnObject
+       
       />
 </div>
 
