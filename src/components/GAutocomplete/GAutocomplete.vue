@@ -56,6 +56,7 @@
           type: String,
           default: 'clear'
         },
+        clearIconColor: String,
         rules: Array,
         type: {
           type: String,
@@ -203,7 +204,7 @@
       const textFieldScopedSlots = {
         clearableSlot: ({ iconColor }) =>
           <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
-                 color={iconColor}>{props.clearIcon}</GIcon>,
+                 color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
         appendInner: ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({ inputErrStyles }) =>
@@ -292,17 +293,10 @@
 	}
 
 	.g-autocomplete {
-
-
 		.g-select ::v-deep {
-
 			.g-menu--activator {
-
 				span {
 					margin: 3px
-				}
-
-				.g-tf-wrapper {
 				}
 
 				.g-tf-append__inner {
@@ -324,7 +318,6 @@
 					flex-basis: auto;
 					cursor: text;
 				}
-
 			}
 		}
 	}
