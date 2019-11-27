@@ -23,28 +23,43 @@
 
             provide('toggleItem', toggleItem)
             provide('isActiveItem', isActiveItem)
-            //console.log(context.parent.$children[0].$slots.default)
-            const headerNodes = _.filter(context.parent.$children[0].$slots.default, node => node.tag && node.tag.indexOf('GSectionsHeader') > -1)
-            const itemNodes = _.filter(context.parent.$children[0].$slots.default, node => node.tag && node.tag.indexOf('GSectionsItem') > -1)
 
-            for (let i = 0; i < itemNodes.length; i++) {
-                if (headerNodes[i]) {
-                    itemNodes[i].componentOptions.propsData.item = i + 1
-                    headerNodes[i].componentOptions.propsData.item = i + 1
-                } else {
-                    itemNodes[i].componentOptions.propsData.item = i + 1
-                    headerNodes.push(
-                        <g-sections-header item={i + 1}
-                                           header-text={itemNodes[i].componentOptions.propsData.header}/>
-                    )
+            let headerNodes = []
+            let itemNodes = []
+
+            if (!props.itemHeaders) {
+                headerNodes = _.filter(context.parent.$children[0].$slots.default, node => node.tag && node.tag.indexOf('GSectionsHeader') > -1)
+                itemNodes = _.filter(context.parent.$children[0].$slots.default, node => node.tag && node.tag.indexOf('GSectionsItem') > -1)
+
+                for (let i = 0; i < itemNodes.length; i++) {
+                    if (headerNodes[i]) {
+                        itemNodes[i].componentOptions.propsData.item = i + 1
+                        headerNodes[i].componentOptions.propsData.item = i + 1
+                    } else {
+                        itemNodes[i].componentOptions.propsData.item = i + 1
+                        headerNodes.push(
+                            <g-sections-header item={i + 1}
+                                               header-text={itemNodes[i].componentOptions.propsData.header}/>
+                        )
+                    }
                 }
+            } else {
+                props.itemHeaders.map((header, index) => {
+                    headerNodes.push(
+                        <g-sections-header item={index + 1} header-text={header}/>
+                    )
+                    itemNodes.push(
+                        <g-sections-item item={index + 1}>
+                            {context.slots[header] ? context.slots[header]() : undefined}
+                        </g-sections-item>
+                    )
+                })
             }
 
-            const sections = ref(_.zip(headerNodes, itemNodes))
-
+            const sections = ref(_.compact(_.flatten(_.zip(headerNodes, itemNodes))))
             const {onDragStart, onDragEnter, onDragOver, onDragLeave, onDrop} = getDndEventHandler(props, context, sections.value)
 
-            const genContentSlotDefault = () => {
+            const genContent = () => {
                 //return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
                 return sections.value.map((section, index) => {
                     return <div
@@ -59,28 +74,13 @@
                 })
             }
 
-
-            const genContentItemHeader = () => {
-                const headerNodes = []
-                const itemNodes = []
-
-                props.itemHeaders.map((header, index) => {
-                    headerNodes.push(
-                        <g-sections-header item={index + 1} header-text={header}/>
-                    )
-                    itemNodes.push(
-                        <g-sections-item item={index + 1}>
-                            {context.slots[header] ? context.slots[header]() : undefined}
-                        </g-sections-item>
-                    )
-                })
-
-                return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
-            }
+            // const genContentItemHeader = () => {
+            //     return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
+            // }
 
             const genSections = () => {
                 return <div class='g-sections'>
-                    {context.slots.default ? genContentSlotDefault() : props.itemHeaders ? genContentItemHeader() : undefined}
+                    {genContent()}
                 </div>
             }
 
@@ -102,10 +102,8 @@
         let previousIndex = null
 
         function onDragStart(e, index) {
-            //console.log(e.target.childNodes)
             source = sections[index]
             sourceIndex = index
-            e.target.classList.add('.dragging')
             e.target.addEventListener('dragend', onDragEnd)
             e.dataTransfer.setData('sourceHTML', e.target.innerHTML)
         }
@@ -114,13 +112,9 @@
             e.preventDefault()
             previousIndex = currentIndex
             currentIndex = index
-            //console.log(previousIndex + ' , ' + currentIndex)
-            //if (currentIndex > sourceIndex) sections[currentIndex - 1] = sections[currentIndex]
             sections[previousIndex] = sections[currentIndex]
             sections[index] = source
-						sections.splice()
-            //sections[index-1] = sections[index]
-            //todo swap innerHTML ?
+            sections.splice()
         }
 
         function onDragLeave(e, index) {
@@ -132,21 +126,19 @@
         }
 
         function onDragEnd(e) {
-            e.target.classList.remove('.dragging')
-        }
-
-        function onDrop(e, index) {
-            console.log('drop')
-            //let ground = sections[index]
-            //sections[index] = sections[sourceIndex]
-            sections[index] = source
-						sections.splice()
             source = null
             sourceIndex = null
             currentIndex = null
             previousIndex = null
-            //source.innerHTML = e.currentTarget.innerHTML
-            //e.currentTarget.innerHTML = e.dataTransfer.getData('sourceHTML')
+        }
+
+        function onDrop(e, index) {
+            sections[index] = source
+            sections.splice()
+            source = null
+            sourceIndex = null
+            currentIndex = null
+            previousIndex = null
         }
 
         return {onDragStart, onDragEnter, onDragOver, onDragLeave, onDrop}
