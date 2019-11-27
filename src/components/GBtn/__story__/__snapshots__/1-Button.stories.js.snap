@@ -7,3 +7,77 @@ exports[`test should test1 1`] = `
   XLARGE BUTTON
 </button>
 `;
+
+exports[`test should test1 2`] = `
+<button class="g-btn g-btn__depressed g-size__default waves-effect"
+        style="color: rgb(255, 165, 0); caret-color: #FFA500;"
+>
+  <span class="g-btn__content">
+    DEPRESSED BUTTON
+  </span>
+</button>
+`;
+
+exports[`test should test1 3`] = `
+<button class="g-btn g-btn__fab g-btn__fixed g-btn__bottom g-btn__right g-btn__round g-btn__contained bg-blue g-size__default waves-effect"
+        style="color: rgb(255, 255, 255); caret-color: #ffffff;"
+>
+  <span class="g-btn__content">
+    <i class="material-icons g-icon">
+      android
+    </i>
+  </span>
+</button>
+`;
+
+exports[`test should test1 4`] = `
+<button class="g-btn g-btn__contained g-size__default waves-effect"
+        style="color: rgb(255, 255, 255); caret-color: #ffffff;"
+>
+  <span class="g-btn__content">
+    GRADIENT BUTTON
+  </span>
+</button>
+`;
+
+exports[`test should test1 5`] = `
+<button class="g-btn g-btn__flat g-btn__icon g-btn__round g-size__default waves-effect"
+        style="color: rgb(255, 76, 76); caret-color: #FF4C4C;"
+>
+  <span class="g-btn__content">
+    <i class="material-icons g-icon">
+      star
+    </i>
+  </span>
+</button>
+`;
+
+exports[`test should test1 6`] = `
+<button class="g-btn g-btn__flat g-btn__depressed g-btn__outlined g-size__default waves-effect"
+        style="color: rgb(25, 25, 255); caret-color: #1919FF;"
+>
+  <span class="g-btn__content">
+    OUTLINED BUTTON
+  </span>
+</button>
+`;
+
+exports[`test should test1 7`] = `
+<button class="g-btn g-btn__rounded g-btn__contained bg-brown g-size__default waves-effect"
+        style="color: rgb(255, 255, 255); caret-color: #ffffff;"
+>
+  <span class="g-btn__content">
+    ROUNDED BUTTON
+  </span>
+</button>
+`;
+
+exports[`test should test1 8`] = `
+<button class="g-btn g-btn__flat g-btn__text g-size__default waves-effect"
+        style="color: rgb(50, 153, 50); caret-color: #329932;"
+>
+  <span class="g-btn__content">
+    TEXT BUTTON
+  </span>
+</button>
+`;

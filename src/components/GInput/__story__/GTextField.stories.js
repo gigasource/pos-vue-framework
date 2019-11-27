@@ -249,7 +249,7 @@ export const TextFieldStyles = () => ({
           class="bg-grey-lighten-5">
           <g-col>
             Regular
-            <g-text-field label="Regular"  value="Blahblah"/>
+            <g-text-field type="week" label="Regular"  />
           </g-col>
           <g-col>
             Solo
@@ -494,6 +494,35 @@ export const TextFieldLabelSlot = () => ({
               </g-container>
 `,
 });
+
+export const TextFieldAppendSlot = () => ({
+  components: { GTextField, GContainer , GIcon},
+  template: `
+              <g-container>
+                <g-text-field >
+                 <template v-slot:appendOuter>
+                 <div class="g-tf-append__outer">
+                 <g-icon>check</g-icon>
+                 </div>
+                </template>
+                </g-text-field>
+              </g-container>
+`,
+});
+export const TextFieldTypes = () => ({
+  components: { GTextField, GContainer , GIcon},
+ props:{
+   type:{ default: text('type', 'text') },
+ }
+ ,
+  template: `
+              <g-container>
+                <g-text-field label="Label" :type="type" >
+                </g-text-field>
+                <div>{{type}}</div>
+              </g-container>
+`,
+});
 //todo: validate
 export const TextFieldValidate = () => ({
   components: { GTextField, GIcon },
@@ -580,6 +609,61 @@ export const TextFieldBoostrap= () => ({
     </g-text-field-bs>`
 
 
+});
+
+export const AllInputTypes= () => ({
+  components: { GTextField, GRow, GCol },
+  data() {
+    return {
+
+    }
+  },
+  props: {
+  },
+  template:
+      `<template>
+        <g-row>
+          <g-col xs3>
+            <g-text-field type="date" label="date"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="datetime-local" label="datetime-local"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="email" label="email"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="month" label="month"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="number" label="number"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="password" label="password"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="range" label="range"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="search" label="search"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="tel" label="tel"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="text" label="text"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="time" label="time"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="url" label="url"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="week" label="week"></g-text-field>
+          </g-col>
+        </g-row>
+      </template>`
 });
 // testing
 import Vue from 'vue/dist/vue.common.js'

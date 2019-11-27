@@ -1,5 +1,5 @@
 <template>
-	<div :class="classes" :style="styles" @click="onSelectItem" @keydown="onKeyDown">
+	<div :class="classes" :style="styles" tabindex="0" v-on="listItemEvents(value)">
 		<slot></slot>
 	</div>
 </template>
@@ -15,7 +15,7 @@
     props: {
       height: String,
       disabled: Boolean,
-      selectable: Boolean,
+			selectable: Boolean,
       twoLine: Boolean,
       threeLine: Boolean,
       value: [String, Number, Object]
@@ -32,7 +32,7 @@
           'g-list-item__selectable': props.selectable,
           'g-list-item__two-line': props.twoLine,
           'g-list-item__three-line': props.threeLine,
-          'g-list-item__active': isActiveItem(props.value),
+					'g-list-item__active': props.isSelected,
         }
       });
       const styles = computed(() => {
@@ -42,27 +42,37 @@
           }
         }
       });
-      const selectedItems = inject('selectedItems')
-			const multiple = inject('multiple')
-			const mandatory = inject('mandatory')
-			const selectable = inject('selectable')
-			const allowDuplicates = inject('allowDuplicates')
-      const { toggleItem, isActiveItem } = groupable({multiple, mandatory, allowDuplicates}, selectedItems)
 
-      const onSelectItem = () => {
-        selectable ? toggleItem(props.value) : null
-        context.emit('singleItemClick')
+      //handle listItem in List case
+      const itemsInList = inject('itemsInList').value.push(props.value)
+      const selectedItems = inject('selectedItems')
+      const multiple = inject('multiple')
+      const mandatory = inject('mandatory')
+      const allowDuplicates = inject('allowDuplicates')
+      const {isActiveItem} = groupable({ multiple, mandatory, allowDuplicates }, selectedItems)
+      const selectable = inject('selectable')
+      const inListEvents = inject('getListEvents')
+      const internalValue = ref(null)
+      const { toggleItem } = groupable(props, internalValue)
+      const singleItemEvents = () => {
+        return {
+          click: () => {
+            toggleItem(props.value)
+            context.emit('singleItemClick')
+          },
+          keydown: (e) => {
+            context.emit('keydown', e)
+          }
+        }
       }
-      const onKeyDown = (e) => {
-        context.emit('keydown', e)
-      }
+      const listItemEvents = selectable ? inListEvents : singleItemEvents()
 
       return {
+        itemsInList,
         classes,
         styles,
-        onSelectItem,
-        onKeyDown,
-				selectedItems
+        listItemEvents,
+        selectedItems,
       }
     }
   }
