@@ -10,15 +10,15 @@
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
       </slot>
       <template v-for="(item, index) in renderList">
-        <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :on="getListEvents(item)"
+        <slot name="listItem" :item="item" :isSelected="isActiveItem(item, index)" :on="getListEvents(item)"
               :onSelect="onSelect">
           <div v-if="item[itemTitle]"
                class="g-list-item"
-               :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
+               :class="{'g-list-item__active': isActiveItem(item, index), [activeClass]: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
                tabindex="0"
-               v-on="getListEvents(item)"
+               v-on="getListEvents(item, index)"
           >
-            <slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+            <slot name="prepend" :item="item" :isSelected="isActiveItem(item, index)">
               <div :class="prependClasses" v-if="item.prepend &&  prependType">
                 <g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
                 <g-avatar v-else-if="prependType==='avatar'">
@@ -57,13 +57,13 @@
 
 				<slot :item="item" v-else>
 					<div class="g-list-item"
-							 :class="{'g-list-item__active': isActiveItem(item) , activeClass: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
+							 :class="{'g-list-item__active': isActiveItem(item, index) , activeClass: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
 							 tabindex="0"
-							 @click="onSelect(item)"
-							 @keydown.enter="onSelect(item)"
+							 @click="onSelect(item, index)"
+							 @keydown.enter="onSelect(item, index)"
 							 @keydown.down="onArrowDown(item)"
 							 @keydown.up="onArrowUp(item)">
-						<slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+						<slot name="prepend" :item="item" :isSelected="isActiveItem(item, index)">
 							<div :class="prependClasses" v-if="item.prepend &&  prependType">
 								<g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
 								<g-avatar v-else-if="prependType==='avatar'">
@@ -210,18 +210,18 @@
         context.emit('keydown:up')
       }
 
-      function onSelect(item) {
+      function onSelect(item, index) {
         if (!props.selectable) return;
-        toggleItem(item)
+        toggleItem(item, index)
         context.emit('click:item')
       }
 
       const { internalValue, toggleItem, isActiveItem } = makeSelectable(props, context);
 
-      const getListEvents = (item) => {
+      const getListEvents = (item, index) => {
        let listListeners ={}
         return listListeners = {
-         click: () => onSelect(item),
+         click: () => onSelect(item, index),
          keydown: (e) => {
            switch (e.keyCode) {
              case keyCodes.down:
@@ -231,7 +231,7 @@
                onArrowUp(item)
                break
              case keyCodes.enter:
-               onSelect(item)
+               onSelect(item, index)
                break
            }
          }

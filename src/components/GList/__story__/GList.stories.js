@@ -25,6 +25,8 @@ export const gListPlayGround = () => ({
     return {
       items: [
         { title: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { title: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { title: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { title: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { title: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
@@ -65,6 +67,9 @@ export const gListPlayGround = () => ({
         :divider="divider"
         :prependType="prependType"
         :subtitleWrap="subtitleWrap"
+        :selectable="selectable"
+        :multiple="multiple"
+        :mandatory="mandatory"
       />
       `,
 })
@@ -674,7 +679,7 @@ export const gListPrimitiveItems = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
-      items: ['Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors']
+      items: ['Jason Oner', 'Jason Oner', 'Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors']
     }
   },
   props: {
@@ -711,6 +716,9 @@ export const gListPrimitiveItems = () => ({
         :divider="divider"
         :prependType="prependType"
         :subtitleWrap="subtitleWrap"
+        :selectable="selectable"
+        :multiple="multiple"
+        :mandatory="mandatory"
       />
       `,
 })
