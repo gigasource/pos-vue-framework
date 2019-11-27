@@ -10,7 +10,7 @@
 			<template v-for="i in Math.max(type.length, scopedSlot.length, local.length)">
 				<tr>
 					<td>
-						<p-o-s-select :items="type[i-1].items" :placeholder="type[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text" v-if="i<=type.length" v-model="internalValue.type[i-1]">
+						<p-o-s-select :items="type[i-1].items" :placeholder="type[i-1].text" append-icon="icon-arrow-down" append-svg item-value="text" itemText="text" itemValue="text" v-if="i<=type.length" v-model="internalValue.type[i-1]">
 							<template class="listItem" v-slot:itemInList="{item, isSelected}">
 								<g-list-item :value="item">
 									<g-list-item-content>
@@ -127,7 +127,6 @@
       set(internalValue.value, 'type', props.type.map(obj => ''));
       set(internalValue.value, 'scopedSlot', props.scopedSlot.map(obj => ''));
       set(internalValue.value, 'local', props.local.map(obj => ''));
-
 
       return {
         styles,

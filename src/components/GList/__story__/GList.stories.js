@@ -103,7 +103,7 @@ export const gListSingleSelectPlayGround = () => ({
     itemValue: { default: text('itemValue', 'prepend') },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
-    returnObject: { default: boolean('returnObject', true) },
+    returnObject: { default: boolean('returnObject', false) },
   },
   template:
     ` 

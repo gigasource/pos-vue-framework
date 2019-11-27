@@ -1,17 +1,16 @@
 <script>
-  import GTextField from "../GInput/GTextField";
-  import GMenu from "../GMenu/GMenu"
-  import {makeSelectable} from "../../mixins/groupable";
-  import {reactive, ref, computed, toRefs} from "@vue/composition-api";
-  import {getList, getSelections} from "./GSelectFactory";
-  import GChip from "../GChip/GChip";
-  import GIcon from "../GIcon/GIcon";
-  import GList from "../GList/GList";
-  import _ from "lodash"
-  import {isSelected} from "../GDatePicker/logic/TableUtil";
-  import GListItem from "../GList/GListItem";
-  import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
-  import {keyCodes} from "../../utils/helpers";
+  import GTextField from '../GInput/GTextField';
+  import GMenu from '../GMenu/GMenu'
+  import { makeSelectable } from '../../mixins/groupable';
+  import { computed, reactive, ref } from '@vue/composition-api';
+  import { getList, getSelections } from './GSelectFactory';
+  import GChip from '../GChip/GChip';
+  import GIcon from '../GIcon/GIcon';
+  import GList from '../GList/GList';
+  import _ from 'lodash'
+  import GListItem from '../GList/GListItem';
+  import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
+  import { keyCodes } from '../../utils/helpers';
 
   export default {
     name: "GSelect",
@@ -92,6 +91,7 @@
       },
       appendSvg: Boolean,
       required: Boolean,
+      returnObject: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -141,6 +141,8 @@
                   props: {
                     items: options.value,
                     'item-title': props.itemText,
+                    itemValue: props.itemValue,
+                    returnObject: props.returnObject,
                     mandatory: props.mandatory,
                     'allow-duplicates': props.allowDuplicates,
                     multiple: props.multiple,
