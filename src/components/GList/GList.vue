@@ -21,7 +21,7 @@
 						>
 							<slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
 								<div :class="prependClasses" v-if="item.prepend &&  prependType && itemText">
-									<g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
+									<g-icon svg="svg" v-if="prependType==='icon'">{{item.prepend}}</g-icon>
 									<g-avatar v-else-if="prependType==='avatar'">
 										<g-img :src="item.prepend"/>
 									</g-avatar>
@@ -37,7 +37,8 @@
 								<div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
 							</div>
 							<slot :isSelected="isActiveItem(item)" :item="item" name="append">
-								<template v-if="item.append && itemText">{{item.append}}</template>
+								<g-icon v-if="appendIcon">{{item.append}}</g-icon>
+								<template v-else>{{item.append}}</template>
 							</slot>
 						</div>
 						<g-divider v-if="(divider && (index < renderList.length -1) )"
@@ -63,7 +64,7 @@
 								 v-on="getListEvents(item, index)">
 							<slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
 								<div :class="prependClasses" v-if="item.prepend &&  prependType">
-									<g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
+									<g-icon svg="svg" v-if="prependType==='icon'">{{item.prepend}}</g-icon>
 									<g-avatar v-else-if="prependType==='avatar'">
 										<g-img :src="item.prepend"/>
 									</g-avatar>
@@ -81,7 +82,8 @@
 								<div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
 							</div>
 							<slot name="append" :item="item">
-								<template v-if="item.append">{{item.append}}</template>
+								<g-icon v-if="appendIcon">{{item.append}}</g-icon>
+								<div class="g-list-item-icon" v-if="appendIcon">{{item.append}}</div>
 							</slot>
 
 						</div>
@@ -146,6 +148,8 @@
       activeClass: String,
       inMenu: Boolean,
       returnObject: Boolean,
+      appendIcon: Boolean,
+      svg: Boolean,
     },
     setup: function (props, context) {
       //G list computed class

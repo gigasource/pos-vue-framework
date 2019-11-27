@@ -160,10 +160,10 @@ export const gListMultiSelectPlayGround = () => ({
     multiple: { default: boolean('multiple', true) },
     mandatory: { default: boolean('mandatory', false) },
     allowDuplicates: { default: boolean('allowDuplicates', true) },
-    itemValue: { default: text('itemValue', 'text') },
+    itemValue: { default: text('itemValue', '') },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
-    returnObject: { default: boolean('returnObject', false) },
+    returnObject: { default: boolean('returnObject', true) },
   },
   template:
     ` 
@@ -359,6 +359,24 @@ export const gListPrependWithSlot = () => ({
       </g-list>
       `,
 })
+export const gListAppendIcon = () => ({
+  components: { GList, GIcon },
+  data() {
+    return {
+      items: [
+        { text: 'Jason Oner', subtext: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg', append: 'mdi-glasses' },
+        { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg', append: 'mdi-glasses' },
+        { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg', append: 'mdi-glasses' },
+        { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg', append: 'mdi-glasses' },
+      ]
+    }
+  },
+  template:
+    `
+      <g-list :items="items"  subheader="subheader" appendIcon itemText="text" >
+      </g-list>
+      `,
+})
 export const gListAppendWithSlot = () => ({
   components: { GList, GIcon },
   data() {
@@ -373,7 +391,7 @@ export const gListAppendWithSlot = () => ({
   },
   template:
     `
-      <g-list :items="items"  subheader="subheader"  >
+      <g-list :items="items"  subheader="subheader" itemText="text" >
         <template v-slot:append="{item}">
         <g-icon color="indigo">mdi-mail</g-icon>
         </template>
