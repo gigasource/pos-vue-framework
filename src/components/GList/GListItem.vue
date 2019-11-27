@@ -5,10 +5,8 @@
 </template>
 
 <script>
-  import { computed, ref, inject } from '@vue/composition-api';
-  import { getInternalValue } from '../../utils/helpers';
-  import groupable, { makeSelectable } from '../../mixins/groupable';
-  import { isSelected } from '../GDatePicker/logic/TableUtil';
+  import { computed, inject, ref } from '@vue/composition-api';
+  import groupable from '../../mixins/groupable';
 
   export default {
     name: 'GListItem',
