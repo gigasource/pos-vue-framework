@@ -74,7 +74,7 @@
     name: 'SelectForm',
     components: { GListItem, POSSelect, GSimpleTable, GIcon, GListItemContent, GListItemText, GListItemAction },
     props: {
-      top: { type: String, default: '400px' },
+      top: { type: String, default: '48px' },
       left: { type: String, default: '25px' },
       width: { type: String, default: '308px' },
       height: { type: String, default: '146px' },
