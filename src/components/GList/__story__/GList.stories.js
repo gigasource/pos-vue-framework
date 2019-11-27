@@ -30,6 +30,8 @@ export const gListPlayGround = () => ({
     return {
       items: [
         { text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
@@ -55,6 +57,7 @@ export const gListPlayGround = () => ({
     itemValue: { default: text('itemValue', '') },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
+    returnObject: { default: boolean('returnObject', false) },
   },
   template:
     `
@@ -71,6 +74,10 @@ export const gListPlayGround = () => ({
         :prependType="prependType"
         :subtextWrap="subtextWrap"
         :itemText="itemText"
+        :selectable="selectable"
+        :multiple="multiple"
+        :mandatory="mandatory"
+        :returnObject="returnObject"
       />
       `,
 })
@@ -685,7 +692,7 @@ export const gListPrimitiveItems = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
-      items: ['Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors'],
+      items: ['Jason Oner', 'Jason Oner', 'Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors'],
       selectedValue: null
     }
   },
@@ -728,9 +735,9 @@ export const gListPrimitiveItems = () => ({
         :subtextWrap="subtextWrap"
         :selectable="selectable"
         :multiple="multiple"
+        :mandatory="mandatory"
         allowDuplicates
         v-model="selectedValue"
-       
       />
 </div>
 

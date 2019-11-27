@@ -1,73 +1,58 @@
 import _ from 'lodash'
-import { ref, watch } from '@vue/composition-api';
+import {ref, watch} from '@vue/composition-api'
 
 function groupable(props, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
-  const { returnObject = true, items, mandatory, multiple, allowDuplicates, maxSelection, itemValue, itemText } = props
+  if (typeof props.returnObject === 'undefined') props.returnObject = true
+
   const toggleItem = (item) => {
-    if (multiple) {
-      if (returnObject && itemText) {
-        updateMultiple(item);
-      } else {
-        itemValue ? updateMultiple(item[itemValue]) : updateMultiple(items.indexOf(item))
-      }
+    if (props.multiple) {
+      if (props.returnObject && props.itemText) updateMultiple(item)
+      else props.itemValue ? updateMultiple(item[props.itemValue]) : updateMultiple(props.items.indexOf(item))
     } else {
-      if (returnObject && itemText) {
-        updateSingle(item);
-      } else {
-        itemValue ? updateSingle(item[itemValue]) : updateSingle(items.indexOf(item))
-      }
+      if (props.returnObject && props.itemText) updateSingle(item)
+      else props.itemValue ? updateSingle(item[props.itemValue]) : updateSingle(props.items.indexOf(item))
     }
-  };
+  }
 
   const updateSingle = (item) => {
-    const isSame = _.isEqual(vModel.value, item);
-    if (isSame && mandatory) {
-      return;
-    }
-    vModel.value = isSame ? null : item;
-  };
+    const isSame = vModel.value === item
+
+    if (isSame && props.mandatory) return
+
+    vModel.value = isSame ? null : item
+  }
 
   const updateMultiple = (item) => {
-    const clonedValue = _.clone(vModel.value);
-    const itemIndex = clonedValue.findIndex((i) => _.isEqual(i, item));
-    //item exists + mandatory
-    if (itemIndex > -1 && mandatory && clonedValue.length - 1 < 1) {
-      return;
-    }
-    if (itemIndex > -1 && !allowDuplicates) {
-      clonedValue.splice(itemIndex, 1);
+    // use isNil because !0 will return true
+    if (_.isNil(vModel.value)) vModel.value = []
+
+    const itemIndex = vModel.value.findIndex(e => e === item)
+    if (itemIndex > -1) {
+      if (props.mandatory && vModel.value.length < 2) return
+
+      if (!props.allowDuplicates) vModel.value.splice(itemIndex, 1)
     } else {
-      if (maxSelection) {
-        if (clonedValue.length < maxSelection) {
-          clonedValue.push(item);
-        } else {
-          return;
-        }
-      } else {
-        clonedValue.push(item);
-      }
+      if (!props.maxSelection || vModel.value.length < props.maxSelection) vModel.value.push(item)
     }
-    vModel.value = clonedValue;
-  };
+  }
 
   const isActiveItem = (item) => {
-    if (multiple) {
-      if (returnObject) {
-        return vModel.value.some(element => _.isEqual(element, item))
-      } else {
-        return itemValue
-          ? vModel.value.some(element => element === item[itemValue])
-          : vModel.value.includes(items.indexOf(item))
-      }
-    }
-    if (returnObject) {
-      return _.isEqual(vModel.value, item)
-    } else {
-      return itemValue ? item[itemValue] === vModel.value : items.indexOf(item) === vModel.value
-    }
+    // use isNil because !0 will return true
+    if (_.isNil(vModel.value)) return false
+
+    if (!props.returnObject) item = props.items.indexOf(item)
+
+    if (props.multiple)
+      return props.itemValue
+          ? vModel.value.includes(item[props.itemValue])
+          : vModel.value.includes(item)
+    else
+      return props.itemValue
+        ? vModel.value === item[props.itemValue]
+        : vModel.value === item
   };
 
   return {
@@ -77,7 +62,6 @@ function groupable(props, vModel) {
 }
 
 export function makeSelectable(props, context) {
-
   // 1 -> {a: 1, b: 2}
   const convertValueToInternalValue = function (value) {
     if (!props.itemValue || !value) {
@@ -117,6 +101,11 @@ export function makeSelectable(props, context) {
 
   let ignoreWatchValue = false;
   let ignoreWatchInternalValue = false;
+
+  watch(() => props.multiple, () => {
+    if (props.multiple) rawInternalValue.value = [];
+    else rawInternalValue.value = null;
+  }, {flush: "pre"})
 
   //use when props.value is change from outside
   watch(() => props.value, () => {
