@@ -4,7 +4,7 @@
     import {provide} from '@vue/composition-api';
     import GSectionsHeader from './GSectionsHeader';
     import GSectionsItem from './GSectionsItem';
-    import {reactive, ref} from '@vue/composition-api';
+    import {ref} from '@vue/composition-api';
 
     export default {
         name: 'GSectionsDraggable',
@@ -56,7 +56,7 @@
                 })
             }
 
-            const sections = ref(_.compact(_.flatten(_.zip(headerNodes, itemNodes))))
+            const sections = ref(_.zip(headerNodes, itemNodes))
             const {onDragStart, onDragEnter, onDragOver, onDragLeave, onDrop} = getDndEventHandler(props, context, sections.value)
 
             const genContent = () => {
@@ -73,10 +73,6 @@
                     </div>
                 })
             }
-
-            // const genContentItemHeader = () => {
-            //     return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
-            // }
 
             const genSections = () => {
                 return <div class='g-sections'>
