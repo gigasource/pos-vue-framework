@@ -42,7 +42,7 @@
 
             const sections = ref(_.zip(headerNodes, itemNodes))
 
-            const {onDragStart, onDragEnter, onDragOver, onDrop} = getDndEventHandler(props, context, sections)
+            const {onDragStart, onDragEnter, onDragOver, onDragLeave, onDrop} = getDndEventHandler(props, context, sections.value)
 
             const genContentSlotDefault = () => {
                 //return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
@@ -51,7 +51,8 @@
                         vOn:dragstart={(e) => onDragStart(e, index)}
                         vOn:dragenter={(e) => onDragEnter(e, index)}
                         vOn:dragover={onDragOver}
-                        vOn:drop={(e)=>onDrop(e,index)}
+                        vOn:dragleave={(e) => onDragLeave(e, index)}
+                        vOn:drop={(e) => onDrop(e, index)}
                         draggable="true">
                         {section}
                     </div>
@@ -89,7 +90,6 @@
         },
 
         render() {
-            console.log('re-render')
             return this.genSections()
         }
     }
@@ -97,20 +97,34 @@
     function getDndEventHandler(props, context, sections) {
 
         let source = null
+        let sourceIndex = null
+        let currentIndex = null
+        let previousIndex = null
 
-        function onDragStart(e,index) {
+        function onDragStart(e, index) {
             //console.log(e.target.childNodes)
-            source = index
+            source = sections[index]
+            sourceIndex = index
             e.target.classList.add('.dragging')
             e.target.addEventListener('dragend', onDragEnd)
             e.dataTransfer.setData('sourceHTML', e.target.innerHTML)
         }
 
         function onDragEnter(e, index) {
-            console.log('enter')
             e.preventDefault()
-						//sections.value[index-1] = sections.value[index]
+            previousIndex = currentIndex
+            currentIndex = index
+            //console.log(previousIndex + ' , ' + currentIndex)
+            //if (currentIndex > sourceIndex) sections[currentIndex - 1] = sections[currentIndex]
+            sections[previousIndex] = sections[currentIndex]
+            sections[index] = source
+						sections.splice()
+            //sections[index-1] = sections[index]
             //todo swap innerHTML ?
+        }
+
+        function onDragLeave(e, index) {
+            e.preventDefault()
         }
 
         function onDragOver(e) {
@@ -123,17 +137,19 @@
 
         function onDrop(e, index) {
             console.log('drop')
-            let ground = sections.value[index]
-            sections.value[index] = sections.value[source]
-						sections.value[source] = ground
-            //sections.value[0] = sections.value[1]
-            //sections.value[1] = x
-            //console.log(sections.value)
+            //let ground = sections[index]
+            //sections[index] = sections[sourceIndex]
+            sections[index] = source
+						sections.splice()
+            source = null
+            sourceIndex = null
+            currentIndex = null
+            previousIndex = null
             //source.innerHTML = e.currentTarget.innerHTML
             //e.currentTarget.innerHTML = e.dataTransfer.getData('sourceHTML')
         }
 
-        return {onDragStart, onDragEnter, onDragOver, onDrop}
+        return {onDragStart, onDragEnter, onDragOver, onDragLeave, onDrop}
     }
 
 </script>
