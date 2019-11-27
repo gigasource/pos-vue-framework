@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import { computed, inject } from '@vue/composition-api';
+  import { computed, inject, ref } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
 
   export default {
@@ -49,9 +49,12 @@
       const {isActiveItem} = groupable({ multiple, mandatory, allowDuplicates }, selectedItems)
       const selectable = inject('selectable')
       const inListEvents = inject('getListEvents')
+      const internalValue = ref(null)
+      const { toggleItem } = groupable(props, internalValue)
       const singleItemEvents = () => {
         return {
           click: () => {
+            toggleItem(props.value)
             context.emit('singleItemClick')
           },
           keydown: (e) => {
