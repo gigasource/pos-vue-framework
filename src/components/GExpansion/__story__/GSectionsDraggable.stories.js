@@ -4,6 +4,8 @@ import GSectionsHeader from '../GSectionsHeader';
 import GSectionsItem from '../GSectionsItem';
 import PosTextField from "../../../POSComponents/POSInput/POSTextField";
 import GIcon from "../../GIcon/GIcon";
+import GSwitch from "../../GSwitch/GSwitch";
+import GBtn from "../../GBtn/GBtn";
 import {ref, computed, watch} from '@vue/composition-api';
 
 export default {
@@ -68,7 +70,7 @@ export const GSectionsDndSlot = () => ({
 })
 
 export const GSectionDnd = () => ({
-    components: {GSectionsDraggable, GSectionsHeader, GSectionsItem, PosTextField, GIcon},
+    components: {GSectionsDraggable, GSectionsHeader, GSectionsItem, PosTextField, GIcon, GSwitch, GBtn},
     props: {
         headerHeight: {default: number('Header height', 32)}
     },
@@ -92,16 +94,16 @@ export const GSectionDnd = () => ({
     template: `
   <div style="width: 300px; height: 600px; border: 1px solid #E0E0E0; overflow: auto">
       <g-sections-draggable v-model="activeItem">       
-        <g-sections-header v-for="(item, index) in items" :height="headerHeight">
+        <g-sections-header v-for="(item, index) in items" :height="headerHeight" :key="-(index+1)">
           <g-icon>fas fa-hand-point-right</g-icon>
           {{item.title}}
         </g-sections-header>
         <g-sections-item v-for="(item, index) in items" :key="index">
-          <g-text-field label="Key" dense/>
-          <g-text-field label="Default" dense/>
-          <g-text-field label="Ref" dense/>
+          <pos-text-field label="Key" dense/>
+          <pos-text-field label="Default" dense/>
+          <pos-text-field label="Ref" dense/>
           <g-switch flat label="Auto populate"/>
-          <g-btn small outlined textColor="#1080EC">ADD FILES</g-btn>
+          <g-btn small outlined textColor="#1080EC">ADD FILES {{index+1}}</g-btn>
         </g-sections-item>
       </g-sections-draggable>
   </div>

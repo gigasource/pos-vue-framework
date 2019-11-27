@@ -1,6 +1,7 @@
 <script>
     import {computed, inject} from '@vue/composition-api';
     import {convertToUnit} from '../../utils/helpers';
+    import {addOnceEventListener} from "../../utils/helpers";
     import GIcon from '../GIcon/GIcon';
 
     export default {
@@ -32,6 +33,8 @@
                 return <div
                     class={['g-sections-header', {'g-sections-header__active': isActiveItem(props.item)}]}
                     vOn:click={() => toggleItem(props.item)}
+                    vOn:mousedown={onMouseDown}
+                    vOn:mouseup={onMouseUp}
                     style={headerStyles.value}>
                     {context.slots.default ? context.slots.default() : genDefaultHeader()}
                 </div>
@@ -46,6 +49,13 @@
         }
     }
 
+    function onMouseDown(e) {
+        e.target.parentNode.setAttribute('draggable', true)
+    }
+
+    function onMouseUp(e) {
+        e.target.parentNode.setAttribute("draggable", false)
+    }
 
 </script>
 <style scoped lang="scss">
