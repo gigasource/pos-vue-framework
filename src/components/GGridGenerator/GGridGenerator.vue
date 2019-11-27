@@ -4,8 +4,9 @@
   import { saveFile, openFile } from '../../utils/helpers'
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
-  import { _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName,
-    _flexJustifyContentOptions, _flexAlignItemOptions, _flexAlignContentOptions, _flexBasis, _flexWraps, _flexAlignSelf, _flexDirection
+  import {
+    _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName,
+    _flexJustifyContentOptions, _flexAlignItemOptions, _flexAlignContentOptions, _flexWraps, _flexDirection
   } from './logic/utils'
   import { fromJSON, toJSONStr, toJSON } from './logic/modelParser'
   import GDialog from '../GDialog/GDialog'
@@ -14,6 +15,8 @@
   import GEditViewInput from './GEditViewInput'
   import GFileInputJSX from '../GFileInput/GFileInput'
   import GridModel from './logic/GridModel';
+  import GLayoutDataInput, { renderGLayoutData } from './GLayoutDataInput';
+  import GGridLayout from './GGridLayout'
 
   const selectedSettingEnum = {
     grid: 0,
@@ -49,7 +52,7 @@
 
   export default {
     name: 'GGridGenerator',
-    components: { GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
+    components: { GGridLayout, GLayoutDataInput, GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
       layout: {
         type: Object
@@ -66,7 +69,8 @@
         fieldHeight: 478,
         // view mode
         viewMode: false,
-
+        demoMode: false,
+        demoLayoutData: [],
         //// hover settings
         hovering: false,
         hoveringArea: {
@@ -92,6 +96,9 @@
         // Base 0
         selectedColumnId: 0,
 
+        // value indicate whether a create demo dialog will be shown or not
+        showCreateDemoInputDialog: false,
+
         // a value indicate whether a confirm dialog will be shown or not
         // the confirm dialog should be show when user create new sub-grid/single item
         showConfirmDialog: false,
@@ -115,12 +122,10 @@
           'grid-gen__sub-list__item--selected': grid === state.selectedGrid
         }
       }
-
       function setSelectedGrid(grid) {
         state.selectedGrid = grid
         state.selectedSetting = selectedSettingEnum.grid
       }
-
       function renderGridList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">Grid</div>
@@ -146,12 +151,10 @@
           'grid-gen__sub-list__item--overflowed': area.isOverflowed()
         }
       }
-
       function setSelectedArea(area) {
         state.selectedArea = area
         state.selectedSetting = selectedSettingEnum.area
       }
-
       function renderAreaList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">Area</div>
@@ -168,6 +171,15 @@
                 </li>
             )}
           </ul>
+        </div>
+      }
+      function renderDemoInputList() {
+        return <div class="grid-gen__sub-list">
+          <div class="grid-gen__sub-list__section">Demo Input</div>
+          <g-layout-data-input vOn:create={demo => state.demoLayoutData.push(demo)}/>
+          {_.map(state.demoLayoutData, dld => <div>{dld.area} <span vOn:click={e => {
+            state.demoLayoutData.splice(_.indexOf(state.demoLayoutData, dld), 1)
+          }}>x</span></div>)}
         </div>
       }
 
@@ -213,7 +225,6 @@
         }
         </div>
       }
-
       function getRowUnitClass(id) {
         return {
           'grid-gen__row-unit': true,
@@ -331,7 +342,6 @@
           </div>
         ])
       }
-
       function getAreaClass(area) {
         return {
           'grid-gen__editor__field__area': true,
@@ -342,7 +352,6 @@
 
       const actionWrapperClass = 'grid-gen__editor__field__area__actions'
       const actionClass = 'area-action'
-
       function areaHit(e) {
         for (let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
           const area = actionWrapperElement.parentNode
@@ -357,7 +366,6 @@
           }
         }
       }
-
       function tryToExecuteActionIfHit(e) {
         let actionExecuted = false
         _.each(context.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
@@ -429,7 +437,7 @@
               style={{
                 border: '1px solid #0008',
                 backgroundColor: grid.bgColor,
-                gridArea: grid.gridAreaCss()
+                gridArea: grid.gridAreaCss(),
               }}>
             {grid.name}
           </div>
@@ -462,7 +470,6 @@
         }}></div> : null
       }
 
-
       // render mini map (view mode)
       function renderMiniMap() {
         const gridItems = []
@@ -471,7 +478,6 @@
             gridItems.push(<div class='grid-gen__editor__field__item'></div>)
           }
         }
-
         const selectedAreaContainerStyle = {
           display: 'grid',
           'grid-template-columns': joinRefArrayValue(state.layout.columns),
@@ -486,7 +492,6 @@
           'pointer-events': 'none',
           //
         }
-
         return ([
           <div style={selectedAreaContainerStyle} class="grid-gen__editor__field">
             {renderGridAreas(state.layout, true)}
@@ -494,8 +499,13 @@
         ])
       }
 
+      function renderDemoLayout() {
+        return state.demoMode ? <g-grid-layout layout={toJSON(state.layout)} displayPreviewColor>
+          {_.map(state.demoLayoutData, renderGLayoutData)}
+        </g-grid-layout> : null
+      }
 
-      // render confirm dialog
+      // render confirm dialog\
       const refIdNewItemNameInput = 'txtItemName'
       const refIdBtnCreateSubItem = 'btnCreateSubItem'
       const refIdBtnCreateSubGrid = 'btnCreateSubGrid'
@@ -610,6 +620,10 @@
           <div class="grid-gen__settings-prop">
             <label>Preview: </label>
             <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}/>
+          </div>,
+          <div class="grid-gen__settings-prop">
+            <label>Demo: </label>
+            <input type="checkbox" value={state.demoMode} vOn:change={() => state.demoMode = !state.demoMode}/>
           </div>,
         ]
       }
@@ -845,6 +859,7 @@
               <div class="grid-gen__list">
                 {renderGridList()}
                 {renderAreaList()}
+                {renderDemoInputList()}
               </div>
               <div class="grid-gen__editor">
                 <div style={{
@@ -870,6 +885,17 @@
                     }}>
                   {renderMiniMap()}
                 </div>
+                <div
+                    vShow={state.demoMode}
+                    style={{
+                      position: 'relative',
+                      width: `${state.fieldWidth}px`,
+                      height: `${state.fieldHeight}px`,
+                      backgroundColor: '#fff',
+                      margin: '0 auto'
+                    }}>
+                  {renderDemoLayout()}
+                </div>
               </div>
               <div class="grid-gen__settings">
                 {renderGridGenerateSaveCloseButton()}
@@ -879,7 +905,6 @@
                 {renderAreaSettings(state.selectedArea)}
               </div>
               {renderConfirmDialog(state.selectedGrid)}
-
             </div>
         )
       }
