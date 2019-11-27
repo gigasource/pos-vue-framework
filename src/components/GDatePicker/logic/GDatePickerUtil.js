@@ -80,14 +80,17 @@ export default (props, context) => {
       state.selectedValues = getValidInitialValue(props, cptIsMultiSelect)
 
     // update viewport
-    state.viewportDate = (props.range
+    state.viewportDate = (cptIsMultiSelect.value
         ? props.value.length === 0
                 ? dayjs().format( props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM')
                 : props.focusOnFirstItem
                     ? props.value[0]
                     : props.value[props.value.length - 1]
         : props.value
+
     )
+
+    console.log(state.viewportDate)
   })
 
   // cause we don't support year picker atm so, context will not be used
