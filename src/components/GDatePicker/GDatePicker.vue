@@ -389,7 +389,7 @@
                 {datePickerBodyRenderFn()}
               </div>
               <template slot="actions">
-                {context.slots.default()}
+                {context.slots.default && context.slots.default()}
               </template>
             </g-picker>
         )
