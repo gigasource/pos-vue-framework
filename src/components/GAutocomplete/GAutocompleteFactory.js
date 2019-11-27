@@ -64,6 +64,8 @@ export function getInputEventHandlers(props, context, state, selections, selecte
         [props.itemText]: state.searchText,
         [props.itemValue]: state.searchText
       } : { [props.itemText]: state.searchText }
+
+      if (!props.items || props.items.length === 0) inputAddedItem = state.searchText
       toggleItem(inputAddedItem)
       setSearch(props, context, selections, state)
     }
