@@ -101,6 +101,7 @@
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
   import { keyCodes } from '../../utils/helpers';
+  import _ from 'lodash';
 
   export default {
     name: 'GList',
@@ -117,7 +118,10 @@
       },
       dense: Boolean,
       nav: Boolean,
-      items: Array,
+      items: {
+        type: Array,
+        default: () => []
+      },
       multiSection: Boolean,
       subheader: String,
       divider: {
@@ -135,7 +139,10 @@
       mandatory: Boolean,
       allowDuplicates: Boolean,
       itemValue: String,
-      itemTitle: String,
+      itemTitle: {
+        type: String,
+        default: 'title'
+      },
       activeClass: String,
        inMenu: Boolean,
     },
@@ -173,7 +180,11 @@
         return `g-list-item-${props.prependType}`;
       })
 
-      const renderList = computed(() => props.itemTitle ? props.items.filter(item => item[props.itemTitle]) : props.items)
+
+      const renderList = computed(() => _.map(props.items, (value) => {
+          if (_.isObject(value)) return value
+          else return {[props.itemTitle]: value} // when props.items is an array of primitives
+        }))
 
       //Select
       function onClick(event) {

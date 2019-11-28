@@ -17,6 +17,20 @@ export default class AreaModel {
     this.alignSelf = ''
     this.justifySelf = ''
     this.wrapInDiv = false
+    // flex support
+    // flex container
+    this.displayFlex = false
+    this.flexDirection = 'row'
+    this.flexWrap = false
+    this.flexJustifyContent = ''
+    this.flexAlignItems = ''
+    this.flexAlignContent = ''
+    // flex items
+    this.flexOrder = ''
+    this.flexGrow = ''
+    this.flexShrink = ''
+    this.flexBasis = ''
+    this.flexAlignSelf = ''
 
     if (area) {
       this.name = area.name
@@ -42,7 +56,18 @@ export default class AreaModel {
       bgColor: this.bgColor,
       alignSelf: this.alignSelf,
       justifySelf: this.justifySelf,
-      wrapInDiv: this.wrapInDiv
+      wrapInDiv: this.wrapInDiv,
+      displayFlex: this.displayFlex,
+      flexDirection: this.flexDirection,
+      flexWrap: this.flexWrap,
+      flexJustifyContent: this.flexJustifyContent,
+      flexAlignItems: this.flexAlignItems,
+      flexAlignContent: this.flexAlignContent,
+      flexOrder: this.flexOrder,
+      flexGrow: this.flexGrow,
+      flexShrink: this.flexShrink,
+      flexBasis: this.flexBasis,
+      flexAlignSelf: this.flexAlignSelf,
     }
   }
 
@@ -88,7 +113,8 @@ export default class AreaModel {
 
   getFullCssModelName(uid, genOptions) {
     if (this._parent == null) {
-      return `${genOptions.prefix}${this.name}[${uid}]`
+      const uidAttr = (uid == null || uid == '') ? '' : `[${uid}]`
+      return `${genOptions.prefix}${this.name}${uidAttr}`
     } else {
       return `${this._parent.getFullCssModelName(uid, genOptions)}>.${genOptions.prefix}${this.name}`
     }
@@ -102,6 +128,22 @@ export default class AreaModel {
     if (this.padding) css += `padding: ${this.padding}; `
     if (this.margin) css += `margin: ${this.margin}; `
     if (genOptions && genOptions.showBackgroundColor) css += `background: ${this.bgColor}; `
+
+    // flex support
+    if (this.wrapInDiv) {
+      if (this.displayFlex) css += 'display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; '
+      if (this.flexDirection) css += `flex-direction: ${this.flexDirection}; `
+      if (this.flexWrap) css += `flex-wrap: ${this.flexWrap}; `
+      if (this.flexJustifyContent) css += `justify-content: ${this.flexJustifyContent}; `
+      if (this.flexAlignContent) css += `align-content: ${this.flexAlignContent}; `
+      if (this.flexAlignItems) css += `align-items: ${this.flexAlignItems}; `
+      if (this.flexOrder) css += `-webkit-box-ordinal-group: ${this.flexOrder}; -moz-box-ordinal-group: ${this.flexOrder}; -ms-flex-order: ${this.flexOrder}; -webkit-order: ${this.flexOrder}; order: ${this.flexOrder}; `
+      if (this.flexGrow) css += `flex-grow: ${this.flexGrow}; `
+      if (this.flexShrink) css += `flex-shrink: ${this.flexShrink}; `
+      if (this.flexBasis) css += `flex-basis: ${this.flexBasis}; `
+      if (this.flexAlignSelf) css += `align-self: ${this.flexAlignSelf}; `
+    }
+
     return css
   }
 

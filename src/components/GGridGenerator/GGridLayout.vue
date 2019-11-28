@@ -42,7 +42,7 @@
       // vue template ref id
       const refIdWrapperElement = 'el'
       // css generate
-      const cssClassPrefix = 'gl-'
+      const cssClassPrefix = uid + '-'
       const getAreaClass = name => `${name} ${cssClassPrefix}${name}`
       const addAreaClassForPredefinedArea = () => {
         // assign class for pre-defined area
@@ -78,7 +78,7 @@
       }
 
       // TODO: Using view reactive instead
-      const __previewAreaNameClassSignature = '__ahoy__matee__'
+      const __previewAreaNameClassSignature = uid + '____PREVIEW'
       const __createAreaNameElement = (name) => {
         const el = document.createElement('span')
         el.style = 'position: absolute; top:0; left:0; text-decoration: underline; font-size: 12px'
@@ -86,10 +86,10 @@
         el.innerText = name
         return el
       }
-      const __getAreaName = classList => _.find(classList, clsName => clsName.startsWith('gl-')).substr(3)
+      const __getAreaName = classList => _.find(classList, clsName => clsName.startsWith(cssClassPrefix)).substr(cssClassPrefix.length)
       const __showPreviewAreaName = () => {
         const wrapperEl = context.refs[refIdWrapperElement]
-        const areaEls = [...wrapperEl.querySelectorAll('[class*="gl-"]')]
+        const areaEls = [...wrapperEl.querySelectorAll(`[class*="${cssClassPrefix}"]`)]
         _.each(areaEls, areaDomNode => {
           if (areaDomNode.childNodes.length == 0) {
             areaDomNode.style += areaDomNode.style + '; position: relative; '
@@ -246,7 +246,7 @@
           // root node -> attach grid-layout attribute id, reference, style, editor dialog, passThrough vNode
           const styleVNode = (
               <style type="text/css">
-                {model.genCss(uid, { showBackgroundColor: props.displayPreviewColor, prefix: cssClassPrefix })}
+                {model.genCss('', { showBackgroundColor: props.displayPreviewColor, prefix: cssClassPrefix })}
               </style>
           )
           const dialogEditVNode = props.editable ? renderEditDialog() : null
@@ -254,8 +254,7 @@
 
           vNode = <div
               class={cssClassName}
-              ref={refIdWrapperElement}
-              {...{ attrs: { [uid]: '' } }}>
+              ref={refIdWrapperElement}>
             {styleVNode}
             {dialogEditVNode}
             {passThroughVNodes}

@@ -88,12 +88,12 @@ export function getSelectedIndex(clockContainer, targetPos, itemsLength = 60) {
   // 60 minute, second will be display in a circle, each item own 360 / 6 angle
   const anglePerUnit = 360 / itemsLength
   const angle = computeAngle(clockContainer, targetPos)
+
   if (angle !== false) {
     let selectedItemIndex = Math.floor((angle + 0.5 * anglePerUnit) / anglePerUnit)
     // reset if selected index reach the boundary
     if (selectedItemIndex >= itemsLength)
       selectedItemIndex = 0
-
     return selectedItemIndex
   } else return -1
 }
