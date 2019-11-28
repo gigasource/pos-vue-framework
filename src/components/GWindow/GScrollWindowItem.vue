@@ -66,7 +66,7 @@
           ]
         };
 
-        return <div {...nodeData}> {context.slots.default && context.slots.default()}</div>
+        return <div {...nodeData}> {this.$slots.default}</div>
       }
 
       function genScrollWindowItem() {
@@ -74,7 +74,7 @@
           props: {
             name: this.computedTransition,
           }
-        }, [this.genWindowItem()])
+        }, [this.genWindowItem.bind(this)()])
       }
 
       return {
@@ -85,7 +85,7 @@
       }
     },
     render() {
-      return this.genScrollWindowItem()
+      return this.genScrollWindowItem.bind(this)()
     }
   }
 </script>
