@@ -2,7 +2,6 @@
   import _ from 'lodash'
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  import { daysInMonth } from './logic/DateTableUtil'
   import { reactive, computed, watch } from '@vue/composition-api';
   import dayjs from 'dayjs';
   import GIcon from '../GIcon/GIcon';
@@ -60,7 +59,7 @@
         if (props.max) {
           return _getDay(props.max)
         } else {
-          return daysInMonth(cptMaxYear.value, cptMaxMonth.value)
+          return dayjs(`${cptMaxYear.value}-${cptMaxMonth.value + 1}`).daysInMonth()
         }
       })
 
@@ -106,7 +105,7 @@
       })
 
       const cptDays = computed(() => {
-        const _daysInMonth = daysInMonth(state.year, state.month)
+        const _daysInMonth = dayjs(`${state.year}-${state.month + 1}`).daysInMonth()
         if (props.max) {
           if (cptMaxYear.value === state.year && cptMaxMonth.value === state.month) {
             return _.range(1, cptMaxDay.value + 1)
@@ -154,7 +153,7 @@
         // for both start and end range, when ever the user change month,
         // ensure the selected day not bigger than the maximum day in a month
         // i.e: selected day: 31, switch to Feb, then selected day will be adjust to 28 or 29 depend on the year is leap year or not
-        const _daysInMonth = daysInMonth(state.year, state.month)
+        const _daysInMonth = dayjs(`${state.year}-${state.month + 1}`).daysInMonth()
         if (state.day > _daysInMonth) {
           state.day = _daysInMonth
         }
