@@ -65,11 +65,11 @@
           style: this.styles,
           directives: this.ripple ? [{ name: 'ripple', value: undefined }] : [],
           on: {
-            click: (e) => context.emit('click', e),
-            mouseenter: (e) => context.emit('mouseenter', e),
-            mouseleave: (e) => context.emit('mouseleave', e),
-            mouseup: (e) => context.emit('mouseup', e),
-            mousedown: (e) => context.emit('mousedown', e),
+            click: (e) => this.$emit('click', e),
+            mouseenter: (e) => this.$emit('mouseenter', e),
+            mouseleave: (e) => this.$emit('mouseleave', e),
+            mouseup: (e) => this.$emit('mouseup', e),
+            mousedown: (e) => this.$emit('mousedown', e),
           }
         };
 
