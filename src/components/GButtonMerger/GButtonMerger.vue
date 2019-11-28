@@ -1,11 +1,6 @@
 <template>
   <div style="height: 100%">
-    <slot :onMerge="mergeButtons" :onSplit="splitButtons" name="controller">
-      <div>
-        <g-btn @click="mergeButtons">Merge</g-btn>
-        <g-btn @click="splitButtons">Split</g-btn>
-      </div>
-    </slot>
+    <slot :onMerge="mergeButtons" :onSplit="splitButtons" name="controller"></slot>
 
     <g-grid-item-selector :cols="cols" :items="internalNewItems" :rows="rows" multiple return-object v-model="selectedButtons">
       <template #default="{toggleSelect, item, index}">

@@ -2,6 +2,7 @@ import { text, withKnobs, boolean, number, array } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions';
 import GButtonMerger from '../GButtonMerger';
 import GBtn from '../../GBtn/GBtn';
+
 export default {
   title: 'GButtonMerger',
   decorators: [withKnobs],
@@ -14,6 +15,14 @@ export const GButtonMerge = () => ({
     rows: { default: text('Grid row definition: ', '1fr 1fr 1fr 1fr') },
     cols: { default: text('Grid col definition: ', '1fr 1fr') },
 
+  },
+  methods: {
+    onMerge() {
+      this.$refs.merger.mergeButtons();
+    },
+    onSplit() {
+      this.$refs.merger.splitButtons();
+    }
   },
   data: () => ({
     itemData: [
@@ -29,13 +38,18 @@ export const GButtonMerge = () => ({
   }),
   template: `
             <div style="width: 700px; height: 500px">
+              <div>
+                 <g-btn @click="onMerge" background-color="blue" text-color="white">Merge</g-btn>
+                 <g-btn @click="onSplit" background-color="green" text-color="white">Split</g-btn>
+              </div>            
               <g-button-merger :items="itemData" ref="merger">
-                <template v-slot:controller="{onMerge, onSplit}">
-                  <div>
-                    <g-btn @click="onMerge" background-color="blue" text-color="white">Merge</g-btn>
-                    <g-btn @click="onSplit" background-color="green" text-color="white">Split</g-btn>
-                  </div>
-                </template>
+<!--              for controller inside component-->
+<!--                <template v-slot:controller="{onMerge, onSplit}">-->
+<!--                  <div>-->
+<!--                    <g-btn @click="onMerge" background-color="blue" text-color="white">Merge</g-btn>-->
+<!--                    <g-btn @click="onSplit" background-color="green" text-color="white">Split</g-btn>-->
+<!--                  </div>-->
+<!--                </template>-->
               </g-button-merger>
             </div>
           `,
