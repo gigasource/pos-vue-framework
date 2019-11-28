@@ -1,17 +1,17 @@
 import { text, withKnobs, boolean, number, color , select, radios, array, date, button } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 
-import GDatePicker from '../GDatePicker'
+import GDatePickerInput from '../GDatePickerInput'
 import { reactive } from '@vue/composition-api';
 
 //
 export default {
-  title: 'GDatePicker',
+  title: 'GDatePickerInput',
   decorators: [withKnobs],
 }
 
 export const SingleValueDatePicker = () => ({
-  components: { GDatePicker },
+  components: { GDatePickerInput },
   props: {
     max: { default: text('max', '2030-10-19') },
     min: { default: text('min', '2019-10-10') },
@@ -31,7 +31,8 @@ export const SingleValueDatePicker = () => ({
   },
   setup(props) {
     return () =>
-      <g-date-picker
+      <g-date-picker-input
+          label={'Due date'}
         max={props.max}
         min={props.min}
         value={props.value}
@@ -53,7 +54,7 @@ export const SingleValueDatePicker = () => ({
 })
 
 export const MultipleValueDatePicker = () => ({
-  components: { GDatePicker },
+  components: { GDatePickerInput },
   props: {
     max: { default: text('max', '2030-10-25') },
     min: { default: text('min', '2019-10-10') },
@@ -73,7 +74,8 @@ export const MultipleValueDatePicker = () => ({
   },
   setup(props) {
     return () =>
-        <g-date-picker
+        <g-date-picker-input
+            label={'Due date'}
             max={props.max}
             min={props.min}
             value={props.value}
@@ -97,7 +99,7 @@ export const MultipleValueDatePicker = () => ({
 
 
 export const RangeValueDatePicker = () => ({
-  components: { GDatePicker },
+  components: { GDatePickerInput },
   props: {
     max: { default: text('max', '2030-10-25') },
     min: { default: text('min', '2019-10-10') },
@@ -118,7 +120,8 @@ export const RangeValueDatePicker = () => ({
   },
   setup(props) {
     return () =>
-        <g-date-picker
+        <g-date-picker-input
+            label={'Due date'}
             max={props.max}
             min={props.min}
             value={props.value}
@@ -142,7 +145,7 @@ export const RangeValueDatePicker = () => ({
 })
 
 export const SingleValueMonthPicker = () => ({
-  components: { GDatePicker },
+  components: { GDatePickerInput },
   props: {
     value: { default: text('value', '2019-10') },
     color: { default: text('color', null) },
@@ -161,7 +164,8 @@ export const SingleValueMonthPicker = () => ({
   setup(props) {
     return () =>
         <div>
-          <g-date-picker
+          <g-date-picker-input
+              label={'Due date'}
               value={props.value}
               color={props.color}
               header-color={props.headerColor}
@@ -185,7 +189,7 @@ export const SingleValueMonthPicker = () => ({
 })
 
 export const MultipleValueMonthPicker = () => ({
-  components: { GDatePicker },
+  components: { GDatePickerInput },
   props: {
     value: { default: array('value', ['2019-10', '2019-12']) },
     color: { default: text('color', null) },
@@ -204,7 +208,8 @@ export const MultipleValueMonthPicker = () => ({
   setup(props) {
     return () =>
         <div>
-          <g-date-picker
+          <g-date-picker-input
+              label={'Due date'}
               value={props.value}
               color={props.color}
               header-color={props.headerColor}
