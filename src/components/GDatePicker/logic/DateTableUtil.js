@@ -4,23 +4,8 @@ import { createRange } from '../../../utils/helpers';
 import { setBackgroundColor } from '../../../mixins/colorable'
 import { isSelected, computedDisplayMonth, computedDisplayYear, isAllowed, applyNewSelectedValue } from './TableUtil'
 import dayjs from 'dayjs';
-
-export const DAYS_IN_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-export const DAYS_IN_MONTH_LEAP = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-/**
- * Return true if year is leapYear, otherwise false
- * @param year
- * @returns {boolean}
- * @private
- */
-export function _isLeapYear (year) {
-  return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)
-}
-
-export function daysInMonth(year, month) {
- return _isLeapYear(year) ? DAYS_IN_MONTH_LEAP[month + 1] : DAYS_IN_MONTH[month + 1]
-}
+import isLeapYear from 'dayjs/plugin/isLeapYear'
+dayjs.extend(isLeapYear)
 
 /**
  * Return number of day in a month
@@ -30,7 +15,7 @@ export function daysInMonth(year, month) {
  * @private
  */
 export const _computedDaysInMonth = (cptYear, cptMonth) => computed(() => {
-  return daysInMonth(cptYear.value, cptMonth.value)
+  return dayjs(`${cptYear.value}-${cptMonth.value + 1}`).daysInMonth()
 })
 
 /**
@@ -90,7 +75,7 @@ export function _computedWeekNumber(props, cptYear, cptMonth) {
   const dayOfYearArr = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
   return computed(() => {
     let dayOfYear = dayOfYearArr[cptMonth.value]
-    if (cptMonth.value > 1 && _isLeapYear(cptYear.value)) {
+    if (cptMonth.value > 1 && dayjs(`${cptYear.value}`).isLeapYear()) {
       dayOfYear++
     }
     const offset = (
