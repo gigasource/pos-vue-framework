@@ -3,7 +3,7 @@
   import { getInternalValue } from '../../mixins/getVModel';
   import GTreeFactory, { genTextFactory } from '../../components/GTreeViewFactory/GTreeFactory';
 	import GIcon from '../../components/GIcon/GIcon';
-
+	import _ from 'lodash';
   export default {
     name: 'BindingDiagramTreeView',
 		components: { GIcon },
@@ -41,7 +41,7 @@
 						{childrenVNodes && genIcon(state)}
 					</span>
 					<span class={['tree-view-text', {'tree-view-text__active': path === activePath.value}]} vOn:click={() => activePath.value = path}>
-						{genText.value(node)}
+						{genText.value(node)} {path}
           </span>
           {!state.collapse ? childrenVNodes : null}
 
@@ -60,12 +60,42 @@
         )
       }
 
+      const itemChildren = function (node, {path, parent, isRoot}) {
+        if (isRoot) return node.items;
+        if (node.virtualNode) return node.items;
+        const slotGroups = _.groupBy(node.items, i => i.slot || 'default');
+        const children = _.map(slotGroups, (items,slot) => {
+          return {
+            component: slot,
+						virtualNode: true,
+						items
+					}
+				})
+				return children;
+        // if (node['slot']) {
+        //   return [node['slot'], ...node['items']]
+				// } else {
+        //   return node['items']
+				// }
+
+			}
+
+			const itemPath = function(node, {parent, path, isRoot, key}) {
+        if (isRoot) return key;
+        if (node.virtualNode) return;
+        if (key) {
+          return `items.${key}`;
+        }
+
+			}
+
       const { treeStates, genTree } = GTreeFactory({
         genNode,
         genWrapper,
         genRootWrapper,
         data: props.data,
-        itemChildren: props.itemChildren,
+        itemChildren,
+        itemPath,
         expandLevel: props.expandLevel
       })
 

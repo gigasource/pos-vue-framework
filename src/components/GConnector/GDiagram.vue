@@ -116,7 +116,7 @@
 
 			// Render function
       function genDiagram() {
-        return <div class="g-diagram-container" style={containerStyles.value} vOn:wheel={zoom} vOn:scroll={scroll} scroll-top="500" ref="container">
+        return <div class="g-diagram-container" style={containerStyles.value} vOn:wheel={zoom} vOn:scroll={scroll} ref="container">
           <div class="g-diagram-content" style={contentStyles.value} ref="content">
             <portal-target name={diagramId.value} width={svgDimension.width} height={svgDimension.height} tag="svg" multiple ref="svg"/>
 						<portal to={diagramId.value} slim>

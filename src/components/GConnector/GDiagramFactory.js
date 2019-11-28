@@ -78,7 +78,9 @@ export default function GDiagramFactory(props, context) {
 
   // Update data when mounted
   onMounted(() => {
-    updateContainer()
+    context.root.$nextTick(() => {
+      updateContainer()
+    })
     updateOriginCoordinate()
     startOriginCoordinate.x = originCoordinate.x
     startOriginCoordinate.y = originCoordinate.y
