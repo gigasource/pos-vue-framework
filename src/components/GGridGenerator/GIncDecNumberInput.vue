@@ -79,7 +79,7 @@
 
     &>input {
       padding: 0 5px;
-      width: 40px;
+      min-width: 0;
       height: 20px;
       flex: 1;
     }
