@@ -11,15 +11,15 @@
 					<div v-if="subheader" class="g-list-header">{{subheader}}</div>
 				</slot>
 				<template v-for="(item, index) in renderList">
-					<slot :isSelected="isActiveItem(item)" :item="item" :on="getListEvents(item, index)" name="listItem"
+					<slot :isSelected="isActiveItem(item, index)" :item="item" :on="getListEvents(item, index)" name="listItem"
 								:onSelect="onSelect">
 						<div
-								:class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
+								:class="{'g-list-item__active': isActiveItem(item, index), [activeClass]: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
 								class="g-list-item"
 								tabindex="0"
 								v-on="getListEvents(item, index)"
 						>
-							<slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+							<slot :isSelected="isActiveItem(item, index)" :item="item" name="prepend">
 								<div :class="prependClasses" v-if="item.prepend &&  prependType && itemText">
 									<g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
 									<g-avatar v-else-if="prependType==='avatar'">
@@ -36,7 +36,7 @@
 								</div>
 								<div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
 							</div>
-							<slot :isSelected="isActiveItem(item)" :item="item" name="append">
+							<slot :isSelected="isActiveItem(item, index)" :item="item" name="append">
 								<template v-if="item.append && itemText">{{item.append}}</template>
 							</slot>
 						</div>
@@ -58,10 +58,10 @@
 
 					<slot :item="item" v-else>
 						<div class="g-list-item"
-								 :class="{'g-list-item__active': isActiveItem(item) , activeClass: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
+								 :class="{'g-list-item__active': isActiveItem(item, index) , activeClass: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
 								 tabindex="0"
 								 v-on="getListEvents(item, index)">
-							<slot name="prepend" :item="item" :isSelected="isActiveItem(item)">
+							<slot :isSelected="isActiveItem(item, index)" :item="item" name="prepend">
 								<div :class="prependClasses" v-if="item.prepend &&  prependType">
 									<g-icon v-if="prependType==='icon'">{{item.prepend}}</g-icon>
 									<g-avatar v-else-if="prependType==='avatar'">
@@ -101,7 +101,6 @@
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
   import { keyCodes } from '../../utils/helpers';
-  import _ from 'lodash'
 
   export default {
     name: 'GList',
@@ -187,39 +186,24 @@
         }
         return `g-list-item-${props.prependType}`;
       })
-
-
-      const isObjectList = computed(() => props.items.some(item => _.isObject(item) === true))
-      const renderList = computed(() => {
-        return isObjectList.value ? props.items.filter(item => item[props.itemText]) : props.items
-      })
-      const isSelected = (item, index) => {
-        return isObjectList.value ? isActiveItem(item) : isActiveItem(index)
-      }
-
-      //Events in list
-
-      //when no props.items provided
-
       //Select
       function onClick(event) {
         context.emit('click', event)
       }
 
       function onArrowDown(index) {
-        index < ((renderList.value && renderList.value.length) - 1 || (itemsInList.value && itemsInList.value.length) - 1) ? index += 1 : index = 0
+        index < ((renderList.value && renderList.value.length) - 1) ? index += 1 : index = 0
         context.refs.list.getElementsByClassName('g-list-item')[index].focus()
         context.emit('keydown:down')
       }
 
       function onArrowUp(index) {
-        index > 0 ? index -= 1 : index = (renderList.value && renderList.value.length) || (itemsInList.value && itemsInList.value.length) - 1
+        index > 0 ? index -= 1 : index = (renderList.value && renderList.value.length)
         context.refs.list.getElementsByClassName('g-list-item')[index].focus()
         context.emit('keydown:up')
       }
 
       function onSelect(item) {
-        debugger
         if (!props.selectable) {
           return;
         }
@@ -227,18 +211,26 @@
         context.emit('click:item')
       }
 
-      const { internalValue, toggleItem, isActiveItem } = makeSelectable(props, context);
-      provide('itemsInList', internalValue)
+      const { uniqueItems: renderList, internalValue, toggleItem, isActiveItem } = makeSelectable(props, context);
 
+      //handler case:  list items in list
 
+      provide('renderList', renderList)
+      const add = (item) => {
+        if (renderList.value.includes(item)) {
+          return false
+        } else {
+          renderList.value.push(item)
+          return true
+        }
+      }
+      provide('add', add)
 
-      //handler list items in list
-
-      provide('selectedItems', internalValue)
-      provide('multiple', props.multiple)
-      provide('mandatory', props.mandatory)
+      provide('listInternalValue', internalValue)
+      provide('toggleItem', toggleItem)
+      provide('isActiveItem', isActiveItem)
       provide('selectable', props.selectable)
-      provide('allowDuplicates', props.allowDuplicates)
+
       const getListEvents = (item, index) => {
         return {
           click: () => onSelect(item),
@@ -272,10 +264,8 @@
         onArrowUp,
         onSelect,
         internalValue,
-        isSelected,
         isActiveItem,
         getListEvents,
-        isObjectList,
       }
     }
   }

@@ -80,6 +80,7 @@ export const gListSingleSelectPlayGround = () => ({
     return {
       items: [
         { text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Myanma', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
@@ -138,6 +139,8 @@ export const gListMultiSelectPlayGround = () => ({
     return {
       items: [
         { text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Myanma', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
@@ -692,15 +695,26 @@ export const gListFreeRender = () => ({
       ]
     }
   },
+  props: {
+    selectable: { default: boolean('selectable', true) },
+    multiple: { default: boolean('multiple', true) },
+    allowDuplicates: { default: boolean('allowDuplicates', true) },
+  },
 
   template:
     `
       <div>
       {{testValue}}
         <template>
-        <g-list multiple selectable v-model="testValue" itemText="" itemValue="">
+        <g-list  selectable v-model="testValue" itemText="" itemValue="" 
+        :multiple="multiple"
+        :allowDuplicates="allowDuplicates"
+        :selectable="selectable">
         <g-list-item :value="items[0].text">
         <g-list-item-content>Item 1</g-list-item-content>
+        </g-list-item>
+        <g-list-item :value="items[0].text">
+        <g-list-item-content>Item 1 Duplicate</g-list-item-content>
         </g-list-item>
         <g-list-item :value="items[1].text">
         <g-list-item-content>Item 2</g-list-item-content>
@@ -717,7 +731,7 @@ export const gListPrimitiveItems = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
-      items: ['Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors'],
+      items: ['Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors', 'Ranee Carlson', 'Ali Connors'],
       selectedValue: null
     }
   },
