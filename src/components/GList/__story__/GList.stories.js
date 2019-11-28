@@ -163,7 +163,7 @@ export const gListMultiSelectPlayGround = () => ({
     multiple: { default: boolean('multiple', true) },
     mandatory: { default: boolean('mandatory', false) },
     allowDuplicates: { default: boolean('allowDuplicates', true) },
-    itemValue: { default: text('itemValue', 'text') },
+    itemValue: { default: text('itemValue', 'prepend') },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
     returnObject: { default: boolean('returnObject', false) },

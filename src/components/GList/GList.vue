@@ -96,11 +96,11 @@
 <script>
   import { computed, provide } from '@vue/composition-api';
   import GDivider from '../GLayout/GDivider';
-  import { makeSelectable } from '../../mixins/groupable';
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
   import { keyCodes } from '../../utils/helpers';
+  import { makeListSelectable } from './groupableForList';
 
   export default {
     name: 'GList',
@@ -203,15 +203,15 @@
         context.emit('keydown:up')
       }
 
-      function onSelect(item) {
+      function onSelect(item, index) {
         if (!props.selectable) {
           return;
         }
-        toggleItem(item)
+        toggleItem(item, index)
         context.emit('click:item')
       }
 
-      const { uniqueItems: renderList, internalValue, toggleItem, isActiveItem } = makeSelectable(props, context);
+      const { uniqueItems: renderList, internalValue, toggleItem, isActiveItem } = makeListSelectable(props, context);
 
       //handler case:  list items in list
 
@@ -233,7 +233,7 @@
 
       const getListEvents = (item, index) => {
         return {
-          click: () => onSelect(item),
+          click: () => onSelect(item, index),
           keydown: (e) => {
             switch (e.keyCode) {
               case keyCodes.down:

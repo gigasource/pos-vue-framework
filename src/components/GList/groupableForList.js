@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { computed, ref, watch } from '@vue/composition-api';
 
-function groupable(props, vModel) {
+export function groupableForList(props, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
@@ -18,7 +18,7 @@ function groupable(props, vModel) {
             if (returnObject) {
               return _.uniqWith(itemsHaveText.value, _.isEqual)
             } else if (itemValue) {
-              return _.uniqBy(itemsHaveText.value, itemValue)
+              return _.uniqBy(itemsHaveText.value, itemText)
             }
             return _.uniqBy(itemsHaveText.value, itemText)
           } else {
@@ -33,50 +33,50 @@ function groupable(props, vModel) {
       }
     }
   )
-
-  const toggleItem = (item) => {
+  const selectedIndex = multiple ? ref([]) : ref(null)
+  const toggleItem = (item, index) => {
     if (multiple) {
       if (returnObject && itemText) {
-        updateMultiple(item);
+        updateMultiple(item, index);
       } else {
-        itemValue ? updateMultiple(item[itemValue]) : updateMultiple(uniqueItems.value.indexOf(item))
+        itemValue ? updateMultiple(item[itemValue], index) : updateMultiple(uniqueItems.value.indexOf(item), index)
       }
     } else {
       if (returnObject && itemText) {
-        updateSingle(item);
+        updateSingle(item, index);
       } else {
-        itemValue ? updateSingle(item[itemValue]) : updateSingle(uniqueItems.value.indexOf(item))
+        if (itemValue) {
+          updateSingle(item[itemValue], index)
+        } else {
+          updateSingle(uniqueItems.value.indexOf(item), index)
+        }
       }
     }
   };
 
-  const updateSingle = (item) => {
-    const isSame = _.isEqual(vModel.value, item);
+  const updateSingle = (item, index) => {
+    const isSame = _.isEqual(vModel.value, item) && selectedIndex.value === index;
     if (isSame && mandatory) {
       return;
     }
     vModel.value = isSame ? null : item;
+    selectedIndex.value = index
   };
 
-  const updateMultiple = (item) => {
+  const updateMultiple = (item, index) => {
     const clonedValue = _.clone(vModel.value);
-    const itemIndex = clonedValue.findIndex((i) => _.isEqual(i, item));
+    const isExisting = clonedValue.includes(uniqueItems[index]);
     //item exists + mandatory
-    if (itemIndex > -1 && mandatory && clonedValue.length - 1 < 1) {
+    if (isExisting && mandatory && clonedValue.length - 1 < 1) {
       return;
     }
-    if (itemIndex > -1 && !allowDuplicates) {
-      clonedValue.splice(itemIndex, 1);
+    if (isExisting && !allowDuplicates) {
+      clonedValue.splice(index, 1);
+      const iLocation = selectedIndex.value.findIndex(i => i === index)
+      selectedIndex.value.splice(iLocation, 1)
     } else {
-      if (maxSelection) {
-        if (clonedValue.length < maxSelection) {
-          clonedValue.push(item);
-        } else {
-          return;
-        }
-      } else {
-        clonedValue.push(item);
-      }
+      clonedValue.push(item);
+      selectedIndex.value.push(index)
     }
     vModel.value = clonedValue;
   };
@@ -87,14 +87,14 @@ function groupable(props, vModel) {
         return vModel.value.some(element => _.isEqual(element, item))
       } else {
         return itemValue
-          ? vModel.value[index] === item[itemValue]
+          ? vModel.value.includes(item[itemValue]) && selectedIndex.value.includes(index)
           : vModel.value.includes(uniqueItems.value.indexOf(item))
       }
     }
     if (returnObject) {
       return _.isEqual(vModel.value, item)
     } else {
-      return itemValue ? item[itemValue] === vModel.value : uniqueItems.value.indexOf(item) === vModel.value
+      return itemValue ? item[itemValue] === vModel.value && selectedIndex.value === index : uniqueItems.value.indexOf(item) === vModel.value
     }
   };
 
@@ -105,7 +105,7 @@ function groupable(props, vModel) {
   }
 }
 
-export function makeSelectable(props, context) {
+export function makeListSelectable(props, context) {
 
   // 1 -> {a: 1, b: 2}
   const convertValueToInternalValue = function (value) {
@@ -170,9 +170,9 @@ export function makeSelectable(props, context) {
     ignoreWatchValue = true;
   })
 
-  const { uniqueItems, toggleItem, isActiveItem } = groupable(props, rawInternalValue);
+  const { uniqueItems, toggleItem, isActiveItem } = groupableForList(props, rawInternalValue);
 
   return { uniqueItems, toggleItem, isActiveItem, internalValue: rawInternalValue };
 }
 
-export default groupable
+export default groupableForList
