@@ -105,8 +105,6 @@
           }
         }
 
-        console.log('merged buttons', mergedButtons);
-
         //add merged buttons contained in big button
         if (mergedButtons.length > 0) {
           //for split buttons
