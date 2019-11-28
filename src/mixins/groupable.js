@@ -7,24 +7,24 @@ function groupable(props, vModel) {
   //allowDuplicate: choose one item multiple times
   const { returnObject = true, items, mandatory, multiple, allowDuplicates, maxSelection } = props
   const toggleItem = (item) => {
-    if (props.multiple) {
+    if (multiple) {
       if (returnObject) {
         updateMultiple(item);
       } else {
-        updateMultiple(props.items.indexOf(item))
+        updateMultiple(items.indexOf(item))
       }
     } else {
       if (returnObject) {
         updateSingle(item);
       } else {
-        updateSingle(props.items.indexOf(item))
+        updateSingle(items.indexOf(item))
       }
     }
   };
 
   const updateSingle = (item) => {
     const isSame = _.isEqual(vModel.value, item);
-    if (isSame && props.mandatory) {
+    if (isSame && mandatory) {
       return;
     }
     vModel.value = isSame ? null : item;
@@ -34,14 +34,14 @@ function groupable(props, vModel) {
     const clonedValue = _.clone(vModel.value);
     const itemIndex = clonedValue.findIndex((i) => i === item);
     //item exists + mandatory
-    if (itemIndex > -1 && props.mandatory && clonedValue.length - 1 < 1) {
+    if (itemIndex > -1 && mandatory && clonedValue.length - 1 < 1) {
       return;
     }
-    if (itemIndex > -1 && !props.allowDuplicates) {
+    if (itemIndex > -1 && !allowDuplicates) {
       clonedValue.splice(itemIndex, 1);
     } else {
-      if (props.maxSelection) {
-        if (clonedValue.length < props.maxSelection) {
+      if (maxSelection) {
+        if (clonedValue.length < maxSelection) {
           clonedValue.push(item);
         } else {
           return;
@@ -54,14 +54,14 @@ function groupable(props, vModel) {
   };
 
   const isActiveItem = (item) => {
-    if (props.multiple) {
+    if (multiple) {
       return returnObject
         ? vModel.value.some(element => _.isEqual(element, item))
-        : vModel.value.includes(props.items.indexOf(item))
+        : vModel.value.includes(items.indexOf(item))
     }
-    return props.returnObject
+    return returnObject
       ? _.isEqual(vModel.value, item)
-      : props.items.indexOf(item) === vModel.value
+      : items.indexOf(item) === vModel.value
   };
 
   return {
