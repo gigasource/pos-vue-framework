@@ -215,7 +215,7 @@
 <style scoped lang="scss">
   .g-date-select {
     & label {
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-style: normal;
       font-weight: normal;
       font-size: 14px;
@@ -233,10 +233,13 @@
 
     & select {
       height: 40px;
-      padding: 10px 26px 10px 10px;
+      padding: 10px 32px 10px 16px;
       margin-right: 8px;
-      font-size: small;
+      font-size: 14px;
+			font-weight: 700;
+			font-family: "Muli", sans-serif;
       outline: none;
+			color: #212B35;
       background: #EBEBEB;
       border: 1px solid #DBDBDB;
       border-radius: 2px;

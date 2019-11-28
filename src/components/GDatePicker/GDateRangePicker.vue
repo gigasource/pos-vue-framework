@@ -1,11 +1,12 @@
 <script>
   import _ from 'lodash'
   import dayjs from 'dayjs';
-  import { reactive, computed, ref } from '@vue/composition-api';
+  import { reactive, computed, ref, watch } from '@vue/composition-api';
   import GDatePickerUtil from './logic/GDatePickerUtil';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import GDateSelect from './GDateSelect';
   import GBtn from '../GBtn/GBtn'
+  import GDivider from '../GLayout/GDivider';
 
 
   const DEFAULT_COLOR = '#2979FF'
@@ -13,7 +14,7 @@
 
   export default {
     name: 'GRangePicker',
-    components: { GDateSelect, GBtn },
+    components: { GDivider, GDateSelect, GBtn },
     props: {
       max: String,
       min: String,
@@ -140,6 +141,10 @@
         }
       }
 
+      watch(() => rangeStartPickerProps.value, newVal => {
+        context.emit('input', newVal)
+			})
+
       function addDateItemClass(dateRows) {
         _.forEach(dateRows, dateRow => {
           _.forEach(dateRow, date => {
@@ -233,14 +238,14 @@
       return () => {
         return <div class="g-date-range-picker">
           <div class="action-btns">
-            <g-btn outlined flat style={ {backgroundColor: selectMode.custom === state.currentMode ? DEFAULT_COLOR : 'transparent' }} vOn:click={e => selectCustom()}>Custom</g-btn>
-            <g-btn outlined flat style={ {backgroundColor: selectMode.today === state.currentMode ? DEFAULT_COLOR : 'transparent' } } vOn:click={e => selectToday()}>Today</g-btn>
-            <g-btn outlined flat style={ {backgroundColor: selectMode.yesterday === state.currentMode ? DEFAULT_COLOR : 'transparent' } } vOn:click={e => selectYesterday()}>Yesterday</g-btn>
-            <g-btn outlined flat style={ {backgroundColor: selectMode.thisWeek === state.currentMode ? DEFAULT_COLOR : 'transparent' } } vOn:click={e => selectThisWeek()}>This week</g-btn>
-            <g-btn outlined flat style={ {backgroundColor: selectMode.thisMonth === state.currentMode ? DEFAULT_COLOR : 'transparent' } } vOn:click={e => selectThisMonth()}>This month</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.custom === state.currentMode && 'btn__active'} vOn:click={e => selectCustom()}>Custom</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.today === state.currentMode && 'btn__active'} vOn:click={e => selectToday()}>Today</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.yesterday === state.currentMode && 'btn__active'} vOn:click={e => selectYesterday()}>Yesterday</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.thisWeek === state.currentMode && 'btn__active'} vOn:click={e => selectThisWeek()}>This week</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.thisMonth === state.currentMode && 'btn__active'} vOn:click={e => selectThisMonth()}>This month</g-btn>
           </div>
-          <hr/>
-          <div style="display: flex; flex-direction: row; padding: 10px 0">
+          <g-divider/>
+          <div class="row-flex pa-3">
             <g-date-select
                 style="flex: 1"
                 label="Start Date"
@@ -254,7 +259,7 @@
                 min={rangeStartPickerProps.value[0]}
                 vOn:input={setEndDateValue}/>
           </div>
-          <div style="display: flex; flex-direction: row;">
+          <div class="row-flex px-3">
             <div style="border-radius: 5px 0 0 5px; border: 1px solid #DFE4E8;">
               {renderHeaderFn(headerModel1)}
               {renderDateTable(state1, dateTableModel1, setStartDateItem)}
@@ -286,7 +291,6 @@
 
   /* Component */
   .g-date-range-picker {
-    width: 600px;
     display: flex;
     flex-direction: column;
 
@@ -294,6 +298,8 @@
     &__header {
       text-align: center;
       padding: 10px;
+			font-weight: 700;
+			font-size: 18px;
       /* identical to box height, or 113% */
       &--disabled {
         color: #999999;
@@ -303,8 +309,7 @@
     /*TABLE*/
     &__date {
       position: relative;
-      padding: 0 12px;
-      height: 254px;
+      padding: 12px;
 
       table {
         table-layout: fixed;
@@ -312,7 +317,21 @@
       }
 
       tr {
-        height: 32px;
+        height: 40px;
+
+				td:first-child{
+					div.g-table-item__background:not(.g-table-item__background--start-range) {
+						border-top-left-radius: 32px;
+						border-bottom-left-radius: 32px;
+					}
+				}
+
+				td:last-child{
+					div.g-table-item__background:not(.g-table-item__background--end-range)  {
+						border-top-right-radius: 32px;
+						border-bottom-right-radius: 32px;
+					}
+				}
       }
 
       td, th {
@@ -325,14 +344,14 @@
         font-weight: 600;
         font-family: Muli, Arial, serif;
         font-style: normal;
-        font-size: 12px;
+        font-size: 15px;
         line-height: 17px;
         color: #919EAB;
       }
 
       td {
-        color: #232323;
-        width: 32px;
+        color: #212B35;
+        width: 40px;
         padding: 2px 0;
       }
     }
@@ -340,13 +359,14 @@
 
   .g-table-item {
     margin: 0;
-    z-index: auto;
-    font-size: 12px;
+    font-size: 16px;
+		font-family: "Muli", sans-serif;
+		font-weight: 400;
     background-color: transparent;
     border-style: none;
     color: inherit;
-    height: 32px;
-    width: 32px;
+    height: 40px;
+    width: 40px;
 
     &--active {
       color: map-get($shades, 'white');
@@ -362,7 +382,7 @@
     }
 
     &--rounded {
-      border-radius: 28px;
+      border-radius: 32px;
     }
 
     &--outlined {
@@ -381,7 +401,7 @@
     &__background {
       width: 0%;
       top: 2px;
-      height: 32px;
+      height: 40px;
       position: absolute;
       z-index: -1;
 
@@ -401,4 +421,19 @@
       }
     }
   }
+
+	.action-btns {
+		padding: 12px 16px;
+
+		.g-btn {
+			margin-right: 16px;
+			padding: 0 24px !important;
+			border-radius: 2px !important;
+		}
+
+		.btn__active {
+			background: #2979FF;
+			color: #FFF !important;
+		}
+	}
 </style>
