@@ -18,11 +18,11 @@
   import delayable from '../../mixins/delayable';
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
-  import GToolTipContent from './GToolTipContent';
+  import GTooltipContent from './GTooltipContent';
 
   export default {
-    name: 'GToolTip',
-    components: { GToolTipContent },
+    name: 'GTooltip',
+    components: { GTooltipContent },
     props: {
       /*position w window*/
       ...{
@@ -190,5 +190,5 @@
 </script>
 
 <style scoped lang="scss">
-  @import "GToolTip";
+  @import "GTooltip";
 </style>
