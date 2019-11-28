@@ -1,12 +1,12 @@
 <template>
   <span class="g-tooltip" ref="el">
-    <g-tool-tip-content
+    <g-tooltip-content
         v-if="state.lazy"
         :show="state.isActive"
         :activator="activator"
         v-bind="props">
       <slot></slot>
-    </g-tool-tip-content>
+    </g-tooltip-content>
     <div class="g-tooltip__activator" ref="activator">
       <slot name="activator" v-bind:on="activatorListeners"></slot>
     </div>
