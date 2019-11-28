@@ -4,13 +4,13 @@ import plugin from '@vue/composition-api'
 Vue.use(plugin)
 
 // Import your components after all of above import
-import GToolTip from '../GToolTip'
+import GTooltip from '../GTooltip'
 
 describe('Tooltip', () => {
   function prepare(template) {
     return new Vue({
       template: template,
-      components: { GToolTip },
+      components: { GTooltip },
     }).$mount(createElement())
   }
 
