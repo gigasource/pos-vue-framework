@@ -2,7 +2,8 @@
   export default {
     name: 'GBindingDiagramTable',
     props: {
-      value: Array
+      value: Array,
+			slotScopeBinding: Boolean
 		},
     setup (props, context) {
 
@@ -17,9 +18,9 @@
       const genTable = () => {
 				return <table>
 					<tr>
-						<th></th>
-						<th>parent</th>
-						<th>children</th>
+						<th>Type</th>
+						<th>{props.slotScopeBinding ? 'SlotScope': 'Root'}</th>
+						<th>Local</th>
 					</tr>
 					{props.value.map((connection) => genBindingConnection(connection))}
 				</table>

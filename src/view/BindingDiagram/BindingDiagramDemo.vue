@@ -13,14 +13,19 @@
 			</g-diagram>
 		</div>
 		<div area="treeview" style="overflow: auto">
-			<binding-diagram-tree-view v-model="selectTreeActivePath" :item-text="itemText" item-children="items" :data="treeData2" :expand-level="4"></binding-diagram-tree-view>
+			<binding-diagram-tree-view v-model="selectTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="4"></binding-diagram-tree-view>
 		</div>
 		<div area="add" style="border-top: 1px solid gray; border-bottom: 1px solid gray; overflow: auto">
 			<g-btn @click="addToDiagram">Add to Diagram</g-btn>
-			<binding-diagram-tree-view v-model="addTreeActivePath" :item-text="itemText" item-children="items" :data="treeData2" :expand-level="4"></binding-diagram-tree-view>
+			<binding-diagram-tree-view v-model="addTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="7" slotted></binding-diagram-tree-view>
 		</div>
-		<div area="preview">
-			<g-binding-diagram-table :value="bindingConnections"/>
+		<div area="preview" style="overflow: auto">
+			<div v-for="(diagramData, index) in diagramsData" v-show="diagramData.localData.path === selectTreeActivePath" :key="index">
+				Binding:
+				<g-binding-diagram-table :value="diagramData.binding"/>
+				SlotScopes Binding:
+				<g-binding-diagram-table :value="diagramData.slotScopeBinding" slot-scope-binding/>
+			</div>
 		</div>
 	</g-grid-layout>
 </template>
@@ -41,74 +46,6 @@
     props: {},
 		setup (props, context) {
 			const treeData = ref({
-        name: 'Root',
-				items: [
-          {
-            type: 'prop',
-            value: 'color'
-          },
-          {
-            type: 'prop',
-            value: 'width'
-          },
-          {
-            type: 'emit',
-            value: 'input'
-          },
-          {
-            type: 'slot',
-            value: 'header'
-          }
-				],
-        children: [
-          {
-            name: 'Parent',
-            items: [
-              {
-                type: 'prop',
-                value: 'textColor'
-              },
-              {
-                type: 'prop',
-                value: 'minWidth'
-              },
-              {
-                type: 'emit',
-                value: 'change'
-              },
-              {
-                type: 'slot',
-                value: 'content'
-              }
-            ],
-            children: [
-              {
-                name: 'Child',
-                items: [
-                  {
-                    type: 'prop',
-                    value: 'bgColor'
-                  },
-                  {
-                    type: 'prop',
-                    value: 'maxWidth'
-                  },
-                  {
-                    type: 'emit',
-                    value: 'toggle'
-                  },
-                  {
-                    type: 'slot',
-                    value: 'footer'
-                  }
-                ],
-              }
-            ]
-          }
-        ]
-      })
-
-			const treeData2 = ref({
         "events": [],
         "_id": "5caf587f9fe2377748da54a8",
         "__v": 0,
@@ -118,21 +55,6 @@
             "choice": "view",
             "component": "VDialog",
             "binding": [],
-            "slotScopes" : {
-              "activator": {
-                "data": {
-                  "isActive": false,
-                },
-                "func": {
-                  "toggleDialog": "() => isActive = !isActive"
-                }
-							},
-							"default": {
-                "data": {
-                  "title": "Hello"
-								}
-							}
-            },
             "items": [
               {
                 "choice": "view",
@@ -144,7 +66,10 @@
                     "depressed": true,
                     "flat": false
                   },
-                  "events": {}
+                  "events": {},
+                  "emits": {
+                    "click": ''
+                  },
                 },
                 "binding": [],
                 "slotScopeBinding": []
@@ -196,7 +121,10 @@
                             "html": "action test",
                             "flat": true,
                             "color": "blue"
-                          }
+                          },
+                          "emits": {
+                            "click": ''
+                          },
                         },
                         "binding": [],
                         "slotScopeBinding": []
@@ -215,7 +143,10 @@
                               "_code_": "module.exports = function() {\n  let dialogVm = this.$parent;\n  while (!dialogVm.$vnode.tag.includes('v-dialog')) {\n    dialogVm = dialogVm.$parent;\n  } \n  dialogVm.isActive = false;\n}",
                               "_code_type_": "commonJs"
                             }
-                          }
+                          },
+                          "emits": {
+                            "click": ''
+                          },
                         },
                         "binding": [
                           {
@@ -253,7 +184,25 @@
               "props": {
                 "max-width": "40vw",
                 "persistent": false
-              }
+              },
+							"emits": {
+                "input": ''
+							},
+              "slotScopes" : {
+                "activator": {
+                  "data": {
+                    "isActive": false,
+                  },
+                  "func": {
+                    "toggleDialog": "() => isActive = !isActive"
+                  }
+                },
+                "default": {
+                  "data": {
+                    "title": "Hello"
+                  }
+                }
+              },
             },
             "slotScopeBinding": []
           }
@@ -286,17 +235,40 @@
 
       const itemText = node => node['name'] ? node['name'] : node['component']
 
-      const selectTreeActivePath = ref('')
-      const addTreeActivePath = ref('')
+			const selectTree = ref({
+				activePath: '',
+				allPaths: []
+			})
+      const addTree = ref({
+        activePath: '',
+        allPaths: []
+      })
+      const selectTreeActivePath = computed(() => selectTree.value.activePath)
+      const addTreeActiveSlottedPath = computed(() => addTree.value.activePath)
+			const selectTreeAllPaths = computed(() => selectTree.value.allPaths)
+      const addTreeAllPaths = computed(() => addTree.value.allPaths)
       const diagramsData = ref([])
 			const bindingConnections = ref([])
+			const slotScopeBindingConnections = ref([])
+
+      const addTreeActivePath = computed(() => convertToPath(addTreeActiveSlottedPath.value))
 
       function getPathName(path, treeData) {
         if (path === '') {
+          // Root
           return _.get(treeData, path + 'name')
-        }
+        } else if (path.indexOf('slot') > -1) {
+          // Slot path
+          return _.get(treeData, path.replace(/\.slot\.\d/, '.component'))
+				}
         return _.get(treeData, path + '.component')
       }
+
+      function getSlotName(slotPath, treeData) {
+        const slotGroups = _.groupBy(_.get(treeData, slotPath.replace(/\.slot\.\d/, '.items')), i => i.slot || 'default')
+				const slotNames = _.map(slotGroups, (items, slot) => slot)
+				return slotNames[slotPath[slotPath.length - 1]]
+			}
 
       function getPathProps(path, treeData) {
 			  if (path === '' && _.get(treeData, path + 'props.fields')) {
@@ -306,6 +278,14 @@
 				} else {
 			    return []
 				}
+			}
+
+			function getPathEmits(path, treeData) {
+        if (_.get(treeData, path + '.content.emits')) {
+          return _.map(_.keys(_.get(treeData, path + '.content.emits')), val => ({type: 'emit', key: val}))
+        } else {
+          return []
+        }
 			}
 
 			function getPathSlots(path, treeData) {
@@ -321,27 +301,62 @@
 			}
 
 			function getPathSlotScopes(path, treeData) {
-			  if (_.get(treeData, path + '.slotScopes')) {
-          return _.mapValues(_.get(treeData, path + '.slotScopes'), slotScope => getSlotScopesItems(slotScope))
+			  if (_.get(treeData, path + '.content.slotScopes')) {
+          return _.mapValues(_.get(treeData, path + '.content.slotScopes'), slotScope => getSlotScopesItems(slotScope))
 				}
 			  return {}
 			}
 
       function getPathData(path, treeData) {
+			  // slot path
+			  if (isSlotPath(path)) {
+			    const slotScopes = getPathSlotScopes(convertToNormalPath(path), treeData)
+					const slotName = getSlotName(path, treeData)
+			    return {
+			      path: path,
+						name: getPathName(path, treeData) + ': ' + slotName,
+						items: slotScopes[slotName] || []
+					}
+				}
+
+			  // normal path
         return {
           path: path,
           name: getPathName(path, treeData),
           items: [
             ...getPathProps(path, treeData),
+						...getPathEmits(path, treeData),
             ...getPathSlots(path, treeData)
           ],
           slotScopes: getPathSlotScopes(path, treeData)
         }
       }
 
-			function getSlotScopes(slot, path, treeData) {
-
+      function convertToNormalPath (slotPath) {
+			  return slotPath.replace(/\.slot\.\d/, '')
 			}
+
+			function convertToSlottedPath (path) {
+			  for (let slottedPath of addTreeAllPaths.value) {
+			    if (convertToPath(slottedPath) === path) return slottedPath
+				}
+			}
+
+			function convertToPath (slottedPath) {
+			  return slottedPath.replace(/slot\.\d\./g, '')
+			}
+
+			function isRootPath (path) {
+			  return path === ''
+			}
+
+      function isSlotPath (path) {
+			  return path.indexOf('slot') > -1
+			}
+
+      function isProperSlotPath(slottedPath, path) {
+        return convertToSlottedPath(path).indexOf(slottedPath) > -1
+      }
 
 			function isSelectedPath (path) {
 			  for (let diagramData of diagramsData.value) {
@@ -351,8 +366,7 @@
 			}
 
       function isDiagramLocalPath (path, diagramData) {
-        if (path === diagramData.localData.path) return true
-				else return false
+        return path === diagramData.localData.path;
       }
 
 			function isDiagramForeignPath (path, diagramData) {
@@ -369,26 +383,42 @@
 			watch(selectTreeActivePath, newVal => {
 			  if (!isSelectedPath(newVal)) {
 			    diagramsData.value.push({
-						localData: getPathData(newVal, treeData2.value),
-						foreignData: []
+						localData: getPathData(newVal, treeData.value),
+						foreignData: [],
+						binding: [],
+						slotScopeBinding: []
 					})
 				}
 			})
 
 			function addToDiagram() {
         for (let diagramData of diagramsData.value) {
-          if (isDiagramLocalPath(selectTreeActivePath.value, diagramData) && !isDiagramPath(addTreeActivePath.value, diagramData)) {
-						diagramData.foreignData.push(getPathData(addTreeActivePath.value, treeData2.value))
+          if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
+            if (((isRootPath(addTreeActivePath.value) || (isSlotPath(addTreeActivePath.value) && isProperSlotPath(addTreeActiveSlottedPath.value, selectTreeActivePath.value))) && !isDiagramPath(addTreeActivePath.value, diagramData))) {
+              diagramData.foreignData.push(getPathData(addTreeActivePath.value, treeData.value))
+            }
 					}
         }
 			}
 
 			function connect (startVal, endVal) {
-        bindingConnections.value.push({
-          type: startVal.type,
-          root: startVal.value,
-          local: endVal.value
-        })
+        for (let diagramData of diagramsData.value) {
+          if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
+            if (endVal.type === 'data' || endVal.type === 'func') {
+              diagramData.slotScopeBinding.push({
+                type: startVal.type,
+                foreign: startVal.key,
+                local: endVal.key
+              })
+            } else {
+              diagramData.binding.push({
+                type: startVal.type,
+                foreign: startVal.key,
+                local: endVal.key
+              })
+						}
+          }
+        }
       }
 
 			function disconnect (startVal, endVal) {
@@ -397,14 +427,17 @@
 
       return {
 			  treeData,
-				treeData2,
 				itemText,
-        selectTreeActivePath,
-        addTreeActivePath,
+				selectTree,
+				addTree,
+				selectTreeActivePath,
+        addTreeActiveSlottedPath,
+				addTreeActivePath,
         bindingDiagramLayout,
 				getPathData,
 				diagramsData,
 				bindingConnections,
+        slotScopeBindingConnections,
 				addToDiagram,
 				connect,
 				disconnect

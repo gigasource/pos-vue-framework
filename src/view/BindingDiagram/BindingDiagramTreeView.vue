@@ -1,5 +1,5 @@
 <script>
-  import { ref, computed } from '@vue/composition-api';
+  import { ref, computed, onMounted } from '@vue/composition-api';
   import { getInternalValue } from '../../mixins/getVModel';
   import GTreeFactory, { genTextFactory } from '../../components/GTreeViewFactory/GTreeFactory';
 	import GIcon from '../../components/GIcon/GIcon';
@@ -20,14 +20,32 @@
         type: Number,
         default: 0
       },
+			slotted: {
+        type: Boolean,
+				default: false
+			},
       data: [Object, Array],
 
-			value: ''
+			value: {
+        type: Object
+			}
     },
     setup(props, context) {
       const genText = genTextFactory(props.itemText)
 
-			const activePath = getInternalValue(props, context)
+			const tree = getInternalValue(props, context)
+
+      onMounted(() => {
+        tree.value.allPaths = _.keys(treeStates)
+      })
+
+      const getRealPath = (slottedPath) => {
+        return slottedPath.replace(/slot\.\d\./g, '')
+      }
+
+      const togglePath = (path) =>  {
+				tree.value.activePath = path
+			}
 
 			const genIcon = function (state) {
         return <g-icon size="16" vOn:click={() => state.collapse = !state.collapse}>
@@ -36,12 +54,13 @@
 			}
 
       const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
+
         return <li>
           <span class="tree-view-prepend">
 						{childrenVNodes && genIcon(state)}
 					</span>
-					<span class={['tree-view-text', {'tree-view-text__active': path === activePath.value}]} vOn:click={() => activePath.value = path}>
-						{genText.value(node)} {path}
+					<span class={['tree-view-text', {'tree-view-text__active': path === tree.value.activePath}]} vOn:click={() => togglePath(path)}>
+						{node.virtualNode ? 'slot:' : ''} {genText.value(node)}
           </span>
           {!state.collapse ? childrenVNodes : null}
 
@@ -60,33 +79,33 @@
         )
       }
 
-      const itemChildren = function (node, {path, parent, isRoot}) {
-        if (isRoot) return node.items;
+      const itemChildren = props.slotted ? function (node, {path, parent, isRoot}) {
+        if (isRoot) {
+          node.items = _.forEach(node.items, (val, key) => {
+            val['origKey'] = key
+          })
+          return node.items;
+        }
         if (node.virtualNode) return node.items;
+        node.items = _.forEach(node.items, (val, key) => {
+          val['origKey'] = key
+				})
         const slotGroups = _.groupBy(node.items, i => i.slot || 'default');
-        const children = _.map(slotGroups, (items,slot) => {
+        return _.map(slotGroups, (items,slot) => {
           return {
             component: slot,
 						virtualNode: true,
 						items
 					}
 				})
-				return children;
-        // if (node['slot']) {
-        //   return [node['slot'], ...node['items']]
-				// } else {
-        //   return node['items']
-				// }
-
-			}
+			} : undefined
 
 			const itemPath = function(node, {parent, path, isRoot, key}) {
-        if (isRoot) return key;
-        if (node.virtualNode) return;
+        if (isRoot) return;
+        if (node.virtualNode) return `slot.${key}`;
         if (key) {
-          return `items.${key}`;
+          return `${props.itemChildren}.${node.origKey || key}`;
         }
-
 			}
 
       const { treeStates, genTree } = GTreeFactory({
@@ -131,6 +150,7 @@
 	.tree-view-text {
 		border-radius: 4px;
 		padding: 2px 4px;
+		font-size: 14px;
 
 		&:not(.tree-view-text__active):hover {
 			background-color: lightgreen;
