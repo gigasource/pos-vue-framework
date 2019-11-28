@@ -9,7 +9,7 @@
     props: {
       //classes
       ...{
-        ripple: { type: Boolean, default: true},
+        ripple: {type: Boolean, default: true},
         raised: Boolean,
         depressed: Boolean,
         disabled: Boolean,
@@ -50,11 +50,11 @@
         textColor: String,
         backgroundColor: String,
         gradient: String,
-        gradientAngle: { type: String, default: '45deg' },
+        gradientAngle: {type: String, default: '45deg'},
       }
     },
     setup(props, context) {
-      const { classes, styles } = GBtnUtil(props, context);
+      const {classes, styles} = GBtnUtil(props, context);
 
       function genBtnContent() {
         return <span class="g-btn__content">
@@ -66,12 +66,17 @@
         const nodeData = {
           class: classes.value,
           style: styles.value,
-          directives: props.ripple ? [{ name: 'ripple', value: undefined }] : []
+          directives: props.ripple ? [{name: 'ripple', value: undefined}] : [],
+          on: {
+            click: (e) => context.emit('click', e),
+            mouseenter: (e) => context.emit('mouseenter', e),
+            mouseleave: (e) => context.emit('mouseleave', e),
+            mouseup: (e) => context.emit('mouseup', e),
+            mousedown: (e) => context.emit('mousedown', e),
+          }
         };
 
-        return <button {...nodeData} vOn:click={(event) => {
-          context.emit('click', event);
-        }}>
+        return <button {...nodeData}>
           {genBtnContent()}
         </button>
       }
