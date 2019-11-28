@@ -94,7 +94,7 @@
 </template>
 
 <script>
-  import { computed, provide, ref } from '@vue/composition-api';
+  import { computed, provide } from '@vue/composition-api';
   import GDivider from '../GLayout/GDivider';
   import { makeSelectable } from '../../mixins/groupable';
   import GIcon from '../GIcon/GIcon';
@@ -141,7 +141,7 @@
       itemValue: String,
       itemText: {
         type: String,
-        default: 'text'
+        default: ''
       },
       activeClass: String,
       inMenu: Boolean,
@@ -200,8 +200,6 @@
       //Events in list
 
       //when no props.items provided
-      const itemsInList = ref([])
-      provide('itemsInList', itemsInList)
 
       //Select
       function onClick(event) {
@@ -221,6 +219,7 @@
       }
 
       function onSelect(item) {
+        debugger
         if (!props.selectable) {
           return;
         }
@@ -229,6 +228,9 @@
       }
 
       const { internalValue, toggleItem, isActiveItem } = makeSelectable(props, context);
+      provide('itemsInList', internalValue)
+
+
 
       //handler list items in list
 
@@ -259,7 +261,7 @@
 
 
       return {
-        itemsInList,
+
         classes,
         styles,
         prependClasses,

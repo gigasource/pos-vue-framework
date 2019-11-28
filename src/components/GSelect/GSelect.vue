@@ -72,11 +72,11 @@
       items: Array,
       itemText: {
         type: String,
-        default: 'text'
+        default: ''
       },
       itemValue: {
         type: String,
-        default: 'value'
+        default: ''
       },
       value: null,
       genTextFieldFn: Function,
@@ -140,7 +140,7 @@
                 {...{
                   props: {
                     items: options.value,
-                    'item-title': props.itemText,
+                    'item-text': props.itemText,
                     itemValue: props.itemValue,
                     returnObject: props.returnObject,
                     mandatory: props.mandatory,
@@ -296,16 +296,11 @@
 <style scoped lang="scss">
   .g-select::v-deep {
     .g-menu--activator {
-      span {
-        margin: 3px
-      }
-      .g-tf-append__inner .g-icon:last-child {
+
+			.g-tf-append__inner .g-icon:last-child {
         transition: transform 0.4s;
       }
 
-      .g-tf-input {
-        display: flex;
-      }
 
       .input {
         display: flex;

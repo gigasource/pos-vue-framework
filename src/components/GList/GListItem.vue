@@ -51,7 +51,7 @@
       const selectable = inject('selectable')
       const inListEvents = inject('getListEvents')
       const internalValue = ref(null)
-      const { toggleItem } = groupable(props, internalValue)
+      const { toggleItem } = groupable(props, itemsInList)
       const singleItemEvents = () => {
         return {
           click: () => {
@@ -71,6 +71,7 @@
         styles,
         listItemEvents,
         selectedItems,
+        internalValue
       }
     }
   }

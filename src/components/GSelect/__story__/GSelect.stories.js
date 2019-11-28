@@ -1,5 +1,11 @@
-import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions'
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
+// testing
+import Vue from 'vue/dist/vue.common.js'
+import GListItem from '../../GList/GListItem';
+import { GListItemContent, GListItemText } from '../../GList/GListFunctionalComponent';
+import GSelect from '../GSelect';
+import { GListItemAction } from '../..';
+import GIcon from '../../GIcon/GIcon';
 
 //
 export default {
@@ -23,8 +29,8 @@ export const GSelectSingle = () => ({
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: number('counter', 25)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemText', 'value')},
-    chips: {default: boolean('chips', false)},
+    itemValue: { default: text('itemValue', 'value') },
+    chips: { default: boolean('chips', true) },
     smallChips: {default: boolean('smallChips', false)},
     mandatory: {default: boolean('mandatory', false)},
   },
@@ -45,6 +51,8 @@ export const GSelectSingle = () => ({
 			width="100%"
 			:items="items"
 			v-model="selected"
+			:itemText="itemText"
+			:itemValue="itemValue"
 	>
 	</g-select>
 </div>
@@ -124,7 +132,7 @@ export const GSelectMultiple = () => ({
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
     allowDuplicates: {type: Boolean, default: boolean('allow duplicates', true)},
-    chips: {default: boolean('chips', false)},
+    chips: { default: boolean('chips', true) },
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemText', 'value')},
     clearable: {default: boolean('clearable', false)},
@@ -377,18 +385,6 @@ export const test2 = () => ({
     )
   }
 })
-
-// testing
-import Vue from 'vue/dist/vue.common.js'
-
-import GCheckbox from "../../GCheckbox/GCheckbox";
-import GTextField from "../../GInput/GTextField";
-import GListItem from "../../GList/GListItem";
-import {GListItemText, GListItemContent, GListItemSubText} from "../../GList/GListFunctionalComponent";
-import GDivider from "../../GLayout/GDivider";
-import GSelect from "../GSelect";
-import { GListItemAction } from '../..';
-import GIcon from '../../GIcon/GIcon';
 
 describe('test', function () {
   it('should', function () {

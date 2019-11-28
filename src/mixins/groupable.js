@@ -101,7 +101,7 @@ export function makeSelectable(props, context) {
       return internalValue;
     }
     if (!Array.isArray(internalValue)) {
-      return props.returnObject ? internalValue : internalValue[props.itemValue];
+      return internalValue
     }
     return internalValue.map(i => props.returnObject ? i : i);
   }

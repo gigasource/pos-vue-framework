@@ -109,6 +109,12 @@
         }
       },
       value: Object,
+      val: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      }
 
     },
     setup: function (props, context) {

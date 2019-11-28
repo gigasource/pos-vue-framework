@@ -698,14 +698,14 @@ export const gListFreeRender = () => ({
       <div>
       {{testValue}}
         <template>
-        <g-list multiple selectable v-model="testValue">
-        <g-list-item :value="items[0]">
+        <g-list multiple selectable v-model="testValue" itemText="" itemValue="">
+        <g-list-item :value="items[0].text">
         <g-list-item-content>Item 1</g-list-item-content>
         </g-list-item>
-        <g-list-item :value="items[1]">
+        <g-list-item :value="items[1].text">
         <g-list-item-content>Item 2</g-list-item-content>
         </g-list-item>
-        <g-list-item :value="items[2]">
+        <g-list-item :value="items[2].text">
         <g-list-item-content>Item 3</g-list-item-content>
         </g-list-item>
         </g-list>
