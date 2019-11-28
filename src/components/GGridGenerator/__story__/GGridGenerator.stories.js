@@ -1,9 +1,9 @@
 import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { reactive } from '@vue/composition-api'
-import GEditViewInput from '../GEditViewInput'
-import GIncDecNumberInput from '../GIncDecNumberInput'
+import GEditViewInput from '../_components/GEditViewInput'
+import GIncDecNumberInput from '../_components/GIncDecNumberInput'
 import GGridLayout from '../GGridLayout'
-import GGridGenerator from '../GGridGenerator'
+import GGridGenerator from '../_components/GGridGenerator'
 import GGridGeneratorInput from '../GGridGeneratorInput'
 import loginLayout from './layout'
 
@@ -47,41 +47,24 @@ export const editViewInput = () => ({
   }
 })
 
-// grid layout generator
-export const GridGeneratorUseDefaultLayout = () => ({
-  components: {GGridGenerator},
-  setup() {
-    return () => <g-grid-generator/>
-  }
-})
-export const GridGeneratorUseProvidedLayout = () => ({
-  components: {GGridGenerator},
-  setup() {
-    return () => <g-grid-generator layout={loginLayout}/>
-  }
-})
-
 // grid layout presenter
-export const layoutJsonObject = () => ({
+export const GridLayout = () => ({
   components: { GGridLayout },
   props: {
     layout: {
       default: loginLayout
     },
     passThrough: {
-      default: boolean('passThrough', false)
-    },
-    editable: {
-      default: boolean('editable', true)
+      default: boolean('passThrough', true)
     },
     displayPreviewColor: {
       type: Boolean,
-      default: boolean('displayPreviewColor', false)
+      default: boolean('displayPreviewColor', true)
     }
   },
   template: `
     <div>
-      <g-grid-layout :layout="layout" :passThrough="passThrough" :editable="editable" style="height: 700px" :displayPreviewColor="displayPreviewColor">
+      <g-grid-layout :layout="layout" :passThrough="passThrough" style="height: 700px" :displayPreviewColor="displayPreviewColor">
         <span slot="s1" class="slot">singleItemSlot</span>
         <span slot="s1" class="slot">singleItemSlot</span>
         <template slot="s2" class="slot">singleItemSlot</template>
@@ -112,19 +95,23 @@ export const GridGeneratorInput = () => ({
   props: {
     displayPreviewColor: {
       type: Boolean,
-      default: boolean('displayPreviewColor', false)
-    }
+      default: boolean('displayPreviewColor', true)
+    },
+    passThrough: {
+      default: boolean('passThrough', true)
+    },
   },
   data() {
     return {
-      model: { layout: undefined },
+      model: { layout: loginLayout },
       field: { key: 'layout' },
     }
   },
   template: `
     <div>
       <g-grid-generator-input :model="model" :field="field"></g-grid-generator-input>
-      <g-grid-layout :layout="model[field.key]" style="height: 700px" :displayPreviewColor="displayPreviewColor">
+      <hr/>
+      <g-grid-layout :layout="model[field.key]" style="height: 700px" :passThrough="passThrough" :displayPreviewColor="displayPreviewColor">
         <span slot="s1" class="slot" >s1</span>
         <span slot="s1" class="slot">s1</span>
         <span slot="s2" class="slot">s2</span>
@@ -135,18 +122,5 @@ export const GridGeneratorInput = () => ({
       </g-grid-layout>
     </div>`
 })
-export const GridGeneratorInputWithModel = () => ({
-  components: { GGridGeneratorInput },
-  setup() {
-    const state = reactive({
-      model: { layout: undefined },
-      field: { key: 'layout' }
-    })
-    const render = () => <g-grid-generator-input {...{ props: { model: state.model } }} field={state.field}></g-grid-generator-input>
-    return { state, render }
-  },
-  render() {
-    return this.render()
-  }
-})
+
 

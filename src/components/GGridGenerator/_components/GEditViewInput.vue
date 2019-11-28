@@ -1,6 +1,6 @@
 <script>
-  import GIcon from '../GIcon/GIcon';
-  import { enterPressed } from '../../utils/keyboardHelper';
+  import GIcon from '../../GIcon/GIcon';
+  import { enterPressed } from '../../../utils/keyboardHelper';
   import { reactive, computed } from '@vue/composition-api';
 
   export default {

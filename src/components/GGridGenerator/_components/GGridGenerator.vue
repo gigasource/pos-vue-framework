@@ -1,22 +1,22 @@
 <script>
   import _ from 'lodash'
   import { reactive, ref, computed, onUpdated } from '@vue/composition-api'
-  import { saveFile, openFile } from '../../utils/helpers'
-  import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../utils/keyboardHelper'
+  import { saveFile, openFile } from '../../../utils/helpers'
+  import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
   import {
     _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName,
     _flexJustifyContentOptions, _flexAlignItemOptions, _flexAlignContentOptions, _flexWraps, _flexDirection
-  } from './logic/utils'
-  import { fromJSON, toJSONStr, toJSON } from './logic/modelParser'
-  import GDialog from '../GDialog/GDialog'
-  import GIcon from '../GIcon/GIcon'
+  } from '../logic/utils'
+  import { fromJSON, toJSONStr, toJSON } from '../logic/modelParser'
+  import GDialog from '../../GDialog/GDialog'
+  import GIcon from '../../GIcon/GIcon'
   import GIncDecNumberInput from './GIncDecNumberInput'
   import GEditViewInput from './GEditViewInput'
-  import GFileInputJSX from '../GFileInput/GFileInput'
-  import GridModel from './logic/GridModel';
+  import GFileInputJSX from '../../GFileInput/GFileInput'
+  import GridModel from '../logic/GridModel';
   import GLayoutDataInput, { renderGLayoutData } from './GLayoutDataInput';
-  import GGridLayout from './GGridLayout'
+  import GGridLayout from '../GGridLayout'
 
   const selectedSettingEnum = {
     grid: 0,

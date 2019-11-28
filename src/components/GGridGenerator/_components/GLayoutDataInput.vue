@@ -1,8 +1,8 @@
 <script>
-  import sampleImg from './logic/sampleImageBase64'
+  import sampleImg from '../logic/sampleImageBase64'
   import { reactive } from '@vue/composition-api';
-  import GDialog from '../GDialog/GDialog'
-  import GBtn from '../GBtn/GBtn'
+  import GDialog from '../../GDialog/GDialog'
+  import GBtn from '../../GBtn/GBtn'
 
   export function renderGLayoutData(model) {
     const style = `background-image: ${model.image}; width: ${model.width}; height: ${model.height}; border: ${model.border}`
