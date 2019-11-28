@@ -1,12 +1,12 @@
 <template>
   <span class="g-tooltip" ref="el">
-    <g-tool-tip-content
+    <g-tooltip-content
         v-if="state.lazy"
         :show="state.isActive"
         :activator="activator"
         v-bind="props">
       <slot></slot>
-    </g-tool-tip-content>
+    </g-tooltip-content>
     <div class="g-tooltip__activator" ref="activator">
       <slot name="activator" v-bind:on="activatorListeners"></slot>
     </div>
@@ -18,11 +18,11 @@
   import delayable from '../../mixins/delayable';
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
-  import GToolTipContent from './GToolTipContent';
+  import GTooltipContent from './GTooltipContent';
 
   export default {
-    name: 'GToolTip',
-    components: { GToolTipContent },
+    name: 'GTooltip',
+    components: { GTooltipContent },
     props: {
       /*position w window*/
       ...{
@@ -190,5 +190,5 @@
 </script>
 
 <style scoped lang="scss">
-  @import "GToolTip";
+  @import "GTooltip";
 </style>
