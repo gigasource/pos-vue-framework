@@ -1,11 +1,11 @@
 <script>
   import { ref, computed, onMounted } from '@vue/composition-api';
   import { getInternalValue } from '../../mixins/getVModel';
-  import GTreeFactory, { genTextFactory } from '../../components/GTreeViewFactory/GTreeFactory';
-	import GIcon from '../../components/GIcon/GIcon';
+  import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
+	import GIcon from '../GIcon/GIcon';
 	import _ from 'lodash';
   export default {
-    name: 'BindingDiagramTreeView',
+    name: 'GBindingDiagramTreeView',
 		components: { GIcon },
     props: {
       itemText: {

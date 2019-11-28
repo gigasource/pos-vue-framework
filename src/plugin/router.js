@@ -17,7 +17,7 @@ import CompanySetting from '../POSView/setting/view/viewCompany';
 import GeneralSetting from '../POSView/setting/view/viewGeneral';
 import PaymentSetting from '../POSView/setting/view/viewPayment';
 import CategorySetting from '../POSView/setting/view/viewCategory';
-import BindingDiagramDemo from '../view/BindingDiagram/BindingDiagramDemo';
+import BindingDiagramDemo from '../view/BindingDiagramDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},

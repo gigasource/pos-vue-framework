@@ -13,11 +13,11 @@
 			</g-diagram>
 		</div>
 		<div area="treeview" style="overflow: auto">
-			<binding-diagram-tree-view v-model="selectTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="4"></binding-diagram-tree-view>
+			<g-binding-diagram-tree-view v-model="selectTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="4"></g-binding-diagram-tree-view>
 		</div>
 		<div area="add" style="border-top: 1px solid gray; border-bottom: 1px solid gray; overflow: auto">
 			<g-btn @click="addToDiagram">Add to Diagram</g-btn>
-			<binding-diagram-tree-view v-model="addTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="7" slotted></binding-diagram-tree-view>
+			<g-binding-diagram-tree-view v-model="addTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="7" slotted></g-binding-diagram-tree-view>
 		</div>
 		<div area="preview" style="overflow: auto">
 			<div v-for="(diagramData, index) in diagramsData" v-show="diagramData.localData.path === selectTreeActivePath" :key="index">
@@ -31,207 +31,26 @@
 </template>
 <script>
 	import _ from 'lodash'
+  import { getInternalValue } from '../../mixins/getVModel';
   import { ref, computed, watch } from '@vue/composition-api';
 	import bindingDiagramLayout from './bindingDiagramLayout'
-	import BindingDiagramTreeView from './BindingDiagramTreeView';
-  import GGridLayout from '../../components/GGridGenerator/GGridLayout';
-  import GDiagram from '../../components/GConnector/GDiagram';
+	import GBindingDiagramTreeView from './GBindingDiagramTreeView';
+  import GGridLayout from '../GGridGenerator/GGridLayout';
+  import GDiagram from '../GConnector/GDiagram';
   import GBindingDiagramItemGroup from './GBindingDiagramItemGroup';
   import GBindingDiagramTable from './GBindingDiagramTable';
-  import GBtn from '../../components/GBtn/GBtn';
+  import GBtn from '../GBtn/GBtn';
 
   export default {
-    name: 'BindingDiagramDemo',
-    components: { GBtn, GBindingDiagramTable, GBindingDiagramItemGroup, GDiagram, BindingDiagramTreeView, GGridLayout },
-    props: {},
+    name: 'GBindingDiagram',
+    components: { GBtn, GBindingDiagramTable, GBindingDiagramItemGroup, GDiagram, GBindingDiagramTreeView, GGridLayout },
+    props: {
+      value: {
+        type: Object
+      }
+		},
 		setup (props, context) {
-			const treeData = ref({
-        "events": [],
-        "_id": "5caf587f9fe2377748da54a8",
-        "__v": 0,
-        "isProduction": true,
-        "items": [
-          {
-            "choice": "view",
-            "component": "VDialog",
-            "binding": [],
-            "items": [
-              {
-                "choice": "view",
-                "slot": "activator",
-                "component": "VBtn",
-                "content": {
-                  "props": {
-                    "html": "open dialog",
-                    "depressed": true,
-                    "flat": false
-                  },
-                  "events": {},
-                  "emits": {
-                    "click": ''
-                  },
-                },
-                "binding": [],
-                "slotScopeBinding": []
-              },
-              {
-                "choice": "view",
-                "component": "VCard",
-                "binding": [],
-                "items": [
-                  {
-                    "choice": "view",
-                    "component": "VCardTitle",
-                    "binding": [],
-                    "content": {
-                      "props": {
-                        "html": "FormDialog",
-                        "primary-title": false,
-                        "class": [
-                          "headline"
-                        ]
-                      },
-                      "events": {}
-                    },
-                    "items": [],
-                    "slotScopeBinding": []
-                  },
-                  {
-                    "choice": "view",
-                    "component": "VCardText",
-                    "binding": [],
-                    "content": {
-                      "props": {
-                        "html": "test thu xem the nao"
-                      },
-                      "events": {}
-                    },
-                    "slotScopeBinding": []
-                  },
-                  {
-                    "choice": "view",
-                    "component": "VCardActions",
-                    "binding": [],
-                    "items": [
-                      {
-                        "choice": "view",
-                        "component": "VBtn",
-                        "content": {
-                          "props": {
-                            "html": "action test",
-                            "flat": true,
-                            "color": "blue"
-                          },
-                          "emits": {
-                            "click": ''
-                          },
-                        },
-                        "binding": [],
-                        "slotScopeBinding": []
-                      },
-                      {
-                        "choice": "view",
-                        "component": "VBtn",
-                        "content": {
-                          "props": {
-                            "html": "cancel",
-                            "flat": true,
-                            "color": "blue"
-                          },
-                          "events": {
-                            "click": {
-                              "_code_": "module.exports = function() {\n  let dialogVm = this.$parent;\n  while (!dialogVm.$vnode.tag.includes('v-dialog')) {\n    dialogVm = dialogVm.$parent;\n  } \n  dialogVm.isActive = false;\n}",
-                              "_code_type_": "commonJs"
-                            }
-                          },
-                          "emits": {
-                            "click": ''
-                          },
-                        },
-                        "binding": [
-                          {
-                            "type": "prop",
-                            "local": "color",
-                            "root": "color"
-                          }
-                        ],
-                        "key": "undefined_copy",
-                        "slotScopeBinding": []
-                      },
-                      {
-                        "choice": "view",
-                        "component": "VSpacer",
-                        "binding": [],
-                        "slotScopeBinding": [],
-                        "clipboardType": "cut",
-                        "content": {
-                          "props": {},
-                          "events": {}
-                        }
-                      }
-                    ],
-                    "slotScopeBinding": [],
-                    "content": {
-                      "props": {},
-                      "events": {}
-                    }
-                  }
-                ],
-                "slotScopeBinding": []
-              }
-            ],
-            "content": {
-              "props": {
-                "max-width": "40vw",
-                "persistent": false
-              },
-							"emits": {
-                "input": ''
-							},
-              "slotScopes" : {
-                "activator": {
-                  "data": {
-                    "isActive": false,
-                  },
-                  "func": {
-                    "toggleDialog": "() => isActive = !isActive"
-                  }
-                },
-                "default": {
-                  "data": {
-                    "title": "Hello"
-                  }
-                }
-              },
-            },
-            "slotScopeBinding": []
-          }
-        ],
-        "name": "MyDialog",
-        "props": {
-          "fields": [
-            {
-              "schemaType": "string",
-              "key": "color",
-              "type": "input",
-              "addable": true
-            },
-            {
-              "schemaType": "number",
-              "key": "width",
-              "default": "500"
-            },
-            {
-              "schemaType": "boolean",
-              "key": "lazy",
-              "default": "false"
-            }
-          ]
-        },
-        "registerAsVueComponent": true,
-        "renderToRoute": "mydialog",
-        "id": "5caf587f9fe2377748da54a8"
-      })
+			const treeData = getInternalValue(props, context)
 
       const itemText = node => node['name'] ? node['name'] : node['component']
 
@@ -426,18 +245,14 @@
 			}
 
       return {
+        bindingDiagramLayout,
 			  treeData,
 				itemText,
 				selectTree,
 				addTree,
 				selectTreeActivePath,
-        addTreeActiveSlottedPath,
 				addTreeActivePath,
-        bindingDiagramLayout,
-				getPathData,
 				diagramsData,
-				bindingConnections,
-        slotScopeBindingConnections,
 				addToDiagram,
 				connect,
 				disconnect
