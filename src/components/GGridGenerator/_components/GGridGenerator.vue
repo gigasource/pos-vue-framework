@@ -15,7 +15,10 @@
   import GGridLayout from '../GGridLayout'
   import GIncDecNumberInput from './_IncDecNumberInput'
   import GEditViewInput from './_EditViewInput'
-  import GLayoutDataInput, { renderGLayoutData } from './_LayoutDataInput';
+  import DemoLayoutDialog, { renderGLayoutData } from './_DemoLayoutDialog';
+  import GSwitch from '../../GSwitch/GSwitch'
+  import GBtn from '../../GBtn/GBtn'
+  import GTextField from '../../GInput/GTextField';
 
   const selectedSettingEnum = {
     grid: 0,
@@ -39,6 +42,17 @@
     return gridList
   }
 
+  function getAreaNames(grid) {
+    let areaNames = []
+    if (grid.subAreas) {
+      _.each(grid.subAreas, area => {
+        areaNames.push(area.name)
+        areaNames.push(...getAreaNames(area))
+      })
+    }
+    return areaNames
+  }
+
   function createEmptySelectingArea() {
     return {
       name: 'div',
@@ -51,7 +65,7 @@
 
   export default {
     name: 'GGridGenerator',
-    components: { GGridLayout, GLayoutDataInput, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
+    components: { GTextField, GSwitch, GGridLayout, DemoLayoutDialog, GEditViewInput, GIncDecNumberInput, GDialog, GIcon, GBtn },
     props: {
       layout: {
         type: Object
@@ -68,8 +82,13 @@
         fieldHeight: 478,
         // view mode
         viewMode: false,
+        // grid layout
         demoMode: false,
+
+        displayPreviewColor: false,
         demoLayoutData: [],
+        showDemoLayoutDialog: false,
+        selectedDemoLayoutDataIndex: -1,
         //// hover settings
         hoveringArea: null,
 
@@ -111,10 +130,12 @@
           'grid-gen__sub-list__item--selected': grid === state.selectedGrid
         }
       }
+
       function setSelectedGrid(grid) {
         state.selectedGrid = grid
         state.selectedSetting = selectedSettingEnum.grid
       }
+
       function renderGridList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">Grid</div>
@@ -140,10 +161,12 @@
           'grid-gen__sub-list__item--overflowed': area.isOverflowed()
         }
       }
+
       function setSelectedArea(area) {
         state.selectedArea = area
         state.selectedSetting = selectedSettingEnum.area
       }
+
       function renderAreaList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">Area</div>
@@ -162,13 +185,42 @@
           </ul>
         </div>
       }
+
+      let areaNames;
+
       function renderDemoInputList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">Demo Input</div>
-          <g-layout-data-input vOn:create={demo => state.demoLayoutData.push(demo)}/>
-          {_.map(state.demoLayoutData, dld => <div>{dld.area} <span vOn:click={e => {
-            state.demoLayoutData.splice(_.indexOf(state.demoLayoutData, dld), 1)
-          }}>x</span></div>)}
+          <g-btn flat outlined vOn:click={() => {
+            areaNames = _.map(_.uniq(getAreaNames(state.layout)), name => ({ text: name, value: name }))
+            console.log(areaNames)
+            state.selectedDemoLayoutDataIndex = -1
+            state.showDemoLayoutDialog = true
+          }}>Add Demo Data
+          </g-btn>
+          <demo-layout-dialog
+              show={state.showDemoLayoutDialog}
+              areaNames={areaNames}
+              value={state.selectedDemoLayoutDataIndex >= 0 ? state.demoLayoutData[state.selectedDemoLayoutDataIndex] : null}
+              vOn:create={demo => state.demoLayoutData.push(demo)}
+              vOn:update={demo => state.demoLayoutData[state.selectedDemoLayoutDataIndex] = demo}
+              vOn:close={() => state.showDemoLayoutDialog = false}
+          />
+          {_.map(state.demoLayoutData, (demoLayoutData, id) =>
+              <div class="grid-gen__sub-list__item">
+                <span style="line-height: 16px">
+                  <g-icon small vOn:click={e => {
+                    state.selectedDemoLayoutDataIndex = id
+                    state.showDemoLayoutDialog = true
+                  }}>edit
+                  </g-icon>
+                </span>
+                <span style="flex: 1; height: 20px; font-size: small">{demoLayoutData.area}</span>
+                <span style="line-height: 16px">
+                  <g-icon small vOn:click={e => state.demoLayoutData.splice(_.indexOf(state.demoLayoutData, demoLayoutData), 1)}>delete</g-icon>
+                </span>
+              </div>
+          )}
         </div>
       }
 
@@ -214,6 +266,7 @@
         }
         </div>
       }
+
       function getRowUnitClass(id) {
         return {
           'grid-gen__row-unit': true,
@@ -258,6 +311,7 @@
       // similar to state.hoveringArea but store raw grid index base 0
       // state.hoveringArea contain modified area and only used for display hovering area
       let _selectingArea = createEmptySelectingArea()
+
       /**
        *
        * @param grid {GridModel}
@@ -333,6 +387,7 @@
           </div>
         ])
       }
+
       function getAreaClass(area) {
         return {
           'grid-gen__editor__field__area': true,
@@ -343,6 +398,7 @@
 
       const actionWrapperClass = 'grid-gen__editor__field__area__actions'
       const actionClass = 'area-action'
+
       function areaHit(e) {
         for (let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
           const area = actionWrapperElement.parentNode
@@ -357,6 +413,7 @@
           }
         }
       }
+
       function tryToExecuteActionIfHit(e) {
         let actionExecuted = false
         _.each(context.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
@@ -476,10 +533,11 @@
           'gap': `${state.layout.rowGap}px ${state.layout.columnGap}px`,
           //
           position: 'absolute',
-          top: widthUnitSettingColumnHeight,
+          top: 0,
           left: heightUnitSettingRowWidth,
           bottom: 0,
           right: 0,
+          backgroundColor: '#fff',
           'pointer-events': 'none',
           //
         }
@@ -491,7 +549,17 @@
       }
 
       function renderDemoLayout() {
-        return state.demoMode ? <g-grid-layout layout={toJSON(state.layout)} displayPreviewColor>
+        return state.demoMode ? <g-grid-layout
+            style={{
+              position: 'absolute',
+              backgroundColor: '#fff',
+              top: 0,
+              left: heightUnitSettingRowWidth,
+              bottom: 0,
+              right: 0,
+            }}
+            layout={toJSON(state.layout)}
+            displayPreviewColor={state.displayPreviewColor}>
           {_.map(state.demoLayoutData, renderGLayoutData)}
         </g-grid-layout> : null
       }
@@ -552,29 +620,15 @@
           <div class="grid-gen__dialog__confirm" vOn:keydown={onOnConfirmDialogKeyDown}>
             <span class="grid-gen__dialog__confirm__header">Create new area</span>
             <div class="grid-gen__dialog__confirm__content">
-              <div>
-                Are you sure you want to create new area? If Yes, please set area name and click to either 'Single' or 'Sub Grid' button.<br/>
-                <small>
-                  <b>Single</b> create an atom item which can't be divided into smaller items<br/>
-                  <b>Sub-grid</b> create a sub grid item which can be divided into smaller items.
-                </small>
-              </div>
-              <br/>
-              <div>
-                Area name:&nbsp;
-                <input class="grid-gen__dialog__confirm__item-name"
-                       type="text"
-                       ref={refIdNewItemNameInput}
-                       value={_selectingArea.name}
-                       vOn:input={e => {
-                         _selectingArea.name = e.target.value
-                         if (state.confirmDialogErrorMsg !== '') {
-                           state.confirmDialogErrorMsg = ''
-                         }
-                       }}
-                />
-                <span class="grid-gen__dialog__confirm__error-msg">{state.confirmDialogErrorMsg}</span>
-              </div>
+              <g-text-field
+                  label="Area name"
+                  value={_selectingArea.name} vOn:input={e => {
+                _selectingArea.name = e.target.value
+                if (state.confirmDialogErrorMsg !== '') {
+                  state.confirmDialogErrorMsg = ''
+                }
+              }}/>
+              <span class="grid-gen__dialog__confirm__error-msg">{state.confirmDialogErrorMsg}</span>
               <div>
                 <small>
                   (*) Item name can contain only a-z, A-Z, -, _ characters<br/>
@@ -586,11 +640,17 @@
               </div>
             </div>
             <div class="grid-gen__dialog__confirm__action-btn">
-              <button ref={refIdBtnCreateSubGrid} class='simple-btn' vOn:click={() => onSubGridBtnClicked(grid)}>Sub grid</button>
+              <span vOn:click={() => onSubGridBtnClicked(grid)} ref={refIdBtnCreateSubGrid}>
+                <g-btn flat outlined>Sub grid</g-btn>
+              </span>
               &nbsp;
-              <button ref={refIdBtnCreateSubItem} class='simple-btn' vOn:click={() => onSubItemBtnClicked(grid)}>Sub item</button>
+              <span ref={refIdBtnCreateSubItem} vOn:click={() => onSubItemBtnClicked(grid)}>
+                <g-btn flat outlined>Sub item</g-btn>
+              </span>
               &nbsp;
-              <button ref={refIdBtnCancel} class='simple-btn' vOn:click={onCancelBtnClick}>Cancel</button>
+              <span ref={refIdBtnCancel} vOn:click={onCancelBtnClick}>
+                <g-btn flat outlined>Cancel</g-btn>
+              </span>
             </div>
           </div>
         </g-dialog>
@@ -599,7 +659,7 @@
       // 3) Settings
       function renderViewportSetting() {
         return [
-          <div class="grid-gen__settings-section">Preview</div>,
+          <div class="grid-gen__settings-section">Viewport</div>,
           <div class="grid-gen__settings-prop">
             <label>Width(px): </label>
             <g-inc-dec-number-input min={600} value={state.fieldWidth} vOn:input={v => state.fieldWidth = v}/>
@@ -607,15 +667,7 @@
           <div class="grid-gen__settings-prop">
             <label>Height(px): </label>
             <g-inc-dec-number-input min={400} value={state.fieldHeight} vOn:input={v => state.fieldHeight = v}/>
-          </div>,
-          <div class="grid-gen__settings-prop">
-            <label>Preview: </label>
-            <input type="checkbox" value={state.viewMode} vOn:change={() => state.viewMode = !state.viewMode}/>
-          </div>,
-          <div class="grid-gen__settings-prop">
-            <label>Demo: </label>
-            <input type="checkbox" value={state.demoMode} vOn:change={() => state.demoMode = !state.demoMode}/>
-          </div>,
+          </div>
         ]
       }
 
@@ -675,23 +727,19 @@
           <div class="grid-gen__settings-section">Insert/Delete</div>,
           <div class="grid-gen__settings-prop">
             <label>Rows:</label>
-            <div>
-              <button class='simple-btn' vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>Above</button>
-              <br/>
-              <button class='simple-btn' vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>Below</button>
-              <br/>
-              <button class='simple-btn' vOn:click={() => grid.deleteRow(state.selectedRowId)}>Delete</button>
+            <div class="grid-gen__settings-prop__insert-delete">
+              <g-icon vOn:click={() => grid.insertRowAbove(state.selectedRowId)}>mdi-table-row-plus-before</g-icon>
+              <g-icon vOn:click={() => grid.insertRowBelow(state.selectedRowId)}>mdi-table-row-plus-after</g-icon>
+              <g-icon vOn:click={() => grid.deleteRow(state.selectedRowId)}>mdi-table-row-remove</g-icon>
             </div>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Columns:</label>
-            <span>
-              <button class='simple-btn' vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>Left</button>
-              <br/>
-              <button class='simple-btn' vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>Right</button>
-              <br/>
-              <button class='simple-btn' vOn:click={() => grid.deleteColumn(state.selectedColumnId)}>Delete</button>
-            </span>
+            <div class="grid-gen__settings-prop__insert-delete">
+              <g-icon vOn:click={() => grid.insertColumnLeft(state.selectedColumnId)}>mdi-table-column-plus-before</g-icon>
+              <g-icon vOn:click={() => grid.insertColumnRight(state.selectedColumnId)}>mdi-table-column-plus-after</g-icon>
+              <g-icon vOn:click={() => grid.deleteColumn(state.selectedColumnId)}>mdi-table-column-remove</g-icon>
+            </div>
           </div>,
         ] : null
       }
@@ -809,34 +857,37 @@
       function renderGridGenerateSaveCloseButton() {
         return [
           <div class="grid-gen__settings-section">Dialog Actions</div>,
-          <button class='simple-btn' vOn:click_stop_prevent={e => {
+          <g-btn flat outlined vOn:click_stop_prevent={e => {
             context.emit('json', toJSON(state.layout))
             context.emit('close')
-          }}>Save</button>,
-          <button class='simple-btn' vOn:click_stop_prevent={e => {
+          }}>Save</g-btn>,
+          <span>&nbsp;</span>,
+          <g-btn flat outlined vOn:click_stop_prevent={e => {
             state.layout = fromJSON(props.layout)
             state.selectedGrid = state.layout
             context.emit('close')
-          }}>Cancel</button>,
+          }}>Cancel</g-btn>,
         ]
       }
 
       function renderGridGeneratorOutput() {
         return [
           <div class="grid-gen__settings-section">Files</div>,
-          <button class='simple-btn' vOn:click_stop_prevent={loadLayoutFile}>Import</button>,
-          <button class='simple-btn' vOn:click_stop_prevent={saveLayoutFile}>Export</button>,
-          <button class='simple-btn' vOn:click_stop_prevent={copyLayoutStrToClipBoard}>Copy To Clipboard</button>,
+          <g-btn flat outlined vOn:click_stop_prevent={loadLayoutFile}>Import</g-btn>,
+          <span>&nbsp;</span>,
+          <g-btn flat outlined vOn:click_stop_prevent={saveLayoutFile}>Export</g-btn>,
+          <span>&nbsp;</span>,
+          <g-btn flat outlined vOn:click_stop_prevent={copyLayoutStrToClipBoard}>Copy</g-btn>,
         ]
       }
 
       onUpdated(() => {
-        if (state.showConfirmDialog) {
-          context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
-          // Known issue: Input doesn't focus automatically
-          // Work-around: Press Tab to focus
-          context.refs[refIdNewItemNameInput].focus()
-        }
+        // if (state.showConfirmDialog) {
+        //   context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
+        //   // Known issue: Input doesn't focus automatically
+        //   // Work-around: Press Tab to focus
+        //   context.refs[refIdNewItemNameInput].focus()
+        // }
       })
 
       // 0) Entire render
@@ -856,34 +907,35 @@
                   width: `${state.fieldWidth}px`,
                   height: `${state.fieldHeight}px`,
                   backgroundColor: '#fff',
-                  margin: '0 auto'
+
                 }}>
                   {renderGridColumnWidthSetting(state.selectedGrid)}
                   {renderGridRowHeightSetting(state.selectedGrid)}
                   {renderGridContainer(state.selectedGrid)}
                 </div>
-                <div style="height: 10px"></div>
-                <div
-                    vShow={state.viewMode}
-                    style={{
-                      position: 'relative',
-                      width: `${state.fieldWidth}px`,
-                      height: `${state.fieldHeight}px`,
-                      backgroundColor: '#fff',
-                      margin: '0 auto'
-                    }}>
-                  {renderMiniMap()}
+                <div style={{
+                  position: 'relative',
+                  width: `${state.fieldWidth}px`,
+                  height: `50px`,
+
+                  backgroundColor: '#dee',
+                  display: 'flex',
+                }}>
+                  <g-switch value={state.viewMode} vOn:change={v => state.viewMode = v} label="Preview"/>
+                  <g-switch value={state.demoMode} vOn:change={v => state.demoMode = v} label="Demo"/>
+                  <g-switch vShow={state.demoMode} value={state.displayPreviewColor} vOn:change={v => state.displayPreviewColor = v} label="Hint"/>
                 </div>
                 <div
-                    vShow={state.demoMode}
+                    vShow={state.viewMode || state.demoMode}
                     style={{
                       position: 'relative',
                       width: `${state.fieldWidth}px`,
                       height: `${state.fieldHeight}px`,
-                      backgroundColor: '#fff',
-                      margin: '0 auto'
+                      backgroundColor: '#dee',
+                      transition: 'height 0.5s'
                     }}>
-                  {renderDemoLayout()}
+                  {state.viewMode && renderMiniMap()}
+                  {state.demoMode && renderDemoLayout()}
                 </div>
               </div>
               <div class="grid-gen__settings">
@@ -914,14 +966,7 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
-
-    &:focus {
-      outline: none;
-    }
-
-    button {
-      border-radius: 0;
-    }
+    outline: none;
 
     &__list {
       background-color: #fff;
@@ -1017,7 +1062,7 @@
       flex: 1;
       overflow: auto;
       border: 1px solid #0003;
-      background: #444;
+      background: #222;
 
       &__field {
         background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='8' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%239C92AC' fill-opacity='.4' fill-rule='evenodd'/%3E%3C/svg%3E");
@@ -1097,6 +1142,23 @@
         display: flex;
         flex-direction: row;
         margin-top: 5px;
+        align-items: center;
+
+        &__insert-delete {
+          display: flex;
+          justify-content: space-between;
+
+          & > * {
+            color: #555;
+            padding: 2px;
+            border: 1px solid #0003;
+            border-radius: 2px;
+
+            &:hover {
+              background: #ddd;
+            }
+          }
+        }
 
         & > label {
           width: 110px;
@@ -1121,7 +1183,7 @@
       &__confirm {
         display: flex;
         flex-direction: column;
-        height: 450px;
+        height: 600px;
         box-shadow: 0 2px 8px 4px #0003;
         background: #fff;
 
@@ -1172,19 +1234,6 @@
           padding: 5px;
         }
       }
-    }
-  }
-
-  .simple-btn {
-    height: 18px;
-    border: 1px solid #0003;
-    margin: 2px;
-    color: #333;
-
-    &:hover {
-      background-color: #888;
-      color: #fff;
-      cursor: pointer;
     }
   }
 </style>

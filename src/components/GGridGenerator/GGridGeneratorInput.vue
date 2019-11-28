@@ -34,7 +34,7 @@
 </script>
 <style scoped lang="scss">
   .editor-dialog {
-    width: 100%;
+    width: calc(100%);
     height: 100vh;
     background-color: white;
     border: 1px solid #666;
