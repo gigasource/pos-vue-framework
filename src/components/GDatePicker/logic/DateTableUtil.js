@@ -18,15 +18,19 @@ export function _isLeapYear (year) {
   return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)
 }
 
+export function daysInMonth(year, month) {
+ return _isLeapYear(year) ? DAYS_IN_MONTH_LEAP[month + 1] : DAYS_IN_MONTH[month + 1]
+}
+
 /**
  * Return number of day in a month
- * @param year
- * @param month
+ * @param cptYear
+ * @param cptMonth
  * @returns {number}
  * @private
  */
 export const _computedDaysInMonth = (cptYear, cptMonth) => computed(() => {
-  return _isLeapYear(cptYear.value) ? DAYS_IN_MONTH_LEAP[cptMonth.value + 1] : DAYS_IN_MONTH[cptMonth.value + 1]
+  return daysInMonth(cptYear.value, cptMonth.value)
 })
 
 /**
@@ -141,14 +145,17 @@ export function _genEvents(props, date) {
 }
 
 export function _addRangeInformation(dateItem, state, date) {
-  if (Array.isArray(state.selectedValues) && state.selectedValues.length > 1 && dateItem.isSelected) {
+  if (Array.isArray(state.selectedValues) && dateItem.isSelected) {
     if (state.selectedValues[0] === date) {
       dateItem.isRangeStart = true
-    } else if (state.selectedValues[state.selectedValues.length - 1] === date) {
-      dateItem.isRangeEnd = true
-    } else {
-      dateItem.isInRange = true
     }
+
+    if (state.selectedValues[state.selectedValues.length - 1] === date) {
+      dateItem.isRangeEnd = true
+    }
+
+    if (!(dateItem.isRangeStart || dateItem.isRangeEnd))
+      dateItem.isInRange = true
   }
 }
 

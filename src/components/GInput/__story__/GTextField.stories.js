@@ -610,6 +610,61 @@ export const TextFieldBoostrap= () => ({
 
 
 });
+
+export const AllInputTypes= () => ({
+  components: { GTextField, GRow, GCol },
+  data() {
+    return {
+
+    }
+  },
+  props: {
+  },
+  template:
+      `<template>
+        <g-row>
+          <g-col xs3>
+            <g-text-field type="date" label="date"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="datetime-local" label="datetime-local"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="email" label="email"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="month" label="month"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="number" label="number"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="password" label="password"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="range" label="range"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="search" label="search"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="tel" label="tel"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="text" label="text"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="time" label="time"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="url" label="url"></g-text-field>
+          </g-col>
+          <g-col xs3>
+            <g-text-field type="week" label="week"></g-text-field>
+          </g-col>
+        </g-row>
+      </template>`
+});
 // testing
 import Vue from 'vue/dist/vue.common.js'
 import GTextField from '../GTextField';

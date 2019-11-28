@@ -379,7 +379,7 @@
                 color={props.headerColor || props.color || DEFAULT_COLOR}
                 fullWidth={props.fullWidth}
                 landscape={props.landscape}
-                width={props.width >= 300 ? props.width : MINIMUM_WIDTH}
+                width={props.width >= MINIMUM_WIDTH ? props.width : MINIMUM_WIDTH}
                 noTitle={props.noTitle}
                 disabled={props.disabled}>
               <template slot="title">
@@ -389,7 +389,7 @@
                 {datePickerBodyRenderFn()}
               </div>
               <template slot="actions">
-                <slot/>
+                {context.slots.default && context.slots.default()}
               </template>
             </g-picker>
         )
@@ -403,6 +403,9 @@
 <style scoped lang="scss">
   @import "../../style/variables";
   @import "../../style/colors";
+
+  button { outline: none; }
+  table { border-collapse: collapse; }
 
   $textDisabled: #9e9e9e;
 
