@@ -221,7 +221,9 @@
             if (!date.isWeek && !date.isBlank) {
               date.class = {
                 'g-table-item--active': date.isSelected,
+                'g-table-item--start-range': date.isRangeStart,
                 'g-table-item--in-range': date.isInRange,
+                'g-table-item--end-range': date.isRangeEnd,
                 'g-table-item--rounded': true,
                 'g-table-item--readonly': props.readonly,
                 'g-table-item--outlined': date.isCurrent && !date.isSelected,
@@ -231,8 +233,8 @@
               // range
               date.background = {
                 class: {
-                  'g-table-item__background--start-range': date.isRangeStart,
-                  'g-table-item__background--end-range': date.isRangeEnd,
+                  'g-table-item__background--start-range': date.isRangeStart && !date.isRangeEnd,
+                  'g-table-item__background--end-range': date.isRangeEnd && !date.isRangeStart,
                   'g-table-item__background--in-range': date.isInRange
                 },
                 style: {}
@@ -587,6 +589,11 @@
         color: map-get($shades, 'white');
       }
 
+      &--start-range, &--end-range {
+        color: #fff;
+        text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      }
+
       &--in-range {
         color: #232323;
       }
@@ -609,7 +616,7 @@
       }
 
       &__background {
-        width: 100%;
+        width: 0;
         top: 2px;
         height: 32px;
         position: absolute;
@@ -617,6 +624,11 @@
 
         &--start-range {
           width: 50%;
+          right: 0;
+        }
+
+        &--in-range {
+          width: 100%;
           right: 0;
         }
 
