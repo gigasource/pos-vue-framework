@@ -87,10 +87,7 @@ export default (props, context) => {
                     ? props.value[0]
                     : props.value[props.value.length - 1]
         : props.value
-
     )
-
-    console.log(state.viewportDate)
   })
 
   // cause we don't support year picker atm so, context will not be used
