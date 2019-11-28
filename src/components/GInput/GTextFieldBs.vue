@@ -17,14 +17,13 @@
 					<slot name="prependContent"></slot>
 				</span>
       </div>
-			<div :class="['bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}]">
+			<div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}]">
 				<slot name="prepend" :on-click="onClickPrepend"></slot>
 				<input class="bs-tf-input"
 							 type="text"
 							 ref="input"
 							 :placeholder="placeholder"
-							 :class="{'input-error': !isValidInput,
-                      'bs-tf-input-has-prepend': ($slots.prependContent || $slots.prepend),
+							 :class="{'bs-tf-input-has-prepend': ($slots.prependContent || $slots.prepend),
                       'bs-tf-input-has-append': ($slots.appendContent || $slots.append)}"
 							 v-model="internalValue"
 							 @change="onChange"
