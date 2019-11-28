@@ -1,7 +1,5 @@
 import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { reactive } from '@vue/composition-api'
-import GEditViewInput from '../_components/GEditViewInput'
-import GIncDecNumberInput from '../_components/GIncDecNumberInput'
 import GGridLayout from '../GGridLayout'
 import GGridGenerator from '../_components/GGridGenerator'
 import GGridGeneratorInput from '../GGridGeneratorInput'
@@ -12,40 +10,6 @@ export default {
   title: 'GGridGenerator',
   decorators: [withKnobs],
 }
-
-export const incDecNumberInput = () => ({
-  components: { GIncDecNumberInput },
-  setup() {
-    const data = reactive({ val: 20 })
-    return () => <div style='width: 65px'> <g-inc-dec-number-input value={data.val} vOn:input={v => data.val = v} min={0} max={100}></g-inc-dec-number-input> </div>
-  }
-})
-export const editViewInput = () => ({
-  components: { GEditViewInput },
-  setup() {
-    const data = reactive({ value: 'hello there' })
-
-    return () => (
-        <div>
-          <div>
-            1) Hover mouse over edit view input, pen icon will be shown on the left side of text<br/>
-            2) Click Pen icon, now the caret will be shown on the right hand side of text<br/>
-            3) Now you can edit the text, press Enter to apply new change or move mouse out of this control to cancel
-          </div>
-          <br/>
-          <span>{data.value}</span>
-          <div>
-            <label>Lazy mode: changed input when enter pressed</label>
-            <g-edit-view-input value={data.value} vOn:input={v => data.value = v}/>
-          </div>
-          <div>
-            <label>Reactive mode: changed input immediately when input change</label>
-            <g-edit-view-input value={data.value} vOn:input={v => data.value = v} reactive/>
-          </div>
-        </div>
-    )
-  }
-})
 
 // grid layout presenter
 export const GridLayout = () => ({

@@ -8,15 +8,14 @@
     _gridItemOptions, _gridContentOptions, joinRefArrayValue, normalizeArea, getCssArea, getUniqueAreaName,
     _flexJustifyContentOptions, _flexAlignItemOptions, _flexAlignContentOptions, _flexWraps, _flexDirection
   } from '../logic/utils'
+  import GridModel from '../logic/GridModel'
   import { fromJSON, toJSONStr, toJSON } from '../logic/modelParser'
   import GDialog from '../../GDialog/GDialog'
   import GIcon from '../../GIcon/GIcon'
-  import GIncDecNumberInput from './GIncDecNumberInput'
-  import GEditViewInput from './GEditViewInput'
-  import GFileInputJSX from '../../GFileInput/GFileInput'
-  import GridModel from '../logic/GridModel';
-  import GLayoutDataInput, { renderGLayoutData } from './GLayoutDataInput';
   import GGridLayout from '../GGridLayout'
+  import GIncDecNumberInput from './_IncDecNumberInput'
+  import GEditViewInput from './_EditViewInput'
+  import GLayoutDataInput, { renderGLayoutData } from './_LayoutDataInput';
 
   const selectedSettingEnum = {
     grid: 0,
@@ -52,7 +51,7 @@
 
   export default {
     name: 'GGridGenerator',
-    components: { GGridLayout, GLayoutDataInput, GFileInputJSX, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
+    components: { GGridLayout, GLayoutDataInput, GEditViewInput, GIncDecNumberInput, GDialog, GIcon },
     props: {
       layout: {
         type: Object
@@ -72,13 +71,7 @@
         demoMode: false,
         demoLayoutData: [],
         //// hover settings
-        hovering: false,
-        hoveringArea: {
-          rowStart: -1,
-          columnStart: -1,
-          rowEnd: -1,
-          columnEnd: -1
-        },
+        hoveringArea: null,
 
         //
         selectedSetting: selectedSettingEnum.grid,
@@ -109,10 +102,6 @@
         // a value which hold generated css
         generatedCss: ''
       })
-      // store selecting area temporary information
-      // similar to state.hoveringArea but store raw grid index base 0
-      // state.hoveringArea contain modified area and only used for display hovering area
-      let _selectingArea = createEmptySelectingArea()
 
       // 1) List
       // list all grid item is grid or sub-grid (not for single item)
@@ -265,6 +254,10 @@
       }
 
       // render grid editor
+      // store selecting area temporary information
+      // similar to state.hoveringArea but store raw grid index base 0
+      // state.hoveringArea contain modified area and only used for display hovering area
+      let _selectingArea = createEmptySelectingArea()
       /**
        *
        * @param grid {GridModel}
@@ -292,24 +285,22 @@
                     columnEnd: j
                   }
                   state.hoveringArea = normalizeArea(_selectingArea)
-                  state.hovering = true
                 }}
                 vOn:mouseenter={() => {
-                  if (state.hovering) {
+                  if (state.hoveringArea) {
                     _selectingArea = { ..._selectingArea, rowEnd: i, columnEnd: j }
                     state.hoveringArea = normalizeArea(_selectingArea)
                   }
                 }}
                 vOn:mouseup={() => {
-                  if (state.hovering) {
-                    state.hovering = false
+                  if (state.hoveringArea) {
                     if (state.editingArea) {
                       state.editingArea.setArea(_selectingArea)
-                      state.hoveringArea = null
                       state.editingArea = null
                     } else {
                       state.showConfirmDialog = true
                     }
+                    state.hoveringArea = null
                   }
                 }}
             ></div>)
@@ -464,7 +455,7 @@
 
       // render hovering area
       function renderHoveringArea() {
-        return state.hovering ? <div style={{
+        return state.hoveringArea ? <div style={{
           border: '3px dashed #000',
           'grid-area': getCssArea(state.hoveringArea)
         }}></div> : null
@@ -627,8 +618,6 @@
           </div>,
         ]
       }
-
-      // a helper method adjust row, col number
 
       /**
        * @param grid {GridModel}

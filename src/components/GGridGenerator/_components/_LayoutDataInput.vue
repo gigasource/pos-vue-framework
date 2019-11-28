@@ -51,7 +51,9 @@
 
       return () => {
         return <div class="g-layout-data-input">
-          <g-btn vOn:click={() => state.showDialog = true}>Add layout</g-btn>
+          <g-btn flat outlined vOn:click={() => state.showDialog = true}>Add layout</g-btn>
+
+
           <g-dialog value={state.showDialog} width="600px" persistent>
             <div class="g-layout-data-input__dialog-content">
               <span class="grid-gen__dialog__confirm__header">Create new demo input</span>
