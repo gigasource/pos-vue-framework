@@ -125,8 +125,8 @@ import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
 
-import GToolTip from './GToolTip/GToolTip';
-import GToolTipContent from './GToolTip/GToolTipContent';
+import GTooltip from './GTooltip/GTooltip';
+import GTooltipContent from './GTooltip/GTooltipContent';
 
 import GToolbar from './GToolbar/GToolbar';
 
@@ -267,8 +267,8 @@ export {
   GTextarea,
   GTextareaJSX,
   GTimePicker,
-  GToolTip,
-  GToolTipContent,
+  GTooltip,
+  GTooltipContent,
   GToolbar,
   GTreeViewExample,
   GTreeViewJson,

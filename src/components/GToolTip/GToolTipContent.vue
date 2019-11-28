@@ -26,7 +26,7 @@
   import detachable from '../../mixins/detachable';
 
   export default {
-    name: 'GToolTipContent',
+    name: 'GTooltipContent',
     props: {
       /*position w window*/
       ...{
