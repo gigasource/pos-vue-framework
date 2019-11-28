@@ -208,13 +208,13 @@
             v-on:click_stop={() => onDateItemClicked(dateItem)}>
           <div class="g-table-item__content">{dateItem.formattedValue}</div>
         </button>,
-          <div class={['g-table-item__background', dateItem.background.class]}
+          <div class={['g-table-item__background', dateItem.background.class, dateItem.isRangeStart && dateItem.isRangeEnd && 'g-table-item__background--single']}
                style={dateItem.background.style}>
           </div>])
       }
 
       function renderDateTableData(date, onDateItemClicked) {
-        return <td>{date.isWeek ? weekRenderFn(date.value) : (date.isBlank ? '' : renderDateButton(date, onDateItemClicked))}</td>
+        return <td class={date.isBlank && 'blank'}>{date.isWeek ? weekRenderFn(date.value) : (date.isBlank ? '' : renderDateButton(date, onDateItemClicked))}</td>
       }
 
       function renderDateTable(state, dateTableModel, onDateItemClicked) {
@@ -293,6 +293,7 @@
   .g-date-range-picker {
     display: flex;
     flex-direction: column;
+		width: 900px;
 
     /*HEADER*/
     &__header {
@@ -317,19 +318,42 @@
       }
 
       tr {
-        height: 40px;
+        height: 48px;
 
 				td:first-child{
 					div.g-table-item__background:not(.g-table-item__background--start-range) {
 						border-top-left-radius: 32px;
 						border-bottom-left-radius: 32px;
+						width: calc(100% - 8px);
+
+						&.g-table-item__background--end-range {
+							width: 0;
+						}
 					}
 				}
 
 				td:last-child{
-					div.g-table-item__background:not(.g-table-item__background--end-range)  {
-						border-top-right-radius: 32px;
-						border-bottom-right-radius: 32px;
+					div.g-table-item__background {
+						margin-right: 8px;
+
+						&.g-table-item__background--start-range {
+							width: 0;
+						}
+
+						&:not(.g-table-item__background--start-range):not(.g-table-item__background--end-range) {
+							width: calc(100% - 8px);
+						}
+
+						&:not(.g-table-item__background--end-range)  {
+							border-top-right-radius: 32px;
+							border-bottom-right-radius: 32px;
+						}
+					}
+				}
+
+				td.blank + td:not(.blank) {
+					div.g-table-item__background.g-table-item__background--end-range{
+						width: 0;
 					}
 				}
       }
@@ -367,6 +391,11 @@
     color: inherit;
     height: 40px;
     width: 40px;
+		position: absolute;
+		top: 4px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 2;
 
     &--active {
       color: map-get($shades, 'white');
@@ -399,11 +428,10 @@
     }
 
     &__background {
-      width: 0%;
-      top: 2px;
       height: 40px;
       position: absolute;
-      z-index: -1;
+			top: 4px;
+			z-index: 1;
 
       &--start-range {
         width: 50%;
@@ -419,6 +447,10 @@
         width: 50%;
         left: 0;
       }
+
+			&--single {
+				width: 0 !important;
+			}
     }
   }
 
