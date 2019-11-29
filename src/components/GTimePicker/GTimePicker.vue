@@ -266,12 +266,20 @@
         touchMoved = false
       }
       function onMouseMove(e) {
+        if (props.disabled || props.readonly) {
+          return
+        }
+
         if (mouseDownState) {
           touchMoved = true
           updateTime(e)
         }
       }
       function onMouseUp(e) {
+        if (props.disabled || props.readonly) {
+          return
+        }
+
         // last update for mouse up, doesn't update when touchend because touchend doesn't contain position
         if (!(e instanceof TouchEvent))
           updateTime(e)
