@@ -43,7 +43,7 @@
       clockSelectedNumberColor: String,
       clockHandColor: String
     },
-    setup(props) {
+    setup(props, context) {
       // get initial time
       let initialTime;
       if (props.value) initialTime = props.value
@@ -62,7 +62,7 @@
       const state = reactive({
         showMenu: false,
         value: initialTime,
-        period: initialPeriod
+        period: initialPeriod,
       })
 
       const cptTimeValue = computed(() => {
@@ -70,12 +70,24 @@
         return `${hour}${state.value.substr(2)} ${state.period}`
       })
 
-      return () => {
+      const updateInput = (timePickerOutput) => {
+        state.value = timePickerOutput.time
+        state.period = timePickerOutput.period
+        context.emit('input', cptTimeValue.value)
+      }
+
+      const updatePeriod = (period) => {
+        state.period = period
+        context.emit('input', cptTimeValue.value)
+      }
+
+      const refIdTimePicker = 'time_picker'
+      const renderTimePickerInput = () => {
         return <g-menu
             contentFillWidth={false}
             closeOnClick
-            maxWidth={320}
-            minWidth={320}
+            maxWidth={300}
+            minWidth={300}
             nudgeBottom={10}
             scopedSlots={{
               activator: gMenuScope =>
@@ -83,11 +95,15 @@
                       label={props.label}
                       prependIcon="access_time"
                       value={cptTimeValue.value}
-                      vOn:click={gMenuScope.toggleContent}/>
+                      vOn:click={e => {
+                        context.refs[refIdTimePicker].showHoursPicker()
+                        gMenuScope.toggleContent(e)
+                      }}/>
             }}
             value={state.showMenu}
             vOn:input={v => state.showMenu = v}>
           <g-time-picker
+              ref={refIdTimePicker}
               vShow={state.showMenu}
               clockHandColor={props.clockHandColor}
               clockFaceColor={props.clockFaceColor}
@@ -104,15 +120,20 @@
               timeSelected={() => state.showMenu = false}
               useSeconds={props.useSeconds}
               value={state.value}
-              vOn:input={v => {
-                state.value = v.time
-                state.period = v.period
-              }}
-              vOn:updateperiod={v => state.period = v}
               width={props.width}
+              vOn:input={updateInput}
+              vOn:updateperiod={updatePeriod}
           />
         </g-menu>
       }
+
+      return {
+        state,
+        renderTimePickerInput
+      }
+    },
+    render() {
+      return this.renderTimePickerInput()
     }
   }
 </script>
