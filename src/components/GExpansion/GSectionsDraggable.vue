@@ -4,7 +4,7 @@
     import {provide} from '@vue/composition-api';
     import GSectionsHeader from './GSectionsHeader';
     import GSectionsItem from './GSectionsItem';
-    import {ref} from '@vue/composition-api';
+    import {ref, onUpdated} from '@vue/composition-api';
 
     export default {
         name: 'GSectionsDraggable',
@@ -17,6 +17,10 @@
             itemHeaders: {
                 type: Array
             },
+            order: {
+                type: Array,
+                default: () => [],
+            }
         },
         setup(props, context) {
             const {model, toggleItem, isActiveItem} = getExpansionModel(props, context)
@@ -24,12 +28,32 @@
             provide('toggleItem', toggleItem)
             provide('isActiveItem', isActiveItem)
 
+            const orderArray = props.order;
+            const {onDragStart, onDragEnter, onDragOver, onDragLeave, onDragEnd, onDrop} = getDndEventHandler(orderArray, context)
+
+            // const onDrop = (sourceIndex, targetIndex) => {
+            // 		const temp = list[sourceIndex];
+            //     list.splice(sourceIndex, 1);
+            //     list.splice(targetIndex, 0, temp);
+            // }
+
+            return {
+                onDragStart, onDragEnter, onDragOver, onDragLeave, onDragEnd, onDrop,
+                isActiveItem,
+                orderArray,
+            }
+        },
+
+        render(h) {
             let headerNodes = []
             let itemNodes = []
 
-            if (!props.itemHeaders) {
-                headerNodes = _.filter(context.parent.$children[0].$slots.default, node => node.tag && node.tag.indexOf('GSectionsHeader') > -1)
-                itemNodes = _.filter(context.parent.$children[0].$slots.default, node => node.tag && node.tag.indexOf('GSectionsItem') > -1)
+            if (!this.itemHeaders) {
+                headerNodes = _.filter(this.$slots.default, node => node.tag && node.tag.indexOf('GSectionsHeader') > -1)
+                itemNodes = _.filter(this.$slots.default, node => {
+                    //console.log(node.componentOptions)
+                    return node.tag && node.tag.indexOf('GSectionsItem') > -1
+                })
 
                 for (let i = 0; i < itemNodes.length; i++) {
                     if (headerNodes[i]) {
@@ -44,33 +68,37 @@
                     }
                 }
             } else {
-                props.itemHeaders.map((header, index) => {
+                this.itemHeaders.map((header, index) => {
                     headerNodes.push(
                         <g-sections-header item={index + 1}
                                            header-text={header}/>
                     )
                     itemNodes.push(
                         <g-sections-item item={index + 1}>
-                            {context.slots[header] ? context.slots[header]() : undefined}
+                            {this.$slots[header] ? this.$slots[header]() : undefined}
                         </g-sections-item>
                     )
                 })
             }
 
-            const sections = ref(_.zip(headerNodes, itemNodes))
-            const {onDragStart, onDragEnter, onDragOver, onDragLeave, onDragEnd, onDrop} = getDndEventHandler(props, context, sections.value)
+            const sections = _.zip(headerNodes, itemNodes)
+            let sectionsClone = []
+
+            for (let i = 0; i < sections.length; i++) {
+                sectionsClone.push(sections[this.orderArray[i]])
+            }
 
             const genContent = () => {
                 //return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
-                return sections.value.map((section, index) => {
+                return sectionsClone.map((section, index) => {
                     return <div
-                        class={['g-sections-element', {'g-sections-element__active': isActiveItem(section[0].componentOptions.propsData.item)}]}
-                        vOn:dragstart={(e) => onDragStart(e, index)}
-                        vOn:dragenter={(e) => onDragEnter(e, index)}
-                        vOn:dragover={onDragOver}
-                        vOn:dragleave={(e) => onDragLeave(e, index)}
-                        vOn:dragen={onDragEnd}
-                        vOn:drop={(e) => onDrop(e, index)}
+                        class={['g-sections-element', {'g-sections-element__active': this.isActiveItem(section[0].componentOptions.propsData.item)}]}
+                        vOn:dragstart={(e) => this.onDragStart(e, this.order[index])}
+                        vOn:dragenter={(e) => this.onDragEnter(e, this.order[index])}
+                        vOn:dragover={this.onDragOver}
+                        vOn:dragleave={this.onDragLeave}
+                        vOn:dragend={this.onDragEnd}
+                        vOn:drop={this.onDrop}
                         draggable="false">
                         {section}
                     </div>
@@ -82,51 +110,54 @@
                     {genContent()}
                 </div>
             }
-
-            return {
-                genSections
-            }
-        },
-
-        render() {
-            return this.genSections()
+            return genSections();
         }
     }
 
-    function getDndEventHandler(props, context, sections) {
-
+    function getDndEventHandler(order, context) {
+        // index in order array
         let source = null
         let sourceIndex = null
-        let currentIndex = null
         let previousIndex = null
+        let currentIndex = null
+        let orderClone = null
 
+        // target in view
         let previousTarget = null
         let currentTarget = null
 
-        function onDragStart(e, index) {
-            source = sections[index]
-            sourceIndex = index
-            e.target.addEventListener('dragend', onDragEnd)
-            e.dataTransfer.setData('sourceHTML', e.target.innerHTML)
+        function onDragStart(e, indexSection) {
+            //e.self()
+            sourceIndex = indexSection
+            currentIndex = indexSection
+            currentTarget = e.currentTarget
+            setTimeout(() => {
+                currentTarget.classList.add('entering')
+            },0)
         }
 
-        function onDragEnter(e, index) {
+        function onDragEnter(e, indexSection) {
+            if (indexSection === sourceIndex) return //prevent re trigger enter when swap section
+            console.log('enter: ' + indexSection)
+
+            e.preventDefault()
             previousTarget = currentTarget
             if (previousTarget) previousTarget.classList.remove('entering')
-            currentTarget = e.currentTarget
+            currentTarget = e.target
             currentTarget.classList.add('entering')
 
-            e.preventDefault()
             previousIndex = currentIndex
-            currentIndex = index
-            sections[previousIndex] = sections[currentIndex]
-            sections[index] = source
-            sections.splice()
+            currentIndex = indexSection
+            orderClone = order.slice()
+            if (previousIndex || previousIndex === 0) {
+                order[orderClone.indexOf(sourceIndex)] = indexSection
+                order[orderClone.indexOf(currentIndex)] = sourceIndex
+            }
+            order.splice()
         }
 
-        function onDragLeave(e, index) {
+        function onDragLeave(e) {
             e.preventDefault()
-
         }
 
         function onDragOver(e) {
@@ -136,17 +167,19 @@
 
         function onDragEnd(e) {
             currentTarget.classList.remove('entering')
+
             source = null
             sourceIndex = null
             currentIndex = null
             previousIndex = null
+
             e.target.setAttribute("draggable", false)
         }
 
-        function onDrop(e, index) {
+        function onDrop(e) {
+            e.preventDefault()
             currentTarget.classList.remove('entering')
-            sections[index] = source
-            sections.splice()
+
             source = null
             sourceIndex = null
             currentIndex = null
@@ -160,12 +193,8 @@
 
 <style lang="scss" scoped>
 	.g-sections {
-		//display: flex;
-		//flex-wrap: wrap;
-		//justify-content: center;
 		list-style-type: none;
 		padding: 0;
-		//z-index: -1;
 
 		> * {
 			cursor: auto;

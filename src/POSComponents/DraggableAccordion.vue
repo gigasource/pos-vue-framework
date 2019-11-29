@@ -1,18 +1,20 @@
 <template>
 	<div class="wrapper">
-		<g-sections-draggable v-model="activeItem">
-			<g-sections-header v-for="(item, index) in items" :key="-(index+1)">
-				<div style="background-color: #FFFFFF; padding: 0 4px">{{item.title}}</div>
-				<div style="background-color: #FFFFFF">
+		<g-sections-draggable v-model="activeItem" :order="itemsOrder">
+			<g-sections-header v-for="(item, index) in items" :key="'header_' + index">
+				<div class="header-item">{{item.title}}</div>
+				<div class="header-item">
 					<g-icon svg>icon-ellipsis</g-icon>
 				</div>
 			</g-sections-header>
-			<g-sections-item v-for="(item, index) in items" :key="index">
-				<div class="input-group">Menu {{index+1}}<input/></div>
+			<g-sections-item v-for="(item, index) in items" :key="'content_' + index">
+				<div class="input-group">Menu {{index+1}}<input v-model="item.value[0]"/>
+				</div>
 				<div class="input-group">Menu {{index+1}}<input/></div>
 				<div class="input-group">Menu {{index+1}}<input/></div>
 			</g-sections-item>
 		</g-sections-draggable>
+		<input v-model="items[0].value[0]"/>
 	</div>
 </template>
 
@@ -24,29 +26,38 @@
     import GTextField from "../components/GInput/GTextField";
     import PosTextField from "./POSInput/POSTextField";
     import GIcon from "../components/GIcon/GIcon";
-    import {ref, onUpdated} from "@vue/composition-api";
+    import {ref, watch, onUpdated} from "@vue/composition-api";
 
     export default {
         name: "DraggableAccordion",
         components: {GTextField, GSectionsItem, GSectionsHeader, GSections, GSectionsDraggable, PosTextField, GIcon},
         props: {},
-        setup() {
+        setup(props, context) {
             const activeItem = ref(null)
             const items = ref([
-                {title: 'Accordion Label 1', value: ['strong1', '', '']},
-                {title: 'Accordion Label 2', value: ['strong2', '', '']},
-                {title: 'Accordion Label 3', value: ['strong3', '', '']},
+                {index: 0, title: 'Accordion Label 1', value: ['111', '', '']},
+                {index: 1, title: 'Accordion Label 2', value: ['222', '', '']},
+                {index: 2, title: 'Accordion Label 3', value: ['333', '', '']},
+                {index: 3, title: 'Accordion Label 4', value: ['444', '', '']},
             ])
-						//todo keep input value after dragging
+            const itemsOrder = ref([0, 1, 2, 3])
 
-						onUpdated(()=>{
-						    // console.log(items.value[0].value)
+            //todo keep input value after dragging
+
+            function onInput(e, index) {
+                items.value[index].value[0] = e.currentTarget.value
+            }
+
+            onUpdated(() => {
+                // console.log(items.value[0].value)
                 // console.log(items.value[1].value)
                 // console.log(items.value[2].value)
-						})
+            })
             return {
                 items,
+                itemsOrder,
                 activeItem,
+                onInput,
             }
         },
     }
@@ -90,6 +101,11 @@
 		min-height: 0;
 		transform-origin: top;
 		transition: 0.5s;
+
+		.header-item {
+			background-color: #FFFFFF;
+			padding: 0 2px;
+		}
 	}
 
 	.wrapper {
