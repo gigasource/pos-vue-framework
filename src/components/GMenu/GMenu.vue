@@ -21,6 +21,7 @@
       },
       // positioning
       ...{
+        //TODO: prop for menu to appear in center
         auto: Boolean,
         top: Boolean,
         bottom: Boolean,
@@ -109,8 +110,7 @@
 
       onMounted(() => {
         context.root.$nextTick(() => {
-          attachToParent(context.refs.activator)
-          activator.value = context.refs.activator
+          activator.value = getActivator()
         })
       })
 
@@ -119,6 +119,12 @@
       })
 
       onUnmounted(() => isActive.value = false)
+
+      function getActivator() {
+        return context.refs.activator.children.length > 0
+            ? context.refs.activator.children[0]
+            : context.refs.activator
+      }
 
       function toggleContent(event) {
         if (props.lazy && state.isFirstRender) state.isFirstRender = false
@@ -179,10 +185,9 @@
 
       const genWrapper = () =>
         <div ref="el" class="g-menu">
-          <div {...activatorData}>{context.slots.activator({ toggleContent })}</div>
+          <div {...activatorData}>{context.slots.activator({ toggleContent, on: activatorData.on })}</div>
           {props.lazy ? (!state.isFirstRender && genContent()) : genContent()}
         </div>
-
       return {
         state,
         isActive,
