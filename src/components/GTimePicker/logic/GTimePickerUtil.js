@@ -10,16 +10,16 @@ export const HourConvention = { _12HRS: '12', _24HRS: '24' }
 export const HourConventionValidator = (convention) => Object.values(HourConvention).indexOf(convention) >= 0
 
 // pre-defined active time picker
-const ActiveTimePicker = {
-  hour: { hour: true, minute: false, second: false },
-  minute: { hour: false, minute: true, second: false },
-  second: { hour: false, minute: false, second: true }
+export const ActiveTimePicker = {
+  hour: 0,
+  minute: 1,
+  second: 2
 }
 
 // pre-defined active period picker
-const ActivePeriodPicker = {
-  AM: { AM: true, PM: false },
-  PM: { AM: false, PM: true }
+export const ActivePeriodPicker = {
+  AM: 1,
+  PM: 2
 }
 
 export const range0_11 = [...Array(12).keys()]
@@ -42,7 +42,6 @@ export const getFormattedHours = (hours, props) => {
 /**
  * Return function help switch timer picker
  * @param state
- * @returns {{showMinutesPicker: (function(): (ActiveTimePicker.minute|{hour, minute, second})), showSecondsPicker: (function(): (ActiveTimePicker.second|{hour, minute, second})), showHoursPicker: (function(): (ActiveTimePicker.hour|{hour, minute, second}))}}
  */
 function getShowTimePickerMethods(state) {
   return {
@@ -55,6 +54,7 @@ function getShowTimePickerMethods(state) {
 /**
  * Return functions which help switch AM/PM
  * @param state
+ * @param context
  * @returns {{showAMPicker: (function(): (ActivePeriodPicker.AM|{AM, PM})), showPMPicker: (function(): (ActivePeriodPicker.PM|{AM, PM}))}}
  */
 function getShowPeriodPickerMethods(state, context) {
@@ -144,7 +144,7 @@ export default function (props, context) {
 
   // try to parsing initial time
   let initialTime = { hours: 0, minutes: 0, seconds: 0 }
-  let timeParts = (props.value ? props.value : dayjs().format('HH:mm:ss')).split(':')
+  let timeParts = (props.value || dayjs().format('HH:mm:ss')).split(':')
   if (timeParts.length >= 1) initialTime.hours = parseInt(timeParts[0]) % 12
   if (timeParts.length >= 2) initialTime.minutes = parseInt(timeParts[1])
   if (timeParts.length >= 3) initialTime.seconds = parseInt(timeParts[2])

@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { computed } from '@vue/composition-api'
 import { HourConvention } from './GTimePickerUtil'
 import { range0_11, range12_23, range0_59 } from './GTimePickerUtil';
+import { ActiveTimePicker } from './GTimePickerUtil';
 
 // ---- Clicked target
 /**
@@ -115,14 +116,13 @@ export function _calcNumberPositionStyle(length, ratio = 1) {
 
 // hour number position
 export const range0_23PositionStyle = [..._calcNumberPositionStyle(range0_11.length), ..._calcNumberPositionStyle(range12_23.length, 0.6)]
-export const range0_23PositionStyle1 = [..._calcNumberPositionStyle(range0_11.length, 0.6), ..._calcNumberPositionStyle(range12_23.length, 1)]
 // minute & second position
 export const range0_59PositionStyle = _calcNumberPositionStyle(range0_59.length)
 
 // ---- Clock's hand
 const _computedHandHeightAndTop = (props, state) => {
   return computed(() => {
-    if (   state.activeTimePicker.hour
+    if (   state.activeTimePicker === ActiveTimePicker.hour
         && props.hourConvention === HourConvention._24HRS
         && state.selectedTime.hours >= 12)
     {
@@ -143,17 +143,17 @@ const _computedHandHeightAndTop = (props, state) => {
 const _computedHandTransform = (state) => {
   return computed(() => {
     let degree = 0
-    if (state.activeTimePicker.hour) {
+    if (state.activeTimePicker === ActiveTimePicker.hour) {
       // 12 hours
       // 30 = 360 / 12
       degree = range0_11.indexOf(state.selectedTime.hours) * 30
       if (degree < 0)
         degree = range12_23.indexOf(state.selectedTime.hours) * 30
     }
-    else if (state.activeTimePicker.minute) {
+    else if (state.activeTimePicker === ActiveTimePicker.minute) {
       degree = range0_59.indexOf(state.selectedTime.minutes) * 6
     }// 360 / 60
-    else if (state.activeTimePicker.second) {
+    else if (state.activeTimePicker === ActiveTimePicker.second) {
       degree = range0_59.indexOf(state.selectedTime.seconds) * 6
     }
 

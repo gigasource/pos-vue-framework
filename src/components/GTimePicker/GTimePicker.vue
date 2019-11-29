@@ -2,9 +2,8 @@
   import _ from 'lodash'
   import { computed } from '@vue/composition-api'
   import GPicker from '../GPicker/GPicker'
-  import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil'
+  import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours, ActiveTimePicker, ActivePeriodPicker } from './logic/GTimePickerUtil'
   import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_59PositionStyle } from './logic/GTimePickerUIHelper';
-  import { pad } from '../GDatePicker/logic/utils';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 
   const MINIMUM_WIDTH = 300
@@ -95,101 +94,67 @@
       } = GTimePickerUtil(props, context)
 
       // Title
-      const titleRenderFn = (function () {
-        const cptTitleClass = computed(() => ({
-          'g-time-picker__title': true,
-          'g-time-picker__title--landscape': props.landscape
-        }))
-        const cptTitleTimeClass = computed(() => ({
-          'g-time-picker__title__time': true,
-          'g-time-picker__title__time--landscape': props.landscape
-        }))
-        const cptTitleHourClassStyle = computed(() => (setTextColor(props.titleTextColor, {
-          class: {
-            'g-time-picker__title__time__number': true,
-            'g-time-picker__title__time__number--active': state.activeTimePicker.hour
-          }
-        })))
-        const cptTitleMinuteClassStyle = computed(() => (setTextColor(props.titleTextColor, {
-          class: {
-            'g-time-picker__title__time__number': true,
-            'g-time-picker__title__time__number--active': state.activeTimePicker.minute
-          }
-        })))
-        const cptTitleSecondClassStyle = computed(() => (setTextColor(props.titleTextColor, {
-          class: {
-            'g-time-picker__title__time__number': true,
-            'g-time-picker__title__time__number--active': state.activeTimePicker.second
-          }
-        })))
-        const cptAMClassStyle = computed(() => (setTextColor(props.titleTextColor, {
-          class: {
-            'g-time-picker__title__period__value': true,
-            'g-time-picker__title__period__value--active': state.activePeriodPicker.AM,
-            'g-time-picker__title__period__value--readonly': props.readonly,
-          }
-        })))
-        const cptPMClassStyle = computed(() => (setTextColor(props.titleTextColor, {
-          class: {
-            'g-time-picker__title__period__value': true,
-            'g-time-picker__title__period__value--active': state.activePeriodPicker.PM,
-            'g-time-picker__title__period__value--readonly': props.readonly,
-          }
-        })))
-        const cptSeparatorClassStyle = computed(() => setTextColor(props.titleTextColor), {
-          class: {
-            'g-time-picker__title__time__separator': true
-          }
-        })
-        // render fn
-        function renderSeparator() {
-          return <span class={cptSeparatorClassStyle.value.class} style={cptSeparatorClassStyle.value.style}>:</span>
+      const cptTitleHourClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+        class: {
+          'g-time-picker__title__time__number': true,
+          'g-time-picker__title__time__number--active': state.activeTimePicker === ActiveTimePicker.hour
         }
-
-        function renderSecondIfUseSeconds() {
-          return props.useSeconds ? [
-            renderSeparator(),
-            <span class={cptTitleSecondClassStyle.value.class}
-                  style={cptTitleSecondClassStyle.value.style}
-                  vOn:click_stop={showSecondsPicker}>
-              {pad(state.selectedTime.seconds)}
-            </span>
-          ] : undefined
+      })))
+      const cptTitleMinuteClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+        class: {
+          'g-time-picker__title__time__number': true,
+          'g-time-picker__title__time__number--active': state.activeTimePicker === ActiveTimePicker.minute
         }
-
-        function renderPeriodIfShowPeriod() {
-          return state.showPeriod
-              ? <div class="g-time-picker__title__period">
-                  <div class={cptAMClassStyle.value.class}
-                       style={cptAMClassStyle.value.style}
-                       vOn:click_stop={showAMPicker}>AM</div>
-                  <div class={cptPMClassStyle.value.class}
-                       style={cptPMClassStyle.value.style}
-                       vOn:click_stop={showPMPicker}>PM</div>
-                </div>
-              : undefined
+      })))
+      const cptTitleSecondClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+        class: {
+          'g-time-picker__title__time__number': true,
+          'g-time-picker__title__time__number--active': state.activeTimePicker === ActiveTimePicker.second
         }
+      })))
+      const cptAMClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+        class: {
+          'g-time-picker__title__period__value': true,
+          'g-time-picker__title__period__value--active': state.activePeriodPicker === ActivePeriodPicker.AM,
+          'g-time-picker__title__period__value--readonly': props.readonly,
+        }
+      })))
+      const cptPMClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+        class: {
+          'g-time-picker__title__period__value': true,
+          'g-time-picker__title__period__value--active': state.activePeriodPicker === ActivePeriodPicker.PM,
+          'g-time-picker__title__period__value--readonly': props.readonly,
+        }
+      })))
+      const cptSeparatorClassStyle = computed(() => setTextColor(props.titleTextColor), {
+        class: {
+          'g-time-picker__title__time__separator': true
+        }
+      })
 
-        return () => (
-            <div class={cptTitleClass.value}>
-              <div class={cptTitleTimeClass.value}>
-                <span class={cptTitleHourClassStyle.value.class}
-                      style={cptTitleHourClassStyle.value.style}
-                      vOn:click_stop={showHoursPicker}>
-                  {pad(getFormattedHours(state.selectedTime.hours, props))}
+      const renderTitle = () => (
+          <div class={{ 'g-time-picker__title': true, 'g-time-picker__title--landscape': props.landscape }}>
+            <div class={{ 'g-time-picker__title__time': true, 'g-time-picker__title__time--landscape': props.landscape }}>
+              <span {...cptTitleHourClassStyle.value} vOn:click_stop={showHoursPicker}>
+                {_.padStart(String(getFormattedHours(state.selectedTime.hours, props)), 2, '0')}
+              </span>
+              <span {...cptSeparatorClassStyle.value}>:</span>
+              <span {...cptTitleMinuteClassStyle.value} vOn:click_stop={showMinutesPicker}>
+                {_.padStart(state.selectedTime.minutes, 2, '0')}
+              </span>
+              {props.useSeconds && [
+                <span {...cptSeparatorClassStyle.value}>:</span>,
+                <span {...cptTitleSecondClassStyle.value} vOn:click_stop={showSecondsPicker}>
+                  {_.padStart(state.selectedTime.seconds, 2, '0')}
                 </span>
-                {renderSeparator()}
-                <span class={cptTitleMinuteClassStyle.value.class}
-                      style={cptTitleMinuteClassStyle.value.style}
-                      vOn:click_stop={showMinutesPicker}>
-                  {pad(state.selectedTime.minutes)}
-                </span>
-                {renderSecondIfUseSeconds()}
-              </div>
-              {renderPeriodIfShowPeriod()}
+              ]}
             </div>
-        )
-      })()
+            {state.showPeriod && <div class="g-time-picker__title__period">
+              <div {...cptAMClassStyle.value} vOn:click_stop={showAMPicker}>AM</div>
+              <div {...cptPMClassStyle.value} vOn:click_stop={showPMPicker}>PM</div>
+            </div>}
+          </div>
+      )
 
       // Clock
       const cptHandPositionAndRotateStyle = computedHandStyle(props, state)
@@ -220,9 +185,9 @@
           changeValue = -1
         }
 
-        let changeFn = (state.activeTimePicker.hour
+        let changeFn = (state.activeTimePicker === ActiveTimePicker.hour
             ? adjustHours
-            : state.activeTimePicker.minute
+            : state.activeTimePicker === ActiveTimePicker.minute
                 ? adjustMinutes
                 : adjustSeconds)
 
@@ -230,28 +195,30 @@
       }
 
       function updateTime(e) {
-        const {width, height, left, top} = e.target.getBoundingClientRect()
-        const itemsLength = state.activeTimePicker.hour ?  12: 60;
+        const { width, height, left, top } = e.target.getBoundingClientRect()
+        const itemsLength = state.activeTimePicker === ActiveTimePicker.hour ? 12 : 60;
         let targetPos
         if (e instanceof TouchEvent) {
-          if (e.touches.length === 0)
+          if (e.touches.length === 0) {
             return
+          }
           targetPos = { x: e.touches[0].clientX - left, y: e.touches[0].clientY - top }
         } else {
           targetPos = { x: e.clientX - left, y: e.clientY - top }
         }
-        let index = getSelectedIndex({width, height}, targetPos, itemsLength)
+        let index = getSelectedIndex({ width, height }, targetPos, itemsLength)
         if (index !== -1) {
-          if (state.activeTimePicker.hour) {
+          if (state.activeTimePicker === ActiveTimePicker.hour) {
             // 24 hours specified
-            const { Ox, Oy } = { Ox: width/2, Oy: height/2 }
+            const { Ox, Oy } = { Ox: width / 2, Oy: height / 2 }
             const distance = Math.sqrt(Math.pow(targetPos.x - Ox, 2) + Math.pow(targetPos.y - Oy, 2))
-            if ((distance < (width / 2 * 0.6)) && props.hourConvention === HourConvention._24HRS)
+            if ((distance < (width / 2 * 0.6)) && props.hourConvention === HourConvention._24HRS) {
               index += 12
+            }
             hoursModel.value[index].select()
-          } else if (state.activeTimePicker.minute) {
+          } else if (state.activeTimePicker === ActiveTimePicker.minute) {
             minutesModel.value[index].select()
-          } else if (state.activeTimePicker.second) {
+          } else if (state.activeTimePicker === ActiveTimePicker.second) {
             secondsModel.value[index].select()
           }
         }
@@ -259,10 +226,12 @@
 
       let mouseDownState = false
       let touchMoved = false
+
       function onMouseDown(e) {
         mouseDownState = true
         touchMoved = false
       }
+
       function onMouseMove(e) {
         if (props.disabled || props.readonly) {
           return
@@ -273,106 +242,56 @@
           updateTime(e)
         }
       }
+
       function onMouseUp(e) {
         if (props.disabled || props.readonly) {
           return
         }
 
         // last update for mouse up, doesn't update when touchend because touchend doesn't contain position
-        if (!(e instanceof TouchEvent))
+        if (!(e instanceof TouchEvent)) {
           updateTime(e)
+        }
         // touchend doesn't contain touch position => prevent time picker switch to another view (minutes, seconds) when touchmove is not call
         if (e instanceof TouchEvent && !touchMoved) {
           return
         }
 
         mouseDownState = false
-        if (state.activeTimePicker.hour)
+        if (state.activeTimePicker === ActiveTimePicker.hour) {
           showMinutesPicker()
-        else if (state.activeTimePicker.minute && props.useSeconds)
+        } else if (state.activeTimePicker === ActiveTimePicker.minute && props.useSeconds) {
           showSecondsPicker()
-        else
+        } else {
           context.emit('timeselected')
+        }
       }
 
-      function addNumberClass(numbers) {
-        _.each(numbers, (el) => {
-          el.class = {
-            ...el.class,
+      function getNumberClassStyle(number, positionStyle) {
+        let classStyle = {
+          class: {
             'g-time-picker__clock__inner__number': true,
-            'g-time-picker__clock__inner__number--selected': el.selected,
+            'g-time-picker__clock__inner__number--selected': number.selected,
             'g-time-picker__clock__inner__number--readonly': props.readonly,
             'g-time-picker__clock__inner__number--disabled': props.disabled
+          },
+          style: {
+            ...positionStyle
           }
-        })
-        return numbers
-      }
+        }
 
-      function getNumberColorStyle(timeModel) {
-        let classStyle = {}
-        if (timeModel.selected) {
+        // add color
+        if (number.selected) {
           setBackgroundColor(props.clockHandColor, classStyle)
           setTextColor(props.clockSelectedNumberColor, classStyle)
         } else {
           setTextColor(props.clockNumberColor, classStyle)
         }
+
         return classStyle
       }
 
-      function hourRenderFn() {
-        if (state.activeTimePicker.hour) {
-          return addNumberClass(hoursModel.value).map((hour, index) => {
-            let hourColor = getNumberColorStyle(hour)
-            return <span vShow={state.activeTimePicker.hour}
-                class={[hour.class, hourColor.class, ]}
-                style={[hour.style, hourColor.style, range0_23PositionStyle[index]]}
-                vOn:click_prevent_stop={(e) => {
-                  hour.select()
-                  showMinutesPicker()
-                }}>
-              <span>{hour.value}</span>
-            </span>
-          })
-        }
-        return undefined
-      }
-
-      function minuteRenderFn() {
-        if (state.activeTimePicker.minute) {
-          return addNumberClass(minutesModel.value).map((minute, index) => {
-            if (index % 5 !== 0) {
-              return undefined
-            }
-            let color = getNumberColorStyle(minute)
-            return <span class={[minute.class, color.class]} style={[minute.style, color.style, range0_59PositionStyle[index]]}>
-              <span>{minute.value}</span>
-            </span>
-          })
-        }
-
-        return undefined
-      }
-
-      function secondRenderFn() {
-        if (props.useSeconds && state.activeTimePicker.second) {
-          return addNumberClass(secondsModel.value).map((second, index) => {
-                if (index % 5 !== 0) {
-                  return undefined
-                }
-                let color = getNumberColorStyle(second)
-                return <span class={[second.class, color.class]}
-                             style={[second.style, color.style, range0_59PositionStyle[index]]}>
-                  <span>{second.value}</span>
-                </span>
-
-              }
-          )
-        }
-
-        return undefined
-      }
-
-      function clockRenderFn() {
+      function renderClock() {
         return (
             <div class={cptClockWrapperClassStyle.value.class} style={cptClockWrapperClassStyle.value.style}>
               <div class={cptClockClassStyle.value.class}
@@ -387,9 +306,25 @@
                 <div class="g-time-picker__clock__inner">
                   <div class={['g-time-picker__clock__inner__hand', cptHandColorStyle.value.class]}
                        style={[cptHandPositionAndRotateStyle.value, cptHandColorStyle.value.style]}></div>
-                  {hourRenderFn()}
-                  {minuteRenderFn()}
-                  {secondRenderFn()}
+                  {
+                    state.activeTimePicker === ActiveTimePicker.hour && hoursModel.value.map((hour, index) =>
+                      <span{...getNumberClassStyle(hour, range0_23PositionStyle[index])}>{hour.value}</span>)
+                  }
+                  {
+                    state.activeTimePicker === ActiveTimePicker.minute && minutesModel.value.map((minute, index) => {
+                      if (index % 5 === 0) {
+                        return <span {...getNumberClassStyle(minute, range0_59PositionStyle[index])}>{minute.value}</span>
+                      }
+                    })
+                  }
+                  {
+                    props.useSeconds && state.activeTimePicker === ActiveTimePicker.second && secondsModel.value.map((second, index) => {
+                          if (index % 5 === 0) {
+                            return <span {...getNumberClassStyle(second, range0_59PositionStyle[index])}>{second.value}</span>
+                          }
+                        }
+                    )
+                  }
                 </div>
               </div>
             </div>
@@ -404,10 +339,10 @@
                 width={props.width && props.width >= MINIMUM_WIDTH ? props.width : MINIMUM_WIDTH}
                 color={props.titleBgColor || DEFAULT_COLOR}>
               <template slot="title">
-                {titleRenderFn()}
+                {renderTitle()}
               </template>
               <div key={state.activePicker}>
-                {clockRenderFn()}
+                {renderClock()}
               </div>
               <template slot="actions">
                 <slot/>
