@@ -1,7 +1,7 @@
 import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { reactive } from '@vue/composition-api'
 import GGridLayout from '../GGridLayout'
-import GGridGenerator from '../_components/GGridGenerator'
+import GGridGenerator from '../components/GGridGenerator'
 import GGridGeneratorInput from '../GGridGeneratorInput'
 import loginLayout from './layout'
 

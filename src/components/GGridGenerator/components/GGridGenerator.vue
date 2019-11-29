@@ -13,9 +13,9 @@
   import GDialog from '../../GDialog/GDialog'
   import GIcon from '../../GIcon/GIcon'
   import GGridLayout from '../GGridLayout'
-  import GIncDecNumberInput from './_IncDecNumberInput'
-  import GEditViewInput from './_EditViewInput'
-  import DemoLayoutDialog, { renderGLayoutData } from './_DemoLayoutDialog';
+  import GIncDecNumberInput from './IncDecNumberInput'
+  import GEditViewInput from './EditViewInput'
+  import DemoLayoutDialog, { renderGLayoutData } from './DemoLayoutDialog';
   import GSwitch from '../../GSwitch/GSwitch'
   import GBtn from '../../GBtn/GBtn'
   import GTextField from '../../GInput/GTextField';
@@ -193,7 +193,6 @@
           <div class="grid-gen__sub-list__section">Demo Input</div>
           <g-btn flat outlined vOn:click={() => {
             areaNames = _.map(_.uniq(getAreaNames(state.layout)), name => ({ text: name, value: name }))
-            console.log(areaNames)
             state.selectedDemoLayoutDataIndex = -1
             state.showDemoLayoutDialog = true
           }}>Add Demo Data
@@ -880,15 +879,6 @@
           <g-btn flat outlined vOn:click_stop_prevent={copyLayoutStrToClipBoard}>Copy</g-btn>,
         ]
       }
-
-      onUpdated(() => {
-        // if (state.showConfirmDialog) {
-        //   context.refs[refIdNewItemNameInput].setSelectionRange(0, context.refs[refIdNewItemNameInput].value.length)
-        //   // Known issue: Input doesn't focus automatically
-        //   // Work-around: Press Tab to focus
-        //   context.refs[refIdNewItemNameInput].focus()
-        // }
-      })
 
       // 0) Entire render
       // event handler doesn't invoke

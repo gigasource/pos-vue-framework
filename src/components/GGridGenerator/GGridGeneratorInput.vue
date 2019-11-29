@@ -1,7 +1,7 @@
 <script>
   import { reactive } from '@vue/composition-api';
   import GDialog from '../GDialog/GDialog'
-  import GGridGenerator from './_components/GGridGenerator'
+  import GGridGenerator from './components/GGridGenerator'
   import GBtn from '../GBtn/GBtn'
 
   export default {
