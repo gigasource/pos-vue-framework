@@ -40,10 +40,10 @@ import GExpansion from './GExpansion/GExpansion';
 
 import GFileInput from './GFileInput/GFileInput';
 
-import GGridGenerator from './GGridGenerator/GGridGenerator';
-import GEditViewInput from './GGridGenerator/GEditViewInput';
+import GGridGenerator from './GGridGenerator/components/GGridGenerator';
+import GEditViewInput from './GGridGenerator/components/EditViewInput';
 import GGridLayout from './GGridGenerator/GGridLayout';
-import GIncDecNumberInput from './GGridGenerator/GIncDecNumberInput';
+import GIncDecNumberInput from './GGridGenerator/components/IncDecNumberInput';
 
 import GGridSelect from './GGridSelect/GGridSelect';
 

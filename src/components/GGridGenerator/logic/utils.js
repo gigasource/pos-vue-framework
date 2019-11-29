@@ -8,10 +8,8 @@ export const _gridContentOptions = ['', 'start', 'end', 'center', 'stretch', 'sp
 export const _flexJustifyContentOptions = ['', 'flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly', 'start', 'end', 'left', 'right']
 export const _flexAlignItemOptions = ['', "stretch" , "flex-start" , "flex-end" , "center" , "baseline" , "first baseline" , "last baseline" , "start" , "end" , "self-start" , "self-end"]
 export const _flexAlignContentOptions = ['', "flex-start" , "flex-end" , "center" , "space-between" , "space-around" , "space-evenly" , "stretch" , 'start' , 'end' , "baseline" , 'first baseline' , "last baseline"]
-export const _flexBasis = ['', 'auto', 'fill', 'max-content', 'min-content', 'fit-content', 'content', ]
 export const _flexWraps = ['', 'nowrap' , 'wrap' , 'wrap-reverse']
 export const _flexDirection = ['', 'row', 'column']
-export const _flexAlignSelf = ['', "auto" , "flex-start" , "flex-end" , "center" , "baseline" , "stretch"]
 
 
 /**
