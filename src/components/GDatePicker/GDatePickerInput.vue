@@ -178,7 +178,6 @@
         return <div>
           <g-menu
               contentFillWidth={false}
-              closeOnClick
               minWidth={300}
               nudgeBottom={10}
               value={state.showMenu}
@@ -224,15 +223,15 @@
     padding: 0 10px 15px 10px;
   }
 
-  ::v-deep {
-    .g-menu--activator {
-      span {
-        margin: 3px
-      }
+  /*::v-deep {*/
+  /*  .g-menu--activator {*/
+  /*    span {*/
+  /*      margin: 3px*/
+  /*    }*/
 
-      .g-tf-input {
-        display: none;
-      }
-    }
-  }
+  /*    .g-tf-input {*/
+  /*      display: none;*/
+  /*    }*/
+  /*  }*/
+  /*}*/
 </style>
