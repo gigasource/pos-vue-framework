@@ -125,8 +125,8 @@ import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
 
-import GTooltip from './GToolTip/GTooltip';
-import GTooltipContent from './GToolTip/GTooltipContent';
+import GTooltip from './GTooltip/GTooltip';
+import GTooltipContent from './GTooltip/GTooltipContent';
 
 import GToolbar from './GToolbar/GToolbar';
 
