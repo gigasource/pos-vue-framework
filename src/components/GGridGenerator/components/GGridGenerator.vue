@@ -371,7 +371,6 @@
           left: heightUnitSettingRowWidth,
           bottom: 0,
           right: 0,
-          //
         }
         const selectedAreaContainerStyle = {
           ...gridStyles,
@@ -538,7 +537,6 @@
           right: 0,
           backgroundColor: '#fff',
           'pointer-events': 'none',
-          //
         }
         return ([
           <div style={selectedAreaContainerStyle} class="grid-gen__editor__field">
@@ -563,8 +561,7 @@
         </g-grid-layout> : null
       }
 
-      // render confirm dialog\
-      const refIdNewItemNameInput = 'txtItemName'
+      // render confirm dialog
       const refIdBtnCreateSubItem = 'btnCreateSubItem'
       const refIdBtnCreateSubGrid = 'btnCreateSubGrid'
       const refIdBtnCancel = 'btnCancel'
@@ -897,7 +894,6 @@
                   width: `${state.fieldWidth}px`,
                   height: `${state.fieldHeight}px`,
                   backgroundColor: '#fff',
-
                 }}>
                   {renderGridColumnWidthSetting(state.selectedGrid)}
                   {renderGridRowHeightSetting(state.selectedGrid)}
@@ -907,7 +903,6 @@
                   position: 'relative',
                   width: `${state.fieldWidth}px`,
                   height: `50px`,
-
                   backgroundColor: '#dee',
                   display: 'flex',
                 }}>
