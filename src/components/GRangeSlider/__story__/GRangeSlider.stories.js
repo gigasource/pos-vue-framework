@@ -10,13 +10,19 @@ export default {
 
 export const basicRange = () => ({
   components: {GRangeSlider},
+  data() {
+    return {
+      value: [1]
+    }
+  },
   props: {
     disabled: {
       default: boolean('Disabled', false)
+
     }
   },
   template: `<div style="height: 500px;">
-               <g-range-slider :disabled="disabled"/>
+               <g-range-slider :disabled="disabled" :value="value"/>
              </div>`,
 })
 

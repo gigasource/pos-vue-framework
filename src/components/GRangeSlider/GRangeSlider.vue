@@ -68,7 +68,7 @@
 
       const state = reactive({
         app: null,
-        lazyValue: props.value,
+        lazyValue: getLazyValue(props.value),
         activeThumb: 0,
         oldValue: 0,
         keyPressed: 0,
@@ -76,6 +76,12 @@
         isActive: false,
         noClick: false,
       })
+
+      function getLazyValue(val) {
+        if (typeof val === 'array' && val.length === 2) return val
+        console.warn('prop value should be an 2 elements array!')
+        return [0, 0]
+      }
 
       const internalValue = computed({
         get: () => state.lazyValue,
@@ -104,7 +110,7 @@
         maxValue.value < internalValue.value[0] && context.emit('input', [maxValue.value, internalValue.value[1]])
         maxValue.value < internalValue.value[1] && context.emit('input', [internalValue.value[0], maxValue.value])
       })
-      watch(() => props.value, (val) => internalValue.value = val)
+      watch(() => props.value, (val) => internalValue.value = val, {lazy: true})
 
       const inputWidth = computed(() => internalValue.value.map((v) => (roundValue(v) - minValue.value) / (maxValue.value - minValue.value) * 100))
       const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
