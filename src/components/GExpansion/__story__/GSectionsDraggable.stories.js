@@ -46,15 +46,16 @@ export const GSectionsDndSlot = () => ({
             {title: 'Accordion 5'},
             {title: 'Accordion 6'},
         ])
-
+        const itemsOrder = ref([0,1,2,3,4,5])
         return {
             items,
+            itemsOrder,
             activeItem,
         }
     },
     template: `
   <div style="width: 400px; border: 1px solid lightblue;">
-    <g-sections-draggable v-model="activeItem">
+    <g-sections-draggable v-model="activeItem" :order="itemsOrder">
       <g-sections-item v-for="(item, index) in items" :header="item.title" :key="index">
         <pos-text-field :label="'label '+(index+1)" />
         <pos-text-field />
@@ -85,15 +86,16 @@ export const GSectionDnd = () => ({
             {title: 'Section 6'},
             {title: 'Section 7'},
         ])
-
+        const itemsOrder = ref([0,1,2,3,4,5,6])
         return {
             items,
+            itemsOrder,
             activeItem,
         }
     },
     template: `
   <div style="width: 300px; height: 600px; border: 1px solid #E0E0E0; overflow: auto">
-      <g-sections-draggable v-model="activeItem">       
+      <g-sections-draggable v-model="activeItem" :order="itemsOrder">       
         <g-sections-header v-for="(item, index) in items" :height="headerHeight" :key="-(index+1)">
           <g-icon>fas fa-hand-point-right</g-icon>
           {{item.title}}
