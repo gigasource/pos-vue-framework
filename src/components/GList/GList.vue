@@ -118,7 +118,10 @@
       },
       dense: Boolean,
       nav: Boolean,
-      items: Array,
+      items: {
+        type: Array,
+        default: () => []
+      },
       multiSection: Boolean,
       subheader: String,
       divider: {

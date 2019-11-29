@@ -169,10 +169,10 @@ export default class GridModel extends AreaModel {
 
   _genGridCss() {
     let gridCss = `display: grid; grid-template-columns: ${joinRefArrayValue(this.columns)}; grid-template-rows: ${joinRefArrayValue(this.rows)}; grid-gap: ${this.rowGap}px ${this.columnGap}px; `
-    if (this.alignItems) gridCss += `align-items: ${this.alignItems}; `
-    if (this.alignContent) gridCss += `align-content: ${this.alignContent}; `
+    if (this.alignItems && !this.flexAlignItems) gridCss += `align-items: ${this.alignItems}; `
+    if (this.alignContent && !this.flexAlignContent) gridCss += `align-content: ${this.alignContent}; `
     if (this.justifyItems) gridCss += `justify-items: ${this.justifyItems}; `
-    if (this.justifyContent) gridCss += `justify-content: ${this.justifyContent}; `
+    if (this.justifyContent && !this.flexJustifyContent) gridCss += `justify-content: ${this.justifyContent}; `
     return gridCss
   }
 
