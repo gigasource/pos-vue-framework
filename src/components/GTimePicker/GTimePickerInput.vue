@@ -1,10 +1,15 @@
 <script>
+  // Consider:
+  // Allow the user input value directly without showing time picker dialog
+  // Support g-text-field props
+
   import GTextField from '../GInput/GTextField'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
   import { reactive, computed } from '@vue/composition-api';
   import { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil';
   import dayjs from 'dayjs';
+  import _ from 'lodash'
 
   GMenu.components['GTextField'] = GTextField
 
@@ -12,52 +17,65 @@
     name: 'GTimePickerInput',
     components: { GMenu, GTimePicker, GTextField },
     props: {
-      label: String,
-      // state
-      disabled: Boolean,
-      readonly: Boolean,
-      scrollable: Boolean,
-      useSeconds: Boolean,
-      // values
-      value: String,
-      // convention
-      hourConvention: {
-        type: String,
-        default: HourConvention._12HRS,
-        validator: HourConventionValidator
+      // common props
+      ...{
+        disabled: Boolean,
+        readonly: Boolean,
       },
-      landscape: Boolean,
-      // Predefined width for date picker
-      width: {
-        type: [Number, String],
-        default: 290,
+
+      // g-text-field-props
+      ...{
+        label: String,
+        required: Boolean,
+        filled: Boolean,
+        outlined: Boolean,
+        solo: Boolean,
+        shaped: Boolean,
+        rounded: Boolean,
+        flat: Boolean,
+        dense: Boolean
       },
-      // coloring
-      // title
-      titleBgColor: String,
-      titleTextColor: String,
-      // clock
-      clockWrapperColor: String,
-      clockFaceColor: String,
-      clockNumberColor: String,
-      clockSelectedNumberColor: String,
-      clockHandColor: String
+
+      // time picker props
+      ...{
+        hourConvention: {
+          type: String,
+          default: HourConvention._24HRS,
+          validator: HourConventionValidator
+        },
+        value: String,
+        useSeconds: Boolean,
+        scrollable: Boolean,
+        landscape: Boolean,
+        titleBgColor: String,
+        titleTextColor: String,
+        clockWrapperColor: String,
+        clockFaceColor: String,
+        clockNumberColor: String,
+        clockSelectedNumberColor: String,
+        clockHandColor: String
+      }
     },
     setup(props, context) {
       // get initial time
       let initialTime;
-      if (props.value) initialTime = props.value
-      else if (props.useSeconds) initialTime = dayjs().format('HH:mm:ss')
-      else initialTime = dayjs().format('HH:mm')
+      if (props.value) {
+        initialTime = props.value
+      } else if (props.useSeconds) {
+        initialTime = dayjs().format('HH:mm:ss')
+      } else {
+        initialTime = dayjs().format('HH:mm')
+      }
 
       // get period if any
       let initialPeriod;
-      if (props.hourConvention === HourConvention._24HRS)
+      if (props.hourConvention === HourConvention._24HRS) {
         initialPeriod = ''
-      else if (initialTime < '12')
+      } else if (initialTime < '12') {
         initialPeriod = 'AM'
-      else
+      } else {
         initialPeriod = 'PM'
+      }
 
       const state = reactive({
         showMenu: false,
@@ -66,8 +84,9 @@
       })
 
       const cptTimeValue = computed(() => {
-        const hour = getFormattedHours(parseInt(state.value.substr(0, 2)), props)
-        return `${hour}${state.value.substr(2)} ${state.period}`
+        let hour = parseInt(state.value.substr(0, 2))
+        hour = getFormattedHours(hour, props)
+        return `${_.padStart(String(hour), 2, '0')}${state.value.substr(2)} ${state.period}`
       })
 
       const updateInput = (timePickerOutput) => {
@@ -81,48 +100,52 @@
         context.emit('input', cptTimeValue.value)
       }
 
+      const openTimePickerDialog = (e, menuScope) => {
+        context.refs[refIdTimePicker].showHoursPicker()
+        menuScope.toggleContent(e)
+      }
+      const closeTimePickerDialog = () => state.showMenu = false
+
       const refIdTimePicker = 'time_picker'
       const renderTimePickerInput = () => {
         return <g-menu
-            contentFillWidth={false}
+            value={state.showMenu} vOn:input={v => state.showMenu = v}
             closeOnClick
-            maxWidth={300}
-            minWidth={300}
-            nudgeBottom={10}
+            contentFillWidth={false}
+            minWidth={300} nudgeBottom={10}
             scopedSlots={{
               activator: gMenuScope =>
                   <g-text-field
-                      label={props.label}
-                      prependIcon="access_time"
-                      value={cptTimeValue.value}
-                      vOn:click={e => {
-                        context.refs[refIdTimePicker].showHoursPicker()
-                        gMenuScope.toggleContent(e)
-                      }}/>
-            }}
-            value={state.showMenu}
-            vOn:input={v => state.showMenu = v}>
+                      {...{
+                        props: {
+                          ..._.pick(props, [
+                            'disabled', 'readonly', 'required',
+                            'label',
+                            'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
+                          ]),
+                          value: cptTimeValue.value,
+                          prependIcon: "access_time"
+                        }
+                      }}
+                      vOn:click={e => openTimePickerDialog(e, gMenuScope)}/>
+            }}>
           <g-time-picker
               ref={refIdTimePicker}
               vShow={state.showMenu}
-              clockHandColor={props.clockHandColor}
-              clockFaceColor={props.clockFaceColor}
-              clockNumberColor={props.clockNumberColor}
-              clockSelectedNumberColor={props.clockSelectedNumberColor}
-              clockWrapperColor={props.clockWrapperColor}
-              disabled={props.disabled}
-              hourConvention={props.hourConvention}
-              landscape={props.landscape}
-              readonly={props.readonly}
-              scrollable={props.scrollable}
-              titleBgColor={props.titleBgColor}
-              titleTextColor={props.titleTextColor}
-              timeSelected={() => state.showMenu = false}
-              useSeconds={props.useSeconds}
-              value={state.value}
-              width={props.width}
+              {...{
+                props: {
+                  ..._.pick(props, [
+                    'disabled', 'readonly',
+                    'hourConvention', 'useSeconds',
+                    'landscape', 'scrollable',
+                    'clockHandColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'titleTextColor', 'titleBgColor', 'clockWrapperColor',
+                  ]),
+                  value: state.value
+                }
+              }}
               vOn:input={updateInput}
               vOn:updateperiod={updatePeriod}
+              vOn:timeselected={closeTimePickerDialog}
           />
         </g-menu>
       }
