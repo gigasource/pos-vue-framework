@@ -31,12 +31,6 @@
             const orderArray = props.order;
             const {onDragStart, onDragEnter, onDragOver, onDragLeave, onDragEnd, onDrop} = getDndEventHandler(orderArray, context)
 
-            // const onDrop = (sourceIndex, targetIndex) => {
-            // 		const temp = list[sourceIndex];
-            //     list.splice(sourceIndex, 1);
-            //     list.splice(targetIndex, 0, temp);
-            // }
-
             return {
                 onDragStart, onDragEnter, onDragOver, onDragLeave, onDragEnd, onDrop,
                 isActiveItem,

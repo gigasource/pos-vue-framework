@@ -24,7 +24,7 @@
     import GTextField from "../components/GInput/GTextField";
     import PosTextField from "./POSInput/POSTextField";
     import GIcon from "../components/GIcon/GIcon";
-    import {ref} from "@vue/composition-api";
+    import {ref, watch, onUpdated} from "@vue/composition-api";
 
     export default {
         name: "DraggableAccordion",
@@ -33,7 +33,7 @@
         setup() {
             const activeItem = ref(null)
             const items = ref([
-                {title: 'Accordion Label',},
+                {title: 'Accordion Label 1',},
                 {title: 'Accordion Label 2',},
                 {title: 'Accordion Label 3',},
             ])
