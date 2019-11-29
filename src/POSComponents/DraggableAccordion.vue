@@ -8,9 +8,9 @@
 				</div>
 			</g-sections-header>
 			<g-sections-item v-for="(item, index) in items" :key="'content_' + index">
-				<div class="input-group">Menu 1<input/></div>
-				<div class="input-group">Menu 2<input/></div>
-				<div class="input-group">Menu 3<input/></div>
+				<div class="input-group">Menu 1<input v-model="item.value[0]"/></div>
+				<div class="input-group">Menu 2<input v-model="item.value[1]"/></div>
+				<div class="input-group">Menu 3<input v-model="item.value[2]"/></div>
 			</g-sections-item>
 		</g-sections-draggable>
 	</div>
@@ -24,21 +24,19 @@
     import GTextField from "../components/GInput/GTextField";
     import PosTextField from "./POSInput/POSTextField";
     import GIcon from "../components/GIcon/GIcon";
-    import {ref, watch, onUpdated} from "@vue/composition-api";
+    import {ref} from "@vue/composition-api";
 
     export default {
         name: "DraggableAccordion",
         components: {GTextField, GSectionsItem, GSectionsHeader, GSections, GSectionsDraggable, PosTextField, GIcon},
-        props: {},
         setup() {
             const activeItem = ref(null)
             const items = ref([
-                {title: 'Accordion Label 1',},
-                {title: 'Accordion Label 2',},
-                {title: 'Accordion Label 3',},
+                {title: 'Accordion Label 1', value: ['', '', '']},
+                {title: 'Accordion Label 2', value: ['', '', '']},
+                {title: 'Accordion Label 3', value: ['', '', '']},
             ])
             const itemsOrder = ref([0, 1, 2])
-
             return {
                 items,
                 itemsOrder,

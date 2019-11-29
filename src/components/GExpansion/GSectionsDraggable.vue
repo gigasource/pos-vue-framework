@@ -4,7 +4,6 @@
     import {provide} from '@vue/composition-api';
     import GSectionsHeader from './GSectionsHeader';
     import GSectionsItem from './GSectionsItem';
-    import {ref, onUpdated} from '@vue/composition-api';
 
     export default {
         name: 'GSectionsDraggable',
@@ -44,10 +43,7 @@
 
             if (!this.itemHeaders) {
                 headerNodes = _.filter(this.$slots.default, node => node.tag && node.tag.indexOf('GSectionsHeader') > -1)
-                itemNodes = _.filter(this.$slots.default, node => {
-                    //console.log(node.componentOptions)
-                    return node.tag && node.tag.indexOf('GSectionsItem') > -1
-                })
+                itemNodes = _.filter(this.$slots.default, node => node.tag && node.tag.indexOf('GSectionsItem') > -1)
 
                 for (let i = 0; i < itemNodes.length; i++) {
                     if (headerNodes[i]) {
@@ -83,7 +79,6 @@
             }
 
             const genContent = () => {
-                //return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
                 return sectionsClone.map((section, index) => {
                     return <div
                         class={['g-sections-element', {'g-sections-element__active': this.isActiveItem(section[0].componentOptions.propsData.item)}]}
@@ -126,7 +121,7 @@
             currentTarget = e.currentTarget
             setTimeout(() => {
                 currentTarget.classList.add('entering')
-            },0)
+            }, 0)
         }
 
         function onDragEnter(e, indexSection) {
