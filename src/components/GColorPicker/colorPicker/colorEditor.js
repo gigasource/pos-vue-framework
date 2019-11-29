@@ -1,10 +1,10 @@
 import { fromHex, fromRGBA } from '../GColorPickerUtil';
 import { clamp } from 'lodash';
+import { enterPressed } from '../../../utils/keyboardHelper';
 
 export default function getRenderColorEditorFn(state, updateColor) {
-  const keyCode_Enter = 13
   function updateHex(e){
-    if (e.keyCode === keyCode_Enter)
+    if (enterPressed(e))
       updateColor(fromHex(e.target.value))
   }
 
@@ -17,7 +17,7 @@ export default function getRenderColorEditorFn(state, updateColor) {
   }
 
   function updateRGBA(e, element) {
-    if (e.keyCode === keyCode_Enter)
+    if (enterPressed(e))
       updateColor(fromRGBA({
         ...state.color.rgba,
         [element]: getElementValue(e.target.value || 0, element)
@@ -30,7 +30,7 @@ export default function getRenderColorEditorFn(state, updateColor) {
           <input type='text' maxLength={7}
                  class='g-color-picker__editor__input'
                  value={state.color.hex}
-                 vOn:keypress={updateHex}/>
+                 vOn:keyup={updateHex}/>
           <small>HEX</small>
         </span>
     )
@@ -51,7 +51,7 @@ export default function getRenderColorEditorFn(state, updateColor) {
                  min={0}
                  max={ getRGBAElementMaxValue(element) }
                  maxLength={ getRGBAElementMaxLength(element) }
-                 vOn:keypress={e => updateRGBA(e, element)}/>
+                 vOn:keyup={e => updateRGBA(e, element)}/>
           <small>{element.toUpperCase()}</small>
         </span>)
   }
