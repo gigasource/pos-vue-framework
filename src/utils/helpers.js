@@ -196,3 +196,16 @@ export function getElementPosition(el) {
     right: rect.right + offsetX
   }
 }
+export function padEnd (str, length, char = '0') {
+  return str + char.repeat(Math.max(0, length - str.length))
+}
+
+export function chunk (str, size = 1) {
+  const chunked = []
+  let index = 0
+  while (index < str.length) {
+    chunked.push(str.substr(index, size))
+    index += size
+  }
+  return chunked
+}
