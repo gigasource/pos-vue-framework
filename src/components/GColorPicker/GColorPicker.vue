@@ -20,7 +20,6 @@
       const renderSwatches = getSwatchesRenderFn(colorSelectedHandler)
       const renderGradientColors = getGradientRenderFn(colorSelectedHandler)
 
-      //
       const inactiveTabColor = '#78909c'
       const activeTabColor = '#42A5F5'
       const tabItems = {
