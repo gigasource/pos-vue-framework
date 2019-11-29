@@ -390,7 +390,7 @@
         )
       }
 
-      return function GTimePickerRenderFn() {
+      function GTimePickerRenderFn() {
         return (
             <g-picker
                 disabled={props.disabled}
@@ -409,6 +409,20 @@
             </g-picker>
         )
       }
+
+      return {
+        state,
+        //
+        showHoursPicker,
+        showMinutesPicker,
+        showSecondsPicker,
+        showAMPicker,
+        showPMPicker,
+        GTimePickerRenderFn
+      }
+    },
+    render() {
+      return this.GTimePickerRenderFn()
     }
   }
 </script>
