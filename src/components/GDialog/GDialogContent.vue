@@ -80,6 +80,7 @@
         if (!isActive.value) {
           return false;
         }
+        if (!context.refs.content) return;
         const clickedInsideContent = context.refs.content.contains(e.target);
         if (clickedInsideContent) {
           return false;

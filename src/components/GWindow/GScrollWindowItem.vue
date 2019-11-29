@@ -26,10 +26,8 @@
       const windowData = inject('windowData');
       const internalReverse = inject('internalReverse');
       const windowComputedTransition = inject('windowComputedTransition');
-      const window = ref({});
       onMounted(function () {
         register(this);
-        window.value = this.$parent;
       });
 
       onBeforeUnmount(function () {

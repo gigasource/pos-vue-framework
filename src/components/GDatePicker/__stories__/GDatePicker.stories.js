@@ -13,7 +13,7 @@ export default {
 export const SingleValueDatePicker = () => ({
   components: { GDatePicker },
   props: {
-    max: { default: text('max', '2019-10-19') },
+    max: { default: text('max', '2030-10-19') },
     min: { default: text('min', '2019-10-10') },
     value: { default: text('value', '2019-10-15') },
     color: { default: text('color', null) },
@@ -55,7 +55,7 @@ export const SingleValueDatePicker = () => ({
 export const MultipleValueDatePicker = () => ({
   components: { GDatePicker },
   props: {
-    max: { default: text('max', '2019-10-25') },
+    max: { default: text('max', '2030-10-25') },
     min: { default: text('min', '2019-10-10') },
     value: { default: array('value', ['2019-10-15', '2019-10-19']) },
     color: { default: text('color', null) },
@@ -99,7 +99,7 @@ export const MultipleValueDatePicker = () => ({
 export const RangeValueDatePicker = () => ({
   components: { GDatePicker },
   props: {
-    max: { default: text('max', '2019-10-25') },
+    max: { default: text('max', '2030-10-25') },
     min: { default: text('min', '2019-10-10') },
     value: { default: array('value', ['2019-10-15', '2019-10-19']) },
     color: { default: text('color', null) },
@@ -144,7 +144,7 @@ export const RangeValueDatePicker = () => ({
 export const SingleValueMonthPicker = () => ({
   components: { GDatePicker },
   props: {
-    value: { default: text('value', '2019-10-15') },
+    value: { default: text('value', '2019-10') },
     color: { default: text('color', null) },
     headerColor: { default: text('headerColor', null) },
     fullWidth: { default: boolean('fullWidth', false) },
@@ -187,7 +187,7 @@ export const SingleValueMonthPicker = () => ({
 export const MultipleValueMonthPicker = () => ({
   components: { GDatePicker },
   props: {
-    value: { default: array('value', ['2019-10-15', '2019-10-19']) },
+    value: { default: array('value', ['2019-10', '2019-12']) },
     color: { default: text('color', null) },
     headerColor: { default: text('headerColor', null) },
     fullWidth: { default: boolean('fullWidth', false) },
