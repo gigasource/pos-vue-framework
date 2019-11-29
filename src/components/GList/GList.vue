@@ -9,7 +9,7 @@
       <slot name="subheader">
         <div v-if="subheader" class="g-list-header">{{subheader}}</div>
       </slot>
-      <template v-for="(item, index) in renderList">
+      <template v-for="(item, index) in renderList" :key="index">
         <slot name="listItem" :item="item" :isSelected="isActiveItem(item)" :on="getListEvents(item)"
               :onSelect="onSelect">
           <div v-if="item[itemTitle]"
@@ -46,7 +46,7 @@
 		</template>
 
 		<template v-else>
-			<template v-for="(item, index) in items">
+			<template v-for="(item, index) in items" :key="index">
 				<template v-if="item.type === 'subheader'">
 					<slot name="subheader">
 						<div class="g-list-header">{{item.subheader}}</div>
