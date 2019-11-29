@@ -122,7 +122,7 @@
         showMenu: false,
       })
 
-      function getValue(val) {
+      function copyValue(val) {
         return (!props.multiple && !props.range) ? val : _.map(val, v => v)
       }
 
@@ -137,7 +137,7 @@
       })
 
       function renderMultipleDates() {
-        return state.tempValue.map((item, index) =>
+        return state.value.map((item, index) =>
             <GChip
                 small={props.smallChips}
                 close={props.deletableChips}
@@ -168,7 +168,7 @@
                   value={cptTextFieldValue.value}
                   vOn:click={e => {
                     gMenuScope.toggleContent(e)
-                    state.tempValue = getValue(state.value)
+                    state.tempValue = copyValue(state.value)
                   }}
                   scopedSlots={gTextFieldInputScopedSlots()}/>
         }
@@ -204,7 +204,7 @@
                 </g-btn>
                 &nbsp;
                 <g-btn flat vOn:click={e => {
-                  state.value = getValue(state.tempValue);
+                  state.value = copyValue(state.tempValue);
                   state.showMenu = false
                 }}>OK
                 </g-btn>
@@ -223,15 +223,15 @@
     padding: 0 10px 15px 10px;
   }
 
-  /*::v-deep {*/
-  /*  .g-menu--activator {*/
-  /*    span {*/
-  /*      margin: 3px*/
-  /*    }*/
+  ::v-deep {
+    .g-menu--activator {
+      span {
+        margin: 3px
+      }
 
-  /*    .g-tf-input {*/
-  /*      display: none;*/
-  /*    }*/
-  /*  }*/
-  /*}*/
+      .g-tf-input {
+        display: none;
+      }
+    }
+  }
 </style>
