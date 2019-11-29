@@ -127,7 +127,6 @@
         let currentTarget = null
 
         function onDragStart(e, indexSection) {
-            //e.self()
             sourceIndex = indexSection
             currentIndex = indexSection
             currentTarget = e.currentTarget
@@ -138,12 +137,11 @@
 
         function onDragEnter(e, indexSection) {
             if (indexSection === sourceIndex) return //prevent re trigger enter when swap section
-            console.log('enter: ' + indexSection)
 
             e.preventDefault()
             previousTarget = currentTarget
             if (previousTarget) previousTarget.classList.remove('entering')
-            currentTarget = e.target
+            currentTarget = e.currentTarget
             currentTarget.classList.add('entering')
 
             previousIndex = currentIndex

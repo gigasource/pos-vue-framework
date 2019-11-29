@@ -3,18 +3,16 @@
 		<g-sections-draggable v-model="activeItem" :order="itemsOrder">
 			<g-sections-header v-for="(item, index) in items" :key="'header_' + index">
 				<div class="header-item">{{item.title}}</div>
-				<div class="header-item">
-					<g-icon svg>icon-ellipsis</g-icon>
+				<div class="header-item-2">
+					<g-icon svg size="22">icon-ellipsis</g-icon>
 				</div>
 			</g-sections-header>
 			<g-sections-item v-for="(item, index) in items" :key="'content_' + index">
-				<div class="input-group">Menu {{index+1}}<input v-model="item.value[0]"/>
-				</div>
-				<div class="input-group">Menu {{index+1}}<input/></div>
-				<div class="input-group">Menu {{index+1}}<input/></div>
+				<div class="input-group">Menu 1<input/></div>
+				<div class="input-group">Menu 2<input/></div>
+				<div class="input-group">Menu 3<input/></div>
 			</g-sections-item>
 		</g-sections-draggable>
-		<input v-model="items[0].value[0]"/>
 	</div>
 </template>
 
@@ -26,38 +24,25 @@
     import GTextField from "../components/GInput/GTextField";
     import PosTextField from "./POSInput/POSTextField";
     import GIcon from "../components/GIcon/GIcon";
-    import {ref, watch, onUpdated} from "@vue/composition-api";
+    import {ref} from "@vue/composition-api";
 
     export default {
         name: "DraggableAccordion",
         components: {GTextField, GSectionsItem, GSectionsHeader, GSections, GSectionsDraggable, PosTextField, GIcon},
         props: {},
-        setup(props, context) {
+        setup() {
             const activeItem = ref(null)
             const items = ref([
-                {index: 0, title: 'Accordion Label 1', value: ['111', '', '']},
-                {index: 1, title: 'Accordion Label 2', value: ['222', '', '']},
-                {index: 2, title: 'Accordion Label 3', value: ['333', '', '']},
-                {index: 3, title: 'Accordion Label 4', value: ['444', '', '']},
+                {title: 'Accordion Label',},
+                {title: 'Accordion Label 2',},
+                {title: 'Accordion Label 3',},
             ])
-            const itemsOrder = ref([0, 1, 2, 3])
+            const itemsOrder = ref([0, 1, 2])
 
-            //todo keep input value after dragging
-
-            function onInput(e, index) {
-                items.value[index].value[0] = e.currentTarget.value
-            }
-
-            onUpdated(() => {
-                // console.log(items.value[0].value)
-                // console.log(items.value[1].value)
-                // console.log(items.value[2].value)
-            })
             return {
                 items,
                 itemsOrder,
                 activeItem,
-                onInput,
             }
         },
     }
@@ -73,15 +58,7 @@
 			border-radius: 4px;
 			margin: 2px;
 			padding: 1px;
-		}
-
-		.g-sections-header {
-			border-top: none;
-
-			font-weight: 600;
-			font-size: 11px;
-			line-height: 14px;
-			color: #757575;
+			background-color: #FFFFFF;
 		}
 
 		.g-sections-element__active {
@@ -90,21 +67,30 @@
 			padding-top: 16px;
 		}
 
-		/*.g-sections-header__active.g-sections-item {*/
-		/*	padding-top: 20px;*/
-		/*}*/
+		.g-sections-header {
+			border-top: none;
+
+			font-weight: 600;
+			font-size: 11px;
+			line-height: 24px;
+			color: #757575;
+		}
 	}
 
 	.g-sections-header__active {
 		position: absolute;
-		top: -12px;
+		top: -13px;
+		left: -1px;
 		min-height: 0;
 		transform-origin: top;
 		transition: 0.5s;
 
-		.header-item {
+		.header-item, .header-item-2 {
 			background-color: #FFFFFF;
-			padding: 0 2px;
+		}
+
+		.header-item {
+			padding: 0 8px 0 4px;
 		}
 	}
 

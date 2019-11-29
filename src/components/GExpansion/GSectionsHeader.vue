@@ -50,11 +50,11 @@
     }
 
     function onMouseDown(e) {
-        e.target.parentNode.setAttribute('draggable', true)
+        e.currentTarget.parentNode.setAttribute('draggable', true)
     }
 
     function onMouseUp(e) {
-        e.target.parentNode.setAttribute("draggable", false)
+        e.currentTarget.parentNode.setAttribute("draggable", false)
     }
 
 </script>
