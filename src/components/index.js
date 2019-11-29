@@ -103,7 +103,7 @@ import GSimpleTable from './GSimpleTable/GSimpleTable';
 
 import GSlideGroup from './GSlideGroup/GSlideGroup';
 
-import GSliderRemake from './GSliderRemake/GSlider.vue';
+import GSliderRemake from './GSlider/GSlider.vue';
 
 import GStepper from './GStepper/GStepper';
 import GStepperContent from './GStepper/GStepperContent';

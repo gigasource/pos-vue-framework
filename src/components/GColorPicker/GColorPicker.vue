@@ -2,7 +2,7 @@
   import _ from 'lodash'
   import { reactive } from '@vue/composition-api'
   // slider used in colorPicker/adjustPreview
-  import GSlider from '../GSliderRemake/GSlider'
+  import GSlider from '../GSlider/GSlider'
   import GTooltip from '../../components/GToolTip/GTooltip'
   import getSwatchesRenderFn from './swatches'
   import getGradientRenderFn from './gradientColors'
