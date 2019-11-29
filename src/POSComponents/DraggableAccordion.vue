@@ -17,39 +17,41 @@
 </template>
 
 <script>
-    import GSections from "../components/GExpansion/GSections";
-    import GSectionsDraggable from "../components/GExpansion/GSectionsDraggable";
-    import GSectionsHeader from "../components/GExpansion/GSectionsHeader";
-    import GSectionsItem from "../components/GExpansion/GSectionsItem";
-    import GTextField from "../components/GInput/GTextField";
-    import PosTextField from "./POSInput/POSTextField";
-    import GIcon from "../components/GIcon/GIcon";
-    import {ref} from "@vue/composition-api";
+  import GSections from "../components/GExpansion/GSections";
+  import GSectionsDraggable from "../components/GExpansion/GSectionsDraggable";
+  import GSectionsHeader from "../components/GExpansion/GSectionsHeader";
+  import GSectionsItem from "../components/GExpansion/GSectionsItem";
+  import GTextField from "../components/GInput/GTextField";
+  import PosTextField from "./POSInput/POSTextField";
+  import GIcon from "../components/GIcon/GIcon";
+  import {ref} from "@vue/composition-api";
 
-    export default {
-        name: "DraggableAccordion",
-        components: {GTextField, GSectionsItem, GSectionsHeader, GSections, GSectionsDraggable, PosTextField, GIcon},
-        setup() {
-            const activeItem = ref(null)
-            const items = ref([
-                {title: 'Accordion Label 1', value: ['', '', '']},
-                {title: 'Accordion Label 2', value: ['', '', '']},
-                {title: 'Accordion Label 3', value: ['', '', '']},
-            ])
-            const itemsOrder = ref([0, 1, 2])
-            return {
-                items,
-                itemsOrder,
-                activeItem,
-            }
-        },
-    }
+  export default {
+    name: "DraggableAccordion",
+    components: {GTextField, GSectionsItem, GSectionsHeader, GSections, GSectionsDraggable, PosTextField, GIcon},
+    setup() {
+      const activeItem = ref(null)
+      const items = ref([
+        {title: 'Accordion Label 1', value: ['', '', '']},
+        {title: 'Accordion Label 2', value: ['', '', '']},
+        {title: 'Accordion Label 3', value: ['', '', '']},
+      ])
+      const itemsOrder = ref([0, 1, 2])
+      return {
+        items,
+        itemsOrder,
+        activeItem,
+      }
+    },
+  }
 </script>
 
 <style scoped lang="scss">
 	$transition: () !default;
 
 	.g-sections::v-deep {
+		background-color: #FFFFFF;
+		padding: 12px 0;
 
 		.g-sections-element {
 			border: 1px solid #E0E0E0;

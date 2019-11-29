@@ -9,51 +9,51 @@ import GBtn from "../../GBtn/GBtn";
 import {ref, computed, watch} from '@vue/composition-api';
 
 export default {
-    title: 'GSectionsDnd',
-    decorators: [withKnobs]
+  title: 'GSectionsDnd',
+  decorators: [withKnobs]
 }
 
 export const GSectionsDndSlot = () => ({
-    components: {GSectionsDraggable, GSectionsHeader, GSectionsItem, PosTextField, GIcon},
-    props: {},
-    data() {
-        return {
-            dragged: null,
-        }
+  components: {GSectionsDraggable, GSectionsHeader, GSectionsItem, PosTextField, GIcon},
+  props: {},
+  data() {
+    return {
+      dragged: null,
+    }
+  },
+  methods: {
+    onDrop(e) {
+      e.preventDefault();
+      if (this.dragged) e.target.appendChild(this.dragged)
     },
-    methods: {
-        onDrop(e) {
-            e.preventDefault();
-            if (this.dragged) e.target.appendChild(this.dragged)
-        },
-        onDragStart(e) {
-            this.dragged = e.target
-        },
-        onDragEnter(e) {
-            e.preventDefault();
-        },
-        onDragOver(e) {
-            e.preventDefault();
-        }
+    onDragStart(e) {
+      this.dragged = e.target
     },
-    setup() {
-        const activeItem = ref(null)
-        const items = ref([
-            {title: 'Accordion 1'},
-            {title: 'Accordion 2'},
-            {title: 'Accordion 3'},
-            {title: 'Accordion 4'},
-            {title: 'Accordion 5'},
-            {title: 'Accordion 6'},
-        ])
-        const itemsOrder = ref([0,1,2,3,4,5])
-        return {
-            items,
-            itemsOrder,
-            activeItem,
-        }
+    onDragEnter(e) {
+      e.preventDefault();
     },
-    template: `
+    onDragOver(e) {
+      e.preventDefault();
+    }
+  },
+  setup() {
+    const activeItem = ref(null)
+    const items = ref([
+      {title: 'Accordion 1'},
+      {title: 'Accordion 2'},
+      {title: 'Accordion 3'},
+      {title: 'Accordion 4'},
+      {title: 'Accordion 5'},
+      {title: 'Accordion 6'},
+    ])
+    const itemsOrder = ref([0, 1, 2, 3, 4, 5])
+    return {
+      items,
+      itemsOrder,
+      activeItem,
+    }
+  },
+  template: `
   <div style="width: 400px; border: 1px solid lightblue;">
     <g-sections-draggable v-model="activeItem" :order="itemsOrder">
       <g-sections-item v-for="(item, index) in items" :header="item.title" :key="index">
@@ -71,29 +71,29 @@ export const GSectionsDndSlot = () => ({
 })
 
 export const GSectionDnd = () => ({
-    components: {GSectionsDraggable, GSectionsHeader, GSectionsItem, PosTextField, GIcon, GSwitch, GBtn},
-    props: {
-        headerHeight: {default: number('Header height', 32)}
-    },
-    setup() {
-        const activeItem = ref(null)
-        const items = ref([
-            {title: 'Section 1'},
-            {title: 'Section 2'},
-            {title: 'Section 3'},
-            {title: 'Section 4'},
-            {title: 'Section 5'},
-            {title: 'Section 6'},
-            {title: 'Section 7'},
-        ])
-        const itemsOrder = ref([0,1,2,3,4,5,6])
-        return {
-            items,
-            itemsOrder,
-            activeItem,
-        }
-    },
-    template: `
+  components: {GSectionsDraggable, GSectionsHeader, GSectionsItem, PosTextField, GIcon, GSwitch, GBtn},
+  props: {
+    headerHeight: {default: number('Header height', 32)}
+  },
+  setup() {
+    const activeItem = ref(null)
+    const items = ref([
+      {title: 'Section 1'},
+      {title: 'Section 2'},
+      {title: 'Section 3'},
+      {title: 'Section 4'},
+      {title: 'Section 5'},
+      {title: 'Section 6'},
+      {title: 'Section 7'},
+    ])
+    const itemsOrder = ref([0, 1, 2, 3, 4, 5, 6])
+    return {
+      items,
+      itemsOrder,
+      activeItem,
+    }
+  },
+  template: `
   <div style="width: 300px; height: 600px; border: 1px solid #E0E0E0; overflow: auto">
       <g-sections-draggable v-model="activeItem" :order="itemsOrder">       
         <g-sections-header v-for="(item, index) in items" :height="headerHeight" :key="-(index+1)">
