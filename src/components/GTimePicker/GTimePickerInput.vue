@@ -86,7 +86,8 @@
       const cptTimeValue = computed(() => {
         let hour = parseInt(state.value.substr(0, 2))
         hour = getFormattedHours(hour, props)
-        return `${_.padStart(String(hour), 2, '0')}${state.value.substr(2)} ${state.period}`
+        const period = state.period ? ` ${state.period}` : ''
+        return `${_.padStart(String(hour), 2, '0')}${state.value.substr(2)}${period}`
       })
 
       const updateInput = (timePickerOutput) => {
