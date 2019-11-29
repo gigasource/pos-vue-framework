@@ -93,7 +93,7 @@ export default function getSwatchesRenderFn(onColorSelected) {
                       vOn:click={() => onColorSelected(pallet)}></span>
                 }
                 return (
-                    <g-tool-tip
+                    <g-tooltip
                         key={pallet.name}
                         top
                         speech-bubble
@@ -114,7 +114,7 @@ export default function getSwatchesRenderFn(onColorSelected) {
                           <div>{pallet.name}</div>
                         </div>
                       </div>
-                    </g-tool-tip>)
+                    </g-tooltip>)
                 }
             )
           }

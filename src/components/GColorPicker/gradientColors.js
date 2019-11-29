@@ -103,7 +103,7 @@ export default function getGradientRenderFn(onGradientSelected) {
                   vOn:click={() => onGradientSelected(gradient)}></span>
             }
 
-            return <g-tool-tip
+            return <g-tooltip
                 key={gradient.name}
                 top
                 speech-bubble
@@ -123,7 +123,7 @@ export default function getGradientRenderFn(onGradientSelected) {
                   {`End Color: ${gradient.colorStop2}`}<br/>
                 </div>
               </div>
-            </g-tool-tip>
+            </g-tooltip>
           })
         }
         </div>
