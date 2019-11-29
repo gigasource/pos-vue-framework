@@ -47,6 +47,10 @@
         flex: 0 0 percentage($i/$grid-columns);
         max-width: percentage($i/$grid-columns);
       }
+      .#{$size}#{$i} {
+        flex: 0 0 percentage($i/$grid-columns);
+        max-width: percentage($i/$grid-columns);
+      }
     }
   }
 }

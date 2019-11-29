@@ -125,23 +125,33 @@
 // a: all, t: top, b: bottom, r: right, l: left
 @each $index, $value in $spacers {
   .pa-#{$index} {
-    padding: $value;
+    padding: $value !important;
   }
 
   .pt-#{$index} {
-    padding-top: $value;
+    padding-top: $value !important;
   }
 
   .pb-#{$index} {
-    padding-bottom: $value;
+    padding-bottom: $value !important;
   }
 
   .pr-#{$index} {
-    padding-right: $value;
+    padding-right: $value !important;
   }
 
   .pl-#{$index} {
-    padding-left: $value;
+    padding-left: $value !important;
+  }
+
+  .px-#{$index} {
+    padding-left: $value !important;
+    padding-right: $value !important;
+  }
+
+  .py-#{$index} {
+    padding-top: $value !important;
+    padding-bottom: $value !important;
   }
 }
 
@@ -154,23 +164,33 @@
 // a: all, t: top, b: bottom, r: right, l: left
 @each $index, $value in $spacers {
   .ma-#{$index} {
-    margin: $value;
+    margin: $value !important;
   }
 
   .mt-#{$index} {
-    margin-top: $value;
+    margin-top: $value !important;
   }
 
   .mb-#{$index} {
-    margin-bottom: $value;
+    margin-bottom: $value !important;
   }
 
   .mr-#{$index} {
-    margin-right: $value;
+    margin-right: $value !important;
   }
 
   .ml-#{$index} {
-    margin-left: $value;
+    margin-left: $value!important;
+  }
+
+  .mx-#{$index} {
+    margin-left: $value !important;
+    margin-right: $value !important;
+  }
+
+  .my-#{$index} {
+    margin-top: $value !important;
+    margin-bottom: $value !important;
   }
 }
 

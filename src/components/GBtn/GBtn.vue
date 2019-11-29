@@ -9,7 +9,7 @@
     props: {
       //classes
       ...{
-        ripple: { type: Boolean, default: true},
+        ripple: { type: Boolean, default: true },
         raised: Boolean,
         depressed: Boolean,
         disabled: Boolean,
@@ -56,31 +56,31 @@
     setup(props, context) {
       const { classes, styles } = GBtnUtil(props, context);
 
-      function genBtnContent() {
-        return <span class="g-btn__content">
-          {context.slots.default && context.slots.default()}
-        </span>
-      }
-
-      function genBtn() {
+      return { classes, styles }
+    },
+    render(h) {
+      const genBtn = () => {
         const nodeData = {
-          class: classes.value,
-          style: styles.value,
-          directives: props.ripple ? [{ name: 'ripple', value: undefined }] : []
+          class: this.classes,
+          style: this.styles,
+          directives: this.ripple ? [{ name: 'ripple', value: undefined }] : [],
+          on: {
+            click: (e) => this.$emit('click', e),
+            mouseenter: (e) => this.$emit('mouseenter', e),
+            mouseleave: (e) => this.$emit('mouseleave', e),
+            mouseup: (e) => this.$emit('mouseup', e),
+            mousedown: (e) => this.$emit('mousedown', e),
+          }
         };
 
-        return <button {...nodeData} vOn:click={(event) => {
-          context.emit('click', event);
-        }}>
-          {genBtnContent()}
+        return <button {...nodeData}>
+          <span className="g-btn__content">
+            {this.$slots.default}
+          </span>
         </button>
-      }
+      };
 
-      return {
-        genBtn
-      }
-    }, render() {
-      return this.genBtn();
+      return genBtn();
     }
 
   }
