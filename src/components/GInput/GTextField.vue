@@ -17,8 +17,7 @@
 				<div class="inputGroup">
 					<div class="input">
 						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
-						<input type="text"
-									 autocomplete="off"
+						<input autocomplete="off"
 									 class="g-tf-input"
 									 :style="inputErrStyles"
 									 :type="type"
