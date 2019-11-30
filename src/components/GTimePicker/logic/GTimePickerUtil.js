@@ -184,7 +184,7 @@ export default function (props, context) {
   function emitInput() {
     let hours = pad(getFormattedHours(state.selectedTime.hours, props))
     let minutes = pad(state.selectedTime.minutes)
-    let seconds = props.useSeconds ? `:${pad(state.selectedTime.seconds)}` : ''
+    let seconds = props.useSeconds ? `:${pad(state.selectedTime.seconds || 0)}` : ''
     let meridiems = props.hourConvention === HourConvention._12HRS ? state.activePeriodPicker === ActivePeriodPicker.AM ? ' AM' : ' PM' : ''
     context.emit('input', `${hours}:${minutes}${seconds}${meridiems}`)
   }
