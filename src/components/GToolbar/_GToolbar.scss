@@ -77,9 +77,10 @@
     border-radius: 16px 16px 0 0;
   }
 
-  &__fixed {
-    position: fixed;
+  &__sticky {
+    position: sticky;
     top: 0;
+    z-index: 300;
 
     &.g-toolbar__bottom {
       top: initial;

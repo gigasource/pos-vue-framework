@@ -43,7 +43,7 @@
         type: [String, Number],
 				default: 'auto'
       },
-      fixed: Boolean,
+      sticky: Boolean,
       flat: Boolean,
       floating: Boolean,
       prominent: Boolean,
@@ -68,7 +68,7 @@
         'g-toolbar__tile': props.tile,
         'g-toolbar__collapse': props.collapse,
         'g-toolbar__filled': props.filled,
-        'g-toolbar__fixed': props.fixed,
+        'g-toolbar__sticky': props.sticky,
 				['bg-'+props.color.split(' ').join('-')]: props.color && !isCssColor(props.color),
       }));
 
