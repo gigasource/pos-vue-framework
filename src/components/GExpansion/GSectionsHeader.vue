@@ -33,6 +33,7 @@
         return <div
             class={['g-sections-header', {'g-sections-header__active': isActiveItem(props.item)}]}
             vOn:click={() => toggleItem(props.item)}
+            vOn:dragenter={(e) => context.emit('entered', e)}
             vOn:mousedown={onMouseDown}
             vOn:mouseup={onMouseUp}
             style={headerStyles.value}>
@@ -60,10 +61,6 @@
 </script>
 <style scoped lang="scss">
 	@import './variable';
-
-	.dragging {
-		border: 1px solid red !important;
-	}
 
 	.g-sections {
 		&-header {

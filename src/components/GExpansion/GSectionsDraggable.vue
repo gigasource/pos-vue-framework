@@ -82,8 +82,9 @@
         return sectionsClone.map((section, index) => {
           return <div
               class={['g-sections-element', {'g-sections-element__active': this.isActiveItem(section[0].componentOptions.propsData.item)}]}
-              vOn:dragstart={(e) => this.onDragStart(e, this.order[index])}
-              vOn:dragenter={(e) => this.onDragEnter(e, this.order[index], this.isActiveItem(section[0].componentOptions.propsData.item))}
+              vOn:dragstart={(e) => this.onDragStart(e, this.orderArray[index])}
+              vOn:dragenter={(e) => this.onDragEnter(e, this.orderArray[index], this.isActiveItem(section[0].componentOptions.propsData.item))}
+						  //vOn:entered={}
               vOn:dragover={this.onDragOver}
               vOn:dragleave={this.onDragLeave}
               vOn:dragend={this.onDragEnd}
@@ -140,7 +141,7 @@
         order[orderClone.indexOf(sourceIndex)] = indexSection
         order[orderClone.indexOf(currentIndex)] = sourceIndex
       }
-      active ? setTimeout(() => order.splice(), 200) : order.splice()
+      active ? setTimeout(() => order.splice(), 300) : order.splice()
     }
 
     function onDragLeave(e) {
@@ -190,13 +191,10 @@
 		> *:last-child {
 			border-bottom: 1px solid #E0E0E0;
 		}
-
-		&-element {
-			transition: 0.3s;
-		}
 	}
 
 	.entering {
 		opacity: 0;
+		transition: 0.4s;
 	}
 </style>

@@ -63,6 +63,7 @@
 
 		.g-sections-element__active {
 			position: relative;
+			//top: 12px;
 			margin-top: 12px;
 			padding-top: 16px;
 		}
@@ -80,9 +81,8 @@
 	.g-sections-header__active {
 		position: absolute;
 		top: -13px;
-		left: -1px;
+		left: -2px;
 		min-height: 0;
-		transform-origin: top;
 		transition: 0.5s;
 
 		.header-item, .header-item-2 {
