@@ -26,6 +26,10 @@
         context.emit('dragStart', e)
 			}
 
+			const onClick = function() {
+        context.emit('edit', model.value)
+			}
+
       function connect(startVal, endVal) {
         context.emit('connected', startVal, endVal)
       }
@@ -40,9 +44,10 @@
 			}))
 
       const genBindingDiagramItemGroup = () => {
-				return <div class="g-binding-item-group b-grey" style={styles.value} vOn:mousedown={dragStart}>
+				return <div class="g-binding-item-group b-grey" style={styles.value} vOn:mousedown={dragStart} vOn:click={onClick}>
 					{model.value.name}
 					{model.value.items.map((item) => {
+					  console.log(item.show.value)
             return <g-binding-diagram-item value={item} vOn:connected={connect} vOn:disconnected={disconnect}/>
 					})}
 				</div>
@@ -64,9 +69,9 @@
 		//left: 20px;
 		display: flex;
 		flex-direction: column;
-		padding: 5px 10px;
+		padding: 3px 6px;
 		border: 1px solid;
 		border-radius: 6px;
-		width: 250px;
+		width: 200px;
 	}
 </style>

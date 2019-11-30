@@ -31,7 +31,7 @@
 					case 'data':
 					  return 'cyan'
 					case 'func':
-						return 'lime'
+						return 'lime-darken-4'
 					default:
 					  return 'black'
         }
@@ -46,19 +46,20 @@
       }
 
 			const genBindingDiagramItem = () => {
-				return <g-connector point-radius="10"
+				return <g-connector point-radius="8"
 														point-color={itemColor.value}
 														point-position="x"
 														path-color={itemColor.value}
+														path-width="2"
 														value={model.value}
 														vOn:connected={endVal => connect(model.value, endVal)}
 														vOn:disconnected={endVal => disconnect(model.value, endVal)}>
-          <div class={['g-binding-item', `b-${itemColor.value}`, `text-${itemColor.value}`]}>
-            <div class={['g-binding-item-type', `bg-${itemColor.value}`]}>
+          <div class={['g-binding-diagram-item', `b-${itemColor.value}`, `text-${itemColor.value}`]} vShow={model.value.show}>
+            <div class={['g-binding-diagram-item-type', `bg-${itemColor.value}`]}>
               {model.value.type}
             </div>
             {model.value.key}
-            <g-icon color={itemColor.value}>fas fa-times-circle</g-icon>
+            <span/>
           </div>
         </g-connector>
 			}
@@ -73,20 +74,21 @@
   }
 </script>
 <style scoped lang="scss">
-	.g-binding-item{
+	.g-binding-diagram-item{
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 40px;
+		height: 30px;
 		border: 1px solid;
 		border-radius: 6px;
 		padding: 10px;
-		margin: 5px 0;
+		margin: 3px 0;
+		font-size: 14px;
 
 		&-type {
-			padding: 3px;
+			padding: 2px;
 			border-radius: 4px;
-			font-size: 12px;
+			font-size: 10px;
 			color: white;
 		}
 	}
