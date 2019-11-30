@@ -57,30 +57,9 @@
       }
     },
     setup(props, context) {
-      // get initial time
-      let initialTime;
-      if (props.value) {
-        initialTime = props.value
-      } else if (props.useSeconds) {
-        initialTime = dayjs().format('HH:mm:ss')
-      } else {
-        initialTime = dayjs().format('HH:mm')
-      }
-
-      // get period if any
-      let initialPeriod;
-      if (props.hourConvention === HourConvention._24HRS) {
-        initialPeriod = ''
-      } else if (initialTime < '12') {
-        initialPeriod = 'AM'
-      } else {
-        initialPeriod = 'PM'
-      }
-
       const state = reactive({
         showMenu: false,
-        value: initialTime,
-        period: initialPeriod,
+        value: props.value || '',
       })
 
       const updateInput = (value) => {

@@ -134,7 +134,7 @@ export const gTimePickerInput = () => ({
     readonly: { type: Boolean, default: boolean('readonly', false) },
     scrollable: { type: Boolean, default: boolean('scrollable', false), },
     useSeconds: { type: Boolean, default: boolean('useSeconds', false) },
-    value: { type: String, default: text('value', '15:18:30') },
+    value: { type: String, default: text('value', null) },
     landscape: { default: boolean('landscape', false) },
     titleBgColor: { type: String, default: text('titleBgColor', null) },
     titleTextColor: { type: String, default: text('titleTextColor', null), },
