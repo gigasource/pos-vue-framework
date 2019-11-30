@@ -90,10 +90,8 @@
         return `${_.padStart(String(hour), 2, '0')}${state.value.substr(2)}${period}`
       })
 
-      const updateInput = (timePickerOutput) => {
-        state.value = timePickerOutput.time
-        state.period = timePickerOutput.period
-        context.emit('input', cptTimeValue.value)
+      const updateInput = (value) => {
+        context.emit('input', value)
       }
 
       const updatePeriod = (period) => {

@@ -3,6 +3,8 @@
 import { computed, reactive, watch } from '@vue/composition-api'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import * as _ from 'lodash';
+import { pad } from '../../GDatePicker/logic/utils';
 dayjs.extend(customParseFormat)
 
 // Hour convention
@@ -57,15 +59,15 @@ function getShowTimePickerMethods(state) {
  * @param context
  * @returns {{showAMPicker: (function(): (ActivePeriodPicker.AM|{AM, PM})), showPMPicker: (function(): (ActivePeriodPicker.PM|{AM, PM}))}}
  */
-function getShowPeriodPickerMethods(state, context) {
+function getShowPeriodPickerMethods(state, context, emitInput) {
   return {
     showAMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.AM
-      context.emit('updateperiod', 'AM')
+      emitInput()
     },
     showPMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.PM
-      context.emit('updateperiod', 'PM')
+      emitInput()
     }
   }
 }
@@ -75,13 +77,9 @@ function getShowPeriodPickerMethods(state, context) {
  * @param props
  * @param state
  * @param context
- * @param cptTimeFormatStr
+ * @param emitInput
  */
-function getSetTimeMethods(props, state, context, cptTimeFormatStr) {
-  function emitInput() {
-    context.emit('input', dayjs(`2000-01-01 ${state.selectedTime.hours}:${state.selectedTime.minutes}:${props.useSeconds ? state.selectedTime.seconds:'00'}`).format(cptTimeFormatStr.value))
-  }
-
+function getSetTimeMethods(props, state, context, emitInput) {
   // events
   function setHours(hours) {
     if (state.selectedTime.hours !== hours) {
@@ -184,9 +182,17 @@ export default function (props, context) {
     state.activePeriodPicker = activePeriod
   })
 
+  function emitInput() {
+    let hours = pad(getFormattedHours(state.selectedTime.hours, props))
+    let minutes = pad(state.selectedTime.minutes)
+    let seconds = props.useSeconds ? `:${pad(state.selectedTime.seconds)}` : ''
+    let meridiems = props.hourConvention === HourConvention._12HRS ? state.activePeriodPicker === ActivePeriodPicker.AM ? ' AM' : ' PM' : ''
+    context.emit('input', `${hours}:${minutes}${seconds}${meridiems}`)
+  }
+
   const { showHoursPicker, showMinutesPicker, showSecondsPicker } = getShowTimePickerMethods(state)
-  const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state, context)
-  const { setHours, setMinutes, setSeconds } = getSetTimeMethods(props, state, context, cptTimeFormatStr)
+  const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state, context, emitInput)
+  const { setHours, setMinutes, setSeconds } = getSetTimeMethods(props, state, context, emitInput)
   const { adjustHours, adjustMinutes, adjustSeconds } = getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, cptIs12HoursConvention})
 
   const hoursModel = computed(() => {
