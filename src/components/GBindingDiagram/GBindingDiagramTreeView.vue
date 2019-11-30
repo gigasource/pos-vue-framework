@@ -39,10 +39,6 @@
         tree.value.allPaths = _.keys(treeStates)
       })
 
-      const getRealPath = (slottedPath) => {
-        return slottedPath.replace(/slot\.\d\./g, '')
-      }
-
       const togglePath = (path) =>  {
 				tree.value.activePath = path
 			}

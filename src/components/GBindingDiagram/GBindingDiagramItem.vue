@@ -1,7 +1,8 @@
 <script>
 	import { getInternalValue } from '../../mixins/getVModel';
   import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
-	import GChip from '../GChip/GChip';
+  import { isSlotPath, isRootPath } from './GBindingDiagramFactory';
+  import GChip from '../GChip/GChip';
   import GConnector from '../GConnector/GConnector';
   import GIcon from '../GIcon/GIcon';
 
@@ -15,7 +16,8 @@
 				  type: 'prop',
 					key: 'unknown'
 				}
-			}
+			},
+			path: String
 		},
     setup (props, context) {
       const model = getInternalValue(props, context)
@@ -37,6 +39,19 @@
         }
 			})
 
+			const startLimit = computed(() => {
+        if (isSlotPath(props.path)) {
+          return 0
+				} else if (!isRootPath(props.path)) {
+          return 1
+				}
+			})
+
+			const endLimit = computed(() => {
+			  if (props.path === '') return 0
+				else return 1
+			})
+
 			function connect(startVal, endVal) {
         context.emit('connected', startVal, endVal)
 			}
@@ -52,6 +67,8 @@
 														path-color={itemColor.value}
 														path-width="2"
 														value={model.value}
+														start-limit={startLimit.value}
+														end-limit={endLimit.value}
 														vOn:connected={endVal => connect(model.value, endVal)}
 														vOn:disconnected={endVal => disconnect(model.value, endVal)}>
           <div class={['g-binding-diagram-item', `b-${itemColor.value}`, `text-${itemColor.value}`]} vShow={model.value.show}>

@@ -39,8 +39,8 @@ export default function GConnectorFactory(props, context, model, isBooted, id, c
       for (let connectionPoint of localConnectionPoints.value) {
         connectionPoint.value = model.value
         connectionPoint.id = id.value
-        if (props.startLimit) connectionPoint.startLimit = +props.startLimit
-        if (props.endLimit) connectionPoint.endLimit = +props.endLimit
+        if (props.startLimit !== undefined) connectionPoint.startLimit = +props.startLimit
+        if (props.endLimit !== undefined) connectionPoint.endLimit = +props.endLimit
       }
       connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
     })

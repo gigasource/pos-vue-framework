@@ -47,8 +47,7 @@
 				return <div class="g-binding-item-group b-grey" style={styles.value} vOn:mousedown={dragStart} vOn:click={onClick}>
 					{model.value.name}
 					{model.value.items.map((item) => {
-					  console.log(item.show.value)
-            return <g-binding-diagram-item value={item} vOn:connected={connect} vOn:disconnected={disconnect}/>
+            return <g-binding-diagram-item value={item} path={model.value.path} vOn:connected={connect} vOn:disconnected={disconnect}/>
 					})}
 				</div>
 			}
@@ -65,6 +64,7 @@
 <style scoped lang="scss">
 	.g-binding-item-group {
 		position: absolute;
+		background-color: white;
 		//top: 20px;
 		//left: 20px;
 		display: flex;

@@ -3,10 +3,10 @@
 		<div area="diagram">
 			<g-diagram v-for="(diagramData, index) in diagramsData" v-model="diagramData.localData.path === selectTreeActivePath" :key="index">
 				<template v-slot:default="{ dragStart }">
-					<g-binding-diagram-item-group :value="diagramData.localData" @dragStart="dragStart" :top="20" :left="20" @connected="connect" @disconnected="disconnect" @edit="edit" :key="'local' + index">
+					<g-binding-diagram-item-group :value="diagramData.localData" @dragStart="dragStart" :top="20" :left="300" @connected="connect" @disconnected="disconnect" @edit="edit" :key="'local' + index">
 
 					</g-binding-diagram-item-group>
-					<g-binding-diagram-item-group v-for="(group, index) in diagramData.foreignData" :value="group" @dragStart="dragStart" :top="20 + index*250" left="350" @connected="connect" @disconnected="disconnect" @edit="edit" :key="index">
+					<g-binding-diagram-item-group v-for="(group, index) in diagramData.foreignData" :value="group" @dragStart="dragStart" :top="20 + index*250" left="20" @connected="connect" @disconnected="disconnect" @edit="edit" :key="index">
 
 					</g-binding-diagram-item-group>
 				</template>
@@ -27,7 +27,7 @@
 				<g-binding-diagram-table :value="diagramData.slotScopeBinding" slot-scope-binding/>
 			</div>
 		</div>
-		<div area="rightsidebar">
+		<div area="rightsidebar" class="g-binding-diagram-rightsidebar">
 			<g-binding-diagram-editor v-model="editorData" @toggle="">
 
 			</g-binding-diagram-editor>
@@ -38,7 +38,8 @@
 	import _ from 'lodash'
   import { getInternalValue } from '../../mixins/getVModel';
   import { ref, reactive, computed, watch, provide, onMounted } from '@vue/composition-api';
-	import bindingDiagramLayout from './bindingDiagramLayout'
+  import { isSlotPath, isRootPath, convertToNormalPath, convertToPath } from './GBindingDiagramFactory';
+  import bindingDiagramLayout from './bindingDiagramLayout'
 	import GBindingDiagramTreeView from './GBindingDiagramTreeView';
   import GGridLayout from '../GGridGenerator/GGridLayout';
   import GDiagram from '../GConnector/GDiagram';
@@ -71,8 +72,6 @@
       const selectTreeActivePath = computed(() => selectTree.activePath)
       const addTreeActiveSlottedPath = computed(() => addTree.activePath)
       const diagramsData = ref([])
-			const bindingConnections = ref([])
-			const slotScopeBindingConnections = ref([])
 			const editorData = ref({})
 
 			// Init diagrams data
@@ -194,26 +193,10 @@
 				}
 			}
 
-      function convertToNormalPath (slotPath) {
-			  return slotPath.replace(/\.slot\.\d/, '')
-			}
-
 			function convertToSlottedPath (path) {
 			  for (let slottedPath of addTree.allPaths) {
 			    if (convertToPath(slottedPath) === path) return slottedPath
 				}
-			}
-
-			function convertToPath (slottedPath) {
-			  return slottedPath.replace(/slot\.\d\./g, '')
-			}
-
-			function isRootPath (path) {
-			  return path === ''
-			}
-
-      function isSlotPath (path) {
-			  return path.indexOf('slot') > -1
 			}
 
       function isProperSlotPath(slottedPath, path) {
@@ -242,17 +225,6 @@
 			  return isDiagramLocalPath(path, diagramData) || isDiagramForeignPath(path, diagramData)
 			}
 
-			// watch(selectTreeActivePath, newVal => {
-			//   if (!isSelectedPath(newVal)) {
-			//     diagramsData.value.push(reactive({
-			// 			localData: initPathData(newVal, treeData.value),
-			// 			foreignData: [],
-			// 			binding: [],
-			// 			slotScopeBinding: []
-			// 		}))
-			// 	}
-			// })
-
 			function addToDiagram() {
         for (let diagramData of diagramsData.value) {
           if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
@@ -269,8 +241,8 @@
             if (endVal.type === 'data' || endVal.type === 'func') {
               diagramData.slotScopeBinding.push({
                 type: startVal.type,
-                foreign: startVal.key,
-                local: endVal.key
+                foreign: endVal.key,
+                local: startVal.key
               })
             } else {
               diagramData.binding.push({
@@ -284,7 +256,6 @@
       }
 
 			function disconnect (startVal, endVal) {
-        bindingConnections.value.splice(bindingConnections.value.findIndex(connection => connection.type === startVal.type && connection.foreign === startVal.value && connection.local === endVal.value), 1)
         for (let diagramData of diagramsData.value) {
           if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
             if (endVal.type === 'data' || endVal.type === 'func') {
@@ -301,7 +272,7 @@
 			}
 
 			function toggleItem(path, index) {
-        if (!path) return
+        if (path === undefined || path === null) return
 				const normalPath = convertToNormalPath(path)
         for (let diagramData of diagramsData.value) {
           if (normalPath === diagramData.localData.path) {
@@ -319,7 +290,7 @@
 			}
 
 			function addItem(path, newItem) {
-        if (!path) return
+        if (path === undefined || path === null) return
         const normalPath = convertToNormalPath(path)
         for (let diagramData of diagramsData.value) {
           if (normalPath === diagramData.localData.path) {
@@ -337,7 +308,7 @@
 			}
 
 			function deleteItem(path, index) {
-			  if (!path) return
+			  if (path === undefined || path === null) return
         const normalPath = convertToNormalPath(path)
         for (let diagramData of diagramsData.value) {
           if (normalPath === diagramData.localData.path) {
@@ -383,14 +354,18 @@
 
 		::v-deep.g-diagram-container {
 			box-shadow: none;
+			background-color: #f0f0f0;
 			border-top: 0;
 			border-bottom: 0;
+			border-left: 2px solid grey;
+			border-right: 2px solid grey;
 		}
 	}
 
-	.binding-diagram {
-		&-local {
-
+	.g-binding-diagram {
+		&-rightsidebar {
+			height: 100%;
+			padding: 0 10px;
 		}
 	}
 
