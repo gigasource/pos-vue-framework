@@ -44,7 +44,9 @@
       })
 
       const genNode = function ({ node, text, childrenVNodes, state, path }) {
-        const icon = node.icon && <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]} svg={node.svgIcon}>{node.icon}</g-icon>
+        if (!node.icon) node.icon = 'brightness_1' //TODO: fix later, text is not displayed if icon is not set
+
+        const icon = <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]} svg={node.svgIcon}>{node.icon}</g-icon>
         if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path+'.'))) {
           state.collapse = true
         }
