@@ -21,10 +21,11 @@
 
 			const toggleItem = inject('toggleItem')
 			const addItem = inject('addItem')
+			const deleteItem = inject('deleteItem')
 
 			const newItem = reactive({
-			  type: null,
-				key: null,
+			  type: '',
+				key: '',
 				show: true
 			})
 
@@ -36,8 +37,8 @@
 
 			const add = () => {
 			  addItem(model.value.path, newItem)
-				newItem.type = null
-				newItem.key = null
+				newItem.type = ''
+				newItem.key = ''
 				dialog.value = false
 			}
 
@@ -51,7 +52,9 @@
 					</div>
 					<div class="g-binding-diagram-editor-content">
             {model.value.items && model.value.items.map((item, index) => {
-              return <g-binding-diagram-editor-item value={item} vOn:toggle={() => toggleItem(model.value.path, index)}/>
+              return <g-binding-diagram-editor-item value={item}
+																										vOn:toggle={() => toggleItem(model.value.path, index)}
+																										vOn:delete={() => deleteItem(model.value.path, index)}/>
             })}
 					</div>
           <g-dialog value={dialog.value} vOn:input={e => dialog.value = e}>

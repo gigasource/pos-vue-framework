@@ -41,15 +41,24 @@
         context.emit('toggle')
 			}
 
+			function deleteItem() {
+        context.emit('delete')
+			}
+
       const genBindingDiagramItem = () => {
         return <div class={['g-binding-diagram-editor-item', `b-${itemColor.value}`, `text-${itemColor.value}`]}>
           <div class={['g-binding-diagram-editor-item-type', `bg-${itemColor.value}`]}>
             {model.value.type}
           </div>
           {model.value.key}
-          <g-icon color={itemColor.value} size="16" vOn:click={toggleItem}>
-						{model.value.show ? 'fas fa-eye' : 'fas fa-eye-slash'}
-          </g-icon>
+          <div class='g-binding-diagram-editor-item-action'>
+						<g-icon color={itemColor.value} size="16" vOn:click={toggleItem}>
+							{model.value.show ? 'fas fa-eye' : 'fas fa-eye-slash'}
+						</g-icon>
+            <g-icon color={itemColor.value} size="16" vOn:click={deleteItem}>
+              fas fa-times-circle
+            </g-icon>
+          </div>
 				</div>
       }
 
@@ -79,6 +88,12 @@
 			border-radius: 4px;
 			font-size: 10px;
 			color: white;
+		}
+
+		&-action {
+			::v-deep.g-icon {
+				margin: 2px;
+			}
 		}
 	}
 </style>

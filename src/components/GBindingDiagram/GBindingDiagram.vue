@@ -301,24 +301,61 @@
 			}
 
 			function toggleItem(path, index) {
+        if (!path) return
 				const normalPath = convertToNormalPath(path)
         for (let diagramData of diagramsData.value) {
           if (normalPath === diagramData.localData.path) {
-            diagramData.localData.items[index].show = !diagramData.localData.items[index].show
+            if (isSlotPath(path)) {
+              for (let slotData of diagramData.slotsData) {
+                if (path === slotData.path) {
+                  slotData.items[index].show = !slotData.items[index].show
+                }
+              }
+            } else {
+              diagramData.localData.items[index].show = !diagramData.localData.items[index].show
+            }
 					}
 				}
 			}
 
 			function addItem(path, newItem) {
+        if (!path) return
         const normalPath = convertToNormalPath(path)
         for (let diagramData of diagramsData.value) {
           if (normalPath === diagramData.localData.path) {
-            diagramData.localData.items.push(newItem)
+            if (isSlotPath(path)) {
+              for (let slotData of diagramData.slotsData) {
+                if (path === slotData.path) {
+                  slotData.items.push(newItem)
+								}
+							}
+            } else {
+              diagramData.localData.items.push(newItem)
+						}
+          }
+        }
+			}
+
+			function deleteItem(path, index) {
+			  if (!path) return
+        const normalPath = convertToNormalPath(path)
+        for (let diagramData of diagramsData.value) {
+          if (normalPath === diagramData.localData.path) {
+            if (isSlotPath(path)) {
+              for (let slotData of diagramData.slotsData) {
+                if (path === slotData.path) {
+                  slotData.items.splice(index, 1)
+                }
+              }
+            } else {
+              diagramData.localData.items.splice(index, 1)
+            }
           }
         }
 			}
 
 			provide('addItem', addItem)
+			provide('deleteItem', deleteItem)
 			provide('toggleItem', toggleItem)
 
       return {
