@@ -210,9 +210,9 @@
         appendInner: ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({ inputErrStyles }) =>
-          <div class="g-tf-input" style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
+          <fragment>
             {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-          </div>,
+          </fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         inputMessage: () => [<div v-show={props.counter} class={{
@@ -313,12 +313,13 @@
 
 				.input {
 					display: flex;
+          flex-wrap: wrap;
 				}
 
 				.g-tf-input {
 					flex-wrap: wrap;
-					width: auto;
 					display: flex;
+          flex: 1;
 				}
 
 				input {
