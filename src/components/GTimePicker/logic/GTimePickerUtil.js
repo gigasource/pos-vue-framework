@@ -162,12 +162,11 @@ export default function (props, context) {
   watch(() => props.value, () => {
     let timeRegex = props.hourConvention === HourConvention._12HRS ? _12HourTimeRegex : _24HourTimeRegex
     let timeRegexResult
-    if (props.value) {
-      timeRegexResult = timeRegex.exec(props.value)
-      console.warn('Invalid time value ', props.value)
+    if (props.value) timeRegexResult = timeRegex.exec(props.value)
+    if (!timeRegexResult) {
+      console.warn('Invalid time value ', props.value, timeRegex)
+      timeRegexResult = timeRegex.exec(dayjs().format(cptTimeFormatStr.value))
     }
-
-    if (!timeRegexResult) timeRegexResult = timeRegex.exec(dayjs().format(cptTimeFormatStr.value))
     let timeObj = timeRegexResult.groups
     let { hours, minutes, seconds } = timeObj
     let activePeriod

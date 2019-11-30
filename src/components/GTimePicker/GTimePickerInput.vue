@@ -83,20 +83,9 @@
         period: initialPeriod,
       })
 
-      const cptTimeValue = computed(() => {
-        let hour = parseInt(state.value.substr(0, 2))
-        hour = getFormattedHours(hour, props)
-        const period = state.period ? ` ${state.period}` : ''
-        return `${_.padStart(String(hour), 2, '0')}${state.value.substr(2)}${period}`
-      })
-
       const updateInput = (value) => {
+        state.value = value
         context.emit('input', value)
-      }
-
-      const updatePeriod = (period) => {
-        state.period = period
-        context.emit('input', cptTimeValue.value)
       }
 
       const openTimePickerDialog = (e, menuScope) => {
@@ -122,7 +111,7 @@
                             'label',
                             'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
                           ]),
-                          value: cptTimeValue.value,
+                          value: state.value,
                           prependIcon: "access_time"
                         }
                       }}
@@ -143,7 +132,6 @@
                 }
               }}
               vOn:input={updateInput}
-              vOn:updateperiod={updatePeriod}
               vOn:timeselected={closeTimePickerDialog}
           />
         </g-menu>
