@@ -251,6 +251,7 @@ export default function GDiagramFactory(props, context) {
 
   return {
     isActive,
+    isBooted,
     connectionPoints,
     zoomState,
     originCoordinate,

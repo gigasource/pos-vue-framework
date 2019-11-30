@@ -55,6 +55,7 @@
       })
 
       const model = getInternalValue(props, context)
+			const isBooted = inject('isBooted')
       const diagramId = inject('diagramId')
       const connectionPoints = inject('connectionPoint')
       const zoomState = inject('zoomState')
@@ -70,7 +71,7 @@
         drawEnd,
         removePath,
 				updateConnectionPoints
-			} = GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId)
+			} = GConnectorFactory(props, context, model, isBooted, id, connectionPoints, zoomState, originCoordinate, activeDrawId)
 
       onMounted(() => {
         eventEmitter.$on(`draw${id.value}`, draw)

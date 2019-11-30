@@ -46,6 +46,7 @@
 
 			const {
         isActive,
+				isBooted,
         connectionPoints,
         zoomState,
         originCoordinate,
@@ -59,6 +60,7 @@
         dragEnd
       } = GDiagramFactory(props, context)
 
+			provide('isBooted', isBooted)
       provide('diagramId', diagramId)
       provide('eventEmitter', eventEmitter)
       provide('connectionPoint', connectionPoints)

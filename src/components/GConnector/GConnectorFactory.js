@@ -1,4 +1,4 @@
-import { ref, reactive, computed, onMounted} from '@vue/composition-api';
+import { ref, reactive, computed, watch, onMounted} from '@vue/composition-api';
 import { Point, Circle } from './CoordinateSystem';
 import { getElementPosition } from '../../utils/helpers';
 
@@ -29,9 +29,22 @@ export function getConnectionPoint(el, originPoint, zoomState, position) {
   }
 }
 
-export default function GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId) {
+export default function GConnectorFactory(props, context, model, isBooted, id, connectionPoints, zoomState, originCoordinate, activeDrawId) {
   const localConnectionPoints = ref([]);
   const connectionPaths = ref([]);
+
+  function initConnectionPoints() {
+    context.root.$nextTick(() => {
+      localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
+      for (let connectionPoint of localConnectionPoints.value) {
+        connectionPoint.value = model.value
+        connectionPoint.id = id.value
+        if (props.startLimit) connectionPoint.startLimit = +props.startLimit
+        if (props.endLimit) connectionPoint.endLimit = +props.endLimit
+      }
+      connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
+    })
+  }
 
   function updateConnectionPoints() {
     localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
@@ -47,18 +60,14 @@ export default function GConnectorFactory(props, context, model, id, connectionP
   }
 
   // Calculate local connection points when mounted
-  onMounted(function () {
-    this.$nextTick(function () {
-      localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
-      for (let connectionPoint of localConnectionPoints.value) {
-        connectionPoint.value = model.value
-        connectionPoint.id = id.value
-        if (props.startLimit) connectionPoint.startLimit = +props.startLimit
-        if (props.endLimit) connectionPoint.endLimit = +props.endLimit
-      }
-      connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
-    })
+  onMounted(() => {
+    initConnectionPoints()
   })
+
+  // Calculate local connection points when booted
+  watch(isBooted, () => {
+    updateConnectionPoints()
+  }, {lazy: true})
 
   // Connection Region is a circle around a connection point
   const connectionRegions = computed(() => {
