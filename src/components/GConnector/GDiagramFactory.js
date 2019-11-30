@@ -1,5 +1,6 @@
-import { ref, reactive, computed, onMounted, onBeforeUnmount} from '@vue/composition-api';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount} from '@vue/composition-api';
 import { getElementPosition } from '../../utils/helpers';
+import { getInternalValue } from '../../mixins/getVModel';
 
 function getConnectorId(el, ids) {
   if (el.classList.contains('g-connector')) ids.push(el.id)
@@ -17,6 +18,8 @@ function getConnectorIds(el) {
 }
 
 export default function GDiagramFactory(props, context) {
+  const isActive = getInternalValue(props, context)
+  const isBooted = ref(false)
   const connectionPoints = ref([])
   const zoomState = ref(1)
   const minScale = computed(() => +props.minZoom)
@@ -85,6 +88,21 @@ export default function GDiagramFactory(props, context) {
     startOriginCoordinate.x = originCoordinate.x
     startOriginCoordinate.y = originCoordinate.y
   })
+
+  // Boot logic
+  watch(isActive, newVal => {
+    if (newVal) isBooted.value = newVal
+  })
+
+  // Update data when booted
+  watch(isBooted, () => {
+    context.root.$nextTick(() => {
+      updateContainer()
+    })
+    updateOriginCoordinate()
+    startOriginCoordinate.x = originCoordinate.x
+    startOriginCoordinate.y = originCoordinate.y
+  }, {lazy: true})
 
   // Update data when resize window
   function updateOnResize() {
@@ -232,6 +250,7 @@ export default function GDiagramFactory(props, context) {
 
 
   return {
+    isActive,
     connectionPoints,
     zoomState,
     originCoordinate,

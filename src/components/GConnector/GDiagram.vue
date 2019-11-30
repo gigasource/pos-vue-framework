@@ -29,9 +29,13 @@
       zoomSpeed: {
         type: [Number, String],
         default: 5
-      }
+      },
+			value: {
+        type: Boolean
+			}
 		},
     setup(props, context) {
+
       const diagramId = ref('null')
 
       onMounted(function() {
@@ -41,6 +45,7 @@
       const eventEmitter = new Vue()
 
 			const {
+        isActive,
         connectionPoints,
         zoomState,
         originCoordinate,
@@ -116,7 +121,7 @@
 
 			// Render function
       function genDiagram() {
-        return <div class="g-diagram-container" style={containerStyles.value} vOn:wheel={zoom} vOn:scroll={scroll} ref="container">
+        return <div class="g-diagram-container" style={containerStyles.value} vShow={isActive.value} vOn:wheel={zoom} vOn:scroll={scroll} ref="container">
           <div class="g-diagram-content" style={contentStyles.value} ref="content">
             <portal-target name={diagramId.value} width={svgDimension.width} height={svgDimension.height} tag="svg" multiple ref="svg"/>
 						<portal to={diagramId.value} slim>
