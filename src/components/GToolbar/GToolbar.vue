@@ -43,6 +43,7 @@
         type: [String, Number],
 				default: 'auto'
       },
+      fixed: Boolean,
       flat: Boolean,
       floating: Boolean,
       prominent: Boolean,
@@ -67,6 +68,7 @@
         'g-toolbar__tile': props.tile,
         'g-toolbar__collapse': props.collapse,
         'g-toolbar__filled': props.filled,
+        'g-toolbar__fixed': props.fixed,
 				['bg-'+props.color.split(' ').join('-')]: props.color && !isCssColor(props.color),
       }));
 
@@ -92,7 +94,8 @@
 			})
 
       const totalHeight = computed(() => {
-        return contentHeight.value + (props.extended ? parseInt(computedExtensionHeight.value) : (isNaN(contentHeight.value) ? '' : 0));
+        if (!isNaN(contentHeight.value)) contentHeight.value = `${contentHeight.value}px`
+        return `calc(${contentHeight.value} + ${props.extended ? parseInt(computedExtensionHeight.value) : '0px'})`
       });
 
       const contentStyles = computed(() => ({
