@@ -77,6 +77,14 @@ function getShowPeriodPickerMethods(state, context) {
  */
 function getSetTimeMethods(props, state, context) {
   function emitInput() {
+    // TODO: Using dayjs format
+    // hour:minutes:seconds
+    // let format = ''
+    // format += props.hourConvention === HourConvention._24HRS ? 'HH' : 'hh'
+    // format += ':mm'
+    // props.useSeconds && (format += ":ss")
+    // props.hourConvention === HourConvention._12HRS && (format += ' A')
+
     const seconds = props.useSeconds ? `:${_.padStart(state.selectedTime.seconds, 2, '0')}` : ''
     const time = `${_.padStart(state.selectedTime.hours, 2, '0')}:${_.padStart(state.selectedTime.minutes, 2, '0')}${seconds}`
     let period = ''
@@ -92,19 +100,16 @@ function getSetTimeMethods(props, state, context) {
   // events
   function setHours(hours) {
     state.selectedTime.hours = hours
-    context.emit('updatehours', hours)
     emitInput()
   }
 
   function setMinutes(minutes) {
     state.selectedTime.minutes = minutes
-    context.emit('updateminutes', minutes)
     emitInput()
   }
 
   function setSeconds(seconds) {
     state.selectedTime.seconds = seconds
-    context.emit('updateseconds', seconds)
     emitInput()
   }
 
@@ -157,8 +162,13 @@ export default function (props, context) {
     activePeriodPicker: parseInt(timeParts[0]) < 12 ?  ActivePeriodPicker.AM : ActivePeriodPicker.PM,
     // storing selected time elements
     selectedTime: initialTime,
+    selectedTimeStr: '',
     // indicate whether period (AM/PM) should be show
     showPeriod: cptIs12HoursConvention.value,
+  })
+
+  watch(() => state.selectedTime, () => {
+    state.selectedTimeStr = `${state.selectedTime.hours}:${state.selectedTime.minutes}:${state.selectedTime.seconds}`
   })
 
   const { showHoursPicker, showMinutesPicker, showSecondsPicker } = getShowTimePickerMethods(state)
