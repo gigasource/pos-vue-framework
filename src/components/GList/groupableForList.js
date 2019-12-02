@@ -12,6 +12,7 @@ export function groupableForList(props, vModel) {
 
   //filter duplicate items for correct select effect
   const uniqueItems = computed(() => {
+    if(props.inMenu) return props.items
         if (items) {
           if (isObjectList.value) {
             if (returnObject) return _.uniqWith(itemsHaveText.value, _.isEqual)
@@ -28,14 +29,14 @@ export function groupableForList(props, vModel) {
         else {
         if (itemValue) updateMultiple(item[itemValue])
         else if (!itemText) updateMultiple(item);
-        else updateMultiple(uniqueItems.value.indexOf(item))
+        else updateMultiple(item)
       }
     } else {
       if (returnObject) updateSingle(item);
        else {
         if (itemValue) updateSingle(item[itemValue])
         else if (!itemText) updateSingle(item);
-        else updateSingle(uniqueItems.value.indexOf(item))
+        else updateSingle(item)
       }
     }
   };
@@ -50,7 +51,7 @@ export function groupableForList(props, vModel) {
     const clonedValue = _.clone(vModel.value);
     const itemIndex = clonedValue.findIndex((i) => _.isEqual(i, item));
     //item exists + mandatory
-    if (itemIndex > -1 && mandatory && clonedValue.length - 1 < 1) return;
+    if (itemIndex > -1 && !allowDuplicates &&  mandatory && clonedValue.length - 1 < 1) return;
     if (itemIndex > -1 && !allowDuplicates) clonedValue.splice(itemIndex, 1);
     else clonedValue.push(item);
     vModel.value = clonedValue;
@@ -78,11 +79,10 @@ export function makeListSelectable(props, context) {
 
   // 1 -> {a: 1, b: 2}
   const convertValueToInternalValue = function (value) {
-
     if (!props.itemValue || !value) return value;
     if (!Array.isArray(props.value)) {
       if (props.returnObject) return props.itemValue ? props.items.find(i => i[props.itemValue] === value) : props.items.find(i => _.isEqual(i, value));
-      else return props.items.find(i => i[props.itemValue] === value)[props.itemValue];
+      else return props.itemValue ? props.items.find(i => i[props.itemValue] === value) && props.items.find(i => i[props.itemValue] === value)[props.itemValue] : props.items;
     }
     if (props.returnObject) return props.itemValue ? props.items.filter(i => value.some(el => el === i[props.itemValue])) : null
     else if (props.itemValue) return value

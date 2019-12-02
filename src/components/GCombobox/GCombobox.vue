@@ -99,6 +99,7 @@
         type: String,
       },
       value: null,
+      returnObject: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -119,7 +120,7 @@
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         } else {
-          return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
+          return fieldItem.value || fieldItem.value === 0 ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
         }
 
       })

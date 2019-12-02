@@ -202,7 +202,7 @@ export const GComboboxNoDataSlot = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
+  <g-combobox itemText="text" returnObject :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
     <template v-slot:no-data>
       <g-list-item>
         <g-list-item-content>
@@ -289,7 +289,8 @@ export const GComboboxPrimitiveArray = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox :items="items" label="Label" v-model="selected" multiple chips clearable>
+  {{selected}}
+  <g-combobox :items="items" label="Label" v-model="selected" multiple itemText=""  chips clearable>
    
   </g-combobox>
 </div>`,

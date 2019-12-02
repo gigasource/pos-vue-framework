@@ -11,9 +11,9 @@
           <div tabindex="0" v-if="subheader" class="g-list-header">{{subheader}}</div>
         </slot>
         <template v-for="(item, index) in renderList">
-          <slot name="listItem" :isSelected="isActiveItem(item, index)" :item="item" :on="getListEvents(item, index)">
+          <slot name="listItem" :isSelected="isActiveItem(item)" :item="item" :on="getListEvents(item, index)">
             <div
-                :class="{'g-list-item__active': isActiveItem(item, index), [activeClass]: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
+                :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
                 class="g-list-item"
                 tabindex="0"
                 v-on="getListEvents(item, index)"
@@ -179,7 +179,7 @@
         'g-list__dense': props.dense,
         'g-list__inMenu': props.inMenu,
         'g-list__nav': props.nav,
-        'g-list__empty': !props.items
+        'g-list__empty': !!props.items
 
       }));
 
@@ -240,7 +240,7 @@
       provide('getListEvents', getListEvents)
 
 
-      const { uniqueItems :renderList, internalValue, toggleItem, isActiveItem} = makeListSelectable(props, context);
+      const {uniqueItems: renderList, internalValue, toggleItem, isActiveItem} = makeListSelectable(props, context);
       // const renderList = computed(() => {
       //   context.refs.listItemRef ? uniqueItems.value : uniqueItems.value
       // })

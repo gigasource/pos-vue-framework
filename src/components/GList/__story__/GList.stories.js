@@ -139,7 +139,7 @@ export const gListMultiSelectPlayGround = () => ({
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
       ],
-      testValue: [ 'Ali Connors']
+      testValue: [ ]
     }
   },
   props: {
@@ -157,7 +157,7 @@ export const gListMultiSelectPlayGround = () => ({
     multiple: { default: boolean('multiple', true) },
     mandatory: { default: boolean('mandatory', false) },
     allowDuplicates: { default: boolean('allowDuplicates', true) },
-    itemValue: { default: text('itemValue', 'text') },
+    itemValue: { default: text('itemValue', 'prepend') },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
     returnObject: { default: boolean('returnObject', false) },
@@ -755,10 +755,10 @@ export const gListPrimitiveItems = () => ({
     subtextWrap: { default: boolean('subtextWrap', false) },
     selectable: { default: boolean('selectable', false) },
     multiple: { default: boolean('multiple', true) },
-    mandatory: { default: boolean('mandatory', false) },
-    allowDuplicates: { default: boolean('allowDuplicates', true) },
+    mandatory: { default: boolean('mandatory', true) },
+    allowDuplicates: { default: boolean('allowDuplicates', false) },
     itemValue: { default: text('itemValue', '') },
-    itemText: { default: text('itemText', 'text') },
+    itemText: { default: text('itemText', '') },
     activeClass: { default: text('activeClass', '') },
   },
   template:

@@ -31,7 +31,7 @@ export const GSelectSingle = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -41,6 +41,7 @@ export const GSelectSingle = () => ({
   },
   template: `
 <div data-app>
+{{selected}}
 	<g-select
 			width="100%"
 			:items="items"
@@ -75,7 +76,7 @@ export const GSelectSingleWithValidate = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -125,10 +126,10 @@ export const GSelectMultiple = () => ({
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
-    allowDuplicates: {type: Boolean, default: boolean('allow duplicates', true)},
+    allowDuplicates: {type: Boolean, default: boolean('allow duplicates', false)},
     chips: {default: boolean('chips', false)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'text')},
+    itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
   },
   data() {
@@ -144,6 +145,7 @@ export const GSelectMultiple = () => ({
   },
   template: `
 <div data-app>
+{{selected}}
 	<g-select
 			:items="items"
 			:item-text="itemText"
@@ -183,7 +185,9 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
   },
   template: `
 <div data-app>
+{{selected}}
 	<g-select
+	returnObject
 			:items="items"
 			:item-text="itemText"
 			:item-value="itemValue"

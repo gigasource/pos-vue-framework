@@ -100,9 +100,11 @@
         fieldItem: null
       })
       //list selections
+
       const {internalValue: selectedItem} = makeListSelectable(props, context)
+      const options = getList(props, selectedItem, state)
       const fieldItem = getSelections(props, selectedItem)
-      const selections = computed(() => {
+      const tfDisplaySelections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
             return item ? (item['text'] || item['value'] || item) : ''
@@ -133,7 +135,7 @@
       }
 
       //genList
-      const options = getList(props, selectedItem, state)
+
       const showOptions = ref(false)
 
       const genList = (typeof props.genListFn === 'function' && props.genListFn)
@@ -180,32 +182,32 @@
       const deleteItemColor = ref('#1d1d1d')
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.allowDuplicates) {
-          return selections.value.map((item, index) => <GChip small={props.smallChips}
+          return tfDisplaySelections.value.map((item, index) => <GChip small={props.smallChips}
                                                               close={props.deletableChips}
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
-        return selections.value.map(function (item, index) {
-          if (index === selections.value.length - 1) return <div
+        return tfDisplaySelections.value.map(function (item, index) {
+          if (index === tfDisplaySelections.value.length - 1) return <div
               style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
           return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
         })
       }
 
       const genSingleSelectionSlot = () => {
-        if (props.chips && selections.value) {
+        if (props.chips && tfDisplaySelections.value) {
           return <GChip small={props.smallChips}
                         close={props.deletableChips}
-                        vOn:close={() => onChipCloseClick()}>{selections.value}</GChip>
+                        vOn:close={() => onChipCloseClick()}>{tfDisplaySelections.value}</GChip>
         }
-        return selections.value
+        return tfDisplaySelections.value
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
             <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-              {selections.value.length === 0 ?
+              {tfDisplaySelections.value.length === 0 ?
                   <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
@@ -217,8 +219,8 @@
       }
 
       const textfieldValue = computed(() => {
-        if (props.multiple) return selections.value.join(', ')
-        return selections.value
+        if (props.multiple) return tfDisplaySelections.value.join(', ')
+        return tfDisplaySelections.value
       })
 
       const genTextField = (typeof props.genTextFieldFn === 'function' && props.genTextFieldFn) || function (toggleContent) {
@@ -281,7 +283,7 @@
         options,
         state,
         selectedItem,
-        selections,
+        tfDisplaySelections,
         showOptions
       }
     },

@@ -100,6 +100,7 @@
       value: null,
       filter: Function,
       noFilter: Boolean,
+      returnObject: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -119,7 +120,8 @@
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         }
-        return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
+        return fieldItem.value || fieldItem.value === 0  ? fieldItem.value[props.itemText] ||
+            fieldItem.value[props.itemValue] || fieldItem.value : ''
 
       })
       const options = getList(props, selectedItem, state, props.filter)

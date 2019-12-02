@@ -14,7 +14,8 @@
 			disabled: Boolean,
 			twoLine: Boolean,
 			threeLine: Boolean,
-			value: [String, Number, Object]
+			value: [String, Number, Object],
+			inList: Boolean,
 		},
 		setup(props, context) {
 			const classes = computed(() => {
@@ -27,7 +28,7 @@
 					'g-list-item__disabled': props.disabled,
 					'g-list-item__two-line': props.twoLine,
 					'g-list-item__three-line': props.threeLine,
-					'g-list-item__active': isActiveItem(props.value),
+					'g-list-item__active': props.inList ? isActiveItem(props.value) : false ,
 				}
 			});
 			const styles = computed(() => {
@@ -39,11 +40,11 @@
 			});
 
 			//handle listItem in List case
-			const add = inject('add')
-			const {isItemAdded, index} = add(props.value)
-			const isActiveItem = inject('isActiveItem')
-			const selectable = inject('selectable')
-			const inListEvents = inject('getListEvents')
+			const add = props.inList ? inject('add') : null
+			const {isItemAdded, index} = props.inList? add(props.value):{ isItemAdded: true, index: 0}
+			const isActiveItem = props.inList ? inject('isActiveItem') : null
+			const selectable = props.inList ?  inject('selectable') : null
+			const inListEvents = props.inList ? inject('getListEvents') : null
 			const internalValue = ref(null)
 			const singleItemEvents = () => {
 				return {
@@ -52,7 +53,7 @@
 					},
 				}
 			}
-			const listItemEvents = selectable ? inListEvents : singleItemEvents
+			const listItemEvents = selectable && props.inList ? inListEvents : singleItemEvents
 
 			return {
 				index,
