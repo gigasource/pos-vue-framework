@@ -94,8 +94,7 @@
 			})
 
       const totalHeight = computed(() => {
-        let contentHeightString
-        if (!isNaN(contentHeight.value)) contentHeightString = `${contentHeight.value}px`
+        let contentHeightString = !isNaN(contentHeight.value) ? `${contentHeight.value}px` : contentHeight.value
         return `calc(${contentHeightString} + ${props.extended ? parseInt(computedExtensionHeight.value) : '0px'})`
       });
 
