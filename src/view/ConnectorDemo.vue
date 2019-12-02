@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>Connection: {{connections}}</p>
-		<g-diagram width="80%" height="80%" position="absolute" top="10%" left="10%">
+		<g-diagram v-model="diagram" width="80%" height="80%" position="absolute" top="10%" left="10%">
 			<template v-slot:default="{ dragStart }">
 				<div id="props" @mousedown="dragStart">
 					<p>props</p>
@@ -88,6 +88,7 @@
     components: { GDiagram, GConnector },
     props: {},
     setup(props, context) {
+      const diagram = ref(true)
 			const Props = ref([
 				{
 				  value: 'A'
@@ -170,6 +171,7 @@
 			}
 
 			return {
+        diagram,
 				Props,
 				Contexts,
 				Events,
