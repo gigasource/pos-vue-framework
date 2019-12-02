@@ -5,7 +5,6 @@ function groupable(props, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
-  const { returnObject = true, items, mandatory, multiple, allowDuplicates, maxSelection } = props
   const toggleItem = (item) => {
     if (props.multiple) {
       if (props.returnObject) {
@@ -40,8 +39,8 @@ function groupable(props, vModel) {
     if (itemIndex > -1 && !props.allowDuplicates) {
       clonedValue.splice(itemIndex, 1);
     } else {
-      if (maxSelection) {
-        if (clonedValue.length < maxSelection) {
+      if (props.maxSelection) {
+        if (clonedValue.length < props.maxSelection) {
           clonedValue.push(item);
         } else {
           return;
