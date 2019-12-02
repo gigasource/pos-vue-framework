@@ -112,6 +112,7 @@ export default (props, context) => {
       ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
       ...backgroundColorOutput.value && backgroundColorOutput.value.style,
       ...textColorOutput.value && textColorOutput.value.style,
+      ...props.borderRadius && { borderRadius: convertToUnit(props.borderRadius) }
     };
 
     _styles['background-image'] = linearGradient(props.gradient && props.gradient.split(','), props.gradientAngle);
