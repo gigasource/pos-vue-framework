@@ -4,7 +4,7 @@
 			<g-sections-header v-for="(item, index) in items" :key="'header_' + index">
 				<div class="header-item">{{item.title}}</div>
 				<div class="header-item-2">
-					<g-icon svg size="22">icon-ellipsis</g-icon>
+					<g-icon svg size="20">icon-ellipsis</g-icon>
 				</div>
 			</g-sections-header>
 			<g-sections-item v-for="(item, index) in items" :key="'content_' + index">
@@ -54,6 +54,7 @@
 		padding: 12px 0;
 
 		.g-sections-element {
+			position: relative;
 			border: 1px solid #E0E0E0;
 			border-radius: 4px;
 			margin: 2px;
@@ -62,16 +63,13 @@
 		}
 
 		.g-sections-element__active {
-			position: relative;
 			margin-top: 12px;
-
-			.g-sections-item {
-				margin-top: 16px;
-			}
+			transition: 0.3s;
 		}
 
 		.g-sections-item-content-wrapper {
 			padding: 0 8px 8px 12.5px;
+			margin-top: 16px;
 		}
 
 		.g-sections-header {
@@ -80,29 +78,27 @@
 
 			font-weight: 600;
 			font-size: 11px;
-			line-height: 24px;
+			line-height: 20px;
 			color: #757575;
 
 			transition: 0.3s;
 			transform-origin: bottom;
 			z-index: 10000;
+
+			.header-item {
+				padding: 0 8px 0 4px;
+			}
 		}
-
-
 	}
 
 	.g-sections-header__active {
 		position: absolute;
-		transform: translateY(-14px) translateX(-2px);
+		transform: translateY(-12px);
 		min-height: 0;
 		transition: 0.3s;
 
 		.header-item, .header-item-2 {
 			background-color: #FFFFFF;
-		}
-
-		.header-item {
-			padding: 0 8px 0 4px;
 		}
 	}
 
