@@ -67,6 +67,9 @@
       provide('zoomState', zoomState)
 			provide('originCoordinate', originCoordinate)
 
+      const itemZIndex = ref(1)
+			provide('itemZIndex', itemZIndex)
+
 			const activeDrawId = ref(null)
 			provide('activeDrawId', activeDrawId)
 
