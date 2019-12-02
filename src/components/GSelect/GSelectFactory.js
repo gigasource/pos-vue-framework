@@ -6,19 +6,19 @@ const listMultipleFilter = (props, selectedItem) => {
   if (props.allowDuplicates) {
     _options = props.items;
   } else {
-    if (!props.itemValue) {
-      _options = props.items.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
-    } else {
-      _options = props.items.filter(item => {
-        if (item[props.itemText]) {
-          return !selectedItem.value.find(value => _.isEqual(value, item));
-        }
-        return !selectedItem.value.find(_selectedItem => (_selectedItem[props.itemValue] === item[props.itemValue]));
-      });
+    if (props.returnObject) _options = props.items.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
+
+    else {
+      if (props.itemValue) {
+        _options = props.items.filter(item => !selectedItem.value.find(el => el === item[props.itemValue]))
+      } else {
+        _options = props.items.filter(item => !(selectedItem.value.includes(item)) )
+      }
     }
-  }
+    }
   return _options
-}
+  }
+
 const searchTextFilteredItems = (props, state, items) => {
   if (!state.searchText || !state.searchText.trim()) {
     return items;
@@ -63,26 +63,26 @@ export function getSelections(props, selectedItem) {
   return computed(() => {
     if (!props.multiple) {
       let item = selectedItem.value;
-      if (!item) {
+      if (!item && item !== 0) {
         return null;
       }
-      if (typeof item === 'string' || typeof item === 'number') {
-        return item;
-      }
-      if (props.itemValue) {
-        item = props.items.find(_item => _item[props.itemValue] === item[props.itemValue]) || item;
+      if (typeof item === 'string' && !props.itemValue) return item;
+      if(typeof item === 'number') return props.items[item]
+      if (props.itemValue && !props.returnObject) {
+        item = props.items.find(_item => _item[props.itemValue] === item) || item;
       }
       return {text: item[props.itemText], value: item[props.itemValue]} || '';
     }
     const list = selectedItem.value
-    if (props.itemText && props.itemValue) {
+    if (props.returnObject) {
       return list.map(item => {
-        if (item[props.itemText]) {
+        if (props.itemValue) {
           return {text: item[props.itemText], value: item[props.itemValue]};
         }
         return item;
       });
     }
-    return list
+    else if(props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item))
+    else return list.map(item => props.items.find(el => el === item))
   })
 }
