@@ -40,10 +40,10 @@ import GExpansion from './GExpansion/GExpansion';
 
 import GFileInput from './GFileInput/GFileInput';
 
-import GGridGenerator from './GGridGenerator/GGridGenerator';
-import GEditViewInput from './GGridGenerator/GEditViewInput';
+import GGridGenerator from './GGridGenerator/components/GGridGenerator';
+import GEditViewInput from './GGridGenerator/components/EditViewInput';
 import GGridLayout from './GGridGenerator/GGridLayout';
-import GIncDecNumberInput from './GGridGenerator/GIncDecNumberInput';
+import GIncDecNumberInput from './GGridGenerator/components/IncDecNumberInput';
 
 import GGridSelect from './GGridSelect/GGridSelect';
 
@@ -125,8 +125,8 @@ import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
 
-import GTooltip from './GToolTip/GTooltip';
-import GTooltipContent from './GToolTip/GTooltipContent';
+import GTooltip from './GTooltip/GTooltip';
+import GTooltipContent from './GTooltip/GTooltipContent';
 
 import GToolbar from './GToolbar/GToolbar';
 

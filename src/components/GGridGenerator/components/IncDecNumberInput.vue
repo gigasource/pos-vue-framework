@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
-  import GIcon from '../GIcon/GIcon';
-  import { enterPressed } from '../../utils/keyboardHelper';
+  import GIcon from '../../GIcon/GIcon';
+  import { enterPressed } from '../../../utils/keyboardHelper';
 
   export default {
     name: 'GIncDecNumberInput',
@@ -79,7 +79,7 @@
 
     &>input {
       padding: 0 5px;
-      width: 40px;
+      min-width: 0;
       height: 20px;
       flex: 1;
     }
