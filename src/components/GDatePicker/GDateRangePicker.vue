@@ -355,6 +355,11 @@
 					div.g-table-item__background.g-table-item__background--end-range{
 						width: 0;
 					}
+
+					div.g-table-item__background--in-range {
+						border-top-left-radius: 32px;
+						border-bottom-left-radius: 32px;
+					}
 				}
       }
 
