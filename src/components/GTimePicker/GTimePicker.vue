@@ -94,43 +94,43 @@
       } = GTimePickerUtil(props, context)
 
       // Title
-      const cptTitleHourClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+      const cptTitleHourClassStyle = computed(() => setTextColor(props.titleTextColor, {
         class: {
           'g-time-picker__title__time__number': true,
           'g-time-picker__title__time__number--active': state.activeTimePicker === ActiveTimePicker.hour
         }
-      })))
-      const cptTitleMinuteClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+      }))
+      const cptTitleMinuteClassStyle = computed(() => setTextColor(props.titleTextColor, {
         class: {
           'g-time-picker__title__time__number': true,
           'g-time-picker__title__time__number--active': state.activeTimePicker === ActiveTimePicker.minute
         }
-      })))
-      const cptTitleSecondClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+      }))
+      const cptTitleSecondClassStyle = computed(() => setTextColor(props.titleTextColor, {
         class: {
           'g-time-picker__title__time__number': true,
           'g-time-picker__title__time__number--active': state.activeTimePicker === ActiveTimePicker.second
         }
-      })))
-      const cptAMClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+      }))
+      const cptAMClassStyle = computed(() => setTextColor(props.titleTextColor, {
         class: {
           'g-time-picker__title__period__value': true,
           'g-time-picker__title__period__value--active': state.activePeriodPicker === ActivePeriodPicker.AM,
           'g-time-picker__title__period__value--readonly': props.readonly,
         }
-      })))
-      const cptPMClassStyle = computed(() => (setTextColor(props.titleTextColor, {
+      }))
+      const cptPMClassStyle = computed(() => setTextColor(props.titleTextColor, {
         class: {
           'g-time-picker__title__period__value': true,
           'g-time-picker__title__period__value--active': state.activePeriodPicker === ActivePeriodPicker.PM,
           'g-time-picker__title__period__value--readonly': props.readonly,
         }
-      })))
-      const cptSeparatorClassStyle = computed(() => setTextColor(props.titleTextColor), {
+      }))
+      const cptSeparatorClassStyle = computed(() => setTextColor(props.titleTextColor, {
         class: {
           'g-time-picker__title__time__separator': true
         }
-      })
+      }))
 
       const renderTitle = () => (
           <div class={{ 'g-time-picker__title': true, 'g-time-picker__title--landscape': props.landscape }}>
