@@ -1,0 +1,7 @@
+@import '~material-design-icons-iconfont/src/variables';
+
+@each $key, $val in $material-icons-codepoints {
+  :export {
+    #{$key} : $val
+  }
+}

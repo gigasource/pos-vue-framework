@@ -4,29 +4,18 @@ import { createRange } from '../../../utils/helpers';
 import { setBackgroundColor } from '../../../mixins/colorable'
 import { isSelected, computedDisplayMonth, computedDisplayYear, isAllowed, applyNewSelectedValue } from './TableUtil'
 import dayjs from 'dayjs';
-
-export const DAYS_IN_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-export const DAYS_IN_MONTH_LEAP = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-/**
- * Return true if year is leapYear, otherwise false
- * @param year
- * @returns {boolean}
- * @private
- */
-export function _isLeapYear (year) {
-  return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)
-}
+import isLeapYear from 'dayjs/plugin/isLeapYear'
+dayjs.extend(isLeapYear)
 
 /**
  * Return number of day in a month
- * @param year
- * @param month
+ * @param cptYear
+ * @param cptMonth
  * @returns {number}
  * @private
  */
 export const _computedDaysInMonth = (cptYear, cptMonth) => computed(() => {
-  return _isLeapYear(cptYear.value) ? DAYS_IN_MONTH_LEAP[cptMonth.value + 1] : DAYS_IN_MONTH[cptMonth.value + 1]
+  return dayjs(`${cptYear.value}-${cptMonth.value + 1}`).daysInMonth()
 })
 
 /**
@@ -86,7 +75,7 @@ export function _computedWeekNumber(props, cptYear, cptMonth) {
   const dayOfYearArr = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
   return computed(() => {
     let dayOfYear = dayOfYearArr[cptMonth.value]
-    if (cptMonth.value > 1 && _isLeapYear(cptYear.value)) {
+    if (cptMonth.value > 1 && dayjs(`${cptYear.value}`).isLeapYear()) {
       dayOfYear++
     }
     const offset = (
@@ -141,14 +130,17 @@ export function _genEvents(props, date) {
 }
 
 export function _addRangeInformation(dateItem, state, date) {
-  if (Array.isArray(state.selectedValues) && state.selectedValues.length > 1 && dateItem.isSelected) {
+  if (Array.isArray(state.selectedValues) && dateItem.isSelected) {
     if (state.selectedValues[0] === date) {
       dateItem.isRangeStart = true
-    } else if (state.selectedValues[state.selectedValues.length - 1] === date) {
-      dateItem.isRangeEnd = true
-    } else {
-      dateItem.isInRange = true
     }
+
+    if (state.selectedValues[state.selectedValues.length - 1] === date) {
+      dateItem.isRangeEnd = true
+    }
+
+    if (!(dateItem.isRangeStart || dateItem.isRangeEnd))
+      dateItem.isInRange = true
   }
 }
 
