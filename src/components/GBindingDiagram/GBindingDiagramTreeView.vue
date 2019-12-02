@@ -44,7 +44,7 @@
 			}
 
 			const genIcon = function (state) {
-        return <g-icon size="16" vOn:click={() => state.collapse = !state.collapse}>
+        return <g-icon size="10" vOn:click={() => state.collapse = !state.collapse}>
 						{state.collapse ? 'far fa-plus-square' : 'far fa-minus-square'}
 					</g-icon>
 			}
@@ -126,7 +126,9 @@
 <style scoped lang="scss">
 	ul {
 		list-style-type: none;
-		padding-left: 20px;
+		padding-left: 16px;
+		margin: 0;
+		line-height: 1.2;
 	}
 
 	.g-tree-view__collapse-expand {
@@ -146,7 +148,7 @@
 	.tree-view-text {
 		border-radius: 4px;
 		padding: 2px 4px;
-		font-size: 14px;
+		font-size: 12px;
 
 		&:not(.tree-view-text__active):hover {
 			background-color: lightgreen;

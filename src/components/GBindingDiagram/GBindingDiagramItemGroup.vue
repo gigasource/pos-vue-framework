@@ -1,6 +1,6 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
-  import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { ref, computed, provide, inject, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GBindingDiagramItem from './GBindingDiagramItem';
   import { convertToUnit } from '../../utils/helpers';
 
@@ -21,13 +21,13 @@
 		},
     setup (props, context) {
       const model = getInternalValue(props, context)
+			const itemZIndex = inject('itemZIndex')
 
-			const dragStart = function (e) {
+			const onMousedown = function (e) {
+        itemZIndex.value++
+				e.currentTarget.style.zIndex = itemZIndex.value
+        context.emit('edit', model.value.path)
         context.emit('dragStart', e)
-			}
-
-			const onClick = function() {
-        context.emit('edit', model.value)
 			}
 
       function connect(startVal, endVal) {
@@ -44,7 +44,7 @@
 			}))
 
       const genBindingDiagramItemGroup = () => {
-				return <div class="g-binding-item-group b-grey" style={styles.value} vOn:mousedown={dragStart} vOn:click={onClick}>
+				return <div class="g-binding-item-group b-grey" style={styles.value} vOn:mousedown={onMousedown}>
 					{model.value.name}
 					{model.value.items.map((item) => {
             return <g-binding-diagram-item value={item} path={model.value.path} vOn:connected={connect} vOn:disconnected={disconnect}/>

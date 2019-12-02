@@ -13,3 +13,4 @@ export function convertToNormalPath (slotPath) {
 export function convertToPath (slottedPath) {
   return slottedPath.replace(/slot\.\d\./g, '')
 }
+

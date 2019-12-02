@@ -1,5 +1,5 @@
 <template>
-	<g-grid-layout :layout="bindingDiagramLayout" class="container">
+	<g-grid-layout :layout="GBindingDiagramLayout" class="container">
 		<div area="diagram">
 			<g-diagram v-for="(diagramData, index) in diagramsData" v-model="diagramData.localData.path === selectTreeActivePath" :key="index">
 				<template v-slot:default="{ dragStart }">
@@ -12,25 +12,46 @@
 				</template>
 			</g-diagram>
 		</div>
-		<div area="treeview" style="overflow: auto">
-			<g-binding-diagram-tree-view v-model="selectTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="4"></g-binding-diagram-tree-view>
+		<div area="treeview" class="g-binding-diagram-select">
+			<div class="g-binding-diagram-select-title">
+				Select
+			</div>
+			<div class="g-binding-diagram-select-tree">
+				<g-binding-diagram-tree-view v-model="selectTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="4"></g-binding-diagram-tree-view>
+			</div>
 		</div>
-		<div area="add" style="border-top: 1px solid gray; border-bottom: 1px solid gray; overflow: auto">
-			<g-btn @click="addToDiagram">Add to Diagram</g-btn>
-			<g-binding-diagram-tree-view v-model="addTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="7" slotted></g-binding-diagram-tree-view>
+		<div area="add" class="g-binding-diagram-add">
+			<div class="g-binding-diagram-add-title">
+				Add
+			</div>
+			<div class="g-binding-diagram-add-tree">
+				<g-btn class="g-binding-diagram-add-button" icon @click="addToDiagram">
+					<g-icon size="20" class="text-blue">fas fa-plus-circle</g-icon>
+				</g-btn>
+				<g-binding-diagram-tree-view v-model="addTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="7" slotted></g-binding-diagram-tree-view>
+			</div>
 		</div>
-		<div area="preview" style="overflow: auto">
-			<div v-for="(diagramData, index) in diagramsData" v-show="diagramData.localData.path === selectTreeActivePath" :key="index">
+		<div area="preview" class="g-binding-diagram-preview">
+			<div class="g-binding-diagram-preview-title">
+				Preview
+			</div>
+			<div class="g-binding-diagram-preview-tables" v-for="(diagramData, index) in diagramsData" v-show="diagramData.localData.path === selectTreeActivePath" :key="index">
 				Binding:
 				<g-binding-diagram-table :value="diagramData.binding"/>
 				SlotScopes Binding:
 				<g-binding-diagram-table :value="diagramData.slotScopeBinding" slot-scope-binding/>
 			</div>
 		</div>
-		<div area="rightsidebar" class="g-binding-diagram-rightsidebar">
-			<g-binding-diagram-editor v-model="editorData" @toggle="">
+		<div area="edit" class="g-binding-diagram-edit">
+			<g-binding-diagram-editor v-model="editorData">
 
 			</g-binding-diagram-editor>
+		</div>
+		<div area="action" class="g-binding-diagram-action">
+			<div class="g-binding-diagram-action-title">
+				Action
+			</div>
+			<g-btn outlined>Close</g-btn>
 		</div>
 	</g-grid-layout>
 </template>
@@ -39,7 +60,7 @@
   import { getInternalValue } from '../../mixins/getVModel';
   import { ref, reactive, computed, watch, provide, onMounted } from '@vue/composition-api';
   import { isSlotPath, isRootPath, convertToNormalPath, convertToPath } from './GBindingDiagramFactory';
-  import bindingDiagramLayout from './bindingDiagramLayout'
+	import GBindingDiagramLayout from './GBindingDiagramLayout'
 	import GBindingDiagramTreeView from './GBindingDiagramTreeView';
   import GGridLayout from '../GGridGenerator/GGridLayout';
   import GDiagram from '../GConnector/GDiagram';
@@ -47,10 +68,11 @@
   import GBindingDiagramTable from './GBindingDiagramTable';
   import GBindingDiagramEditor from './GBindingDiagramEditor';
   import GBtn from '../GBtn/GBtn';
+  import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GBindingDiagram',
-    components: { GBtn, GBindingDiagramTable, GBindingDiagramEditor, GBindingDiagramItemGroup, GDiagram, GBindingDiagramTreeView, GGridLayout },
+    components: { GIcon, GBtn, GBindingDiagramTable, GBindingDiagramEditor, GBindingDiagramItemGroup, GDiagram, GBindingDiagramTreeView, GGridLayout },
     props: {
       value: {
         type: Object
@@ -71,6 +93,7 @@
       })
       const selectTreeActivePath = computed(() => selectTree.activePath)
       const addTreeActiveSlottedPath = computed(() => addTree.activePath)
+      const addTreeActivePath = computed(() => convertToPath(addTreeActiveSlottedPath.value))
       const diagramsData = ref([])
 			const editorData = ref({})
 
@@ -95,13 +118,13 @@
 						slotsData: slotsData,
 						foreignData: [],
 						binding: [],
-						slotScopeBinding: []
+						slotScopeBinding: [],
+						editorData: {}
 					})
 				}
 			})
 
-      const addTreeActivePath = computed(() => convertToPath(addTreeActiveSlottedPath.value))
-
+			// Data extraction functionality
       function getPathName(path, treeData) {
         if (path === '') {
           // Root
@@ -181,7 +204,7 @@
         }
       }
 
-
+			// Get path's data from diagramsData
       function getPathData (path) {
 			  for (let diagramData of diagramsData.value) {
 			    if (path === diagramData.localData.path) return diagramData.localData
@@ -193,6 +216,7 @@
 				}
 			}
 
+			// Path conversion functionality
 			function convertToSlottedPath (path) {
 			  for (let slottedPath of addTree.allPaths) {
 			    if (convertToPath(slottedPath) === path) return slottedPath
@@ -203,12 +227,6 @@
         return convertToSlottedPath(path).indexOf(slottedPath) > -1
       }
 
-			function isSelectedPath (path) {
-			  for (let diagramData of diagramsData.value) {
-			    if (diagramData.localData.path === path) return true
-				}
-			  return false
-			}
 
       function isDiagramLocalPath (path, diagramData) {
         return path === diagramData.localData.path;
@@ -225,16 +243,18 @@
 			  return isDiagramLocalPath(path, diagramData) || isDiagramForeignPath(path, diagramData)
 			}
 
+			// Add tree button
 			function addToDiagram() {
         for (let diagramData of diagramsData.value) {
           if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
             if (((isRootPath(addTreeActivePath.value) || (isSlotPath(addTreeActivePath.value) && isProperSlotPath(addTreeActiveSlottedPath.value, selectTreeActivePath.value))) && !isDiagramPath(addTreeActivePath.value, diagramData))) {
-              diagramData.foreignData.push(getPathData(addTreeActivePath.value, diagramsData.value))
+              diagramData.foreignData.push(getPathData(addTreeActivePath.value))
             }
 					}
         }
 			}
 
+			// Connect disconnect logic
 			function connect (startVal, endVal) {
         for (let diagramData of diagramsData.value) {
           if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
@@ -267,10 +287,32 @@
         }
       }
 
-			function edit(value) {
-			  editorData.value = value
+
+      // Editor logic
+
+      // Extract diagrams data from path
+      function getDiagramData (path) {
+        const normalPath = convertToNormalPath(path)
+        for (let diagramData of diagramsData.value) {
+          if (normalPath === diagramData.localData.path) {
+            return diagramData
+          }
+        }
+      }
+
+      // Switch editor data according to active diagram
+      watch(selectTreeActivePath, newVal => {
+        editorData.value = getDiagramData(newVal).editorData
+      }, {lazy: true})
+
+			// Handle edit event from item group
+			function edit(path) {
+			  const tempEditorData = getPathData(path)
+				getDiagramData(selectTreeActivePath.value).editorData = tempEditorData
+			  editorData.value = tempEditorData
 			}
 
+			// Editing functionality
 			function toggleItem(path, index) {
         if (path === undefined || path === null) return
 				const normalPath = convertToNormalPath(path)
@@ -330,7 +372,7 @@
 			provide('toggleItem', toggleItem)
 
       return {
-        bindingDiagramLayout,
+				GBindingDiagramLayout,
 			  treeData,
 				itemText,
 				selectTree,
@@ -363,7 +405,55 @@
 	}
 
 	.g-binding-diagram {
-		&-rightsidebar {
+
+		&-select, &-add, &-preview, &-action {
+			position: relative;
+			padding: 0 10px;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			flex: 1 1 100%;
+
+			&-title {
+				position: relative;
+				overflow: hidden;
+				font-size: 16px;
+				color: grey;
+				flex: 0 0 auto;
+
+
+				&::after {
+					content: "";
+					width: 100%;
+					height: 100%;
+					border-top: 1px solid grey;
+					position: absolute;
+					transform: translateY(50%);
+					margin-left: 10px
+				}
+			}
+
+			&-tree {
+				backface-visibility: hidden;
+				flex: 1 1 auto;
+				overflow-y: auto;
+			}
+
+			&-button {
+				position: absolute;
+				top: 16px;
+			 	right: 12px;
+			}
+
+			&-tables {
+				font-size: 14px;
+				backface-visibility: hidden;
+				flex: 1 1 auto;
+				overflow-y: auto;
+			}
+		}
+
+		&-edit {
 			height: 100%;
 			padding: 0 10px;
 		}

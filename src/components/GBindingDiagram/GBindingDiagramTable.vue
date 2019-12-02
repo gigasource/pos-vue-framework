@@ -37,7 +37,9 @@
 </script>
 <style scoped lang="scss">
 	table {
-		width: 100%
+		width: 100%;
+		font-size: 12px;
+		text-align: center;
 	}
 
 	th, td {

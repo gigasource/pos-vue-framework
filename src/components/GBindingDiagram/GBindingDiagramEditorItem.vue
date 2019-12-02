@@ -52,10 +52,10 @@
           </div>
           {model.value.key}
           <div class='g-binding-diagram-editor-item-action'>
-						<g-icon color={itemColor.value} size="16" vOn:click={toggleItem}>
+						<g-icon color={itemColor.value} size="14" vOn:click={toggleItem}>
 							{model.value.show ? 'fas fa-eye' : 'fas fa-eye-slash'}
 						</g-icon>
-            <g-icon color={itemColor.value} size="16" vOn:click={deleteItem}>
+            <g-icon color={itemColor.value} size="14" vOn:click={deleteItem}>
               fas fa-times-circle
             </g-icon>
           </div>
@@ -76,17 +76,17 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 30px;
+		height: 26px;
 		border: 1px solid;
 		border-radius: 6px;
 		padding: 10px;
-		margin: 5px 0;
-		font-size: 14px;
+		margin: 3px 0;
+		font-size: 12px;
 
 		&-type {
 			padding: 2px;
 			border-radius: 4px;
-			font-size: 10px;
+			font-size: 8px;
 			color: white;
 		}
 
