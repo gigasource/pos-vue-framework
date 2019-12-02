@@ -222,9 +222,11 @@
         ]
       }
 
-      const tfValue = computed(() =>
-        (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
-          state.lazySearch)
+      const tfValue = computed(() => props.value ||
+            ((props.multiple || props.chips || props.smallChips || props.deletableChips)
+                ? state.searchText
+                : state.lazySearch)
+      )
 
       const genTextFieldProps = function (toggleContent) {
         return (

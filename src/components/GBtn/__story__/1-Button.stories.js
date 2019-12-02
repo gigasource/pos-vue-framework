@@ -35,8 +35,9 @@ export const GBtnDefault = () => ({
     left: { type: Boolean, default: boolean('left', false) },
     right: { type: Boolean, default: boolean('right', false) },
     tile: { type: Boolean, default: boolean('tile', false) },
+    borderRadius: {type: String, default: text('Border Radius', '2')},
   },
-  template: `<g-btn :tile="tile" :flat="flat" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :elevation="elevation" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge">{{text}}</g-btn>`,
+  template: `<g-btn :tile="tile" :flat="flat" :absolute="absolute" :fixed="fixed" :top="top" :bottom="bottom" :left="left" :right="right" :disabled="disabled" :block="block" :elevation="elevation" :x-small="xSmall" :small="small" :large="large" :x-large="xLarge" :border-radius="borderRadius">{{text}}</g-btn>`,
 })
 
 export const GBtnOutlined = () => ({

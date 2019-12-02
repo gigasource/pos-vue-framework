@@ -133,10 +133,8 @@
                 {titleModel.value.year}
               </div>
               <div class='g-picker__title__btn g-date-picker-title__date'>
-                <transition name='picker-transition'>
                   <div key={titleModel.value.date}
                        domPropsInnerHTML={titleModel.value.date}/>
-                </transition>
               </div>
             </div>)
       }
@@ -156,16 +154,13 @@
       }
 
       // GDatePicker -> Body -> Header render function
-      const transitionName = ref('')
       const goPrev = () => {
         if (headerModel.value.canGoPrev) {
-          transitionName.value = 'tab-reverse-transition'
           headerModel.value.on.prevClicked()
         }
       }
       const goNext = () => {
         if (headerModel.value.canGoNext) {
-          transitionName.value = 'tab-transition'
           headerModel.value.on.nextClicked()
         }
       }
@@ -178,7 +173,6 @@
         return (
             <div class='g-date-picker-header'>
               <div class={cptHeaderValueClass.value}>
-                <transition name={transitionName.value}>
                   <div key={headerModel.value.content}>
                     <button
                         type="button"
@@ -188,7 +182,6 @@
                       {headerModel.value.content}
                     </button>
                   </div>
-                </transition>
               </div>
               <button
                   class="g-date-picker-header__prev-button"
@@ -299,7 +292,6 @@
       function dateTableRenderFn() {
         return (
             <div class='g-date-picker-table g-date-picker-table--date' v-on:wheel_stop={onWheelHandler}>
-              <transition name={transitionName.value}>
                 <table key={state.viewportDate}>
                   <thead>
                   <tr>{dateTableModel.value.dayNames.map(dayName => <th>{dayName}</th>)}</tr>
@@ -312,7 +304,6 @@
                   }
                   </tbody>
                 </table>
-              </transition>
             </div>)
       }
 
@@ -337,7 +328,6 @@
 
       function monthTableRenderFn() {
         return (<div class='g-date-picker-table g-date-picker-table--month' v-on:wheel={onWheelHandler}>
-          <transition name={transitionName.value}>
             <table key={state.viewportDate}>
               <tbody>
               {
@@ -366,7 +356,6 @@
               }
               </tbody>
             </table>
-          </transition>
         </div>)
       }
 

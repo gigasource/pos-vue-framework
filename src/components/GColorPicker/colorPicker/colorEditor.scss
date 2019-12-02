@@ -1,0 +1,29 @@
+.g-color-picker__editor {
+  &__input-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__hex {
+      width: 28%;
+    }
+
+    &__rgba {
+      width: 18%;
+    }
+  }
+
+  &__input {
+    width: 90%;
+    height: 25px;
+    padding: 5px;
+    border-color: #0003;
+    border-radius: 5px;
+    border-style: inset;
+    border-width: 1px;
+
+    &:focus {
+      border-color: #0006;
+    }
+  }
+}
