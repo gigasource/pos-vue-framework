@@ -546,7 +546,9 @@
       }
 
       function renderDemoLayout() {
-        return state.demoMode ? <g-grid-layout
+        return <g-grid-layout
+            vShow={state.demoMode}
+            lazy={!state.demoMode}
             style={{
               position: 'absolute',
               backgroundColor: '#fff',
@@ -558,7 +560,7 @@
             layout={toJSON(state.layout)}
             displayPreviewColor={state.displayPreviewColor}>
           {_.map(state.demoLayoutData, renderGLayoutData)}
-        </g-grid-layout> : null
+        </g-grid-layout>
       }
 
       // render confirm dialog

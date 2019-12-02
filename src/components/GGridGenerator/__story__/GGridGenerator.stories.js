@@ -15,6 +15,9 @@ export default {
 export const GridLayout = () => ({
   components: { GGridLayout },
   props: {
+    lazy: {
+      default: boolean('lazy', true)
+    },
     layout: {
       default: loginLayout
     },
@@ -28,7 +31,7 @@ export const GridLayout = () => ({
   },
   template: `
     <div>
-      <g-grid-layout :layout="layout" :passThrough="passThrough" style="height: 700px" :displayPreviewColor="displayPreviewColor">
+      <g-grid-layout :lazy="lazy" :layout="layout" :passThrough="passThrough" style="height: 700px" :displayPreviewColor="displayPreviewColor">
         <span slot="s1" class="slot">singleItemSlot</span>
         <span slot="s1" class="slot">singleItemSlot</span>
         <template slot="s2" class="slot">singleItemSlot</template>
@@ -64,6 +67,9 @@ export const GridGeneratorInput = () => ({
     passThrough: {
       default: boolean('passThrough', true)
     },
+    lazy: {
+      default: boolean('lazy', false)
+    },
   },
   data() {
     return {
@@ -75,7 +81,7 @@ export const GridGeneratorInput = () => ({
     <div>
       <g-grid-generator-input :model="model" :field="field"></g-grid-generator-input>
       <hr/>
-      <g-grid-layout :layout="model[field.key]" style="height: 700px" :passThrough="passThrough" :displayPreviewColor="displayPreviewColor">
+      <g-grid-layout :lazy="lazy" :layout="model[field.key]" style="height: 700px" :passThrough="passThrough" :displayPreviewColor="displayPreviewColor">
         <span slot="s1" class="slot" >s1</span>
         <span slot="s1" class="slot">s1</span>
         <span slot="s2" class="slot">s2</span>
