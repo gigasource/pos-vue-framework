@@ -53,7 +53,7 @@
         gradientAngle: { type: String, default: '45deg' },
 				borderRadius: {
           type: [Number, String],
-					default: 4
+					default: 2
 				}
       }
     },
