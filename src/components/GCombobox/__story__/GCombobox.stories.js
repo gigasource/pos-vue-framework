@@ -273,6 +273,27 @@ export const GComboboxSingleWithValidate = () => ({
 </div>
   `,
 })
+export const GComboboxPrimitiveArray = () => ({
+  components: {GCombobox, GListItem, GListItemContent, GListItemText},
+  props: {},
+  data() {
+    return {
+      items: [
+        'Jason Oner',
+        'Cindy Baker',
+        'Ali Connors',
+        'Ranee Carlson',
+      ],
+      selected: null
+    }
+  },
+  template: `
+  <div data-app>
+  <g-combobox :items="items" label="Label" v-model="selected" multiple chips clearable>
+   
+  </g-combobox>
+</div>`,
+})
 
 export const test2 = () => ({
   components: {},

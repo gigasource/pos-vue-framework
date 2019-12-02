@@ -12,6 +12,7 @@
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
+  import {makeListSelectable} from "../GList/groupableForList";
 
   export default {
     name: "GSelect",
@@ -52,7 +53,6 @@
       //list props
       searchable: Boolean,
       multiple: Boolean,
-      mandatory: Boolean,
       allowDuplicates: Boolean,
       //menu props
       menuProps: {
@@ -73,11 +73,11 @@
       items: Array,
       itemText: {
         type: String,
-        default: 'text'
+        default: ''
       },
       itemValue: {
         type: String,
-        default: 'value'
+        default: ''
       },
       value: null,
       genTextFieldFn: Function,
@@ -92,6 +92,7 @@
       },
       appendSvg: Boolean,
       required: Boolean,
+      returnObject: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -99,7 +100,7 @@
         fieldItem: null
       })
       //list selections
-      const {internalValue: selectedItem} = makeSelectable(props, context)
+      const {internalValue: selectedItem} = makeListSelectable(props, context)
       const fieldItem = getSelections(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
@@ -107,7 +108,8 @@
             return item ? (item['text'] || item['value'] || item) : ''
           })
         }
-        return fieldItem.value ? fieldItem.value['text'] || fieldItem.value['value'] || fieldItem.value : ''
+        return fieldItem.value || fieldItem.value === 0 ? fieldItem.value['text'] || fieldItem.value['value'] ||
+            fieldItem.value : ''
       })
 
       //gen SearchText
@@ -140,9 +142,11 @@
                 {...{
                   props: {
                     items: options.value,
-                    'item-title': props.itemText,
+                    itemText: props.itemText,
+                    itemValue: props.itemValue,
+                    returnObject: props.returnObject,
                     mandatory: props.mandatory,
-                    'allow-duplicates': props.allowDuplicates,
+                    allowDuplicates: props.allowDuplicates,
                     multiple: props.multiple,
                     inMenu: true,
                     selectable: true,

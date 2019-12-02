@@ -15,6 +15,7 @@
   import { keyCodes } from '../../utils/helpers';
   import { getList, getSelections } from '../GSelect/GSelectFactory';
   import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
+  import {makeListSelectable} from "../GList/groupableForList";
 
   export default {
     name: 'GCombobox',
@@ -69,7 +70,6 @@
         default: true
       },
       multiple: Boolean,
-      mandatory: Boolean,
       allowDuplicates: Boolean,
       //menu props
       menuProps: {
@@ -111,7 +111,7 @@
 
 
       //list selections
-      const { internalValue: selectedItem, toggleItem } = makeSelectable(props, context)
+      const { internalValue: selectedItem, toggleItem } = makeListSelectable(props, context)
       const fieldItem = getSelections(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
@@ -135,7 +135,9 @@
           {...{
             props: {
               items: options.value,
-              'item-title': props.itemText,
+              itemText: props.itemText,
+              itemValue: props.itemValue,
+              returnObject: props.returnObject,
               mandatory: true,
               allowDuplicates: props.allowDuplicates,
               multiple: props.multiple,
