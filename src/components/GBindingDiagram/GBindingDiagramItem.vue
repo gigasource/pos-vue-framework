@@ -39,6 +39,12 @@
         }
 			})
 
+			const computedItemColor = ref(undefined)
+
+			onMounted(() => {
+			  computedItemColor.value = window.getComputedStyle(context.refs.itemType).getPropertyValue('background-color')
+			})
+
 			const startLimit = computed(() => {
         if (isSlotPath(props.path)) {
           return 0
@@ -62,9 +68,9 @@
 
 			const genBindingDiagramItem = () => {
 				return <g-connector point-radius="8"
-														point-color={itemColor.value}
+														point-color={computedItemColor.value}
 														point-position="x"
-														path-color={itemColor.value}
+														path-color={computedItemColor.value}
 														path-width="2"
 														value={model.value}
 														start-limit={startLimit.value}
@@ -72,7 +78,7 @@
 														vOn:connected={endVal => connect(model.value, endVal)}
 														vOn:disconnected={endVal => disconnect(model.value, endVal)}>
           <div class={['g-binding-diagram-item', `b-${itemColor.value}`, `text-${itemColor.value}`]} vShow={model.value.show}>
-            <div class={['g-binding-diagram-item-type', `bg-${itemColor.value}`]}>
+            <div class={['g-binding-diagram-item-type', `bg-${itemColor.value}`]} ref="itemType">
               {model.value.type}
             </div>
             {model.value.key}

@@ -46,6 +46,10 @@
 		width: 33.33%
 	}
 
+	th {
+		background-color: #f0f0f0;
+	}
+
 	table, th, td {
 		border: 1px solid black;
 		border-collapse: collapse;
