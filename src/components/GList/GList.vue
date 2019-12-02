@@ -8,16 +8,16 @@
     <slot>
       <template v-if="!multiSection">
         <slot name="subheader">
-          <div v-if="subheader" class="g-list-header">{{subheader}}</div>
+          <div tabindex="0" v-if="subheader" class="g-list-header">{{subheader}}</div>
         </slot>
         <template v-for="(item, index) in renderList">
-          <slot :isSelected="isActiveItem(item, index)" :item="item" :on="getListEvents(item, index)" name="listItem"
-                :onSelect="onSelect">
+          <slot name="listItem" :isSelected="isActiveItem(item, index)" :item="item" :on="getListEvents(item, index)">
             <div
                 :class="{'g-list-item__active': isActiveItem(item, index), [activeClass]: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
                 class="g-list-item"
                 tabindex="0"
                 v-on="getListEvents(item, index)"
+                ref="listItemRef"
             >
               <slot :isSelected="isActiveItem(item, index)" :item="item" name="prepend">
                 <div :class="prependClasses" v-if="item.prepend &&  prependType && itemText">
@@ -37,9 +37,9 @@
                 <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
               </div>
               <slot :isSelected="isActiveItem(item, index)" :item="item" name="append">
-             <div v-if="appendIcon && item.append " class="g-list-item-action">
-               <g-icon>{{item.append}}</g-icon>
-             </div>
+                <div v-if="appendIcon && item.append " class="g-list-item-action">
+                  <g-icon>{{item.append}}</g-icon>
+                </div>
                 <template v-else-if="item.append && itemText">{{item.append}}</template>
               </slot>
             </div>
@@ -99,17 +99,17 @@
 </template>
 
 <script>
-  import { computed, provide } from '@vue/composition-api';
+  import {computed, provide} from '@vue/composition-api';
   import GDivider from '../GLayout/GDivider';
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
-  import { keyCodes } from '../../utils/helpers';
-  import { makeListSelectable } from './groupableForList';
+  import {keyCodes} from '../../utils/helpers';
+  import {makeListSelectable} from './groupableForList';
 
   export default {
     name: 'GList',
-    components: { GImg, GAvatar, GIcon, GDivider },
+    components: {GImg, GAvatar, GIcon, GDivider},
     props: {
       height: String,
       width: String,
@@ -184,8 +184,8 @@
       }));
 
       const styles = computed(() => ({
-        ...props.height && { 'height': props.height },
-        ...props.width && { 'width': props.width }
+        ...props.height && {'height': props.height},
+        ...props.width && {'width': props.width}
       }));
       const prependClasses = computed(() => {
         if (!['icon', 'avatar', 'image'].includes(props.prependType)) {
@@ -193,6 +193,7 @@
         }
         return `g-list-item-${props.prependType}`;
       })
+
       //list events
       function onClick(event) {
         context.emit('click', event)
@@ -217,6 +218,7 @@
         toggleItem(item, index)
         context.emit('click:item')
       }
+
       const getListEvents = (item, index) => {
         return {
           click: () => onSelect(item, index),
@@ -238,20 +240,23 @@
       provide('getListEvents', getListEvents)
 
 
-      const { uniqueItems: renderList, internalValue, toggleItem, isActiveItem } = makeListSelectable(props, context);
+      const { uniqueItems :renderList, internalValue, toggleItem, isActiveItem} = makeListSelectable(props, context);
+      // const renderList = computed(() => {
+      //   context.refs.listItemRef ? uniqueItems.value : uniqueItems.value
+      // })
 
       //handler case:  list items in list
       const add = (item) => {
         if (renderList.value.includes(item)) {
           return {
-            isItemAdded : false,
-            index : -1
+            isItemAdded: false,
+            index: -1
           }
         } else {
           renderList.value.push(item)
           return {
-            isItemAdded : true,
-            index : renderList.value.findIndex(el => el === item)
+            isItemAdded: true,
+            index: renderList.value.findIndex(el => el === item)
           }
         }
       }

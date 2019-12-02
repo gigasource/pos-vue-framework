@@ -3,6 +3,7 @@ import {computed, reactive, ref} from '@vue/composition-api';
 import Vue from 'vue/dist/vue.common.js'
 import {makeListSelectable} from "../groupableForList";
 import _ from 'lodash'
+import GList from "../GList";
 
 const testComp = (props) => ({
   template: '<div/>',
@@ -592,6 +593,72 @@ describe('test', function () {
     expect(vm.internalValue).toEqual(['d','v'])
   })
 
+//todo: multi layer component
+  const testComp2 = (props) => ({
+    template: '<g-list :items="items" :multiple="multiple" selectable :itemText="itemText" :itemValue="itemValue" :returnObject="returnObject" v-model="test"></g-list>',
+    component: {GList},
+    props: Object.assign({
+      multiple: {
+        default: true,
+        type: Boolean
+      },
+      mandatory: Boolean,
+      allowDuplicates: Boolean,
+      value: {
+        type: [Array, Object, String, Number, Boolean],
+        default: () => null
+      },
+      itemValue: {
+        default: '',
+        type: String
+      },
+      itemText: {
+        default: '',
+        type: String
+      },
+      returnObject: {
+        default: true,
+        type: Boolean,
+      },
+      items: {
+        type: Array,
+        default: () => []
+      }
+    }, props),
+    setup(props, context) {
+      const {toggleItem, isActiveItem, internalValue} = makeListSelectable(props, context);
+      const test = ref()
+
+      return {
+        test,
+        internalValue,
+        toggleItem,
+        isActiveItem
+      }
+    }
+  })
+  it('single, returnObject', async function () {
+    const items = [{a: 1}]
+    const test = ref(null)
+    const vm = new Vue(testComp2({
+      multiple: {
+        default: false,
+        type: Boolean
+      },
+      value: {
+        type: [Array, Object, String, Number, Boolean],
+        default: () => test
+      },
+      items: {
+        type: Array,
+        default: () => items
+      },
+    },
+        )).$mount();
+    vm.toggleItem(items[0]);
+    await vm.$nextTick() && await vm.$nextTick();
+    expect(vm.internalValue).toEqual({a: 1})
+  })
 
 
 })
