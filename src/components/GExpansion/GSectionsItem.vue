@@ -10,7 +10,6 @@
     },
     props: {
       item: null,
-
       header: String,
     },
     setup(props, context) {

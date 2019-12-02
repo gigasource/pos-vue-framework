@@ -82,9 +82,9 @@
         return sectionsClone.map((section, index) => {
           return <div
               class={['g-sections-element', {'g-sections-element__active': this.isActiveItem(section[0].componentOptions.propsData.item)}]}
-              vOn:dragstart={(e) => this.onDragStart(e, this.orderArray[index])}
+              vOn:dragstart={(e) => this.onDragStart(e, this.orderArray[index], this.isActiveItem(section[0].componentOptions.propsData.item))}
               vOn:dragenter={(e) => this.onDragEnter(e, this.orderArray[index], this.isActiveItem(section[0].componentOptions.propsData.item))}
-						  //vOn:entered={}
+						//vOn:entered={}
               vOn:dragover={this.onDragOver}
               vOn:dragleave={this.onDragLeave}
               vOn:dragend={this.onDragEnd}
@@ -111,15 +111,17 @@
     let previousIndex = null
     let currentIndex = null
     let orderClone = null
+    let sourceActive = false
 
     // target in view
     let previousTarget = null
     let currentTarget = null
 
-    function onDragStart(e, indexSection) {
+    function onDragStart(e, indexSection, active) {
       sourceIndex = indexSection
       currentIndex = indexSection
       currentTarget = e.currentTarget
+      sourceActive = active
       setTimeout(() => {
         currentTarget.classList.add('entering')
       }, 0)
@@ -127,12 +129,15 @@
 
     function onDragEnter(e, indexSection, active) {
       if (indexSection === sourceIndex) return //prevent re trigger enter when swap section
+      console.log('enter')
       e.preventDefault()
       previousTarget = currentTarget
-      if (previousTarget) previousTarget.classList.remove('entering')
+      previousTarget.classList.remove('entering')
       currentTarget = e.currentTarget
-      currentTarget.classList.add('entering')
-
+      if (sourceActive) {
+        currentTarget.classList.add('g-sections-element__active')
+        currentTarget.classList.add('entering')
+      } else currentTarget.classList.add('entering')
 
       previousIndex = currentIndex
       currentIndex = indexSection
@@ -172,6 +177,7 @@
       sourceIndex = null
       currentIndex = null
       previousIndex = null
+      sourceActive = false
     }
 
     return {onDragStart, onDragEnter, onDragOver, onDragLeave, onDragEnd, onDrop}
@@ -180,6 +186,8 @@
 </script>
 
 <style lang="scss" scoped>
+	@import './variable';
+
 	.g-sections {
 		list-style-type: none;
 		padding: 0;
@@ -195,6 +203,6 @@
 
 	.entering {
 		opacity: 0;
-		transition: 0.4s;
+		transition: .3s map_get($transition, 'fast-out-linear-in');
 	}
 </style>

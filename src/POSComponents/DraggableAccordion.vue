@@ -60,11 +60,12 @@
 			margin: 2px;
 			padding: 1px;
 			background-color: #FFFFFF;
+			transition: all 0.4s;
 		}
 
 		.g-sections-element__active {
 			margin-top: 12px;
-			transition: 0.3s;
+			//transition: 0.3s;
 		}
 
 		.g-sections-item-content-wrapper {
@@ -81,7 +82,7 @@
 			line-height: 20px;
 			color: #757575;
 
-			transition: 0.3s;
+			transition: all 0.4s;
 			transform-origin: bottom;
 			z-index: 10000;
 
@@ -95,10 +96,14 @@
 		position: absolute;
 		transform: translateY(-12px);
 		min-height: 0;
-		transition: 0.3s;
+		transition: all 0.4s;
 
 		.header-item, .header-item-2 {
 			background-color: #FFFFFF;
+		}
+
+		.header-item-2 {
+			margin-right: 2px;
 		}
 	}
 
@@ -126,5 +131,4 @@
 			margin-left: 8px;
 		}
 	}
-
 </style>

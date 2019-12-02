@@ -7,8 +7,9 @@ export default {
 }
 
 export const DraggableAccordion = () => ({
-    components: {draggableAccordion},
-    template:`<div>
-                <draggable-accordion />
-              </div>`
+  components: {draggableAccordion},
+  template:`<div>
+		<draggable-accordion />
+	</div>`
 })
+
