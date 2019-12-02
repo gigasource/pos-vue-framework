@@ -84,6 +84,7 @@
         viewMode: false,
         // grid layout
         demoMode: false,
+        gridLayoutLazy: false,
 
         displayPreviewColor: false,
         demoLayoutData: [],
@@ -546,7 +547,9 @@
       }
 
       function renderDemoLayout() {
-        return state.demoMode ? <g-grid-layout
+        return <g-grid-layout
+            vShow={state.demoMode}
+            lazy={state.gridLayoutLazy}
             style={{
               position: 'absolute',
               backgroundColor: '#fff',
@@ -558,7 +561,7 @@
             layout={toJSON(state.layout)}
             displayPreviewColor={state.displayPreviewColor}>
           {_.map(state.demoLayoutData, renderGLayoutData)}
-        </g-grid-layout> : null
+        </g-grid-layout>
       }
 
       // render confirm dialog
@@ -907,7 +910,11 @@
                   display: 'flex',
                 }}>
                   <g-switch value={state.viewMode} vOn:change={v => state.viewMode = v} label="Preview"/>
-                  <g-switch value={state.demoMode} vOn:change={v => state.demoMode = v} label="Demo"/>
+                  <g-switch value={state.demoMode} vOn:change={v => {
+                    state.demoMode = v
+                    if (state.demoMode)
+                      state.gridLayoutLazy = false
+                  }} label="Demo"/>
                   <g-switch vShow={state.demoMode} value={state.displayPreviewColor} vOn:change={v => state.displayPreviewColor = v} label="Hint"/>
                 </div>
                 <div
