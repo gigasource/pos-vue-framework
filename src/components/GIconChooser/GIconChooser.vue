@@ -176,55 +176,13 @@
               <div class="icon-detail__action-btn">
                 <g-btn outlined vOn:click={() => {
                   state.value = state.selectedIcon.value
+                  context.emit('input', state.selectedIcon.value)
+                  context.emit('value', createIconModel())
                   state.showDialog = false
                 }}>Add
                 </g-btn>
               </div>
             </div>
-          </div>
-        </div>
-      }
-
-      // Customize
-      function renderIconDetail() {
-        return <div class="icon-detail">
-          <div class="icon-detail__content">
-            <div class="icon-detail__content__preview">
-              <g-icon>{state.selectedIcon.value}</g-icon>
-            </div>
-            <div class="icon-detail__content__custom-panel">
-              <span class="icon-detail__content__value">{state.selectedIcon.name}</span>
-              <div class="icon-detail__content__shape-setting">
-                <div>
-                  <span>Flip Icon</span>
-                  <div>
-                    <g-btn outlined class={{ 'setting-prop--active': state.flipHorizontal }} vOn:click={() => state.flipHorizontal = !state.flipHorizontal}>Horizontal</g-btn>
-                    <g-btn outlined class={{ 'setting-prop--active': state.flipVertical }} vOn:click={() => state.flipVertical = !state.flipVertical}>Vertical</g-btn>
-                  </div>
-                </div>
-                <div>
-                  <span>Rotate Icon</span>
-                  <div>
-                    <g-btn outlined class={{ 'setting-prop--active': state.rotate === rotateEnum._0 }} vOn:click={() => state.rotate = rotateEnum._0}>0</g-btn>
-                    <g-btn outlined class={{ 'setting-prop--active': state.rotate === rotateEnum._90 }} vOn:click={() => state.rotate = rotateEnum._90}>90</g-btn>
-                    <g-btn outlined class={{ 'setting-prop--active': state.rotate === rotateEnum._180 }} vOn:click={() => state.rotate = rotateEnum._180}>180</g-btn>
-                    <g-btn outlined class={{ 'setting-prop--active': state.rotate === rotateEnum._270 }} vOn:click={() => state.rotate = rotateEnum._270}>270</g-btn>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <span>Color</span>
-                <input/>
-              </div>
-            </div>
-          </div>
-          <div class="icon-detail__action-btn">
-            <g-btn outlined vOn:click={() => {
-              context.emit('icon', createIconModel())
-              state.showDialog = false
-            }}>Add and Close
-            </g-btn>
-            <g-btn outlined vOn:click={() => context.emit('icon', createIconModel())}>Add</g-btn>
           </div>
         </div>
       }
