@@ -186,8 +186,7 @@
         </div>
       }
 
-      let areaNames;
-
+      let areaNames = []
       function renderDemoInputList() {
         return <div class="grid-gen__sub-list">
           <div class="grid-gen__sub-list__section">Demo Input</div>

@@ -64,20 +64,6 @@
         }
       })
 
-      const cptSelected = computed(() => {
-        if (!props.value)
-          return null
-        else
-          return _.find(props.areaNames, areaName => areaName.value === props.value.area)
-      })
-
-      const cptSelectedTag = computed(() => {
-        if (!props.value)
-          return null
-        else
-          return _.find(suggestedTags, tag => tag.value === props.value.tag)
-      })
-
       function create() {
         context.emit(props.value ? 'update' : 'create', {
           ..._.pick(state, 'area', 'tag', 'text', 'border', 'width', 'height'),
@@ -97,14 +83,18 @@
             <div class="g-layout-data-dialog__content__body">
               <g-auto-complete
                   flat label="Area"
+                  itemText="text"
+                  itemValue="value"
                   items={props.areaNames}
-                  selected={cptSelected.value}
-                  vOn:input={v => v && (state.area = v.value)}/>
+                  value={state.area}
+                  vOn:input={v => state.area = v}/>
               <g-auto-complete
                   flat label="Tag"
+                  itemText="text"
+                  itemValue="value"
                   items={suggestedTags}
-                  selected={cptSelectedTag.value}
-                  vOn:input={v => v && (state.tag = v.value)}
+                  value={state.tag}
+                  vOn:input={v => state.tag = v}
               />
               <g-text-field flat label="Text" value={state.text} vOn:input={v => state.text = v}/>
               <g-text-field flat label="Border" value={state.border} vOn:input={v => state.border = v}/>
