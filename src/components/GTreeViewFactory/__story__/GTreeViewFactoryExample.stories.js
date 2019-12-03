@@ -25,12 +25,18 @@ export const playground = () => ({
         }, { content: 'components' }]
     }
     return () => (
-        <g-tree-view-example
-            item-text={node => node.content}
-            item-children='children'
-            expand-level={0}
-            data={data}>
-        </g-tree-view-example>
+        <div>
+          <button vOn:click={() => {
+            data.children.push({
+              content: 'random-stuff'
+            })
+          }}>Add more</button>
+          <g-tree-view-example
+              item-text={node => node.content}
+              item-children='children'
+              expand-level={0}
+              data={data}/>
+        </div>
     )
   }
 })

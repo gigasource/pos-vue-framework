@@ -1,4 +1,4 @@
-import { reactive, set, computed } from '@vue/composition-api'
+import { reactive, set, computed, ref } from '@vue/composition-api'
 import traverse from 'traverse'
 
 export function genTextFactory(itemText) {
@@ -33,6 +33,7 @@ export default function treeFactory({
   //     { collapse: Boolean }
 
   const genText = computed(() => typeof itemText === 'function' ? itemText : (node, __) => node[itemText])
+  const refData = ref(data)
 
   // A function do some stuff to prepare data which
   // will be consumed by custom genNode function
@@ -83,7 +84,7 @@ export default function treeFactory({
       }
     }
 
-    const treeVNodeWithoutRoot = traverse(data).map(function (node) {
+    const treeVNodeWithoutRoot = traverse(refData.value).map(function (node) {
       if (blockUnnecessaryNode.bind(this)()) {
         return
       }
