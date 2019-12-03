@@ -59,13 +59,17 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   const inputAddSelection = () => {
+    //returnObject ---> itemValue ? {text, value} : {text}
+    //!returnObject ---> itemValue ? value string only
+    //primitive array ---> same as above
     if (state.searchText.trim().length > 0) {
-      let inputAddedItem = props.itemValue ? {
-        [props.itemText]: state.searchText,
-        [props.itemValue]: state.searchText
-      } : { [props.itemText]: state.searchText }
+      let inputAddedItem;
+      if (props.returnObbject || props.itemValue) inputAddedItem = {
+          [props.itemText]: state.searchText,
+          [props.itemValue]: state.searchText
+        }
+      else inputAddedItem = state.searchText
 
-      if (!props.items || props.items.length === 0) inputAddedItem = state.searchText
       toggleItem(inputAddedItem)
       setSearch(props, context, selections, state)
     }

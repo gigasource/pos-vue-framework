@@ -211,11 +211,11 @@
         context.emit('keydown:up')
       }
 
-      function onSelect(item, index) {
+      function onSelect(item) {
         if (!props.selectable) {
           return;
         }
-        toggleItem(item, index)
+        toggleItem(item)
         context.emit('click:item')
       }
 

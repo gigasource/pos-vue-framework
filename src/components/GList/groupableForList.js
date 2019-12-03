@@ -78,13 +78,19 @@ export function groupableForList(props, vModel) {
 export function makeListSelectable(props, context) {
 
   // 1 -> {a: 1, b: 2}
+  //multiple --> returnObject ? props.value array --> object of items have value array
   const convertValueToInternalValue = function (value) {
     if (!props.itemValue || !value) return value;
     if (!Array.isArray(props.value)) {
-      if (props.returnObject) return props.itemValue ? props.items.find(i => i[props.itemValue] === value) : props.items.find(i => _.isEqual(i, value));
-      else return props.itemValue ? props.items.find(i => i[props.itemValue] === value) && props.items.find(i => i[props.itemValue] === value)[props.itemValue] : props.items;
+      if (props.returnObject) {
+        return props.itemValue ? props.items.find(i => i[props.itemValue] === value) : props.items.find(i => _.isEqual(i, value)) || value;}
+      else if (props.itemValue) {
+        return props.items.find(i => i[props.itemValue] === value) && props.items.find(i => i[props.itemValue] === value)[props.itemValue] || value;
+      } else {
+        return props.items || value;
+      }
     }
-    if (props.returnObject) return props.itemValue ? props.items.filter(i => value.some(el => el === i[props.itemValue])) : null
+    if (props.returnObject) return props.itemValue ? props.items.filter(i => value.some(el => el === i[props.itemValue])) : value
     else if (props.itemValue) return value
   }
 
@@ -111,7 +117,7 @@ export function makeListSelectable(props, context) {
 
   //use when props.value is change from outside
   watch(() => props.value, () => {
-    if (_.isEqual(props.value, rawInternalValue.value)) return
+    if (_.isEqual(rawInternalValue.value, convertValueToInternalValue(props.value))) return
 
     if (props.multiple && props.value && !Array.isArray(props.value)) {
       rawInternalValue.value = [convertValueToInternalValue(props.value)];
@@ -121,7 +127,7 @@ export function makeListSelectable(props, context) {
   }, {lazy: true});
 
   watch(() => rawInternalValue.value, () => {
-    if (_.isEqual(rawInternalValue.value, props.value)) return
+    if (_.isEqual(convertInternalValueToValue(rawInternalValue.value), props.value)) return
 
     context.emit('input', convertInternalValueToValue(rawInternalValue.value));
   })

@@ -7,7 +7,6 @@ const listMultipleFilter = (props, selectedItem) => {
     _options = props.items;
   } else {
     if (props.returnObject) _options = props.items.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
-
     else {
       if (props.itemValue) {
         _options = props.items.filter(item => !selectedItem.value.find(el => el === item[props.itemValue]))
@@ -66,8 +65,10 @@ export function getSelections(props, selectedItem) {
       if (!item && item !== 0) {
         return null;
       }
+      //primitive array
       if (typeof item === 'string' && !props.itemValue) return item;
       if(typeof item === 'number') return props.items[item]
+
       if (props.itemValue && !props.returnObject) {
         item = props.items.find(_item => _item[props.itemValue] === item) || item;
       }
@@ -84,5 +85,44 @@ export function getSelections(props, selectedItem) {
     }
     else if(props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item))
     else return list.map(item => props.items.find(el => el === item))
+  })
+}
+export function getSelections2(props, selectedItem) {
+  return computed(() => {
+    if (!props.multiple) {
+      let item = selectedItem.value;
+      if (!item && item !== 0) {
+        return null;
+      }
+      //primitive array
+      if (typeof item === 'string' && !props.itemValue) return item;
+      if(typeof item === 'number') return props.items[item]
+
+      if (props.itemValue && !props.returnObject) {
+        let itemInList = props.items.find(_item => _item[props.itemValue] === item)
+        return itemInList !== undefined ? itemInList : item;
+      }
+      else return {text: item[props.itemText], value: item[props.itemValue]} || '';
+    }
+    const list = selectedItem.value
+    if (props.returnObject) {
+      return list.map(item => {
+        if (props.itemValue) {
+          return {text: item[props.itemText], value: item[props.itemValue]};
+        }
+        return item;
+      });
+    }
+    else if(props.itemValue){
+      return list.map(item => {
+        if(props.items.find(el => el[props.itemValue] === item)) return props.items.find(el => el[props.itemValue] === item)
+        else return item
+      })
+    }
+    // else {
+    //   // if(props.items.find(el => el === item)) return list.map(item => props.items.find(el => el === item))
+    //   // else return list
+    // }
+    return list
   })
 }

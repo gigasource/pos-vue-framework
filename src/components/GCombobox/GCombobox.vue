@@ -1,7 +1,7 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import { makeSelectable } from '../../mixins/groupable';
+  import groupable, { makeSelectable } from '../../mixins/groupable';
   import { reactive, ref, computed, watch } from '@vue/composition-api';
 
   import GChip from '../GChip/GChip';
@@ -13,9 +13,9 @@
   import GListItem from '../GList/GListItem';
   import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
   import { keyCodes } from '../../utils/helpers';
-  import { getList, getSelections } from '../GSelect/GSelectFactory';
-  import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
-  import {makeListSelectable} from "../GList/groupableForList";
+  import {getList, getSelections, getSelections2} from '../GSelect/GSelectFactory';
+  import {getInputEventHandlers, resetSelectionsDisplay, setSearch} from '../GAutocomplete/GAutocompleteFactory';
+  import {groupableForList, makeListSelectable} from "../GList/groupableForList";
 
   export default {
     name: 'GCombobox',
@@ -112,8 +112,8 @@
 
 
       //list selections
-      const { internalValue: selectedItem, toggleItem } = makeListSelectable(props, context)
-      const fieldItem = getSelections(props, selectedItem)
+      const { internalValue: selectedItem, toggleItem} = makeListSelectable(props, context)
+      const fieldItem = getSelections2(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
@@ -127,6 +127,7 @@
       const options = getList(props, selectedItem, state)
 
       //genList
+      const showOptions = ref(false)
       function genList(showOptions) {
         const onClickItem = () => {
           setSearch(props, context, selections, state)
@@ -174,12 +175,19 @@
       const {
         onChipCloseClick,
         clearSelection,
-        onInputKeyDown,
         onInputClick,
         onInputBlur,
         onInputDelete,
         inputAddSelection
       } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
+
+      function onInputKeyDown(e) {
+        resetSelectionsDisplay(state)
+        if (e.keyCode === keyCodes.down) {
+          const listRef = context.refs.list
+          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
+        }
+      }
 
       //textfield scoped slot
       const genMultiSelectionsSlot = () => {
@@ -257,34 +265,37 @@
           />
         )
       }
+      //gen menu
+      function genMenu(showOptions) {
+        const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
+        return <g-menu {...{
+          props: {
+            ...props.menuProps,
+            nudgeBottom: nudgeBottom.value,
+            value: showOptions.value,
+          },
+          scopedSlots: {
+            activator: ({toggleContent}) => genTextFieldProps(toggleContent, showOptions)
+          },
+          on: {
+            input: e => showOptions.value = e,
+          }
+        }}
+        >
+          <template slot="default">
+            <template vShow={!options.value.length}>
+              {context.slots['no-data'] && context.slots['no-data']()}
+            </template>
+            {genList(showOptions)}
+          </template>
+        </g-menu>
+      }
 
       //gen Combobox
 
       function genCombobox() {
-        const comboboxSlots = {
-          'prepend-item': () =>
-            <div vShow={options.value.length === 0}>
-              {context.slots['no-data'] && context.slots['no-data']()}
-            </div>
-        }
-
         return <div class="g-combobox">
-          <g-select ref="select"
-                    {...{
-                      props: {
-                        ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
-                          'shaped', 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label',
-                          'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
-                          'allowDuplicates', 'chips', 'items', 'itemText', 'itemValue', 'value',]
-                        ),
-                        showSearchField: false,
-                        genTextFieldFn: genTextFieldProps,
-                        genListFn: (showOptions) => genList(showOptions),
-                      },
-                      scopedSlots: { ...comboboxSlots }
-                    }}
-          >
-          </g-select>
+          {genMenu(showOptions)}
         </div>
       }
 
@@ -295,6 +306,7 @@
         options,
         selectedItem,
         selections,
+        fieldItem,
       }
     },
     render() {

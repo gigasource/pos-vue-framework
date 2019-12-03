@@ -36,7 +36,7 @@ export const GSelectSingle = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected:  'https://cdn.vuetifyjs.com/images/lists/1.jpg'
     }
   },
   template: `
@@ -135,12 +135,12 @@ export const GSelectMultiple = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: []
+      selected: ['https://cdn.vuetifyjs.com/images/lists/1.jpg','https://cdn.vuetifyjs.com/images/lists/2.jpg']
     }
   },
   template: `
