@@ -5,6 +5,7 @@
   import GDialog from '../../GDialog/GDialog'
   import GBtn from '../../GBtn/GBtn'
   import GAutoComplete from '../../GAutocomplete/GAutocomplete'
+  import GCombobox from '../../GCombobox/GCombobox'
   import GTextField from '../../GInput/GTextField'
 
   export function renderGLayoutData(model) {
@@ -18,7 +19,7 @@
 
   export default {
     name: 'DemoLayoutDialog',
-    components: { GTextField, GAutoComplete, GDialog, GBtn },
+    components: { GTextField, GAutoComplete, GCombobox, GDialog, GBtn },
     props: {
       // boolean value indicate whether this dialog should be shown or not
       show: Boolean,
@@ -88,7 +89,7 @@
                   items={props.areaNames}
                   value={state.area}
                   vOn:input={v => state.area = v}/>
-              <g-auto-complete
+              <g-combobox
                   flat label="Tag"
                   itemText="text"
                   itemValue="value"
