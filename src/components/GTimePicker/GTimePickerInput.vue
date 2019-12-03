@@ -98,7 +98,6 @@
             }}>
           <g-time-picker
               ref={refIdTimePicker}
-              vShow={state.showMenu}
               {...{
                 props: {
                   ..._.pick(props, [
