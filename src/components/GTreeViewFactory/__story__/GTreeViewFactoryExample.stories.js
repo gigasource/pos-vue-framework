@@ -1,6 +1,6 @@
-import { text, withKnobs, number } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions'
-import GTreeViewExample from '../GTreeViewExample'
+import { withKnobs } from '@storybook/addon-knobs';
+import GTreeViewExample from '../GTreeViewExample';
+import { ref } from '@vue/composition-api';
 
 //
 export default {
@@ -11,7 +11,7 @@ export default {
 export const playground = () => ({
   components: { GTreeViewExample },
   setup() {
-    const data = {
+    const data = ref({
       content: 'src',
       children: [
         {
@@ -23,14 +23,27 @@ export const playground = () => ({
             },
             { content: 'delivery' }]
         }, { content: 'components' }]
+    })
+
+    const createData = () => {
+      return {
+        content: 'src ' + Math.random(),
+        children: [
+          {
+            content: 'assets',
+            children: [
+              {
+                content: 'config',
+                children: [{ content: 'advance_printer.svg' }]
+              },
+              { content: 'delivery' }]
+          }, { content: 'components' }]
+      }
     }
+
     return () => (
         <div>
-          <button vOn:click={() => {
-            data.children.push({
-              content: 'random-stuff'
-            })
-          }}>Add more</button>
+          <button vOn:click={() => data.value = createData()}>Change data</button>
           <g-tree-view-example
               item-text={node => node.content}
               item-children='children'
