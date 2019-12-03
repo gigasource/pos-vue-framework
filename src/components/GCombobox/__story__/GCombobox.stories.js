@@ -202,7 +202,7 @@ export const GComboboxNoDataSlot = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
+  <g-combobox itemText="text" returnObject :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
     <template v-slot:no-data>
       <g-list-item>
         <g-list-item-content>
@@ -272,6 +272,28 @@ export const GComboboxSingleWithValidate = () => ({
    </g-combobox>
 </div>
   `,
+})
+export const GComboboxPrimitiveArray = () => ({
+  components: {GCombobox, GListItem, GListItemContent, GListItemText},
+  props: {},
+  data() {
+    return {
+      items: [
+        'Jason Oner',
+        'Cindy Baker',
+        'Ali Connors',
+        'Ranee Carlson',
+      ],
+      selected: null
+    }
+  },
+  template: `
+  <div data-app>
+  {{selected}}
+  <g-combobox :items="items" label="Label" v-model="selected" multiple itemText=""  chips clearable>
+   
+  </g-combobox>
+</div>`,
 })
 
 export const test2 = () => ({

@@ -205,6 +205,8 @@
                 &nbsp;
                 <g-btn flat vOn:click={e => {
                   state.value = copyValue(state.tempValue);
+                  context.emit('input', cptTextFieldValue.value)
+                  context.emit('value', copyValue(state.value))
                   state.showMenu = false
                 }}>OK
                 </g-btn>

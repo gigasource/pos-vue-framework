@@ -618,12 +618,13 @@
             <div class="grid-gen__dialog__confirm__content">
               <g-text-field
                   label="Area name"
-                  value={_selectingArea.name} vOn:input={e => {
-                _selectingArea.name = e.target.value
-                if (state.confirmDialogErrorMsg !== '') {
-                  state.confirmDialogErrorMsg = ''
-                }
-              }}/>
+                  value={_selectingArea.name}
+                  vOn:input={value => {
+                    _selectingArea.name = value
+                    if (state.confirmDialogErrorMsg !== '') {
+                      state.confirmDialogErrorMsg = ''
+                    }
+                  }}/>
               <span class="grid-gen__dialog__confirm__error-msg">{state.confirmDialogErrorMsg}</span>
               <div>
                 <small>
