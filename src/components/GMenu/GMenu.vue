@@ -121,7 +121,7 @@
       onUnmounted(() => isActive.value = false)
 
       function getActivator() {
-        return context.refs.activator.children.length > 0
+        return (context.refs.activator && context.refs.activator.children.length > 0)
             ? context.refs.activator.children[0]
             : context.refs.activator
       }
