@@ -179,7 +179,7 @@ export default function (props, context) {
       else
         activePeriod = ActivePeriodPicker.PM
     }
-    state.selectedTime = { hours, minutes, seconds }
+    state.selectedTime = { hours: Number(hours), minutes: Number(minutes), seconds: Number(seconds) }
     state.activePeriodPicker = activePeriod
   })
 
