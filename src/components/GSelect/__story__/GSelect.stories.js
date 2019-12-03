@@ -43,6 +43,7 @@ export const GSelectSingle = () => ({
 <div data-app>
 {{selected}}
 	<g-select
+	:label="label"
 			width="100%"
 			:items="items"
 			v-model="selected"
@@ -281,7 +282,7 @@ export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemText', 'value')},
+    itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
     smallChips: {default: boolean('smallChips', false)},
   },
@@ -293,11 +294,13 @@ export const GSelectSearchableMultipleSelectAllowduplicates = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: ['https://cdn.vuetifyjs.com/images/lists/2.jpg']
     }
   },
   template: `
-<div data-app><g-select
+<div data-app>
+{{selected}}
+<g-select
 		:items="items"
 		:item-text="itemText"
 		:item-value="itemValue"
@@ -347,17 +350,16 @@ export const GSelectItemSlot = () => ({
   data() {
     return {
       items: [
-        {name: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {name: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {name: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {name: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {name: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {name: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {name: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
       selected: null
     }
   },
   template: `
 <div data-app>
-	<g-select :items="items" item-text="name" item-value="prepend" label="Display list" multiple clearable
+	<g-select :items="items" item-text="name" item-value="value" label="Display list" multiple clearable
 						v-model="selected">
 		<template v-slot:item="{item, isSelected}">
 			<p>slot item</p>
@@ -375,7 +377,7 @@ export const GSelectPrimitiveArray = () => ({
          'Cindy Baker',
          'Ali Connors',
       ],
-      selected: null
+      selected: [ 'Jason Oner']
     }
   },
   template: `
