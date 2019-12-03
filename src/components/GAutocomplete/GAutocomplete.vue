@@ -249,7 +249,10 @@
                 click: toggleContent,
                 delete: onInputDelete,
                 keydown: (e) => onInputKeyDown(e),
-                input: (e) => state.searchText = e,
+                input: (e) => {
+                  state.searchText = e
+                  context.emit('input', e)
+                },
               },
               scopedSlots: textFieldScopedSlots
             }}
