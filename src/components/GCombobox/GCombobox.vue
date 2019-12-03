@@ -13,13 +13,14 @@
   import GListItem from '../GList/GListItem';
   import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
   import { keyCodes } from '../../utils/helpers';
-  import {getList, getSelections, getSelections2} from '../GSelect/GSelectFactory';
+  import {getList, getSelections, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
   import {getInputEventHandlers, resetSelectionsDisplay, setSearch} from '../GAutocomplete/GAutocompleteFactory';
   import {groupableForList, makeListSelectable} from "../GList/groupableForList";
+  import {Fragment} from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
-    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText },
+    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText, Fragment },
     props: {
       //select props
       width: [String, Number],
@@ -113,7 +114,7 @@
 
       //list selections
       const { internalValue: selectedItem, toggleItem} = makeListSelectable(props, context)
-      const fieldItem = getSelections2(props, selectedItem)
+      const fieldItem = getSelectionsForCombobox(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
@@ -221,9 +222,9 @@
         appendInner: ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({ inputErrStyles }) =>
-          <fragment>
+          <Fragment>
             {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-          </fragment>,
+          </Fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         inputMessage: () => [<div v-show={props.counter} class={{
@@ -295,7 +296,7 @@
       //gen Combobox
 
       function genCombobox() {
-        return <div class="g-combobox">
+        return <div class={{'g-combobox': true, 'g-combobox__active': showOptions.value}}>
           {genMenu(showOptions)}
         </div>
       }
@@ -316,42 +317,39 @@
   }
 </script>
 <style lang="scss" scoped>
-	.g-combobox {
-		.g-select ::v-deep {
-			.g-menu--activator {
-				span {
-					margin: 3px
-				}
+  .g-combobox ::v-deep {
+    .g-menu--activator {
+      span {
+        margin: 3px
+      }
 
-				.g-tf-append__inner .g-icon:last-child {
-					transition: transform 0.4s;
-				}
+      .g-tf-append__inner .g-icon:last-child {
+        transition: transform 0.4s;
+      }
 
-				.input {
-					display: flex;
-          flex-wrap: wrap;
-				}
+      .input {
+        display: flex;
+        flex-wrap: wrap;
+      }
 
-				.g-tf-input {
-					flex-wrap: wrap;
-					display: flex;
-          flex: 1;
-				}
+      .g-tf-input {
+        flex-wrap: wrap;
+        display: flex;
+        flex: 1;
+      }
 
-				input {
-					flex-shrink: 0;
-					flex-basis: auto;
-					cursor: text;
-				}
-			}
-		}
+      input {
+        flex-shrink: 0;
+        flex-basis: auto;
+        cursor: text;
+      }
+    }
+  }
 
-		.g-select__active ::v-deep {
-			.g-tf-append__inner .g-icon:last-child {
-				transition: transform 0.4s;
-				transform: rotateZ(180deg);
-			}
-		}
-	}
-
+  .g-combobox__active {
+    ::v-deep .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
+      transform: rotateZ(180deg);
+    }
+  }
 </style>

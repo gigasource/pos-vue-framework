@@ -7,6 +7,7 @@ const listMultipleFilter = (props, selectedItem) => {
     _options = props.items;
   } else {
     if (props.returnObject) _options = props.items.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
+
     else {
       if (props.itemValue) {
         _options = props.items.filter(item => !selectedItem.value.find(el => el === item[props.itemValue]))
@@ -66,9 +67,7 @@ export function getSelections(props, selectedItem) {
         return null;
       }
       //primitive array
-      if (typeof item === 'string' && !props.itemValue) return item;
-      if(typeof item === 'number') return props.items[item]
-
+      if (!props.itemValue && (typeof item === 'string' || typeof item === 'number')) return item;
       if (props.itemValue && !props.returnObject) {
         item = props.items.find(_item => _item[props.itemValue] === item) || item;
       }
@@ -87,7 +86,8 @@ export function getSelections(props, selectedItem) {
     else return list.map(item => props.items.find(el => el === item))
   })
 }
-export function getSelections2(props, selectedItem) {
+
+export function getSelectionsForCombobox(props, selectedItem) {
   return computed(() => {
     if (!props.multiple) {
       let item = selectedItem.value;
@@ -95,8 +95,7 @@ export function getSelections2(props, selectedItem) {
         return null;
       }
       //primitive array
-      if (typeof item === 'string' && !props.itemValue) return item;
-      if(typeof item === 'number') return props.items[item]
+      if (!props.itemValue && (typeof item === 'string' || typeof item === 'number')) return item;
 
       if (props.itemValue && !props.returnObject) {
         let itemInList = props.items.find(_item => _item[props.itemValue] === item)
