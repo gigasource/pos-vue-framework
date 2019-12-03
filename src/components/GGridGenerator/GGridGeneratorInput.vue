@@ -18,7 +18,7 @@
           <g-btn flat outlined vOn:click={() => dialogState.show = true}>
             { props.model[props.field.key] != null ? 'Edit grid': 'Add grid' }
           </g-btn>
-          <g-dialog value={dialogState.show} fullscreen>
+          <g-dialog lazy value={dialogState.show} fullscreen>
             <div class="editor-dialog">
               <g-grid-generator
                   ref="gridGenerator"
