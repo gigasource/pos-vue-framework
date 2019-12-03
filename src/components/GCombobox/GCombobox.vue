@@ -16,10 +16,11 @@
   import { getList, getSelections } from '../GSelect/GSelectFactory';
   import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
   import {makeListSelectable} from "../GList/groupableForList";
+  import { Fragment } from 'vue-fragment';
 
   export default {
     name: 'GCombobox',
-    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText },
+    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText, Fragment},
     props: {
       //select props
       width: [String, Number],
@@ -212,10 +213,9 @@
                  color={iconColor}>{props.clearIcon}</GIcon>,
         appendInner: ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
-        inputSlot: ({ inputErrStyles }) =>
-          <fragment>
+        inputSlot: ({ inputErrStyles }) => <Fragment>
             {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-          </fragment>,
+          </Fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         inputMessage: () => [<div v-show={props.counter} class={{
