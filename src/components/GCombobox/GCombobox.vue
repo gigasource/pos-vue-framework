@@ -283,9 +283,9 @@
         }}
         >
           <template slot="default">
-            <template vShow={!options.value.length}>
+            <div vShow={!options.value.length}>
               {context.slots['no-data'] && context.slots['no-data']()}
-            </template>
+            </div>
             {genList(showOptions)}
           </template>
         </g-menu>
