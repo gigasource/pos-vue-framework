@@ -236,8 +236,9 @@
       }
       //textfield value
       const tfValue = computed(() =>
-        (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
-          state.lazySearch)
+        (props.multiple || props.chips || props.smallChips || props.deletableChips)
+            ? state.searchText || selections.value
+            : state.lazySearch || selections.value)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {

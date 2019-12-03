@@ -283,13 +283,13 @@ export const GComboboxPrimitiveArray = () => ({
         'Ali Connors',
         'Ranee Carlson',
       ],
-      selected: ['sddsf','sdfsf']
+      selected: 'ddd'
     }
   },
   template: `
   <div data-app>
   {{selected}}
-  <g-combobox :items="items" label="Label" v-model="selected" itemText="" multiple chips clearable>
+  <g-combobox :items="items" label="Label" v-model="selected" itemText=""   clearable>
    
   </g-combobox>
 </div>`,
