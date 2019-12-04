@@ -45,12 +45,12 @@ export default function detachable(props, context) {
     if (node) {
       node.parentNode && node.parentNode.removeChild(node);
     } else {
-      context.refs.content.parentNode.removeChild(context.refs.content);
+      context.refs.content && context.refs.content.parentNode.removeChild(context.refs.content);
       if (activatorChildNodes) {
         for (let node of activatorChildNodes)
           node.parentNode && node.parentNode.removeChild(node);
       } else {
-        activator.parentNode.removeChild(context.refs.activator);
+        activator && activator.parentNode.removeChild(context.refs.activator);
       }
     }
   }
