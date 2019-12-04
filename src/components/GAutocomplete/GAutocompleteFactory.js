@@ -21,7 +21,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   function onInputKeyDown(e) {
     resetSelectionsDisplay(state)
     if (e.keyCode === keyCodes.down) {
-      const listRef = context.refs.select.$refs.list
+      const listRef = context.refs.list
       listRef.$el.getElementsByClassName('g-list-item')[0].focus()
     }
   }

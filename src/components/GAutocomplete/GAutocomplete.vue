@@ -20,7 +20,7 @@
 
   export default {
     name: 'GAutocomplete',
-    components: { GSelect },
+    components: { GSelect, GMenu },
     props: {
       //select props
       width: [String, Number],
@@ -103,14 +103,6 @@
       returnObject: Boolean,
     },
     setup: function (props, context) {
-      const state = reactive({
-        searchText: '',
-        fieldItem: null,
-        lazySearch: '',
-        lastItemColor: '#1d1d1d',
-        pressDeleteTimes: 0,
-      })
-
       //list selections
       const { internalValue: selectedItem, toggleItem } = makeListSelectable(props, context)
       const fieldItem = getSelections(props, selectedItem)
@@ -124,9 +116,18 @@
             fieldItem.value[props.itemValue] || fieldItem.value : ''
 
       })
+      const state = reactive({
+        searchText: '',
+        fieldItem: null,
+        lazySearch: '',
+        lastItemColor: '#1d1d1d',
+        pressDeleteTimes: 0,
+      })
+
       const options = getList(props, selectedItem, state, props.filter)
 
       //gen List
+      const showOptions = ref(false)
       function genList(showOptions) {
         const onClickItem = () => {
           setSearch(props, context, selections, state)
@@ -226,9 +227,10 @@
         ]
       }
 
-      const tfValue = computed(() =>  ((props.multiple || props.chips || props.smallChips || props.deletableChips)
-                ? state.searchText
-                : state.lazySearch || selections.value)
+      const tfValue = computed(() =>
+          ((props.multiple || props.chips || props.smallChips || props.deletableChips || !selections.value.length)
+          ? state.searchText
+          : state.lazySearch )
       )
 
       const genTextFieldProps = function (toggleContent) {
@@ -256,26 +258,37 @@
         )
       }
 
+      //gen Menu
+      function genMenu(showOptions) {
+        const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
+        return <g-menu {...{
+          props: {
+            ...props.menuProps,
+            nudgeBottom: nudgeBottom.value,
+            value: showOptions.value,
+          },
+          scopedSlots: {
+            activator: ({toggleContent}) => genTextFieldProps(toggleContent, showOptions)
+          },
+          on: {
+            input: e => showOptions.value = e,
+          }
+        }}
+        >
+          <template slot="default">
+            <div vShow={!options.value.length}>
+              {context.slots['no-data'] && context.slots['no-data']()}
+            </div>
+            {genList(showOptions)}
+          </template>
+        </g-menu>
+      }
+
       //gen Autocomplete
 
       function genAutocomplete() {
-        return <div class="g-autocomplete">
-          <g-select
-            {...{
-              props: {
-                ..._.pick(props, ['width', 'filled', 'solo', 'outlined', 'flat', 'rounded',
-                  'shaped', 'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label',
-                  'prefix', 'suffix', 'rules', 'type', 'searchable', 'multiple', 'mandatory',
-                  'allowDuplicates', 'menuProps', 'chips', 'items', 'itemText', 'itemValue', 'value',]
-                ),
-                showSearchField: false,
-                genTextFieldFn: genTextFieldProps,
-                genListFn: (showOptions) => genList(showOptions),
-              },
-            }}
-            ref="select"
-          >
-          </g-select>
+        return <div class={{"g-autocomplete ": true, 'g-autocomplete__active': showOptions.value}}>
+          {genMenu(showOptions)}
         </div>
       }
 
@@ -293,19 +306,17 @@
   }
 </script>
 <style lang="scss" scoped>
-	.g-menu--content {
-		background-color: #00b0ff;
-	}
 
 	.g-autocomplete {
-		.g-select ::v-deep {
-			.g-menu--activator {
+			.g-menu::v-deep {
 				span {
 					margin: 3px
 				}
 
 				.g-tf-append__inner {
-					transition: transform 0.4s;
+          .g-icon:last-child{
+            transition: transform 0.4s;
+          }
 				}
 
 				.input {
@@ -324,6 +335,15 @@
 					cursor: text;
 				}
 			}
+    &__active{
+      .g-menu::v-deep{
+        .g-tf-append__inner{
+          .g-icon:last-child{
+            transition: transform 0.4s;
+            transform: rotateZ(180deg);
+          }
+        }
+      }
+    }
 		}
-	}
 </style>

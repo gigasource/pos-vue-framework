@@ -1,41 +1,40 @@
 import _ from 'lodash'
 import {computed, ref, watch} from '@vue/composition-api';
 
+//filter duplications in list for correct select effect
+export function filterList(props){
+  const isObjectList = computed(() => props.items.some(item => _.isObject(item) === true))
+  const itemsHaveText = ref(props.items.filter(item => item[props.itemText]) || [])
+  return computed(() => {
+        if (props.items) {
+          if (isObjectList.value) {
+            if (props.returnObject) return _.uniqWith(itemsHaveText.value, _.isEqual)
+            else if (props.itemValue) return _.uniqBy(itemsHaveText.value, props.itemText)
+            return _.uniqBy(itemsHaveText.value, props.itemText)
+          } else return _.uniq(props.items)
+        } else return []
+      }
+  )
+}
 export function groupableForList(props, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
-  const {returnObject = true, items, mandatory, multiple, allowDuplicates, maxSelection, itemValue, itemText} = props
+  const {returnObject = true, items, mandatory, multiple, allowDuplicates, itemValue, itemText} = props
 
-  const isObjectList = computed(() => items.some(item => _.isObject(item) === true))
-  const itemsHaveText = ref(items.filter(item => item[itemText]) || [])
-
-  //filter duplicate items for correct select effect
-  const uniqueItems = computed(() => {
-    if(props.inMenu) return props.items
-        if (items) {
-          if (isObjectList.value) {
-            if (returnObject) return _.uniqWith(itemsHaveText.value, _.isEqual)
-             else if (itemValue) return _.uniqBy(itemsHaveText.value, itemText)
-            return _.uniqBy(itemsHaveText.value, itemText)
-          } else return _.uniq(items)
-        } else return []
-      }
-  )
-
+  //filter by function for better reactive
+  let uniqueItems = filterList(props)
   const toggleItem = (item) => {
     if (multiple) {
       if (returnObject) updateMultiple(item);
         else {
         if (itemValue) updateMultiple(item[itemValue])
-        else if (!itemText) updateMultiple(item);
         else updateMultiple(item)
       }
     } else {
       if (returnObject) updateSingle(item);
        else {
         if (itemValue) updateSingle(item[itemValue])
-        else if (!itemText) updateSingle(item);
         else updateSingle(item)
       }
     }
@@ -60,12 +59,12 @@ export function groupableForList(props, vModel) {
   const isActiveItem = (item) => {
     if (multiple) {
       if (returnObject) return vModel.value.some(element => _.isEqual(element, item))
-      else return itemValue
+      else return !!itemValue
             ? vModel.value.includes(item[itemValue])
-            : (vModel.value.includes(uniqueItems.value.indexOf(item)) || vModel.value.includes(item))
+            : vModel.value.includes(item)
     }
     if (returnObject) return _.isEqual(vModel.value, item)
-    else return itemValue ? item[itemValue] === vModel.value : (uniqueItems.value.indexOf(item) === vModel.value || vModel.value === item)
+    else return !!itemValue ? item[itemValue] === vModel.value : item === vModel.value
   };
 
   return {
@@ -80,19 +79,25 @@ export function makeListSelectable(props, context) {
   // 1 -> {a: 1, b: 2}
   //multiple --> returnObject ? props.value array --> object of items have value array
   const convertValueToInternalValue = function (value) {
+    //primitive array
     if (!props.itemValue || !value) return value;
+    //for single select
     if (!Array.isArray(props.value)) {
-      if (props.returnObject) {
-        return props.itemValue ? props.items.find(i => i[props.itemValue] === value) : props.items.find(i => _.isEqual(i, value)) || value;}
-      else if (props.itemValue) {
-        return props.items.find(i => i[props.itemValue] === value) && props.items.find(i => i[props.itemValue] === value)[props.itemValue] || value;
-      } else {
-        return props.items || value;
-      }
+      //{a:1, b:2} in value --> {a:1, b:2} inlist
+      if (props.returnObject) return props.items.find(i => _.isEqual(i, value)) || value
+      // 1  value, itemValue: a -->  {a:1} in list --> 1
+      else if (props.itemValue) return value;
+
     }
-    if (props.returnObject) return props.itemValue ? props.items.filter(i => value.some(el => el === i[props.itemValue])) : value
-    else if (props.itemValue) return value
-  }
+    //multiple select
+    if (props.returnObject) {
+      let itemInList = props.items.filter(i => value.some(el => _.isEqual(el,i)))
+      return itemInList.length ? itemInList : value
+    }
+    else if (props.itemValue){
+      let itemsHaveValueInlist = props.items.filter(i => value.some(el => el === i[props.itemValue]))
+      return itemsHaveValueInlist.length ? itemsHaveValueInlist.map(item => item[props.itemValue]) : value
+  }}
 
   // {a: 1, b: 2} -> 1
   const convertInternalValueToValue = function (internalValue) {

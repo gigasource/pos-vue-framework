@@ -13,9 +13,9 @@
   import GListItem from '../GList/GListItem';
   import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
   import { keyCodes } from '../../utils/helpers';
-  import {getList, getSelections, getSelections2} from '../GSelect/GSelectFactory';
+  import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
   import {getInputEventHandlers, resetSelectionsDisplay, setSearch} from '../GAutocomplete/GAutocompleteFactory';
-  import {groupableForList, makeListSelectable} from "../GList/groupableForList";
+  import {filterList, makeListSelectable} from "../GList/groupableForList";
 
   export default {
     name: 'GCombobox',
@@ -102,18 +102,10 @@
       returnObject: Boolean,
     },
     setup: function (props, context) {
-      const state = reactive({
-        searchText: '',
-        fieldItem: null,
-        lazySearch: '',
-        lastItemColor: '#1d1d1d',
-        pressDeleteTimes: 0,
-      })
-
 
       //list selections
       const { internalValue: selectedItem, toggleItem} = makeListSelectable(props, context)
-      const fieldItem = getSelections2(props, selectedItem)
+      const fieldItem = getSelectionsForCombobox(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
@@ -123,6 +115,13 @@
           return fieldItem.value || fieldItem.value === 0 ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
         }
 
+      })
+      const state = reactive({
+        searchText: '',
+        fieldItem: null,
+        lazySearch: '',
+        lastItemColor: '#1d1d1d',
+        pressDeleteTimes: 0,
       })
       const options = getList(props, selectedItem, state)
 
@@ -175,19 +174,14 @@
       const {
         onChipCloseClick,
         clearSelection,
+        onInputKeyDown,
         onInputClick,
         onInputBlur,
         onInputDelete,
         inputAddSelection
       } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
 
-      function onInputKeyDown(e) {
-        resetSelectionsDisplay(state)
-        if (e.keyCode === keyCodes.down) {
-          const listRef = context.refs.list
-          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
-        }
-      }
+
 
       //textfield scoped slot
       const genMultiSelectionsSlot = () => {
@@ -236,9 +230,9 @@
       }
       //textfield value
       const tfValue = computed(() =>
-        (props.multiple || props.chips || props.smallChips || props.deletableChips)
-            ? state.searchText || selections.value
-            : state.lazySearch || selections.value)
+        (props.multiple || props.chips || props.smallChips || props.deletableChips|| !selections.value.length)
+            ? state.searchText
+            : state.lazySearch)
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
@@ -295,7 +289,7 @@
       //gen Combobox
 
       function genCombobox() {
-        return <div class="g-combobox">
+        return <div class={{"g-combobox ": true, 'g-combobox__active': showOptions.value}}>
           {genMenu(showOptions)}
         </div>
       }
@@ -316,42 +310,43 @@
   }
 </script>
 <style lang="scss" scoped>
-	.g-combobox {
-		.g-select ::v-deep {
-			.g-menu--activator {
-				span {
-					margin: 3px
-				}
+  .g-combobox {
+    .g-menu::v-deep {
+      span {
+        margin: 3px
+      }
 
-				.g-tf-append__inner .g-icon:last-child {
-					transition: transform 0.4s;
-				}
+      .g-tf-append__inner {
+        .g-icon:last-child{
+          transition: transform 0.4s;
+        }
+      }
 
-				.input {
-					display: flex;
-          flex-wrap: wrap;
-				}
+      .input {
+        display: flex;
+      }
 
-				.g-tf-input {
-					flex-wrap: wrap;
-					display: flex;
-          flex: 1;
-				}
+      .g-tf-input {
+        flex-wrap: wrap;
+        width: auto;
+        display: flex;
+      }
 
-				input {
-					flex-shrink: 0;
-					flex-basis: auto;
-					cursor: text;
-				}
-			}
-		}
-
-		.g-select__active ::v-deep {
-			.g-tf-append__inner .g-icon:last-child {
-				transition: transform 0.4s;
-				transform: rotateZ(180deg);
-			}
-		}
-	}
-
+      input {
+        flex-shrink: 0;
+        flex-basis: auto;
+        cursor: text;
+      }
+    }
+    &__active{
+      .g-menu::v-deep{
+        .g-tf-append__inner{
+          .g-icon:last-child{
+            transition: transform 0.4s;
+            transform: rotateZ(180deg);
+          }
+        }
+      }
+    }
+  }
 </style>
