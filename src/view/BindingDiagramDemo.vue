@@ -4,7 +4,8 @@
  </g-binding-diagram>
 </template>
 <script>
-	import { ref, computed } from '@vue/composition-api'
+  import { saveFile, openFile } from '../utils/helpers';
+  import { ref, computed } from '@vue/composition-api'
   import GBindingDiagram from '../components/GBindingDiagram/GBindingDiagram';
   export default {
     name: 'BindingDiagramDemo',
@@ -197,6 +198,8 @@
         "renderToRoute": "mydialog",
         "id": "5caf587f9fe2377748da54a8"
       })
+     //saveFile('treeData', JSON.stringify(treeData), 'application/json')
+
 			return {
         treeData
 			}
