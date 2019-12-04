@@ -15,11 +15,12 @@
   import { keyCodes } from '../../utils/helpers';
   import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
   import {getInputEventHandlers, resetSelectionsDisplay, setSearch} from '../GAutocomplete/GAutocompleteFactory';
-  import {filterList, makeListSelectable} from "../GList/groupableForList";
+  import {groupableForList, makeListSelectable} from "../GList/groupableForList";
+  import {Fragment} from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
-    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText },
+    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText, Fragment },
     props: {
       //select props
       width: [String, Number],
@@ -103,6 +104,7 @@
     },
     setup: function (props, context) {
 
+
       //list selections
       const { internalValue: selectedItem, toggleItem} = makeListSelectable(props, context)
       const fieldItem = getSelectionsForCombobox(props, selectedItem)
@@ -181,7 +183,13 @@
         inputAddSelection
       } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
 
-
+      function onInputKeyDown(e) {
+        resetSelectionsDisplay(state)
+        if (e.keyCode === keyCodes.down) {
+          const listRef = context.refs.list
+          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
+        }
+      }
 
       //textfield scoped slot
       const genMultiSelectionsSlot = () => {
@@ -215,9 +223,9 @@
         appendInner: ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({ inputErrStyles }) =>
-          <fragment>
+          <Fragment>
             {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-          </fragment>,
+          </Fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         inputMessage: () => [<div v-show={props.counter} class={{
@@ -310,43 +318,39 @@
   }
 </script>
 <style lang="scss" scoped>
-  .g-combobox {
-    .g-menu::v-deep {
-      span {
-        margin: 3px
-      }
+  .g-combobox ::v-deep {
+    .g-menu--activator {
+				span {
+					margin: 3px
+				}
 
-      .g-tf-append__inner {
-        .g-icon:last-child{
-          transition: transform 0.4s;
-        }
-      }
+				.g-tf-append__inner .g-icon:last-child {
+					transition: transform 0.4s;
+				}
 
-      .input {
+				.input {
+					display: flex;
+          flex-wrap: wrap;
+				}
+
+				.g-tf-input {
+					flex-wrap: wrap;
         display: flex;
+          flex: 1;
       }
 
-      .g-tf-input {
-        flex-wrap: wrap;
-        width: auto;
-        display: flex;
-      }
-
-      input {
-        flex-shrink: 0;
-        flex-basis: auto;
-        cursor: text;
-      }
-    }
-    &__active{
-      .g-menu::v-deep{
-        .g-tf-append__inner{
-          .g-icon:last-child{
-            transition: transform 0.4s;
-            transform: rotateZ(180deg);
-          }
-        }
-      }
-    }
+				input {
+					flex-shrink: 0;
+					flex-basis: auto;
+					cursor: text;
+				}
+			}
   }
+
+  .g-combobox__active {
+    ::v-deep .g-tf-append__inner .g-icon:last-child {
+				transition: transform 0.4s;
+				transform: rotateZ(180deg);
+			}
+		}
 </style>

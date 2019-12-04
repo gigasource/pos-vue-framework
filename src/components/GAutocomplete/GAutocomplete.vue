@@ -112,8 +112,9 @@
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         }
-        return fieldItem.value || fieldItem.value === 0  ? fieldItem.value[props.itemText] ||
-            fieldItem.value[props.itemValue] || fieldItem.value : ''
+        return fieldItem.value || fieldItem.value === 0
+            ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value
+            : ''
 
       })
       const state = reactive({
@@ -241,7 +242,7 @@
                 ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                   'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                   'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
-                value: tfValue.value
+                value: props.value || tfValue.value
               },
               on: {
                 'click:clearIcon': clearSelection,

@@ -22,6 +22,7 @@ const searchTextFilteredItems = (props, state, items) => {
   if (!state.searchText || !state.searchText.trim()) {
     return items;
   }
+
   // normalize search text if used in g-select
   const searchText = !props.filter ? state.searchText.trim().toLowerCase() : state.searchText.trim();
   //match searchText
