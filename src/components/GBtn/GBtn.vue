@@ -51,7 +51,7 @@
         backgroundColor: String,
         gradient: String,
         gradientAngle: { type: String, default: '45deg' },
-				borderRadius: [Number, String],
+        borderRadius: [Number, String],
       }
     },
     setup(props, context) {
