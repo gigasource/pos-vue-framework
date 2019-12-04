@@ -15,6 +15,7 @@
   import { keyCodes } from '../../utils/helpers';
   import { getList, getSelections } from '../GSelect/GSelectFactory';
   import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
+  import {makeListSelectable} from "../GList/groupableForList";
 
   export default {
     name: 'GCombobox',
@@ -69,7 +70,6 @@
         default: true
       },
       multiple: Boolean,
-      mandatory: Boolean,
       allowDuplicates: Boolean,
       //menu props
       menuProps: {
@@ -87,7 +87,10 @@
       chips: Boolean,
       smallChips: Boolean,
       deletableChips: Boolean,
-      items: Array,
+      items: {
+        type: Array,
+        default: () => []
+      },
       itemText: {
         type: String,
         default: 'text'
@@ -96,6 +99,7 @@
         type: String,
       },
       value: null,
+      returnObject: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -108,7 +112,7 @@
 
 
       //list selections
-      const { internalValue: selectedItem, toggleItem } = makeSelectable(props, context)
+      const { internalValue: selectedItem, toggleItem } = makeListSelectable(props, context)
       const fieldItem = getSelections(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
@@ -116,7 +120,7 @@
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         } else {
-          return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
+          return fieldItem.value || fieldItem.value === 0 ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
         }
 
       })
@@ -132,7 +136,9 @@
           {...{
             props: {
               items: options.value,
-              'item-title': props.itemText,
+              itemText: props.itemText,
+              itemValue: props.itemValue,
+              returnObject: props.returnObject,
               mandatory: true,
               allowDuplicates: props.allowDuplicates,
               multiple: props.multiple,
@@ -207,9 +213,9 @@
         appendInner: ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({ inputErrStyles }) =>
-          <div class="g-tf-input" style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
+          <fragment>
             {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-          </div>,
+          </fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         inputMessage: () => [<div v-show={props.counter} class={{
@@ -310,12 +316,13 @@
 
 				.input {
 					display: flex;
+          flex-wrap: wrap;
 				}
 
 				.g-tf-input {
 					flex-wrap: wrap;
-					width: auto;
 					display: flex;
+          flex: 1;
 				}
 
 				input {

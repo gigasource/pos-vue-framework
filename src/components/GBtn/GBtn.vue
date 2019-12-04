@@ -51,23 +51,33 @@
         backgroundColor: String,
         gradient: String,
         gradientAngle: { type: String, default: '45deg' },
+				borderRadius: {
+          type: [Number, String],
+					default: 2
+				}
       }
     },
     setup(props, context) {
       const { classes, styles } = GBtnUtil(props, context);
 
       return { classes, styles }
-    }, render(h) {
+    },
+    render(h) {
       const genBtn = () => {
         const nodeData = {
           class: this.classes,
           style: this.styles,
-          directives: this.ripple ? [{ name: 'ripple', value: undefined }] : []
+          directives: this.ripple ? [{ name: 'ripple', value: undefined }] : [],
+          on: {
+            click: (e) => this.$emit('click', e),
+            mouseenter: (e) => this.$emit('mouseenter', e),
+            mouseleave: (e) => this.$emit('mouseleave', e),
+            mouseup: (e) => this.$emit('mouseup', e),
+            mousedown: (e) => this.$emit('mousedown', e),
+          }
         };
 
-        return <button {...nodeData} vOn:click={(event) => {
-          this.$emit('click', event);
-        }}>
+        return <button {...nodeData}>
           <span className="g-btn__content">
             {this.$slots.default}
           </span>

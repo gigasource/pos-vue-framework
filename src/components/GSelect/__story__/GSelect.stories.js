@@ -23,7 +23,7 @@ export const GSelectSingle = () => ({
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: number('counter', 25)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemText', 'value')},
+    itemValue: {default: text('itemValue', 'value')},
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
     mandatory: {default: boolean('mandatory', false)},
@@ -31,7 +31,7 @@ export const GSelectSingle = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -41,10 +41,13 @@ export const GSelectSingle = () => ({
   },
   template: `
 <div data-app>
+{{selected}}
 	<g-select
 			width="100%"
 			:items="items"
 			v-model="selected"
+			:itemText="itemText"
+			:itemValue="itemValue"
 	>
 	</g-select>
 </div>
@@ -73,7 +76,7 @@ export const GSelectSingleWithValidate = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -123,10 +126,10 @@ export const GSelectMultiple = () => ({
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
-    allowDuplicates: {type: Boolean, default: boolean('allow duplicates', true)},
+    allowDuplicates: {type: Boolean, default: boolean('allow duplicates', false)},
     chips: {default: boolean('chips', false)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemText', 'value')},
+    itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
   },
   data() {
@@ -142,6 +145,7 @@ export const GSelectMultiple = () => ({
   },
   template: `
 <div data-app>
+{{selected}}
 	<g-select
 			:items="items"
 			:item-text="itemText"
@@ -152,7 +156,6 @@ export const GSelectMultiple = () => ({
 			:clearable="clearable"
 			multiple
 			:allow-duplicates="allowDuplicates"
-			:menuProps="{closeOnContentClick : true}"
 			v-model="selected">
 	</g-select>
 </div>`
@@ -182,7 +185,9 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
   },
   template: `
 <div data-app>
+{{selected}}
 	<g-select
+	returnObject
 			:items="items"
 			:item-text="itemText"
 			:item-value="itemValue"
@@ -357,6 +362,26 @@ export const GSelectItemSlot = () => ({
 		<template v-slot:item="{item, isSelected}">
 			<p>slot item</p>
 		</template>
+	</g-select>
+</div>`
+})
+export const GSelectPrimitiveArray = () => ({
+  components: {GSelect},
+  data() {
+    return {
+      items: [
+         'Jason Oner',
+         'Ranee Carlson',
+         'Cindy Baker',
+         'Ali Connors',
+      ],
+      selected: null
+    }
+  },
+  template: `
+<div data-app>
+	<g-select :items="items" label="Primitive list" multiple clearable itemText='' itemValue=""
+						v-model="selected">
 	</g-select>
 </div>`
 })

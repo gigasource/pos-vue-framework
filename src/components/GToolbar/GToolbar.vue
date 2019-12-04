@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import { computed, onMounted, ref } from '@vue/composition-api';
+	import { computed } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
   import { isCssColor } from '../../mixins/colorable';
   import { linearGradient } from '../../utils/colors';
@@ -29,6 +29,10 @@
 				default: 'white'
 			},
 			gradient: String,
+			gradientAngle: {
+        type: [String, Number],
+				default: 45
+			},
       dense: Boolean,
       elevation: {
         type: [String, Number],
@@ -39,6 +43,7 @@
         type: [String, Number],
 				default: 'auto'
       },
+      sticky: Boolean,
       flat: Boolean,
       floating: Boolean,
       prominent: Boolean,
@@ -63,11 +68,12 @@
         'g-toolbar__tile': props.tile,
         'g-toolbar__collapse': props.collapse,
         'g-toolbar__filled': props.filled,
+        'g-toolbar__sticky': props.sticky,
 				['bg-'+props.color.split(' ').join('-')]: props.color && !isCssColor(props.color),
       }));
 
       const contentHeight = computed(() => {
-        if (props.height) return parseInt(props.height);
+        if (props.height) return props.height;
         if (props.prominent && props.dense) return 96;
         if (props.prominent && props.short) return 112;
         if (props.prominent) return 128;
@@ -88,7 +94,8 @@
 			})
 
       const totalHeight = computed(() => {
-        return contentHeight.value + (props.extended ? parseInt(computedExtensionHeight.value) : 0);
+        let contentHeightString = !isNaN(contentHeight.value) ? `${contentHeight.value}px` : contentHeight.value
+        return `calc(${contentHeightString} + ${props.extended ? parseInt(computedExtensionHeight.value) : '0px'})`
       });
 
       const contentStyles = computed(() => ({
@@ -119,7 +126,7 @@
           'background-color': [props.color]
 				},
 				... props.gradient && {
-          'background-image': [linearGradient(props.gradient.split(','))]
+          'background-image': [linearGradient(props.gradient.split(','), props.gradientAngle)]
 				}
       }));
 

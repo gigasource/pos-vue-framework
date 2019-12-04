@@ -120,7 +120,6 @@ export const GAutocompleteMultiSelect = () => ({
     deletableChips: {default: boolean('deletable-chips', false)},
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemValue', 'value')},
-    menuProps:{default: object('menuProps', {closeOnContentClick : true})},
   },
   computed: {
     activeFilter() {

@@ -3,6 +3,14 @@ import _ from 'lodash'
 export const _gridItemOptions = ['', 'start', 'end', 'center', 'stretch']
 export const _gridContentOptions = ['', 'start', 'end', 'center', 'stretch', 'space-around', 'space-between', 'space-evenly']
 
+// https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+// https://developer.mozilla.org/en-US/docs/Web/CSS/align-items
+export const _flexJustifyContentOptions = ['', 'flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly', 'start', 'end', 'left', 'right']
+export const _flexAlignItemOptions = ['', "stretch" , "flex-start" , "flex-end" , "center" , "baseline" , "first baseline" , "last baseline" , "start" , "end" , "self-start" , "self-end"]
+export const _flexAlignContentOptions = ['', "flex-start" , "flex-end" , "center" , "space-between" , "space-around" , "space-evenly" , "stretch" , 'start' , 'end' , "baseline" , 'first baseline' , "last baseline"]
+export const _flexWraps = ['', 'nowrap' , 'wrap' , 'wrap-reverse']
+export const _flexDirection = ['', 'row', 'column']
+
 
 /**
  * Join ref string

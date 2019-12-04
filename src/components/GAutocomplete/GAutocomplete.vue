@@ -16,6 +16,7 @@
   import {
     getInputEventHandlers, setSearch
   } from './GAutocompleteFactory';
+  import {makeListSelectable} from "../GList/groupableForList";
 
   export default {
     name: 'GAutocomplete',
@@ -56,6 +57,7 @@
           type: String,
           default: 'clear'
         },
+        clearIconColor: String,
         rules: Array,
         type: {
           type: String,
@@ -70,7 +72,6 @@
         default: true
       },
       multiple: Boolean,
-      mandatory: Boolean,
       allowDuplicates: Boolean,
       //menu props
       menuProps: {
@@ -99,6 +100,7 @@
       value: null,
       filter: Function,
       noFilter: Boolean,
+      returnObject: Boolean,
     },
     setup: function (props, context) {
       const state = reactive({
@@ -110,7 +112,7 @@
       })
 
       //list selections
-      const { internalValue: selectedItem, toggleItem } = makeSelectable(props, context)
+      const { internalValue: selectedItem, toggleItem } = makeListSelectable(props, context)
       const fieldItem = getSelections(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
@@ -118,7 +120,8 @@
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         }
-        return fieldItem.value ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value : ''
+        return fieldItem.value || fieldItem.value === 0  ? fieldItem.value[props.itemText] ||
+            fieldItem.value[props.itemValue] || fieldItem.value : ''
 
       })
       const options = getList(props, selectedItem, state, props.filter)
@@ -133,7 +136,9 @@
           {...{
             props: {
               items: options.value,
-              'item-title': props.itemText,
+              itemText: props.itemText,
+              itemValue: props.itemValue,
+              returnObject: props.returnObject,
               mandatory: true,
               allowDuplicates: props.allowDuplicates,
               multiple: props.multiple,
@@ -203,7 +208,7 @@
       const textFieldScopedSlots = {
         clearableSlot: ({ iconColor }) =>
           <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
-                 color={iconColor}>{props.clearIcon}</GIcon>,
+                 color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
         appendInner: ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({ inputErrStyles }) =>
@@ -221,9 +226,11 @@
         ]
       }
 
-      const tfValue = computed(() =>
-        (props.multiple || props.chips || props.smallChips || props.deletableChips) ? state.searchText :
-          state.lazySearch)
+      const tfValue = computed(() => props.value ||
+            ((props.multiple || props.chips || props.smallChips || props.deletableChips)
+                ? state.searchText
+                : state.lazySearch)
+      )
 
       const genTextFieldProps = function (toggleContent) {
         return (
@@ -292,17 +299,10 @@
 	}
 
 	.g-autocomplete {
-
-
 		.g-select ::v-deep {
-
 			.g-menu--activator {
-
 				span {
 					margin: 3px
-				}
-
-				.g-tf-wrapper {
 				}
 
 				.g-tf-append__inner {
@@ -324,7 +324,6 @@
 					flex-basis: auto;
 					cursor: text;
 				}
-
 			}
 		}
 	}
