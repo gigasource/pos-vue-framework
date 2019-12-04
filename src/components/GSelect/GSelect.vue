@@ -101,22 +101,22 @@
       })
       //list selections
 
-      const {internalValue: selectedItem} = makeListSelectable(props, context)
-      const options = getList(props, selectedItem, state)
-      const fieldItem = getSelections(props, selectedItem)
+      const {internalValue: selectedValue} = makeListSelectable(props, context)
+
+      const fieldItem = getSelections(props, selectedValue)
       const tfDisplaySelections = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return item ? (item['text'] || item['value'] || item) : ''
+            return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         }
-        return fieldItem.value || fieldItem.value === 0 ? fieldItem.value['text'] || fieldItem.value['value'] ||
-            fieldItem.value : ''
+        return fieldItem.value || fieldItem.value === 0 ? fieldItem.value[props.itemText] ||
+            fieldItem.value[props.itemValue] ||
+            fieldItem.value.toString() : ''
       })
 
       //gen SearchText
       const searchFocused = ref(false)
-      //todo: use ref to avoid query wrong element
       const onInputClick = () => {
         searchFocused.value = true
       }
@@ -137,7 +137,7 @@
       //genList
 
       const showOptions = ref(false)
-
+      const options = getList(props, selectedValue, state)
       const genList = (typeof props.genListFn === 'function' && props.genListFn)
           || function (showOptions) {
             return <GList
@@ -152,12 +152,15 @@
                     multiple: props.multiple,
                     inMenu: true,
                     selectable: true,
-                    value: selectedItem.value,
+                    value: selectedValue.value,
                   },
                   on: {
                     'click:item': () => showOptions.value = props.multiple,
-                    input: e => selectedItem.value = e,
+                    input: e => selectedValue.value = e,
                   },
+                  scopedSlots:{
+                    content: () =>  context.slots.item && context.slots.item()
+                  }
                 }}
                 ref="list"
             />
@@ -173,9 +176,9 @@
 
       function onChipCloseClick(index = null) {
         if (props.multiple) {
-          selectedItem.value.splice(index, 1);
+          selectedValue.value.splice(index, 1);
         } else {
-          selectedItem.value = null
+          selectedValue.value = null
         }
       }
 
@@ -214,7 +217,7 @@
       }
 
       function clearSelection() {
-        selectedItem.value = props.multiple ? [] : ''
+        selectedValue.value = props.multiple ? [] : ''
         state.searchText = ''
       }
 
@@ -282,9 +285,10 @@
         genSelect,
         options,
         state,
-        selectedItem,
+        selectedValue,
         tfDisplaySelections,
-        showOptions
+        showOptions,
+        fieldItem
       }
     },
     render() {

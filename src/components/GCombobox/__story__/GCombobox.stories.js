@@ -85,11 +85,12 @@ export const GComboboxSingleSelectChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: 'kk'
     }
   },
   template: `
   <div data-app>
+  {{selected}}
   <g-combobox chips
               :deletableChips="deletableChips"
               :items="items" 
@@ -130,7 +131,7 @@ export const GComboboxMultiSelect = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: ['hhh','hgh','Jason Oner']
     }
   },
   template: `
@@ -167,7 +168,7 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: ['Jason Oner']
     }
   },
   template: `
@@ -192,12 +193,10 @@ export const GComboboxNoDataSlot = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: []
     }
   },
   template: `
@@ -280,17 +279,18 @@ export const GComboboxPrimitiveArray = () => ({
     return {
       items: [
         'Jason Oner',
+        'Jason Oner',
         'Cindy Baker',
         'Ali Connors',
         'Ranee Carlson',
       ],
-      selected: null
+      selected: 'Jason Oner'
     }
   },
   template: `
   <div data-app>
   {{selected}}
-  <g-combobox :items="items" label="Label" v-model="selected" multiple itemText=""  chips clearable>
+  <g-combobox  :items="items" label="Label" v-model="selected"  clearable>
    
   </g-combobox>
 </div>`,

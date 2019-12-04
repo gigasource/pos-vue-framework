@@ -1,18 +1,17 @@
 import {computed} from '@vue/composition-api';
 import _ from "lodash";
 
-const listMultipleFilter = (props, selectedItem) => {
+const listMultipleFilter = (props, selectedValue) => {
   let _options
   if (props.allowDuplicates) {
     _options = props.items;
   } else {
-    if (props.returnObject) _options = props.items.filter(item => !selectedItem.value.find(_selectedItem => _.isEqual(_selectedItem, item)));
-
+    if (props.returnObject) _options = props.items.filter(item => !selectedValue.value.find(_selectedValue => _.isEqual(_selectedValue, item)));
     else {
       if (props.itemValue) {
-        _options = props.items.filter(item => !selectedItem.value.find(el => el === item[props.itemValue]))
+        _options = props.items.filter(item => !selectedValue.value.find(el => el === item[props.itemValue]))
       } else {
-        _options = props.items.filter(item => !(selectedItem.value.includes(item)) )
+        _options = props.items.filter(item => !(selectedValue.value.includes(item)) )
       }
     }
     }
@@ -26,7 +25,7 @@ const searchTextFilteredItems = (props, state, items) => {
 
   // normalize search text if used in g-select
   const searchText = !props.filter ? state.searchText.trim().toLowerCase() : state.searchText.trim();
-  //Search text match
+  //match searchText
   let _filteredOptions
   if (!props.filter) {
     let _searchedOptions = items.filter(item => {
@@ -37,16 +36,18 @@ const searchTextFilteredItems = (props, state, items) => {
       const text = item[props.itemText] ? (item[props.itemText] + "").toLowerCase() : (item + "").toLowerCase();
       return !text.startsWith(searchText) && text.includes(searchText);
     }));
-  } else if (typeof props.filter === 'function') {
+  }
+  //use props.filter to filter items
+  else if (typeof props.filter === 'function') {
     _filteredOptions = items.filter(item => props.filter(item[props.itemText], searchText))
   }
   return _filteredOptions
 }
 
-export function getList(props, selectedItem, state) {
+export function getList(props, selectedValue, state) {
   return computed(() => {
     if (props.multiple) {
-      let options = listMultipleFilter(props, selectedItem)
+      let options = listMultipleFilter(props, selectedValue)
 
       if (props.searchable) {
         let items = _.cloneDeep(options);
@@ -59,30 +60,63 @@ export function getList(props, selectedItem, state) {
   })
 }
 
-export function getSelections(props, selectedItem) {
+
+//selectedValue : primitive array --> return item itself,
+//selectedValue: primitive array of value --> return item have value
+//selectedValue: object array --> return item match
+//then normalise item in form {text:, value:}
+export function getSelections(props, selectedValue) {
   return computed(() => {
     if (!props.multiple) {
-      let item = selectedItem.value;
-      if (!item && item !== 0) {
-        return null;
-      }
-      if (typeof item === 'string' && !props.itemValue) return item;
-      if(typeof item === 'number') return props.items[item]
-      if (props.itemValue && !props.returnObject) {
-        item = props.items.find(_item => _item[props.itemValue] === item) || item;
-      }
-      return {text: item[props.itemText], value: item[props.itemValue]} || '';
+      let item = selectedValue.value;
+      if (!item && item !== 0) return null;
+      if (!props.itemValue && (typeof item === 'string'||typeof item === 'number') ) return item;
+      if (props.itemValue && !props.returnObject) item = props.items.find(_item => _item[props.itemValue] === item) || item;
+      else item = props.items.find(_item =>_.isEqual(item, _item))
+
+      return {text: item[props.itemText], value: item[props.itemValue]};
     }
-    const list = selectedItem.value
+    const list = selectedValue.value
     if (props.returnObject) {
-      return list.map(item => {
-        if (props.itemValue) {
-          return {text: item[props.itemText], value: item[props.itemValue]};
-        }
-        return item;
-      });
+      if(props.itemValue) return list.map(item => {
+          return {text: item[props.itemText], value: item[props.itemValue]}
+        })
+      else return list
     }
     else if(props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item))
     else return list.map(item => props.items.find(el => el === item))
+  })
+}
+
+//same as getSelection but accept selections not in list
+export function getSelectionsForCombobox(props, selectedValue) {
+  return computed(() => {
+    if (!props.multiple) {
+      let item = selectedValue.value;
+      if (!item && item !== 0) return null
+      //primitive array
+      if (!props.itemValue && (typeof item === 'string'||typeof item === 'number') ) return item;
+      if (props.itemValue && !props.returnObject) {
+        let itemInList = props.items.find(_item => _item[props.itemValue] === item)
+        return itemInList !== undefined ? itemInList : item;
+      }
+      else item = props.items.find(_item =>_.isEqual(item, _item)) || item
+
+      return {text: item[props.itemText], value: item[props.itemValue]} || '';
+    }
+    const list = selectedValue.value || []
+    if (props.returnObject) {
+      if(props.itemValue) return list.map(item => {
+        return item[props.itemValue] ?  {text: item[props.itemText], value: item[props.itemValue]} : item
+      })
+      else return list
+    }
+    else if(props.itemValue){
+      return list.map(item => {
+        let itemsHaveValue = props.items.find(el => el[props.itemValue] === item)
+         return itemsHaveValue ?  itemsHaveValue : item
+      })
+    }
+    return list
   })
 }
