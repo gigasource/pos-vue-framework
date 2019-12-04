@@ -245,9 +245,6 @@
 
 
       const {uniqueItems: renderList, internalValue, toggleItem, isActiveItem} = makeListSelectable(props, context);
-      // const renderList = computed(() => {
-      //   context.refs.listItemRef ? uniqueItems.value : uniqueItems.value
-      // })
 
       //handler case:  list items in list
       const add = (item) => {

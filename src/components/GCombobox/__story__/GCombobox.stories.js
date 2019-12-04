@@ -131,7 +131,7 @@ export const GComboboxMultiSelect = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: ['hhh','hgh']
+      selected: ['hhh','hgh','Jason Oner']
     }
   },
   template: `

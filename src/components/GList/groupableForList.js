@@ -51,7 +51,7 @@ export function groupableForList(props, vModel) {
     const itemIndex = clonedValue.findIndex((i) => _.isEqual(i, item));
     //item exists + mandatory
     if (itemIndex > -1 && !allowDuplicates &&  mandatory && clonedValue.length - 1 < 1) return;
-    if (itemIndex > -1 && !allowDuplicates) clonedValue.splice(itemIndex, 1);
+    if (itemIndex > -1 && !allowDuplicates) return clonedValue.splice(itemIndex, 1)
     else clonedValue.push(item);
     vModel.value = clonedValue;
   };
@@ -122,7 +122,7 @@ export function makeListSelectable(props, context) {
 
   //use when props.value is change from outside
   watch(() => props.value, () => {
-    if (_.isEqual(rawInternalValue.value, convertValueToInternalValue(props.value))) return
+    if (_.isEqual(rawInternalValue.value, props.value)) return
 
     if (props.multiple && props.value && !Array.isArray(props.value)) {
       rawInternalValue.value = [convertValueToInternalValue(props.value)];
@@ -132,7 +132,7 @@ export function makeListSelectable(props, context) {
   }, {lazy: true});
 
   watch(() => rawInternalValue.value, () => {
-    if (_.isEqual(convertInternalValueToValue(rawInternalValue.value), props.value)) return
+    if (_.isEqual(rawInternalValue.value, props.value)) return
 
     context.emit('input', convertInternalValueToValue(rawInternalValue.value));
   })
