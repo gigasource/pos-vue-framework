@@ -16,7 +16,6 @@
 <script>
   import { computed, onMounted, reactive, ref } from '@vue/composition-api'
   import delayable from '../../mixins/delayable';
-  import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
   import GTooltipContent from './GTooltipContent';
 
@@ -137,7 +136,6 @@
       })
       const { runDelay } = delayable(props, state)
       const { attachToParent } = detachable(props, context)
-      const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
       //// ACTIVATOR
       // This variable will be used by Tooltip content to calculate position
@@ -181,9 +179,6 @@
         state,
         activator,
         activatorListeners,
-        showSpeechBubble,
-        speechBubbleClass,
-        speechBubbleStyle
       }
     }
   }
