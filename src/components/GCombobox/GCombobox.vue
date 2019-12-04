@@ -121,7 +121,7 @@
       const state = reactive({
         searchText: '',
         fieldItem: null,
-        lazySearch: ref(selections.value),
+        lazySearch: ref(props.multiple ? selections.value.join(', ') : selections.value),
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
