@@ -26,10 +26,10 @@
           type: String,
           default: 'g-btn__active',
         },
-				uppercase: {
+        uppercase: {
           type: Boolean,
-					default: true,
-				}
+          default: true,
+        }
       },
       //style
       ...{
@@ -55,7 +55,7 @@
         backgroundColor: String,
         gradient: String,
         gradientAngle: { type: String, default: '45deg' },
-				borderRadius: [Number, String],
+        borderRadius: [Number, String],
       }
     },
     setup(props, context) {
