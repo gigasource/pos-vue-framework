@@ -45,7 +45,7 @@
       });
       const isSelectedArray = computed(() => Array.isArray(internalValue.value));
       //value return when checkbox checked
-      const trueValue = props.value ? (props.value) : true;
+      const trueValue = computed(() => props.value ? (props.value) : true);
       let isActive = ref(props.inputValue || false);
       //determinate state
       let isDeterminate = ref(true);
@@ -53,14 +53,14 @@
         isDeterminate.value = false;
       }
       //change determinate & active state when value changes
-      watch(() => internalValue.value, (newVal) => {
+      watch(() => [internalValue.value, props.value], () => {
         //inputValue & value is both array
         if (props.multiple) {
-          if (xorWith(newVal, props.value, isEqual).length === 0) {
+          if (xorWith(internalValue.value, props.value, isEqual).length === 0) {
             // equal arrays (all selected)
             isDeterminate.value = true;
             isActive.value = true;
-          } else if (newVal.length === 0) {
+          } else if (!internalValue.value || internalValue.value.length === 0) {
             // none selected
             isDeterminate.value = true;
             isActive.value = false;
@@ -70,13 +70,13 @@
             isActive.value = false;
           }
         } else {
-          if (newVal && isSelectedArray.value) {
-            isActive.value = newVal.some(v => isEqual(v, trueValue));
+          if (internalValue.value && isSelectedArray.value) {
+            isActive.value = internalValue.value.some(v => isEqual(v, trueValue.value));
           } else {
-            isActive.value = newVal === true || newVal === 'true' || isEqual(newVal, trueValue);
+            isActive.value = internalValue.value === true || internalValue.value === 'true' || isEqual(internalValue.value, trueValue.value);
           }
         }
-      }, { lazy: true });
+      });
       //define props color is a class or a css style
       const { getColorType, convertColorClass } = colorHandler();
       const type = computed(() => getColorType(props.color));
@@ -102,19 +102,18 @@
       function toggle() {
         isActive.value = !isActive.value;
         isDeterminate.value = true;
-
         if (isSelectedArray.value && !props.multiple) {
           //if the checkbox is not checkbox for all & in an multiple input
-          const index = internalValue.value.findIndex(v => isEqual(v, trueValue));
+          const index = internalValue.value.findIndex(v => isEqual(v, trueValue.value));
           if (isActive.value && index === -1) { //check
             // internalValue.value.push(value);
-            internalValue.value = [...internalValue.value, trueValue]
+            internalValue.value = [...internalValue.value, trueValue.value]
           } else if (!isActive.value && index > -1) { //uncheck
             internalValue.value.splice(index, 1);
           }
         } else {
           if (isActive.value) { //checked
-            internalValue.value = cloneDeep(trueValue);
+            internalValue.value = cloneDeep(trueValue.value);
           } else {
             if (props.multiple) {
               internalValue.value = [];
