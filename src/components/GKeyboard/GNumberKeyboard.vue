@@ -48,12 +48,6 @@
           return '' + this.value;
         },
         set(value) {
-          if (value.length === 0) {
-            value = '0';
-          } else {
-            //TODO: bigint > 2^53
-            value = '' + parseFloat(value);
-          }
           this.$emit('input', value);
         }
       }
