@@ -104,8 +104,7 @@ export function getSelectionsForCombobox(props, selectedValue) {
 
       return {text: item[props.itemText], value: item[props.itemValue]} || '';
     }
-
-    const list = selectedValue.value
+    const list = selectedValue.value || []
     if (props.returnObject) {
       if(props.itemValue) return list.map(item => {
         return item[props.itemValue] ?  {text: item[props.itemText], value: item[props.itemValue]} : item

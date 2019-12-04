@@ -196,7 +196,7 @@ export const GComboboxNoDataSlot = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: []
     }
   },
   template: `
@@ -284,7 +284,7 @@ export const GComboboxPrimitiveArray = () => ({
         'Ali Connors',
         'Ranee Carlson',
       ],
-      selected: null
+      selected: 'Jason Oner'
     }
   },
   template: `

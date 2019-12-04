@@ -134,7 +134,7 @@ export const GSelectMultiple = () => ({
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
-    returnObject: {default: boolean('returnObject', false)}
+    returnObject: {default: boolean('returnObject', true)}
   },
   data() {
     return {

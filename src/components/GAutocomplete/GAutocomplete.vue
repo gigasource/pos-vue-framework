@@ -120,12 +120,12 @@
       const state = reactive({
         searchText: '',
         fieldItem: null,
-        lazySearch: '',
+        lazySearch: ref(selections.value),
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
 
-      const options = getList(props, selectedItem, state, props.filter)
+      const options = getList(props, selectedItem, state)
 
       //gen List
       const showOptions = ref(false)
@@ -242,7 +242,7 @@
                 ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                   'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                   'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
-                value: props.value || tfValue.value
+                value: tfValue.value
               },
               on: {
                 'click:clearIcon': clearSelection,

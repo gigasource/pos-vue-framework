@@ -1,29 +1,29 @@
 import _ from 'lodash'
 import {computed, ref, watch} from '@vue/composition-api';
+import {getInternalValue} from "../../utils/helpers";
 
-//filter duplications in list for correct select effect
-export function filterList(props){
-  const isObjectList = computed(() => props.items.some(item => _.isObject(item) === true))
-  const itemsHaveText = ref(props.items.filter(item => item[props.itemText]) || [])
-  return computed(() => {
-        if (props.items) {
-          if (isObjectList.value) {
-            if (props.returnObject) return _.uniqWith(itemsHaveText.value, _.isEqual)
-            else if (props.itemValue) return _.uniqBy(itemsHaveText.value, props.itemText)
-            return _.uniqBy(itemsHaveText.value, props.itemText)
-          } else return _.uniq(props.items)
-        } else return []
-      }
-  )
-}
+
 export function groupableForList(props, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
   //allowDuplicate: choose one item multiple times
   const {returnObject = true, items, mandatory, multiple, allowDuplicates, itemValue, itemText} = props
 
-  //filter by function for better reactive
-  let uniqueItems = filterList(props)
+  const uniqueItems = ref([])
+  watch(() => props.items , () => {
+    const isObjectList = props.items.some(item => _.isObject(item) === true)
+    const itemsHaveText = props.items.filter(item => item[props.itemText])
+
+    if (props.items) {
+      if (isObjectList.value) {
+        if (props.returnObject) return uniqueItems.value = _.uniqWith(itemsHaveText.value, _.isEqual)
+        else if (props.itemValue) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
+        else if (props.itemText) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
+      }
+      else return uniqueItems.value = _.uniq(props.items)
+    }
+    else return uniqueItems.value = []
+  })
   const toggleItem = (item) => {
     if (multiple) {
       if (returnObject) updateMultiple(item);
@@ -140,5 +140,12 @@ export function makeListSelectable(props, context) {
   const {uniqueItems, toggleItem, isActiveItem} = groupableForList(props, rawInternalValue);
 
   return {uniqueItems, toggleItem, isActiveItem, internalValue: rawInternalValue};
+}
+
+export function makeCombobox(props, context){
+  const internalValue = getInternalValue(props, context)
+  const {uniqueItems, toggleItem, isActiveItem} = groupableForList(props, internalValue);
+  return {uniqueItems, toggleItem, isActiveItem, internalValue};
+
 }
 

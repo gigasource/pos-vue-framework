@@ -15,7 +15,7 @@
   import { keyCodes } from '../../utils/helpers';
   import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
   import {getInputEventHandlers, resetSelectionsDisplay, setSearch} from '../GAutocomplete/GAutocompleteFactory';
-  import {groupableForList, makeListSelectable} from "../GList/groupableForList";
+  import {groupableForList, makeCombobox, makeListSelectable} from "../GList/groupableForList";
   import {Fragment} from 'vue-fragment'
 
   export default {
@@ -106,7 +106,7 @@
 
 
       //list selections
-      const { internalValue: selectedItem, toggleItem} = makeListSelectable(props, context)
+      const { internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
       const fieldItem = getSelectionsForCombobox(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
@@ -121,7 +121,7 @@
       const state = reactive({
         searchText: '',
         fieldItem: null,
-        lazySearch: '',
+        lazySearch: ref(selections.value),
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
@@ -182,14 +182,6 @@
         onInputDelete,
         inputAddSelection
       } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
-
-      function onInputKeyDown(e) {
-        resetSelectionsDisplay(state)
-        if (e.keyCode === keyCodes.down) {
-          const listRef = context.refs.list
-          listRef.$el.getElementsByClassName('g-list-item')[0].focus()
-        }
-      }
 
       //textfield scoped slot
       const genMultiSelectionsSlot = () => {
