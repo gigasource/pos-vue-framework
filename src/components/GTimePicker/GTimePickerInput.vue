@@ -7,8 +7,6 @@
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
   import { reactive, computed } from '@vue/composition-api';
-  import { HourConvention, HourConventionValidator, getFormattedHours } from './logic/GTimePickerUtil';
-  import dayjs from 'dayjs';
   import _ from 'lodash'
 
   GMenu.components['GTextField'] = GTextField
@@ -38,11 +36,7 @@
 
       // time picker props
       ...{
-        hourConvention: {
-          type: String,
-          default: HourConvention._24HRS,
-          validator: HourConventionValidator
-        },
+        use24Hours: Boolean,
         value: String,
         useSeconds: Boolean,
         scrollable: Boolean,
@@ -102,7 +96,7 @@
                 props: {
                   ..._.pick(props, [
                     'disabled', 'readonly',
-                    'hourConvention', 'useSeconds',
+                    'use24Hours', 'useSeconds',
                     'landscape', 'scrollable',
                     'clockHandColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'titleTextColor', 'titleBgColor', 'clockWrapperColor',
                   ]),

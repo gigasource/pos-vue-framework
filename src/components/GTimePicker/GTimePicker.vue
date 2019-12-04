@@ -2,7 +2,7 @@
   import _ from 'lodash'
   import { computed } from '@vue/composition-api'
   import GPicker from '../GPicker/GPicker'
-  import GTimePickerUtil, { HourConvention, HourConventionValidator, getFormattedHours, ActiveTimePicker, ActivePeriodPicker } from './logic/GTimePickerUtil'
+  import GTimePickerUtil, { getFormattedHours, ActiveTimePicker, ActivePeriodPicker } from './logic/GTimePickerUtil'
   import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_59PositionStyle } from './logic/GTimePickerUIHelper';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 
@@ -23,11 +23,7 @@
       value: String,
 
       // convention
-      hourConvention: {
-        type: String,
-        default: HourConvention._12HRS,
-        validator: HourConventionValidator
-      },
+      use24Hours: Boolean,
 
       landscape: Boolean,
       // Predefined width for date picker
@@ -212,7 +208,7 @@
             // 24 hours specified
             const { Ox, Oy } = { Ox: width / 2, Oy: height / 2 }
             const distance = Math.sqrt(Math.pow(targetPos.x - Ox, 2) + Math.pow(targetPos.y - Oy, 2))
-            if ((distance < (width / 2 * 0.6)) && props.hourConvention === HourConvention._24HRS) {
+            if ((distance < (width / 2 * 0.6)) && props.use24Hours) {
               index += 12
             }
             hoursModel.value[index].select()

@@ -7,10 +7,6 @@ import * as _ from 'lodash';
 import { pad } from '../../GDatePicker/logic/utils';
 dayjs.extend(customParseFormat)
 
-// Hour convention
-export const HourConvention = { _12HRS: '12', _24HRS: '24' }
-export const HourConventionValidator = (convention) => Object.values(HourConvention).indexOf(convention) >= 0
-
 // pre-defined active time picker
 export const ActiveTimePicker = {
   hour: 0,
@@ -31,7 +27,7 @@ export const range0_59 = [...Array(60).keys()]
 
 // convert 0 to 12 in 12 hour convention
 export const getFormattedHours = (hours, props) => {
-  if (props.hourConvention === HourConvention._24HRS) {
+  if (props.use24Hours) {
     return hours
   } else if (hours === 0) {
     return 12
@@ -137,13 +133,13 @@ export const _12HourTimeRegex = /^(?<hours>1[0-2]|0?[1-9]):(?<minutes>[0-5][0-9]
 export const _24HourTimeRegex = /^(?<hours>2[0-3]|[0-1]?[1-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))?$/i
 
 export default function (props, context) {
-  const cptIs12HoursConvention = computed(() => props.hourConvention === HourConvention._12HRS)
+  const cptIs12HoursConvention = computed(() => !props.use24Hours)
   const cptTimeFormatStr = computed(() => {
     let timeFormatStr = ''
-    timeFormatStr += props.hourConvention === HourConvention._24HRS ? 'HH' : 'hh'
+    timeFormatStr += props.use24Hours ? 'HH' : 'hh'
     timeFormatStr += ':mm'
     props.useSeconds && (timeFormatStr += ":ss")
-    props.hourConvention === HourConvention._12HRS && (timeFormatStr += ' A')
+    !props.use24Hours && (timeFormatStr += ' A')
     return timeFormatStr
   })
 
@@ -160,7 +156,7 @@ export default function (props, context) {
   })
 
   watch(() => props.value, () => {
-    let timeRegex = props.hourConvention === HourConvention._12HRS ? _12HourTimeRegex : _24HourTimeRegex
+    let timeRegex = props.use24Hours ? _24HourTimeRegex : _12HourTimeRegex
     let timeRegexResult
     const newValue = props.value == null ? '' : String(props.value).trim()
     if (newValue)
@@ -172,7 +168,7 @@ export default function (props, context) {
     let timeObj = timeRegexResult.groups
     let { hours, minutes, seconds } = timeObj
     let activePeriod
-    if (props.hourConvention === HourConvention._12HRS) {
+    if (!props.use24Hours) {
       let { meridiems } =  timeObj
       if (meridiems[0].toLowerCase() === 'a')
         activePeriod = ActivePeriodPicker.AM
@@ -187,7 +183,7 @@ export default function (props, context) {
     let hours = pad(getFormattedHours(state.selectedTime.hours, props))
     let minutes = pad(state.selectedTime.minutes)
     let seconds = props.useSeconds ? `:${pad(state.selectedTime.seconds || 0)}` : ''
-    let meridiems = props.hourConvention === HourConvention._12HRS ? state.activePeriodPicker === ActivePeriodPicker.AM ? ' AM' : ' PM' : ''
+    let meridiems = props.use24Hours ? '' : state.activePeriodPicker === ActivePeriodPicker.AM ? ' AM' : ' PM'
     context.emit('input', `${hours}:${minutes}${seconds}${meridiems}`)
   }
 

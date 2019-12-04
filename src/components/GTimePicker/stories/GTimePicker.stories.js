@@ -2,7 +2,6 @@ import { boolean, text, withKnobs, select, array, number } from '@storybook/addo
 import { action } from '@storybook/addon-actions';
 import GTimePicker from '../GTimePicker'
 import GTimePickerInput from '../GTimePickerInput'
-import { HourConvention } from '../logic/GTimePickerUtil';
 import _ from 'lodash'
 
 //
@@ -78,7 +77,6 @@ export const Index = () => ({
                 scrollable={props.scrollable}
                 useSeconds={props.useSeconds}
                 value={props.value}
-                hourConvention={HourConvention._12HRS}
                 color={props.color}
                 header-color={props.headerColor}
                 width={props.width}
@@ -103,7 +101,7 @@ export const Index = () => ({
                 scrollable={props.scrollable}
                 useSeconds={props.useSeconds}
                 value={props.value}
-                hourConvention={HourConvention._24HRS}
+                use24Hours
                 color={props.color}
                 header-color={props.headerColor}
                 width={props.width}
@@ -156,12 +154,12 @@ export const gTimePickerInput = () => ({
   },
   setup(props) {
     return () => <div>
-      <g-time-picker-input hourConvention="12" {...{
+      <g-time-picker-input {...{
         props: _.pick(props, ['disabled', 'readonly', 'scrollable', 'useSeconds', 'value', 'landscape', 'titleBgColor',
           'titleTextColor', 'clockWrapperColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'clockHandColor',
           'label', 'filled', 'solo', 'outlined', 'flat', 'dense', 'rounded', 'shaped', ''])
       }}/>
-      <g-time-picker-input  hourConvention="24" {...{
+      <g-time-picker-input use24Hours {...{
         props: _.pick(props, ['disabled', 'readonly', 'scrollable', 'useSeconds', 'value', 'landscape', 'titleBgColor',
           'titleTextColor', 'clockWrapperColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'clockHandColor',
           'label', 'filled', 'solo', 'outlined', 'flat', 'dense', 'rounded', 'shaped', ''])

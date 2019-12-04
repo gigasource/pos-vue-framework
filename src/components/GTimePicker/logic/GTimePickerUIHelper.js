@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { computed } from '@vue/composition-api'
-import { HourConvention } from './GTimePickerUtil'
 import { range0_11, range12_23, range0_59 } from './GTimePickerUtil';
 import { ActiveTimePicker } from './GTimePickerUtil';
 
@@ -123,7 +122,7 @@ export const range0_59PositionStyle = _calcNumberPositionStyle(range0_59.length)
 const _computedHandHeightAndTop = (props, state) => {
   return computed(() => {
     if (   state.activeTimePicker === ActiveTimePicker.hour
-        && props.hourConvention === HourConvention._24HRS
+        && props.use24Hours
         && state.selectedTime.hours >= 12)
     {
       // get short hand
