@@ -1,21 +1,21 @@
 <script>
   import _ from 'lodash'
-  import { reactive } from '@vue/composition-api'
+  import {reactive} from '@vue/composition-api'
   // slider used in colorPicker/adjustPreview
   import GSlider from '../GSliderRemake/GSlider'
-  import GTooltip from '../../components/GToolTip/GTooltip'
+  import GTooltip from '../../components/GTooltip/GTooltip'
   import getSwatchesRenderFn from './swatches'
   import getGradientRenderFn from './gradientColors'
   import getColorPickerRenderFn from './colorPicker'
-  import { tabIndexes } from './commonUI';
+  import {tabIndexes} from './commonUI';
 
   export default {
     name: 'GColorPicker',
-    components: { GSlider, GTooltip },
+    components: {GSlider, GTooltip},
     setup(props, context) {
       const colorSelectedHandler = color => context.emit('color', color)
       // color picker require tabState to activate updateCanvas function
-      const tabState = reactive({ selectedTab: tabIndexes.swatches })
+      const tabState = reactive({selectedTab: tabIndexes.swatches})
       const renderColorPicker = getColorPickerRenderFn(props, context, tabState, colorSelectedHandler)
       const renderSwatches = getSwatchesRenderFn(colorSelectedHandler)
       const renderGradientColors = getGradientRenderFn(colorSelectedHandler)
@@ -27,20 +27,20 @@
           id: tabIndexes.swatches,
           title: 'swatches',
           renderFn: renderSwatches,
-          bgStyle: { background: inactiveTabColor, borderColor: inactiveTabColor },
-          bgSelectedStyle: { background: activeTabColor, borderColor: activeTabColor }
+          bgStyle: {background: inactiveTabColor, borderColor: inactiveTabColor},
+          bgSelectedStyle: {background: activeTabColor, borderColor: activeTabColor}
         }, {
           id: tabIndexes.gradient,
           title: 'gradient',
           renderFn: renderGradientColors,
-          bgStyle: { background: 'linear-gradient(180deg, #fff, #b0bec5, #78909c)', borderColor: inactiveTabColor },
-          bgSelectedStyle: { background: 'linear-gradient(180deg, #fff, #90CAF9, #42A5F5)', borderColor: activeTabColor }
+          bgStyle: {background: 'linear-gradient(180deg, #fff, #b0bec5, #78909c)', borderColor: inactiveTabColor},
+          bgSelectedStyle: {background: 'linear-gradient(180deg, #fff, #90CAF9, #42A5F5)', borderColor: activeTabColor}
         }, {
           id: tabIndexes.colorPicker,
           title: 'color picker',
           renderFn: renderColorPicker,
-          bgStyle: { background: '#fff', borderColor: inactiveTabColor },
-          bgSelectedStyle: { background: '#fff', borderColor: activeTabColor }
+          bgStyle: {background: '#fff', borderColor: inactiveTabColor},
+          bgSelectedStyle: {background: '#fff', borderColor: activeTabColor}
         }]
       }
 
