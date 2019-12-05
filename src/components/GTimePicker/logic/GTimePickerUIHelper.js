@@ -145,16 +145,16 @@ const _computedHandTransform = (state) => {
     if (state.activeTimePicker === ActiveTimePicker.hour) {
       // 12 hours
       // 30 = 360 / 12
-      degree = _.findIndex(range0_11, hours => hours == state.selectedTime.hours) * 30
+      degree = _.findIndex(range0_11, hours => hours === Number(state.selectedTime.hours)) * 30
       if (degree < 0) {
-        degree = _.findIndex(range12_23, hours => hours == state.selectedTime.hours) * 30
+        degree = _.findIndex(range12_23, hours => hours === Number(state.selectedTime.hours)) * 30
       }
     }
     else if (state.activeTimePicker === ActiveTimePicker.minute) {
-      degree = _.findIndex(range0_59, minutes => minutes == state.selectedTime.minutes) * 6
+      degree = _.findIndex(range0_59, minutes => minutes === Number(state.selectedTime.minutes)) * 6
     }// 360 / 60
     else if (state.activeTimePicker === ActiveTimePicker.second) {
-      degree = _.findIndex(range0_59, seconds => seconds == state.selectedTime.seconds) * 6
+      degree = _.findIndex(range0_59, seconds => seconds === Number(state.selectedTime.seconds)) * 6
     }
 
     return { 'transform': `rotate(${degree}deg)` }
