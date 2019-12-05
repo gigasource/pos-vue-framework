@@ -69,9 +69,12 @@
 
 			const unwatch = watch(isActive, newVal => {
 			  if (newVal) {
+          window.addEventListener('wheel', onWheel, {passive: false})
           context.root.$nextTick(() => {
             context.refs.wrapper.focus()
 					})
+				} else {
+          window.removeEventListener('wheel', onWheel)
 				}
 			})
 
@@ -113,6 +116,82 @@
         context.refs.wrapper && detach(context.refs.wrapper);
         context.refs.overlay && detach(context.refs.overlay.$el);
       });
+
+      // Scroll prevent
+
+      const composedPath = function(e) {
+        if (e.composedPath) return e.composedPath()
+
+        const path = []
+        let el = e.target
+
+        while (el) {
+          path.push(el)
+
+          if (el.tagName === 'HTML') {
+            path.push(document)
+            path.push(window)
+
+            return path
+          }
+
+          el = el.parentElement
+        }
+        return path
+      }
+
+			const hasScrollbar = function(el) {
+        if (!el || el.nodeType !== Node.ELEMENT_NODE) return false
+        const style = window.getComputedStyle(el)
+        return ['auto', 'scroll'].includes(style.overflowY) && el.scrollHeight > el.clientHeight
+			}
+
+      const shouldScroll = function(el, delta) {
+        if (el.scrollTop === 0 && delta < 0) return true
+        return el.scrollTop + el.clientHeight === el.scrollHeight && delta > 0
+      }
+
+      const isInside = function (el, parent) {
+        if (el === parent) {
+          return true
+        } else if (el === null || el === document.body) {
+          return false
+        } else {
+          return isInside(el.parentNode, parent)
+        }
+      }
+
+      const checkPath = function (e) {
+        //debugger
+        const path = e.path || composedPath(e)
+        const delta = e.deltaY
+
+        if (e.type === 'keydown' && path[0] === document.body) {
+          const dialog = context.refs.wrapper
+          // getSelection returns null in firefox in some edge cases, can be ignored
+          const selected = window.getSelection().anchorNode
+          if (dialog && hasScrollbar(dialog) && isInside(selected, dialog)) {
+            return shouldScroll(dialog, delta)
+          }
+          return true
+        }
+
+        for (let index = 0; index < path.length; index++) {
+          const el = path[index]
+
+          if (el === document) return true
+          if (el === document.documentElement) return true
+          if (el === context.refs.content) return true
+
+          if (hasScrollbar(el)) return shouldScroll(el, delta)
+        }
+
+        return true
+			}
+
+			const onWheel = function (e) {
+			  if (e.target === context.refs.overlay.$el.firstChild || checkPath(e)) e.preventDefault()
+			}
 
       // Render functions
       function genContent() {

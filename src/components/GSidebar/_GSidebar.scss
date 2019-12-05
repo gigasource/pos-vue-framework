@@ -16,12 +16,16 @@
   transition-property: transform, width, max-width;
   @include elevation(2);
 
+  &-wrapper {
+    height: 100%;
+  }
+
   &-header {
     position: sticky;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 202;
     background: inherit;
     text-overflow: ellipsis;
 
