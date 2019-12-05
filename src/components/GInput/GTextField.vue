@@ -17,8 +17,7 @@
 				<div class="inputGroup">
 					<div class="input">
 						<slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
-            <input id="input"
-                   autocomplete="off"
+            <input autocomplete="off"
 									 :autofocus="autofocus"
                    class="g-tf-input"
 									 :style="inputErrStyles"
@@ -34,7 +33,7 @@
 									 @keydown="onKeyDown">
 					</div>
 					<slot name="label">
-						<label for="input" class="g-tf-label" :class="labelClasses" :style="labelStyles">
+						<label class="g-tf-label" :class="labelClasses" :style="labelStyles">
 							{{label}}
 							<span v-if="required" style="color: red">*</span>
 						</label>
