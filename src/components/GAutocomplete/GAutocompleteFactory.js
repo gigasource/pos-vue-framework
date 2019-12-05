@@ -1,8 +1,4 @@
-import GList from '../GList/GList';
-import GIcon from '../GIcon/GIcon';
-import { keyCodes } from '../../utils/helpers';
-import GChip from '../GChip/GChip';
-import { getLabel } from '../GInput/GInputFactory';
+import {keyCodes} from '../../utils/helpers';
 
 export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
   function onChipCloseClick(index = null) {
@@ -64,17 +60,14 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   const inputAddSelection = () => {
-    //returnObject ---> itemValue ? {text, value} : {text}
-    //!returnObject ---> itemValue ? value string only
-    //primitive array ---> same as above
     if (state.searchText.trim().length > 0) {
+      let isNumberArray = props.itemValue ? props.items.some(item => typeof item[props.itemValue] === 'number') : props.items.some(item => typeof item === 'number')
       let inputAddedItem;
       if (props.returnObbject || props.itemValue) inputAddedItem = {
-          [props.itemText]: state.searchText,
-          [props.itemValue]: state.searchText
-        }
-      else inputAddedItem = state.searchText
-
+        [props.itemText]: state.searchText,
+        [props.itemValue]: isNumberArray ? Number(state.searchText) : state.searchText
+      }
+      else inputAddedItem = isNumberArray ? Number(state.searchText) : state.searchText
       toggleItem(inputAddedItem)
       setSearch(props, context, selections, state)
     }

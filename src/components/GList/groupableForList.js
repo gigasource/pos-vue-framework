@@ -94,7 +94,7 @@ export function makeListSelectable(props, context) {
       let itemsHaveValueInlist = props.items.filter(i => value.some(el => el === i[props.itemValue]))
       return itemsHaveValueInlist.length ? itemsHaveValueInlist.map(item => item[props.itemValue]) : value
     }
-  }
+    }
 
   // {a: 1, b: 2} -> 1
   const convertInternalValueToValue = function (internalValue) {

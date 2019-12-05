@@ -1,8 +1,7 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {makeSelectable} from '../../mixins/groupable';
-  import {reactive, ref, computed, watch} from '@vue/composition-api';
+  import {computed, reactive, ref} from '@vue/composition-api';
   import {getList, getSelections} from '../GSelect/GSelectFactory';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
@@ -10,17 +9,12 @@
   import _ from 'lodash'
   import {getLabel, getValidate} from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
-  import GListItem from '../GList/GListItem';
-  import {GListItemContent, GListItemText} from '../GList/GListFunctionalComponent';
-  import {keyCodes} from '../../utils/helpers';
-  import {
-    getInputEventHandlers, setSearch
-  } from './GAutocompleteFactory';
+  import {getInputEventHandlers, setSearch} from './GAutocompleteFactory';
   import {makeListSelectable} from "../GList/groupableForList";
 
   export default {
     name: 'GAutocomplete',
-    components: {GSelect, GMenu},
+    components: { GSelect, GMenu },
     props: {
       //select props
       width: [String, Number],
@@ -85,6 +79,7 @@
           top: false,
         })
       },
+      eager:Boolean,
       //item textfieldValue props
       chips: Boolean,
       smallChips: Boolean,
@@ -120,7 +115,7 @@
       const state = reactive({
         searchText: '',
         fieldItem: null,
-        lazySearch: props.multiple ? selectionTexts.value.join(', ') : selectionTexts.value,
+        lazySearch: props.multiple ? selectionTexts.value.join() : selectionTexts.value,
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
@@ -129,7 +124,6 @@
 
       //gen List
       const showOptions = ref(false)
-
       function genList(showOptions) {
         const onClickItem = () => {
           setSearch(props, context, selectionTexts, state)
@@ -161,14 +155,14 @@
       }
 
       //selections text
-      const selectionsText = computed(() => {
+      const selectionString = computed(() => {
         return props.multiple ? selectionTexts.value.join('') : selectionTexts.value
       })
 
       //textfield logic, styles, classes computed
       const isValidInput = ref(true)
       const isFocused = ref(false);
-      const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
+      const validateText = computed(() => state.lazySearch || selectionString.value || state.searchText)
       const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages} = getValidate(props, isFocused, validateText, isValidInput);
@@ -229,11 +223,11 @@
         ]
       }
 
-      const tfValue = computed(() =>
-          ((props.multiple || props.chips || props.smallChips || props.deletableChips || !selectionTexts.value.length)
+      const tfValue = computed(() => {
+        return (props.multiple || props.chips || props.smallChips || props.deletableChips|| !selectionTexts.value)
               ? state.searchText
-              : state.lazySearch)
-      )
+            : state.lazySearch
+      })
 
       const genTextFieldProps = function (toggleContent) {
         return (
@@ -268,9 +262,10 @@
             ...props.menuProps,
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
+            lazy: !props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextFieldProps(toggleContent, showOptions)
+            activator: ({toggleContent}) => genTextFieldProps(toggleContent)
           },
           on: {
             input: e => showOptions.value = e,
@@ -308,6 +303,7 @@
   }
 </script>
 <style lang="scss" scoped>
+
   .g-autocomplete {
     .g-menu::v-deep {
       span {
