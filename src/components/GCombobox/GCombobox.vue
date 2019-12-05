@@ -101,6 +101,7 @@
       },
       value: null,
       returnObject: Boolean,
+      searchText: String,
     },
     setup: function (props, context) {
 
@@ -181,6 +182,7 @@
         onInputClick,
         onInputBlur,
         onInputDelete,
+        onInputChange,
         inputAddSelection
       } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
 
@@ -254,7 +256,7 @@
                     delete: onInputDelete,
                     enter: inputAddSelection,
                     keydown: (e) => onInputKeyDown(e),
-                    input: (e) => state.searchText = e,
+                    input: (e) => onInputChange(e),
                   },
                   scopedSlots: textFieldScopedSlots
                 }}
