@@ -72,7 +72,7 @@
                 state.collapse = !state.collapse;
                 openPath.value = path
 
-                if (!node.clickable) return // subheader is clickable
+                if (!node.clickable) return
               }
 
               context.emit('node-selected', node)
