@@ -26,6 +26,51 @@
   }
 }
 
+@each $size, $width in $grid-breakpoints {
+  @media (min-width: $width) {
+    .col-#{$size} {
+      flex-basis: 0;
+      flex-grow: 1;
+      max-width: 100%;
+    }
+    .col-#{$size}-auto {
+      flex: 0 0 auto;
+      width: auto;
+      max-width: 100%;
+    }
+    @for $i from 1 through $grid-columns {
+      .col-#{$size}-#{$i} {
+        flex: 0 0 percentage($i/$grid-columns);
+        max-width: percentage($i/$grid-columns);
+      }
+      .#{$size}-#{$i} {
+        flex: 0 0 percentage($i/$grid-columns);
+        max-width: percentage($i/$grid-columns);
+      }
+      .#{$size}#{$i} {
+        flex: 0 0 percentage($i/$grid-columns);
+        max-width: percentage($i/$grid-columns);
+      }
+    }
+  }
+}
+
+@for $i from 1 through $grid-columns {
+  .offset-#{$i} {
+    margin-left: percentage($i/$grid-columns);
+  }
+}
+
+@each $size, $width in $grid-breakpoints {
+  @media (min-width: $width) {
+    @for $i from 1 through $grid-columns {
+      .offset-#{$size}-#{$i} {
+        margin-left: percentage($i/$grid-columns);
+      }
+    }
+  }
+}
+
 @for $i from 1 through $grid-columns {
   .row-#{$i} {
     flex: 0 0 percentage($i/$grid-columns);

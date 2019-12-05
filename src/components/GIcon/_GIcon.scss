@@ -1,0 +1,54 @@
+$icon-size: 24px !default;
+$icon-size-dense: 20px !default;
+
+.g-icon.g-icon {
+  align-items: center;
+  display: inline-flex;
+  font-feature-settings: 'liga';
+  font-size: $icon-size;
+  justify-content: center;
+  letter-spacing: normal;
+  line-height: 1;
+  text-indent: 0;
+  transition: default;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.g-icon {
+  &__right {
+    margin-left: 16px;
+  }
+
+  &__left {
+    margin-right: 16px;
+  }
+
+  &__link {
+    cursor: pointer;
+  }
+
+  &__disabled {
+    pointer-events: none;
+    opacity: .6;
+  }
+
+  &__is-component {
+    height: $icon-size;
+    width: $icon-size;
+  }
+
+  &__svg {
+    height: $icon-size;
+    width: $icon-size;
+    fill: currentColor;
+  }
+
+  &__dense {
+    font-size: $icon-size-dense;
+
+    &__is-component {
+      height: $icon-size-dense;
+    }
+  }
+}

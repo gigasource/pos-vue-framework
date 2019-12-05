@@ -354,7 +354,6 @@ $colors: (
         "shades": $shades
 ) !default;
 
-
 // usage: color("name_of_color", "type_of_color")
 // to avoid to repeating map-get($colors, ...)
 
@@ -374,43 +373,53 @@ $colors: (
     @if $color_type == "base" {
       //background
       .bg-#{$color_name} {
-        background-color: $color_value ;
+        background-color: $color_value !important;
       }
       //text
-      .#{$color_name} {
-        color: $color_value ;
+      .text-#{$color_name} {
+        color: $color_value !important;
       }
       //border
       .b-#{$color_name} {
         border-color: $color_value;
       }
+      :export {
+        #{$color_name}: $color_value;
+      }
     } @else if $color_name != "shades" {
       //background
       .bg-#{$color_name}-#{$color_type} {
-        background-color: $color_value;
+        background-color: $color_value !important;
       }
       //text
-      .#{$color_name}-#{$color_type} {
-        color: $color_value;
+      .text-#{$color_name}-#{$color_type} {
+        color: $color_value  !important;
       }
       //border
       .b-#{$color_name}-#{$color_type} {
-        border-color: $color_value;
+        border-color: $color_value  !important;
+      }
+      :export {
+        #{$color_name}-#{$color_type}: $color_value;
       }
     }
+
   }
 }
 
 // Shade classes
 @each $color, $color_value in $shades {
   .bg-#{$color} {
-    background-color: $color_value;
+    background-color: $color_value !important;
   }
-  .#{$color} {
-    color: $color_value;
+  .text-#{$color} {
+    color: $color_value !important;
   }
   .b-#{$color} {
-    border-color: $color_value;
+    border-color: $color_value !important;
+  }
+  :export {
+    #{$color}: $color_value;
   }
 }
 
@@ -581,6 +590,14 @@ $gradient-colors: (
 
     &.gradient-shadow {
       box-shadow: 0 6px 20px 0 rgba($end-color, 0.5) !important;
+    }
+  }
+}
+
+@each $gradient_name, $gradient_obj in $gradient-colors {
+  @each $property, $value in $gradient_obj {
+    :export {
+      #{$gradient_name}--#{$property}: $value
     }
   }
 }

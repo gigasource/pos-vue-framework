@@ -1,5 +1,5 @@
 <template>
-	<div class="spacer"></div>
+	<div class="g-spacer"></div>
 </template>
 
 <script>
@@ -12,5 +12,8 @@
 </script>
 
 <style scoped>
-
+	.g-spacer {
+		flex-grow: 1;
+		visibility: hidden;
+	}
 </style>

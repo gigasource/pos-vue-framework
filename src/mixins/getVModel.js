@@ -1,16 +1,26 @@
-import { computed } from '@vue/composition-api';
+import { computed, ref, watch } from '@vue/composition-api';
 
 function getVModel(props, context) {
-  let model = computed({
+  return computed({
     get: () => props.value,
     set: value => {
       context.emit('input', value)
     }
-  });
+  })
+}
 
-  return {
-    model
-  }
+export function getInternalValue(prop, context, event = 'input') {
+  const rawInternalValue = ref(prop.value);
+
+  watch(() => prop.value, () => rawInternalValue.value = prop.value, { lazy: true });
+
+  return computed({
+    get: () => rawInternalValue.value,
+    set: (value) => {
+      rawInternalValue.value = value;
+      context.emit(event, rawInternalValue.value)
+    }
+  });
 }
 
 export default getVModel;

@@ -1,23 +1,28 @@
 <template>
 	<div class="keyboard__template" :style="template">
-		<g-button v-for="(item, i) in items" :key="i" :class="item.classes" class="key" :style="item.style" @click="click(item)">
+		<button v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key" :style="item.style" @click="click(item)">
 			<!-- TODO: responsive height for img -->
 			<img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
+      <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
 			<template v-if="item.content">
 				<span v-if="item.content.length > 0 && item.content.length > index" v-html="item.content[index]"></span>
 				<span v-else v-html="item.content[0]"></span>
 			</template>
-		</g-button>
+		</button>
 	</div>
 </template>
 
 <script>
-  import GButton from '../GButton/GButton';
+  import GIcon from '../GIcon/GIcon';
   export default {
     name: 'GKeyboard',
-    components: { GButton },
+    components: { GIcon },
     props: {
       value: String,
+			ripple: {
+				type: Boolean,
+				default: true
+			},
 			template: {
         type: String,
 				default: 'grid-template-areas: "q q w w e e r r t t y y u u i i o o p p del del" ' +
@@ -77,7 +82,7 @@
 		computed: {
       computedValue: {
         get() {
-          return this.value;
+          return this.value || '';
 				},
 				set(value) {
           this.$emit('input', value);
@@ -94,16 +99,17 @@
       click(item) {
         if(item.type === 'shift'){
           this.isShift = item.action(this.isShift);
-				} else if(item.type === 'enter') {
+        } else if(item.type === 'enter') {
           this.$emit('submit', this.value);
 				} else {
           this.computedValue = item.content ? item.action(this.computedValue, item.content[this.index]) : item.action(this.computedValue);
 				}
+
       },
     }
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+	@import "GKeyboard";
 </style>

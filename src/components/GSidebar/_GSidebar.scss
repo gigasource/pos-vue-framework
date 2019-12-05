@@ -1,0 +1,161 @@
+@import "../../style/variables";
+@import "../../style/elevation";
+
+.g-sidebar {
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 256px;
+  max-width: 256px;
+  z-index: 200;
+  overflow: hidden auto;
+  backface-visibility: hidden;
+  transition: 0.3s map_get($transition, 'fast-out-slow-in');
+  transition-property: transform, width, max-width;
+  @include elevation(2);
+
+  &-wrapper {
+    height: 100%;
+  }
+
+  &-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 202;
+    background: inherit;
+    text-overflow: ellipsis;
+
+    &:before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      margin: 16px;
+      content: '\F1D8';
+      font-size: 24px;
+      font-family: "Material Design Icons", sans-serif;
+      background: inherit;
+      visibility: hidden;
+    }
+  }
+
+  > .g-list {
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+
+  &__absolute {
+    position: absolute;
+  }
+
+  &__fixed {
+    position: fixed;
+  }
+
+  &__collapsed {
+    //width: 72px;
+    width: auto;
+    max-width: 72px;
+
+    ::v-deep .g-list-item-content,
+    ::v-deep .g-list-item-action {
+      display: none;
+    }
+
+    .g-sidebar-header {
+      visibility: hidden;
+      max-width: 24px;
+
+      &:before {
+        visibility: visible;
+      }
+    }
+
+    ::v-deep .g-list-header {
+      visibility: hidden;
+      position: relative;
+      max-width: 24px;
+
+      &:before {
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        margin: 16px;
+        content: '\F1D8';
+        font-size: 24px;
+        font-family: "Material Design Icons", sans-serif;
+        background: inherit;
+      }
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+      width: 256px;
+      max-width: 256px;
+
+      ::v-deep .g-list-item-content,
+      ::v-deep .g-list-item-action {
+        display: flex;
+      }
+
+      .g-sidebar-header {
+        visibility: visible;
+        max-width: 100%;
+
+        &:before {
+          visibility: hidden;
+        }
+      }
+
+      ::v-deep .g-list-header {
+        visibility: visible;
+        max-width: 100%;
+
+        &:before {
+          visibility: hidden;
+        }
+      }
+    }
+  }
+
+  &__small {
+    width: 220px;
+    max-width: 220px;
+
+    ::v-deep .g-treeview-icon {
+      margin: 8px 12px;
+
+      &__small {
+        margin: 12px 16px;
+      }
+    }
+
+    ::v-deep .g-treeview-title {
+      font-size: 12px;
+    }
+  }
+
+  &__medium {
+    width: 220px;
+    max-width: 220px;
+
+    ::v-deep .g-treeview-icon {
+      margin: 10px 14px;
+
+      &__small {
+        margin: 14px 18px;
+      }
+    }
+
+    ::v-deep .g-treeview-title {
+      font-size: 14px;
+    }
+  }
+}

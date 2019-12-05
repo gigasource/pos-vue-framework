@@ -1,26 +1,24 @@
-<template>
-	<div :class="classes" :style="styles">
-		<slot name="default"></slot>
-		<slot name="progress"></slot>
-	</div>
-</template>
-
 <script>
-  import { computed } from '@vue/composition-api';
-  import { convertToUnit } from '../../utils/helpers';
+  import GCardUtils from './logic/GCardUtils';
 
   export default {
     name: 'GCard',
     props: {
       //classes
       ...{
+        active: Boolean,
+        activeClass: {
+          type: String,
+          default: 'g-card__active'
+        },
+        shaped: Boolean,
         disabled: Boolean,
         isClickable: Boolean,
         loading: Boolean,
         backgroundColor: String,
         flat: Boolean,
         hover: Boolean,
-        color: String,
+        textColor: String,
         tile: Boolean,
       },
       //styles
@@ -29,56 +27,46 @@
         maxWidth: [String, Number],
         minHeight: [String, Number],
         maxHeight: [String, Number],
+        ripple: Boolean,
         width: [String, Number],
-				borderRadius: [String, Number],
-        elevation: [String, Number],
+        borderRadius: [String, Number],
+        elevation: {
+          type: [String, Number],
+          default: 2
+        },
         height: [String, Number],
         img: String,
         outlined: Boolean,
         raised: Boolean,
       }
     }, setup(props, context) {
+      const { classes, styles } = GCardUtils(props, context);
 
-      let classes = computed(() => {
-        let elevationClassName = props.elevation ? `g-card__elevation-${props.elevation}` : null;
-        let _classes = {
-          'g-card': true,
-          'g-card__flat': props.flat,
-          'g-card__hover': props.hover,
-          'g-card__link': props.isClickable,
-          'g-card__loading': props.loading,
-          'g-card__disabled': props.loading || props.disabled,
-          'g-card__outlined': props.outlined,
-          'g-card__raised': props.raised,
-        };
-        if (elevationClassName) {
-          _classes[elevationClassName] = true;
+      function genCard() {
+        const nodeData = {
+          class: classes.value,
+          style: styles.value,
+          on: {
+            click: (event) => {
+              context.emit('click', event)
+            }
+          }
         }
-        return _classes;
-      });
-
-      let styles = computed(() => {
-        return {
-          ...props.img && { backgroundImage: `url("${props.img}"` },
-          ...props.backgroundColor && { backgroundColor: convertToUnit(props.backgroundColor) },
-          ...props.color && { color: props.color },
-          ...props.tile && { borderRadius: '0px'},
-          ...props.borderRadius && { borderRadius: props.borderRadius },
-          ...props.width && { minWidth: convertToUnit(props.width) },
-          ...props.height && { minWidth: convertToUnit(props.height) },
-          ...props.minWidth && { minWidth: convertToUnit(props.minWidth) },
-          ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
-          ...props.maxWidth && { maxWidth: convertToUnit(props.maxWidth) },
-          ...props.maxHeight && { maxHeight: convertToUnit(props.maxHeight) },
-        };
-      });
+        return <div {...nodeData}>
+          {context.slots.default && context.slots.default()}
+        </div>
+      }
 
       return {
-        styles,
-        classes
+        genCard
       }
+    },
+    render() {
+      return this.genCard();
     }
   }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+	@import "GCard";
+</style>

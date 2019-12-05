@@ -1,3 +1,7 @@
+button {
+  outline: none;
+}
+
 .keyboard__template {
   display: grid;
   grid-gap: 4px;
@@ -8,19 +12,14 @@
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
-  border-radius: 4px;
-  font-family: "Roboto", sans-serif;
+  border-radius: 0.125rem;
+  font-family: "Muli", sans-serif;
 }
 
 .key-number {
   background-clip: padding-box;
-  border-radius: 0.25rem;
-  text-align: center;
   font-weight: 700;
   font-size: 1.25rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
 }
 
 
@@ -30,7 +29,7 @@
 
   &-show {
     max-width: 100%;
-    border-radius: 0.25rem;
+    border-radius: 0.125rem;
     flex: 0 1 auto;
     display: flex;
     flex-direction: row;
