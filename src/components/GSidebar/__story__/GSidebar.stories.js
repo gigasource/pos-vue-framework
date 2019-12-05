@@ -110,7 +110,7 @@ export const treeView = () => ({
       { subheader: 'APPLICATIONS', type: 'subheader' },
       { title: 'Mail', icon: 'mail_outline', badge: '5 new', badgeColor: 'pink accent 2' },
       { title: 'Chat', icon: 'chat_bubble_outline' },
-      { title: 'ToDo', icon: 'check' },
+      { title: 'ToDo', },
       { title: 'Contacts', icon: 'import_contacts' },
       { title: 'Calendar', icon: 'today' },
       {
@@ -124,7 +124,8 @@ export const treeView = () => ({
       { type: 'divider' },
       { subheader: 'PAGES', type: 'subheader' },
       {
-        title: 'Pages', icon: 'content_paste',
+        title: 'Pages',
+        icon: 'content_paste',
         items: [
           { title: 'Contact', icon: 'radio_button_unchecked', iconType: 'small' },
           { title: 'Blog', icon: 'radio_button_unchecked', iconType: 'small' },
