@@ -1,7 +1,7 @@
 <template>
 	<div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
 		<div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-			<slot name="prepend-outer" >
+			<slot name="prependOuter" >
 				<g-icon :color=iconColor>{{prependIcon}}</g-icon>
 			</slot>
 		</div>
@@ -9,7 +9,7 @@
 			<legend :style="legendStyles">{{label}}</legend>
 			<div class='g-tf' :class="tfErrClasses">
 				<div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
-					<slot name="prepend-inner">
+					<slot name="prependInner">
 						<g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
 					</slot>
 				</div>

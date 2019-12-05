@@ -70,12 +70,12 @@ export const TextFieldPlayGround = () => ({
                            :append-inner-icon="appendInnerIcon"
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">
-                          <template v-slot:prepend-outer>
+                          <template v-slot:prependOuter>
                           </template>
-                          <template v-slot:append-inner>
+                          <template v-slot:appendInner>
                           <g-icon>{{appendInnerIcon}}</g-icon>
                           </template>
-                          <template v-slot:append-outer>
+                          <template v-slot:appendOuter>
                           </template>
               </g-text-field>`,
 });
@@ -475,8 +475,8 @@ export const TextFieldIconEvent = () => ({
             label="Message"
             type="text"
             @click:append="toggleMarker"
-            @click:append-outer="sendMessage"
-            @click:prepend-outer="changeIcon"
+            @click:appendOuter="sendMessage"
+            @click:prependOuter="changeIcon"
             @click:clear="clearMessage">
               </g-text-field>`,
 });

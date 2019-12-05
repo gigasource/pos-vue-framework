@@ -29,16 +29,16 @@ describe('GTextField', function () {
                                :rules="[rules.required, rules.counter]"
                               
       >
-        <template v-slot:prepend-inner >
+        <template v-slot:prependInner >
           <img src="../../../assets/delivery/avatar.svg" alt="avatar">
         </template>
-        <template v-slot:prepend-outer >
+        <template v-slot:prependOuter >
           <img src="../../../assets/delivery/avatar.svg" alt="avatar">
         </template>
-        <template v-slot:append-inner >
+        <template v-slot:appendInner >
           <img src="../../../assets/delivery/avatar.svg" alt="avatar">
         </template>
-        <template v-slot:append-outer >
+        <template v-slot:appendOuter >
           <img src="../../../assets/delivery/avatar.svg" alt="avatar">
         </template>
       </g-text-field>`,

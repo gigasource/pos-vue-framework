@@ -133,7 +133,7 @@
         const tfErrClasses = computed(() => isValidInput.value ? {} : { 'g-tf__error': true })
 				return <div class={['g-tf',tfErrClasses]}>
           <div class="g-tf--prepend__inner" vOn:click={onClickPrependInner}>
-						{genIconSlot('prepend-inner')}
+						{genIconSlot('prependInner')}
 					</div>
 					{genAffix(props,'prefix')}
 					{genInputGroup()}
@@ -141,7 +141,7 @@
           <div class="g-tf--append__inner" vOn:click={onClickAppendInner}>
 						{genClearIcon()}
       		</div>
-          {genIconSlot('append-inner')}
+          {genIconSlot('appendInner')}
 					{genMessage()}
           <div v-show="counter" class={{'g-tf--counter':true, 'g-tf--counter__error': !isValidInput.value}}>{internalValue.length} / {props.counter}</div>
 				</div>
@@ -168,14 +168,14 @@
         });
 				return <div class={["g-tf--wrapper",tfWrapperClasses, tfErrWrapperClass]} vOn:click="onClick" vOn:mouseup="onMouseUp" vOn:mousedown="onMouseDown">
 					<div class="g-tf--prepend__outer" ref="prependRef" vOn:click={onClickPrependOuter}>
-						{genIconSlot('prepend-outer')}
+						{genIconSlot('prependOuter')}
 					</div>
 					<fieldset>
             <legend style={legendStyles}>{props.label}</legend>
 					</fieldset>
 					{genInput()}
           <div class="g-tf--append__outer" vOn:click={onClickAppendOuter} ref="appendOuter">
-						{genIconSlot("append-outer")}
+						{genIconSlot("appendOuter")}
       		</div>
 				</div>
 			}
