@@ -82,7 +82,8 @@
       });
 
       onMounted(() => {
-        if (context.refs.itemsRef) sliderResizeObserver.observe(context.refs.itemsRef)
+        itemsRef.value = context.refs.itemsRef
+        sliderResizeObserver.observe(itemsRef.value)
       })
 
       onUnmounted(() => {
@@ -99,7 +100,7 @@
           sliderStyles.height = convertToUnit(props.vertical ? activeTab.value.offsetHeight : props.sliderSize);
           sliderStyles.top = convertToUnit(props.vertical ? activeTab.value.offsetTop : (activeTab.value.offsetHeight - props.sliderSize));
 
-          const parent = context.refs.itemsRef.querySelector('.g-slide-group__content')
+          const parent = itemsRef.value.querySelector('.g-slide-group__content')
           sliderStyles.left = convertToUnit(activeTab.value.offsetLeft)
           sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.value.offsetWidth - activeTab.value.offsetLeft)
         }
@@ -118,7 +119,7 @@
 
       // tab transition
       watch(() => model.value, () => {
-        const parent = context.refs.itemsRef.querySelector('.g-slide-group__content');
+        const parent = itemsRef.value.querySelector('.g-slide-group__content');
         activeTab.value = find(parent.children, i => i.classList.contains('g-tab__active'));
 
         if (props.vertical) {
