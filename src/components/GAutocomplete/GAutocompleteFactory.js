@@ -1,8 +1,4 @@
-import GList from '../GList/GList';
-import GIcon from '../GIcon/GIcon';
-import { keyCodes } from '../../utils/helpers';
-import GChip from '../GChip/GChip';
-import { getLabel } from '../GInput/GInputFactory';
+import {keyCodes} from '../../utils/helpers';
 
 export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
   function onChipCloseClick(index = null) {
@@ -21,9 +17,14 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   function onInputKeyDown(e) {
     resetSelectionsDisplay(state)
     if (e.keyCode === keyCodes.down) {
-      const listRef = context.refs.select.$refs.list
+      const listRef = context.refs.list
       listRef.$el.getElementsByClassName('g-list-item')[0].focus()
     }
+  }
+
+  function onInputChange(text) {
+    state.searchText = text
+    context.emit('update:searchText', text)
   }
 
   function onInputClick() {
@@ -60,19 +61,20 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   const inputAddSelection = () => {
     if (state.searchText.trim().length > 0) {
-      let inputAddedItem = props.itemValue ? {
+      let isNumberArray = props.itemValue ? props.items.some(item => typeof item[props.itemValue] === 'number') : props.items.some(item => typeof item === 'number')
+      let inputAddedItem;
+      if (props.returnObbject || props.itemValue) inputAddedItem = {
         [props.itemText]: state.searchText,
-        [props.itemValue]: state.searchText
-      } : { [props.itemText]: state.searchText }
-
-      if (!props.items || props.items.length === 0) inputAddedItem = state.searchText
+        [props.itemValue]: isNumberArray ? Number(state.searchText) : state.searchText
+      }
+      else inputAddedItem = isNumberArray ? Number(state.searchText) : state.searchText
       toggleItem(inputAddedItem)
       setSearch(props, context, selections, state)
     }
   }
 
   return {
-    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection
+    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection, onInputChange
   }
 
 }

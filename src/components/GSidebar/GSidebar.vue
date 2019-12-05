@@ -57,7 +57,7 @@
           'background-position': 'center center',
           'background-size': 'cover',
         },
-        ...props.width && { width: convertToUnit(props.width) }
+        ...props.width && { width: convertToUnit(props.width), maxWidth: convertToUnit(props.width) }
       }));
 
       return {

@@ -20,7 +20,7 @@
 
       function genContent() {
         return <transition name="g-stepper-transition">
-          <div className="g-stepper-content" vShow={show.value}>
+          <div class="g-stepper-content" vShow={show.value}>
             {genDefaultSlot()}
           </div>
         </transition>

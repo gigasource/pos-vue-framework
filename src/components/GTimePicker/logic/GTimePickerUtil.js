@@ -1,24 +1,23 @@
 // https://en.wikipedia.org/wiki/12-hour_clock
 //
-
-import { computed, reactive } from '@vue/composition-api'
-import dayjs from 'dayjs';
-
-// Hour convention
-export const HourConvention = { _12HRS: '12', _24HRS: '24' }
-export const HourConventionValidator = (convention) => Object.values(HourConvention).indexOf(convention) >= 0
+import { computed, reactive, watch } from '@vue/composition-api'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import * as _ from 'lodash';
+import { pad } from '../../GDatePicker/logic/utils';
+dayjs.extend(customParseFormat)
 
 // pre-defined active time picker
-const ActiveTimePicker = {
-  hour: { hour: true, minute: false, second: false },
-  minute: { hour: false, minute: true, second: false },
-  second: { hour: false, minute: false, second: true }
+export const ActiveTimePicker = {
+  hour: 0,
+  minute: 1,
+  second: 2
 }
 
 // pre-defined active period picker
-const ActivePeriodPicker = {
-  AM: { AM: true, PM: false },
-  PM: { AM: false, PM: true }
+export const ActivePeriodPicker = {
+  AM: 1,
+  PM: 2
 }
 
 export const range0_11 = [...Array(12).keys()]
@@ -28,7 +27,7 @@ export const range0_59 = [...Array(60).keys()]
 
 // convert 0 to 12 in 12 hour convention
 export const getFormattedHours = (hours, props) => {
-  if (props.hourConvention === HourConvention._24HRS) {
+  if (props.use24Hours) {
     return hours
   } else if (hours === 0) {
     return 12
@@ -41,7 +40,6 @@ export const getFormattedHours = (hours, props) => {
 /**
  * Return function help switch timer picker
  * @param state
- * @returns {{showMinutesPicker: (function(): (ActiveTimePicker.minute|{hour, minute, second})), showSecondsPicker: (function(): (ActiveTimePicker.second|{hour, minute, second})), showHoursPicker: (function(): (ActiveTimePicker.hour|{hour, minute, second}))}}
  */
 function getShowTimePickerMethods(state) {
   return {
@@ -54,61 +52,63 @@ function getShowTimePickerMethods(state) {
 /**
  * Return functions which help switch AM/PM
  * @param state
+ * @param context
  * @returns {{showAMPicker: (function(): (ActivePeriodPicker.AM|{AM, PM})), showPMPicker: (function(): (ActivePeriodPicker.PM|{AM, PM}))}}
  */
-function getShowPeriodPickerMethods(state, context) {
+function getShowPeriodPickerMethods(state, context, emitInput) {
   return {
     showAMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.AM
-      context.emit('update:period', 'am')
+      emitInput()
     },
     showPMPicker: () => {
       state.activePeriodPicker = ActivePeriodPicker.PM
-      context.emit('update:period', 'pm')
+      emitInput()
     }
   }
 }
 
 /**
  * Return functions which change time picker value
+ * @param props
  * @param state
  * @param context
+ * @param emitInput
  */
-function getSetTimeMethods(state, context) {
-  function emitInput() {
-    context.emit('input', `${state.selectedTime.hours}:${state.selectedTime.minutes}:${state.selectedTime.seconds}`)
-  }
-
+function getSetTimeMethods(props, state, context, emitInput) {
   // events
   function setHours(hours) {
-    state.selectedTime.hours = hours
-    context.emit('update:hours', hours)
-    emitInput()
+    if (state.selectedTime.hours !== hours) {
+      state.selectedTime.hours = hours
+      emitInput()
+    }
   }
 
   function setMinutes(minutes) {
-    state.selectedTime.minutes = minutes
-    context.emit('update:minutes', minutes)
-    emitInput()
+    if (state.selectedTime.minutes !== minutes) {
+      state.selectedTime.minutes = minutes
+      emitInput()
+    }
   }
 
   function setSeconds(seconds) {
-    state.selectedTime.seconds = seconds
-    context.emit('update:seconds', seconds)
-    emitInput()
+    if (state.selectedTime.seconds !== seconds) {
+      state.selectedTime.seconds = seconds
+      emitInput()
+    }
   }
 
   return { setHours, setMinutes, setSeconds }
 }
 
 // adjust current time
-export function getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, cptIs12HoursConvention}) {
-  const cptMaxHour = computed(() => cptIs12HoursConvention.value ? 12 : 24)
+export function getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, use24Hours}) {
+  const maxHours = use24Hours ? 24 : 12
 
   function adjustHours(offset) {
     let newHours = state.selectedTime.hours + offset
-    while (newHours < 0) newHours += cptMaxHour.value
-    while (newHours >= cptMaxHour.value) newHours -= cptMaxHour.value
+    while (newHours < 0) newHours += maxHours
+    while (newHours >= maxHours) newHours -= maxHours
     setHours(newHours)
   }
 
@@ -129,37 +129,67 @@ export function getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, c
   return { adjustHours, adjustMinutes, adjustSeconds }
 }
 
-export default function (props, context) {
-  const cptIs12HoursConvention = computed(() => props.hourConvention === HourConvention._12HRS)
+export const _12HourTimeRegex = /^(?<hours>1[0-2]|0?[1-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))? ?(?<meridiems>[AaPp][Mm])$/i
+export const _24HourTimeRegex = /^(?<hours>2[0-3]|[0-1]?[1-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))?$/i
 
-  // try to parsing initial time
-  let initialTime = { hours: 0, minutes: 0, seconds: 0 }
-  let timeParts = (props.value ? props.value : dayjs().format('HH:mm:ss')).split(':')
-  if (timeParts.length >= 1) initialTime.hours = parseInt(timeParts[0]) % 12
-  if (timeParts.length >= 2) initialTime.minutes = parseInt(timeParts[1])
-  if (timeParts.length >= 3) initialTime.seconds = parseInt(timeParts[2])
+export default function (props, context) {
+  let timeFormatStr = props.use24Hours ? 'HH:mm' : 'hh:mm'
+  if (props.useSeconds) timeFormatStr += ":ss"
+  if (!props.use24Hours) timeFormatStr += ' A'
 
   const state = reactive({
     // indicate whether hour, minutes, second view will be shown
     // if you want to show all components (hour, minute, second), just ignore this value
     activeTimePicker: ActiveTimePicker.hour,
     // indicate whether AM or PM is active
-    activePeriodPicker: ActivePeriodPicker.AM,
+    activePeriodPicker: undefined,
     // storing selected time elements
-    selectedTime: initialTime,
+    selectedTime: undefined,
     // indicate whether period (AM/PM) should be show
-    showPeriod: cptIs12HoursConvention.value,
+    showPeriod: !props.use24Hours,
   })
 
+  watch(() => props.value, () => {
+    let timeRegex = props.use24Hours ? _24HourTimeRegex : _12HourTimeRegex
+    let timeRegexResult
+    const newValue = props.value == null ? '' : String(props.value).trim()
+    if (newValue)
+      timeRegexResult = timeRegex.exec(props.value)
+    if (!timeRegexResult) {
+      console.warn('Invalid time value ', props.value, timeRegex)
+      timeRegexResult = timeRegex.exec(dayjs().format(timeFormatStr))
+    }
+    let timeObj = timeRegexResult.groups
+    let { hours, minutes, seconds } = timeObj
+    let activePeriod
+    if (!props.use24Hours) {
+      let { meridiems } =  timeObj
+      if (meridiems[0].toLowerCase() === 'a')
+        activePeriod = ActivePeriodPicker.AM
+      else
+        activePeriod = ActivePeriodPicker.PM
+    }
+    state.selectedTime = { hours: Number(hours), minutes: Number(minutes), seconds: Number(seconds || '0') }
+    state.activePeriodPicker = activePeriod
+  })
+
+  function emitInput() {
+    let hours = pad(getFormattedHours(state.selectedTime.hours, props))
+    let minutes = pad(state.selectedTime.minutes)
+    let seconds = props.useSeconds ? `:${pad(state.selectedTime.seconds || 0)}` : ''
+    let meridiems = props.use24Hours ? '' : state.activePeriodPicker === ActivePeriodPicker.AM ? ' AM' : ' PM'
+    context.emit('input', `${hours}:${minutes}${seconds}${meridiems}`)
+  }
+
   const { showHoursPicker, showMinutesPicker, showSecondsPicker } = getShowTimePickerMethods(state)
-  const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state, context)
-  const { setHours, setMinutes, setSeconds } = getSetTimeMethods(state, context)
-  const { adjustHours, adjustMinutes, adjustSeconds } = getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, cptIs12HoursConvention})
+  const { showAMPicker, showPMPicker } = getShowPeriodPickerMethods(state, context, emitInput)
+  const { setHours, setMinutes, setSeconds } = getSetTimeMethods(props, state, context, emitInput)
+  const { adjustHours, adjustMinutes, adjustSeconds } = getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, use24Hours: props.use24Hours})
 
   const hoursModel = computed(() => {
-    return (cptIs12HoursConvention.value ? range0_11 : range0_23).map(hours => ({
+    return (!props.use24Hours ? range0_11 : range0_23).map(hours => ({
       value: getFormattedHours(hours, props),
-      selected: hours === state.selectedTime.hours,
+      selected: hours === Number(state.selectedTime.hours),
       select: () => setHours(hours)
     }))
   })
@@ -167,7 +197,7 @@ export default function (props, context) {
   const minutesModel = computed(() => {
     return range0_59.map(minutes => ({
       value: minutes,
-      selected: minutes === state.selectedTime.minutes,
+      selected: minutes === Number(state.selectedTime.minutes),
       select: () => setMinutes(minutes)
     }))
   })
@@ -176,7 +206,7 @@ export default function (props, context) {
   const secondsModel = computed(() => {
     return range0_59.map(seconds => ({
       value: seconds,
-      selected: seconds === state.selectedTime.seconds,
+      selected: seconds === Number(state.selectedTime.seconds),
       select: () => setSeconds(seconds)
     }))
   })

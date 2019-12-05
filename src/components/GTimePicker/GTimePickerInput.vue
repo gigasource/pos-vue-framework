@@ -1,0 +1,123 @@
+<script>
+  // Consider:
+  // Allow the user input value directly without showing time picker dialog
+  // Support g-text-field props
+
+  import GTextField from '../GInput/GTextField'
+  import GTimePicker from './GTimePicker'
+  import GMenu from '../GMenu/GMenu'
+  import { reactive, computed } from '@vue/composition-api';
+  import _ from 'lodash'
+
+  GMenu.components['GTextField'] = GTextField
+
+  export default {
+    name: 'GTimePickerInput',
+    components: { GMenu, GTimePicker, GTextField },
+    props: {
+      // common props
+      ...{
+        disabled: Boolean,
+        readonly: Boolean,
+      },
+
+      // g-text-field-props
+      ...{
+        label: String,
+        required: Boolean,
+        filled: Boolean,
+        outlined: Boolean,
+        solo: Boolean,
+        shaped: Boolean,
+        rounded: Boolean,
+        flat: Boolean,
+        dense: Boolean
+      },
+
+      // time picker props
+      ...{
+        use24Hours: Boolean,
+        value: String,
+        useSeconds: Boolean,
+        scrollable: Boolean,
+        landscape: Boolean,
+        titleBgColor: String,
+        titleTextColor: String,
+        clockWrapperColor: String,
+        clockFaceColor: String,
+        clockNumberColor: String,
+        clockSelectedNumberColor: String,
+        clockHandColor: String
+      }
+    },
+    setup(props, context) {
+      const state = reactive({
+        showMenu: false,
+        value: props.value || '',
+      })
+
+      const updateInput = (value) => {
+        state.value = value
+        context.emit('input', value)
+      }
+
+      const openTimePickerDialog = (e, menuScope) => {
+        context.refs[refIdTimePicker].showHoursPicker()
+        menuScope.toggleContent(e)
+      }
+      const closeTimePickerDialog = () => state.showMenu = false
+
+      const refIdTimePicker = 'time_picker'
+      const renderTimePickerInput = () => {
+        return <g-menu
+            value={state.showMenu} vOn:input={v => state.showMenu = v}
+            closeOnClick
+            contentFillWidth={false}
+            minWidth={300} nudgeBottom={10}
+            scopedSlots={{
+              activator: gMenuScope =>
+                  <g-text-field
+                      {...{
+                        props: {
+                          ..._.pick(props, [
+                            'disabled', 'readonly', 'required',
+                            'label',
+                            'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
+                          ]),
+                          value: state.value,
+                          prependIcon: "access_time"
+                        }
+                      }}
+                      vOn:click={e => openTimePickerDialog(e, gMenuScope)}/>
+            }}>
+          <g-time-picker
+              ref={refIdTimePicker}
+              {...{
+                props: {
+                  ..._.pick(props, [
+                    'disabled', 'readonly',
+                    'use24Hours', 'useSeconds',
+                    'landscape', 'scrollable',
+                    'clockHandColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'titleTextColor', 'titleBgColor', 'clockWrapperColor',
+                  ]),
+                  value: state.value
+                }
+              }}
+              vOn:input={updateInput}
+              vOn:timeselected={closeTimePickerDialog}
+          />
+        </g-menu>
+      }
+
+      return {
+        state,
+        renderTimePickerInput
+      }
+    },
+    render() {
+      return this.renderTimePickerInput()
+    }
+  }
+</script>
+<style scoped>
+</style>
