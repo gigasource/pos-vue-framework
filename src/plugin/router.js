@@ -17,6 +17,7 @@ import CompanySetting from '../POSView/setting/view/viewCompany';
 import GeneralSetting from '../POSView/setting/view/viewGeneral';
 import PaymentSetting from '../POSView/setting/view/viewPayment';
 import CategorySetting from '../POSView/setting/view/viewCategory';
+import SlideShowDemo from '../view/SlideShowDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -42,7 +43,7 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/article', name: 'Article', component: Article },
   { path: '/function-button', name: 'Function Button', component: FunctionButton },
-
+  { path: '/slideshow-demo', name: 'Slideshow', component: SlideShowDemo},
 ];
 
 const router = new VueRouter({
