@@ -31,6 +31,7 @@
 			const maxCount = ref(0)
 
 			onMounted(() => {
+			  console.log(model.value)
 				maxCount.value = model.value.length - 1
 			})
 
