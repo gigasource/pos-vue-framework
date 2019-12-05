@@ -74,7 +74,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   return {
-    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection
+    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection, onInputChange
   }
 
 }
