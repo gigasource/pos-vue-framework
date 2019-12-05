@@ -115,7 +115,7 @@
       const state = reactive({
         searchText: '',
         fieldItem: null,
-        lazySearch: props.multiple ? selectionTexts.value.join(', ') : selectionTexts.value,
+        lazySearch: props.multiple ? selectionTexts.value.join() : selectionTexts.value,
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
@@ -155,14 +155,14 @@
       }
 
       //selections text
-      const selectionsText = computed(() => {
+      const selectionString = computed(() => {
         return props.multiple ? selectionTexts.value.join('') : selectionTexts.value
       })
 
       //textfield logic, styles, classes computed
       const isValidInput = ref(true)
       const isFocused = ref(false);
-      const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
+      const validateText = computed(() => state.lazySearch || selectionString.value || state.searchText)
       const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages} = getValidate(props, isFocused, validateText, isValidInput);
@@ -224,7 +224,7 @@
       }
 
       const tfValue = computed(() => {
-        return (props.multiple || props.chips || props.smallChips || props.deletableChips|| !selections.value)
+        return (props.multiple || props.chips || props.smallChips || props.deletableChips|| !selectionTexts.value)
               ? state.searchText
             : state.lazySearch
       })
@@ -265,7 +265,7 @@
             lazy: !props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextFieldProps(toggleContent, showOptions)
+            activator: ({toggleContent}) => genTextFieldProps(toggleContent)
           },
           on: {
             input: e => showOptions.value = e,

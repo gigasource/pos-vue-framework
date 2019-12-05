@@ -105,7 +105,7 @@
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
       const fieldItem = getSelectionsForCombobox(props, selectedItem)
-      const selections = computed(() => {
+      const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
@@ -119,7 +119,7 @@
       const state = reactive({
         searchText: '',
         fieldItem: null,
-        lazySearch: selections.value,
+        lazySearch: props.multiple ? selectionTexts.value.join(): selectionTexts.value,
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
@@ -130,7 +130,7 @@
 
       function genList(showOptions) {
         const onClickItem = () => {
-          setSearch(props, context, selections, state)
+          setSearch(props, context, selectionTexts, state)
           showOptions.value = props.multiple
         }
         return <GList
@@ -159,20 +159,20 @@
       }
 
       //selections text
-      const selectionsText = computed(() => {
-        return props.multiple ? selections.value.join('') : selections.value
+      const selectionsString = computed(() => {
+        return props.multiple ? selectionTexts.value.join('') : selectionTexts.value
       })
 
       //textfield logic, styles, classes computed
       const isValidInput = ref(true)
       const isFocused = ref(false);
-      const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
+      const validateText = computed(() => state.lazySearch || selectionsString.value || state.searchText)
       const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
       const {errorMessages} = getValidate(props, isFocused, validateText, isValidInput);
       const tfValue = computed(() => {
         return (props.multiple || props.chips || props.smallChips || props.deletableChips
-            || !selections.value) ?
+            || !selectionTexts.value) ?
             state.searchText : state.lazySearch
       })
 
@@ -185,19 +185,19 @@
         onInputBlur,
         onInputDelete,
         inputAddSelection
-      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, tfValue)
+      } = getInputEventHandlers(props, context, state, selectionTexts, selectedItem, isFocused, toggleItem, tfValue)
 
       //textfield scoped slot
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) {
-          return selections.value.map((item, index) => <GChip small={props.smallChips}
+          return selectionTexts.value.map((item, index) => <GChip small={props.smallChips}
                                                               close={props.deletableChips}
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
 
-        return selections.value.map(function (item, index) {
-              if (index === selections.value.length - 1) {
+        return selectionTexts.value.map(function (item, index) {
+              if (index === selectionTexts.value.length - 1) {
                 return <div
                     style={{'color': state.lastItemColor, 'padding-right': '5px'}}>{item}</div>
               }
@@ -205,10 +205,10 @@
             }
         )
       }
-      const genSingleSelectionSlot = () => {
-        if ((props.chips || props.smallChips || props.deletableChips) && selections.value) {
+      const genSingleChipSlot = () => {
+        if ((props.chips || props.smallChips || props.deletableChips) && selectionTexts.value) {
           return <GChip small={props.smallChips} close={props.deletableChips}
-                        vOn:close={() => onChipCloseClick()}>{selections.value}</GChip>
+                        vOn:close={() => onChipCloseClick()}>{selectionTexts.value}</GChip>
         }
       }
 
@@ -220,7 +220,7 @@
             <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <Fragment>
-              {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
+              {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
             </Fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
@@ -273,7 +273,7 @@
             lazy: !props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextFieldProps(toggleContent, showOptions)
+            activator: ({toggleContent}) => genTextFieldProps(toggleContent)
           },
           on: {
             input: e => showOptions.value = e,
@@ -303,7 +303,7 @@
         state,
         options,
         selectedItem,
-        selections,
+        selectionTexts,
         fieldItem,
         tfValue
       }

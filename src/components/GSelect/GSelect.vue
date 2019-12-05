@@ -103,7 +103,7 @@
       const {internalValue: selectedValue} = makeListSelectable(props, context)
 
       const fieldItem = getSelections(props, selectedValue)
-      const tfDisplaySelections = computed(() => {
+      const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
             return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
@@ -184,32 +184,32 @@
       const deleteItemColor = ref('#1d1d1d')
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.allowDuplicates) {
-          return tfDisplaySelections.value.map((item, index) => <GChip small={props.smallChips}
+          return selectionTexts.value.map((item, index) => <GChip small={props.smallChips}
                                                               close={props.deletableChips}
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
-        return tfDisplaySelections.value.map(function (item, index) {
-          if (index === tfDisplaySelections.value.length - 1) return <div
+        return selectionTexts.value.map(function (item, index) {
+          if (index === selectionTexts.value.length - 1) return <div
               style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
           return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
         })
       }
 
       const genSingleSelectionSlot = () => {
-        if (props.chips && tfDisplaySelections.value) {
+        if (props.chips && selectionTexts.value) {
           return <GChip small={props.smallChips}
                         close={props.deletableChips}
-                        vOn:close={() => onChipCloseClick()}>{tfDisplaySelections.value}</GChip>
+                        vOn:close={() => onChipCloseClick()}>{selectionTexts.value}</GChip>
         }
-        return tfDisplaySelections.value
+        return selectionTexts.value
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
             <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-              {tfDisplaySelections.value.length === 0 ?
+              {selectionTexts.value.length === 0 ?
                   <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
@@ -220,9 +220,9 @@
         state.searchText = ''
       }
 
-      const textfieldValue = computed(() => {
-        if (props.multiple) return tfDisplaySelections.value.join(', ')
-        return tfDisplaySelections.value
+      const tfValue = computed(() => {
+        if (props.multiple) return selectionTexts.value.join(', ')
+        return selectionTexts.value
       })
 
       const genTextField = (typeof props.genTextFieldFn === 'function' && props.genTextFieldFn) || function (toggleContent) {
@@ -233,7 +233,7 @@
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                       'rules', 'type', 'disabled', 'readOnly', 'required']),
-                    value: textfieldValue.value
+                    value: tfValue.value
                   },
                   on: {
                     'click:clearIcon': () => clearSelection(),
@@ -259,7 +259,7 @@
             lazy: !props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+            activator: ({toggleContent}) => genTextField(toggleContent)
           },
           on: {
             input: e => showOptions.value = e,
@@ -286,7 +286,7 @@
         options,
         state,
         selectedValue,
-        tfDisplaySelections,
+        selectionTexts,
         showOptions,
         fieldItem
       }

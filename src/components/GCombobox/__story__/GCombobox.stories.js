@@ -163,12 +163,12 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {text: 'Jason Oner', subtitle: "Jason the ant", value: 1},
+        {text: 'Ranee Carlson', value: 2},
+        {text: 'Cindy Baker', value: 3},
+        {text: 'Ali Connors', value: 4},
       ],
-      selected: ['Jason Oner']
+      selected: []
     }
   },
   template: `
