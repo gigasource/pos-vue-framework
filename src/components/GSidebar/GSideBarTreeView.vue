@@ -33,18 +33,22 @@
 
       const openPath = ref(null)
 
-      const itemText = props.itemText || ((node, isRoot) => {
-        if (node.type === 'subheader') {
+      const itemText = (typeof props.itemText === 'function' && props.itemText) || ((node, isRoot) => {
+        if (node && node.type === 'subheader') {
           return <span class='g-treeview-subheader'>{node.subheader}</span>
-        } else if (node.type === 'divider') {
+        } else if (node && node.type === 'divider') {
           return <g-divider/>
         } else {
-          return <span class='g-treeview-title'>{node.title}</span>
+          return <span class='g-treeview-title'>{node.title || node[props.itemText]}</span>
         }
       })
 
       const genNode = function ({ node, text, childrenVNodes, state, path }) {
-        const icon = (node.icon || (!node.icon && node.type !== 'divider' && node.type !== 'subheader')) && <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]} svg={node.svgIcon}>{node.icon}</g-icon>
+        const isChild = path.split('.').length > 2
+        if (isChild && !node.icon) node.icon = 'radio_button_unchecked'
+
+        const icon = (node.icon || (!node.icon && node.type !== 'divider' && node.type !== 'subheader')) &&
+            <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]} svg={node.svgIcon}>{node.icon}</g-icon>
         if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path+'.'))) {
           state.collapse = true
         }
@@ -58,7 +62,7 @@
             ? 'g-treeview-item waves-effect'
             : null,
             props.rounded ? 'g-treeview-item__rounded' : null,
-            !childrenVNodes && activePath.value === path
+            (!childrenVNodes || node.clickable) && activePath.value === path
               ? 'g-treeview__active'
               : null],
           on: {
@@ -67,11 +71,14 @@
               if (childrenVNodes) {
                 state.collapse = !state.collapse;
                 openPath.value = path
-              } else {
+
+                if (!node.clickable) return // subheader is clickable
+              }
+
+              context.emit('node-selected', node)
                 activePath.value = path;
                 node.href && context.root.$router && context.root.$router.currentRoute.path !== node.href && context.root.$router.push(node.href);
 							}
-            }
           },
         }
         return <li class={!state.collapse && childrenVNodes && 'g-treeview__open'}>
@@ -151,6 +158,7 @@
 
 	.g-treeview {
 		&-item {
+      height: 44px;
 			display: flex;
 			align-items: center;
 			contain: layout;
@@ -202,10 +210,6 @@
 		&__open {
 			background-color: rgba(0, 0, 0, .035);
 
-			> .g-treeview-item {
-				border-radius: 0;
-			}
-
 			.g-treeview__open {
 				background-color: rgba(0, 0, 0, .015);
 			}
@@ -213,7 +217,9 @@
 
 		&__active {
 			background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
+      box-shadow: 3px 3px 20px 0 rgba(255, 110, 64, .5);
 			color: white;
+      margin-right: 8px;
 
 			.g-icon {
 				color: inherit;
@@ -236,6 +242,10 @@
 			ul {
 				/*padding-left: 4px;*/
 			}
+
+      i {
+        font-size: 10px !important;
+      }
 		}
 	}
 </style>
