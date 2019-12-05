@@ -109,6 +109,10 @@ button {
   > .g-btn__content .g-icon {
     color: inherit;
   }
+
+  &__uppercase {
+    text-transform: uppercase;
+  }
 }
 
 .g-btn__content {

@@ -25,6 +25,10 @@
         activeClass: {
           type: String,
           default: 'g-btn__active',
+        },
+        uppercase: {
+          type: Boolean,
+          default: true,
         }
       },
       //style

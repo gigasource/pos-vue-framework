@@ -169,7 +169,7 @@
       const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
       const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
-      const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
+      const {errorMessages} = getValidate(props, isFocused, validateText, isValidInput);
       const tfValue = computed(() => {
         return (props.multiple || props.chips || props.smallChips || props.deletableChips
             || !selections.value) ?
