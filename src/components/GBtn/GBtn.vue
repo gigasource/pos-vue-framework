@@ -79,7 +79,7 @@
         };
 
         return <button {...nodeData}>
-          <span className="g-btn__content">
+          <span class="g-btn__content">
             {this.$slots.default}
           </span>
         </button>
