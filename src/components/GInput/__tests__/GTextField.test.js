@@ -1,4 +1,4 @@
-import { createElement, setInputValue } from '../../../tests/setup'
+import {createElement, setInputValue} from '../../../tests/setup'
 
 const Vue = require('vue/dist/vue.common.js')
 import plugin from '@vue/composition-api'
@@ -42,7 +42,7 @@ describe('GTextField', function () {
           <img src="../../../assets/delivery/avatar.svg" alt="avatar">
         </template>
       </g-text-field>`,
-      components: { GTextFieldFunctional },
+      components: {GTextFieldFunctional},
       data: () => {
         return {
           testValue: null,
@@ -68,16 +68,16 @@ describe('GTextField', function () {
   })
   it('should render wrapper', function () {
     let vm = new Vue({
-      template:`<g-text-field filled></g-text-field>`,
-      components:{ GTextFieldFunctional}
-    }).$mount() ;
+      template: `<g-text-field filled></g-text-field>`,
+      components: {GTextFieldFunctional}
+    }).$mount();
     expect(vm.$el.getElementsByClassName('tf__filled')).toBeTruthy()
   })
   it('should render hint, activate, deactivate hint', function () {
     let vm = new Vue({
-      template:`<g-text-field hint="Test hint"></g-text-field>`,
-      components:{ GTextFieldFunctional}
-    }).$mount() ;
+      template: `<g-text-field hint="Test hint"></g-text-field>`,
+      components: {GTextFieldFunctional}
+    }).$mount();
     const input = vm.$el.querySelector('input');
     expect(vm.$el.querySelector('.g-tf--hint')).toBeTruthy()
     input.click();
@@ -90,14 +90,13 @@ describe('GTextField', function () {
     });
 
 
-
   });
   ;
   it('should render label, transform label when input focused', function () {
     let vm = new Vue({
-      template:`<g-text-field label="Test label"></g-text-field>`,
-      components:{ GTextFieldFunctional}
-    }).$mount() ;
+      template: `<g-text-field label="Test label"></g-text-field>`,
+      components: {GTextFieldFunctional}
+    }).$mount();
     const input = vm.$el.querySelector('input');
     expect(input.getAttribute('label')).toBe('Test label');
     const label = vm.$el.querySelector('.g-tf--label');
@@ -106,15 +105,15 @@ describe('GTextField', function () {
     vm.$nextTick(() => {
       expect(label.style).toContain('transform');
       input.blur();
-      vm.$nextTick(() =>{
+      vm.$nextTick(() => {
         expect(label.style).not.toContain('transform');
       })
     })
   });
   it('should render prefix, transform label align to prefix', function () {
     let vm = new Vue({
-      template:`<g-text-field label="Test label" prefix="Prefix"></g-text-field>`,
-      components:{ GTextFieldFunctional}
+      template: `<g-text-field label="Test label" prefix="Prefix"></g-text-field>`,
+      components: {GTextFieldFunctional}
     }).$mount();
     const prefix = vm.$el.querySelector('.g-tf--affix');
     expect(prefix).toBeTruthy();
@@ -122,7 +121,7 @@ describe('GTextField', function () {
     expect(vm.$el.outerHTML).toMatchSnapshot();
     const label = vm.$el.querySelector('label');
     label.click();
-    vm.$nextTick(() =>{
+    vm.$nextTick(() => {
       expect(vm.$el.querySelector('.g-tf--hint__active')).toBeTruthy()
     })
 
