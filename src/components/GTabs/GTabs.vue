@@ -37,6 +37,7 @@
     setup(props, context) {
       const model = getVModel(props, context);
       const sliderResizeObserver = new ResizeObserver(calculateSliderStyle)
+      const activeTab = ref(null)
 
       if (!model.value) {
         model.value = props.items.find(item => !item.disabled);
@@ -91,16 +92,16 @@
       function calculateSliderStyle() {
         if (!itemsRef.value) return
         const children = itemsRef.value.querySelector('.g-slide-group__content').children
-        const activeTab = find(children, i => i.classList.contains('g-tab__active'));
+        activeTab.value = find(children, i => i.classList.contains('g-tab__active'));
 
-        if (activeTab) {
+        if (activeTab.value) {
           sliderStyles.width = convertToUnit(props.vertical ? props.sliderSize : 'auto');
-          sliderStyles.height = convertToUnit(props.vertical ? activeTab.offsetHeight : props.sliderSize);
-          sliderStyles.top = convertToUnit(props.vertical ? activeTab.offsetTop : (activeTab.offsetHeight - props.sliderSize));
+          sliderStyles.height = convertToUnit(props.vertical ? activeTab.value.offsetHeight : props.sliderSize);
+          sliderStyles.top = convertToUnit(props.vertical ? activeTab.value.offsetTop : (activeTab.value.offsetHeight - props.sliderSize));
 
           const parent = context.refs.itemsRef.querySelector('.g-slide-group__content')
-          sliderStyles.left = convertToUnit(activeTab.offsetLeft)
-          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft)
+          sliderStyles.left = convertToUnit(activeTab.value.offsetLeft)
+          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.value.offsetWidth - activeTab.value.offsetLeft)
         }
 
         sliderStyles['background-color'] = props.sliderColor
@@ -118,29 +119,29 @@
       // tab transition
       watch(() => model.value, () => {
         const parent = context.refs.itemsRef.querySelector('.g-slide-group__content');
-        const activeTab = find(parent.children, i => i.classList.contains('g-tab__active'));
+        activeTab.value = find(parent.children, i => i.classList.contains('g-tab__active'));
 
         if (props.vertical) {
-          if (activeTab.offsetTop < +sliderStyles.top.replace('px', '')) {
+          if (activeTab.value.offsetTop < +sliderStyles.top.replace('px', '')) {
             sliderStyles['transition'] = 'top 0.5s, bottom 1s';
           } else {
             sliderStyles['transition'] = 'bottom 0.5s, top 1s';
           }
 
           //todo vertical arrows
-          sliderStyles.bottom = convertToUnit(parent.offsetHeight - activeTab.offsetHeight - activeTab.offsetTop);
-          sliderStyles.top = convertToUnit(activeTab.offsetTop);
+          sliderStyles.bottom = convertToUnit(parent.offsetHeight - activeTab.value.offsetHeight - activeTab.value.offsetTop);
+          sliderStyles.top = convertToUnit(activeTab.value.offsetTop);
           sliderStyles.height = 'auto';
         } else {
-          if (activeTab.offsetLeft < +sliderStyles.left.replace('px', '')) {
+          if (activeTab.value.offsetLeft < +sliderStyles.left.replace('px', '')) {
             sliderStyles['transition'] = 'left 0.5s, right 1s';
           } else {
             sliderStyles['transition'] = 'left 1s, right 0.5s';
           }
 
           sliderStyles.width = 'auto';
-          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft)
-          sliderStyles.left = convertToUnit(activeTab.offsetLeft)
+          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.value.offsetWidth - activeTab.value.offsetLeft)
+          sliderStyles.left = convertToUnit(activeTab.value.offsetLeft)
         }
       }, { lazy: true });
 
@@ -149,18 +150,6 @@
         console.warn(`Required prop title for tab`)
         return !noTitle;
       });
-
-      const genWrapper = () => <g-layout class="g-tabs-wrapper" vertical={!props.vertical}>
-        <div class={tabsClasses.value} style={tabsStyles.value}>
-          <div ref="itemsRef"
-               class={{ ...barClasses.value, 'g-tabs-bar': true }}
-               style={barStyles.value}
-               v-resize={calculateSliderStyle}>
-            {genTabsBar()}
-          </div>
-        </div>
-        {context.slots.default && context.slots.default()}
-      </g-layout>
 
       const genTabIcon = (item) => {
         if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
@@ -193,7 +182,7 @@
         }
         return <g-slide-group {...slideGroupData} vOn:input={e => model.value = e} value={model.value} dense>
           {genTabs()}
-          {genTabSlider()}
+          {activeTab.value && genTabSlider()}
         </g-slide-group>
       }
 
