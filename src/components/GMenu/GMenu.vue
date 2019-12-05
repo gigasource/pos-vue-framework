@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { onBeforeUnmount, onMounted, reactive, ref, onUnmounted } from '@vue/composition-api';
+  import { onBeforeUnmount, onMounted, reactive, ref, onUnmounted, computed } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import menuable from '../../mixins/menuable';
   import detachable from '../../mixins/detachable';
@@ -17,7 +17,8 @@
       // basic
       ...{
         value: Boolean,
-        lazy: Boolean
+        lazy: Boolean,
+        activator: null,
       },
       // positioning
       ...{
@@ -95,12 +96,19 @@
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
-      const { detach, attachToParent } = detachable(props, context);
+      const { detach } = detachable(props, context);
       const { runDelay } = delayable(props)
+
 
       //template refs
       const el = ref(null);
-      const activator = ref(null);
+      const activator = computed(() => {
+        if (props.activator) return props.activator
+
+        return (context.refs.activator && context.refs.activator.children.length > 0)
+            ? context.refs.activator.children[0]
+            : context.refs.activator
+      })
 
       const state = reactive({
         top: 0,
@@ -108,23 +116,11 @@
         isFirstRender: true,
       });
 
-      onMounted(() => {
-        context.root.$nextTick(() => {
-          activator.value = getActivator()
-        })
-      })
-
       onBeforeUnmount(() => {
-        if (activator.value) detach(activator.value)
+        if (context.refs.activator) detach(context.refs.activator)
       })
 
       onUnmounted(() => isActive.value = false)
-
-      function getActivator() {
-        return (context.refs.activator && context.refs.activator.children.length > 0)
-            ? context.refs.activator.children[0]
-            : context.refs.activator
-      }
 
       function toggleContent(event) {
         if (props.lazy && state.isFirstRender) state.isFirstRender = false
@@ -185,7 +181,7 @@
 
       const genWrapper = () =>
         <div ref="el" class="g-menu">
-          <div {...activatorData}>{context.slots.activator({ toggleContent, on: activatorData.on })}</div>
+          <div {...activatorData}>{context.slots.activator && context.slots.activator({ toggleContent, on: activatorData.on })}</div>
           {props.lazy ? (!state.isFirstRender && genContent()) : genContent()}
         </div>
       return {
