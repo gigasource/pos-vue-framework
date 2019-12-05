@@ -187,7 +187,7 @@
         onInputDelete,
         onInputChange,
         inputAddSelection
-      } = getInputEventHandlers(props, context, state, selectionTexts, selectedItem, isFocused, toggleItem, tfValue)
+      } = getInputEventHandlers(props, context, state, selectionTexts, selectedItem, isFocused, toggleItem)
 
       //textfield scoped slot
       const genMultiSelectionsSlot = () => {

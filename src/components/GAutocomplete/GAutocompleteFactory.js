@@ -1,6 +1,6 @@
 import {keyCodes} from '../../utils/helpers';
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, tfValue) {
+export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
   function onChipCloseClick(index = null) {
     if (props.multiple) {
       selectedItem.value.splice(index, 1);
