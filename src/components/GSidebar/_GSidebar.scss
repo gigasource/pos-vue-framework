@@ -16,6 +16,10 @@
   transition-property: transform, width, max-width;
   @include elevation(2);
 
+  &-wrapper {
+    height: 100%;
+  }
+
   &-header {
     position: sticky;
     top: 0;
