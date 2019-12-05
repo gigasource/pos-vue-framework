@@ -5,7 +5,7 @@
   import GTabItem from './GTabItem';
   import GIcon from '../GIcon/GIcon';
   import getVModel from '../../mixins/getVModel';
-  import { computed, provide, reactive, ref, watch } from '@vue/composition-api'
+  import { computed, provide, reactive, ref, watch, onMounted, onUnmounted } from '@vue/composition-api'
   import { find } from 'lodash'
   import colorHandler, { convertToUnit } from '../../utils/helpers';
   import { colors } from '../../utils/colors';
@@ -36,6 +36,7 @@
     },
     setup(props, context) {
       const model = getVModel(props, context);
+      const sliderResizeObserver = new ResizeObserver(calculateSliderStyle)
 
       if (!model.value) {
         model.value = props.items.find(item => !item.disabled);
@@ -79,17 +80,28 @@
         'transition': 'left 1s, right 0.5s'
       });
 
+      onMounted(() => {
+        if (context.refs.itemsRef) sliderResizeObserver.observe(context.refs.itemsRef)
+      })
+
+      onUnmounted(() => {
+        sliderResizeObserver.disconnect()
+      })
+
       function calculateSliderStyle() {
         if (!itemsRef.value) return
         const children = itemsRef.value.querySelector('.g-slide-group__content').children
         const activeTab = find(children, i => i.classList.contains('g-tab__active'));
-        sliderStyles.width = convertToUnit(props.vertical ? props.sliderSize : 'auto');
-        sliderStyles.height = convertToUnit(props.vertical ? activeTab.offsetHeight : props.sliderSize);
-        sliderStyles.top = convertToUnit(props.vertical ? activeTab.offsetTop : (activeTab.offsetHeight - props.sliderSize));
 
-        const parent = context.refs.itemsRef.querySelector('.g-slide-group__content')
-        sliderStyles.left = convertToUnit(activeTab.offsetLeft)
-        sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft)
+        if (activeTab) {
+          sliderStyles.width = convertToUnit(props.vertical ? props.sliderSize : 'auto');
+          sliderStyles.height = convertToUnit(props.vertical ? activeTab.offsetHeight : props.sliderSize);
+          sliderStyles.top = convertToUnit(props.vertical ? activeTab.offsetTop : (activeTab.offsetHeight - props.sliderSize));
+
+          const parent = context.refs.itemsRef.querySelector('.g-slide-group__content')
+          sliderStyles.left = convertToUnit(activeTab.offsetLeft)
+          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.offsetWidth - activeTab.offsetLeft)
+        }
 
         sliderStyles['background-color'] = props.sliderColor
           ? (getColorType(props.sliderColor) === 'style'
@@ -138,10 +150,10 @@
         return !noTitle;
       });
 
-      const genWrapper = () => <g-layout className="g-tabs-wrapper" vertical={!props.vertical}>
-        <div className={tabsClasses.value} style={tabsStyles.value}>
+      const genWrapper = () => <g-layout class="g-tabs-wrapper" vertical={!props.vertical}>
+        <div class={tabsClasses.value} style={tabsStyles.value}>
           <div ref="itemsRef"
-               className={{ ...barClasses.value, 'g-tabs-bar': true }}
+               class={{ ...barClasses.value, 'g-tabs-bar': true }}
                style={barStyles.value}
                v-resize={calculateSliderStyle}>
             {genTabsBar()}

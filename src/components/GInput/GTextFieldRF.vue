@@ -84,7 +84,7 @@
         if (isValidInput.value) {
            return <div class="g-tf--hint" class={hintClasses}>{props.hint}</div>
         }
-        return <div className="g-tf--error">{errorMessages}</div>
+        return <div class="g-tf--error">{errorMessages}</div>
 
       }
       const genClearIcon = () => {
