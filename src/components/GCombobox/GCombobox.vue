@@ -1,26 +1,23 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import groupable, { makeSelectable } from '../../mixins/groupable';
-  import { reactive, ref, computed, watch } from '@vue/composition-api';
-
+  import {computed, reactive, ref} from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import { getLabel, getValidate } from '../GInput/GInputFactory';
+  import {getLabel, getValidate} from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
   import GListItem from '../GList/GListItem';
-  import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
-  import { keyCodes } from '../../utils/helpers';
+  import {GListItemContent, GListItemText} from '../GList/GListFunctionalComponent';
   import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
-  import {getInputEventHandlers, resetSelectionsDisplay, setSearch} from '../GAutocomplete/GAutocompleteFactory';
-  import {groupableForList, makeCombobox, makeListSelectable} from "../GList/groupableForList";
+  import {getInputEventHandlers, setSearch} from '../GAutocomplete/GAutocompleteFactory';
+  import {makeCombobox} from "../GList/groupableForList";
   import {Fragment} from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
-    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText, Fragment },
+    components: {GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText, Fragment},
     props: {
       //select props
       width: [String, Number],
@@ -84,6 +81,7 @@
           top: false,
         })
       },
+      eager: Boolean,
       //item textfieldValue props
       chips: Boolean,
       smallChips: Boolean,
@@ -104,9 +102,8 @@
     },
     setup: function (props, context) {
 
-
       //list selections
-      const { internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
+      const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
       const fieldItem = getSelectionsForCombobox(props, selectedItem)
       const selections = computed(() => {
         if (props.multiple) {
@@ -118,10 +115,11 @@
         }
 
       })
+
       const state = reactive({
         searchText: '',
         fieldItem: null,
-        lazySearch: ref(props.multiple ? selections.value.join(', ') : selections.value),
+        lazySearch: selections.value,
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
@@ -129,32 +127,33 @@
 
       //genList
       const showOptions = ref(false)
+
       function genList(showOptions) {
         const onClickItem = () => {
           setSearch(props, context, selections, state)
           showOptions.value = props.multiple
         }
         return <GList
-          {...{
-            props: {
-              items: options.value,
-              itemText: props.itemText,
-              itemValue: props.itemValue,
-              returnObject: props.returnObject,
-              mandatory: true,
-              allowDuplicates: props.allowDuplicates,
-              multiple: props.multiple,
-              selectable: true,
-              inMenu: true,
-              value: selectedItem.value,
-            },
-            on: {
-              'click:item': onClickItem,
-              input: e => selectedItem.value = e,
-            },
-          }
-          }
-          ref="list"
+            {...{
+              props: {
+                items: options.value,
+                itemText: props.itemText,
+                itemValue: props.itemValue,
+                returnObject: props.returnObject,
+                mandatory: true,
+                allowDuplicates: props.allowDuplicates,
+                multiple: props.multiple,
+                selectable: true,
+                inMenu: true,
+                value: selectedItem.value,
+              },
+              on: {
+                'click:item': onClickItem,
+                input: e => selectedItem.value = e,
+              },
+            }
+            }
+            ref="list"
         />
 
       }
@@ -168,9 +167,14 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
       const validateText = computed(() => state.lazySearch || selectionsText.value || state.searchText)
-      const { labelClasses, labelStyles, isDirty } = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
-      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
-      const { errorMessages, validate } = getValidate(props, isFocused, validateText, isValidInput);
+      const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
+      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
+      const {errorMessages, validate} = getValidate(props, isFocused, validateText, isValidInput);
+      const tfValue = computed(() => {
+        return (props.multiple || props.chips || props.smallChips || props.deletableChips
+            || !selections.value) ?
+            state.searchText : state.lazySearch
+      })
 
       //textfield event handlers
       const {
@@ -181,7 +185,7 @@
         onInputBlur,
         onInputDelete,
         inputAddSelection
-      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem)
+      } = getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, tfValue)
 
       //textfield scoped slot
       const genMultiSelectionsSlot = () => {
@@ -193,12 +197,12 @@
         }
 
         return selections.value.map(function (item, index) {
-            if (index === selections.value.length - 1) {
-              return <div
-                style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+              if (index === selections.value.length - 1) {
+                return <div
+                    style={{'color': state.lastItemColor, 'padding-right': '5px'}}>{item}</div>
+              }
+              return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
             }
-            return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
-          }
         )
       }
       const genSingleSelectionSlot = () => {
@@ -209,15 +213,15 @@
       }
 
       const textFieldScopedSlots = {
-        clearableSlot: ({ iconColor }) =>
-          <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
-                 color={iconColor}>{props.clearIcon}</GIcon>,
-        appendInner: ({ iconColor }) =>
-          <GIcon color={iconColor}>arrow_drop_down</GIcon>,
-        inputSlot: ({ inputErrStyles }) =>
-          <Fragment>
-            {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
-          </Fragment>,
+        clearableSlot: ({iconColor}) =>
+            <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
+                   color={iconColor}>{props.clearIcon}</GIcon>,
+        appendInner: ({iconColor}) =>
+            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
+        inputSlot: ({inputErrStyles}) =>
+            <Fragment>
+              {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
+            </Fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         inputMessage: () => [<div v-show={props.counter} class={{
@@ -225,41 +229,39 @@
           'g-tf-counter__error': !isValidInput.value
         }}>{validateText.value.length}/{props.counter}</div>,
           isValidInput.value ? <div class={['g-tf-hint', hintClasses.value]}>{props.hint}</div>
-            : <div class="g-tf-error">{errorMessages.value}</div>
+              : <div class="g-tf-error">{errorMessages.value}</div>
         ]
       }
       //textfield value
-      const tfValue = computed(() =>
-        (props.multiple || props.chips || props.smallChips || props.deletableChips|| !selections.value.length)
-            ? state.searchText
-            : state.lazySearch)
+
 
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
         return (
-          <GTextField
-            {...{
-              props: {
-                ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
-                  'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                  'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
-                value: tfValue.value
-              },
-              on: {
-                'click:clearIcon': () => clearSelection(),
-                focus: () => onInputClick(),
-                blur: () => onInputBlur(),
-                click: toggleContent,
-                delete: onInputDelete,
-                enter: inputAddSelection,
-                keydown: (e) => onInputKeyDown(e),
-                input: (e) => state.searchText = e,
-              },
-              scopedSlots: textFieldScopedSlots
-            }}
-          />
+            <GTextField
+                {...{
+                  props: {
+                    ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
+                      'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
+                      'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
+                    value: tfValue.value
+                  },
+                  on: {
+                    'click:clearIcon': () => clearSelection(),
+                    focus: () => onInputClick(),
+                    blur: () => onInputBlur(),
+                    click: toggleContent,
+                    delete: onInputDelete,
+                    enter: inputAddSelection,
+                    keydown: (e) => onInputKeyDown(e),
+                    input: (e) => state.searchText = e,
+                  },
+                  scopedSlots: textFieldScopedSlots
+                }}
+            />
         )
       }
+
       //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
@@ -268,6 +270,7 @@
             ...props.menuProps,
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
+            lazy: !props.eager,
           },
           scopedSlots: {
             activator: ({toggleContent}) => genTextFieldProps(toggleContent, showOptions)
@@ -302,6 +305,7 @@
         selectedItem,
         selections,
         fieldItem,
+        tfValue
       }
     },
     render() {
@@ -312,37 +316,37 @@
 <style lang="scss" scoped>
   .g-combobox ::v-deep {
     .g-menu--activator {
-				span {
-					margin: 3px
-				}
-
-				.g-tf-append__inner .g-icon:last-child {
-					transition: transform 0.4s;
-				}
-
-				.input {
-					display: flex;
-          flex-wrap: wrap;
-				}
-
-				.g-tf-input {
-					flex-wrap: wrap;
-        display: flex;
-          flex: 1;
+      span {
+        margin: 3px
       }
 
-				input {
-					flex-shrink: 0;
-					flex-basis: auto;
-					cursor: text;
-				}
-			}
+      .g-tf-append__inner .g-icon:last-child {
+        transition: transform 0.4s;
+      }
+
+      .input {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .g-tf-input {
+        flex-wrap: wrap;
+        display: flex;
+        flex: 1;
+      }
+
+      input {
+        flex-shrink: 0;
+        flex-basis: auto;
+        cursor: text;
+      }
+    }
   }
 
   .g-combobox__active {
     ::v-deep .g-tf-append__inner .g-icon:last-child {
-				transition: transform 0.4s;
-				transform: rotateZ(180deg);
-			}
-		}
+      transition: transform 0.4s;
+      transform: rotateZ(180deg);
+    }
+  }
 </style>

@@ -1,14 +1,12 @@
 <script>
   import GTextField from "../GInput/GTextField";
   import GMenu from "../GMenu/GMenu"
-  import {makeSelectable} from "../../mixins/groupable";
-  import {reactive, ref, computed, toRefs} from "@vue/composition-api";
+  import {computed, reactive, ref} from "@vue/composition-api";
   import {getList, getSelections} from "./GSelectFactory";
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
   import _ from "lodash"
-  import {isSelected} from "../GDatePicker/logic/TableUtil";
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
@@ -66,6 +64,7 @@
           top: false,
         })
       },
+      eager: Boolean,
       //item textfieldValue props
       chips: Boolean,
       smallChips: Boolean,
@@ -257,6 +256,7 @@
             ...props.menuProps,
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
+            lazy: !props.eager,
           },
           scopedSlots: {
             activator: ({toggleContent}) => genTextField(toggleContent, showOptions)

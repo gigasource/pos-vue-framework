@@ -4,7 +4,7 @@ import { keyCodes } from '../../utils/helpers';
 import GChip from '../GChip/GChip';
 import { getLabel } from '../GInput/GInputFactory';
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
+export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, tfValue) {
   function onChipCloseClick(index = null) {
     if (props.multiple) {
       selectedItem.value.splice(index, 1);

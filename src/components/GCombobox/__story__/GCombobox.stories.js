@@ -18,7 +18,7 @@ export const GComboboxSingleSelectNoChips = () => ({
     flat: {default: boolean('flat', false)},
     rounded: {default: boolean('rounded', false)},
     shaped: {default: boolean('shaped', false)},
-    clearable: {default: boolean('clearable', false)},
+    clearable: {default: boolean('clearable', true)},
     hint: {default: text('hint', 'Hint')},
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: Number('counter', 25)},
@@ -33,7 +33,7 @@ export const GComboboxSingleSelectNoChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: 'sdf'
     }
   },
   template: `
@@ -118,18 +118,18 @@ export const GComboboxMultiSelect = () => ({
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
     deletableChips: {default: boolean('deletable-chips', false)},
-    itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'value')},
+    itemText: {default: text('itemText', 'title')},
+    itemValue: {default: text('itemValue', 'title')},
     clearable: {default: boolean('clearable', false)},
     menuProps:{default: object('menuProps', {closeOnContentClick : true})},
   },
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {title: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {title: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {title: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
       selected: ['hhh','hgh','Jason Oner']
     }
@@ -168,7 +168,7 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: ['Jason Oner']
+      selected: []
     }
   },
   template: `
@@ -278,19 +278,15 @@ export const GComboboxPrimitiveArray = () => ({
   data() {
     return {
       items: [
-        'Jason Oner',
-        'Jason Oner',
-        'Cindy Baker',
-        'Ali Connors',
-        'Ranee Carlson',
+        112,313,4234, 454353, 5345
       ],
-      selected: 'Jason Oner'
+      selected: 4234
     }
   },
   template: `
   <div data-app>
   {{selected}}
-  <g-combobox  :items="items" label="Label" v-model="selected"  clearable>
+  <g-combobox :items="items" label="Label" v-model="selected"  clearable>
    
   </g-combobox>
 </div>`,
