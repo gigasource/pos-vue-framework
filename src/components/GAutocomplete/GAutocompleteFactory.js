@@ -26,6 +26,11 @@ export function getInputEventHandlers(props, context, state, selections, selecte
     }
   }
 
+  function onInputChange(text) {
+    state.searchText = text
+    context.emit('update:searchText', text)
+  }
+
   function onInputClick() {
     resetSelectionsDisplay(state)
     isFocused.value = true
