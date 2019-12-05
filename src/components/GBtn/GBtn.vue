@@ -25,6 +25,10 @@
         activeClass: {
           type: String,
           default: 'g-btn__active',
+        },
+        uppercase: {
+          type: Boolean,
+          default: true,
         }
       },
       //style
@@ -51,10 +55,7 @@
         backgroundColor: String,
         gradient: String,
         gradientAngle: { type: String, default: '45deg' },
-				borderRadius: {
-          type: [Number, String],
-					default: 2
-				}
+        borderRadius: [Number, String],
       }
     },
     setup(props, context) {

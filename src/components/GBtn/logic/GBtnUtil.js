@@ -26,6 +26,7 @@ export default (props, context) => {
       'g-btn__outlined': props.outlined,
       'g-btn__round': isRound.value,
       'g-btn__contained': contained.value,
+      'g-btn__uppercase': props.uppercase,
       [props.activeClass]: props.active,
       ...elevationClasses.value,
       ...backgroundColorOutput.value && backgroundColorOutput.value.class,
