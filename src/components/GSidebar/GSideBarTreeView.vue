@@ -125,127 +125,127 @@
 </script>
 
 <style scoped lang="scss">
-	ul {
-		list-style-type: none;
-		padding: 0;
-		margin: 0;
-	}
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
 
-	.g-treeview-wrapper {
-		overflow-y: auto;
+  .g-treeview-wrapper {
+    overflow-y: auto;
 
-		/* TODO custom scrollbar */
-		/*&:hover::-webkit-scrollbar {*/
-		/*	width: 6px;*/
-		/*	display: block;*/
-		/*}*/
+    /* TODO custom scrollbar */
+    /*&:hover::-webkit-scrollbar {*/
+    /*	width: 6px;*/
+    /*	display: block;*/
+    /*}*/
 
-		/*&::-webkit-scrollbar {*/
-		/*	width: 6px;*/
-		/*	display: none;*/
-		/*}*/
+    /*&::-webkit-scrollbar {*/
+    /*	width: 6px;*/
+    /*	display: none;*/
+    /*}*/
 
-		/*&::-webkit-scrollbar-thumb{*/
-		/*	background-color: rgba(170, 170, 170, 0.6);*/
-		/*	border-radius: 4px;*/
-		/*}*/
-	}
+    /*&::-webkit-scrollbar-thumb{*/
+    /*	background-color: rgba(170, 170, 170, 0.6);*/
+    /*	border-radius: 4px;*/
+    /*}*/
+  }
 
-	li {
-		padding: 0;
-		line-height: 0;
-	}
+  li {
+    padding: 0;
+    line-height: 0;
+  }
 
-	.g-treeview {
-		&-item {
+  .g-treeview {
+    &-item {
       height: 44px;
-			display: flex;
-			align-items: center;
-			contain: layout;
-			transition: none;
-			color: rgba(0, 0, 0, .87);
+      display: flex;
+      align-items: center;
+      contain: layout;
+      transition: none;
+      color: rgba(0, 0, 0, .87);
 
-			&:not(.g-treeview-subheader):hover {
-				background: rgba(0, 0, 0, 0.035);
-			}
+      &:not(.g-treeview-subheader):hover {
+        background: rgba(0, 0, 0, 0.035);
+      }
 
-			&__rounded {
-				border-top-right-radius: 32px;
-				border-bottom-right-radius: 32px;
-			}
-		}
+      &__rounded {
+        border-top-right-radius: 32px;
+        border-bottom-right-radius: 32px;
+      }
+    }
 
-		&-icon {
-			margin: 12px 16px;
-			font-size: 20px !important;
-			width: 20px !important;
-			height: 20px !important;
-			color: rgba(0, 0, 0, .54);
+    &-icon {
+      margin: 12px 16px;
+      font-size: 20px !important;
+      width: 20px !important;
+      height: 20px !important;
+      color: rgba(0, 0, 0, .54);
 
-			&__small {
-				font-size: 12px !important;
-				width: 12px !important;
-				height: 12px !important;
-				margin: 16px 20px;
-			}
-		}
+      &__small {
+        font-size: 12px !important;
+        width: 12px !important;
+        height: 12px !important;
+        margin: 16px 20px;
+      }
+    }
 
-		&-title {
-			font-size: 16px;
-			line-height: 1.75;
-			flex: 1 1 0;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-		}
+    &-title {
+      font-size: 16px;
+      line-height: 1.75;
+      flex: 1 1 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
-		&-action {
-			margin-right: 16px;
+    &-action {
+      margin-right: 16px;
 
-			> .g-icon {
-				font-size: 18px !important;
-				color: rgba(0, 0, 0, .54);
-			}
-		}
+      > .g-icon {
+        font-size: 18px !important;
+        color: rgba(0, 0, 0, .54);
+      }
+    }
 
-		&__open {
-			background-color: rgba(0, 0, 0, .035);
+    &__open {
+      background-color: rgba(0, 0, 0, .035);
 
-			.g-treeview__open {
-				background-color: rgba(0, 0, 0, .015);
-			}
-		}
+      .g-treeview__open {
+        background-color: rgba(0, 0, 0, .015);
+      }
+    }
 
-		&__active {
-			background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
+    &__active {
+      background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
       box-shadow: 3px 3px 20px 0 rgba(255, 110, 64, .5);
-			color: white;
+      color: white;
       margin-right: 8px;
 
-			.g-icon {
-				color: inherit;
-			}
-		}
+      .g-icon {
+        color: inherit;
+      }
+    }
 
-		&-subheader {
-			display: flex;
-			align-items: center;
-			height: 48px;
-			padding: 0 16px;
-			font-size: 14px;
-			font-weight: 400;
-			color: rgba(0, 0, 0, 0.54);
-			pointer-events: none;
-			cursor: default;
-		}
+    &-subheader {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.54);
+      pointer-events: none;
+      cursor: default;
+    }
 
-		&-children {
-			ul {
-				/*padding-left: 4px;*/
-			}
+    &-children {
+      ul {
+        /*padding-left: 4px;*/
+      }
 
       i {
         font-size: 10px !important;
       }
-		}
-	}
+    }
+  }
 </style>
