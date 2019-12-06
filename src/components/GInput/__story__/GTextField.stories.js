@@ -70,12 +70,12 @@ export const TextFieldPlayGround = () => ({
                            :append-inner-icon="appendInnerIcon"
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">
-                          <template v-slot:prependOuter>
+                          <template v-slot:prepend-outer>
                           </template>
-                          <template v-slot:appendInner>
+                          <template v-slot:append-inner>
                           <g-icon>{{appendInnerIcon}}</g-icon>
                           </template>
-                          <template v-slot:appendOuter>
+                          <template v-slot:append-outer>
                           </template>
               </g-text-field>`,
 });
@@ -475,8 +475,8 @@ export const TextFieldIconEvent = () => ({
             label="Message"
             type="text"
             @click:append="toggleMarker"
-            @click:appendOuter="sendMessage"
-            @click:prependOuter="changeIcon"
+            @click:append-outer="sendMessage"
+            @click:prepend-outer="changeIcon"
             @click:clear="clearMessage">
               </g-text-field>`,
 });
@@ -500,7 +500,7 @@ export const TextFieldAppendSlot = () => ({
   template: `
               <g-container>
                 <g-text-field >
-                 <template v-slot:appendOuter>
+                 <template v-slot:append-outer>
                  <div class="g-tf-append__outer">
                  <g-icon>check</g-icon>
                  </div>
@@ -586,7 +586,7 @@ export const TextFieldBoostrap = () => ({
 								 :required="required"
 								 :clearable="clearable"
 								 :rules="[rules.max]">
-      <template #prependContent>
+      <template #prepend-content>
         Prepend
       </template>
       <template v-slot:prepend="{onClick}">
@@ -597,7 +597,7 @@ export const TextFieldBoostrap = () => ({
         </div>
       </template>
     
-      <template #appendContent>
+      <template #append-content>
         Append
       </template>
       <template v-slot:append="{onClick}">

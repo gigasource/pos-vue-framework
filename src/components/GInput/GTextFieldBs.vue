@@ -10,9 +10,9 @@
       </slot>
     </label>
     <div class="bs-tf-input-group">
-      <div class="bs-tf-input-prepend" @click="onClickPrepend" v-if="$slots.prependContent">
+      <div class="bs-tf-input-prepend" @click="onClickPrepend" v-if="$slots['prepend-content']">
 				<span class="bs-tf-input-text">
-					<slot name="prependContent"></slot>
+					<slot name="prepend-content"></slot>
 				</span>
       </div>
       <div
@@ -22,8 +22,8 @@
                type="text"
                ref="input"
                :placeholder="placeholder"
-               :class="{'bs-tf-input-has-prepend': ($slots.prependContent || $slots.prepend),
-                      'bs-tf-input-has-append': ($slots.appendContent || $slots.append)}"
+               :class="{'bs-tf-input-has-prepend': ($slots['prepend-content'] || $slots.prepend),
+                      'bs-tf-input-has-append': ($slots['append-content'] || $slots.append)}"
                v-model="internalValue"
                @change="onChange"
                @focus="onFocus"
@@ -32,9 +32,9 @@
         <slot name="append" :on-click="onClickAppend"></slot>
       </div>
 
-      <div class="bs-tf-input-append" @click="onClickAppend" v-if="$slots.appendContent">
+      <div class="bs-tf-input-append" @click="onClickAppend" v-if="$slots['append-content']">
         <span class="bs-tf-input-text">
-					<slot name="appendContent"></slot>
+					<slot name="append-content"></slot>
 				</span>
       </div>
 

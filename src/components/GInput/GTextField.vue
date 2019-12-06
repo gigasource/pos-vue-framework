@@ -2,7 +2,7 @@
   <div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp"
        @mousedown="onMouseDown">
     <div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-      <slot name="prependOuter">
+      <slot name="prepend-outer">
         <g-icon :color=iconColor>{{prependIcon}}</g-icon>
       </slot>
     </div>
@@ -10,14 +10,14 @@
       <legend :style="legendStyles">{{label}}</legend>
       <div class='g-tf' :class="tfErrClasses">
         <div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
-          <slot name="prependInner">
+          <slot name="prepend-inner">
             <g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
           </slot>
         </div>
         <div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
           <div class="input">
-            <slot name="inputSlot" :inputErrStyles="inputErrStyles"></slot>
+            <slot name="input-slot" :inputErrStyles="inputErrStyles"></slot>
             <input autocomplete="off"
                    :autofocus="autofocus"
                    class="g-tf-input"
@@ -43,15 +43,15 @@
         </div>
         <div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
         <div class="g-tf-append__inner" @click="onClickAppendInner">
-          <slot name="clearableSlot" :iconColor="iconColor">
+          <slot name="clearable-slot" :iconColor="iconColor">
             <g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
           </slot>
 
-          <slot name="appendInner" :iconColor="iconColor">
+          <slot name="append-inner" :iconColor="iconColor">
             <g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
           </slot>
         </div>
-        <slot name="inputMessage">
+        <slot name="input-message">
           <div class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</div>
           <div class="g-tf-hint" v-else-if="isValidInput && hint" :class="hintClasses">
             <slot name="hint">{{hint}}</slot>
@@ -63,7 +63,7 @@
       </div>
     </fieldset>
 
-    <slot name="appendOuter">
+    <slot name="append-outer">
       <div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
         <g-icon :color=iconColor>{{appendIcon}}</g-icon>
       </div>
