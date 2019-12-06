@@ -6,7 +6,7 @@
 					<g-binding-diagram-item-group :value="diagramData.localData" @dragStart="dragStart" :top="20" :left="300" @connected="connect" @disconnected="disconnect" @edit="edit" :key="'local' + index">
 
 					</g-binding-diagram-item-group>
-					<g-binding-diagram-item-group v-for="(group, index) in diagramData.foreignData" :value="group" @dragStart="dragStart" :top="20 + index*250" left="20" @connected="connect" @disconnected="disconnect" @edit="edit" :key="index">
+					<g-binding-diagram-item-group v-for="(group, index) in diagramData.foreignData" :value="group" @dragStart="dragStart" :top="20 + index*250" left="20" @connected="connect" @disconnected="disconnect" @edit="edit" :key="'foreign' + index">
 
 					</g-binding-diagram-item-group>
 				</template>
@@ -17,7 +17,7 @@
 				Select
 			</div>
 			<div class="g-binding-diagram-select-tree">
-				<g-binding-diagram-tree-view v-model="selectTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="4"></g-binding-diagram-tree-view>
+				<g-binding-diagram-tree-view v-model="selectTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="4"/>
 			</div>
 		</div>
 		<div area="add" class="g-binding-diagram-add">
@@ -28,7 +28,7 @@
 				<g-btn class="g-binding-diagram-add-button" icon @click="addToDiagram">
 					<g-icon size="20" class="text-blue">fas fa-plus-circle</g-icon>
 				</g-btn>
-				<g-binding-diagram-tree-view v-model="addTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="7" slotted></g-binding-diagram-tree-view>
+				<g-binding-diagram-tree-view v-model="addTree" :item-text="itemText" item-children="items" :data="treeData" :expand-level="7" slotted/>
 			</div>
 		</div>
 		<div area="preview" class="g-binding-diagram-preview">
@@ -51,7 +51,7 @@
 			<div class="g-binding-diagram-action-title">
 				Action
 			</div>
-			<g-btn outlined>Close</g-btn>
+			<g-btn outlined @click="close">Close</g-btn>
 		</div>
 	</g-grid-layout>
 </template>
@@ -83,45 +83,51 @@
 
       const itemText = node => node['name'] ? node['name'] : node['component']
 
-			const selectTree = reactive({
-				activePath: '',
-				allPaths: []
-			})
-      const addTree = reactive({
+			const selectTree = treeData.value.metaData ? reactive(treeData.value.metaData.selectTree) : reactive({
+        allPaths: [],
         activePath: '',
-        allPaths: []
+			})
+      const addTree = treeData.value.metaData ? reactive(treeData.value.metaData.addTree) : reactive({
+        allPaths: [],
+        activePath: '',
       })
+      const diagramsData = treeData.value.metaData ? ref(treeData.value.metaData.diagramsData) : ref([])
+
       const selectTreeActivePath = computed(() => selectTree.activePath)
       const addTreeActiveSlottedPath = computed(() => addTree.activePath)
       const addTreeActivePath = computed(() => convertToPath(addTreeActiveSlottedPath.value))
-      const diagramsData = ref([])
+			const editorPath = ref('')
 			const editorData = ref({})
 
 			// Init diagrams data
-      onMounted(() => {
+			function initDiagramsData() {
         const allSlotData = []
 
-				for (let slottedPath of addTree.allPaths) {
-				  const path = convertToPath(slottedPath)
-				  if (isSlotPath(path)) {
-				    allSlotData.push(initPathData(path, treeData.value))
-					}
-				}
+        for (let slottedPath of addTree.allPaths) {
+          const path = convertToPath(slottedPath)
+          if (isSlotPath(path)) {
+            allSlotData.push(initPathData(path, treeData.value))
+          }
+        }
 
         for (let path of selectTree.allPaths) {
           const slotsData = []
-					for (let slotData of allSlotData) {
-					  if (path === convertToNormalPath(slotData.path)) slotsData.push(slotData)
-					}
+          for (let slotData of allSlotData) {
+            if (path === convertToNormalPath(slotData.path)) slotsData.push(slotData)
+          }
           diagramsData.value.push({
-						localData: initPathData(path, treeData.value),
-						slotsData: slotsData,
-						foreignData: [],
-						binding: [],
-						slotScopeBinding: [],
-						editorData: {}
-					})
-				}
+            localData: initPathData(path, treeData.value),
+            slotsData: slotsData,
+            foreignData: [],
+            binding: [],
+            slotScopeBinding: [],
+            editorPath: undefined
+          })
+        }
+			}
+
+      onMounted(() => {
+        if (treeData.value.metaData === undefined) initDiagramsData()
 			})
 
 			// Data extraction functionality
@@ -214,6 +220,7 @@
 						}
 					}
 				}
+        return {}
 			}
 
 			// Path conversion functionality
@@ -287,9 +294,6 @@
         }
       }
 
-
-      // Editor logic
-
       // Extract diagrams data from path
       function getDiagramData (path) {
         const normalPath = convertToNormalPath(path)
@@ -300,20 +304,27 @@
         }
       }
 
+      // Editor logic
+
       // Switch editor data according to active diagram
       watch(selectTreeActivePath, newVal => {
-        editorData.value = getDiagramData(newVal).editorData
-      }, {lazy: true})
+        const diagramData = getDiagramData(newVal)
+        editorPath.value = diagramData ? diagramData.editorPath : undefined
+      })
+
+			watch(editorPath, newVal => {
+			  editorData.value = getPathData(newVal)
+			})
 
 			// Handle edit event from item group
 			function edit(path) {
-			  const tempEditorData = getPathData(path)
-				getDiagramData(selectTreeActivePath.value).editorData = tempEditorData
-			  editorData.value = tempEditorData
+				getDiagramData(selectTreeActivePath.value).editorPath = path
+				editorPath.value = path
 			}
 
 			// Editing functionality
 			function toggleItem(path, index) {
+			  // debugger
         if (path === undefined || path === null) return
 				const normalPath = convertToNormalPath(path)
         for (let diagramData of diagramsData.value) {
@@ -371,6 +382,23 @@
 			provide('deleteItem', deleteItem)
 			provide('toggleItem', toggleItem)
 
+			// External functionality
+			function save() {
+        !treeData.value.metadata && (treeData.value.metaData = {})
+        treeData.value.metaData.diagramsData = diagramsData.value
+        treeData.value.metaData.selectTree = selectTree
+        treeData.value.metaData.addTree = addTree
+			}
+
+			function updateIntoTreeData() {
+
+			}
+
+			function close() {
+				save()
+			  context.emit('close')
+			}
+
       return {
 				GBindingDiagramLayout,
 			  treeData,
@@ -384,7 +412,8 @@
 				connect,
 				disconnect,
 				editorData,
-				edit
+				edit,
+				close
 			}
 		},
   }
@@ -413,6 +442,7 @@
 			display: flex;
 			flex-direction: column;
 			flex: 1 1 100%;
+			background-color: white;
 
 			&-title {
 				position: relative;
@@ -456,6 +486,7 @@
 		&-edit {
 			height: 100%;
 			padding: 0 10px;
+			background-color: white;
 		}
 	}
 

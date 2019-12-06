@@ -3,7 +3,7 @@ export function isRootPath (path) {
 }
 
 export function isSlotPath (path) {
-  return path.indexOf('slot') > -1
+  return path && path.indexOf('slot') > -1
 }
 
 export function convertToNormalPath (slotPath) {

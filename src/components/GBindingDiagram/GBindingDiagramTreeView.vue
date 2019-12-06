@@ -1,5 +1,5 @@
 <script>
-  import { ref, computed, onMounted } from '@vue/composition-api';
+  import { ref, computed, watch, onMounted } from '@vue/composition-api';
   import { getInternalValue } from '../../mixins/getVModel';
   import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
 	import GIcon from '../GIcon/GIcon';
@@ -37,6 +37,12 @@
 
       onMounted(() => {
         tree.value.allPaths = _.keys(treeStates)
+				if (_.isEmpty(tree.value.states))  {
+				  tree.value.states = treeStates
+				} else {
+				  _.forEach(tree.value.states, (val, key) => treeStates[key] = val)
+          //tree.value.states = treeStates
+				}
       })
 
       const togglePath = (path) =>  {
@@ -44,13 +50,13 @@
 			}
 
 			const genIcon = function (state) {
+
         return <g-icon size="10" vOn:click={() => state.collapse = !state.collapse}>
 						{state.collapse ? 'far fa-plus-square' : 'far fa-minus-square'}
 					</g-icon>
 			}
 
       const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
-
         return <li>
           <span class="tree-view-prepend">
 						{childrenVNodes && genIcon(state)}
@@ -111,10 +117,13 @@
         data: props.data,
         itemChildren,
         itemPath,
-        expandLevel: props.expandLevel
+        expandLevel: props.expandLevel,
       })
 
-      return { treeStates, genTree }
+      return {
+        treeStates,
+				genTree,
+      }
     },
     render() {
       return this.genTree()
