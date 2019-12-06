@@ -15,7 +15,7 @@
       //display props
       ...{
         label: String,
-				svgIcon: Boolean,
+        svgIcon: Boolean,
         prependIcon: String,
         prependInnerIcon: {
           type: String,
@@ -172,7 +172,8 @@
       }
 
       function genSelectionSlot() {
-        return Array.from(files.value).map((file, index, files) => {
+        const fs = (!files.value || files.value.length === 0) && internalValue.value ? [internalValue.value] : files.value
+        return Array.from(fs).map((file, index, files) => {
           if (!context.slots.selection) return
 
           let text = props.showSize ? filesName.value[index] + ` (${convertFileSize(file.size)})` : filesName.value[index]
