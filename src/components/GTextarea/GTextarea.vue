@@ -2,7 +2,7 @@
   <div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]"
        @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
     <div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
-      <slot name="prepend-outer">
+      <slot name="prependOuter">
         <g-icon>{{prependIcon}}</g-icon>
       </slot>
     </div>
@@ -10,7 +10,7 @@
       <legend :style="legendStyles">{{label}}</legend>
       <div class='g-tf' :class="tfErrClasses">
         <div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
-          <slot name="prepend-inner">
+          <slot name="prependInner">
             <g-icon>{{prependInnerIcon}}</g-icon>
           </slot>
         </div>
@@ -39,7 +39,7 @@
           <div v-if="isDirty && clearable" @click="onClearIconClick">
             <g-icon class="g-icon__link">mdi-close</g-icon>
           </div>
-          <slot name="append-inner">
+          <slot name="appendInner">
             <g-icon>{{appendIcon}}</g-icon>
           </slot>
         </div>
@@ -52,7 +52,7 @@
       </div>
     </fieldset>
     <div v-if="appendOuterIcon" class="g-tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
-      <slot name="append-outer">
+      <slot name="appendOuter">
         <g-icon>{{appendOuterIcon}}</g-icon>
       </slot>
     </div>

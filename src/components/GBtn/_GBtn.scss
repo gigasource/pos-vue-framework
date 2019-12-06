@@ -28,6 +28,7 @@ button {
   user-select: none;
   vertical-align: middle;
   white-space: nowrap;
+  border-radius: 2px;
 
   &:hover::before {
     opacity: 0.04;
@@ -107,6 +108,10 @@ button {
 
   > .g-btn__content .g-icon {
     color: inherit;
+  }
+
+  &__uppercase {
+    text-transform: uppercase;
   }
 }
 

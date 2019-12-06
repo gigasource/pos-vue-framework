@@ -34,9 +34,7 @@ export /*public for test only*/ function shouldApplyColor(color, data) {
  *  - If color is CSS color, add 'background-color' & 'border-color' with value is color
  *  - If color is not CSS color, add [color] as property in data.class
  */
-export function setBackgroundColor(color, data) {
-  data = data || {}
-
+export function setBackgroundColor(color, data = {}) {
   if (!shouldApplyColor(color, data))
     return data
 

@@ -59,9 +59,11 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 
   function validate(value) {
     const errorBucket = []
-    if (props.rules ||props.required  ) {
+    if (props.rules || props.required) {
       let rules = props.rules || []
-      props.required ? rules.push(function(value){ return !!value||' ' }) : rules
+      props.required ? rules.push(function (value) {
+        return !!value || ' '
+      }) : rules
       for (let i = 0; i < rules.length; i++) {
         const rule = rules[i]
         const validatedValue = typeof rule === 'function' ? rule(value) : rule
@@ -98,18 +100,18 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 export function getSlotEventListeners(context) {
   //slot events
   return {
-    onClickPrependOuter: () => context.emit('click:prepend-outer'),
-    onClickPrependInner: () => context.emit('click:prepend-inner'),
-    onClickAppendOuter: () => context.emit('click:append-outer'),
-    onClickAppendInner: () => context.emit('click:append-inner'),
+    onClickPrependOuter: () => context.emit('click:prependOuter'),
+    onClickPrependInner: () => context.emit('click:prependInner'),
+    onClickAppendOuter: () => context.emit('click:appendOuter'),
+    onClickAppendInner: () => context.emit('click:appendInner'),
   }
 }
 
 export function getSlotBsEventListeners(context) {
   //slot events
   return {
-    onClickPrepend: () => context.emit('click:prepend-outer'),
-    onClickAppend: () => context.emit('click:append-outer'),
+    onClickPrepend: () => context.emit('click:prependOuter'),
+    onClickAppend: () => context.emit('click:appendOuter'),
   }
 }
 
@@ -201,5 +203,5 @@ export function getInternalValue(props, context) {
     }
   });
 
-  return{ internalValue, rawInternalValue};
+  return {internalValue, rawInternalValue};
 }

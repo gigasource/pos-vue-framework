@@ -28,14 +28,16 @@
                   <g-img v-else-if="prependType==='image'" :src="item.prepend"/>
                 </div>
               </slot>
-              <div class="g-list-item-content">
-                <div class="g-list-item-text">{{item[itemText]||item}}</div>
-                <div class="g-list-item-text__sub"
-                     v-if="lineNumber > 1">
-                  {{item.subtext|| '&nbsp;'}}
+              <slot name="content">
+                <div class="g-list-item-content">
+                  <div class="g-list-item-text">{{item[itemText]||item}}</div>
+                  <div class="g-list-item-text__sub"
+                       v-if="lineNumber > 1">
+                    {{item.subtext|| '&nbsp;'}}
+                  </div>
+                  <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
                 </div>
-                <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
-              </div>
+              </slot>
               <slot :isSelected="isActiveItem(item, index)" :item="item" name="append">
                 <div v-if="appendIcon && item.append " class="g-list-item-action">
                   <g-icon>{{item.append}}</g-icon>
@@ -59,7 +61,7 @@
 
           <g-divider v-else-if="item.type === 'divider'"></g-divider>
 
-          <slot :item="item" v-else>
+          <slot name="listItem" :item="item" v-else>
             <div class="g-list-item"
                  :class="{'g-list-item__active': isActiveItem(item, index) , activeClass: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
                  tabindex="0"
@@ -74,15 +76,17 @@
                 </div>
                 <div v-else>{{item.prepend}}</div>
               </slot>
-
-              <div class="g-list-item-content">
-                <div class="g-list-item-text">{{item[itemText]}}</div>
-                <div class="g-list-item-text__sub"
-                     v-if="lineNumber > 1">
-                  {{item.subtext || '&nbsp;'}}
+              <slot name="content">
+                <div class="g-list-item-content">
+                  <div class="g-list-item-text">{{item[itemText]}}</div>
+                  <div class="g-list-item-text__sub"
+                       v-if="lineNumber > 1">
+                    {{item.subtext || '&nbsp;'}}
+                  </div>
+                  <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
                 </div>
-                <div class="g-list-item-text__sub" v-if="lineNumber === 3">{{item.subtext2||'&nbsp;'}}</div>
-              </div>
+              </slot>
+
               <slot :isSelected="isActiveItem(item, index)" :item="item" name="append">
                 <div v-if="appendIcon && item.append " class="g-list-item-action">
                   <g-icon :svg="svg">{{item.append}}</g-icon>
@@ -211,11 +215,11 @@
         context.emit('keydown:up')
       }
 
-      function onSelect(item, index) {
+      function onSelect(item) {
         if (!props.selectable) {
           return;
         }
-        toggleItem(item, index)
+        toggleItem(item)
         context.emit('click:item')
       }
 
@@ -241,9 +245,6 @@
 
 
       const {uniqueItems: renderList, internalValue, toggleItem, isActiveItem} = makeListSelectable(props, context);
-      // const renderList = computed(() => {
-      //   context.refs.listItemRef ? uniqueItems.value : uniqueItems.value
-      // })
 
       //handler case:  list items in list
       const add = (item) => {

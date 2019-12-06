@@ -1,14 +1,12 @@
 <script>
   import GTextField from "../GInput/GTextField";
   import GMenu from "../GMenu/GMenu"
-  import {makeSelectable} from "../../mixins/groupable";
-  import {reactive, ref, computed, toRefs} from "@vue/composition-api";
+  import {computed, reactive, ref} from "@vue/composition-api";
   import {getList, getSelections} from "./GSelectFactory";
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
   import _ from "lodash"
-  import {isSelected} from "../GDatePicker/logic/TableUtil";
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
@@ -66,6 +64,7 @@
           top: false,
         })
       },
+      eager: Boolean,
       //item textfieldValue props
       chips: Boolean,
       smallChips: Boolean,
@@ -101,22 +100,22 @@
       })
       //list selections
 
-      const {internalValue: selectedItem} = makeListSelectable(props, context)
-      const options = getList(props, selectedItem, state)
-      const fieldItem = getSelections(props, selectedItem)
-      const tfDisplaySelections = computed(() => {
+      const {internalValue: selectedValue} = makeListSelectable(props, context)
+
+      const fieldItem = getSelections(props, selectedValue)
+      const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return item ? (item['text'] || item['value'] || item) : ''
+            return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
           })
         }
-        return fieldItem.value || fieldItem.value === 0 ? fieldItem.value['text'] || fieldItem.value['value'] ||
-            fieldItem.value : ''
+        return fieldItem.value || fieldItem.value === 0 ? fieldItem.value[props.itemText] ||
+            fieldItem.value[props.itemValue] ||
+            fieldItem.value.toString() : ''
       })
 
       //gen SearchText
       const searchFocused = ref(false)
-      //todo: use ref to avoid query wrong element
       const onInputClick = () => {
         searchFocused.value = true
       }
@@ -137,7 +136,7 @@
       //genList
 
       const showOptions = ref(false)
-
+      const options = getList(props, selectedValue, state)
       const genList = (typeof props.genListFn === 'function' && props.genListFn)
           || function (showOptions) {
             return <GList
@@ -152,12 +151,15 @@
                     multiple: props.multiple,
                     inMenu: true,
                     selectable: true,
-                    value: selectedItem.value,
+                    value: selectedValue.value,
                   },
                   on: {
                     'click:item': () => showOptions.value = props.multiple,
-                    input: e => selectedItem.value = e,
+                    input: e => selectedValue.value = e,
                   },
+                  scopedSlots:{
+                    content: () =>  context.slots.item && context.slots.item()
+                  }
                 }}
                 ref="list"
             />
@@ -173,54 +175,54 @@
 
       function onChipCloseClick(index = null) {
         if (props.multiple) {
-          selectedItem.value.splice(index, 1);
+          selectedValue.value.splice(index, 1);
         } else {
-          selectedItem.value = null
+          selectedValue.value = null
         }
       }
 
       const deleteItemColor = ref('#1d1d1d')
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.allowDuplicates) {
-          return tfDisplaySelections.value.map((item, index) => <GChip small={props.smallChips}
+          return selectionTexts.value.map((item, index) => <GChip small={props.smallChips}
                                                               close={props.deletableChips}
                                                               vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
-        return tfDisplaySelections.value.map(function (item, index) {
-          if (index === tfDisplaySelections.value.length - 1) return <div
+        return selectionTexts.value.map(function (item, index) {
+          if (index === selectionTexts.value.length - 1) return <div
               style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
           return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
         })
       }
 
       const genSingleSelectionSlot = () => {
-        if (props.chips && tfDisplaySelections.value) {
+        if (props.chips && selectionTexts.value) {
           return <GChip small={props.smallChips}
                         close={props.deletableChips}
-                        vOn:close={() => onChipCloseClick()}>{tfDisplaySelections.value}</GChip>
+                        vOn:close={() => onChipCloseClick()}>{selectionTexts.value}</GChip>
         }
-        return tfDisplaySelections.value
+        return selectionTexts.value
       }
       const getTextFieldScopedSlots = {
         appendInner: ({iconColor}) =>
             <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
         inputSlot: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-              {tfDisplaySelections.value.length === 0 ?
+              {selectionTexts.value.length === 0 ?
                   <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
       }
 
       function clearSelection() {
-        selectedItem.value = props.multiple ? [] : ''
+        selectedValue.value = props.multiple ? [] : ''
         state.searchText = ''
       }
 
-      const textfieldValue = computed(() => {
-        if (props.multiple) return tfDisplaySelections.value.join(', ')
-        return tfDisplaySelections.value
+      const tfValue = computed(() => {
+        if (props.multiple) return selectionTexts.value.join(', ')
+        return selectionTexts.value
       })
 
       const genTextField = (typeof props.genTextFieldFn === 'function' && props.genTextFieldFn) || function (toggleContent) {
@@ -231,7 +233,7 @@
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                       'rules', 'type', 'disabled', 'readOnly', 'required']),
-                    value: textfieldValue.value
+                    value: tfValue.value
                   },
                   on: {
                     'click:clearIcon': () => clearSelection(),
@@ -254,9 +256,10 @@
             ...props.menuProps,
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
+            lazy: !props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+            activator: ({toggleContent}) => genTextField(toggleContent)
           },
           on: {
             input: e => showOptions.value = e,
@@ -282,9 +285,10 @@
         genSelect,
         options,
         state,
-        selectedItem,
-        tfDisplaySelections,
-        showOptions
+        selectedValue,
+        selectionTexts,
+        showOptions,
+        fieldItem
       }
     },
     render() {

@@ -18,7 +18,7 @@ export const GComboboxSingleSelectNoChips = () => ({
     flat: {default: boolean('flat', false)},
     rounded: {default: boolean('rounded', false)},
     shaped: {default: boolean('shaped', false)},
-    clearable: {default: boolean('clearable', false)},
+    clearable: {default: boolean('clearable', true)},
     hint: {default: text('hint', 'Hint')},
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: Number('counter', 25)},
@@ -33,7 +33,7 @@ export const GComboboxSingleSelectNoChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: 'sdf'
     }
   },
   template: `
@@ -85,11 +85,12 @@ export const GComboboxSingleSelectChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: 'kk'
     }
   },
   template: `
   <div data-app>
+  {{selected}}
   <g-combobox chips
               :deletableChips="deletableChips"
               :items="items" 
@@ -117,20 +118,20 @@ export const GComboboxMultiSelect = () => ({
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
     deletableChips: {default: boolean('deletable-chips', false)},
-    itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'value')},
+    itemText: {default: text('itemText', 'title')},
+    itemValue: {default: text('itemValue', 'title')},
     clearable: {default: boolean('clearable', false)},
     menuProps:{default: object('menuProps', {closeOnContentClick : true})},
   },
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {title: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {title: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {title: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {title: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: ['hhh','hgh','Jason Oner']
     }
   },
   template: `
@@ -162,12 +163,12 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {text: 'Jason Oner', subtitle: "Jason the ant", value: 1},
+        {text: 'Ranee Carlson', value: 2},
+        {text: 'Cindy Baker', value: 3},
+        {text: 'Ali Connors', value: 4},
       ],
-      selected: null
+      selected: []
     }
   },
   template: `
@@ -192,12 +193,10 @@ export const GComboboxNoDataSlot = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null
+      selected: []
     }
   },
   template: `
@@ -279,18 +278,15 @@ export const GComboboxPrimitiveArray = () => ({
   data() {
     return {
       items: [
-        'Jason Oner',
-        'Cindy Baker',
-        'Ali Connors',
-        'Ranee Carlson',
+        112,313,4234, 454353, 5345
       ],
-      selected: null
+      selected: 4234
     }
   },
   template: `
   <div data-app>
   {{selected}}
-  <g-combobox :items="items" label="Label" v-model="selected" multiple itemText=""  chips clearable>
+  <g-combobox :items="items" label="Label" v-model="selected"  clearable>
    
   </g-combobox>
 </div>`,

@@ -187,7 +187,7 @@ export const materialize = () => ({
   },
   template: `<div data-app><g-toolbar gradient="purple darken 1, deep orange accent 2">
       <g-text-field-functional placeholder="Explore materialize" solo class="w-50">
-        <template v-slot:prepend-inner>
+        <template v-slot:prependInner>
            <i class="material-icons">search</i>
         </template>    
       </g-text-field-functional>
