@@ -205,9 +205,9 @@
         return selectionTexts.value
       }
       const getTextFieldScopedSlots = {
-        appendInner: ({iconColor}) =>
+        ['append-inner']: ({iconColor}) =>
             <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
-        inputSlot: ({inputErrStyles}) =>
+        ['input-slot']: ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {selectionTexts.value.length === 0 ?
                   <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}

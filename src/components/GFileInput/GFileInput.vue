@@ -307,7 +307,7 @@
       }
 
       function genAppendOuter() {
-        return <div class="g-tf-append__outer" ref="appendOuter">
+        return <div class="g-tf-append__outer" ref="append-outer">
           <g-icon>{props.appendOuterIcon}</g-icon>
         </div>
       }

@@ -159,12 +159,12 @@ export const GWindowWithCards = () => ({
                   <g-card-text>
                      <p>Please fill in the blank your name & password</p>
                      <g-text-field v-model="username" label="Name"> 
-                        <template v-slot:prependOuter>
+                        <template v-slot:prepend-outer>
                            <g-icon>mdi-account</g-icon>
                         </template>
                       </g-text-field>
                      <g-text-field v-model="password" label="Password"> 
-                        <template v-slot:prependOuter>
+                        <template v-slot:prepend-outer>
                            <g-icon>mdi-textbox-password</g-icon>
                         </template>
                      </g-text-field>
