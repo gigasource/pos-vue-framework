@@ -54,7 +54,7 @@ export const gMenuLookAndFeel = () => ({
   template: `
     <div data-app class="row-flex">
       <g-menu v-model="showMenu" :top="top" :bottom="bottom" :offset-x="offsetX" :offset-y="offsetY" :nudge-top="nudgeTop" 
-              :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight">
+              :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight" eager>
         <template v-slot:activator="{on}">
           <g-btn v-on="on" :width="activatorWidth" :height="activatorHeight">Activator</g-btn>
         </template>
