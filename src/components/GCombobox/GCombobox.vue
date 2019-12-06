@@ -215,13 +215,13 @@
       }
 
       const textFieldScopedSlots = {
-        ['clearable-slot']: ({iconColor}) =>
+        'clearable-slot': ({iconColor}) =>
             <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
                    color={iconColor}>{props.clearIcon}</GIcon>,
-        ['append-inner']: ({iconColor}) =>
+        'append-inner': ({iconColor}) =>
             [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
               context.slots['append-inner'] && context.slots['append-inner']()],
-        ['input-slot']: ({inputErrStyles}) =>
+        'input-slot': ({inputErrStyles}) =>
             <Fragment>
               {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
             </Fragment>,

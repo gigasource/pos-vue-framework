@@ -152,7 +152,7 @@
 
       function gTextFieldInputScopedSlots() {
         return {
-          ['input-slot']: ({ inputErrStyles }) =>
+          'input-slot': ({ inputErrStyles }) =>
               <div style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
                 { props.multiple ? renderMultipleDates() : renderSingleOrDateRanges()}
               </div>
