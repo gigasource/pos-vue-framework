@@ -1,216 +1,299 @@
-import { text, withKnobs, boolean, number } from '@storybook/addon-knobs';
-import GToolbar from '../GToolbar';
+import {text, withKnobs, boolean, number, array} from '@storybook/addon-knobs';
+import GCard from '../../GCard/GCard';
 import GBtn from '../../GBtn/GBtn';
+import GImg from '../../GImg/GImg';
+import GCardTitle from '../../GCard/GCardTitle';
+import GIcon from '../../GIcon/GIcon';
 import GSpacer from '../../GLayout/GSpacer';
+import {GCardText, GCardActions, GCardSubtitle} from '../../GCard/GCardFunctionalComponent'
+import GWindow from '../GWindow';
+import GWindowItem from '../GWindowItem';
 import GTextField from '../../GInput/GTextField';
-import GMenu from '../../GMenu/GMenu';
-import GList from '../../GList/GList';
-import GListItem from '../../GList/GListItem';
+import GChip from '../../GChip/GChip';
+import GChipGroup from '../../GChipGroup/GChipGroup';
+import GDivider from '../../GLayout/GDivider';
+import GAvatar from '../../GAvatar/GAvatar';
+import GScrollWindow from '../GScrollWindow';
+import GScrollWindowItem from '../GScrollWindowItem';
+
 
 export default {
-  title: 'Toolbar',
+  title: 'GWindow',
   decorators: [withKnobs],
 };
 
-export const basic = () => ({
-  components: {GToolbar, GBtn, GSpacer},
+export const GWindowDefault = () => ({
+  components: {GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GWindowItem, GWindow, GImg, GIcon},
+  data: () => ({
+    selectedItem: 0,
+  }),
   props: {
-    bottom: {
-      type: Boolean,
-      default: boolean('Bottom', false)
-    },
-    dense: {
-      type: Boolean,
-      default: boolean('Dense', false)
-    },
-    short: {
-      type: Boolean,
-      default: boolean('Short', false)
-    },
-    prominent: {
-      type: Boolean,
-      default: boolean('Prominent', false)
-    },
-    flat: {
-      type: Boolean,
-      default: boolean('Flat', false)
-    },
-    collapse: {
-      type: Boolean,
-      default: boolean('Collapse', false)
-    },
-    rounded: {
-      type: Boolean,
-      default: boolean('Rounded border', false)
-    },
-    elevation: {
-      type: Number,
-      default: number('Elevation', 4)
-    }
+    continuous: {type: Boolean, default: boolean('continuous', false)},
+    reverse: {type: Boolean, default: boolean('reverse', false)},
+    vertical: {type: Boolean, default: boolean('vertical', false)},
+    showArrows: {type: Boolean, default: boolean('showArrows', true)},
+    prevIcon: {type: String, default: text('prevIcon', 'mdi-chevron-left')},
+    nextIcon: {type: String, default: text('nextIcon', 'mdi-chevron-right')},
+    showArrowsOnHover: {type: Boolean, default: boolean('showArrowsOnHover', false)},
+    elevation: {type: Number, default: number('elevation', 2)},
+    hideDelimiters: {type: Boolean, default: boolean('hideDelimiters', true)},
+
   },
-  template: `<g-toolbar :bottom="bottom" :dense="dense" :short="short" :prominent="prominent" :flat="flat" :collapse="collapse" :tile="!rounded" :elevation="elevation">
-    <g-btn flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer/>
-    <g-btn flat><i class="material-icons">search</i></g-btn>
-    <g-btn flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
+  template: `<g-window :continuous="continuous"
+                       :hide-delimiters="hideDelimiters"
+                       :elevation="elevation" :vertical="vertical"
+                       :show-arrows-on-hover="showArrowsOnHover"
+                       :prev-icon="prevIcon" :next-icon="nextIcon"
+                       :reverse="reverse" :show-arrows="showArrows"
+                       v-model="selectedItem"
+             >
+               <g-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/plitvice-lakes-croatia-beautiful-place-260nw-1050138794.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>DISCOVER</p>
+                    </g-card-title>
+                  </g-img>
+                </g-window-item>
+                <g-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/scenic-view-vernazza-cinque-terre-260nw-1252453072.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>A</p>
+                    </g-card-title>
+                  </g-img>
+                </g-window-item>
+                <g-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/z/stock-photo-the-istrian-streets-in-croatia-1461805289.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>WHOLE</p>
+                    </g-card-title>
+                  </g-img>
+                </g-window-item>
+                <g-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/view-over-colorful-buildings-riomaggiore-600w-1532937503.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>NEW</p>
+                    </g-card-title>
+                  </g-img>
+                </g-window-item>
+                <g-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/lake-bled-autumn-600w-1463231747.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>WORLD</p>
+                    </g-card-title>
+                  </g-img>
+                </g-window-item>
+            </g-window>`,
 });
 
-export const customHeight = () => ({
-  components: {GToolbar, GBtn, GSpacer},
+export const GWindowWithCards = () => ({
+  components: {
+    GCard,
+    GCardActions,
+    GCardTitle,
+    GDivider,
+    GCardText,
+    GBtn,
+    GSpacer,
+    GAvatar,
+    GCardSubtitle,
+    GWindowItem,
+    GWindow,
+    GImg,
+    GTextField,
+    GIcon,
+    GChip,
+    GChipGroup
+  },
+  data: () => ({
+    selectedItem: 0,
+    activeItems: null,
+    username: '',
+    password: ''
+  }),
   props: {
-    height: {
-      type: Number,
-      default: number('Custom height', 64)
+    continuous: {type: Boolean, default: boolean('continuous', false)},
+    reverse: {type: Boolean, default: boolean('reverse', undefined)},
+    vertical: {type: Boolean, default: boolean('vertical', false)},
+    showArrows: {type: Boolean, default: boolean('showArrows', false)},
+    prevIcon: {type: String, default: text('prevIcon', 'mdi-chevron-left')},
+    nextIcon: {type: String, default: text('nextIcon', 'mdi-chevron-right')},
+    showArrowsOnHover: {type: Boolean, default: boolean('showArrowsOnHover', false)},
+    elevation: {type: Number, default: number('elevation', 2)},
+    items: {
+      default: array('items', [
+        {id: 1, text: 'BMW', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 2, text: 'Toyota', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 3, text: 'Mercedes', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 4, text: 'Ford', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 5, text: 'Lexus', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 6, text: 'Audi', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 7, text: 'Maserati', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 8, text: 'Mazda', prependIcon: '', appendIcon: '', active: false, close: true,}])
     }
   },
-  template: `<g-toolbar :height="height">
-    <g-btn flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer/>
-    <g-btn flat><i class="material-icons">search</i></g-btn>
-    <g-btn flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const extension = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  props: {
-    extended: {
-      type: Boolean,
-      default: boolean('Extended', true)
+  methods: {
+    next() {
+      this.selectedItem = (this.selectedItem + 1) % 4;
     },
-    height: {
-      type: Number,
-      default: number('Extension height', 64)
-    }
-  },
-  template: `<g-toolbar :extended="extended" :extensionHeight="height">
-    <g-btn flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer/>
-    <g-btn flat><i class="material-icons">search</i></g-btn>
-    <g-btn flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn flat><i class="material-icons">more_vert</i></g-btn>
-    <template v-slot:extension>
-      <span>Extension</span>    
-    </template>
-   </g-toolbar>`
-});
-
-export const image = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  props: {
-    src: {
-      type: String,
-      default: text('src', 'https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg')
-    }
-  },
-  template: `<g-toolbar :src="src"> 
-    <g-btn flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer></g-spacer>
-    <g-btn flat><i class="material-icons">search</i></g-btn>
-    <g-btn flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const color = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  props: {
-    color: {
-      type: String,
-      default: text("Color", '#ff4452')
-    }
-  },
-  template: `<g-toolbar :color="color"> 
-    <g-btn flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer/>
-    <g-btn flat><i class="material-icons">search</i></g-btn>
-    <g-btn flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
-});
-
-export const gradient = () => ({
-  components: {GToolbar, GBtn, GSpacer},
-  props: {
-    grad: {
-      type: String,
-      default: text('Gradient', 'indigo, purple darken 2')
+    prev() {
+      this.selectedItem = (this.selectedItem - 1) === -1 ? 3 : this.selectedItem - 1;
     },
   },
-  template: `<g-toolbar :gradient="grad"> 
-    <g-btn flat><i class="material-icons">menu</i></g-btn>
-    <span>Title</span>
-    <g-spacer/>
-    <g-btn flat><i class="material-icons">search</i></g-btn>
-    <g-btn flat><i class="material-icons">favorite</i></g-btn>
-    <g-btn flat><i class="material-icons">more_vert</i></g-btn>
-   </g-toolbar>`
+  template: `<g-window :continuous="continuous" :elevation="elevation" :vertical="vertical" :show-arrows-on-hover="showArrowsOnHover" :prev-icon="prevIcon" :next-icon="nextIcon" :reverse="reverse" :show-arrows="showArrows" v-model="selectedItem">
+              <g-window-item>
+                <g-card>
+                  <g-card-title>TASK 01: WELCOME TO CAR DEALER<g-spacer/><g-avatar background-color="blue" text-color="white">1</g-avatar></g-card-title>
+                  <div style="background-image: url('https://cdn.vuetifyjs.com/images/logos/v.svg'); background-position: center center; background-repeat: no-repeat; width: 100%; height: 300px;">
+                    
+                  </div>
+                  <g-card-actions>
+                    <g-btn depressed @click="prev">BACK</g-btn>
+                    <g-spacer/>
+                    <g-btn depressed @click="next" background-color="blue" text-color="white">CONTINUE</g-btn>
+                  </g-card-actions>
+                </g-card>
+              </g-window-item>
+              <g-window-item>
+               <g-card>
+                  <g-card-title>TASK 02: LOGIN FORM<g-spacer/><g-avatar background-color="blue" text-color="white">2</g-avatar></g-card-title>
+                  <g-card-text>
+                     <p>Please fill in the blank your name & password</p>
+                     <g-text-field v-model="username" label="Name"> 
+                        <template v-slot:prependOuter>
+                           <g-icon>mdi-account</g-icon>
+                        </template>
+                      </g-text-field>
+                     <g-text-field v-model="password" label="Password"> 
+                        <template v-slot:prependOuter>
+                           <g-icon>mdi-textbox-password</g-icon>
+                        </template>
+                     </g-text-field>
+                  </g-card-text>
+                  
+                  <g-divider/>
+                  
+                  <g-card-actions>
+                   <g-btn depressed @click="prev">BACK</g-btn>
+                   <g-spacer/>
+                   <g-btn depressed @click="next" background-color="blue" text-color="white" :disabled="!username || !password">CONTINUE</g-btn>
+                  </g-card-actions>
+                </g-card>
+              </g-window-item>
+              <g-window-item>
+               <g-card>
+                  <g-card-title>TASK 03: CHOOSE YOUR FAVOURITE CARS<g-spacer/><g-avatar background-color="blue" text-color="white">3</g-avatar></g-card-title>
+                  <g-card-text>
+                    <g-chip-group :items="items" v-model="activeItems" multiple>
+                        <template v-slot:item="{value, click, active, close}">{{value.text}}</template>
+                    </g-chip-group>
+                    <p>
+                      Please choose some of your favourite car brands so we know your preferences.
+                    </p>
+                  </g-card-text>
+                  
+                  <g-divider/>
+                  
+                  <g-card-actions>
+                   <g-btn depressed @click="prev">BACK</g-btn>
+                    <g-spacer/>                   
+                   <g-btn depressed @click="next" background-color="blue"  text-color="white" :disabled="!activeItems || (activeItems && activeItems.length <= 0)">CONTINUE</g-btn>
+                  </g-card-actions>
+                </g-card>
+              </g-window-item>
+              <g-window-item>
+               <g-card>
+                  <g-card-title>TASK 04: CONFIRM YOUR CHOICES<g-spacer/><g-avatar background-color="blue" text-color="white">4</g-avatar></g-card-title>
+                  <g-card-text>
+                   <p>Please read through your choices:</p>
+                   <p>- Your username: {{username}}</p>
+                   <p>- Your password: {{password}}</p>
+                   <p>- Your choices: </p>
+                   <p v-for="(item, index) in activeItems" style="margin-left: 20px;">{{item.text}}</p>
+                  </g-card-text>
+                  
+                  <g-divider/>
+                  
+                  <g-card-actions>
+                    <g-btn depressed @click="prev">BACK</g-btn>
+                    <g-spacer/>                    
+                    <g-btn depressed background-color="blue" text-color="white">CONFIRM</g-btn>
+                  </g-card-actions>
+                </g-card>
+              </g-window-item>
+            </g-window>`,
 });
 
-export const materialize = () => ({
-  components: { GToolbar, GSpacer, GBtn, GTextFieldFunctional, GMenu, GList, GListItem},
-  data() {
-    return {
-      items1: [
-        {title: 'Image 1', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Image 2', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Image 3', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Image 4', prepend: 'https://loremflickr.com/320/240'},
-      ],
-      items2: [
-        {title: 'Notification 1', subtitle: '1 hour ago', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Notification 2', subtitle: '1 hour ago', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Notification 3', subtitle: '1 hour ago', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Notification 4', subtitle: '1 hour ago', prepend: 'https://loremflickr.com/320/240'},
-      ],
-      items3: [
-        {title: 'Item 1', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Item 2', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Item 3', prepend: 'https://loremflickr.com/320/240'},
-        {title: 'Item 4', prepend: 'https://loremflickr.com/320/240'},
-      ],
-      showMenu1: false,
-      showMenu2: false,
-      showMenu3: false,
-    }
+export const GWindowInfiniteScrollTest = () => ({
+  components: {
+    GCard,
+    GCardActions,
+    GCardTitle,
+    GCardText,
+    GBtn,
+    GCardSubtitle,
+    GWindowItem,
+    GWindow,
+    GImg,
+    GIcon,
+    GScrollWindow,
+    GScrollWindowItem
   },
+  data: () => ({
+    selectedItem: 0,
+  }),
   props: {
+    continuous: {type: Boolean, default: boolean('continuous', false)},
+    reverse: {type: Boolean, default: boolean('reverse', false)},
+    vertical: {type: Boolean, default: boolean('vertical', false)},
+    showArrows: {type: Boolean, default: boolean('showArrows', true)},
+    prevIcon: {type: String, default: text('prevIcon', 'mdi-chevron-left')},
+    nextIcon: {type: String, default: text('nextIcon', 'mdi-chevron-right')},
+    showArrowsOnHover: {type: Boolean, default: boolean('showArrowsOnHover', false)},
+    elevation: {type: Number, default: number('elevation', 2)},
+    hideDelimiters: {type: Boolean, default: boolean('hideDelimiters', false)},
 
   },
-  template: `<div data-app><g-toolbar gradient="purple darken 1, deep orange accent 2">
-      <g-text-field-functional placeholder="Explore materialize" solo class="w-50">
-        <template v-slot:prepend-inner>
-           <i class="material-icons">search</i>
-        </template>    
-      </g-text-field-functional>
-      <g-spacer/>
-      <g-menu v-model="showMenu1">
-        <template v-slot:activator="{toggleContent}">
-          <g-btn flat color="white" @click="toggleContent"><img alt style="width: 24px" src="https://loremflickr.com/320/240"/></g-btn>
-        </template>
-        <g-list :items="items1"/>
-      </g-menu>
-      <g-menu v-model="showMenu2">
-        <template v-slot:activator="{toggleContent}">
-          <g-btn flat color="white" @click="toggleContent"><i class="material-icons">notifications_none</i></g-btn>
-        </template>
-        <g-list :items="items2" subheader="Notifications"/>
-      </g-menu>
-      <g-menu v-model="showMenu3">
-        <template v-slot:activator="{toggleContent}">
-          <g-btn flat color="white" @click="toggleContent">
-            <i class="material-icons">more_vert</i>
-          </g-btn>
-        </template>
-        <g-list :items="items3" divider/>
-      </g-menu>
-    </g-toolbar></div>`
+  template: `<g-scroll-window :continuous="continuous"
+                       :hide-delimiters="hideDelimiters"
+                       :elevation="elevation" :vertical="vertical"
+                       :show-arrows-on-hover="showArrowsOnHover"
+                       :prev-icon="prevIcon" :next-icon="nextIcon"
+                       :reverse="reverse" :show-arrows="showArrows"
+                       v-model="selectedItem">
+               <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/plitvice-lakes-croatia-beautiful-place-260nw-1050138794.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>DISCOVER</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/scenic-view-vernazza-cinque-terre-260nw-1252453072.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>A</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/z/stock-photo-the-istrian-streets-in-croatia-1461805289.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>WHOLE</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/view-over-colorful-buildings-riomaggiore-600w-1532937503.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>NEW</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+                <g-scroll-window-item>
+                  <g-img height="300" src="https://image.shutterstock.com/image-photo/lake-bled-autumn-600w-1463231747.jpg" width="100%">
+                    <g-card-title absolute bottom left textColor="white">
+                      <p>WORLD</p>
+                    </g-card-title>
+                  </g-img>
+                </g-scroll-window-item>
+            </g-scroll-window>`,
 });
