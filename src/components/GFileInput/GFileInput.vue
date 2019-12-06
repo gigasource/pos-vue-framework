@@ -105,6 +105,7 @@
       const onClearIconClick = function () {
         internalValue.value = props.multiple ? [] : null
         context.refs.input.value = ''
+        context.emit('clear')
       }
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
 
