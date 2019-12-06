@@ -203,18 +203,18 @@
       }
 
       const textFieldScopedSlots = {
-        clearableSlot: ({iconColor}) =>
+        'clearable-slot': ({iconColor}) =>
             <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
                    color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
-        appendInner: ({iconColor}) =>
+        'append-inner': ({iconColor}) =>
             <GIcon color={iconColor}>arrow_drop_down</GIcon>,
-        inputSlot: ({inputErrStyles}) =>
+        'input-slot': ({inputErrStyles}) =>
             <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
             </div>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
-        inputMessage: () => [<div v-show={props.counter} class={{
+        ['input-message']: () => [<div v-show={props.counter} class={{
           'g-tf-counter': true,
           'g-tf-counter__error': !isValidInput.value
         }}>{validateText.value.length}/{props.counter}</div>,
