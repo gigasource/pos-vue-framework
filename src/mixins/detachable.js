@@ -1,12 +1,7 @@
 // requires template refs: activator, content, el
 
 export default function detachable(props, context) {
-  let activatorChildNodes;
-
-  function attachToRoot(node) {
-    if (!node) {
-      node = context.refs.content
-    }
+  function attachToRoot(node = context.refs.content) {
     const target = document.querySelector('[data-app]') || document.body
     if (!target) {
       console.warn('Unable to locate root element');
@@ -14,6 +9,7 @@ export default function detachable(props, context) {
     }
 
     target.insertBefore(node, target.firstChild)
+    return target
   }
 
   function attachToParent(node) {
@@ -45,13 +41,8 @@ export default function detachable(props, context) {
     if (node) {
       node.parentNode && node.parentNode.removeChild(node);
     } else {
-      context.refs.content && context.refs.content.parentNode.removeChild(context.refs.content);
-      if (activatorChildNodes) {
-        for (let node of activatorChildNodes)
-          node.parentNode && node.parentNode.removeChild(node);
-      } else {
-        activator && activator.parentNode.removeChild(context.refs.activator);
-      }
+      context.refs.content && context.refs.content.parentNode && context.refs.content.parentNode.removeChild(context.refs.content);
+      activator && activator.parentNode.removeChild(context.refs.activator);
     }
   }
 

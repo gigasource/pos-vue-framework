@@ -221,6 +221,7 @@
         'append-inner': ({iconColor}) =>
             [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
               context.slots['append-inner'] && context.slots['append-inner']()],
+        'append-outer': () => context.slots['append-outer'] && context.slots['append-outer'](),
         'input-slot': ({inputErrStyles}) =>
             <Fragment>
               {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}

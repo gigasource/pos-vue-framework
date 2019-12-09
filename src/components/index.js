@@ -138,6 +138,8 @@ import GScrollWindowItem from './GWindow/GScrollWindowItem';
 import GWindow from './GWindow/GWindow';
 import GWindowItem from './GWindow/GWindowItem';
 
+import GSnackbar from "./GSnackbar/GSnackbar";
+
 import {
   GCarouselTransition,
   GCarouselReverseTransition,
@@ -319,4 +321,5 @@ export {
   GZoomLeftAnimation,
   GExpandTransition,
   GExpandXTransition,
+  GSnackbar,
 }
