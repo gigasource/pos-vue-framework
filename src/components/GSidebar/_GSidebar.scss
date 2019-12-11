@@ -14,7 +14,6 @@
   backface-visibility: hidden;
   transition: 0.3s map_get($transition, 'fast-out-slow-in');
   transition-property: transform, width, max-width;
-  @include elevation(2);
 
   &-wrapper {
     height: 100%;

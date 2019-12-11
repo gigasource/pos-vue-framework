@@ -133,7 +133,8 @@
               isActive.value = e
               state.hasJustFocused = e
             }
-          }
+          },
+          ref: 'content'
         }
         return <g-menu-content {...contentOptions}>
           {context.slots.default()}

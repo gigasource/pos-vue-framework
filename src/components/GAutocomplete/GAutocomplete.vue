@@ -323,7 +323,6 @@
 
       .g-tf-input {
         flex-wrap: wrap;
-        width: auto;
         display: flex;
       }
 

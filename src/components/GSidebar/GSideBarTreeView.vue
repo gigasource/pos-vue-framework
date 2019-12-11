@@ -1,14 +1,14 @@
 <script>
-  import { computed, ref } from '@vue/composition-api';
-  import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
+  import {computed, ref} from '@vue/composition-api';
+  import GTreeFactory, {genTextFactory} from '../GTreeViewFactory/GTreeFactory';
   import GDivider from '../GLayout/GDivider';
   import GIcon from '../GIcon/GIcon';
-  import { GExpandTransition } from '../transition/transition';
+  import {GExpandTransition} from '../transition/transition';
   import GBadge from '../GBadge/GBadge';
 
   export default {
     name: 'GSideBarTreeView',
-    components: { GBadge, GIcon, GDivider, GExpandTransition },
+    components: {GBadge, GIcon, GDivider, GExpandTransition},
     props: {
       itemText: {
         type: [Function, String]
@@ -24,8 +24,17 @@
       data: [Object, Array],
       rounded: Boolean,
       value: null,
+      elevation: {
+        type: [String, Number],
+        default: 0
+      },
+      flat: Boolean,
     },
     setup(props, context) {
+      const classes = computed(() => ({
+        ['elevation-' + (props.flat ? '0' : props.elevation)]: true,
+      }))
+
       const activePath = computed({
         get: () => props.value,
         set: (val) => context.emit('input', val)
@@ -43,42 +52,66 @@
         }
       })
 
-      const genNode = function ({ node, text, childrenVNodes, state, path }) {
+      const genNode = function ({node, text, childrenVNodes, state, path}) {
         const isChild = path.split('.').length > 2
         if (isChild && !node.icon) node.icon = 'radio_button_unchecked'
 
         const icon = (node.icon || (!node.icon && node.type !== 'divider' && node.type !== 'subheader')) &&
-            <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]} svg={node.svgIcon}>{node.icon}</g-icon>
-        if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path+'.'))) {
+            <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}
+                    svg={node.svgIcon}>{node.icon}</g-icon>
+        if (openPath.value !== path && (openPath.value && !openPath.value.toString().includes(path + '.'))) {
           state.collapse = true
         }
-        const children = childrenVNodes && <div vShow={!state.collapse} class="g-treeview-children">{childrenVNodes}</div>
+        const children = childrenVNodes &&
+            <div vShow={!state.collapse} class="g-treeview-children">{childrenVNodes}</div>
         const scopedSlots = {
-					badge: scope => <span>{node.badge}</span>
+          badge: scope => <span>{node.badge}</span>
         }
-        const badge = node.badge && <g-badge inline color={node.badgeColor} scopedSlots={scopedSlots} style={childrenVNodes ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
+        const badge = node.badge && <g-badge inline color={node.badgeColor} scopedSlots={scopedSlots}
+                                             style={childrenVNodes || context.slots['prepend-icon'] || node.appendIcon ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
+
+        const appendIcon = node.appendIcon && <g-icon small class="mx-1">{node.appendIcon}</g-icon>
+
+        const onArrowIconClicked = (e) => {
+          if (node.clickable) {
+            e.stopPropagation()
+            state.collapse = !state.collapse;
+            openPath.value = path
+          }
+        }
+
         const data = {
           class: [node.type !== 'subheader' && node.type !== 'divider'
-            ? 'g-treeview-item waves-effect'
-            : null,
+              ? 'g-treeview-item waves-effect'
+              : null,
             props.rounded ? 'g-treeview-item__rounded' : null,
             (!childrenVNodes || node.clickable) && activePath.value === path
-              ? 'g-treeview__active'
-              : null],
+                ? 'g-treeview__active'
+                : null],
           on: {
             click: (e) => {
               e.stopPropagation()
-              if (childrenVNodes) {
-                state.collapse = !state.collapse;
-                openPath.value = path
-
-                if (!node.clickable) return
-              }
-
-              context.emit('node-selected', node)
+              if (node.clickable || !childrenVNodes) {
+                context.emit('node-selected', node)
                 activePath.value = path;
-                node.href && context.root.$router && context.root.$router.currentRoute.path !== node.href && context.root.$router.push(node.href);
-							}
+
+                node.href
+                && context.root.$router
+                && context.root.$router.currentRoute.path !== node.href
+                && context.root.$router.push(node.href);
+              } else {
+                if (childrenVNodes) {
+                  state.collapse = !state.collapse;
+                  openPath.value = path
+                }
+              }
+            },
+            mouseenter: () => {
+              context.emit('mouseenter', path)
+            },
+            mouseleave: () => {
+              context.emit('mouseleave', path)
+            },
           },
         }
         return <li class={!state.collapse && childrenVNodes && 'g-treeview__open'}>
@@ -86,13 +119,16 @@
             {icon}
             {text}
             {badge}
+            {node && node.type !== 'divider' && node.type !== 'subheader' &&
+              context.slots['prepend-icon'] && context.slots['prepend-icon']({path})}
             <span
-              class='g-treeview-action'
-              vShow={childrenVNodes}>
-              <g-icon>
-                {state.collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
+                class='g-treeview-action'
+                vShow={childrenVNodes}>
+              <g-icon vOn:click={onArrowIconClicked}>
+                {state.collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
               </g-icon>
             </span>
+            {appendIcon}
           </a>
           <g-expand-transition>{children}</g-expand-transition>
         </li>
@@ -103,10 +139,10 @@
       }
 
       const genRootWrapper = function (childrenVNodes) {
-        return <ul class="g-treeview-wrapper">{childrenVNodes}</ul>
+        return <ul class={["g-treeview-wrapper", classes.value]}>{childrenVNodes}</ul>
       }
 
-      const { treeStates, genTree } = GTreeFactory({
+      const {treeStates, genTree} = GTreeFactory({
         genNode,
         genWrapper,
         genRootWrapper,
@@ -116,7 +152,7 @@
         expandLevel: props.expandLevel
       })
 
-      return { treeStates, genTree }
+      return {treeStates, genTree}
     },
     render() {
       return this.genTree()
@@ -133,6 +169,7 @@
 
   .g-treeview-wrapper {
     overflow-y: auto;
+    height: 100%;
 
     /* TODO custom scrollbar */
     /*&:hover::-webkit-scrollbar {*/
@@ -164,6 +201,7 @@
       contain: layout;
       transition: none;
       color: rgba(0, 0, 0, .87);
+      margin-right: 8px;
 
       &:not(.g-treeview-subheader):hover {
         background: rgba(0, 0, 0, 0.035);
@@ -199,7 +237,7 @@
     }
 
     &-action {
-      margin-right: 16px;
+      margin-right: 4px;
 
       > .g-icon {
         font-size: 18px !important;
@@ -219,7 +257,6 @@
       background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
       box-shadow: 3px 3px 20px 0 rgba(255, 110, 64, .5);
       color: white;
-      margin-right: 8px;
 
       .g-icon {
         color: inherit;

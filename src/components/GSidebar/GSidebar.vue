@@ -11,13 +11,13 @@
 </template>
 
 <script>
-  import { computed } from '@vue/composition-api';
+  import {computed} from '@vue/composition-api';
   import GOverlay from '../GOverlay/GOverlay';
-  import colorHandler, { convertToUnit } from '../../utils/helpers';
+  import colorHandler, {convertToUnit} from '../../utils/helpers';
 
   export default {
     name: 'GSidebar',
-    components: { GOverlay },
+    components: {GOverlay},
     props: {
       absolute: Boolean,
       fixed: Boolean,
@@ -36,11 +36,17 @@
       width: [Number, String],
       small: Boolean,
       medium: Boolean,
+      elevation: {
+        type: [String, Number],
+        default: 2
+      },
+      flat: Boolean,
     },
     setup(props) {
-      const { getColorType, convertColorClass } = colorHandler();
+      const {getColorType, convertColorClass} = colorHandler();
 
       const classes = computed(() => ({
+        ['elevation-' + (props.flat ? '0' : props.elevation)]: true,
         'g-sidebar': true,
         'g-sidebar__absolute': props.absolute,
         'g-sidebar__fixed': props.fixed,
@@ -51,13 +57,13 @@
       }));
 
       const styles = computed(() => ({
-        ...props.color && getColorType(props.color) === 'style' && { 'background-color': props.color },
+        ...props.color && getColorType(props.color) === 'style' && {'background-color': props.color},
         ...props.src && {
           'background-image': 'url("' + props.src + '")',
           'background-position': 'center center',
           'background-size': 'cover',
         },
-        ...props.width && { width: convertToUnit(props.width), maxWidth: convertToUnit(props.width) }
+        ...props.width && {width: convertToUnit(props.width), maxWidth: convertToUnit(props.width)}
       }));
 
       return {
