@@ -1,5 +1,5 @@
 <template>
-	<g-layout class="g-item-group">
+	<g-row class="g-item-group">
 		<slot :toggle="toggleItem" :active="isActiveItem">
 			<template v-for="(item, index) in items">
 				<g-item :item="item" :is-active="isActiveItem(item)" @toggle="toggleItem" :key="index">
@@ -7,7 +7,7 @@
 				</g-item>
 			</template>
 		</slot>
-	</g-layout>
+	</g-row>
 </template>
 
 <script>
