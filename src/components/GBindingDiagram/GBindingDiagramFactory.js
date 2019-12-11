@@ -497,6 +497,10 @@ export default function GBindingDiagramFactory (props, context, treeData, select
     context.emit('save')
   }
 
+  function cancel() {
+    context.emit('cancel')
+  }
+
   return {
     selectTreeActivePath,
     addTreeActivePath,
@@ -515,6 +519,7 @@ export default function GBindingDiagramFactory (props, context, treeData, select
     updatePosition,
     getSlotPathFromKey,
     save,
+    cancel,
     close
   }
 }

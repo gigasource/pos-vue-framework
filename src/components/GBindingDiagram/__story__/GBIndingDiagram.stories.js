@@ -17,6 +17,8 @@ export const Demo = () => ({
 
     const treeData = ref(undefined)
 
+    const revertTreeData = ref(undefined)
+
     function resetTreeData() {
       const treeData = {
         "events": [],
@@ -245,16 +247,24 @@ export const Demo = () => ({
 
     function openDiagram() {
       treeData.value = JSON.parse(localStorage.getItem('treeData'))
+      revertTreeData.value = JSON.parse(localStorage.getItem('treeData'))
       dialog.value = true
     }
 
     function closeDiagram() {
       localStorage.setItem('treeData', JSON.stringify(treeData.value))
+      revertTreeData.value = JSON.parse(localStorage.getItem('treeData'))
       dialog.value = false
     }
 
     function saveData() {
       localStorage.setItem('treeData', JSON.stringify(treeData.value))
+      revertTreeData.value = JSON.parse(localStorage.getItem('treeData'))
+    }
+
+    function cancel() {
+      localStorage.setItem('treeData', JSON.stringify(revertTreeData.value))
+      dialog.value = false
     }
 
     return {
@@ -264,7 +274,8 @@ export const Demo = () => ({
       resetDiagramData,
       openDiagram,
       closeDiagram,
-      saveData
+      saveData,
+      cancel
     }
   },
   template: `
@@ -279,7 +290,7 @@ export const Demo = () => ({
         Reset DiagramData: remove metaData filed from TreeData. <br/>
       </div>
 			<g-dialog v-model="dialog" lazy fullscreen>
-				<g-binding-diagram v-model="treeData" @close="closeDiagram" @save="saveData">
+				<g-binding-diagram v-model="treeData" @close="closeDiagram" @save="saveData" @cancel="cancel">
 
 				</g-binding-diagram>
 			</g-dialog>

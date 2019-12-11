@@ -68,6 +68,7 @@
 			<div class="g-binding-diagram-action-title">
 				Action
 			</div>
+			<g-btn outlined @click="cancel">Cancel</g-btn>
 			<g-btn outlined @click="save">Save</g-btn>
 			<g-btn outlined @click="close">Close</g-btn>
 		</div>
@@ -129,6 +130,7 @@
         updatePosition,
         getSlotPathFromKey,
         save,
+				cancel,
         close
       } = GBindingDiagramFactory(props, context, treeData, selectTree, addTree, diagramsData, editorPath)
 
@@ -158,6 +160,7 @@
 				editorPath,
 				edit,
 				save,
+				cancel,
 				close,
 			}
 		},
