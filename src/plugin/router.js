@@ -17,7 +17,6 @@ import CompanySetting from '../POSView/setting/view/viewCompany';
 import GeneralSetting from '../POSView/setting/view/viewGeneral';
 import PaymentSetting from '../POSView/setting/view/viewPayment';
 import CategorySetting from '../POSView/setting/view/viewCategory';
-import BindingDiagramDemo from '../view/BindingDiagramDemo';
 
 const routes = [
   { path: '/keyboard-demo', name: 'KeyboardDemo', component: KeyboardDemo},
@@ -43,7 +42,6 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/article', name: 'Article', component: Article },
   { path: '/function-button', name: 'Function Button', component: FunctionButton },
-  { path: '/binding-diagram-demo', name: 'Binding Diagram', component: BindingDiagramDemo},
 ];
 
 const router = new VueRouter({

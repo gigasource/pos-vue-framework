@@ -10,7 +10,6 @@
       <router-link to="/login">Login</router-link>
 			<router-link to="/article">Article</router-link>
 			<router-link to="/function-button">Function Button</router-link>
-			<router-link to="/binding-diagram-demo">Binding Diagram Demo</router-link>
 		</g-layout>
 		<router-view></router-view>
 	</div>
