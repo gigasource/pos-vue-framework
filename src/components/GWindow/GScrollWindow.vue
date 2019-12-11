@@ -1,10 +1,8 @@
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import { computed, inject, onMounted, provide, reactive, watch } from '@vue/composition-api';
-  import { getInternalValue } from '../../mixins/getVModel';
+  import { computed, onMounted, provide, reactive, watch } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
-  import Touch from '../../directives/touch/touch';
 
   export default {
     name: 'GScrollWindow',
@@ -39,7 +37,7 @@
         default: 2
       },
     },
-    setup(props, context) {
+    setup(props) {
       const data = reactive({
         transitionHeight: undefined, // Intermediate height during transition.
         transitionCount: 0, // Number of windows in transition state.
@@ -48,12 +46,12 @@
         items: []
       });
 
-      const internalValue = getInternalValue(props, context);
+      onMounted(function () {
+        this.$forceUpdate = () => null;
+      })
 
       function register(item) {
-        const index = data.items.push(item) - 1;
-        item.data.value = index;
-        item.$el.id = `g-window-item-${index}`;
+        item.data.value = data.items.push(item) - 1;
       }
 
       function unregister(item) {
@@ -66,14 +64,6 @@
 
       provide('register', register);
       provide('unregister', unregister);
-      provide('windowData', data);
-      provide('internalValue', internalValue);
-      const registerWindow = inject('registerWindow', null);
-
-      onMounted(function () {
-        window.requestAnimationFrame(() => data.isBooted = true);
-        registerWindow && registerWindow(this);
-      });
 
       const classes = computed(() => ({
         'g-window__vertical-delimiters': isVertical.value,
@@ -85,28 +75,12 @@
 
       const isActive = computed(() => data.transitionCount > 0);
 
-      const internalReverse = computed(() => props.reverse ? props.reverse : data.isReverse)
-      provide('internalReverse', internalReverse);
-
-      watch(internalValue, (val, oldVal) => {
-        const currentElement = document.querySelector(`#${data.items[internalValue.value].$el.id}`);
-        currentElement.scrollIntoView({ block: 'center' });
-
-        data.isReverse = val < oldVal
-      }, { lazy: true });
-
-      const computedTransition = computed(() => {
-        if (!data.isBooted) {
-          return '';
+      watch(() => props.value, (val, oldVal) => {
+        if (val !== oldVal) {
+          const currentElement = data.items[props.value].$el;
+          currentElement.scrollIntoView({ block: 'center' });
         }
-
-        const axis = props.vertical ? 'y' : 'x';
-        const direction = internalReverse.value ? '-reverse' : '';
-
-        return `g-window-${axis}${direction}-transition`
-      });
-
-      provide('windowComputedTransition', computedTransition);
+      }, { lazy: true });
 
       function genDelimiters() {
         const nodeData = {
@@ -168,9 +142,6 @@
       }
 
       return {
-        computedTransition,
-        internalReverse,
-        internalValue,
         genWindow,
         data,
       }
