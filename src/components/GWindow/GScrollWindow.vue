@@ -153,7 +153,7 @@
         };
 
         return <div {...containerData}>
-          {context.slots.default && context.slots.default()}
+          {this.$slots.default}
         </div>
       }
 
@@ -164,7 +164,7 @@
           directives: []
         };
 
-        return <div ref="window" {...windowData}>{genContainer()} {!props.hideDelimiters && genDelimiters()}</div>
+        return <div ref="window" {...windowData}>{genContainer.bind(this)()} {!props.hideDelimiters && genDelimiters()}</div>
       }
 
       return {
@@ -176,7 +176,7 @@
       }
     },
     render() {
-      return this.genWindow();
+      return this.genWindow.bind(this)();
     }
   }
 </script>

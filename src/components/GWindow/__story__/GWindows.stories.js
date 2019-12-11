@@ -1,11 +1,11 @@
-import { text, withKnobs, boolean, number, array } from '@storybook/addon-knobs';
+import {text, withKnobs, boolean, number, array} from '@storybook/addon-knobs';
 import GCard from '../../GCard/GCard';
 import GBtn from '../../GBtn/GBtn';
 import GImg from '../../GImg/GImg';
 import GCardTitle from '../../GCard/GCardTitle';
 import GIcon from '../../GIcon/GIcon';
 import GSpacer from '../../GLayout/GSpacer';
-import { GCardText, GCardActions, GCardSubtitle } from '../../GCard/GCardFunctionalComponent'
+import {GCardText, GCardActions, GCardSubtitle} from '../../GCard/GCardFunctionalComponent'
 import GWindow from '../GWindow';
 import GWindowItem from '../GWindowItem';
 import GTextField from '../../GInput/GTextField';
@@ -23,20 +23,20 @@ export default {
 };
 
 export const GWindowDefault = () => ({
-  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GWindowItem, GWindow, GImg, GIcon },
+  components: {GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GWindowItem, GWindow, GImg, GIcon},
   data: () => ({
     selectedItem: 0,
   }),
   props: {
-    continuous: { type: Boolean, default: boolean('continuous', false) },
-    reverse: { type: Boolean, default: boolean('reverse', false) },
-    vertical: { type: Boolean, default: boolean('vertical', false) },
-    showArrows: { type: Boolean, default: boolean('showArrows', true) },
-    prevIcon: { type: String, default: text('prevIcon', 'mdi-chevron-left') },
-    nextIcon: { type: String, default: text('nextIcon', 'mdi-chevron-right') },
-    showArrowsOnHover: { type: Boolean, default: boolean('showArrowsOnHover', false) },
-    elevation: { type: Number, default: number('elevation', 2) },
-    hideDelimiters: { type: Boolean, default: boolean('hideDelimiters', true) },
+    continuous: {type: Boolean, default: boolean('continuous', false)},
+    reverse: {type: Boolean, default: boolean('reverse', false)},
+    vertical: {type: Boolean, default: boolean('vertical', false)},
+    showArrows: {type: Boolean, default: boolean('showArrows', true)},
+    prevIcon: {type: String, default: text('prevIcon', 'mdi-chevron-left')},
+    nextIcon: {type: String, default: text('nextIcon', 'mdi-chevron-right')},
+    showArrowsOnHover: {type: Boolean, default: boolean('showArrowsOnHover', false)},
+    elevation: {type: Number, default: number('elevation', 2)},
+    hideDelimiters: {type: Boolean, default: boolean('hideDelimiters', true)},
 
   },
   template: `<g-window :continuous="continuous"
@@ -111,24 +111,24 @@ export const GWindowWithCards = () => ({
     password: ''
   }),
   props: {
-    continuous: { type: Boolean, default: boolean('continuous', false) },
-    reverse: { type: Boolean, default: boolean('reverse', undefined) },
-    vertical: { type: Boolean, default: boolean('vertical', false) },
-    showArrows: { type: Boolean, default: boolean('showArrows', false) },
-    prevIcon: { type: String, default: text('prevIcon', 'mdi-chevron-left') },
-    nextIcon: { type: String, default: text('nextIcon', 'mdi-chevron-right') },
-    showArrowsOnHover: { type: Boolean, default: boolean('showArrowsOnHover', false) },
-    elevation: { type: Number, default: number('elevation', 2) },
+    continuous: {type: Boolean, default: boolean('continuous', false)},
+    reverse: {type: Boolean, default: boolean('reverse', undefined)},
+    vertical: {type: Boolean, default: boolean('vertical', false)},
+    showArrows: {type: Boolean, default: boolean('showArrows', false)},
+    prevIcon: {type: String, default: text('prevIcon', 'mdi-chevron-left')},
+    nextIcon: {type: String, default: text('nextIcon', 'mdi-chevron-right')},
+    showArrowsOnHover: {type: Boolean, default: boolean('showArrowsOnHover', false)},
+    elevation: {type: Number, default: number('elevation', 2)},
     items: {
       default: array('items', [
-        { id: 1, text: 'BMW', prependIcon: '', appendIcon: '', active: false, close: true, },
-        { id: 2, text: 'Toyota', prependIcon: '', appendIcon: '', active: false, close: true, },
-        { id: 3, text: 'Mercedes', prependIcon: '', appendIcon: '', active: false, close: true, },
-        { id: 4, text: 'Ford', prependIcon: '', appendIcon: '', active: false, close: true, },
-        { id: 5, text: 'Lexus', prependIcon: '', appendIcon: '', active: false, close: true, },
-        { id: 6, text: 'Audi', prependIcon: '', appendIcon: '', active: false, close: true, },
-        { id: 7, text: 'Maserati', prependIcon: '', appendIcon: '', active: false, close: true, },
-        { id: 8, text: 'Mazda', prependIcon: '', appendIcon: '', active: false, close: true, }])
+        {id: 1, text: 'BMW', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 2, text: 'Toyota', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 3, text: 'Mercedes', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 4, text: 'Ford', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 5, text: 'Lexus', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 6, text: 'Audi', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 7, text: 'Maserati', prependIcon: '', appendIcon: '', active: false, close: true,},
+        {id: 8, text: 'Mazda', prependIcon: '', appendIcon: '', active: false, close: true,}])
     }
   },
   methods: {
@@ -159,12 +159,12 @@ export const GWindowWithCards = () => ({
                   <g-card-text>
                      <p>Please fill in the blank your name & password</p>
                      <g-text-field v-model="username" label="Name"> 
-                        <template v-slot:prepend-outer>
+                        <template v-slot:prependOuter>
                            <g-icon>mdi-account</g-icon>
                         </template>
                       </g-text-field>
                      <g-text-field v-model="password" label="Password"> 
-                        <template v-slot:prepend-outer>
+                        <template v-slot:prependOuter>
                            <g-icon>mdi-textbox-password</g-icon>
                         </template>
                      </g-text-field>
@@ -224,20 +224,33 @@ export const GWindowWithCards = () => ({
 });
 
 export const GWindowInfiniteScrollTest = () => ({
-  components: { GCard, GCardActions, GCardTitle, GCardText, GBtn, GCardSubtitle, GWindowItem, GWindow, GImg, GIcon, GScrollWindow, GScrollWindowItem },
+  components: {
+    GCard,
+    GCardActions,
+    GCardTitle,
+    GCardText,
+    GBtn,
+    GCardSubtitle,
+    GWindowItem,
+    GWindow,
+    GImg,
+    GIcon,
+    GScrollWindow,
+    GScrollWindowItem
+  },
   data: () => ({
     selectedItem: 0,
   }),
   props: {
-    continuous: { type: Boolean, default: boolean('continuous', false) },
-    reverse: { type: Boolean, default: boolean('reverse', false) },
-    vertical: { type: Boolean, default: boolean('vertical', false) },
-    showArrows: { type: Boolean, default: boolean('showArrows', true) },
-    prevIcon: { type: String, default: text('prevIcon', 'mdi-chevron-left') },
-    nextIcon: { type: String, default: text('nextIcon', 'mdi-chevron-right') },
-    showArrowsOnHover: { type: Boolean, default: boolean('showArrowsOnHover', false) },
-    elevation: { type: Number, default: number('elevation', 2) },
-    hideDelimiters: { type: Boolean, default: boolean('hideDelimiters', false) },
+    continuous: {type: Boolean, default: boolean('continuous', false)},
+    reverse: {type: Boolean, default: boolean('reverse', false)},
+    vertical: {type: Boolean, default: boolean('vertical', false)},
+    showArrows: {type: Boolean, default: boolean('showArrows', true)},
+    prevIcon: {type: String, default: text('prevIcon', 'mdi-chevron-left')},
+    nextIcon: {type: String, default: text('nextIcon', 'mdi-chevron-right')},
+    showArrowsOnHover: {type: Boolean, default: boolean('showArrowsOnHover', false)},
+    elevation: {type: Number, default: number('elevation', 2)},
+    hideDelimiters: {type: Boolean, default: boolean('hideDelimiters', false)},
 
   },
   template: `<g-scroll-window :continuous="continuous"
@@ -246,8 +259,7 @@ export const GWindowInfiniteScrollTest = () => ({
                        :show-arrows-on-hover="showArrowsOnHover"
                        :prev-icon="prevIcon" :next-icon="nextIcon"
                        :reverse="reverse" :show-arrows="showArrows"
-                       v-model="selectedItem"
-             >
+                       v-model="selectedItem">
                <g-scroll-window-item>
                   <g-img height="300" src="https://image.shutterstock.com/image-photo/plitvice-lakes-croatia-beautiful-place-260nw-1050138794.jpg" width="100%">
                     <g-card-title absolute bottom left textColor="white">

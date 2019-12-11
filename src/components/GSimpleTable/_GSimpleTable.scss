@@ -83,7 +83,7 @@
 
 .g-data-table__fixed-height {
   .g-data-table__wrapper {
-    overflow-y: auto;
+    overflow-y: scroll;
   }
 }
 
@@ -159,10 +159,6 @@
 
   .g-data-table__wrapper {
     border: 1px solid #dee2e6;
-
-    th, td {
-      border: 1px solid #dee2e6;
-    }
 
     thead {
       th, td {

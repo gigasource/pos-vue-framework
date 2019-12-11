@@ -40,10 +40,10 @@ import GExpansion from './GExpansion/GExpansion';
 
 import GFileInput from './GFileInput/GFileInput';
 
-import GGridGenerator from './GGridGenerator/GGridGenerator';
-import GEditViewInput from './GGridGenerator/GEditViewInput';
+import GGridGenerator from './GGridGenerator/components/GGridGenerator';
+import GEditViewInput from './GGridGenerator/components/EditViewInput';
 import GGridLayout from './GGridGenerator/GGridLayout';
-import GIncDecNumberInput from './GGridGenerator/GIncDecNumberInput';
+import GIncDecNumberInput from './GGridGenerator/components/IncDecNumberInput';
 
 import GGridSelect from './GGridSelect/GGridSelect';
 
@@ -125,8 +125,8 @@ import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
 
-import GToolTip from './GToolTip/GToolTip';
-import GToolTipContent from './GToolTip/GToolTipContent';
+import GTooltip from './GTooltip/GTooltip';
+import GTooltipContent from './GTooltip/GTooltipContent';
 
 import GToolbar from './GToolbar/GToolbar';
 
@@ -137,6 +137,8 @@ import GScrollWindow from './GWindow/GScrollWindow';
 import GScrollWindowItem from './GWindow/GScrollWindowItem';
 import GWindow from './GWindow/GWindow';
 import GWindowItem from './GWindow/GWindowItem';
+
+import GSnackbar from "./GSnackbar/GSnackbar";
 
 import {
   GCarouselTransition,
@@ -267,8 +269,8 @@ export {
   GTextarea,
   GTextareaJSX,
   GTimePicker,
-  GToolTip,
-  GToolTipContent,
+  GTooltip,
+  GTooltipContent,
   GToolbar,
   GTreeViewExample,
   GTreeViewJson,
@@ -319,4 +321,5 @@ export {
   GZoomLeftAnimation,
   GExpandTransition,
   GExpandXTransition,
+  GSnackbar,
 }

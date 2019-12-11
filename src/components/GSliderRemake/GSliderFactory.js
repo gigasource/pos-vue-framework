@@ -17,11 +17,11 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     const mouseUpOptions = passiveSupported ? {passive: true, capture: true} : true
     const mouseMoveOptions = passiveSupported ? {passive: true} : false
     if ('touches' in e) {
-      context.root.$el.addEventListener('touchmove', onMouseMove, mouseMoveOptions)
-      addOnceEventListener(context.root.$el, 'touchend', onSliderMouseUp, mouseUpOptions)
+      window.addEventListener('touchmove', onMouseMove, mouseMoveOptions)
+      addOnceEventListener(window, 'touchend', onSliderMouseUp, mouseUpOptions)
     } else {
-      context.root.$el.addEventListener('mousemove', onMouseMove, mouseMoveOptions)
-      addOnceEventListener(context.root.$el, 'mouseup', onSliderMouseUp, mouseUpOptions)
+      window.addEventListener('mousemove', onMouseMove, mouseMoveOptions)
+      addOnceEventListener(window, 'mouseup', onSliderMouseUp, mouseUpOptions)
     }
 
     context.emit('start', internalValue.value)
@@ -31,8 +31,8 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
     e.stopPropagation()
     state.keyPressed = 0
     const mouseMoveOptions = passiveSupported ? {passive: true} : false
-    context.root.$el.removeEventListener('touchmove', onMouseMove, mouseMoveOptions)
-    context.root.$el.removeEventListener('mousemove', onMouseMove, mouseMoveOptions)
+    window.removeEventListener('touchmove', onMouseMove, mouseMoveOptions)
+    window.removeEventListener('mousemove', onMouseMove, mouseMoveOptions)
 
     context.emit('end', internalValue.value)
     if (!isEqual(state.oldValue, internalValue.value)) {

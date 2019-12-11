@@ -26,6 +26,7 @@ export default (props, context) => {
       'g-btn__outlined': props.outlined,
       'g-btn__round': isRound.value,
       'g-btn__contained': contained.value,
+      'g-btn__uppercase': props.uppercase,
       [props.activeClass]: props.active,
       ...elevationClasses.value,
       ...backgroundColorOutput.value && backgroundColorOutput.value.class,
@@ -112,6 +113,7 @@ export default (props, context) => {
       ...props.minHeight && { minHeight: convertToUnit(props.minHeight) },
       ...backgroundColorOutput.value && backgroundColorOutput.value.style,
       ...textColorOutput.value && textColorOutput.value.style,
+      ...props.borderRadius && { borderRadius: convertToUnit(props.borderRadius) }
     };
 
     _styles['background-image'] = linearGradient(props.gradient && props.gradient.split(','), props.gradientAngle);

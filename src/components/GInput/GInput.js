@@ -65,7 +65,6 @@ export default function getGInput(props, context) {
   // let isLabelActive = computed()
 
 
-
   return {
     listeners,
     state,

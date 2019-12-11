@@ -133,10 +133,8 @@
                 {titleModel.value.year}
               </div>
               <div class='g-picker__title__btn g-date-picker-title__date'>
-                <transition name='picker-transition'>
                   <div key={titleModel.value.date}
                        domPropsInnerHTML={titleModel.value.date}/>
-                </transition>
               </div>
             </div>)
       }
@@ -156,16 +154,13 @@
       }
 
       // GDatePicker -> Body -> Header render function
-      const transitionName = ref('')
       const goPrev = () => {
         if (headerModel.value.canGoPrev) {
-          transitionName.value = 'tab-reverse-transition'
           headerModel.value.on.prevClicked()
         }
       }
       const goNext = () => {
         if (headerModel.value.canGoNext) {
-          transitionName.value = 'tab-transition'
           headerModel.value.on.nextClicked()
         }
       }
@@ -178,7 +173,6 @@
         return (
             <div class='g-date-picker-header'>
               <div class={cptHeaderValueClass.value}>
-                <transition name={transitionName.value}>
                   <div key={headerModel.value.content}>
                     <button
                         type="button"
@@ -188,7 +182,6 @@
                       {headerModel.value.content}
                     </button>
                   </div>
-                </transition>
               </div>
               <button
                   class="g-date-picker-header__prev-button"
@@ -221,7 +214,9 @@
             if (!date.isWeek && !date.isBlank) {
               date.class = {
                 'g-table-item--active': date.isSelected,
+                'g-table-item--start-range': date.isRangeStart,
                 'g-table-item--in-range': date.isInRange,
+                'g-table-item--end-range': date.isRangeEnd,
                 'g-table-item--rounded': true,
                 'g-table-item--readonly': props.readonly,
                 'g-table-item--outlined': date.isCurrent && !date.isSelected,
@@ -231,8 +226,8 @@
               // range
               date.background = {
                 class: {
-                  'g-table-item__background--start-range': date.isRangeStart,
-                  'g-table-item__background--end-range': date.isRangeEnd,
+                  'g-table-item__background--start-range': date.isRangeStart && !date.isRangeEnd,
+                  'g-table-item__background--end-range': date.isRangeEnd && !date.isRangeStart,
                   'g-table-item__background--in-range': date.isInRange
                 },
                 style: {}
@@ -297,7 +292,6 @@
       function dateTableRenderFn() {
         return (
             <div class='g-date-picker-table g-date-picker-table--date' v-on:wheel_stop={onWheelHandler}>
-              <transition name={transitionName.value}>
                 <table key={state.viewportDate}>
                   <thead>
                   <tr>{dateTableModel.value.dayNames.map(dayName => <th>{dayName}</th>)}</tr>
@@ -310,7 +304,6 @@
                   }
                   </tbody>
                 </table>
-              </transition>
             </div>)
       }
 
@@ -335,7 +328,6 @@
 
       function monthTableRenderFn() {
         return (<div class='g-date-picker-table g-date-picker-table--month' v-on:wheel={onWheelHandler}>
-          <transition name={transitionName.value}>
             <table key={state.viewportDate}>
               <tbody>
               {
@@ -364,7 +356,6 @@
               }
               </tbody>
             </table>
-          </transition>
         </div>)
       }
 
@@ -587,6 +578,11 @@
         color: map-get($shades, 'white');
       }
 
+      &--start-range, &--end-range {
+        color: #fff;
+        text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      }
+
       &--in-range {
         color: #232323;
       }
@@ -609,7 +605,7 @@
       }
 
       &__background {
-        width: 100%;
+        width: 0;
         top: 2px;
         height: 32px;
         position: absolute;
@@ -617,6 +613,11 @@
 
         &--start-range {
           width: 50%;
+          right: 0;
+        }
+
+        &--in-range {
+          width: 100%;
           right: 0;
         }
 
