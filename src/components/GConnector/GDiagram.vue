@@ -1,6 +1,6 @@
 <script>
 	import { convertToUnit } from '../../utils/helpers';
-  import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { ref, computed, provide, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GDiagramFactory from './GDiagramFactory';
   import Vue from 'vue';
 
@@ -60,6 +60,7 @@
         dragEnd
       } = GDiagramFactory(props, context)
 
+			provide('isActive', isActive)
 			provide('isBooted', isBooted)
       provide('diagramId', diagramId)
       provide('eventEmitter', eventEmitter)
@@ -122,7 +123,11 @@
 				transformOrigin: `0 0`
       }))
 
-
+			watch(isActive, newVal => {
+			  if (newVal) context.root.$nextTick(() => {
+          eventEmitter.$emit(`update${diagramId.value}`)
+				})
+			}, )
 
 			// Render function
       function genDiagram() {

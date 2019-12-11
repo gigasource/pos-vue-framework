@@ -190,7 +190,7 @@ export default function GDiagramFactory(props, context) {
 
     target = e.currentTarget
     activeDragIds.value = getConnectorIds(target)
-    console.log(activeDragIds.value)
+    // console.log(activeDragIds.value)
 
     const rect = getElementPosition(target)
     startPosition.top = (rect.top - originCoordinate.y)/zoomState.value
