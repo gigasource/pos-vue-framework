@@ -68,7 +68,9 @@
           badge: scope => <span>{node.badge}</span>
         }
         const badge = node.badge && <g-badge inline color={node.badgeColor} scopedSlots={scopedSlots}
-                                             style={childrenVNodes ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
+                                             style={childrenVNodes || context.slots['prepend-icon'] || node.appendIcon ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
+
+        const appendIcon = node.appendIcon && <g-icon small class="mx-1">{node.appendIcon}</g-icon>
 
         const onArrowIconClicked = (e) => {
           if (node.clickable) {
@@ -126,6 +128,7 @@
                 {state.collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
               </g-icon>
             </span>
+            {appendIcon}
           </a>
           <g-expand-transition>{children}</g-expand-transition>
         </li>
