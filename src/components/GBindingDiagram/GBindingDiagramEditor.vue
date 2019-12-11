@@ -1,5 +1,4 @@
 <script>
-  import { getInternalValue } from '../../mixins/getVModel';
   import { ref, reactive, watch, inject } from '@vue/composition-api';
   import { isSlotPath } from './GBindingDiagramFactory';
   import GBindingDiagramEditorItem from './GBindingDiagramEditorItem';
@@ -16,17 +15,19 @@
     name: 'GBindingDiagramEditor',
 		components: { GCardText, GCardActions, GCardTitle, GCard, GSelect, GTextField, GBindingDiagramEditorItem, GBtn, GIcon, GDialog },
     props: {
-      diagramPath: String,
-			value : {
-			  type: Object,
-			}
+      path: String,
 		},
     setup (props, context) {
-			const model = getInternalValue(props, context)
+			const model = ref({})
 
+			const getPathData = inject('getPathData')
 			const toggleItem = inject('toggleItem')
 			const addItem = inject('addItem')
 			const deleteItem = inject('deleteItem')
+
+			watch(() => props.path, newVal => {
+			  model.value = getPathData(props.path)
+			})
 
 			const componentTypes = [
 				{text: 'prop', value: 'prop'},
@@ -42,6 +43,7 @@
 			const newItem = reactive({
 			  type: '',
 				key: '',
+				default: undefined
 			})
 
 			const dialog = ref(false)
@@ -51,15 +53,22 @@
 			  if(!newVal) {
           newItem.type = ''
           newItem.key = ''
+					newItem.default = undefined
 				}
 			})
 
 			const add = () => {
-			  const item = {
+			  const item = newItem.default === undefined ? {
 			    type: newItem.type,
 					key: newItem.key,
 					show: true
+				} : {
+          type: newItem.type,
+          key: newItem.key,
+					default: newItem.default,
+          show: true
 				}
+
 			  addItem(model.value.path, item)
 				dialog.value = false
 			}
@@ -68,6 +77,10 @@
 			  return <g-btn icon vOn:click={() => {dialog.value = true}}>
           <g-icon size="20" class="text-blue">fas fa-plus-circle</g-icon>
         </g-btn>
+			}
+
+			const genPropDefaultInput = () => {
+			  return <g-text-field value={newItem.default} vOn:input={e => newItem.default = e} label='default'/>
 			}
 
 			const genAddDialog = () => {
@@ -79,6 +92,7 @@
                         items={isSlotPath(model.value.path) ? slotScopeTypes : componentTypes}
                         label='type'/>
               <g-text-field value={newItem.key} vOn:input={e => newItem.key = e} label='key'/>
+							{newItem.type === 'prop' && genPropDefaultInput()}
             </g-card-text>
             <g-card-actions>
               <g-btn text textColor="blue" vOn:click={add}>Add</g-btn>

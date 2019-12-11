@@ -1,9 +1,11 @@
 <script>
-  import { ref, computed, watch, onMounted } from '@vue/composition-api';
+  import { inject, onMounted } from '@vue/composition-api';
   import { getInternalValue } from '../../mixins/getVModel';
   import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
 	import GIcon from '../GIcon/GIcon';
 	import _ from 'lodash';
+	import { convertToPath } from './GBindingDiagramFactory';
+
   export default {
     name: 'GBindingDiagramTreeView',
 		components: { GIcon },
@@ -35,18 +37,24 @@
 
 			const tree = getInternalValue(props, context)
 
+			const isProperAddPath = inject('isProperAddPath')
+			const isConnectedPath = inject('isConnectedPath')
+
       onMounted(() => {
         tree.value.allPaths = _.keys(treeStates)
 				if (_.isEmpty(tree.value.states))  {
 				  tree.value.states = treeStates
 				} else {
 				  _.forEach(tree.value.states, (val, key) => treeStates[key] = val)
-          //tree.value.states = treeStates
 				}
       })
 
       const togglePath = (path) =>  {
-				tree.value.activePath = path
+				if (props.slotted && isProperAddPath(convertToPath(path))) {
+          tree.value.activePath = path
+				} else if (!props.slotted) {
+          tree.value.activePath = path
+				}
 			}
 
 			const genIcon = function (state) {
@@ -61,7 +69,7 @@
           <span class="tree-view-prepend">
 						{childrenVNodes && genIcon(state)}
 					</span>
-					<span class={['tree-view-text', {'tree-view-text__active': path === tree.value.activePath}]} vOn:click={() => togglePath(path)}>
+					<span class={['tree-view-text', {'tree-view-text__active': path === tree.value.activePath, 'tree-view-text__disabled': props.slotted && !isProperAddPath(convertToPath(path)), 'tree-view-text__connected': !props.slotted && isConnectedPath(path)}]} vOn:click={() => togglePath(path)}>
 						{node.virtualNode ? 'slot:' : ''} {genText.value(node)}
           </span>
           {!state.collapse ? childrenVNodes : null}
@@ -81,7 +89,7 @@
         )
       }
 
-      const itemChildren = props.slotted ? function (node, {path, parent, isRoot}) {
+      const itemChildren = props.slotted ? function (node, {isRoot}) {
         if (isRoot) {
           node.items = _.forEach(node.items, (val, key) => {
             val['origKey'] = key
@@ -102,7 +110,7 @@
 				})
 			} : undefined
 
-			const itemPath = function(node, {parent, path, isRoot, key}) {
+			const itemPath = function(node, {isRoot, key}) {
         if (isRoot) return;
         if (node.virtualNode) return `slot.${key}`;
         if (key) {
@@ -159,13 +167,32 @@
 		padding: 2px 4px;
 		font-size: 12px;
 
-		&:not(.tree-view-text__active):hover {
+		&:not(.tree-view-text__active):not(.tree-view-text__disabled):not(.tree-view-text__connected):hover {
 			background-color: lightgreen;
 		}
 
+		&.tree-view-text__connected:not(.tree-view-text__active):hover {
+			background-color: #f097a3;
+		}
+
 		&__active {
-			background-color: forestgreen;
-			color: white;
+			&:not(.tree-view-text__disabled) {
+				background-color: forestgreen;
+				color: white;
+			}
+
+			&.tree-view-text__connected {
+				background-color: #b8162c;
+				color: white;
+			}
+		}
+
+		&__disabled {
+			color: #d0d0d0
+		}
+
+		&__connected {
+			color: #b8162c
 		}
 	}
 

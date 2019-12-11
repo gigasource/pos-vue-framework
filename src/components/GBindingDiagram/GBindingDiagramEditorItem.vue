@@ -1,6 +1,6 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
-  import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GConnector from '../GConnector/GConnector';
   import GIcon from '../GIcon/GIcon';

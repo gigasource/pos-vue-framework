@@ -3,12 +3,29 @@
 		<div area="diagram">
 			<g-diagram v-for="(diagramData, index) in diagramsData" v-model="diagramData.localData.path === selectTreeActivePath" :key="index">
 				<template v-slot:default="{ dragStart }">
-					<g-binding-diagram-item-group :value="diagramData.localData" @dragStart="dragStart" :top="20" :left="300" @connected="connect" @disconnected="disconnect" @edit="edit" :key="'local' + index">
+					<g-binding-diagram-item-group :path="diagramData.localData.path"
+																				:local-path="diagramData.localData.path"
+																				:slot-scope-binding="diagramData.slotScopeBinding"
+																				@dragStart="dragStart"
+																				:top="diagramData.localPosition.top"
+																				:left="diagramData.localPosition.left"
+																				@connected="connect"
+																				@disconnected="disconnect"
+																				@edit="edit"
+																				:key="'local' + diagramData.localData.path"/>
 
-					</g-binding-diagram-item-group>
-					<g-binding-diagram-item-group v-for="(group, index) in diagramData.foreignData" :value="group" @dragStart="dragStart" :top="20 + index*250" left="20" @connected="connect" @disconnected="disconnect" @edit="edit" :key="'foreign' + index">
-
-					</g-binding-diagram-item-group>
+					<g-binding-diagram-item-group v-for="(item, index) in diagramData.foreignObjects"
+																				:path="item.path"
+																				:local-path="diagramData.localData.path"
+																				:binding="item.path === '' ? diagramData.binding : []"
+																				@dragStart="dragStart"
+																				:top="item.top"
+																				:left="item.left"
+																				@connected="connect"
+																				@disconnected="disconnect"
+																				@edit="edit"
+																				@removeGroup="(path, localPath) => removeGroup(path, localPath, index)"
+																				:key="'foreign' + item.path"/>
 				</template>
 			</g-diagram>
 		</div>
@@ -43,7 +60,7 @@
 			</div>
 		</div>
 		<div area="edit" class="g-binding-diagram-edit">
-			<g-binding-diagram-editor v-model="editorData">
+			<g-binding-diagram-editor :path="editorPath">
 
 			</g-binding-diagram-editor>
 		</div>
@@ -51,15 +68,15 @@
 			<div class="g-binding-diagram-action-title">
 				Action
 			</div>
+			<g-btn outlined @click="save">Save</g-btn>
 			<g-btn outlined @click="close">Close</g-btn>
 		</div>
 	</g-grid-layout>
 </template>
 <script>
-	import _ from 'lodash'
   import { getInternalValue } from '../../mixins/getVModel';
-  import { ref, reactive, computed, watch, provide, onMounted } from '@vue/composition-api';
-  import { isSlotPath, isRootPath, convertToNormalPath, convertToPath } from './GBindingDiagramFactory';
+  import { ref, reactive, provide } from '@vue/composition-api';
+  import GBindingDiagramFactory from './GBindingDiagramFactory';
 	import GBindingDiagramLayout from './GBindingDiagramLayout'
 	import GBindingDiagramTreeView from './GBindingDiagramTreeView';
   import GGridLayout from '../GGridGenerator/GGridLayout';
@@ -92,312 +109,38 @@
         activePath: '',
       })
       const diagramsData = treeData.value.metaData ? ref(treeData.value.metaData.diagramsData) : ref([])
-
-      const selectTreeActivePath = computed(() => selectTree.activePath)
-      const addTreeActiveSlottedPath = computed(() => addTree.activePath)
-      const addTreeActivePath = computed(() => convertToPath(addTreeActiveSlottedPath.value))
 			const editorPath = ref('')
-			const editorData = ref({})
 
-			// Init diagrams data
-			function initDiagramsData() {
-        const allSlotData = []
+     	const {
+        selectTreeActivePath,
+        addTreeActivePath,
+        getPathData,
+        addToDiagram,
+        removeGroup,
+        connect,
+        disconnect,
+        edit,
+        toggleItem,
+        addItem,
+        deleteItem,
+        isProperAddPath,
+        isConnectedPath,
+        getPosition,
+        updatePosition,
+        getSlotPathFromKey,
+        save,
+        close
+      } = GBindingDiagramFactory(props, context, treeData, selectTree, addTree, diagramsData, editorPath)
 
-        for (let slottedPath of addTree.allPaths) {
-          const path = convertToPath(slottedPath)
-          if (isSlotPath(path)) {
-            allSlotData.push(initPathData(path, treeData.value))
-          }
-        }
-
-        for (let path of selectTree.allPaths) {
-          const slotsData = []
-          for (let slotData of allSlotData) {
-            if (path === convertToNormalPath(slotData.path)) slotsData.push(slotData)
-          }
-          diagramsData.value.push({
-            localData: initPathData(path, treeData.value),
-            slotsData: slotsData,
-            foreignData: [],
-            binding: [],
-            slotScopeBinding: [],
-            editorPath: undefined
-          })
-        }
-			}
-
-      onMounted(() => {
-        if (treeData.value.metaData === undefined) initDiagramsData()
-			})
-
-			// Data extraction functionality
-      function getPathName(path, treeData) {
-        if (path === '') {
-          // Root
-          return _.get(treeData, path + 'name')
-        } else if (path.indexOf('slot') > -1) {
-          // Slot path
-          return _.get(treeData, path.replace(/\.slot\.\d/, '.component'))
-				}
-        return _.get(treeData, path + '.component')
-      }
-
-      function getSlotName(slotPath, treeData) {
-        const slotGroups = _.groupBy(_.get(treeData, slotPath.replace(/\.slot\.\d/, '.items')), i => i.slot || 'default')
-				const slotNames = _.map(slotGroups, (items, slot) => slot)
-				return slotNames[slotPath[slotPath.length - 1]]
-			}
-
-      function getPathProps(path, treeData) {
-			  if (path === '' && _.get(treeData, path + 'props.fields')) {
-			    return _.map(_.get(treeData, path + 'props.fields'), val => ({type: 'prop', key: val.key, show: true}))
-				} else if (_.get(treeData, path + '.content.props')) {
-			    return _.map(_.keys(_.get(treeData, path + '.content.props')), val => ({type: 'prop', key: val, show: true}))
-				} else {
-			    return []
-				}
-			}
-
-			function getPathEmits(path, treeData) {
-        if (_.get(treeData, path + '.content.emits')) {
-          return _.map(_.keys(_.get(treeData, path + '.content.emits')), val => ({type: 'emit', key: val, show: true}))
-        } else {
-          return []
-        }
-			}
-
-			function getPathSlots(path, treeData) {
-				if (path === '') return []
-				else if (!_.get(treeData, path + '.items')) return []
-				else {
-          return _.map(_.uniq(_.map(_.get(treeData, path + '.items'), 'slot')), slot => ({type: 'slot', key: slot || 'default', show: true}))
-				}
-			}
-
-			function getSlotScopesItems(slotScope) {
-			  return _.flatten(_.map(slotScope, (val, type) => _.map(_.keys(val), key => ({ type: type, key: key, show: true}))))
-			}
-
-			function getPathSlotScopes(path, treeData) {
-			  if (_.get(treeData, path + '.content.slotScopes')) {
-          return _.mapValues(_.get(treeData, path + '.content.slotScopes'), slotScope => getSlotScopesItems(slotScope))
-				}
-			  return {}
-			}
-
-      function initPathData(path, treeData) {
-			  // slot path
-			  if (isSlotPath(path)) {
-			    const slotScopes = getPathSlotScopes(convertToNormalPath(path), treeData)
-					const slotName = getSlotName(path, treeData)
-			    return {
-			      path: path,
-						name: getPathName(path, treeData) + ': ' + slotName,
-						items: slotScopes[slotName] || [],
-					}
-				}
-
-			  // normal path
-        return {
-          path: path,
-          name: getPathName(path, treeData),
-          items: [
-            ...getPathProps(path, treeData),
-						...getPathEmits(path, treeData),
-            ...getPathSlots(path, treeData)
-          ],
-          slotScopes: getPathSlotScopes(path, treeData),
-        }
-      }
-
-			// Get path's data from diagramsData
-      function getPathData (path) {
-			  for (let diagramData of diagramsData.value) {
-			    if (path === diagramData.localData.path) return diagramData.localData
-					if (isSlotPath(path) && convertToNormalPath(path) === diagramData.localData.path) {
-            for (let slotData of diagramData.slotsData) {
-              if (path === slotData.path) return slotData
-						}
-					}
-				}
-        return {}
-			}
-
-			// Path conversion functionality
-			function convertToSlottedPath (path) {
-			  for (let slottedPath of addTree.allPaths) {
-			    if (convertToPath(slottedPath) === path) return slottedPath
-				}
-			}
-
-      function isProperSlotPath(slottedPath, path) {
-        return convertToSlottedPath(path).indexOf(slottedPath) > -1
-      }
-
-
-      function isDiagramLocalPath (path, diagramData) {
-        return path === diagramData.localData.path;
-      }
-
-			function isDiagramForeignPath (path, diagramData) {
-				for (let item of diagramData.foreignData) {
-				  if (path === item.path) return true
-				}
-				return false
-			}
-
-			function isDiagramPath (path, diagramData) {
-			  return isDiagramLocalPath(path, diagramData) || isDiagramForeignPath(path, diagramData)
-			}
-
-			// Add tree button
-			function addToDiagram() {
-        for (let diagramData of diagramsData.value) {
-          if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
-            if (((isRootPath(addTreeActivePath.value) || (isSlotPath(addTreeActivePath.value) && isProperSlotPath(addTreeActiveSlottedPath.value, selectTreeActivePath.value))) && !isDiagramPath(addTreeActivePath.value, diagramData))) {
-              diagramData.foreignData.push(getPathData(addTreeActivePath.value))
-            }
-					}
-        }
-			}
-
-			// Connect disconnect logic
-			function connect (startVal, endVal) {
-        for (let diagramData of diagramsData.value) {
-          if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
-            if (endVal.type === 'data' || endVal.type === 'func') {
-              diagramData.slotScopeBinding.push({
-                type: startVal.type,
-                foreign: endVal.key,
-                local: startVal.key
-              })
-            } else {
-              diagramData.binding.push({
-                type: startVal.type,
-                foreign: startVal.key,
-                local: endVal.key
-              })
-						}
-          }
-        }
-      }
-
-			function disconnect (startVal, endVal) {
-        for (let diagramData of diagramsData.value) {
-          if (isDiagramLocalPath(selectTreeActivePath.value, diagramData)) {
-            if (endVal.type === 'data' || endVal.type === 'func') {
-              diagramData.slotScopeBinding.splice(diagramData.slotScopeBinding.findIndex(connection => connection.type === startVal.type && connection.foreign === startVal.value && connection.local === endVal.value), 1)
-            } else {
-              diagramData.binding.splice(diagramData.binding.findIndex(connection => connection.type === startVal.type && connection.foreign === startVal.value && connection.local === endVal.value), 1)
-            }
-          }
-        }
-      }
-
-      // Extract diagrams data from path
-      function getDiagramData (path) {
-        const normalPath = convertToNormalPath(path)
-        for (let diagramData of diagramsData.value) {
-          if (normalPath === diagramData.localData.path) {
-            return diagramData
-          }
-        }
-      }
-
-      // Editor logic
-
-      // Switch editor data according to active diagram
-      watch(selectTreeActivePath, newVal => {
-        const diagramData = getDiagramData(newVal)
-        editorPath.value = diagramData ? diagramData.editorPath : undefined
-      })
-
-			watch(editorPath, newVal => {
-			  editorData.value = getPathData(newVal)
-			})
-
-			// Handle edit event from item group
-			function edit(path) {
-				getDiagramData(selectTreeActivePath.value).editorPath = path
-				editorPath.value = path
-			}
-
-			// Editing functionality
-			function toggleItem(path, index) {
-			  // debugger
-        if (path === undefined || path === null) return
-				const normalPath = convertToNormalPath(path)
-        for (let diagramData of diagramsData.value) {
-          if (normalPath === diagramData.localData.path) {
-            if (isSlotPath(path)) {
-              for (let slotData of diagramData.slotsData) {
-                if (path === slotData.path) {
-                  slotData.items[index].show = !slotData.items[index].show
-                }
-              }
-            } else {
-              diagramData.localData.items[index].show = !diagramData.localData.items[index].show
-            }
-					}
-				}
-			}
-
-			function addItem(path, newItem) {
-        if (path === undefined || path === null) return
-        const normalPath = convertToNormalPath(path)
-        for (let diagramData of diagramsData.value) {
-          if (normalPath === diagramData.localData.path) {
-            if (isSlotPath(path)) {
-              for (let slotData of diagramData.slotsData) {
-                if (path === slotData.path) {
-                  slotData.items.push(newItem)
-								}
-							}
-            } else {
-              diagramData.localData.items.push(newItem)
-						}
-          }
-        }
-			}
-
-			function deleteItem(path, index) {
-			  if (path === undefined || path === null) return
-        const normalPath = convertToNormalPath(path)
-        for (let diagramData of diagramsData.value) {
-          if (normalPath === diagramData.localData.path) {
-            if (isSlotPath(path)) {
-              for (let slotData of diagramData.slotsData) {
-                if (path === slotData.path) {
-                  slotData.items.splice(index, 1)
-                }
-              }
-            } else {
-              diagramData.localData.items.splice(index, 1)
-            }
-          }
-        }
-			}
-
-			provide('addItem', addItem)
-			provide('deleteItem', deleteItem)
+			provide('getPathData', getPathData)
 			provide('toggleItem', toggleItem)
-
-			// External functionality
-			function save() {
-        !treeData.value.metadata && (treeData.value.metaData = {})
-        treeData.value.metaData.diagramsData = diagramsData.value
-        treeData.value.metaData.selectTree = selectTree
-        treeData.value.metaData.addTree = addTree
-			}
-
-			function updateIntoTreeData() {
-
-			}
-
-			function close() {
-				save()
-			  context.emit('close')
-			}
+      provide('addItem', addItem)
+      provide('deleteItem', deleteItem)
+      provide('isProperAddPath', isProperAddPath)
+      provide('isConnectedPath', isConnectedPath)
+      provide('updatePosition', updatePosition)
+      provide('getPosition', getPosition)
+      provide('getSlotPathFromKey', getSlotPathFromKey)
 
       return {
 				GBindingDiagramLayout,
@@ -409,11 +152,13 @@
 				addTreeActivePath,
 				diagramsData,
 				addToDiagram,
+				removeGroup,
 				connect,
 				disconnect,
-				editorData,
+				editorPath,
 				edit,
-				close
+				save,
+				close,
 			}
 		},
   }
@@ -487,6 +232,12 @@
 			height: 100%;
 			padding: 0 10px;
 			background-color: white;
+		}
+
+		&-action {
+			::v-deep.g-btn {
+				margin: 5px 0;
+			}
 		}
 	}
 

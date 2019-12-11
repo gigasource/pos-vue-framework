@@ -10,7 +10,7 @@
       const genBindingConnection = (connection) => {
 				return <tr>
 					<td>{connection.type}</td>
-					<td>{connection.foreign}</td>
+					<td>{connection.root || connection.slotScope}</td>
 					<td>{connection.local}</td>
 				</tr>
 			}

@@ -1,6 +1,6 @@
 <script>
 	import { getInternalValue } from '../../mixins/getVModel';
-  import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { ref, computed, onMounted } from '@vue/composition-api';
   import { isSlotPath, isRootPath } from './GBindingDiagramFactory';
   import GChip from '../GChip/GChip';
   import GConnector from '../GConnector/GConnector';
@@ -21,6 +21,13 @@
 		},
     setup (props, context) {
       const model = getInternalValue(props, context)
+
+			const connectorModel = computed(() => ({
+				type: model.value.type,
+				key: model.value.key,
+				show: model.value.show,
+				path: props.path
+			}))
 
 			const itemColor = computed(() => {
 			  switch (model.value.type) {
@@ -58,6 +65,15 @@
 				else return 1
 			})
 
+			const filter = (startVal, endVal) => {
+        if (isRootPath(startVal.path) && isSlotPath(endVal.path)) return false
+				if (startVal.path === endVal.path) return false
+				if (startVal.type === 'prop' && endVal.type !== 'prop' && endVal.type !== 'data') return false
+				if (startVal.type === 'emit' && endVal.type !== 'func') return false
+				if (startVal.type === 'slot' && endVal.type !== 'slot') return false
+				return true
+			}
+
 			function connect(startVal, endVal) {
         context.emit('connected', startVal, endVal)
 			}
@@ -72,11 +88,13 @@
 														point-position="x"
 														path-color={computedItemColor.value}
 														path-width="2"
-														value={model.value}
+														value={connectorModel.value}
 														start-limit={startLimit.value}
 														end-limit={endLimit.value}
+														filter={filter}
 														vOn:connected={endVal => connect(model.value, endVal)}
-														vOn:disconnected={endVal => disconnect(model.value, endVal)}>
+														vOn:disconnected={endVal => disconnect(model.value, endVal)}
+														vOn:dragEnd={() => context.emit('dragEnd')}>
           <div class={['g-binding-diagram-item', `b-${itemColor.value}`, `text-${itemColor.value}`]} vShow={model.value.show}>
             <div class={['g-binding-diagram-item-type', `bg-${itemColor.value}`]} ref="itemType">
               {model.value.type}
