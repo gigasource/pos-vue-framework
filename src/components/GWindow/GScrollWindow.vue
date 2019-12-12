@@ -1,6 +1,6 @@
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import { computed, onMounted, provide, reactive, watch } from '@vue/composition-api';
+  import { computed, provide, reactive, watch } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
 
@@ -45,10 +45,6 @@
         isReverse: false,
         items: []
       });
-
-      onMounted(function () {
-        this.$forceUpdate = () => null;
-      })
 
       function register(item) {
         item.data.value = data.items.push(item) - 1;

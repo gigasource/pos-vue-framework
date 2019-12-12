@@ -13,7 +13,6 @@
 
       onMounted(function () {
         register(this);
-        this.$forceUpdate = () => null
       });
 
       onBeforeUnmount(function () {
@@ -69,6 +68,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 100px;
   }
 </style>
