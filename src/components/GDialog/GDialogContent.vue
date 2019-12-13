@@ -69,12 +69,16 @@
 
 			const unwatch = watch(isActive, newVal => {
 			  if (newVal) {
-          window.addEventListener('wheel', onWheel, {passive: false})
           context.root.$nextTick(() => {
+            window.addEventListener('wheel', onWheel, {passive: false})
+            window.addEventListener('touchstart', onTouchStart, {passive: false})
+						window.addEventListener('touchmove', onTouchMove, {passive: false})
             context.refs.wrapper.focus()
 					})
 				} else {
           window.removeEventListener('wheel', onWheel)
+          window.removeEventListener('touchstart', onTouchStart)
+          window.removeEventListener('touchmove', onTouchMove)
 				}
 			})
 
@@ -162,9 +166,12 @@
       }
 
       const checkPath = function (e) {
-        //debugger
         const path = e.path || composedPath(e)
-        const delta = e.deltaY
+        let delta = e.deltaY
+
+				if (e.type === 'touchmove') {
+					delta = touchStartY - e.touches[0].clientY
+				}
 
         if (e.type === 'keydown' && path[0] === document.body) {
           const dialog = context.refs.wrapper
@@ -191,6 +198,18 @@
 
 			const onWheel = function (e) {
 			  if (e.target === context.refs.overlay.$el.firstChild || checkPath(e)) e.preventDefault()
+			}
+
+			let touchStartY
+
+			const onTouchStart = function (e) {
+				touchStartY = e.touches[0].clientY
+			}
+
+			const onTouchMove = function (e) {
+        if ((e.target === context.refs.overlay.$el.firstChild || checkPath(e)) && e.cancelable) {
+          e.preventDefault()
+        }
 			}
 
       // Render functions
