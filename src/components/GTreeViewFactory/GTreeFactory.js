@@ -29,7 +29,7 @@ export default function treeFactory({
     return !(nodeContext.isRoot || (nodeContext.parent && nodeContext.parent.key === '_children_'));
   }
 
-  itemPath = (typeof itemPath === 'function') || ((n, {key}) => {
+  itemPath = (typeof itemPath === 'function' && itemPath) || ((n, {key}) => {
     if (key && typeof itemChildren === 'string') {
       return `${itemChildren}.${key}`;
     }
