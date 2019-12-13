@@ -1,5 +1,6 @@
 import { withKnobs } from '@storybook/addon-knobs';
 import GSlideshow from '../GSlideshow';
+import GBtn from '../../GBtn/GBtn';
 import src1 from '../../../assets/slideshow/food1.jpeg'
 import src2 from '../../../assets/slideshow/food2.jpeg'
 import src3 from '../../../assets/slideshow/food3.jpeg'
@@ -13,59 +14,93 @@ export default {
 };
 
 export const Basic = () => ({
-  components: { GSlideshow },
+  components: { GSlideshow, GBtn },
   props: {},
   data() {
     return {
-      slideItems: [
+      slideItems: [],
+      flag: false
+    }
+  },
+  methods: {
+    start() {
+      const slide = [[
+        {
+          src: 'https://free4kwallpapers.com/uploads/originals/2015/10/27/morning-glory-wallpaper.jpg',
+          type: 'image',
+          transition: 'Slide Top To Bottom',
+          duration: 5000
+        },
+        // {
+        //   src: 'https://free4kwallpapers.com/uploads/wallpaper/fog-in-jungle-wallpaper-2560x1440-wallpaper.jpg',
+        //   type: 'image',
+        //   transition: 'Slide Top To Bottom',
+        //   duration: 5000
+        // },
+        // {
+        //   src: 'https://free4kwallpapers.com/uploads/wallpaper/sunset-summer-4k-wallpaper-2560x1440-wallpaper.jpg',
+        //   type: 'image',
+        //   transition: 'Slide Top To Bottom',
+        //   duration: 5000
+        // },
+        // {
+        //   src: 'https://free4kwallpapers.com/uploads/originals/2015/09/06/beautiful-nature-images-with-quotes.jpg',
+        //   type: 'image',
+        //   transition: 'Slide Top To Bottom',
+        //   duration: 5000
+        // },
+      ], [
         {
           src: src1,
           type: 'image',
-          transition: 'slide',
-          duration: 5000
+          transition: 'Slide Top To Bottom',
+          duration: 10000
         },
         {
           src: src2,
           type: 'image',
-          transition: 'slide',
+          transition: 'Slide Top To Bottom',
           duration: 5000
         },
         {
           src: video,
           type: 'video',
-          transition: 'none',
+          transition: 'Slide Top To Bottom',
           duration : 8000
         },
         {
           src: src3,
           type: 'image',
-          transition: 'none',
+          transition: 'Slide Top To Bottom',
           duration: 5000
         },
         {
           src: video,
           type: 'video',
-          transition: 'none',
+          transition: 'Slide Top To Bottom',
           duration : 8000
         },
         {
           src: src4,
           type: 'image',
-          transition: 'none',
+          transition: 'Slide Top To Bottom',
           duration: 5000
         },
         {
           src: src5,
           type: 'image',
-          transition: 'slide',
+          transition: 'Slide Top To Bottom',
           duration: 5000
         },
-      ]
+      ]]
+      this.slideItems = slide[this.flag ? 1 : 0]
+      this.flag = !this.flag
     }
   },
   template: `
 		<div style="position: relative; width: 800px; height: 480px">
+			<g-btn @click="start">Play</g-btn>
 			<g-slideshow v-model="slideItems"/>
 		</div>
-  `
+`
 })
