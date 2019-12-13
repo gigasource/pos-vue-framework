@@ -1,6 +1,6 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
-  import { createSlideNode, setSrc, getTransition } from './GSlideshowFactory';
+  import { createSlideNode, setSrc, getTransition, clean } from './GSlideshowFactory';
   import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
 
   export default {
@@ -19,40 +19,27 @@
     setup (props, context) {
 			const model = getInternalValue(props, context)
 
-			const containerDimension = {
-				width: 0,
-				height: 0,
-			}
-
 			const nodeList = []
 			let nodeFlag = false
 			const count = ref(0)
 			const nextCount = computed(() => count.value === maxCount.value ? 0 : count.value + 1)
-			const maxCount = ref(0)
+			const maxCount = computed(() => model.value.length - 1)
 
-			onMounted(() => {
-			  console.log(model.value)
-				maxCount.value = model.value.length - 1
-			})
 
-			const currentItem = computed(() => model.value[count.value])
+			const currentItem = computed({get: () => model.value[count.value], set: val => count.value = val})
 			const nextItem = computed(() => model.value[nextCount.value])
 
-			// Update container dimension when mounted
-			onMounted(() => {
-			  containerDimension.width = context.refs.container.parentNode.clientWidth
-				containerDimension.height = context.refs.container.parentNode.clientHeight
-			})
+			let currentTimeout
 
 			// Init slide nodes when mounted
       onMounted(() => {
         const container = context.refs.container
 
-        const slideNode1 = createSlideNode(containerDimension)
-        const slideNode2 = createSlideNode(containerDimension)
+        const slideNode1 = createSlideNode()
+        const slideNode2 = createSlideNode()
 
-				setSrc(currentItem.value, slideNode1)
-				setSrc(nextItem.value, slideNode2)
+				currentItem.value && setSrc(currentItem.value, slideNode1)
+				currentItem.value && setSrc(nextItem.value, slideNode2)
 
 				slideNode2.container.style.display = 'none'
 
@@ -63,23 +50,49 @@
         count.value = count.value === maxCount.value ? 0 : count.value + 1
       })
 
+			//
+      watch(() => model.value, () => {
+        currentItem.value = 0
+				clean(nodeList)
+        clearTimeout(currentTimeout)
+        nodeFlag = false
+        context.root.$nextTick(() => {
+					const firstItem = model.value[0]
+					const secondItem = model.value[1] ? model.value[1] :firstItem
+          const slideNode1 = nodeList[0]
+          const slideNode2 = nodeList[1]
+          setSrc(firstItem, slideNode1)
+          setSrc(secondItem, slideNode2)
+          slideNode1.container.style.display ='block'
+          slideNode2.container.style.display = 'none'
+
+					count.value = count.value === maxCount.value ? 0 : 1
+        })
+
+      }, {deep: true, lazy: true})
+
 			// Sliding logic
       watch(currentItem, (newVal, oldVal) => {
-			  setTimeout(() => {
-          const currentNode = nodeList[nodeFlag ? 1 : 0]
-          const nextNode = nodeList[nodeFlag ? 0 : 1]
-			    nextNode.container.style.display = 'block'
-					const transition = currentNode.container.animate(...getTransition(newVal.transition, 'out', props))
-					nextNode.container.animate(...getTransition(newVal.transition, 'in', props))
-					nextNode.video.style.display !== 'none' && (nextNode.video.play())
-					transition.onfinish = () => {
-			      currentNode.container.style.display = 'none'
-						setSrc(nextItem.value, currentNode)
-						nodeFlag = !nodeFlag
-            count.value = count.value === maxCount.value ? 0 : count.value + 1
-					}
-				}, oldVal.duration - (newVal.transition === 'none' ? 0 : props.transitionDuration))
+				if (oldVal && newVal) {
+          currentTimeout = setTimeout(() => {
+            const currentNode = nodeList[nodeFlag ? 1 : 0]
+            const nextNode = nodeList[nodeFlag ? 0 : 1]
+            nextNode.container.style.display = 'block'
+            const transition = currentNode.container.animate(...getTransition(newVal.transition, 'out', props))
+            nextNode.container.animate(...getTransition(newVal.transition, 'in', props))
+            nextNode.video.style.display !== 'none' && (nextNode.video.play())
+            transition.onfinish = () => {
+              clearTimeout(currentTimeout)
+              currentNode.container.style.display = 'none'
+              setSrc(nextItem.value, currentNode)
+              nodeFlag = !nodeFlag
+              count.value = count.value === maxCount.value ? 0 : count.value + 1
+            }
+          }, oldVal.duration - (newVal.transition === 'none' ? 0 : props.transitionDuration))
+        }
 			}, {lazy: true})
+
+
 
 			// Clean up before destroyed
 			onBeforeUnmount(() => {
@@ -127,5 +140,16 @@
 			width: 100%;
 			display: none;
 		}
+	}
+
+	::v-deep img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	::v-deep video {
+		width: 100%;
+		height: 100%;
 	}
 </style>
