@@ -57,40 +57,39 @@
     setup(props, context) {
       let prevSelectedPath = null
       let prevOpenPath = null // for items with children but not clickable
-      const treeState = reactive({})
+      const treeStates = reactive({})
 
       // common functions
       const toggleNodeExpansion = _.throttle((e, path) => {
         e.stopPropagation()
-        if (!treeState[path]) return
+        if (!treeStates[path]) return
 
         // autoCollapse === false means that only 1 item with children can be expanded
         if (props.autoCollapse) {
-          if (prevOpenPath && prevOpenPath !== path) treeState[prevOpenPath].collapse = true
+          if (prevOpenPath && prevOpenPath !== path) treeStates[prevOpenPath].collapse = true
           prevOpenPath = path
         }
 
-        treeState[path].collapse = !treeState[path].collapse;
+        treeStates[path].collapse = !treeStates[path].collapse;
       }, 200, {trailing: false})
 
       const setTreeState = function (path, state) {
-        if (!treeState[path]) {
-          set(treeState, path, state)
+        if (!treeStates[path]) {
+          set(treeStates, path, state)
         } else {
-          treeState[path].collapse = state.collapse
-          treeState[path].selected = state.selected
+          if (!_.isNil(state.collapse)) treeStates[path].collapse = state.collapse
+          if (!_.isNil(state.selected)) treeStates[path].selected = state.selected
         }
       }
 
       watch(() => props.value, () => {
         if (!props.value || props.value === prevSelectedPath) return
 
-        if (prevSelectedPath) treeState[prevSelectedPath].selected = false
+        if (prevSelectedPath) treeStates[prevSelectedPath].selected = false
         prevSelectedPath = props.value
 
         setTreeState(props.value, {
-          selected: true,
-          collapse: true
+          selected: true
         })
 
         let path = props.value
@@ -131,30 +130,31 @@
             node,
             text,
             childrenVNodes,
-            state,
+            state: treeStates[path],
             path
           })
           else node.icon = props.itemIcon
         }
 
-        if (isChildNode && !node.icon) {
+        if (isChildNode && _.isNil(node.icon)) {
           node.icon = 'radio_button_unchecked' // Set default icon for children nodes
           node.iconType = 'small'
         }
 
         const icon = (node.type !== 'divider' && node.type !== 'subheader') &&
-            <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}
-                    svg={node.svgIcon}>{node.icon || ''}</g-icon>
+            ((context.slots.icon && context.slots.icon({node})) ||
+                <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}
+                        svg={node.svgIcon}>{node.icon || ''}</g-icon>)
 
         // gen children
         const children = childrenVNodes &&
-            <div vShow={!treeState[path].collapse} class="g-treeview-children">{childrenVNodes}</div>
+            <div vShow={!treeStates[path].collapse} class="g-treeview-children">{childrenVNodes}</div>
 
         // gen badge
-        const scopedSlots = {
+        const badgeScopedSlots = {
           badge: () => <span>{node.badge}</span>
         }
-        const badge = node.badge && <g-badge inline color={node.badgeColor} scopedSlots={scopedSlots}
+        const badge = node.badge && <g-badge inline color={node.badgeColor} scopedSlots={badgeScopedSlots}
                                              style={childrenVNodes || context.slots['prepend-icon'] || node.appendIcon ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
 
         const appendIcon = node.appendIcon && <g-icon small class="mx-1">{node.appendIcon}</g-icon>
@@ -165,7 +165,7 @@
               ? 'g-treeview-item waves-effect'
               : null,
             props.rounded ? 'g-treeview-item__rounded' : null,
-            (!childrenVNodes || node.clickable) && treeState[path].selected
+            (!childrenVNodes || node.clickable) && treeStates[path].selected
                 ? 'g-treeview__active'
                 : null],
           on: {
@@ -201,7 +201,7 @@
           'color': node.textColor
         }
 
-        return <li class={!treeState[path].collapse && childrenVNodes && 'g-treeview__open'}>
+        return <li class={!treeStates[path].collapse && childrenVNodes && 'g-treeview__open'}>
           <a {...data}>
             {icon}
             <span style={node.textColor && textStyle}>{text}</span>
@@ -212,10 +212,10 @@
             <span
                 class='g-treeview-action'
                 vShow={childrenVNodes}>
-              <g-icon vOn:click={e => toggleNodeExpansion(e, path)}>
-                {treeState[path].collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
-              </g-icon>
-            </span>
+            <g-icon vOn:click={e => toggleNodeExpansion(e, path)}>
+              {treeStates[path].collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
+            </g-icon>
+          </span>
             {appendIcon}
           </a>
           <g-expand-transition>{children}</g-expand-transition>
@@ -240,10 +240,10 @@
         itemText: itemTextFn,
         itemChildren: props.itemChildren,
         expandLevel: props.expandLevel,
-        treeStates: treeState,
+        treeStates,
       })
 
-      return {treeState, genTree}
+      return {treeStates, genTree}
     },
     render() {
       return this.genTree()
