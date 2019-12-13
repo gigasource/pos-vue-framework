@@ -319,7 +319,6 @@
 </script>
 <style lang="scss" scoped>
   .g-combobox ::v-deep {
-    .g-menu--activator {
       span {
         margin: 3px
       }
@@ -344,7 +343,6 @@
         flex-basis: auto;
         cursor: text;
       }
-    }
   }
 
   .g-combobox__active {
