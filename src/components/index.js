@@ -138,6 +138,15 @@ import GScrollWindowItem from './GWindow/GScrollWindowItem';
 import GWindow from './GWindow/GWindow';
 import GWindowItem from './GWindow/GWindowItem';
 
+import {getInternalValue, getVModel} from '../mixins/getVModel';
+export {getInternalValue, getVModel};
+
+import {getExpansionModel} from './GExpansion/GExpansionFactory';
+export {getExpansionModel};
+
+import colorHandler, {convertToUnit} from '../utils/helpers'
+export {colorHandler, convertToUnit};
+
 import GSnackbar from "./GSnackbar/GSnackbar";
 
 import {
