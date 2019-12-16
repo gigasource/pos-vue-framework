@@ -10,10 +10,10 @@ export default {
 export const Basic = () => ({
   components: { GProgressBar },
   props: {
-    value: {default: number('Value', 100, {range: true, min:0, max: 100})},
-    buffer: {default: number('Buffer', 100, {range: true, min:0, max: 100})},
+    value: {default: number('Value', 40, {range: true, min:0, max: 100})},
+    buffer: {default: number('Buffer', 70, {range: true, min:0, max: 100})},
     height: {default: number('Height', 4)},
-    backgroundColor: {default: text('Background Color', 'green')},
+    backgroundColor: {default: text('Background Color', 'blue')},
     backgroundOpacity: {default: number('Background Opacity', 0.3, {range: true, min:0, max: 1, step: 0.01})},
     color: {default: text('Color', 'blue')},
     striped: {default: boolean('Stripped', false)},

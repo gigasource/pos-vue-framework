@@ -62,7 +62,7 @@
         return val
 			}
 
-			const bgColor = computed(() => setBackgroundColor(props.backgroundcolor || props.color))
+			const bgColor = computed(() => setBackgroundColor(props.backgroundColor || props.color))
       const textColor = computed(() => setTextColor(props.color))
 			const color = computed(() => setBackgroundColor(props.color))
 
