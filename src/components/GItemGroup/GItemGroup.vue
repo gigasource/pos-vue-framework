@@ -1,5 +1,5 @@
 <template>
-	<g-layout class="g-item-group">
+	<div class="g-item-group">
 		<slot :toggle="toggleItem" :active="isActiveItem">
 			<template v-for="(item, index) in items">
 				<g-item :item="item" :is-active="isActiveItem(item)" @toggle="toggleItem" :key="index">
@@ -7,18 +7,17 @@
 				</g-item>
 			</template>
 		</slot>
-	</g-layout>
+	</div>
 </template>
 
 <script>
   import GItem from '../GItemGroup/GItem';
-  import GLayout from '../GLayout/GLayout';
   import { computed } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
 
   export default {
     name: 'GItemGroup',
-    components: { GLayout, GItem },
+    components: { GItem },
     props: {
       mandatory: Boolean,
       multiple: Boolean,
@@ -57,5 +56,7 @@
 </script>
 
 <style scoped lang="scss">
-	@import "GItemGroup";
+  .g-item-group {
+    display: flex;
+  }
 </style>

@@ -39,5 +39,4 @@
 </script>
 
 <style scoped lang="scss">
- @import "GItemGroup";
 </style>

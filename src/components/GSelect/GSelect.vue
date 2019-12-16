@@ -298,7 +298,6 @@
 </script>
 <style scoped lang="scss">
   .g-select::v-deep {
-    .g-menu--activator {
       span {
         margin: 3px
       }
@@ -320,7 +319,6 @@
         flex-basis: 0;
       }
 
-    }
   }
 
   .g-select__active::v-deep {

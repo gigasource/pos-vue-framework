@@ -147,6 +147,8 @@ export {getExpansionModel};
 import colorHandler, {convertToUnit} from '../utils/helpers'
 export {colorHandler, convertToUnit};
 
+import GSnackbar from "./GSnackbar/GSnackbar";
+
 import {
   GCarouselTransition,
   GCarouselReverseTransition,
@@ -328,4 +330,5 @@ export {
   GZoomLeftAnimation,
   GExpandTransition,
   GExpandXTransition,
+  GSnackbar,
 }

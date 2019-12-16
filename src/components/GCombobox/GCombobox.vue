@@ -221,6 +221,7 @@
         'append-inner': ({iconColor}) =>
             [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
               context.slots['append-inner'] && context.slots['append-inner']()],
+        'append-outer': () => context.slots['append-outer'] && context.slots['append-outer'](),
         'input-slot': ({inputErrStyles}) =>
             <Fragment>
               {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
@@ -318,7 +319,6 @@
 </script>
 <style lang="scss" scoped>
   .g-combobox ::v-deep {
-    .g-menu--activator {
       span {
         margin: 3px
       }
@@ -343,7 +343,6 @@
         flex-basis: auto;
         cursor: text;
       }
-    }
   }
 
   .g-combobox__active {

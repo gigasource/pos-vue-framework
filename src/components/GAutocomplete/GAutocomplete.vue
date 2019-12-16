@@ -1,16 +1,16 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import { computed, reactive, ref } from '@vue/composition-api';
-  import { getList, getSelections } from '../GSelect/GSelectFactory';
+  import {computed, reactive, ref} from '@vue/composition-api';
+  import {getList, getSelections} from '../GSelect/GSelectFactory';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import { getLabel, getValidate } from '../GInput/GInputFactory';
+  import {getLabel, getValidate} from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
-  import { getInputEventHandlers, setSearch } from './GAutocompleteFactory';
-  import { makeListSelectable } from '../GList/groupableForList';
+  import {getInputEventHandlers, setSearch} from './GAutocompleteFactory';
+  import {makeListSelectable} from '../GList/groupableForList';
 
   export default {
     name: 'GAutocomplete',
@@ -305,44 +305,35 @@
 </script>
 <style lang="scss" scoped>
 
-  .g-autocomplete {
-    .g-menu::v-deep {
-      span {
-        margin: 3px
-      }
-
-      .g-tf-append__inner {
-        .g-icon:last-child {
-          transition: transform 0.4s;
-        }
-      }
-
-      .input {
-        display: flex;
-      }
-
-      .g-tf-input {
-        flex-wrap: wrap;
-        width: auto;
-        display: flex;
-      }
-
-      input {
-        flex-shrink: 0;
-        flex-basis: auto;
-        cursor: text;
-      }
+  .g-autocomplete ::v-deep {
+    span {
+      margin: 3px
     }
 
-    &__active {
-      .g-menu::v-deep {
-        .g-tf-append__inner {
-          .g-icon:last-child {
-            transition: transform 0.4s;
-            transform: rotateZ(180deg);
-          }
-        }
-      }
+    .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
+    }
+
+    .input {
+      display: flex;
+    }
+
+    .g-tf-input {
+      flex-wrap: wrap;
+      display: flex;
+    }
+
+    input {
+      flex-shrink: 0;
+      flex-basis: auto;
+      cursor: text;
     }
   }
+
+  .g-autocomplete__active ::v-deep {
+    .g-tf-append__inner .g-icon:last-child {
+            transition: transform 0.4s;
+            transform: rotateZ(180deg);
+        }
+    }
 </style>
