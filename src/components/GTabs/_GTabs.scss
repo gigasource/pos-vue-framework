@@ -24,7 +24,7 @@
   }
 
   &__grow {
-    .g-tab {
+    ::v-deep .g-tab {
       flex: 1 0 auto;
     }
   }
