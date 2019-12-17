@@ -1,5 +1,5 @@
 <script>
-  import { ref, computed, onMounted } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
 	import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import { getInternalValue } from '../../mixins/getVModel';
   import { convertToUnit } from '../../utils/helpers';
@@ -49,8 +49,6 @@
 		},
     setup (props, context) {
 			const internalValue = getInternalValue(props, context)
-
-			const internalLazyValue = ref(internalValue.value || 0)
 
 			const normalizedValue = computed(() => normalize(parseFloat(internalValue.value)))
 
