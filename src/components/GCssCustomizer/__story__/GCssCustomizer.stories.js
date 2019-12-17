@@ -22,9 +22,11 @@ export const Demo = () => ({
     const resetTreeData = () => {
       const treeData = {
         "name": "GBtn",
+        "id": "28adc2342",
         "items": [
           {
-            "component": "GIcon"
+            "component": "GIcon",
+            "id": "82qod23s"
           }
         ]
       }

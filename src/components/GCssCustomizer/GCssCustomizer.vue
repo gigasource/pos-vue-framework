@@ -1,15 +1,18 @@
 <script>
-  import { ref, reactive, provide } from '@vue/composition-api';
+	import _ from 'lodash';
+  import { ref, reactive, computed, onMounted } from '@vue/composition-api';
   import { getInternalValue } from '../../mixins/getVModel';
+  import { convertToUnit } from '../../utils/helpers';
   import GCssCustomizerLayout from './GCssCustomizerLayout'
   import GGridLayout from '../GGridGenerator/GGridLayout';
   import GCssCustomizerTreeView from './GCssCustomizerTreeView';
   import GBtn from '../GBtn/GBtn';
+  import GDatePicker from '../GDatePicker/GDatePicker';
   import GTextField from '../GInput/GTextField';
 
   export default {
     name: 'GCssCustomizer',
-		components: { GTextField, GCssCustomizerTreeView, GGridLayout, GBtn },
+		components: { GTextField, GCssCustomizerTreeView, GGridLayout, GBtn, GDatePicker },
     props: {
       value: {
         type: Object
@@ -23,6 +26,10 @@
         activePath: '',
       })
 
+
+			// Tree Data logic
+			const getComponentName = path => _.get(treeData.value, path + 'name') || _.get(treeData.value, path + '.component')
+			const getComponentId = path => _.get(treeData.value, path + 'id') || _.get(treeData.value, path + '.id')
 
 			// Tree view logic
       const itemText = node => node['name'] ? node['name'] : node['component']
@@ -53,31 +60,127 @@
 			}
 
 			// Preview
+			const scopedId = ref(null)
+			const genPreviewComponent = () => {
+				return <g-btn ref="previewComponent">Test</g-btn>
+			}
+
+			onMounted(() => {
+			  const previewComponent = context.refs.previewComponent
+				scopedId.value = previewComponent.$options._scopeId
+				previewComponent.$el.classList.add(genCssClass(getComponentName(cssCustomizerTree.activePath), getComponentId(cssCustomizerTree.activePath)))
+				// debugger
+			})
+
 			const genPreview = () => {
-			  return <div area="preview" class="g-css-customizer-preview" refs="preview">
-					<g-btn>Test</g-btn>
+			  return <div area="preview" class="g-css-customizer-preview" ref="preview">
+					{genPreviewComponent()}
+					<div class="test-class">
+					</div>
+					<style type="text/css">
+
+					</style>
 				</div>
 			}
 
 			// Code
+      const genText = (text) => {
+			  if (text.match(/#/) || text.match(/\d+/)) return <span class="g-css-customizer-code-number"> {text}</span>
+				else return <span class="g-css-customizer-code-string"> {text}</span>
+			}
+
+			const genCssClass = (component, id) => {
+			  return `${_.kebabCase(component)}-${id}`
+			}
+
+			const activeCssClass = computed(() => {
+			  return genCssClass(getComponentName(cssCustomizerTree.activePath), getComponentId(cssCustomizerTree.activePath))
+			})
+
+			const cssCode = computed(() => {
+			  let temp = '{'
+				_.forEach(stylesObj.value, (val, key) => {
+				  val && (temp += `${_.kebabCase(key)}: ${val} !important;` + ' ')
+				})
+				temp += '}'
+				return temp
+			})
+
+			const cssDisplayCode = computed(() => {
+        const temp = []
+        _.forEach(stylesObj.value, (val, key) => {
+          val && temp.push({
+            property: _.kebabCase(key),
+            value: val.split(' ')
+          })
+        })
+        return temp
+      })
+
+			const genDisplayCode = (item) => {
+				return <p>
+					<span>{item.property + ':'}</span>
+          {item.value.map(val => genText(val))};
+				</p>
+			}
+
 			const genCode = () => {
 			  return <div area="code" class="g-css-customizer-code">
 					<div class="g-css-customizer-code-title">
 						CSS
 					</div>
+					{cssDisplayCode.value.map(item => genDisplayCode(item))}
 				</div>
 			}
 
 			// Design
-			const cssCode = computed(() => ({
-				backgroundColor: backgroundColor.value
+
+			const inputObj = reactive({
+        backgroundColor: '#ab3f67',
+        color: '#ffffff',
+        width: '100',
+        height: '50',
+				border: '1px solid lightgreen',
+				borderRadius: '20',
+			})
+
+			const stylesObj = computed(() => ({
+				backgroundColor: inputObj.backgroundColor,
+				color: inputObj.color,
+				width: convertToUnit(inputObj.width),
+				height: convertToUnit(inputObj.height),
+				border: inputObj.border,
+				borderRadius: convertToUnit(inputObj.borderRadius)
 			}))
 
-			const backgroundColor = ref('#ababab')
+			const setStyle = (el, stylesObj) => {
+			  _.forEach(stylesObj, (val, key) => {
+			    // if (key === 'width') debugger
+			    el.style[key] = val || ""
+					return true
+				})
+			}
+
+			const resetStyle = (el, stylesObj) => {
+			  for (let key in stylesObj) {
+			    el.style[key] = ""
+				}
+			}
 
 			const applyChanges = () => {
 			  const preview = context.refs.preview
-				preview.addEventListener()
+        const el = preview.querySelector(`[${scopedId.value}]`)
+        // setStyle(el, stylesObj.value)
+				const style = preview.querySelector('style')
+				style.innerText = '.' + activeCssClass.value + ' ' + cssCode.value + '\r\n'
+			}
+
+			const resetChanges = () => {
+        const preview = context.refs.preview
+        const el = preview.querySelector(`[${scopedId.value}]`)
+				// resetStyle(el, stylesObj.value)
+        const style = preview.querySelector('style')
+				style.innerText = ''
 			}
 
 			const genDesign = () => {
@@ -86,10 +189,14 @@
 						Design
 					</div>
           <div class="g-css-customizer-design-content">
-						<g-text-field vModel={backgroundColor.value} label="Background Color">
-
-						</g-text-field>
-						<g-btn>Apply</g-btn>
+						<g-text-field dense vModel={inputObj.backgroundColor} label="Background Color"/>
+						<g-text-field dense vModel={inputObj.color} label="Color"/>
+						<g-text-field dense vModel={inputObj.width} label="Width"/>
+						<g-text-field dense vModel={inputObj.height} label="Height"/>
+            <g-text-field dense vModel={inputObj.border} label="Border"/>
+            <g-text-field dense vModel={inputObj.borderRadius} label="Border Radius"/>
+						<g-btn outlined vOn:click={applyChanges}>Apply</g-btn>
+            <g-btn outlined vOn:click={resetChanges}>Reset</g-btn>
           </div>
 				</div>
 			}
@@ -105,7 +212,9 @@
 			}
 
 			return {
-			  genCssCustomizer
+			  genCssCustomizer,
+				cssCode,
+				activeCssClass
 			}
 		},
 		render () {
@@ -129,6 +238,7 @@
 			flex-direction: column;
 			flex: 1 1 100%;
 			background-color: white;
+
 
 			&-title {
 				position: relative;
@@ -156,7 +266,7 @@
 			}
 		}
 
-		&-action {
+		&-action, &-design {
 			&-content {
 				display: flex;
 				flex-wrap: wrap;
@@ -165,6 +275,19 @@
 				::v-deep.g-btn {
 					margin: 0 10px 10px 0;
 				}
+			}
+		}
+
+		&-code {
+			font-size: 12px;
+			color: #444444;
+
+			&-number {
+				color: #F16B16;
+			}
+
+			&-string {
+				color: #20A471
 			}
 		}
 
