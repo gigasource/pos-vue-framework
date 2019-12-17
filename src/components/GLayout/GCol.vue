@@ -97,8 +97,6 @@
 
 <style scoped lang="scss">
 	.g-col:not([class*=col-]):not([class*=xs]):not([class*=sm]):not([class*=md]):not([class*=lg]):not([class*=xl]) {
-		flex-basis: 0;
 		flex-grow: 1;
-		width: 100%;
 	}
 </style>

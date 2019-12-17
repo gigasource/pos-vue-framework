@@ -9,16 +9,21 @@ export function groupableForList(props, vModel) {
   const uniqueItems = ref([])
 
   watch(() => props.items, () => {
-    const isObjectList = props.items.some(item => _.isObject(item) === true)
-    const itemsHaveText = props.items.filter(item => item[props.itemText])
-
     if (props.items) {
+      const isObjectList = props.items && props.items.some(item => _.isObject(item) === true)
+      const itemsHaveText = props.items && props.items.filter(item => item[props.itemText])
+
       if (isObjectList.value) {
         if (props.returnObject) return uniqueItems.value = _.uniqWith(itemsHaveText.value, _.isEqual)
         else if (props.itemValue) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
         else if (props.itemText) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
-      } else return uniqueItems.value = _.uniq(props.items)
-    } else return uniqueItems.value = []
+      } else {
+        uniqueItems.value = _.uniq(props.items)
+      }
+
+    } else {
+      uniqueItems.value = []
+    }
   })
 
   const toggleItem = (item) => {
@@ -57,8 +62,8 @@ export function groupableForList(props, vModel) {
     if (props.multiple) {
       if (props.returnObject) return vModel.value.some(element => _.isEqual(element, item))
       else return !!props.itemValue
-          ? vModel.value.includes(item[props.itemValue])
-          : vModel.value.includes(item)
+        ? vModel.value.includes(item[props.itemValue])
+        : vModel.value.includes(item)
     }
     if (props.returnObject) return _.isEqual(vModel.value, item)
     else return !!props.itemValue ? item[props.itemValue] === vModel.value : item === vModel.value
@@ -94,7 +99,7 @@ export function makeListSelectable(props, context) {
       let itemsHaveValueInlist = props.items.filter(i => value.some(el => el === i[props.itemValue]))
       return itemsHaveValueInlist.length ? itemsHaveValueInlist.map(item => item[props.itemValue]) : value
     }
-    }
+  }
 
   // {a: 1, b: 2} -> 1
   const convertInternalValueToValue = function (internalValue) {

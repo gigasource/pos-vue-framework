@@ -1,8 +1,8 @@
 <script>
-  import { computed, onBeforeUnmount, onMounted, watch, ref } from '@vue/composition-api';
+  import {computed, onBeforeUnmount, onMounted, ref, watch} from '@vue/composition-api';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
-  import { convertToUnit, getZIndex } from '../../utils/helpers';
+  import {convertToUnit} from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
@@ -20,7 +20,6 @@
       // basic
       ...{
         value: Boolean,
-        lazy: Boolean
       },
       // positioning
       ...{
@@ -93,15 +92,27 @@
           type: [Number, String],
           default: 0
         }
-      }
+      },
+      // dependent mixin
+      ...{
+        closeDependents: {
+          type: Boolean,
+          default: true,
+        },
+        isDependent: {
+          type: Boolean,
+          default: true,
+        },
+      },
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
-      const { attachToRoot, detach } = detachable(props, context);
+      const {attachToRoot, detach} = detachable(props, context);
       const {
         updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow
       } = menuable(props, context);
-      const { getMaxZIndex } = stackable(props, context)
+      const {getMaxZIndex} = stackable(props, context)
+
 
       function getResizeObserver() {
         let activatorResizeObserver = undefined
@@ -135,9 +146,13 @@
       })
 
       // update dimensions when toggled on
-      watch(isActive, newVal => {
-        if (newVal) updateDimensions(props.activator.value)
-      })
+      watch(() => props.value, newVal => {
+        if (newVal) {
+          context.root.$nextTick(() => {
+            updateDimensions(props.activator.value)
+          })
+        }
+      }, {lazy: true})
 
       let rootEl
       const getOpenDependentElements = ref(null)
@@ -199,11 +214,6 @@
       const genDirectives = () => {
         //callback to close menu when clicked outside
         const closeConditional = (e) => {
-          // if (!isActive.value) return false
-          // if (!context.refs.content) return false
-          // if (context.refs.content.contains(target)) return false
-          // if (getZIndex(context.refs.content) <= getMaxZIndex(context.refs.content)) return false
-          // return true
           const target = e.target;
           return isActive.value && context.refs.content && !context.refs.content.contains(target)
         }
@@ -237,14 +247,12 @@
       const genMenuContent = () => <div style={contentStyles.value}
                                         class="g-menu--content"
                                         ref="content"
-                                        {...{ directives: genDirectives(), on: contentListeners }}>
+                                        {...{directives: genDirectives(), on: contentListeners}}>
         {context.slots.default && context.slots.default()}
       </div>;
 
       return {
         isActive,
-        closeDependents: true,
-        isDependent: true,
         getOpenDependentElements,
         genMenuContent
       }

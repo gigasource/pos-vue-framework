@@ -97,7 +97,7 @@
         // By default, the tooltip will be shown if user click to activator
         openOnHover: {
           type: Boolean,
-          default: false,
+          default: true,
         },
         // delay
         closeDelay: {

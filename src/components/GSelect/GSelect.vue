@@ -55,14 +55,7 @@
       //menu props
       menuProps: {
         type: Object,
-        default: () => ({
-          closeOnClick: true,
-          closeOnContentClick: false,
-          maxHeight: 300,
-          offsetY: true,
-          offsetOverflow: true,
-          top: false,
-        })
+        default: () => ({})
       },
       eager: Boolean,
       //item textfieldValue props
@@ -251,9 +244,19 @@
       //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
+
+        const defaultMenuProps = {
+          closeOnClick: true,
+          closeOnContentClick: false,
+          maxHeight: 300,
+          offsetY: true,
+          offsetOverflow: true,
+          top: false,
+        }
+
         return <g-menu {...{
           props: {
-            ...props.menuProps,
+            ...Object.assign(defaultMenuProps, props.menuProps),
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
             lazy: !props.eager,
