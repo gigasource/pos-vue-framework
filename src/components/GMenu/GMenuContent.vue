@@ -1,12 +1,13 @@
 <script>
-  import { computed, onBeforeUnmount, onMounted, watch } from '@vue/composition-api';
+  import { computed, onBeforeUnmount, onMounted, watch, ref } from '@vue/composition-api';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
-  import { convertToUnit } from '../../utils/helpers';
+  import { convertToUnit, getZIndex } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
   import stackable from '../../mixins/stackable';
+  import dependent from '../../mixins/dependent';
 
   export default {
     name: 'GMenuContent',
@@ -134,14 +135,16 @@
       })
 
       // update dimensions when toggled on
-      watch(() => props.value, newVal => {
+      watch(isActive, newVal => {
         if (newVal) updateDimensions(props.activator.value)
       })
 
       let rootEl
+      const getOpenDependentElements = ref(null)
 
-      onMounted(() => {
+      onMounted(function () {
         rootEl = attachToRoot()
+        getOpenDependentElements.value = dependent(this)
       })
 
       onBeforeUnmount(() => {
@@ -181,12 +184,12 @@
       }))
 
       const contentListeners = {
-        ...(props.closeOnContentClick) && {
+        ...props.closeOnContentClick && {
           click() {
             if (isActive.value) isActive.value = false
           }
         },
-        ...(props.openOnHover) && {
+        ...props.openOnHover && {
           mouseleave() {
             if (isActive.value) isActive.value = false
           }
@@ -196,6 +199,11 @@
       const genDirectives = () => {
         //callback to close menu when clicked outside
         const closeConditional = (e) => {
+          // if (!isActive.value) return false
+          // if (!context.refs.content) return false
+          // if (context.refs.content.contains(target)) return false
+          // if (getZIndex(context.refs.content) <= getMaxZIndex(context.refs.content)) return false
+          // return true
           const target = e.target;
           return isActive.value && context.refs.content && !context.refs.content.contains(target)
         }
@@ -206,7 +214,9 @@
           },
           arg: {
             closeConditional: closeConditional,
-            include: () => [context.parent.$el]
+            include: () => {
+              return [context.parent.$el, ...getOpenDependentElements.value()];
+            }
           },
         }
         //equates to v-show="value" in template
@@ -224,12 +234,23 @@
         return directives;
       }
 
-      return () => <div style={contentStyles.value}
-                        class="g-menu--content"
-                        ref="content"
-                        {...{ directives: genDirectives(), on: contentListeners }}>
-        {context.slots.default()}
-      </div>
+      const genMenuContent = () => <div style={contentStyles.value}
+                                        class="g-menu--content"
+                                        ref="content"
+                                        {...{ directives: genDirectives(), on: contentListeners }}>
+        {context.slots.default && context.slots.default()}
+      </div>;
+
+      return {
+        isActive,
+        closeDependents: true,
+        isDependent: true,
+        getOpenDependentElements,
+        genMenuContent
+      }
+    },
+    render() {
+      return this.genMenuContent()
     }
   }
 </script>

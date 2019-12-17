@@ -61,9 +61,9 @@
         context.emit('input', value)
       }
 
-      const openTimePickerDialog = (e, menuScope) => {
+      const openTimePickerDialog = (e, clickHandler) => {
+        clickHandler(e)
         context.refs[refIdTimePicker].showHoursPicker()
-        menuScope.toggleContent(e)
       }
       const closeTimePickerDialog = () => state.showMenu = false
 
@@ -75,7 +75,7 @@
             contentFillWidth={false}
             minWidth={300} nudgeBottom={10}
             scopedSlots={{
-              activator: gMenuScope =>
+              activator: ({on}) =>
                   <g-text-field
                       {...{
                         props: {
@@ -88,7 +88,7 @@
                           prependIcon: "access_time"
                         }
                       }}
-                      vOn:click={e => openTimePickerDialog(e, gMenuScope)}/>
+                      vOn:click={e => openTimePickerDialog(e, on.click)}/>
             }}>
           <g-time-picker
               ref={refIdTimePicker}

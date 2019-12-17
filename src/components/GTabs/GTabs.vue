@@ -157,7 +157,9 @@
       }
 
       const genTabs = () => {
-        return props.items.map((item, index) => (
+        return context.slots.tabs
+          ? context.slots.tabs() 
+          : props.items.map((item, index) => (
           (context.slots.tab && context.slots.tab({ item, index }))
           || <g-tab item={item} key={index}>
             {genTabIcon(item)}
