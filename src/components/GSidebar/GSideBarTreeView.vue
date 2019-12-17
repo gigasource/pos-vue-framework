@@ -1,5 +1,5 @@
 <script>
-  import {computed, ref, reactive, watch, set} from '@vue/composition-api';
+  import {computed, reactive, watch} from '@vue/composition-api';
   import GTreeFactory from '../GTreeViewFactory/GTreeFactory';
   import {GExpandTransition} from '../transition/transition';
   import GSpacer from "../GLayout/GSpacer";
@@ -51,7 +51,7 @@
       },
       autoCollapse: {
         type: Boolean,
-        default: true,
+        default: false,
       },
     },
     setup(props, context) {
@@ -64,45 +64,69 @@
         e.stopPropagation()
         if (!treeStates[path]) return
 
-        // autoCollapse === false means that only 1 item with children can be expanded
-        if (props.autoCollapse) {
-          if (prevOpenPath && prevOpenPath !== path) treeStates[prevOpenPath].collapse = true
-          prevOpenPath = path
+        setNodeState(path, {
+          collapse: !treeStates[path].collapse
+        })
+        setParentNodesState(path, {
+          collapse: false
+        })
+
+        // autoCollapse === true means that only 1 item with children can be expanded
+        if (props.autoCollapse && prevOpenPath && getRootPath(prevOpenPath) !== getRootPath(path)) {
+          setRootNodeState(prevOpenPath, {
+            collapse: true
+          })
         }
 
-        treeStates[path].collapse = !treeStates[path].collapse;
+        prevOpenPath = path
       }, 200, {trailing: false})
 
-      const setTreeState = function (path, state) {
-        if (!treeStates[path]) {
-          set(treeStates, path, state)
-        } else {
-          if (!_.isNil(state.collapse)) treeStates[path].collapse = state.collapse
-          if (!_.isNil(state.selected)) treeStates[path].selected = state.selected
+      const setNodeState = function (path, state) {
+        if (!treeStates[path]) return
+
+        if (!_.isNil(state.collapse)) treeStates[path].collapse = state.collapse
+        if (!_.isNil(state.selected)) treeStates[path].selected = state.selected
+      }
+
+      const setParentNodesState = (path, state) => {
+        while (path.indexOf('.') > -1) {
+          path = path.slice(0, path.lastIndexOf('.'))
+          path = path.slice(0, path.lastIndexOf('.'))
+          if (path.includes('.')) {
+            setNodeState(path, state)
+          }
         }
+      }
+
+      const setRootNodeState = (path, state) => {
+        setNodeState(getRootPath(path), state)
+      }
+
+      const getRootPath = path => {
+        if (path && path.indexOf('.') >= 1) {
+          const paths = path.split('.')
+          return `${paths[0]}.${paths[1]}`
+        }
+        return path
       }
 
       watch(() => props.value, () => {
         if (!props.value || props.value === prevSelectedPath) return
 
-        if (prevSelectedPath) treeStates[prevSelectedPath].selected = false
-        prevSelectedPath = props.value
+        if (prevSelectedPath)
+          setNodeState(prevSelectedPath, {
+            selected: false
+          })
 
-        setTreeState(props.value, {
+        prevSelectedPath = props.value
+        if (!prevOpenPath) prevOpenPath = props.value
+
+        setNodeState(props.value, {
           selected: true
         })
-
-        let path = props.value
-        while (path.indexOf('.') > -1) {
-          path = path.slice(0, path.lastIndexOf('.'))
-          path = path.slice(0, path.lastIndexOf('.'))
-          if (path.includes('.')) {
-            setTreeState(path, {
-              collapse: false,
-              selected: false,
-            })
-          }
-        }
+        setParentNodesState(props.value, {
+          collapse: false
+        })
       })
 
       // generate components
@@ -118,11 +142,11 @@
 
       const genNode = function ({node, text, childrenVNodes, path}) {
         return <tree-node-wrapper {...{
-          scopedSlots: {default: ({state}) => genNodeContent({node, text, childrenVNodes, path, state})}
+          scopedSlots: {default: () => genNodeContent({node, text, childrenVNodes, path})}
         }}/>
       }
 
-      const genNodeContent = function ({node, text, childrenVNodes, state, path}) {
+      const genNodeContent = function ({node, text, childrenVNodes, path}) {
         // gen icon
         const isChildNode = path.split('.').length > 2
         if (props.itemIcon) {
