@@ -31,7 +31,6 @@ export default function dependent(vm) {
   }
 
   function getOpenDependentElements() {
-    debugger
     const result = []
     const openDependents = getOpenDependents()
 

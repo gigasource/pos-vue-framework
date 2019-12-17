@@ -162,7 +162,6 @@
       }
 
       const checkPath = function (e) {
-        //debugger
         const path = e.path || composedPath(e)
         const delta = e.deltaY
 
