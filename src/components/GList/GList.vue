@@ -11,7 +11,7 @@
           <div tabindex="0" v-if="subheader" class="g-list-header">{{subheader}}</div>
         </slot>
         <template v-for="(item, index) in renderList">
-          <slot name="listItem" :isSelected="isActiveItem(item)" :item="item" :on="getListEvents(item, index)">
+          <slot name="list-item" :isSelected="isActiveItem(item)" :item="item" :on="getListEvents(item, index)">
             <div
                 :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
                 class="g-list-item"
@@ -61,7 +61,7 @@
 
           <g-divider v-else-if="item.type === 'divider'"></g-divider>
 
-          <slot name="listItem" :item="item" v-else>
+          <slot name="list-item" :item="item" v-else>
             <div class="g-list-item"
                  :class="{'g-list-item__active': isActiveItem(item, index) , activeClass: isActiveItem(item, index), 'waves-effect': true, 'waves-auto': true}"
                  tabindex="0"
