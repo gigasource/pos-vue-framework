@@ -147,6 +147,9 @@ export {getExpansionModel};
 import colorHandler, {convertToUnit} from '../utils/helpers'
 export {colorHandler, convertToUnit};
 
+import Intersect from '../directives/intersect/intersect';
+export {Intersect};
+
 import GSnackbar from "./GSnackbar/GSnackbar";
 
 import {
