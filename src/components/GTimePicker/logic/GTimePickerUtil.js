@@ -149,14 +149,13 @@ export default function (props, context) {
     showPeriod: !props.use24Hours,
   })
 
-  watch(() => props.value, () => {
+  watch(() => props.value, (newVal) => {
     let timeRegex = props.use24Hours ? _24HourTimeRegex : _12HourTimeRegex
     let timeRegexResult
-    const newValue = !props.value ? '' : String(props.value).trim()
-    if (newValue)
-      timeRegexResult = timeRegex.exec(props.value)
+    const newValue = !newVal ? '' : String(newVal).trim()
+    if (newValue) timeRegexResult = timeRegex.exec(newVal)
     if (!timeRegexResult) {
-      console.warn('Invalid time value ', props.value, timeRegex)
+      if (newValue) console.warn('Invalid time value ', newVal, timeRegex)
       timeRegexResult = timeRegex.exec(dayjs().format(timeFormatStr))
     }
     let timeObj = timeRegexResult.groups

@@ -124,6 +124,7 @@ import GTextarea from './GTextarea/GTextarea';
 import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
+import GTimePickerInput from './GTimePicker/GTimePickerInput';
 
 import GTooltip from './GTooltip/GTooltip';
 import GTooltipContent from './GTooltip/GTooltipContent';
@@ -269,6 +270,7 @@ export {
   GTextarea,
   GTextareaJSX,
   GTimePicker,
+  GTimePickerInput,
   GTooltip,
   GTooltipContent,
   GToolbar,
