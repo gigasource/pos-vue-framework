@@ -10,33 +10,19 @@ export function groupableForList(props, vModel) {
   const isObjectList = ref(props.items && props.items.some(item => _.isObject(item) === true))
   watch(() => props.items, () => {
     if (props.items) {
-      const itemsHaveText = props.items && props.items.filter(item => item[props.itemText])
-      if (isObjectList.value) {
-        if (props.returnObject) return uniqueItems.value = _.uniqWith(itemsHaveText, _.isEqual)
-        else if (props.itemValue) return uniqueItems.value = _.uniqBy(itemsHaveText, props.itemText)
-        else if (props.itemText) return uniqueItems.value = _.uniqBy(itemsHaveText, props.itemText)
-      } else {
-        uniqueItems.value = _.uniq(props.items)
-      }
-
-    } else {
-      uniqueItems.value = []
+      if (isObjectList.value) return uniqueItems.value = _.uniqWith(props.items, _.isEqual)
+      else  return uniqueItems.value = _.uniq(props.items)
     }
+    else return uniqueItems.value = []
   })
 
   const toggleItem = (item) => {
     if (props.multiple) {
       if (props.returnObject || !isObjectList.value) updateMultiple(item);
-      else {
-        if (props.itemValue) updateMultiple(item[props.itemValue])
-        else updateMultiple(item)
-      }
+      else if (props.itemValue) updateMultiple(item[props.itemValue])
     } else {
-      if (props.returnObject || !isObjectList.value) updateSingle(item);
-      else {
-        if (props.itemValue) updateSingle(item[props.itemValue])
-        else updateSingle(item)
-      }
+      if (props.returnObject|| !isObjectList.value) updateSingle(item);
+      else if(props.itemValue) updateSingle(item[props.itemValue])
     }
   };
 
