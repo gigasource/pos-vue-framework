@@ -63,7 +63,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
     if (state.searchText.trim().length > 0) {
       let isNumberArray = props.itemValue ? props.items.some(item => typeof item[props.itemValue] === 'number') : props.items.some(item => typeof item === 'number')
       let inputAddedItem;
-      if (props.returnObbject || props.itemValue) inputAddedItem = {
+      if (props.returnObject || props.itemValue) inputAddedItem = {
         [props.itemText]: state.searchText,
         [props.itemValue]: isNumberArray ? Number(state.searchText) : state.searchText
       }

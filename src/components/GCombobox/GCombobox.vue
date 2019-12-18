@@ -1,7 +1,7 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {computed, reactive, ref} from '@vue/composition-api';
+  import {computed, reactive, ref, watch} from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
@@ -109,7 +109,6 @@
         }
 
       })
-
       const state = reactive({
         searchText: '',
         fieldItem: null,
@@ -117,6 +116,7 @@
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
       })
+      watch(() => {state.lazySearch = props.multiple ? selectionTexts.value.join() : selectionTexts.value})
       const options = getList(props, selectedItem, state)
 
       //genList
