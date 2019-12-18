@@ -66,17 +66,19 @@ export function getList(props, selectedValue, state) {
 //selectedValue: object array --> return item match
 //then normalise item in form {text:, value:}
 export function getSelections(props, selectedValue) {
+  const isObjectList = props.items.some(item => _.isObject(item) === true)
   return computed(() => {
     if (!props.multiple) {
       let item = selectedValue.value;
       if (!item && item !== 0) return null;
-      if (!props.itemValue && (typeof item === 'string'||typeof item === 'number') ) return item;
+      if (!isObjectList ) return item;
       if (props.itemValue && !props.returnObject) item = props.items.find(_item => _item[props.itemValue] === item) || item;
       else item = props.items.find(_item =>_.isEqual(item, _item))
 
       return {text: item[props.itemText], value: item[props.itemValue]};
     }
     const list = selectedValue.value
+    if(!isObjectList) return list.map(item => props.items.find(el => el === item))
     if (props.returnObject) {
       if(props.itemValue) return list.map(item => {
           return {text: item[props.itemText], value: item[props.itemValue]}
@@ -84,18 +86,18 @@ export function getSelections(props, selectedValue) {
       else return list
     }
     else if(props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item))
-    else return list.map(item => props.items.find(el => el === item))
   })
 }
 
 //same as getSelection but accept selections not in list
 export function getSelectionsForCombobox(props, selectedValue) {
+  const isObjectList = props.items.some(item => _.isObject(item) === true)
   return computed(() => {
     if (!props.multiple) {
       let item = selectedValue.value;
       if (!item && item !== 0) return null
       //primitive array
-      if (!props.itemValue && (typeof item === 'string'||typeof item === 'number') ) return item;
+      if (!isObjectList) return item;
       if (props.itemValue && !props.returnObject) {
         let itemInList = props.items.find(_item => _item[props.itemValue] === item)
         return itemInList !== undefined ? itemInList : item;
@@ -105,6 +107,7 @@ export function getSelectionsForCombobox(props, selectedValue) {
       return {text: item[props.itemText], value: item[props.itemValue]} || '';
     }
     const list = selectedValue.value || []
+    if (!isObjectList) return list
     if (props.returnObject) {
       if(props.itemValue) return list.map(item => {
         return item[props.itemValue] ?  {text: item[props.itemText], value: item[props.itemValue]} : item
@@ -117,6 +120,5 @@ export function getSelectionsForCombobox(props, selectedValue) {
          return itemsHaveValue ?  itemsHaveValue : item
       })
     }
-    return list
   })
 }

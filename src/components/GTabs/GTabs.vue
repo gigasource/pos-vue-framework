@@ -5,7 +5,7 @@
   import GTabItem from './GTabItem';
   import GIcon from '../GIcon/GIcon';
   import getVModel from '../../mixins/getVModel';
-  import { computed, provide, reactive, ref, watch, onMounted, onUnmounted } from '@vue/composition-api'
+  import { computed, onMounted, onUnmounted, provide, reactive, ref, watch } from '@vue/composition-api'
   import { find } from 'lodash'
   import colorHandler, { convertToUnit } from '../../utils/helpers';
   import { colors } from '../../utils/colors';
@@ -21,6 +21,7 @@
       value: null,
       color: String,
       textColor: String,
+      activeTextColor: String,
       grow: Boolean,
       sliderColor: String,
       sliderSize: {
@@ -115,13 +116,13 @@
       const itemsRef = ref(null)
       watch(() => [itemsRef.value, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
         calculateSliderStyle();
+        console.log(activeTextColor)
       });
 
       // tab transition
       watch(() => model.value, () => {
         const parent = itemsRef.value.querySelector('.g-slide-group__content');
         activeTab.value = find(parent.children, i => i.classList.contains('g-tab__active'));
-
         if (props.vertical) {
           if (activeTab.value.offsetTop < +sliderStyles.top.replace('px', '')) {
             sliderStyles['transition'] = 'top 0.5s, bottom 1s';
@@ -156,12 +157,17 @@
         if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
       }
 
+      const activeTextColor = computed(() => props.activeTextColor ? props.activeTextColor : sliderStyles['background-color']);
+
+      //provide slider style (color) default active tab text color
+      provide('slider-styles', sliderStyles);
+
       const genTabs = () => {
         return context.slots.tabs
           ? context.slots.tabs() 
           : props.items.map((item, index) => (
           (context.slots.tab && context.slots.tab({ item, index }))
-          || <g-tab item={item} key={index}>
+          || <g-tab active-text-color={activeTextColor.value} item={item} key={index}>
             {genTabIcon(item)}
             {item.title}
           </g-tab>
