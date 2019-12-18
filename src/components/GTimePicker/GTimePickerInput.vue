@@ -6,7 +6,7 @@
   import GTextField from '../GInput/GTextField'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
-  import { reactive, computed } from '@vue/composition-api';
+  import { reactive, watch } from '@vue/composition-api';
   import _ from 'lodash'
 
   GMenu.components['GTextField'] = GTextField
@@ -31,7 +31,9 @@
         shaped: Boolean,
         rounded: Boolean,
         flat: Boolean,
-        dense: Boolean
+        dense: Boolean,
+        clearable: Boolean,
+        showIcon: Boolean
       },
 
       // time picker props
@@ -56,6 +58,11 @@
         value: props.value || '',
       })
 
+      watch(() => props.value, newVal => {
+        const stringValue = newVal ? String(newVal).trim() : '';
+        if (stringValue) state.value = stringValue
+      })
+
       const updateInput = (value) => {
         state.value = value
         context.emit('input', value)
@@ -63,7 +70,9 @@
 
       const openTimePickerDialog = (e, clickHandler) => {
         clickHandler(e)
-        context.refs[refIdTimePicker].showHoursPicker()
+        context.root.$nextTick(() => {
+          context.refs[refIdTimePicker] && context.refs[refIdTimePicker].showHoursPicker()
+        })
       }
       const closeTimePickerDialog = () => state.showMenu = false
 
@@ -80,15 +89,17 @@
                       {...{
                         props: {
                           ..._.pick(props, [
-                            'disabled', 'readonly', 'required',
+                            'disabled', 'readonly', 'required', 'clearable',
                             'label',
                             'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
                           ]),
                           value: state.value,
-                          prependIcon: "access_time"
+                          ...props.showIcon && { prependIcon: 'access_time' },
                         }
                       }}
-                      vOn:click={e => openTimePickerDialog(e, on.click)}/>
+                      vOn:click={e => openTimePickerDialog(e, on.click)}
+                      vOn:input={e => e.trim() && (state.value = e)}
+                  />
             }}>
           <g-time-picker
               ref={refIdTimePicker}

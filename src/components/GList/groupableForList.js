@@ -7,16 +7,14 @@ export function groupableForList(props, vModel) {
   //props.multiple: props.multiple items can be active at a time
   //allowDuplicate: choose one item props.multiple times
   const uniqueItems = ref([])
-
+  const isObjectList = ref(props.items && props.items.some(item => _.isObject(item) === true))
   watch(() => props.items, () => {
     if (props.items) {
-      const isObjectList = props.items && props.items.some(item => _.isObject(item) === true)
       const itemsHaveText = props.items && props.items.filter(item => item[props.itemText])
-
       if (isObjectList.value) {
-        if (props.returnObject) return uniqueItems.value = _.uniqWith(itemsHaveText.value, _.isEqual)
-        else if (props.itemValue) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
-        else if (props.itemText) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
+        if (props.returnObject) return uniqueItems.value = _.uniqWith(itemsHaveText, _.isEqual)
+        else if (props.itemValue) return uniqueItems.value = _.uniqBy(itemsHaveText, props.itemText)
+        else if (props.itemText) return uniqueItems.value = _.uniqBy(itemsHaveText, props.itemText)
       } else {
         uniqueItems.value = _.uniq(props.items)
       }
@@ -28,13 +26,13 @@ export function groupableForList(props, vModel) {
 
   const toggleItem = (item) => {
     if (props.multiple) {
-      if (props.returnObject) updateMultiple(item);
+      if (props.returnObject || !isObjectList.value) updateMultiple(item);
       else {
         if (props.itemValue) updateMultiple(item[props.itemValue])
         else updateMultiple(item)
       }
     } else {
-      if (props.returnObject) updateSingle(item);
+      if (props.returnObject || !isObjectList.value) updateSingle(item);
       else {
         if (props.itemValue) updateSingle(item[props.itemValue])
         else updateSingle(item)

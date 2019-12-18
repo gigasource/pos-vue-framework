@@ -124,6 +124,7 @@ import GTextarea from './GTextarea/GTextarea';
 import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
+import GTimePickerInput from './GTimePicker/GTimePickerInput';
 
 import GTooltip from './GTooltip/GTooltip';
 import GTooltipContent from './GTooltip/GTooltipContent';
@@ -151,6 +152,8 @@ import Intersect from '../directives/intersect/intersect';
 export {Intersect};
 
 import GSnackbar from "./GSnackbar/GSnackbar";
+
+import GSubheader from './GSubheader/GSubheader';
 
 import {
   GCarouselTransition,
@@ -281,6 +284,7 @@ export {
   GTextarea,
   GTextareaJSX,
   GTimePicker,
+  GTimePickerInput,
   GTooltip,
   GTooltipContent,
   GToolbar,
@@ -334,4 +338,5 @@ export {
   GExpandTransition,
   GExpandXTransition,
   GSnackbar,
+  GSubheader
 }
