@@ -139,21 +139,16 @@ import GScrollWindowItem from './GWindow/GScrollWindowItem';
 import GWindow from './GWindow/GWindow';
 import GWindowItem from './GWindow/GWindowItem';
 
-import {getInternalValue, getVModel} from '../mixins/getVModel';
-export {getInternalValue, getVModel};
-
-import {getExpansionModel} from './GExpansion/GExpansionFactory';
-export {getExpansionModel};
-
-import colorHandler, {convertToUnit} from '../utils/helpers'
-export {colorHandler, convertToUnit};
-
-import Intersect from '../directives/intersect/intersect';
-export {Intersect};
-
 import GSnackbar from "./GSnackbar/GSnackbar";
-
 import GSubheader from './GSubheader/GSubheader';
+import GProgressBar from './GProgressBar/GProgressBar';
+import GSlider from './GSliderRemake/GSlider';
+import GRating from './GRating/GRating';
+
+import {getInternalValue, getVModel} from '../mixins/getVModel';
+import {getExpansionModel} from './GExpansion/GExpansionFactory';
+import colorHandler, {convertToUnit} from '../utils/helpers'
+import Intersect from '../directives/intersect/intersect';
 
 import {
   GCarouselTransition,
@@ -200,6 +195,15 @@ import {
   GExpandTransition,
   GExpandXTransition,
 } from './transition/transition';
+
+export {
+  colorHandler,
+  convertToUnit,
+  Intersect,
+  getInternalValue,
+  getVModel,
+  getExpansionModel,
+}
 
 export {
   GAutocomplete,
@@ -338,5 +342,8 @@ export {
   GExpandTransition,
   GExpandXTransition,
   GSnackbar,
-  GSubheader
+  GSubheader,
+  GProgressBar,
+  GSlider,
+  GRating,
 }
