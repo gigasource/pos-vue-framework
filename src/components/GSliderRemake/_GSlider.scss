@@ -150,6 +150,22 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     user-select: none;
     transition: .3s map-get($transition, 'fast-in-fast-out');
   }
+
+  &-wrapper {
+    display: flex;
+    align-items: center;
+
+    &__vertical {
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+
+  &-label {
+    margin: 0 8px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.87);
+  }
 }
 
 //g-slider modifier class
