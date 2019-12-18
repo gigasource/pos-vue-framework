@@ -269,7 +269,7 @@
             ...Object.assign(defaultMenuProps, props.menuProps),
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
-            lazy: !props.eager,
+            eager: props.eager,
           },
           scopedSlots: {
             activator: ({ toggleContent }) => genTextFieldProps(toggleContent)
