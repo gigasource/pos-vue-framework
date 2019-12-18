@@ -152,6 +152,8 @@ export {Intersect};
 
 import GSnackbar from "./GSnackbar/GSnackbar";
 
+import GSubheader from './GSubheader/GSubheader';
+
 import {
   GCarouselTransition,
   GCarouselReverseTransition,
@@ -334,4 +336,5 @@ export {
   GExpandTransition,
   GExpandXTransition,
   GSnackbar,
+  GSubheader
 }
