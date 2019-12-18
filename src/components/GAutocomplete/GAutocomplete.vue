@@ -221,7 +221,7 @@
       }
 
       const tfValue = computed(() => {
-        return (props.multiple || props.chips || props.smallChips || props.deletableChips || !selectionTexts.value)
+        return (props.multiple || props.chips || props.smallChips || props.deletableChips || (!selectionTexts.value && selectionTexts.value !== 0))
             ? state.searchText
             : state.lazySearch
       })
