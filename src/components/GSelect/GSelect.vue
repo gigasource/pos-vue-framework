@@ -139,7 +139,7 @@
                     itemText: props.itemText,
                     itemValue: props.itemValue,
                     returnObject: props.returnObject,
-                    mandatory: props.mandatory,
+                    mandatory: true,
                     allowDuplicates: props.allowDuplicates,
                     multiple: props.multiple,
                     inMenu: true,
