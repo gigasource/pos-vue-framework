@@ -11,9 +11,9 @@ export function groupableForList(props, vModel) {
   watch(() => props.items, () => {
     if (props.items) {
       if (isObjectList.value) return uniqueItems.value = _.uniqWith(props.items, _.isEqual)
-      else  return uniqueItems.value = _.uniq(props.items)
+      return uniqueItems.value = _.uniq(props.items)
     }
-    else return uniqueItems.value = []
+    return uniqueItems.value = []
   })
 
   const toggleItem = (item) => {

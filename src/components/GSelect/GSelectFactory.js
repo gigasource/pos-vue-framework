@@ -1,5 +1,5 @@
-import {computed} from '@vue/composition-api';
-import _ from "lodash";
+import { computed } from '@vue/composition-api';
+import _ from 'lodash';
 
 const listMultipleFilter = (props, selectedValue) => {
   let _options
@@ -96,29 +96,25 @@ export function getSelectionsForCombobox(props, selectedValue) {
     if (!props.multiple) {
       let item = selectedValue.value;
       if (!item && item !== 0) return null
-      //primitive array
       if (!isObjectList) return item;
-      if (props.itemValue && !props.returnObject) {
-        let itemInList = props.items.find(_item => _item[props.itemValue] === item)
-        return itemInList !== undefined ? itemInList : item;
-      }
-      else item = props.items.find(_item =>_.isEqual(item, _item)) || item
-
-      return {text: item[props.itemText], value: item[props.itemValue]} || '';
+      if (props.itemValue && !props.returnObject)  item = props.items.find(_item => _item[props.itemValue] === item) || item;
+      else item = props.items.find(_item => _.isEqual(item, _item)) || item
+      return { text: item[props.itemText], value: item[props.itemValue] } || '';
     }
+
     const list = selectedValue.value || []
     if (!isObjectList) return list
     if (props.returnObject) {
-      if(props.itemValue) return list.map(item => {
-        return item[props.itemValue] ?  {text: item[props.itemText], value: item[props.itemValue]} : item
+      if (props.itemValue) return list.map(item => {
+        return item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item
       })
-      else return list
+      return list
     }
-    else if(props.itemValue){
+    else if (props.itemValue) {
       return list.map(item => {
-        let itemsHaveValue = props.items.find(el => el[props.itemValue] === item)
-         return itemsHaveValue ?  itemsHaveValue : item
+        return props.items.find(el => el[props.itemValue] === item) || item
       })
     }
+    return list
   })
 }
