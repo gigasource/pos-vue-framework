@@ -14,25 +14,48 @@
     name: 'GCssCustomizer',
 		components: { GTextField, GCssCustomizerTreeView, GGridLayout, GBtn, GDatePicker },
     props: {
-      value: {
-        type: Object
-      }
+      value: undefined
 		},
     setup (props, context) {
 			const treeData = getInternalValue(props, context)
+
+			const parsedElementObj = ref({})
 
 			const cssCustomizerTree = treeData.value.metaData && treeData.value.metaData.cssCustomizerTree ? reactive(treeData.value.metaData.cssCustomizerTree) : reactive({
         allPaths: [],
         activePath: '',
       })
 
+			const parseElement = (el) => {
+			  const obj = {}
+        if (el instanceof Element) {
+          obj['start'] = el.outerHTML.slice(0, el.outerHTML.indexOf(el.innerHTML)).replace(/ data-v-\w+=""/g, '')
+					obj['end'] = el.outerHTML.slice(el.outerHTML.indexOf(el.innerHTML) + el.innerHTML.length - el.outerHTML.length)
+          obj['children'] = []
+          for (let childEl of el.childNodes) {
+            obj['children'].push(parseElement(childEl))
+          }
+        } else if (el instanceof Text) {
+					obj['name'] = el.wholeText
+				}
+			  return obj
+			}
+
+			onMounted(() => {
+			  const previewComponent = context.refs.previewComponent
+				// previewComponent.$el.classList.add(genCssClass(getComponentName(cssCustomizerTree.activePath), getComponentId(cssCustomizerTree.activePath)))
+				// treeData.value = previewComponent.$el
+				// console.log(treeData.value.childNodes)
+				treeData.value = parseElement(previewComponent.$el)
+				// debugger
+			})
 
 			// Tree Data logic
 			const getComponentName = path => _.get(treeData.value, path + 'name') || _.get(treeData.value, path + '.component')
 			const getComponentId = path => _.get(treeData.value, path + 'id') || _.get(treeData.value, path + '.id')
 
 			// Tree view logic
-      const itemText = node => node['name'] ? node['name'] : node['component']
+      const itemText = node => node['start'] ? node['start'] : node['name'] ? node['name'] : node['component']
 
       const genTreeView = () => {
         return <div area="tree" class="g-css-customizer-tree">
@@ -40,7 +63,7 @@
             Select
           </div>
 					<div class="g-css-customizer-tree-content">
-						<g-css-customizer-tree-view vModel={cssCustomizerTree} data={treeData.value} itemText={itemText} itemChildren="items" expandLevel={3}/>
+						<g-css-customizer-tree-view vModel={cssCustomizerTree} data={treeData.value} itemText={itemText} itemChildren="children" expandLevel={10}/>
 					</div>
         </div>
 			}
@@ -54,23 +77,16 @@
           <div class="g-css-customizer-action-content">
             <g-btn outlined>Save</g-btn>
             <g-btn outlined>Cancel</g-btn>
-            <g-btn outlined>Close</g-btn>
+            <g-btn outlined vOn:click={() => context.emit('close')}>Close</g-btn>
 					</div>
 				</div>
 			}
 
 			// Preview
-			const scopedId = ref(null)
 			const genPreviewComponent = () => {
 				return <g-btn ref="previewComponent">Test</g-btn>
 			}
 
-			onMounted(() => {
-			  const previewComponent = context.refs.previewComponent
-				scopedId.value = previewComponent.$options._scopeId
-				previewComponent.$el.classList.add(genCssClass(getComponentName(cssCustomizerTree.activePath), getComponentId(cssCustomizerTree.activePath)))
-				// debugger
-			})
 
 			const genPreview = () => {
 			  return <div area="preview" class="g-css-customizer-preview" ref="preview">
@@ -213,8 +229,7 @@
 
 			return {
 			  genCssCustomizer,
-				cssCode,
-				activeCssClass
+				parsedElementObj,
 			}
 		},
 		render () {
