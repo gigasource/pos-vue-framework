@@ -139,7 +139,7 @@
                     itemText: props.itemText,
                     itemValue: props.itemValue,
                     returnObject: props.returnObject,
-                    mandatory: props.mandatory,
+                    mandatory: true,
                     allowDuplicates: props.allowDuplicates,
                     multiple: props.multiple,
                     inMenu: true,
@@ -259,7 +259,7 @@
             ...Object.assign(defaultMenuProps, props.menuProps),
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
-            lazy: !props.eager,
+            eager: props.eager,
           },
           scopedSlots: {
             activator: ({toggleContent}) => genTextField(toggleContent)
