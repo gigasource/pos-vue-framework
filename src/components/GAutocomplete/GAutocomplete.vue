@@ -326,7 +326,6 @@
 		.g-tf-input {
 			flex-wrap: wrap;
 			display: flex;
-			flex: 1;
 		}
 
 		input {
