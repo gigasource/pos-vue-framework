@@ -152,7 +152,7 @@
 
       function gTextFieldInputScopedSlots() {
         return {
-          inputSlot: ({ inputErrStyles }) =>
+          'input-slot': ({ inputErrStyles }) =>
               <div style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
                 { props.multiple ? renderMultipleDates() : renderSingleOrDateRanges()}
               </div>
@@ -205,6 +205,8 @@
                 &nbsp;
                 <g-btn flat vOn:click={e => {
                   state.value = copyValue(state.tempValue);
+                  context.emit('input', cptTextFieldValue.value)
+                  context.emit('value', copyValue(state.value))
                   state.showMenu = false
                 }}>OK
                 </g-btn>

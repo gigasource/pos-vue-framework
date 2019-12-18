@@ -4,8 +4,7 @@
          class="g-tooltip__content"
          :class="tooltipContentClasses"
          :style="tooltipContentStyle"
-         ref="content"
-         :key="transitionName">
+         ref="content">
       <div v-if="showSpeechBubble"
            :class="speechBubbleClass"
            :style="speechBubbleStyle">
@@ -17,10 +16,10 @@
 </template>
 
 <script>
-  import { computed, onMounted, onBeforeUnmount } from '@vue/composition-api'
-  import { setBackgroundColor } from '../../mixins/colorable';
-  import { calcTop, calcLeft } from './TopLeftCalculate';
-  import { convertToUnit } from '../../utils/helpers';
+  import {computed, onMounted, onBeforeUnmount} from '@vue/composition-api'
+  import {setBackgroundColor} from '../../mixins/colorable';
+  import {calcTop, calcLeft} from './TopLeftCalculate';
+  import {convertToUnit} from '../../utils/helpers';
   import menuable from '../../mixins/menuable';
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
@@ -134,9 +133,9 @@
       show: Boolean,
     },
     setup(props, context) {
-      const { attachToRoot, detach } = detachable(props, context)
-      const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
-      const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
+      const {attachToRoot, detach} = detachable(props, context)
+      const {updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState} = menuable(props, context)
+      const {showSpeechBubble, speechBubbleClass, speechBubbleStyle} = tooltipSpeechBubble(props, context)
 
       //// TOOLTIP CONTENT ////
       let colorOutput = computed(() => setBackgroundColor(props.color, {}))
@@ -162,7 +161,7 @@
 
       onMounted(() => {
         attachToRoot()
-        updateDimensions(props.activator)
+        context.root.$nextTick(() => updateDimensions(props.activator))
       })
 
       onBeforeUnmount(() => {

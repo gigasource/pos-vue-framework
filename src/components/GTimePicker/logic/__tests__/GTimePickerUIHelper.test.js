@@ -2,7 +2,6 @@
 import { createLocalVue } from '@vue/test-utils'
 import plugin from '@vue/composition-api'
 import { _calcNumberPositionStyle, computedHandStyle, getSelectedIndex } from '../GTimePickerUIHelper'
-import { HourConvention } from '../GTimePickerUtil';
 
 describe('/GTimePickerUIHelper', () => {
   createLocalVue().use(plugin)
@@ -70,7 +69,7 @@ describe('/GTimePickerUIHelper', () => {
   describe('computedHandStyle', () => {
     it('Should pass the test case', () => {
       // hours: hand in 24 hour convention, with hour >= 12
-      let props = { hourConvention: HourConvention._24HRS }
+      let props = { use24Hours: true }
       let state = { activeTimePicker: { hour: true }, selectedTime: { hours: 15 } }
       let handStyle = computedHandStyle(props, state).value
       expect(handStyle.top).toBe('20%')
@@ -79,7 +78,7 @@ describe('/GTimePickerUIHelper', () => {
 
 
       // hours: hand in 24 hour convention, with hour < 12
-      props = { hourConvention: HourConvention._24HRS }
+      props = { use24Hours: true }
       state = { activeTimePicker: { hour: true }, selectedTime: { hours: 6 } }
       handStyle = computedHandStyle(props, state).value
       expect(handStyle.top).toBe('2%')
@@ -88,7 +87,7 @@ describe('/GTimePickerUIHelper', () => {
 
 
       // minutes: long hand, rotate = 6 * 13 = 78
-      props = { hourConvention: HourConvention._24HRS }
+      props = { use24Hours: true }
       state = { activeTimePicker: { minute: true }, selectedTime: { minutes: 13 } }
       handStyle = computedHandStyle(props, state).value
       expect(handStyle.top).toBe('2%')
