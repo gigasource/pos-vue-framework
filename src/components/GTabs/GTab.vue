@@ -1,6 +1,8 @@
 <script>
   import { computed, inject } from '@vue/composition-api'
   import { isEqual } from 'lodash'
+  import { colors } from '../../utils/colors';
+  import { isCssColor } from '../../mixins/colorable';
 
   export default {
     name: 'GTab',
@@ -14,6 +16,7 @@
         type: String,
         default: 'g-tab__active'
       },
+      activeTextColor: String,
       ripple: {
         type: Boolean,
         default: true
@@ -30,13 +33,25 @@
         'g-tab__disabled': props.disabled || (props.item && props.item.disabled)
       }));
 
+      const slideStyles = inject('slider-styles');
+
+      const activeTextColor = computed(() => props.activeTextColor
+          ? isCssColor(props.activeTextColor)
+              ? props.activeTextColor
+              : colors[props.activeTextColor.trim().split(' ').join('-')]
+          : slideStyles['background-color'])
+
+      const styles = computed(() => ({
+        ... isActive.value && { color: activeTextColor.value}
+      }))
+
       function toggle() {
         if (props.disabled) return;
         model.value = props.item;
       }
 
       return () =>
-        <div class={classes.value} vOn:click={toggle}>
+        <div class={classes.value} vOn:click={toggle} style={styles.value}>
           {context.slots.default()}
         </div>
     },

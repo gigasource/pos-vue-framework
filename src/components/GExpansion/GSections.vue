@@ -12,6 +12,10 @@
       mandatory: Boolean,
       multiple: Boolean,
       value: null,
+			returnObject: {
+        type: Boolean,
+				default: true
+			},
 
       itemHeaders: {
         type: Array
