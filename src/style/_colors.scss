@@ -330,6 +330,16 @@ $shades: (
         "transparent": transparent
 );
 
+$vuetify-themes: (
+        "primary": #1976D2,
+        "secondary": #424242,
+        "accent": #82B1FF,
+        "error": #FF5252,
+        "info": #2196F3,
+        "success": #4CAF50,
+        "warning": #FFC107,
+);
+
 $colors: (
         "materialize-red": $materialize-red,
         "red": $red,
@@ -351,7 +361,8 @@ $colors: (
         "brown": $brown,
         "blue-grey": $blue-grey,
         "grey": $grey,
-        "shades": $shades
+        "shades": $shades,
+        "vuetify-themes": $vuetify-themes,
 ) !default;
 
 // usage: color("name_of_color", "type_of_color")
@@ -386,6 +397,22 @@ $colors: (
       :export {
         #{$color_name}: $color_value;
       }
+    } @else if $color_name == "vuetify-themes" {
+      //background
+      .bg-#{$color_type} {
+        background-color: $color_value !important;
+      }
+      //text
+      .text-#{$color_type} {
+        color: $color_value  !important;
+      }
+      //border
+      .b-#{$color_type} {
+        border-color: $color_value  !important;
+      }
+      :export {
+        #{$color_type}: $color_value;
+      }
     } @else if $color_name != "shades" {
       //background
       .bg-#{$color_name}-#{$color_type} {
@@ -403,7 +430,6 @@ $colors: (
         #{$color_name}-#{$color_type}: $color_value;
       }
     }
-
   }
 }
 

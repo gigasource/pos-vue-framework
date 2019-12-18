@@ -1,6 +1,6 @@
 <template>
 	<div class="keyboard__template" :style="template">
-		<button v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key" :style="item.style" @click="click(item)">
+		<div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key" :style="item.style" @click="click(item)">
 			<!-- TODO: responsive height for img -->
 			<img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
       <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
@@ -8,7 +8,7 @@
 				<span v-if="item.content.length > 0 && item.content.length > index" v-html="item.content[index]"></span>
 				<span v-else v-html="item.content[0]"></span>
 			</template>
-		</button>
+		</div>
 	</div>
 </template>
 
