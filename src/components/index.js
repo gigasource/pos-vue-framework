@@ -23,6 +23,10 @@ import GChip from './GChip/GChip';
 
 import GChipGroup from './GChipGroup/GChipGroup';
 
+import GColorPicker from './GColorPicker/GColorPicker';
+import GColorPickerInput from './GColorPicker/GColorPickerInput';
+import GColorPickerInputModel from './GColorPicker/GColorPickerInputModel';
+
 import GCombobox from './GCombobox/GCombobox';
 
 import GConnector from './GConnector/GConnector';
@@ -48,6 +52,7 @@ import GIncDecNumberInput from './GGridGenerator/components/IncDecNumberInput';
 import GGridSelect from './GGridSelect/GGridSelect';
 
 import GIcon from './GIcon/GIcon';
+import GIconChooser from './GIconChooser/GIconChooser';
 
 import GImg from './GImg/GImg';
 
