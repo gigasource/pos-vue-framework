@@ -72,18 +72,14 @@ export function getSelections(props, selectedValue) {
       let item = selectedValue.value;
       if (!item && item !== 0) return null;
       if (!isObjectList ) return item;
-      if (props.itemValue && !props.returnObject) item = props.items.find(_item => _item[props.itemValue] === item) || item;
+      if (props.itemValue && !props.returnObject) item = props.items.find(_item => _item[props.itemValue] === item);
       else item = props.items.find(_item =>_.isEqual(item, _item))
-
-      return {text: item[props.itemText], value: item[props.itemValue]};
+      return item ? {text: item[props.itemText], value: item[props.itemValue]} : '';
     }
     const list = selectedValue.value
     if(!isObjectList) return list.map(item => props.items.find(el => el === item))
     if (props.returnObject) {
-      if(props.itemValue) return list.map(item => {
-          return {text: item[props.itemText], value: item[props.itemValue]}
-        })
-      else return list
+      if (props.itemValue) return list.map(item => ({ text: item[props.itemText], value: item[props.itemValue] }))
     }
     else if(props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item))
   })
@@ -91,30 +87,25 @@ export function getSelections(props, selectedValue) {
 
 //same as getSelection but accept selections not in list
 export function getSelectionsForCombobox(props, selectedValue) {
+  if(props.items === null || props.items.length === 0) return props.multiple ? [] : ''
   const isObjectList = props.items.some(item => _.isObject(item) === true)
-  return computed(() => {
-    if (!props.multiple) {
-      let item = selectedValue.value;
-      if (!item && item !== 0) return null
-      if (!isObjectList) return item;
-      if (props.itemValue && !props.returnObject)  item = props.items.find(_item => _item[props.itemValue] === item) || item;
-      else item = props.items.find(_item => _.isEqual(item, _item)) || item
-      return { text: item[props.itemText], value: item[props.itemValue] } || '';
-    }
-
+  if (!props.multiple) {
+    let item = selectedValue.value;
+    if (!item && item !== 0) return null
+    if (!isObjectList) return item;
+    if (props.itemValue && !props.returnObject) {item = props.items.find(_item => _item[props.itemValue] === item) || item}
+    else item = props.items.find(_item => _.isEqual(item, _item)) || item
+    return item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item
+  }
+  else{
     const list = selectedValue.value || []
     if (!isObjectList) return list
     if (props.returnObject) {
-      if (props.itemValue) return list.map(item => {
-        return item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item
-      })
+      if (props.itemValue) return list.map(item => item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item)
       return list
     }
-    else if (props.itemValue) {
-      return list.map(item => {
-        return props.items.find(el => el[props.itemValue] === item) || item
-      })
-    }
+    else if (props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item) || item)
     return list
-  })
+  }
+
 }

@@ -103,13 +103,13 @@
 </template>
 
 <script>
-  import {computed, provide} from '@vue/composition-api';
+  import { computed, provide } from '@vue/composition-api';
   import GDivider from '../GLayout/GDivider';
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
-  import {keyCodes} from '../../utils/helpers';
-  import {makeListSelectable} from './groupableForList';
+  import { keyCodes } from '../../utils/helpers';
+  import { makeListSelectable } from './groupableForList';
 
   export default {
     name: 'GList',
@@ -183,7 +183,7 @@
         'g-list__dense': props.dense,
         'g-list__inMenu': props.inMenu,
         'g-list__nav': props.nav,
-        'g-list__empty': !!props.items
+        'g-list__empty': !!props.items || props.items === null
 
       }));
 

@@ -1,19 +1,19 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {computed, reactive, ref, watch} from '@vue/composition-api';
+  import { computed, reactive, ref, watch } from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import {getLabel, getValidate} from '../GInput/GInputFactory';
+  import { getLabel, getValidate } from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
   import GListItem from '../GList/GListItem';
-  import {GListItemContent, GListItemText} from '../GList/GListFunctionalComponent';
-  import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
-  import {getInputEventHandlers, setSearch} from '../GAutocomplete/GAutocompleteFactory';
-  import {makeCombobox} from "../GList/groupableForList";
-  import {Fragment} from 'vue-fragment'
+  import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
+  import { getList, getSelectionsForCombobox } from '../GSelect/GSelectFactory';
+  import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
+  import { makeCombobox } from '../GList/groupableForList';
+  import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
@@ -98,7 +98,8 @@
 
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
-      const fieldItem = getSelectionsForCombobox(props, selectedItem)
+			const fieldItem = ref(null)
+      watch(() => props.items, () => fieldItem.value = getSelectionsForCombobox(props, selectedItem))
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
@@ -111,7 +112,6 @@
       })
       const state = reactive({
         searchText: '',
-        fieldItem: null,
         lazySearch: props.multiple ? selectionTexts.value.join(): selectionTexts.value,
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,

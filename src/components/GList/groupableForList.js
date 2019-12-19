@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import {computed, ref, watch} from '@vue/composition-api';
-import {getInternalValue} from "../../utils/helpers";
+import { ref, watch } from '@vue/composition-api';
+import { getInternalValue } from '../../utils/helpers';
 
 export function groupableForList(props, vModel) {
   //props.mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
@@ -45,13 +45,15 @@ export function groupableForList(props, vModel) {
   };
 
   const isActiveItem = (item) => {
-    if (props.multiple) return vModel.value.some(element => _.isEqual(element, item))
+    const isObjectList = props.items.some(item => typeof  item === 'object')
+    if (props.multiple) return isObjectList ? vModel.value.some(element => _.isEqual(element, item))
       || vModel.value.includes(item[props.itemValue])
       || vModel.value.includes(item[props.itemText])
+      : vModel.value.some(el => el === item)
 
-    return _.isEqual(vModel.value, item)
+    return isObjectList ?  _.isEqual(vModel.value, item)
       || (!!props.itemValue && vModel.value === item[props.itemValue])
-      || (!!props.itemText && vModel.value === item[props.itemText])
+      || (!!props.itemText && vModel.value === item[props.itemText]) : vModel.value === item
   };
 
   return {
