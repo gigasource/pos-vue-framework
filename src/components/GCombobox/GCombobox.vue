@@ -100,7 +100,6 @@
       const { internalValue: selectedItem, toggleItem } = makeCombobox(props, context)
       const fieldItem = ref(null)
       watch([() => props.items, () => selectedItem.value], () => fieldItem.value = getSelectionsForCombobox(props, selectedItem))
-
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
