@@ -69,12 +69,16 @@
 
 			const unwatch = watch(isActive, newVal => {
 			  if (newVal) {
-          window.addEventListener('wheel', onWheel, {passive: false})
           context.root.$nextTick(() => {
+            window.addEventListener('wheel', onWheel, {passive: false})
+            window.addEventListener('touchstart', onTouchStart, {passive: false})
+						window.addEventListener('touchmove', onTouchMove, {passive: false})
             context.refs.wrapper.focus()
 					})
 				} else {
           window.removeEventListener('wheel', onWheel)
+          window.removeEventListener('touchstart', onTouchStart)
+          window.removeEventListener('touchmove', onTouchMove)
 				}
 			})
 
@@ -146,6 +150,10 @@
         return ['auto', 'scroll'].includes(style.overflowY) && el.scrollHeight > el.clientHeight
 			}
 
+			const onEdge = function(el) {
+        return el.scrollTop === 0 || el.scrollTop + el.clientHeight === el.scrollHeight
+			}
+
       const shouldScroll = function(el, delta) {
         if (el.scrollTop === 0 && delta < 0) return true
         return el.scrollTop + el.clientHeight === el.scrollHeight && delta > 0
@@ -162,9 +170,8 @@
       }
 
       const checkPath = function (e) {
-        //debugger
         const path = e.path || composedPath(e)
-        const delta = e.deltaY
+        let delta = e.deltaY
 
         if (e.type === 'keydown' && path[0] === document.body) {
           const dialog = context.refs.wrapper
@@ -183,14 +190,57 @@
           if (el === document.documentElement) return true
           if (el === context.refs.content) return true
 
-          if (hasScrollbar(el)) return shouldScroll(el, delta)
+          if (hasScrollbar(el)) {
+            return shouldScroll(el, delta)
+          }
         }
 
         return true
 			}
 
 			const onWheel = function (e) {
-			  if (e.target === context.refs.overlay.$el.firstChild || checkPath(e)) e.preventDefault()
+			  if ((context.refs.overlay && e.target === context.refs.overlay.$el.firstChild) || checkPath(e)) e.preventDefault()
+			}
+
+			const checkPathTouch = function (e) {
+        const path = e.path || composedPath(e)
+        let delta = touchStartY - touchMoveY
+        for (let index = 0; index < path.length; index++) {
+          const el = path[index]
+
+          if (el === document) return true
+          if (el === document.documentElement) return true
+          if (el === context.refs.content) return true
+
+          if (hasScrollbar(el)) {
+            if (!onEdge(el)) return false
+            return shouldScroll(el, delta)
+          }
+        }
+
+        return true
+			}
+
+			let touchStartY
+			let touchMoveY
+			let touchFlag = false
+			let shouldScrollTouchMove = false
+
+
+			const onTouchStart = function (e) {
+        touchFlag = true
+				touchStartY = e.touches[0].clientY
+			}
+
+			const onTouchMove = function (e) {
+        if (touchFlag) {
+          touchMoveY = e.touches[0].clientY
+          shouldScrollTouchMove = checkPathTouch(e)
+					touchFlag = false
+				}
+        if (((context.refs.overlay && e.target === context.refs.overlay.$el.firstChild) || shouldScrollTouchMove) && e.cancelable) {
+          e.preventDefault()
+        }
 			}
 
       // Render functions

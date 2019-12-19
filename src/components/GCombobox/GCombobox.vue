@@ -215,18 +215,20 @@
       }
 
       const textFieldScopedSlots = {
-        clearableSlot: ({iconColor}) =>
+        'clearable-slot': ({iconColor}) =>
             <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
                    color={iconColor}>{props.clearIcon}</GIcon>,
-        appendInner: ({iconColor}) =>
-            <GIcon color={iconColor}>arrow_drop_down</GIcon>,
-        inputSlot: ({inputErrStyles}) =>
+        'append-inner': ({iconColor}) =>
+            [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
+              context.slots['append-inner'] && context.slots['append-inner']()],
+        'append-outer': () => context.slots['append-outer'] && context.slots['append-outer'](),
+        'input-slot': ({inputErrStyles}) =>
             <Fragment>
               {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
             </Fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
-        inputMessage: () => [<div v-show={props.counter} class={{
+        ['input-message']: () => [<div v-show={props.counter} class={{
           'g-tf-counter': true,
           'g-tf-counter__error': !isValidInput.value
         }}>{validateText.value.length}/{props.counter}</div>,
@@ -317,7 +319,6 @@
 </script>
 <style lang="scss" scoped>
   .g-combobox ::v-deep {
-    .g-menu--activator {
       span {
         margin: 3px
       }
@@ -342,7 +343,6 @@
         flex-basis: auto;
         cursor: text;
       }
-    }
   }
 
   .g-combobox__active {

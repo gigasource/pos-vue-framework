@@ -73,6 +73,96 @@ export const tab = () => ({
     sliderColor: {
       type: String,
       default: text('Slider Color', 'currentColor')
+    },
+    activeTextColor: {
+      type: String,
+      default: text('Active Text Color', 'success')
+    }
+  },
+  template: `
+    <g-tabs v-model="model" 
+          :items="items" 
+          :color="color" 
+          :text-color="textColor" 
+          :vertical="vertical"
+          :right="right" 
+          :center="center"
+          :center-active="centerActive"
+          :grow="grow"
+          :icon="icon"
+          :slider-size="sliderSize"
+          :slider-color="sliderColor"
+          :active-text-color="activeTextColor">
+      <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
+        {{item.title}}
+      </g-tab-item>
+    </g-tabs>`
+});
+
+export const tabWithSlot = () => ({
+  components: { GTabs, GTab, GTabItems, GTabItem },
+  data() {
+    return {
+      items: [
+        { title: 'Tab 1', icon: 'home' },
+        { title: 'Tab 2', icon: 'group' },
+        { title: 'Tab 3', icon: 'notifications' },
+        { title: 'Tab 4', icon: 'block', disabled: true },
+        { title: 'Tab 5', icon: 'phone' },
+        { title: 'Tab 6', icon: 'phone' },
+        { title: 'Tab 7', icon: 'phone' },
+        { title: 'Tab 8', icon: 'phone' },
+        { title: 'Tab 9', icon: 'phone' },
+      ],
+      model: null,
+    }
+  },
+  created() {
+    this.model = this.items[0]
+  },
+  props: {
+    color: {
+      type: String,
+      default: text('Color', 'purple darken 2')
+    },
+    textColor: {
+      type: String,
+      default: text('Text Color', 'white')
+    },
+    vertical: {
+      type: Boolean,
+      default: boolean('Vertical', false)
+    },
+    right: {
+      type: Boolean,
+      default: boolean('Right', false)
+    },
+    center: {
+      type: Boolean,
+      default: boolean('Center', false)
+    },
+    centerActive: {
+      default: boolean('Center active tab', true)
+    },
+    grow: {
+      type: Boolean,
+      default: boolean('Grow', false)
+    },
+    icon: {
+      type: Boolean,
+      default: boolean('Show icon', false)
+    },
+    sliderSize: {
+      type: Number,
+      default: number('Slider Size', 2)
+    },
+    sliderColor: {
+      type: String,
+      default: text('Slider Color', 'currentColor')
+    },
+    activeTextColor: {
+      type: String,
+      default: text('Active Text Color', '')
     }
   },
   template: `
@@ -92,7 +182,7 @@ export const tab = () => ({
         {{item.title}}
       </g-tab-item>
       <template #tab="{item, index}">
-        <g-tab :item="item" :key="index">Slotted {{item.title}}</g-tab>
+        <g-tab :item="item" :key="index" :active-text-color="activeTextColor">Slotted {{item.title}}</g-tab>
       </template>
     </g-tabs>`
 });
@@ -150,6 +240,10 @@ export const insideToolbar = () => ({
     sliderColor: {
       type: String,
       default: text('Slider Color', 'currentColor')
+    },
+    activeTextColor: {
+      type: String,
+      default: text('Active Text Color', 'success')
     }
   },
   template: `<div>
@@ -171,7 +265,8 @@ export const insideToolbar = () => ({
           :grow="grow"
           :icon="icon"
           :slider-size="sliderSize"
-          :slider-color="sliderColor">
+          :slider-color="sliderColor"
+          :active-text-color="activeTextColor">
         </g-tabs>
       </template>
     </g-toolbar>

@@ -138,13 +138,15 @@
         if (newVal) updateDimensions(props.activator.value)
       })
 
+      let rootEl
+
       onMounted(() => {
-        attachToRoot()
+        rootEl = attachToRoot()
       })
 
       onBeforeUnmount(() => {
         resizeObserver.destroy();
-        detach(context.refs.content)
+        if (rootEl) rootEl.removeChild(context.refs.content) // menu content is mounted to root element
       })
 
       const calculatedLeft = computed(() => {

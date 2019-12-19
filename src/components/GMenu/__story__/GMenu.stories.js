@@ -54,9 +54,9 @@ export const gMenuLookAndFeel = () => ({
   template: `
     <div data-app class="row-flex">
       <g-menu v-model="showMenu" :top="top" :bottom="bottom" :offset-x="offsetX" :offset-y="offsetY" :nudge-top="nudgeTop" 
-              :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight">
-        <template v-slot:activator="{toggleContent}">
-          <g-btn @click="toggleContent" :width="activatorWidth" :height="activatorHeight">Activator</g-btn>
+              :nudge-bottom="nudgeBottom" :nudge-left="nudgeLeft" :nudge-right="nudgeRight" eager>
+        <template v-slot:activator="{on}">
+          <g-btn v-on="on" :width="activatorWidth" :height="activatorHeight">Activator</g-btn>
         </template>
         <div>Content</div>
       </g-menu>
@@ -95,7 +95,7 @@ export const gMenuBehavior = () => ({
     <div data-app style="min-height: 80vh">
       <g-menu v-model="showMenu" :close-on-content-click="closeOnContentClick" :close-on-click="closeOnClick"
               :open-on-hover="openOnHover" :open-delay="openDelay" :close-delay="closeDelay">
-        <template v-slot:activator="{toggleContent}"><g-btn @click="toggleContent">Activator</g-btn></template>
+        <template v-slot:activator="{on}"><g-btn v-on="on">Activator</g-btn></template>
         <div>Content</div>
       </g-menu>
     </div>
@@ -125,7 +125,7 @@ export const gMenuHover = () => ({
     <div data-app style="min-height: 80vh">
       <g-menu v-model="showMenu"
               :open-on-hover="openOnHover" :open-delay="openDelay" :close-delay="closeDelay" style="display: inline-flex" lazy>
-        <template v-slot:activator="{toggleContent}"><g-btn @click="toggleContent">Activator</g-btn></template>
+        <template v-slot:activator="{on}"><g-btn v-on="on">Activator</g-btn></template>
         <div>Content</div>
       </g-menu>
     </div>
