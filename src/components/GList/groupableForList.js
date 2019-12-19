@@ -30,7 +30,7 @@ export function groupableForList(props, vModel) {
       if (props.returnObject|| !isObjectList.value) updateSingle(item);
       else if (props.itemValue) {
         isObject ? updateSingle(item[props.itemValue]) : updateSingle(item)
-      } else if (props.itemValue) {
+      } else if (props.itemText) {
         isObject ? updateSingle(item[props.itemText]) : updateSingle(item)
       }
     }
