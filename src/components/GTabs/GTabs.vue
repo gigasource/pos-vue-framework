@@ -5,22 +5,23 @@
   import GTabItem from './GTabItem';
   import GIcon from '../GIcon/GIcon';
   import getVModel from '../../mixins/getVModel';
-  import { computed, provide, reactive, ref, watch, onMounted, onUnmounted } from '@vue/composition-api'
-  import { find } from 'lodash'
-  import colorHandler, { convertToUnit } from '../../utils/helpers';
-  import { colors } from '../../utils/colors';
+  import {computed, onMounted, onUnmounted, provide, reactive, ref, watch} from '@vue/composition-api'
+  import {find} from 'lodash'
+  import colorHandler, {convertToUnit} from '../../utils/helpers';
+  import {colors} from '../../utils/colors';
   import GSlideGroup from '../GSlideGroup/GSlideGroup';
   import Resize from '../../directives/resize/resize';
 
   export default {
     name: 'GTabs',
-    directives: { Resize },
-    components: { GSlideGroup, GIcon, GTabItem, GLayout, GTab, GTabItems },
+    directives: {Resize},
+    components: {GSlideGroup, GIcon, GTabItem, GLayout, GTab, GTabItems},
     props: {
       items: Array,
       value: null,
       color: String,
       textColor: String,
+      activeTextColor: String,
       grow: Boolean,
       sliderColor: String,
       sliderSize: {
@@ -45,7 +46,7 @@
       provide('model', model);
       provide('items', props.items)
 
-      const { getColorType, convertColorClass } = colorHandler();
+      const {getColorType, convertColorClass} = colorHandler();
 
       const tabsClasses = computed(() => ({
         'g-tabs': true,
@@ -59,7 +60,7 @@
       }));
 
       const tabsStyles = computed(() => ({
-        ...props.textColor && getColorType(props.textColor) === 'style' && { color: props.textColor }
+        ...props.textColor && getColorType(props.textColor) === 'style' && {color: props.textColor}
       }));
 
       const barClasses = computed(() => ({
@@ -67,7 +68,7 @@
       }));
 
       const barStyles = computed(() => ({
-        ...props.color && getColorType(props.color) === 'style' && { 'background-color': props.color }
+        ...props.color && getColorType(props.color) === 'style' && {'background-color': props.color}
       }));
 
       const sliderStyles = reactive({
@@ -106,10 +107,10 @@
         }
 
         sliderStyles['background-color'] = props.sliderColor
-          ? (getColorType(props.sliderColor) === 'style'
-            ? props.sliderColor
-            : colors[props.sliderColor.trim().split(' ').join('-')])
-          : 'currentColor';
+            ? (getColorType(props.sliderColor) === 'style'
+                ? props.sliderColor
+                : colors[props.sliderColor.trim().split(' ').join('-')])
+            : 'currentColor';
       }
 
       const itemsRef = ref(null)
@@ -121,7 +122,6 @@
       watch(() => model.value, () => {
         const parent = itemsRef.value.querySelector('.g-slide-group__content');
         activeTab.value = find(parent.children, i => i.classList.contains('g-tab__active'));
-
         if (props.vertical) {
           if (activeTab.value.offsetTop < +sliderStyles.top.replace('px', '')) {
             sliderStyles['transition'] = 'top 0.5s, bottom 1s';
@@ -144,7 +144,7 @@
           sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.value.offsetWidth - activeTab.value.offsetLeft)
           sliderStyles.left = convertToUnit(activeTab.value.offsetLeft)
         }
-      }, { lazy: true });
+      }, {lazy: true});
 
       const fullTitle = computed(() => {
         const noTitle = find(props.items, item => item.title === undefined);
@@ -156,13 +156,18 @@
         if (props.icon && item.icon) return <g-icon>{item.icon}</g-icon>
       }
 
+      const activeTextColor = computed(() => props.activeTextColor ? props.activeTextColor : sliderStyles['background-color']);
+
+      //provide slider style (color) default active tab text color
+      provide('slider-styles', sliderStyles);
+
       const genTabs = () => {
         return props.items.map((item, index) => (
-          (context.slots.tab && context.slots.tab({ item, index }))
-          || <g-tab item={item} key={index}>
-            {genTabIcon(item)}
-            {item.title}
-          </g-tab>
+            (context.slots.tab && context.slots.tab({item, index}))
+            || <g-tab active-text-color={activeTextColor.value} item={item} key={index}>
+              {genTabIcon(item)}
+              {item.title}
+            </g-tab>
         ))
       }
 
@@ -190,16 +195,16 @@
       return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
           <div ref="itemsRef"
-               class={{ ...barClasses.value, 'g-tabs-bar': true }}
+               class={{...barClasses.value, 'g-tabs-bar': true}}
                style={barStyles.value}
                v-resize={calculateSliderStyle}>
             {genTabsBar()}
           </div>
         </div>
         {context.slots.default && (
-          <g-tab-items>
-            {context.slots.default()}
-          </g-tab-items>
+            <g-tab-items>
+              {context.slots.default()}
+            </g-tab-items>
         )}
       </div>
     }
@@ -207,5 +212,5 @@
 </script>
 
 <style scoped lang="scss">
-	@import "GTabs";
+  @import "GTabs";
 </style>
