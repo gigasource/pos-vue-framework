@@ -28,9 +28,16 @@
     name: 'GIconChooser',
     components: { GTextField, GDndDialog, GPagination, GIcon, GIconSearch, GBtn },
     props: {
-      label: String
+      label: String,
+      model: Object,
+      field: Object
     },
     setup(props, context) {
+      let initialIcon = ''
+      if (props.field && props.field.key && props.model && _.has(props.model, props.field.key)) {
+        initialIcon = props.model[props.field.key]
+      }
+
       const state = reactive({
         // dialog state
         showDialog: false,
@@ -46,7 +53,7 @@
         flipVertical: false,
         color: null,
         //
-        value: ''
+        value: initialIcon
       })
 
       const iconSources = getIconSources()
@@ -176,6 +183,8 @@
               <div class="icon-detail__action-btn">
                 <g-btn outlined vOn:click={() => {
                   state.value = state.selectedIcon.value
+                  if (props.model && props.field && props.field.key)
+                    props.model[props.field.key] = state.selectedIcon.value
                   context.emit('input', state.selectedIcon.value)
                   context.emit('value', createIconModel())
                   state.showDialog = false

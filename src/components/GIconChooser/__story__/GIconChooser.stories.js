@@ -16,3 +16,17 @@ export const gIconChooser = () => ({
     )
   }
 })
+
+
+export const gIconChooserModel = () => ({
+  components: { GIconChooser },
+  data() {
+    return {
+      model: { icon: 'fab fa-adversal' },
+      field: { key: 'icon' }
+    }
+  },
+  template: `
+    <g-icon-chooser label='avatar' :model="model" :field="field"/>
+  `
+})
