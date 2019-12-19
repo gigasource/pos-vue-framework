@@ -17,14 +17,22 @@ export function groupableForList(props, vModel) {
   })
 
   const toggleItem = (item) => {
+    const isObject = typeof item === 'object'
     if (props.multiple) {
-      if (props.returnObject || !isObjectList.value) updateMultiple(item);
-      else if (props.itemValue) updateMultiple(item[props.itemValue])
-      else if (props.itemText) updateMultiple(item[props.itemText])
+      if (props.returnObject || !isObjectList.value) {
+        updateMultiple(item)
+      } else if (props.itemValue) {
+        isObject ? updateMultiple(item[props.itemValue]) : updateMultiple(item)
+      } else if (props.itemText) {
+        isObject ? updateMultiple(item[props.itemText]) : updateMultiple(item)
+      }
     } else {
       if (props.returnObject|| !isObjectList.value) updateSingle(item);
-      else if(props.itemValue) updateSingle(item[props.itemValue])
-      else if(props.itemValue) updateSingle(item[props.itemText])
+      else if (props.itemValue) {
+        isObject ? updateSingle(item[props.itemValue]) : updateSingle(item)
+      } else if (props.itemValue) {
+        isObject ? updateSingle(item[props.itemText]) : updateSingle(item)
+      }
     }
   };
 
