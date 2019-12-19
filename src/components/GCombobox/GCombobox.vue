@@ -1,23 +1,23 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import { computed, reactive, ref, watch } from '@vue/composition-api';
+  import {computed, reactive, ref, watch} from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import { getLabel, getValidate } from '../GInput/GInputFactory';
+  import {getLabel, getValidate} from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
   import GListItem from '../GList/GListItem';
-  import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
-  import { getList, getSelectionsForCombobox } from '../GSelect/GSelectFactory';
-  import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
-  import { makeCombobox } from '../GList/groupableForList';
-  import { Fragment } from 'vue-fragment'
+  import {GListItemContent, GListItemText} from '../GList/GListFunctionalComponent';
+  import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
+  import {getInputEventHandlers, setSearch} from '../GAutocomplete/GAutocompleteFactory';
+  import {makeCombobox} from '../GList/groupableForList';
+  import {Fragment} from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
-    components: { GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText, Fragment },
+    components: {GSelect, GList, GIcon, GChip, GTextField, GMenu, GListItem, GListItemContent, GListItemText, Fragment},
     props: {
       //select props
       width: [String, Number],
@@ -54,6 +54,7 @@
           type: String,
           default: 'clear'
         },
+        clearIconColor: String,
         rules: Array,
         type: {
           type: String,
@@ -97,10 +98,9 @@
     setup: function (props, context) {
 
       //list selections
-      const { internalValue: selectedItem, toggleItem } = makeCombobox(props, context)
+      const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
       const fieldItem = ref(null)
-      watch([() => props.items, () => selectedItem.value], () => fieldItem.value = getSelectionsForCombobox(props, selectedItem))
-
+      watch(() => props.items, () => fieldItem.value = getSelectionsForCombobox(props, selectedItem))
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
@@ -131,26 +131,26 @@
           showOptions.value = props.multiple
         }
         return <GList
-          {...{
-            props: {
-              items: options.value,
-              itemText: props.itemText,
-              itemValue: props.itemValue,
-              returnObject: props.returnObject,
-              mandatory: true,
-              allowDuplicates: props.allowDuplicates,
-              multiple: props.multiple,
-              selectable: true,
-              inMenu: true,
-              value: selectedItem.value,
-            },
-            on: {
-              'click:item': onClickItem,
-              input: e => selectedItem.value = e,
-            },
-          }
-          }
-          ref="list"
+            {...{
+              props: {
+                items: options.value,
+                itemText: props.itemText,
+                itemValue: props.itemValue,
+                returnObject: props.returnObject,
+                mandatory: true,
+                allowDuplicates: props.allowDuplicates,
+                multiple: props.multiple,
+                selectable: true,
+                inMenu: true,
+                value: selectedItem.value,
+              },
+              on: {
+                'click:item': onClickItem,
+                input: e => selectedItem.value = e,
+              },
+            }
+            }
+            ref="list"
         />
 
       }
@@ -164,13 +164,13 @@
       const isValidInput = ref(true)
       const isFocused = ref(false);
       const validateText = computed(() => state.lazySearch || selectionsString.value || state.searchText)
-      const { labelClasses, labelStyles, isDirty } = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
-      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
-      const { errorMessages } = getValidate(props, isFocused, validateText, isValidInput);
+      const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
+      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
+      const {errorMessages} = getValidate(props, isFocused, validateText, isValidInput);
       const tfValue = computed(() => {
         return (props.multiple || props.chips || props.smallChips || props.deletableChips
-          || (!selectionTexts.value && selectionTexts.value !== 0)) ?
-          state.searchText : state.lazySearch
+            || (!selectionTexts.value && selectionTexts.value !== 0)) ?
+            state.searchText : state.lazySearch
       })
 
       //textfield event handlers
@@ -195,12 +195,12 @@
         }
 
         return selectionTexts.value.map(function (item, index) {
-            if (index === selectionTexts.value.length - 1) {
-              return <div
-                style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+              if (index === selectionTexts.value.length - 1) {
+                return <div
+                    style={{'color': state.lastItemColor, 'padding-right': '5px'}}>{item}</div>
+              }
+              return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
             }
-            return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
-          }
         )
       }
       const genSingleChipSlot = () => {
@@ -211,17 +211,17 @@
       }
 
       const textFieldScopedSlots = {
-        'clearable-slot': ({ iconColor }) =>
-          <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
-                 color={iconColor}>{props.clearIcon}</GIcon>,
-        'append-inner': ({ iconColor }) =>
-          [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
-            context.slots['append-inner'] && context.slots['append-inner']()],
+        'clearable-slot': ({iconColor}) =>
+            <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable} class={['g-icon__clear']}
+                   color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
+        'append-inner': ({iconColor}) =>
+            [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
+              context.slots['append-inner'] && context.slots['append-inner']()],
         'append-outer': () => context.slots['append-outer'] && context.slots['append-outer'](),
-        'input-slot': ({ inputErrStyles }) =>
-          <Fragment>
-            {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
-          </Fragment>,
+        'input-slot': ({inputErrStyles}) =>
+            <Fragment>
+              {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
+            </Fragment>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         ['input-message']: () => [<div v-show={props.counter} class={{
@@ -229,7 +229,7 @@
           'g-tf-counter__error': !isValidInput.value
         }}>{validateText.value.length}/{props.counter}</div>,
           isValidInput.value ? <div class={['g-tf-hint', hintClasses.value]}>{props.hint}</div>
-            : <div class="g-tf-error">{errorMessages.value}</div>
+              : <div class="g-tf-error">{errorMessages.value}</div>
         ]
       }
       //textfield value
@@ -238,27 +238,27 @@
       //gen textfield function
       const genTextFieldProps = function (toggleContent) {
         return (
-          <GTextField
-            {...{
-              props: {
-                ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
-                  'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                  'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
-                value: tfValue.value
-              },
-              on: {
-                'click:clearIcon': () => clearSelection(),
-                focus: () => onInputClick(),
-                blur: () => onInputBlur(),
-                click: toggleContent,
-                delete: onInputDelete,
-                enter: inputAddSelection,
-                keydown: (e) => onInputKeyDown(e),
-                input: (e) => onInputChange(e),
-              },
-              scopedSlots: textFieldScopedSlots
-            }}
-          />
+            <GTextField
+                {...{
+                  props: {
+                    ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
+                      'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
+                      'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
+                    value: tfValue.value
+                  },
+                  on: {
+                    'click:clearIcon': () => clearSelection(),
+                    focus: () => onInputClick(),
+                    blur: () => onInputBlur(),
+                    click: toggleContent,
+                    delete: onInputDelete,
+                    enter: inputAddSelection,
+                    keydown: (e) => onInputKeyDown(e),
+                    input: (e) => onInputChange(e),
+                  },
+                  scopedSlots: textFieldScopedSlots
+                }}
+            />
         )
       }
 
@@ -283,7 +283,7 @@
             eager: props.eager,
           },
           scopedSlots: {
-            activator: ({ toggleContent }) => genTextFieldProps(toggleContent)
+            activator: ({toggleContent}) => genTextFieldProps(toggleContent)
           },
           on: {
             input: e => showOptions.value = e,
@@ -302,7 +302,7 @@
       //gen Combobox
 
       function genCombobox() {
-        return <div class={{ 'g-combobox ': true, 'g-combobox__active': showOptions.value }}>
+        return <div class={{"g-combobox ": true, 'g-combobox__active': showOptions.value}}>
           {genMenu(showOptions)}
         </div>
       }
@@ -324,37 +324,37 @@
   }
 </script>
 <style lang="scss" scoped>
-	.g-combobox ::v-deep {
-		span {
-			margin: 3px
-		}
+  .g-combobox ::v-deep {
+    span {
+      margin: 3px
+    }
 
-		.g-tf-append__inner .g-icon:last-child {
-			transition: transform 0.4s;
-		}
+    .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
+    }
 
-		.input {
-			display: flex;
-			flex-wrap: wrap;
-		}
+    .input {
+      display: flex;
+      flex-wrap: wrap;
+    }
 
-		.g-tf-input {
-			flex-wrap: wrap;
-			display: flex;
-			flex: 1;
-		}
+    .g-tf-input {
+      flex-wrap: wrap;
+      display: flex;
+      flex: 1;
+    }
 
-		input {
-			flex-shrink: 0;
-			flex-basis: auto;
-			cursor: text;
-		}
-	}
+    input {
+      flex-shrink: 0;
+      flex-basis: auto;
+      cursor: text;
+    }
+  }
 
-	.g-combobox__active {
-		::v-deep .g-tf-append__inner .g-icon:last-child {
-			transition: transform 0.4s;
-			transform: rotateZ(180deg);
-		}
-	}
+  .g-combobox__active {
+    ::v-deep .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
+      transform: rotateZ(180deg);
+    }
+  }
 </style>
