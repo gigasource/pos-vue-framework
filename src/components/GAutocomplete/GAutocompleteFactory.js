@@ -1,6 +1,6 @@
 import { keyCodes } from '../../utils/helpers';
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, showOptions) {
+export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
   function onChipCloseClick(index = null) {
     if (props.multiple) {

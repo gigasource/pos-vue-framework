@@ -85,6 +85,8 @@ export function makeListSelectable(props, context) {
     } else if (props.itemValue) {
       let itemsHaveValueInlist = props.items.filter(i => value.some(el => el === i[props.itemValue]))
       return itemsHaveValueInlist.length ? itemsHaveValueInlist.map(item => item[props.itemValue]) : value
+    } else {
+      return value
     }
   }
 

@@ -237,7 +237,7 @@
 
 
       //gen textfield function
-      const genTextFieldProps = function (toggleContent) {
+      const genTextFieldProps = function () {
         return (
             <GTextField
                 {...{
@@ -286,10 +286,10 @@
             eager: props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextFieldProps(toggleContent)
+            activator: () => genTextFieldProps()
           },
           on: {
-            input: e => showOptions.value = e,
+            input: (e) => isFocused.value ? showOptions.value = true : showOptions.value = e,
           }
         }}
         >
@@ -312,13 +312,14 @@
 
       return {
         genCombobox,
-        labelClasses,
         state,
         options,
         selectedItem,
         selectionTexts,
         fieldItem,
-        tfValue
+        tfValue,
+        isFocused,
+        showOptions
       }
     },
     render() {
