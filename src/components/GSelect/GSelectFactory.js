@@ -86,9 +86,10 @@ export function getSelections(props, selectedValue) {
 }
 
 //same as getSelection but accept selections not in list
-
 export function getSelectionsForCombobox(props, selectedValue) {
-  if(props.items === null || props.items.length === 0) return props.multiple ? [] : ''
+  if (props.items === null || props.items.length === 0) {
+    return props.multiple ? [] : selectedValue.value || ''
+  }
   const isObjectList = props.items.some(item => _.isObject(item) === true)
   if (!props.multiple) {
     let item = selectedValue.value;

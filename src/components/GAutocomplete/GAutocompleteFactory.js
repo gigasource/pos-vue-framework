@@ -1,4 +1,4 @@
-import {keyCodes} from '../../utils/helpers';
+import { keyCodes } from '../../utils/helpers';
 
 export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
   function onChipCloseClick(index = null) {
@@ -24,6 +24,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   function onInputChange(text) {
     state.searchText = text
+    selectedItem.value ? selectedItem.value = '' : null
     context.emit('update:searchText', text)
   }
 
@@ -64,10 +65,11 @@ export function getInputEventHandlers(props, context, state, selections, selecte
       const isObjectList = props.items.some(item => typeof item === 'object')
       const isNumberList = props.items.some(item => typeof item === 'number')
       let inputAddedItem;
-      if (isObjectList && (props.returnObject || props.itemValue))
+      if (isObjectList && (props.returnObject || props.itemValue)) {
         inputAddedItem = {
         [props.itemText]: state.searchText,
         [props.itemValue]: isNumberList ? Number(state.searchText) : state.searchText
+      }
       }
       else inputAddedItem = isNumberList ? Number(state.searchText) : state.searchText
       toggleItem(inputAddedItem)

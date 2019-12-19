@@ -1,19 +1,19 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {computed, reactive, ref, watch} from '@vue/composition-api';
+  import { computed, reactive, ref, watch } from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import {getLabel, getValidate} from '../GInput/GInputFactory';
+  import { getLabel, getValidate } from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
   import GListItem from '../GList/GListItem';
-  import {GListItemContent, GListItemText} from '../GList/GListFunctionalComponent';
-  import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
-  import {getInputEventHandlers, setSearch} from '../GAutocomplete/GAutocompleteFactory';
-  import {makeCombobox} from '../GList/groupableForList';
-  import {Fragment} from 'vue-fragment'
+  import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
+  import { getList, getSelectionsForCombobox } from '../GSelect/GSelectFactory';
+  import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
+  import { makeCombobox } from '../GList/groupableForList';
+  import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
@@ -250,7 +250,9 @@
                     'click:clearIcon': () => clearSelection(),
                     focus: () => onInputClick(),
                     blur: () => onInputBlur(),
-                    click: toggleContent,
+                    click: () => {
+                      showOptions.value = true
+                    },
                     delete: onInputDelete,
                     enter: inputAddSelection,
                     keydown: (e) => onInputKeyDown(e),
