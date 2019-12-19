@@ -53,6 +53,10 @@
         type: Boolean,
         default: false,
       },
+      nodeExpansionHistory: {
+        type: Array,
+        default: [],
+      }
     },
     setup(props, context) {
       let prevSelectedPath = null
@@ -79,6 +83,7 @@
         }
 
         prevOpenPath = path
+        context.emit('node-expansion-toggled', path, !treeStates[path].collapse)
       }, 200, {trailing: false})
 
       const setNodeState = function (path, state) {
@@ -141,6 +146,8 @@
       }
 
       const genNode = function ({node, text, childrenVNodes, path}) {
+        if (treeStates[path] && props.nodeExpansionHistory.includes(path)) treeStates[path].collapse = false
+
         return <tree-node-wrapper {...{
           scopedSlots: {default: () => genNodeContent({node, text, childrenVNodes, path})}
         }}/>
