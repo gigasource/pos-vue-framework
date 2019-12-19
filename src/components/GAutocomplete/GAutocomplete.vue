@@ -1,16 +1,16 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {computed, reactive, ref, watch} from '@vue/composition-api';
-  import {getList, getSelections} from '../GSelect/GSelectFactory';
+  import { computed, reactive, ref, watch } from '@vue/composition-api';
+  import { getList, getSelections } from '../GSelect/GSelectFactory';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import {getLabel, getValidate} from '../GInput/GInputFactory';
+  import { getLabel, getValidate } from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
-  import {getInputEventHandlers, setSearch} from './GAutocompleteFactory';
-  import {makeListSelectable} from '../GList/groupableForList';
+  import { getInputEventHandlers, setSearch } from './GAutocompleteFactory';
+  import { makeListSelectable } from '../GList/groupableForList';
 
   export default {
     name: 'GAutocomplete',
@@ -98,13 +98,12 @@
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
+            return (item || item === 0) ? (item['text'] || item['value'] || (typeof item !== 'object' && item)) : ''
           })
+        } else {
+          return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
         }
 
-        return fieldItem.value || fieldItem.value === 0
-            ? fieldItem.value[props.itemText] || fieldItem.value[props.itemValue] || fieldItem.value
-            : ''
       })
       const state = reactive({
         searchText: '',
@@ -226,7 +225,7 @@
             : state.lazySearch
       })
 
-      const genTextFieldProps = function (toggleContent) {
+      const genTextFieldProps = function () {
         return (
             <GTextField
                 {...{
@@ -240,7 +239,7 @@
                     'click:clearIcon': clearSelection,
                     focus: onInputClick,
                     blur: onInputBlur,
-                    click: toggleContent,
+                    click: () => showOptions.value = true,
                     delete: onInputDelete,
                     keydown: (e) => onInputKeyDown(e),
                     input: (e) => state.searchText = e,
@@ -272,10 +271,10 @@
             eager: props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextFieldProps(toggleContent)
+            activator: () => genTextFieldProps()
           },
           on: {
-            input: e => showOptions.value = e,
+            input: (e) => isFocused.value ? showOptions.value = true : showOptions.value = e,
           }
         }}
         >
@@ -301,7 +300,11 @@
         state,
         options,
         selectedItem,
-        selections: selectionTexts,
+        selectionTexts,
+        fieldItem,
+        tfValue,
+        isFocused,
+        showOptions
       }
     },
     render() {

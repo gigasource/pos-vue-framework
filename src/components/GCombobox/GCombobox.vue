@@ -124,7 +124,7 @@
 
       //genList
       const isFocused = ref(false);
-      const showOptions = ref(isFocused.value)
+      const showOptions = ref(false)
 
       function genList(showOptions) {
         const onClickItem = () => {

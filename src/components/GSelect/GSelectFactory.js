@@ -2,7 +2,11 @@ import { computed } from '@vue/composition-api';
 import _ from 'lodash';
 
 const listMultipleFilter = (props, selectedValue) => {
+
   let _options
+  if (!selectedValue.value) {
+    return _options = props.items
+  }
   if (props.allowDuplicates) {
     _options = props.items;
   } else {
@@ -22,7 +26,9 @@ const searchTextFilteredItems = (props, state, items) => {
   if (!state.searchText || !state.searchText.trim()) {
     return items;
   }
-
+  if (items === null) {
+    return
+  }
   // normalize search text if used in g-select
   const searchText = !props.filter ? state.searchText.trim().toLowerCase() : state.searchText.trim();
   //match searchText
@@ -80,15 +86,18 @@ export function getSelections(props, selectedValue) {
     if(!isObjectList) return list.map(item => props.items.find(el => el === item))
     if (props.returnObject) {
       if (props.itemValue) return list.map(item => ({ text: item[props.itemText], value: item[props.itemValue] }))
+      return list.map(item => props.items.find(el => _.isEqual(el, item)))
     }
     else if(props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item))
+    return list.map(item => props.items.find(el => _.isEqual(el, item)))
   })
 }
 
 //same as getSelection but accept selections not in list
 export function getSelectionsForCombobox(props, selectedValue) {
   if (props.items === null || props.items.length === 0) {
-    return props.multiple ? [] : selectedValue.value || ''
+    let empty = props.multiple ? [] : ''
+    return selectedValue.value || empty
   }
   const isObjectList = props.items.some(item => _.isObject(item) === true)
   if (!props.multiple) {
@@ -97,7 +106,7 @@ export function getSelectionsForCombobox(props, selectedValue) {
     if (!isObjectList) return item;
     if (props.itemValue && !props.returnObject) {item = props.items.find(_item => _item[props.itemValue] === item) || item}
     else item = props.items.find(_item => _.isEqual(item, _item)) || item
-    return item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item
+    return item ? { text: item[props.itemText], value: item[props.itemValue] } : ''
   }
   else{
     const list = selectedValue.value || []

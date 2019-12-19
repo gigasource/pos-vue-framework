@@ -65,8 +65,8 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   const inputAddSelection = () => {
     if (state.searchText.trim().length > 0) {
-      const isObjectList = props.items.some(item => typeof item === 'object')
-      const isNumberList = props.items.some(item => typeof item === 'number')
+      const isObjectList = props.item && props.items.some(item => typeof item === 'object')
+      const isNumberList = props.item && props.items.some(item => typeof item === 'number')
       let inputAddedItem;
       if (isObjectList && (props.returnObject || props.itemValue)) {
         inputAddedItem = {
