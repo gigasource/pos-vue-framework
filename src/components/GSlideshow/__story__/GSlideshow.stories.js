@@ -1,5 +1,5 @@
 import { withKnobs } from '@storybook/addon-knobs';
-import GSlideshow from '../GSlideshow';
+import GSlideshow, {transitionList} from '../GSlideshow';
 import GBtn from '../../GBtn/GBtn';
 import src1 from '../../../assets/slideshow/food1.jpeg'
 import src2 from '../../../assets/slideshow/food2.jpeg'
@@ -53,43 +53,43 @@ export const Basic = () => ({
         {
           src: src1,
           type: 'image',
-          transition: 'Slide Top To Bottom',
+          transition: 'slideTopToBottom',
           duration: 10000
         },
         {
           src: src2,
           type: 'image',
-          transition: 'Slide Top To Bottom',
+          transition: transitionList.slideTopToBottom,
           duration: 5000
         },
         {
           src: video,
           type: 'video',
-          transition: 'Slide Top To Bottom',
-          duration : 8000
+          transition: transitionList.none,
+          duration : 0
         },
         {
           src: src3,
           type: 'image',
-          transition: 'Slide Top To Bottom',
+          transition: transitionList.none,
           duration: 5000
         },
         {
           src: video,
           type: 'video',
-          transition: 'Slide Top To Bottom',
-          duration : 8000
+          transition: transitionList.slideTopToBottom,
+          duration : 0
         },
         {
           src: src4,
           type: 'image',
-          transition: 'Slide Top To Bottom',
+          transition: transitionList.slideTopToBottom,
           duration: 5000
         },
         {
           src: src5,
           type: 'image',
-          transition: 'Slide Top To Bottom',
+          transition: transitionList.slideTopToBottom,
           duration: 5000
         },
       ]]
