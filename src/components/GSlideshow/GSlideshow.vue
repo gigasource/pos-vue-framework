@@ -1,6 +1,6 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
-  import { createSlideNode, setSrc, getTransition, clean } from './GSlideshowFactory';
+  import { transitionList, createSlideNode, setSrc, getTransition, clean } from './GSlideshowFactory';
   import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
 
   export default {
@@ -88,7 +88,7 @@
               nodeFlag = !nodeFlag
               count.value = count.value === maxCount.value ? 0 : count.value + 1
             }
-          }, oldVal.duration - (newVal.transition === 'none' ? 0 : props.transitionDuration))
+          }, oldVal.duration - (transitionList.includes(newVal.transition) ? props.transitionDuration : 0))
         }
 			}, {lazy: true})
 
