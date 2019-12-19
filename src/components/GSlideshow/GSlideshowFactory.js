@@ -33,7 +33,7 @@ export function getTransition(name, type, props) {
           easing: 'linear'
         }
       ]
-    case 'slideLeftToRight':
+    case 'slideRightToLeft':
       return [
         [
           {transform: type === 'in' ? 'translateX(100%)' : 'translateX(0)' + ' translateZ(0) translate3d(0,0,0)'},
@@ -44,7 +44,7 @@ export function getTransition(name, type, props) {
           easing: 'ease-in-out'
         }
       ]
-    case 'slideRightToLeft':
+    case 'slideLeftToRight':
       return [
         [
           {transform: type === 'in' ? 'translateX(-100%)' : 'translateX(0)' + ' translateZ(0) translate3d(0,0,0)'},
@@ -55,7 +55,7 @@ export function getTransition(name, type, props) {
           easing: 'ease-in-out'
         }
       ]
-    case 'slideTopToBottom':
+    case 'slideBottomToTop':
       return [
         [
           {transform: type === 'in' ? 'translateY(100%)' : 'translateY(0)' + ' translateZ(0) translate3d(0,0,0)'},
@@ -66,7 +66,7 @@ export function getTransition(name, type, props) {
           easing: 'ease-in-out'
         }
       ]
-    case 'slideBottomToTop':
+    case 'slideTopToBottom':
       return [
         [
           {transform: type === 'in' ? 'translateY(-100%)' : 'translateY(0)' + ' translateZ(0) translate3d(0,0,0)'},
