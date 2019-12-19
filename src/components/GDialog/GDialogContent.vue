@@ -70,15 +70,11 @@
 			const unwatch = watch(isActive, newVal => {
 			  if (newVal) {
           context.root.$nextTick(() => {
-            window.addEventListener('wheel', onWheel, {passive: false})
-            window.addEventListener('touchstart', onTouchStart, {passive: false})
-						window.addEventListener('touchmove', onTouchMove, {passive: false})
+            disableOutsideScroll()
             context.refs.wrapper.focus()
 					})
 				} else {
-          window.removeEventListener('wheel', onWheel)
-          window.removeEventListener('touchstart', onTouchStart)
-          window.removeEventListener('touchmove', onTouchMove)
+          enableOutsideScroll()
 				}
 			})
 
@@ -114,15 +110,7 @@
         }
       }
 
-      // Clean-up when destroy
-      onBeforeUnmount(() => {
-        unwatch()
-        context.refs.wrapper && detach(context.refs.wrapper);
-        context.refs.overlay && detach(context.refs.overlay.$el);
-      });
-
       // Scroll prevent
-
       const composedPath = function(e) {
         if (e.composedPath) return e.composedPath()
 
@@ -242,6 +230,26 @@
           e.preventDefault()
         }
 			}
+
+			const disableOutsideScroll = () => {
+        window.addEventListener('wheel', onWheel, {passive: false})
+        window.addEventListener('touchstart', onTouchStart, {passive: false})
+        window.addEventListener('touchmove', onTouchMove, {passive: false})
+			}
+
+			const enableOutsideScroll = () => {
+        window.removeEventListener('wheel', onWheel)
+        window.removeEventListener('touchstart', onTouchStart)
+        window.removeEventListener('touchmove', onTouchMove)
+			}
+
+      // Clean-up when destroy
+      onBeforeUnmount(() => {
+        unwatch()
+				enableOutsideScroll()
+        context.refs.wrapper && detach(context.refs.wrapper);
+        context.refs.overlay && detach(context.refs.overlay.$el);
+      });
 
       // Render functions
       function genContent() {
