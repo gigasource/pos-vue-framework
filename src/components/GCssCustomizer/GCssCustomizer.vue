@@ -7,12 +7,14 @@
   import GGridLayout from '../GGridGenerator/GGridLayout';
   import GCssCustomizerTreeView from './GCssCustomizerTreeView';
   import GBtn from '../GBtn/GBtn';
+  import GIcon from '../GIcon/GIcon';
   import GDatePicker from '../GDatePicker/GDatePicker';
   import GTextField from '../GInput/GTextField';
+  import GCombobox from '../GCombobox/GCombobox';
 
   export default {
     name: 'GCssCustomizer',
-		components: { GTextField, GCssCustomizerTreeView, GGridLayout, GBtn, GDatePicker },
+		components: { GCombobox, GTextField, GCssCustomizerTreeView, GGridLayout, GBtn, GIcon, GDatePicker },
     props: {
       value: undefined
 		},
@@ -27,18 +29,27 @@
       })
 
 			const parseElement = (el) => {
+			  // debugger
 			  const obj = {}
         if (el instanceof Element) {
-          obj['start'] = el.outerHTML.slice(0, el.outerHTML.indexOf(el.innerHTML)).replace(/ data-v-\w+=""/g, '')
-					obj['end'] = el.outerHTML.slice(el.outerHTML.indexOf(el.innerHTML) + el.innerHTML.length - el.outerHTML.length)
+          obj['start'] = el.innerHTML ? el.outerHTML.slice(0, el.outerHTML.indexOf(el.innerHTML)) : el.outerHTML.slice(0, el.outerHTML.search(/<\/+/))
+					obj['end'] = el.innerHTML ? el.outerHTML.slice(el.outerHTML.indexOf(el.innerHTML) + el.innerHTML.length - el.outerHTML.length) : el.outerHTML.slice(obj['start'].length - el.outerHTML.length)
+					obj['start'] = obj['start'].replace(/ data-v-\w+=""/g, '')
           obj['children'] = []
           for (let childEl of el.childNodes) {
-            obj['children'].push(parseElement(childEl))
+            const child = parseElement(childEl)
+            child && obj['children'].push(child)
           }
+          return obj
         } else if (el instanceof Text) {
 					obj['name'] = el.wholeText
+          if (obj['name'].search(/\S+/) > -1) return obj
 				}
-			  return obj
+			}
+
+			const rebuildTreeData = () => {
+        const previewComponent = context.refs.previewComponent
+        treeData.value = parseElement(previewComponent.$el)
 			}
 
 			onMounted(() => {
@@ -55,27 +66,33 @@
 			const getComponentId = path => _.get(treeData.value, path + 'id') || _.get(treeData.value, path + '.id')
 
 			// Tree view logic
-      const itemText = node => node['start'] ? node['start'] : node['name'] ? node['name'] : node['component']
-
       const genTreeView = () => {
         return <div area="tree" class="g-css-customizer-tree">
           <div class="g-css-customizer-tree-title">
             Select
           </div>
 					<div class="g-css-customizer-tree-content">
-						<g-css-customizer-tree-view vModel={cssCustomizerTree} data={treeData.value} itemText={itemText} itemChildren="children" expandLevel={10}/>
+						<g-btn small class="g-css-customizer-tree-reload" icon vOn:click={rebuildTreeData}>
+							<g-icon size="16" color="grey">fas fa-redo-alt</g-icon>
+						</g-btn>
+						<g-css-customizer-tree-view vModel={cssCustomizerTree} data={treeData.value} expandLevel={10}/>
 					</div>
         </div>
 			}
 
 			// Actions
+
+			const saveData = () => {
+			  context.emit('save')
+			}
+
 			const genActions = () => {
 			  return <div area="action" class="g-css-customizer-action">
 					<div class="g-css-customizer-action-title">
 						Action
 					</div>
           <div class="g-css-customizer-action-content">
-            <g-btn outlined>Save</g-btn>
+            <g-btn outlined vOn:click={saveData}>Save</g-btn>
             <g-btn outlined>Cancel</g-btn>
             <g-btn outlined vOn:click={() => context.emit('close')}>Close</g-btn>
 					</div>
@@ -83,8 +100,12 @@
 			}
 
 			// Preview
+			const model = ref('2019-12-10')
 			const genPreviewComponent = () => {
-				return <g-btn ref="previewComponent">Test</g-btn>
+				// return <g-btn ref="previewComponent">Test</g-btn>
+				return <g-date-picker vModel={model.value} ref="previewComponent">
+
+				</g-date-picker>
 			}
 
 
@@ -145,6 +166,7 @@
 					<div class="g-css-customizer-code-title">
 						CSS
 					</div>
+					<g-combobox label="selector"/>
 					{cssDisplayCode.value.map(item => genDisplayCode(item))}
 				</div>
 			}
@@ -239,6 +261,7 @@
 </script>
 <style scoped lang="scss">
 	.g-css-customizer {
+
 		&-container {
 			width: 100%;
 			height: 100%;
@@ -308,10 +331,23 @@
 
 		&-preview {
 			background-color: #f0f0f0;
+			padding: 10px;
 			border-top: 0;
 			border-bottom: 0;
 			border-left: 2px solid grey;
 			border-right: 2px solid grey;
+		}
+
+		&-tree {
+			&-reload {
+				position: absolute;
+				top: 16px;
+				right: 12px;
+			}
+		}
+
+		::v-deep.g-tf-wrapper {
+			margin: 4px 0 4px 0;
 		}
 	}
 </style>

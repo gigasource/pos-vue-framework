@@ -27,9 +27,13 @@
       }
 		},
     setup (props, context) {
-      const genText = genTextFactory(props.itemText)
-			const genCloseEl = node => `${node['start']}...${node['end']}`
-			const genEndTag = node => node['end']
+      const genText = node => `${node['name'] || node['start']}`
+			const genClosedEl = node => `${node['start']}...${node['end']}`
+			const genEndTag = node => `${node['end']}`
+			const genEmptyEl = node => {
+        if (node['start'] && node['end']) return `${node['start']}${node['end']}`
+				else return `${node['name']}`
+      }
 
       const tree = getInternalValue(props, context)
 
@@ -38,6 +42,34 @@
 			const togglePath = (path) => {
         tree.value.activePath = path
 			}
+
+			const genTextPretty = (html) => {
+        // debugger
+				let temp = html.replace(/="|"|<\/*|>/g, match => ` ${match} `)
+				temp = temp.split(' ')
+				let printResource = _.map(temp, (val, index, arr) => {
+				  let type
+					if (html.indexOf('<') === -1 || html.indexOf('>') === -1) type ='text'
+					else if (val.indexOf('<') > -1 || val.indexOf('>') > -1) type = 'tagquote'
+					else if (index > 0 && arr[index - 1].indexOf('<') > -1) type = 'tag'
+					else if (html.indexOf(`${val}=`) > -1) type ='attribute'
+					else if (val.indexOf(`"`) > -1) type = 'quote'
+					else type = 'value'
+					return {
+					  type: type,
+						string: val
+					}
+				})
+
+        return <span class="tree-view-text">
+					{printResource.map((val, index, arr) => {
+						return <span class={`tree-view-text-${val.type}`}>
+							{val.type === 'quote' || val.type === 'tagquote' || (arr[index+1] && arr[index+1].type === 'quote') || (arr[index+1] && arr[index+1].type === 'tagquote') ? val.string : val.string + ' '}
+						</span>
+					})}
+				</span>
+			}
+
 
       const genIcon = function (state) {
         return <g-icon size="10" vOn:click={(e) => {
@@ -48,11 +80,9 @@
         </g-icon>
       }
 
-      const genClosing = (node, path) => {
+      const genCloseTag = (node, path) => {
         return <div class={['tree-view-node', {'tree-view-node__active': path === tree.value.activePath}]} vOn:click={() => togglePath(path)}>
-          <span class="tree-view-text">
-						{node['end']}
-          </span>
+					{genTextPretty(genEndTag(node))}
 				</div>
 			}
 
@@ -62,12 +92,10 @@
 						<span class="tree-view-prepend">
 							{childrenVNodes && genIcon(state)}
 						</span>
-						<span class={['tree-view-text', {'tree-view-text__active': path === tree.value.activePath}]}>
-              {!state.collapse ? genText.value(node) : genCloseEl(node) }
-						</span>
+						{!childrenVNodes ? genTextPretty(genEmptyEl(node)) : !state.collapse ? genTextPretty(genText(node)) : genTextPretty(genClosedEl(node))}
           </div>
           {!state.collapse ? childrenVNodes : undefined}
-					{!state.collapse ? genClosing(node, path) : undefined}
+					{childrenVNodes && !state.collapse && node['end'] ? genCloseTag(node, path) : undefined}
         </li>
       }
 
@@ -129,13 +157,33 @@
 	}
 
 	.tree-view-text {
-		padding: 0 4px 2px 4px;
+		//padding: 0 4px 2px 4px;
 		font-size: 10px;
+
+		&-tag {
+			color: rgb(135, 27, 127)
+		}
+
+		&-attribute {
+			color: rgb(156, 78, 28)
+		}
+
+		&-quote, &-tagquote {
+			color: rgb(56, 56, 61)
+		}
+
+		&-value {
+			color: rgb(28, 35, 163)
+		}
+
+		&-text {
+			color: rgb(56, 52, 60)
+		}
 	}
 
 	.tree-view-node {
 
-		&:not(.tree-view-text__active):hover {
+		&:not(.tree-view-node__active):hover {
 			background-color: #e6edf1;
 		}
 
