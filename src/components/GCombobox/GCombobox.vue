@@ -123,7 +123,8 @@
       const options = getList(props, selectedItem, state)
 
       //genList
-      const showOptions = ref(false)
+      const isFocused = ref(false);
+      const showOptions = ref(isFocused.value)
 
       function genList(showOptions) {
         const onClickItem = () => {
@@ -162,7 +163,7 @@
 
       //textfield logic, styles, classes computed
       const isValidInput = ref(true)
-      const isFocused = ref(false);
+
       const validateText = computed(() => state.lazySearch || selectionsString.value || state.searchText)
       const {labelClasses, labelStyles, isDirty} = getLabel(context, props, validateText, isValidInput, isFocused, 'g-tf-label__active');
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})

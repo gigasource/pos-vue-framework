@@ -1,6 +1,7 @@
 import { keyCodes } from '../../utils/helpers';
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
+export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, showOptions) {
+  const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
   function onChipCloseClick(index = null) {
     if (props.multiple) {
       selectedItem.value.splice(index, 1);
@@ -24,7 +25,9 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   function onInputChange(text) {
     state.searchText = text
-    selectedItem.value ? selectedItem.value = '' : null
+    if (selectedItem.value && isInputDisplay) {
+      selectedItem.value = ''
+    }
     context.emit('update:searchText', text)
   }
 
@@ -40,7 +43,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputDelete() {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
+    if (isInputDisplay) {
       return
     }
     if (state.searchText) {
