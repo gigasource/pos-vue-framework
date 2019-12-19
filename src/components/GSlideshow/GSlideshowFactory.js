@@ -1,5 +1,13 @@
 import { convertToUnit } from '../../utils/helpers';
 
+export const transitionList = [
+  'Fade In',
+  'Slide Left To Right',
+  'Slide Right To Left',
+  'Slide Top To Bottom',
+  'Slide Bottom To Top'
+]
+
 export function getTransition(name, type, props) {
   switch (name) {
     case 'Fade In':

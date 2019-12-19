@@ -16,7 +16,7 @@ export const basicSlider = () => ({
     }
   },
   template: `<div style="height: 500px;">
-               <g-slider :disabled="disabled"/>
+               <g-slider :disabled="disabled" label="Label"/>
              </div>`,
 })
 
