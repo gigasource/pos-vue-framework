@@ -1,7 +1,9 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
-  import { transitionList, createSlideNode, setSrc, getTransition, clean } from './GSlideshowFactory';
+  import { createSlideNode, setSrc, clean, getTransition, getTransitionDuration, transitionList } from './GSlideshowFactory';
   import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
+
+  export { transitionList }
 
   export default {
     name: 'GSlideshow',
@@ -18,6 +20,7 @@
 		},
     setup (props, context) {
 			const model = getInternalValue(props, context)
+			const defaultSlideDuration = 5000
 
 			const nodeList = []
 			let nodeFlag = false
@@ -50,7 +53,7 @@
         count.value = count.value === maxCount.value ? 0 : count.value + 1
       })
 
-			//
+			// Reset slide nodes when source changed
       watch(() => model.value, () => {
         currentItem.value = 0
 				clean(nodeList)
@@ -74,9 +77,11 @@
 			// Sliding logic
       watch(currentItem, (newVal, oldVal) => {
 				if (oldVal && newVal) {
+          const currentNode = nodeList[nodeFlag ? 1 : 0]
+          const nextNode = nodeList[nodeFlag ? 0 : 1]
+					const duration = (oldVal.duration ? oldVal.duration : currentNode.video.style.display !== 'none' ? Math.round(currentNode.video.duration * 1000) - getTransitionDuration(oldVal.transition, props) : defaultSlideDuration)
+					const transitionDuration = getTransitionDuration(newVal.transition, props)
           currentTimeout = setTimeout(() => {
-            const currentNode = nodeList[nodeFlag ? 1 : 0]
-            const nextNode = nodeList[nodeFlag ? 0 : 1]
             nextNode.container.style.display = 'block'
             const transition = currentNode.container.animate(...getTransition(newVal.transition, 'out', props))
             nextNode.container.animate(...getTransition(newVal.transition, 'in', props))
@@ -88,7 +93,7 @@
               nodeFlag = !nodeFlag
               count.value = count.value === maxCount.value ? 0 : count.value + 1
             }
-          }, oldVal.duration - (transitionList.includes(newVal.transition) ? props.transitionDuration : 0))
+          }, duration - transitionDuration)
         }
 			}, {lazy: true})
 

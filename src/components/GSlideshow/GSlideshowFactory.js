@@ -1,16 +1,28 @@
 import { convertToUnit } from '../../utils/helpers';
 
-export const transitionList = [
-  'Fade In',
-  'Slide Left To Right',
-  'Slide Right To Left',
-  'Slide Top To Bottom',
-  'Slide Bottom To Top'
-]
+export const transitionList = {
+  none: 'None',
+  fadeIn: 'fadeIn',
+  slideLeftToRight: 'slideLeftToRight',
+  slideRightToLeft: 'slideRightToLeft',
+  slideTopToBottom: 'slideTopToBottom',
+  slideBottomToTop: 'slideBottomToTop'
+}
+
+function isValidTransition (inputTransition) {
+  for (let transition in transitionList) {
+    if (inputTransition === transitionList[transition]) return true
+  }
+}
+
+export function getTransitionDuration(transition, props) {
+  if (isValidTransition(transition) && transition !== transitionList.none) return props.transitionDuration
+  return 0
+}
 
 export function getTransition(name, type, props) {
   switch (name) {
-    case 'Fade In':
+    case 'fadeIn':
       return [
         [
           { transform: 'translateZ(0) translate3d(0,0,0)', opacity: type === 'in' ? '0' : '1'},
@@ -21,7 +33,7 @@ export function getTransition(name, type, props) {
           easing: 'linear'
         }
       ]
-    case 'Slide Left To Right':
+    case 'slideLeftToRight':
       return [
         [
           {transform: type === 'in' ? 'translateX(100%)' : 'translateX(0)' + ' translateZ(0) translate3d(0,0,0)'},
@@ -32,7 +44,7 @@ export function getTransition(name, type, props) {
           easing: 'ease-in-out'
         }
       ]
-    case 'Slide Right To Left':
+    case 'slideRightToLeft':
       return [
         [
           {transform: type === 'in' ? 'translateX(-100%)' : 'translateX(0)' + ' translateZ(0) translate3d(0,0,0)'},
@@ -43,7 +55,7 @@ export function getTransition(name, type, props) {
           easing: 'ease-in-out'
         }
       ]
-    case 'Slide Top To Bottom':
+    case 'slideTopToBottom':
       return [
         [
           {transform: type === 'in' ? 'translateY(100%)' : 'translateY(0)' + ' translateZ(0) translate3d(0,0,0)'},
@@ -54,7 +66,7 @@ export function getTransition(name, type, props) {
           easing: 'ease-in-out'
         }
       ]
-    case 'Slide Bottom To Top':
+    case 'slideBottomToTop':
       return [
         [
           {transform: type === 'in' ? 'translateY(-100%)' : 'translateY(0)' + ' translateZ(0) translate3d(0,0,0)'},
