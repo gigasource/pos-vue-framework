@@ -28,7 +28,7 @@ export const Basic = () => ({
   },
   template: `
   <div data-app>
-    <g-dialog v-model="dialog" lazy :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :hideOverlay="hideOverlay" :persistent="persistent" :bottom="bottom" :fullscreen="fullscreen">
+    <g-dialog v-model="dialog" :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :hideOverlay="hideOverlay" :persistent="persistent" :bottom="bottom" :fullscreen="fullscreen">
       <template v-slot:activator="{ toggleDialog }">
         <g-btn width="150" height="50" @click="toggleDialog">Open Dialog</g-btn>
       </template>
@@ -72,7 +72,7 @@ export const OverflowContent = () => ({
   },
   template: `
   <div data-app>
-    <g-dialog v-model="dialog" lazy :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :persistent="persistent"  :hideOverlay="hideOverlay" :scrollable="scrollable" :bottom="bottom" :fullscreen="fullscreen">
+    <g-dialog v-model="dialog" :width="width" :overlay-color="overlayColor" :overlay-opacity="overlayOpacity" :persistent="persistent"  :hideOverlay="hideOverlay" :scrollable="scrollable" :bottom="bottom" :fullscreen="fullscreen">
       <template v-slot:activator="{ toggleDialog }">
         <g-btn width="150" height="50" @click="toggleDialog">Open Dialog</g-btn>
       </template>
@@ -186,7 +186,7 @@ export const Nested = () => ({
         </div>
         <g-card-actions>
           <g-btn flat right @click="dialog2 = false">I accept</g-btn>
-          <g-btn flat right @click="dialog3 = true">Open Dialog 2</g-btn>
+          <g-btn flat right @click="dialog3 = true">Open Dialog 3</g-btn>
         </g-card-actions>
       </g-card>
     </g-dialog>
