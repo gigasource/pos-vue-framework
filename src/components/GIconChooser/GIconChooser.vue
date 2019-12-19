@@ -190,7 +190,6 @@
 
       // render function
       const renderFn = () => {
-        console.log('icon srcs', iconSources)
         return (
             <div class="g-icon-chooser__dialog-content">
               <g-icon-search

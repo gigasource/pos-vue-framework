@@ -1,33 +1,55 @@
+<template>
+  <div>
+    <g-btn flat outlined @click="showDialog">{{ displayText }}</g-btn>
+    <g-dialog :value="show" fullscreen>
+      <div class="editor-dialog">
+        <component
+            :is="GGridGenerator"
+            :layout="layout"
+            @json="updateModel"
+            @close="hideDialog"/>
+      </div>
+    </g-dialog>
+  </div>
+</template>
 <script>
-  import { reactive } from '@vue/composition-api';
-  import GDialog from '../GDialog/GDialog'
-  import GGridGenerator from './components/GGridGenerator'
-  import GBtn from '../GBtn/GBtn'
+  const GDialog = () => import('../GDialog/GDialog')
+  const GBtn = () => import('../GBtn/GBtn')
+  // Don't add lazy load component to components prop
+  const GGridGeneratorLazyLoad = () => import('./components/GGridGenerator')
 
   export default {
     name: 'GGridGeneratorInput',
-    components: { GDialog, GGridGenerator, GBtn },
+    components: { GDialog, GBtn },
     props: {
       model: Object,
       field: Object,
     },
-    setup(props, context) {
-      const dialogState = reactive({ show: false })
-      return () => {
-        return <div>
-          <g-btn flat outlined vOn:click={() => dialogState.show = true}>
-            { props.model[props.field.key] != null ? 'Edit grid': 'Add grid' }
-          </g-btn>
-          <g-dialog value={dialogState.show} fullscreen>
-            <div class="editor-dialog">
-              <g-grid-generator
-                  ref="gridGenerator"
-                  layout={props.model[props.field.key]}
-                  vOn:json={json => props.model[props.field.key] = json}
-                  vOn:close={() => dialogState.show = false}/>
-            </div>
-          </g-dialog>
-        </div>
+    data() {
+      return {
+        show: false,
+      }
+    },
+    computed: {
+      GGridGenerator() {
+        if (this.show) return GGridGeneratorLazyLoad
+      },
+      displayText() {
+        return this.model[this.field.key] != null ? 'Edit grid' : 'Add grid'
+      },
+      layout() {
+        return this.model[this.field.key]
+      }
+    },
+    methods: {
+      showDialog() {
+        this.show = true;
+      },
+      hideDialog() {
+        this.show = false
+      },
+      updateModel(json) {
+        this.model[this.field.key] = json
       }
     }
   }
