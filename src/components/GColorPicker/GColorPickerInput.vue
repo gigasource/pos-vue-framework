@@ -1,14 +1,14 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../../components/GMenu/GMenu';
-  import GColorPicker from './GColorPicker'
   import { reactive, watch } from '@vue/composition-api'
+  const GColorPickerComponent = () => import('./GColorPicker')
 
   GMenu.components['GTextField'] = GTextField
 
   export default {
     name: 'GColorPickerInput',
-    components: { GMenu, GColorPicker },
+    components: { GMenu },
     props: {
       label: String,
       disabled: Boolean,
@@ -22,6 +22,11 @@
         dense: Boolean
       },
       value: String
+    },
+    computed: {
+      GColorPicker() {
+        if (this.showMenu) return GColorPickerComponent
+      }
     },
     setup(props, context) {
       const state = reactive({
@@ -78,7 +83,7 @@
             maxWidth={320}
             contentFillWidth={false}
             closeOnClick>
-          <g-color-picker vOn:color={updateColor}/>
+          <component is={GColorPicker} vOn:color={updateColor}/>
         </g-menu>
       }
     }
