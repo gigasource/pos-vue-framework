@@ -70,7 +70,6 @@
 				</span>
 			}
 
-
       const genIcon = function (state) {
         return <g-icon size="10" vOn:click={(e) => {
           state.collapse = !state.collapse
@@ -111,15 +110,23 @@
         )
       }
 
-      const itemChildren = (node, {isRoot}) => {
+      const itemChildren = (node) => {
         return node['children']
 			}
+
+			const itemPath = (node, {isRoot, key}) => {
+        if (isRoot) return
+				if (key) {
+				  return `children.${key}`
+				}
+      }
 
       const { treeStates, genTree } = GTreeFactory({
         genNode,
         genWrapper,
         genRootWrapper,
 				itemChildren,
+				itemPath,
         data: computedData,
         expandLevel: props.expandLevel,
       })

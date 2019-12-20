@@ -21,12 +21,15 @@
     setup (props, context) {
 			const treeData = getInternalValue(props, context)
 
-			const parsedElementObj = ref({})
-
 			const cssCustomizerTree = treeData.value.metaData && treeData.value.metaData.cssCustomizerTree ? reactive(treeData.value.metaData.cssCustomizerTree) : reactive({
         allPaths: [],
         activePath: '',
       })
+
+			// Path
+      function isRootPath (path) {
+        return path === ''
+      }
 
 			const parseElement = (el) => {
 			  // debugger
@@ -35,6 +38,7 @@
           obj['start'] = el.innerHTML ? el.outerHTML.slice(0, el.outerHTML.indexOf(el.innerHTML)) : el.outerHTML.slice(0, el.outerHTML.search(/<\/+/))
 					obj['end'] = el.innerHTML ? el.outerHTML.slice(el.outerHTML.indexOf(el.innerHTML) + el.innerHTML.length - el.outerHTML.length) : el.outerHTML.slice(obj['start'].length - el.outerHTML.length)
 					obj['start'] = obj['start'].replace(/ data-v-\w+=""/g, '')
+					obj['classList'] = [...el.classList]
           obj['children'] = []
           for (let childEl of el.childNodes) {
             const child = parseElement(childEl)
@@ -131,7 +135,8 @@
 			}
 
 			const activeCssClass = computed(() => {
-			  return genCssClass(getComponentName(cssCustomizerTree.activePath), getComponentId(cssCustomizerTree.activePath))
+			  if (isRootPath(cssCustomizerTree.activePath)) return _.get(treeData.value, cssCustomizerTree.activePath + 'classList')
+				return _.get(treeData.value, cssCustomizerTree.activePath + '.classList')
 			})
 
 			const cssCode = computed(() => {
@@ -166,7 +171,7 @@
 					<div class="g-css-customizer-code-title">
 						CSS
 					</div>
-					<g-combobox label="selector"/>
+					<g-combobox items={activeCssClass.value} label="selector"/>
 					{cssDisplayCode.value.map(item => genDisplayCode(item))}
 				</div>
 			}
@@ -210,7 +215,7 @@
         const el = preview.querySelector(`[${scopedId.value}]`)
         // setStyle(el, stylesObj.value)
 				const style = preview.querySelector('style')
-				style.innerText = '.' + activeCssClass.value + ' ' + cssCode.value + '\r\n'
+				// style.innerText = '.' + activeCssClass.value + ' ' + cssCode.value + '\r\n'
 			}
 
 			const resetChanges = () => {
@@ -251,7 +256,8 @@
 
 			return {
 			  genCssCustomizer,
-				parsedElementObj,
+				cssCustomizerTree,
+				activeCssClass
 			}
 		},
 		render () {
