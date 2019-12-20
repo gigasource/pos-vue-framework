@@ -23,6 +23,10 @@
         value: null
       });
 
+      const intersectCb = () => {
+        context.emit('input', data.value)
+      }
+
       function genWindowItem() {
         const nodeData = {
           class: 'g-scroll-window-item',
@@ -30,12 +34,10 @@
             {
               name: 'intersect',
               arg: {
-                root: context.parent.$el,
-                threshold: 0.99
+                root: undefined,
+                threshold: 0.999
               },
-              value: () => {
-                context.emit('input', data.value)
-              }
+              value: intersectCb
             }
           ]
         };
@@ -45,6 +47,7 @@
       return {
         data,
         genWindowItem,
+        intersectCb
       }
     },
     render() {
