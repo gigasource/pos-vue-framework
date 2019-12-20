@@ -73,8 +73,15 @@
 
       watch(() => props.value, (val, oldVal) => {
         if (val !== oldVal) {
-          const currentElement = data.items[props.value].$el;
+
+          const currentItem = data.items[props.value];
+          const currentElement = currentItem.$el;
+
+          const temp = currentItem.intersectCb
+          currentItem.intersectCb = () => null
+
           currentElement.scrollIntoView({ block: 'center' });
+          currentItem.intersectCb = temp
         }
       }, { lazy: true });
 
@@ -228,7 +235,7 @@
 
       .g-window__next,
       .g-window__prev {
-        transition: .2s transform cubic-bezier(0.25, 0.8, 0.5, 1);
+        transition: .2s transform cubic-bezier(0.25, 0.8, 0.8, 0.25);
       }
 
       .g-window__prev {
