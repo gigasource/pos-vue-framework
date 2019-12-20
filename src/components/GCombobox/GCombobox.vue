@@ -1,19 +1,19 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {computed, reactive, ref, watch} from '@vue/composition-api';
+  import { computed, reactive, ref, watch } from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import {getLabel, getValidate} from '../GInput/GInputFactory';
+  import { getLabel, getValidate } from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
   import GListItem from '../GList/GListItem';
-  import {GListItemContent, GListItemText} from '../GList/GListFunctionalComponent';
-  import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
-  import {getInputEventHandlers, setSearch} from '../GAutocomplete/GAutocompleteFactory';
-  import {makeCombobox} from '../GList/groupableForList';
-  import {Fragment} from 'vue-fragment'
+  import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
+  import { getList, getSelectionsForCombobox } from '../GSelect/GSelectFactory';
+  import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
+  import { makeCombobox } from '../GList/groupableForList';
+  import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
@@ -97,6 +97,26 @@
       searchText: String,
     },
     setup: function (props, context) {
+      function createItemFn(prop) {
+        return typeof prop === 'function'
+          ? prop
+          : item => {
+            if (!_.isObject(item)) {
+              return item
+            }
+
+            if (_.isArray(prop)) {
+              const key = prop.find(Object.keys(item).includes)
+              return item[key]
+            } else {
+              return item[prop]
+            }
+          }
+      }
+
+      const itemTextFn = computed(() => createItemFn(props.itemText))
+      const itemValueFn = computed(() => createItemFn(props.itemValue))
+
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
       const fieldItem = ref(null)
@@ -104,10 +124,10 @@
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return (item || item === 0) ? (item['text'] || item[props.itemText] || item['value'] || (typeof item !== 'object' && item)) : ''
+            return (item || item === 0) ? (item['text'] || itemTextFn.value(item) || item['value'] || (typeof item !== 'object' && item)) : ''
           })
         } else {
-          return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || fieldItem.value[props.itemText] || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
+          return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || itemTextFn.value(fieldItem.value) || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
         }
       })
       const state = reactive({
