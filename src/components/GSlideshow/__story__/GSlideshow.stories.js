@@ -1,5 +1,6 @@
 import { withKnobs } from '@storybook/addon-knobs';
-import GSlideshow, {transitionList} from '../GSlideshow';
+import GSlideshow from '../GSlideshow';
+import { transitionList } from "../GSlideshowFactory";
 import GBtn from '../../GBtn/GBtn';
 import src1 from '../../../assets/slideshow/food1.jpeg'
 import src2 from '../../../assets/slideshow/food2.jpeg'
@@ -26,27 +27,27 @@ export const Basic = () => ({
     start() {
       const slide = [[
         {
-          src: 'https://free4kwallpapers.com/uploads/originals/2015/10/27/morning-glory-wallpaper.jpg',
+          src: 'https://free4kwallpapers.com/uploads/wallpaper/fog-in-jungle-wallpaper-2560x1440-wallpaper.jpg',
           type: 'image',
-          transition: 'Slide Top To Bottom',
-          duration: 5000
+          transition: transitionList.slideRightToLeft,
+          duration: 0
         },
         // {
         //   src: 'https://free4kwallpapers.com/uploads/wallpaper/fog-in-jungle-wallpaper-2560x1440-wallpaper.jpg',
         //   type: 'image',
-        //   transition: 'Slide Top To Bottom',
+        //   transition: transitionList.slideBottomToTop,
         //   duration: 5000
         // },
         // {
         //   src: 'https://free4kwallpapers.com/uploads/wallpaper/sunset-summer-4k-wallpaper-2560x1440-wallpaper.jpg',
         //   type: 'image',
-        //   transition: 'Slide Top To Bottom',
+        //   transition: transitionList.slideBottomToTop,
         //   duration: 5000
         // },
         // {
         //   src: 'https://free4kwallpapers.com/uploads/originals/2015/09/06/beautiful-nature-images-with-quotes.jpg',
         //   type: 'image',
-        //   transition: 'Slide Top To Bottom',
+        //   transition: transitionList.slideBottomToTop,
         //   duration: 5000
         // },
       ], [
