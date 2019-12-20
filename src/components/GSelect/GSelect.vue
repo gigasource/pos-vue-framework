@@ -322,7 +322,7 @@
       margin: 3px
     }
 
-    .g-tf-append__inner .g-icon:last-child {
+    .g-tf-append__inner .g-icon.g-icon__arrow  {
       transition: transform 0.4s;
     }
 
