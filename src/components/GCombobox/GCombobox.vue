@@ -104,10 +104,10 @@
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return (item || item === 0) ? (item['text'] || item['value'] || (typeof item !== 'object' && item)) : ''
+            return (item || item === 0) ? (item['text'] || item[props.itemText] || item['value'] || (typeof item !== 'object' && item)) : ''
           })
         } else {
-          return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
+          return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || fieldItem.value[props.itemText] || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
         }
 
       })
