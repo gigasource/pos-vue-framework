@@ -78,15 +78,30 @@
         type: Boolean,
         default: true
       },
-      appendIcon: {
-        type: String,
-        default: 'arrow_drop_down'
-      },
+      appendIcon: String,
       appendSvg: Boolean,
       required: Boolean,
       returnObject: Boolean,
     },
     setup: function (props, context) {
+      function createItemFn(prop) {
+        return typeof prop === 'function'
+            ? prop
+            : item => {
+              if (!_.isObject(item)) return item
+
+              if (_.isArray(prop)) {
+                const key = prop.find(Object.keys(item).includes)
+                return item[key]
+              } else {
+                return item[prop]
+              }
+            }
+      }
+
+      const itemTextFn = computed(() => createItemFn(props.itemText))
+      const itemValueFn = computed(() => createItemFn(props.itemValue))
+
       const state = reactive({
         searchText: '',
         fieldItem: null
@@ -99,11 +114,11 @@
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
+            return item ? (itemTextFn.value(item) || itemValueFn.value(item) || item) : ''
           })
         }
-        return fieldItem.value || fieldItem.value === 0 ? fieldItem.value[props.itemText] ||
-            fieldItem.value[props.itemValue] ||
+        return fieldItem.value || fieldItem.value === 0 ? itemTextFn.value(fieldItem.value) ||
+            itemValueFn.value(fieldItem.value) ||
             fieldItem.value.toString() : ''
       })
 
@@ -150,8 +165,8 @@
                     'click:item': () => showOptions.value = props.multiple,
                     input: e => selectedValue.value = e,
                   },
-                  scopedSlots:{
-                    content: () =>  context.slots.item && context.slots.item()
+                  scopedSlots: {
+                    content: () => context.slots.item && context.slots.item()
                   }
                 }}
                 ref="list"
@@ -178,8 +193,8 @@
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.allowDuplicates) {
           return selectionTexts.value.map((item, index) => <GChip small={props.smallChips}
-                                                              close={props.deletableChips}
-                                                              vOn:close={() => onChipCloseClick(index)}>{item}
+                                                                  close={props.deletableChips}
+                                                                  vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
         return selectionTexts.value.map(function (item, index) {
@@ -199,7 +214,9 @@
       }
       const getTextFieldScopedSlots = {
         'append-inner': ({iconColor}) =>
-            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
+            [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+              context.slots['append-inner'] && context.slots['append-inner'](),
+              props.appendIcon && <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>],
         'input-slot': ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {selectionTexts.value.length === 0 ?
@@ -301,31 +318,32 @@
 </script>
 <style scoped lang="scss">
   .g-select::v-deep {
-      span {
-        margin: 3px
-      }
-      .g-tf-append__inner .g-icon:last-child {
-        transition: transform 0.4s;
-      }
+    span {
+      margin: 3px
+    }
 
-      .g-tf-input {
-        display: flex;
-      }
+    .g-tf-append__inner .g-icon:last-child {
+      transition: transform 0.4s;
+    }
 
-      .input {
-        display: flex;
-      }
+    .g-tf-input {
+      display: flex;
+    }
 
-      input {
-        flex-shrink: 1;
-        flex-grow: 1;
-        flex-basis: 0;
-      }
+    .input {
+      display: flex;
+    }
+
+    input {
+      flex-shrink: 1;
+      flex-grow: 1;
+      flex-basis: 0;
+    }
 
   }
 
   .g-select__active::v-deep {
-    .g-tf-append__inner .g-icon:last-child {
+    .g-tf-append__inner .g-icon.g-icon__arrow {
       transition: transform 0.4s;
       transform: rotateZ(180deg);
     }

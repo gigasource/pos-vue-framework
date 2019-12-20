@@ -85,17 +85,37 @@
         default: () => []
       },
       itemText: {
-        type: String,
+        type: [String, Array, Function],
         default: 'text'
       },
       itemValue: {
-        type: String,
+        type: [String, Array, Function],
+        default: 'value'
       },
       value: null,
       returnObject: Boolean,
       searchText: String,
     },
     setup: function (props, context) {
+      function createItemFn(prop) {
+        return typeof prop === 'function'
+          ? prop
+          : item => {
+            if (!_.isObject(item)) {
+              return item
+            }
+
+            if (_.isArray(prop)) {
+              const key = prop.find(Object.keys(item).includes)
+              return item[key]
+            } else {
+              return item[prop]
+            }
+          }
+      }
+
+      const itemTextFn = computed(() => createItemFn(props.itemText))
+      const itemValueFn = computed(() => createItemFn(props.itemValue))
 
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
@@ -104,12 +124,11 @@
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return (item || item === 0) ? (item['text'] || item['value'] || (typeof item !== 'object' && item)) : ''
+            return (item || item === 0) ? (item['text'] || itemTextFn.value(item) || item['value'] || (typeof item !== 'object' && item)) : ''
           })
         } else {
-          return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
+          return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || itemTextFn.value(fieldItem.value) || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
         }
-
       })
       const state = reactive({
         searchText: '',
@@ -132,26 +151,26 @@
           showOptions.value = props.multiple
         }
         return <GList
-          {...{
-            props: {
-              items: options.value,
-              itemText: props.itemText,
-              itemValue: props.itemValue,
-              returnObject: props.returnObject,
-              mandatory: true,
-              allowDuplicates: props.allowDuplicates,
-              multiple: props.multiple,
-              selectable: true,
-              inMenu: true,
-              value: selectedItem.value,
-            },
-            on: {
-              'click:item': onClickItem,
-              input: e => selectedItem.value = e,
-            },
-          }
-          }
-          ref="list"
+            {...{
+              props: {
+                items: options.value,
+                itemText: props.itemText,
+                itemValue: props.itemValue,
+                returnObject: props.returnObject,
+                mandatory: true,
+                allowDuplicates: props.allowDuplicates,
+                multiple: props.multiple,
+                selectable: true,
+                inMenu: true,
+                value: selectedItem.value,
+              },
+              on: {
+                'click:item': onClickItem,
+                input: e => selectedItem.value = e,
+              },
+            }
+            }
+            ref="list"
         />
 
       }
@@ -216,7 +235,7 @@
             <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable} class={['g-icon__clear']}
                    color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
         'append-inner': ({iconColor}) =>
-            [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
+            [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
               context.slots['append-inner'] && context.slots['append-inner']()],
         'append-outer': () => context.slots['append-outer'] && context.slots['append-outer'](),
         'input-slot': ({inputErrStyles}) =>
@@ -356,7 +375,7 @@
   }
 
   .g-combobox__active {
-    ::v-deep .g-tf-append__inner .g-icon:last-child {
+    ::v-deep .g-tf-append__inner .g-icon.g-icon__arrow {
       transition: transform 0.4s;
       transform: rotateZ(180deg);
     }
