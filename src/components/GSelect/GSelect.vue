@@ -78,10 +78,7 @@
         type: Boolean,
         default: true
       },
-      appendIcon: {
-        type: String,
-        default: 'arrow_drop_down'
-      },
+      appendIcon: String,
       appendSvg: Boolean,
       required: Boolean,
       returnObject: Boolean,
@@ -217,7 +214,9 @@
       }
       const getTextFieldScopedSlots = {
         'append-inner': ({iconColor}) =>
-            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
+            [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+              context.slots['append-inner'] && context.slots['append-inner'](),
+              props.appendIcon && <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>],
         'input-slot': ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
               {selectionTexts.value.length === 0 ?
@@ -344,7 +343,7 @@
   }
 
   .g-select__active::v-deep {
-    .g-tf-append__inner .g-icon:last-child {
+    .g-tf-append__inner .g-icon.g-icon__arrow {
       transition: transform 0.4s;
       transform: rotateZ(180deg);
     }

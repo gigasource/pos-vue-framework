@@ -235,7 +235,7 @@
             <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable} class={['g-icon__clear']}
                    color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
         'append-inner': ({iconColor}) =>
-            [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
+            [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
               context.slots['append-inner'] && context.slots['append-inner']()],
         'append-outer': () => context.slots['append-outer'] && context.slots['append-outer'](),
         'input-slot': ({inputErrStyles}) =>
@@ -375,7 +375,7 @@
   }
 
   .g-combobox__active {
-    ::v-deep .g-tf-append__inner .g-icon:last-child {
+    ::v-deep .g-tf-append__inner .g-icon.g-icon__arrow {
       transition: transform 0.4s;
       transform: rotateZ(180deg);
     }

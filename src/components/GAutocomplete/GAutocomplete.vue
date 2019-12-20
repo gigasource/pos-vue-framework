@@ -200,8 +200,9 @@
         'clearable-slot': ({iconColor}) =>
             <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable} class={['g-icon__clear']}
                    color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
-        'append-inner': ({iconColor}) => [<GIcon color={iconColor}>arrow_drop_down</GIcon>,
-          context.slots['append-inner'] && context.slots['append-inner']({iconColor})],
+        'append-inner': ({iconColor}) =>
+            [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+              context.slots['append-inner'] && context.slots['append-inner']({iconColor})],
         'append-outer': ({iconColor}) => context.slots['append-outer'] && context.slots['append-outer']({iconColor}),
         'input-slot': ({inputErrStyles}) =>
             <div class="g-tf-input" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
@@ -339,7 +340,7 @@
   }
 
   .g-autocomplete__active ::v-deep {
-    .g-tf-append__inner .g-icon:last-child {
+    .g-tf-append__inner .g-icon.g-icon__arrow {
       transition: transform 0.4s;
       transform: rotateZ(180deg);
     }
