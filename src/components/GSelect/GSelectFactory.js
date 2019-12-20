@@ -1,4 +1,4 @@
-import {computed} from '@vue/composition-api';
+import { computed } from '@vue/composition-api';
 import _ from 'lodash';
 
 function createItemFn(prop) {
@@ -18,6 +18,7 @@ function createItemFn(prop) {
 
 const listMultipleFilter = (props, selectedValue) => {
   const itemValueFn = computed(() => createItemFn(props.itemValue))
+  const itemTextFn = computed(() => createItemFn(props.itemText))
 
   let _options
   if (!selectedValue.value) {
@@ -26,8 +27,9 @@ const listMultipleFilter = (props, selectedValue) => {
   if (props.allowDuplicates) {
     _options = props.items;
   } else {
-    if (props.returnObject) _options = props.items.filter(item => !selectedValue.value.find(_selectedValue => _.isEqual(_selectedValue, item)));
-    else {
+    if (props.returnObject) {
+      _options = props.items.filter(item => !selectedValue.value.find(_selectedValue => itemTextFn.value(_selectedValue) === itemTextFn.value(item)));
+    } else {
       if (props.itemValue) {
         _options = props.items.filter(item => !selectedValue.value.find(el => el === itemValueFn.value(item)))
       } else {
