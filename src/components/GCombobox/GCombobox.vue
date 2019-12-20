@@ -1,19 +1,19 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import { computed, reactive, ref, watch } from '@vue/composition-api';
+  import {computed, reactive, ref, watch} from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import { getLabel, getValidate } from '../GInput/GInputFactory';
+  import {getLabel, getValidate} from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
   import GListItem from '../GList/GListItem';
-  import { GListItemContent, GListItemText } from '../GList/GListFunctionalComponent';
-  import { getList, getSelectionsForCombobox } from '../GSelect/GSelectFactory';
-  import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
-  import { makeCombobox } from '../GList/groupableForList';
-  import { Fragment } from 'vue-fragment'
+  import {GListItemContent, GListItemText} from '../GList/GListFunctionalComponent';
+  import {getList, getSelectionsForCombobox} from '../GSelect/GSelectFactory';
+  import {getInputEventHandlers, setSearch} from '../GAutocomplete/GAutocompleteFactory';
+  import {makeCombobox} from '../GList/groupableForList';
+  import {Fragment} from 'vue-fragment'
 
   export default {
     name: 'GCombobox',
@@ -85,18 +85,18 @@
         default: () => []
       },
       itemText: {
-        type: String,
+        type: [String, Array, Function],
         default: 'text'
       },
       itemValue: {
-        type: String,
+        type: [String, Array, Function],
+        default: 'value'
       },
       value: null,
       returnObject: Boolean,
       searchText: String,
     },
     setup: function (props, context) {
-
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
       const fieldItem = ref(null)
@@ -109,7 +109,6 @@
         } else {
           return (fieldItem.value || fieldItem.value === 0) ? fieldItem.value['text'] || fieldItem.value[props.itemText] || fieldItem.value['value'] || (typeof fieldItem.value !== 'object' && fieldItem.value) : ''
         }
-
       })
       const state = reactive({
         searchText: '',
@@ -132,26 +131,26 @@
           showOptions.value = props.multiple
         }
         return <GList
-          {...{
-            props: {
-              items: options.value,
-              itemText: props.itemText,
-              itemValue: props.itemValue,
-              returnObject: props.returnObject,
-              mandatory: true,
-              allowDuplicates: props.allowDuplicates,
-              multiple: props.multiple,
-              selectable: true,
-              inMenu: true,
-              value: selectedItem.value,
-            },
-            on: {
-              'click:item': onClickItem,
-              input: e => selectedItem.value = e,
-            },
-          }
-          }
-          ref="list"
+            {...{
+              props: {
+                items: options.value,
+                itemText: props.itemText,
+                itemValue: props.itemValue,
+                returnObject: props.returnObject,
+                mandatory: true,
+                allowDuplicates: props.allowDuplicates,
+                multiple: props.multiple,
+                selectable: true,
+                inMenu: true,
+                value: selectedItem.value,
+              },
+              on: {
+                'click:item': onClickItem,
+                input: e => selectedItem.value = e,
+              },
+            }
+            }
+            ref="list"
         />
 
       }

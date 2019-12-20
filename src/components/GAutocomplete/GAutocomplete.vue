@@ -1,16 +1,16 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import { computed, reactive, ref, watch } from '@vue/composition-api';
-  import { getList, getSelections } from '../GSelect/GSelectFactory';
+  import {computed, reactive, ref, watch} from '@vue/composition-api';
+  import {getList, getSelections} from '../GSelect/GSelectFactory';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import { getLabel, getValidate } from '../GInput/GInputFactory';
+  import {getLabel, getValidate} from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
-  import { getInputEventHandlers, setSearch } from './GAutocompleteFactory';
-  import { makeListSelectable } from '../GList/groupableForList';
+  import {getInputEventHandlers, setSearch} from './GAutocompleteFactory';
+  import {makeListSelectable} from '../GList/groupableForList';
 
   export default {
     name: 'GAutocomplete',
@@ -79,11 +79,11 @@
       deletableChips: Boolean,
       items: {type: Array, default: () => []},
       itemText: {
-        type: String,
+        type: [String, Array, Function],
         default: 'text',
       },
       itemValue: {
-        type: String,
+        type: [String, Array, Function],
         default: 'value',
       },
       value: null,
@@ -146,7 +146,6 @@
             }
             ref="list"
         />
-
       }
 
       //selections text
