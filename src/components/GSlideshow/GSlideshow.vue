@@ -55,9 +55,8 @@
       }
 
 			// Init slide nodes when mounted
-      onMounted( async () => {
+      onMounted(() => {
         initSlideNodes()
-        if (model.value.length > 0 && slideNodes[0].video.style.display !== "none") await slideNodes[0].video.play()
         count.value = count.value >= maxCount.value ? 0 : count.value + 1
       })
 
