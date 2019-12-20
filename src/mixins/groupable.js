@@ -1,6 +1,21 @@
 import _ from 'lodash'
 import { computed, ref, watch } from '@vue/composition-api';
 
+function createItemFn(prop) {
+  return typeof prop === 'function'
+    ? prop
+    : item => {
+      if (!_.isObject(item)) return item
+
+      if (_.isArray(prop)) {
+        const key = prop.find(Object.keys(item).includes)
+        return item[key]
+      } else {
+        return item[prop]
+      }
+    }
+}
+
 function groupable(props, vModel) {
   //mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //multiple: multiple items can be active at a time
@@ -70,18 +85,20 @@ function groupable(props, vModel) {
 }
 
 export function makeSelectable(props, context) {
+  const itemValueFn = computed(() => createItemFn(props.itemValue))
+
   // 1 -> {a: 1, b: 2}
   const convertValueToInternalValue = function (value) {
     if (!props.itemValue || !value) return value;
-    if (!Array.isArray(props.value)) return props.items.find(i => i[props.itemValue] === value);
-    return props.items.filter(i => value.includes(i[props.itemValue]));
+    if (!Array.isArray(props.value)) return props.items.find(i => itemValueFn.value(i) === value);
+    return props.items.filter(i => value.includes(itemValueFn.value(i)));
   }
 
   // {a: 1, b: 2} -> 1
   const convertInternalValueToValue = function (internalValue) {
     if (!props.itemValue || !internalValue) return internalValue;
-    if (!Array.isArray(internalValue)) return internalValue[props.itemValue];
-    return internalValue.map(i => i[props.itemValue]);
+    if (!Array.isArray(internalValue)) return itemValueFn.value(internalValue);
+    return internalValue.map(i => itemValueFn.value(i));
   }
 
   let rawInternalValue;
