@@ -1,4 +1,4 @@
-import { ref, reactive, computed, onMounted} from '@vue/composition-api';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount} from '@vue/composition-api';
 import { Point, Circle } from './CoordinateSystem';
 import { getElementPosition } from '../../utils/helpers';
 
@@ -29,9 +29,22 @@ export function getConnectionPoint(el, originPoint, zoomState, position) {
   }
 }
 
-export default function GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId) {
+export default function GConnectorFactory(props, context, model, eventEmitter, isActive, isBooted, diagramId, id, connectionPoints, zoomState, originCoordinate, activeDrawId, initConnections) {
   const localConnectionPoints = ref([]);
   const connectionPaths = ref([]);
+
+  function initConnectionPoints() {
+    context.root.$nextTick(() => {
+      localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
+      for (let connectionPoint of localConnectionPoints.value) {
+        connectionPoint.value = model.value
+        connectionPoint.id = id.value
+        if (props.startLimit !== undefined) connectionPoint.startLimit = +props.startLimit
+        if (props.endLimit !== undefined) connectionPoint.endLimit = +props.endLimit
+      }
+      connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
+    })
+  }
 
   function updateConnectionPoints() {
     localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
@@ -47,17 +60,31 @@ export default function GConnectorFactory(props, context, model, id, connectionP
   }
 
   // Calculate local connection points when mounted
-  onMounted(function () {
-    this.$nextTick(function () {
-      localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
-      for (let connectionPoint of localConnectionPoints.value) {
-        connectionPoint.value = model.value
-        connectionPoint.id = id.value
-        if (props.startLimit) connectionPoint.startLimit = +props.startLimit
-        if (props.endLimit) connectionPoint.endLimit = +props.endLimit
+  onMounted(() => {
+    initConnectionPoints()
+  })
+
+  // Initial connection paths
+  watch(initConnections, newVal => {
+    if (newVal.length > 0) {
+      for (let connection of newVal) {
+        if (localConnectionPoints.value.includes(connection.startPoint)) {
+          connection.startPoint.startCount++
+          connection.endPoint.endCount++
+          connectionPaths.value.push(drawPath(connection.startPoint, connection.endPoint))
+        }
       }
-      connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
-    })
+    }
+  }, {lazy: true})
+
+  // Calculate local connection points when booted
+  watch(isBooted, () => {
+    updateConnectionPoints()
+  }, {lazy: true})
+
+  // Update when toggle
+  model.value.show !== undefined && watch(() => model.value.show, () => {
+    if (isActive.value) eventEmitter.$emit(`update${diagramId.value}`)
   })
 
   // Connection Region is a circle around a connection point
@@ -68,22 +95,27 @@ export default function GConnectorFactory(props, context, model, id, connectionP
 
   // Draw new connection path
 
+  function drawPath(startPoint, endPoint) {
+    let tempPath = reactive({
+      startPoint: startPoint,
+      endPoint: endPoint,
+      startControlPoint: computed(() => {
+        return new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.startPoint.y)
+      }),
+      endControlPoint: computed(() => {
+        return new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.endPoint.y)
+      }),
+    })
+    return tempPath
+  }
+
   function drawStart(e) {
     const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
     const targetRegion = mousePoint.isInside(connectionRegions.value)
+    if (targetRegion === undefined) return
     if (targetRegion.center.startCount < targetRegion.center.startLimit) {
       targetRegion.center.startCount++
-      let tempPath = reactive({
-        startPoint: targetRegion.center,
-        endPoint: targetRegion.center,
-        startControlPoint: computed(() => {
-          return new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.startPoint.y)
-        }),
-        endControlPoint: computed(() => {
-          return new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.endPoint.y)
-        }),
-      })
-      connectionPaths.value.push(tempPath)
+      connectionPaths.value.push(drawPath(targetRegion.center, targetRegion.center))
       activeDrawId.value = id.value
     }
   }
@@ -119,6 +151,11 @@ export default function GConnectorFactory(props, context, model, id, connectionP
       connectionPaths.value.splice(index, 1)
     }
   }
+
+  // Update connection points before unmount
+  onBeforeUnmount(() => {
+    eventEmitter.$emit(`update${diagramId.value}`)
+  })
 
   return {
     connectionPaths,

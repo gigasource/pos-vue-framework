@@ -1,6 +1,6 @@
 <script>
 	import { convertToUnit } from '../../utils/helpers';
-  import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { ref, computed, provide, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
   import GDiagramFactory from './GDiagramFactory';
   import Vue from 'vue';
 
@@ -29,9 +29,13 @@
       zoomSpeed: {
         type: [Number, String],
         default: 5
-      }
+      },
+			value: {
+        type: Boolean
+			}
 		},
     setup(props, context) {
+
       const diagramId = ref('null')
 
       onMounted(function() {
@@ -41,6 +45,8 @@
       const eventEmitter = new Vue()
 
 			const {
+        isActive,
+				isBooted,
         connectionPoints,
         zoomState,
         originCoordinate,
@@ -54,11 +60,16 @@
         dragEnd
       } = GDiagramFactory(props, context)
 
+			provide('isActive', isActive)
+			provide('isBooted', isBooted)
       provide('diagramId', diagramId)
       provide('eventEmitter', eventEmitter)
       provide('connectionPoint', connectionPoints)
       provide('zoomState', zoomState)
 			provide('originCoordinate', originCoordinate)
+
+      const itemZIndex = ref(1)
+			provide('itemZIndex', itemZIndex)
 
 			const activeDrawId = ref(null)
 			provide('activeDrawId', activeDrawId)
@@ -112,11 +123,15 @@
 				transformOrigin: `0 0`
       }))
 
-
+			watch(isActive, newVal => {
+			  if (newVal) context.root.$nextTick(() => {
+          eventEmitter.$emit(`update${diagramId.value}`)
+				})
+			}, )
 
 			// Render function
       function genDiagram() {
-        return <div class="g-diagram-container" style={containerStyles.value} vOn:wheel={zoom} vOn:scroll={scroll} scroll-top="500" ref="container">
+        return <div class="g-diagram-container" style={containerStyles.value} vShow={isActive.value} vOn:wheel={zoom} vOn:scroll={scroll} ref="container">
           <div class="g-diagram-content" style={contentStyles.value} ref="content">
             <portal-target name={diagramId.value} width={svgDimension.width} height={svgDimension.height} tag="svg" multiple ref="svg"/>
 						<portal to={diagramId.value} slim>

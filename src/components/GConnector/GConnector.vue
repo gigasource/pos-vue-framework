@@ -2,11 +2,9 @@
 	import getInternalValue from '../../mixins/getVModel';
   import { ref, inject, onMounted } from '@vue/composition-api';
   import GConnectorFactory from './GConnectorFactory';
-  import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'GConnector',
-		components: { Fragment },
     props: {
 			value: [Number, String, Object],
 
@@ -38,7 +36,7 @@
 
 			startLimit: [Number, String],
 			endLimit: [Number, String],
-			filter: Function
+			filter: Function,
     },
     setup(props, context) {
       // Connector Id handling
@@ -55,12 +53,15 @@
       })
 
       const model = getInternalValue(props, context)
+      const isActive = inject('isActive')
+			const isBooted = inject('isBooted')
       const diagramId = inject('diagramId')
       const connectionPoints = inject('connectionPoint')
       const zoomState = inject('zoomState')
 			const originCoordinate = inject('originCoordinate')
 			const eventEmitter = inject('eventEmitter')
 			const activeDrawId = inject('activeDrawId')
+			const initConnections = inject('initConnections')
 
 			const { connectionPaths,
         localConnectionPoints,
@@ -70,18 +71,22 @@
         drawEnd,
         removePath,
 				updateConnectionPoints
-			} = GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId)
+			} = GConnectorFactory(props, context, model, eventEmitter, isActive, isBooted, diagramId, id, connectionPoints, zoomState, originCoordinate, activeDrawId, initConnections)
 
       onMounted(() => {
         eventEmitter.$on(`draw${id.value}`, draw)
         eventEmitter.$on(`drawEnd${id.value}`, drawEnd)
         eventEmitter.$on(`drag${id.value}`, updateConnectionPoints)
-        eventEmitter.$on(`dragEnd${id.value}`, updateConnectionPoints)
+        eventEmitter.$on(`dragEnd${id.value}`, () => {
+          updateConnectionPoints()
+					context.emit('dragEnd')
+				})
+				eventEmitter.$on(`update${diagramId.value}`, updateConnectionPoints)
       })
 
 			// Render functions
       function genCircle(connectionPoint, r, stroke, strokeWidth, fill) {
-        return <circle vOn:mousedown={drawStart} class="g-connection-point" cx={connectionPoint.x} cy={connectionPoint.y} r={r} stroke={stroke} stroke-width={strokeWidth} fill={fill}/>
+        return <circle key={`${model.value.type}_${model.value.key}_${model.value.path}_${connectionPoint.position}`} vOn:mousedown={drawStart} class="g-connection-point" cx={connectionPoint.x} cy={connectionPoint.y} r={r} stroke={stroke} stroke-width={strokeWidth} fill={fill}/>
       }
 
       function genConnector(path, index) {
@@ -93,7 +98,7 @@
       }
 
       function genGroup() {
-        return <fragment>
+        return <div>
           <portal to={diagramId.value} slim>
 						<marker id={`arrow${id.value}`} markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto" markerUnits="strokeWidth">
 							<path d="M1,1 L4,3 L1,5" stroke={props.pathColor} stroke-width="1" stroke-linejoin="bevel" fill="none"/>
@@ -111,13 +116,15 @@
             </g>
           </portal>
           {context.slots.default ? context.slots.default() : undefined}
-				</fragment>
+				</div>
       }
 
       return {
         genGroup,
 				localConnectionPoints,
-				connectionRegions
+				connectionRegions,
+				connectionPoints,
+				connectionPaths
       }
     },
     render() {
