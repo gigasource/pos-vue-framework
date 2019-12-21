@@ -67,17 +67,6 @@
         initComponent()
       })
 
-			const unwatch = watch(isActive, newVal => {
-			  if (newVal) {
-          context.root.$nextTick(() => {
-            disableOutsideScroll()
-            context.refs.wrapper.focus()
-					})
-				} else {
-          enableOutsideScroll()
-				}
-			})
-
       // Close conditional for click outside directive
       const closeConditional = (e) => {
         if (!isActive.value) {
@@ -242,6 +231,17 @@
         window.removeEventListener('touchstart', onTouchStart)
         window.removeEventListener('touchmove', onTouchMove)
 			}
+
+      const unwatch = watch(isActive, newVal => {
+        if (newVal) {
+          disableOutsideScroll()
+          context.root.$nextTick(() => {
+            context.refs.wrapper.focus()
+          })
+        } else {
+          enableOutsideScroll()
+        }
+      })
 
       // Clean-up when destroy
       onBeforeUnmount(() => {
