@@ -1,9 +1,7 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
-  import { createSlideNode, setSrc, clean, getTransition, getTransitionDuration, transitionList } from './GSlideshowFactory';
+  import { createSlideNode, setSrc, clean, getTransition, getTransitionDuration } from './GSlideshowFactory';
   import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
-
-  export { transitionList }
 
   export default {
     name: 'GSlideshow',
@@ -22,54 +20,66 @@
 			const model = getInternalValue(props, context)
 			const defaultSlideDuration = 5000
 
-			const nodeList = []
+      const computedModel = computed(() => {
+        if (model.value.length === 1) return model.value = [...model.value, ...model.value]
+        return model.value
+      })
+
+			const slideNodes = []
 			let nodeFlag = false
 			const count = ref(0)
 			const nextCount = computed(() => count.value === maxCount.value ? 0 : count.value + 1)
-			const maxCount = computed(() => model.value.length - 1)
+			const maxCount = computed(() => computedModel.value.length - 1)
 
 
-			const currentItem = computed({get: () => model.value[count.value], set: val => count.value = val})
-			const nextItem = computed(() => model.value[nextCount.value])
+			const currentItem = computed({get: () => computedModel.value[count.value], set: val => count.value = val})
+			const nextItem = computed(() => computedModel.value[nextCount.value])
 
 			let currentTimeout
 
-			// Init slide nodes when mounted
-      onMounted(() => {
+      const initSlideNodes = () => {
         const container = context.refs.container
 
         const slideNode1 = createSlideNode()
         const slideNode2 = createSlideNode()
 
-				currentItem.value && setSrc(currentItem.value, slideNode1)
-				currentItem.value && setSrc(nextItem.value, slideNode2)
+        currentItem.value && setSrc(currentItem.value, slideNode1)
+        currentItem.value && setSrc(nextItem.value, slideNode2)
 
-				slideNode2.container.style.display = 'none'
+        slideNode2.container.style.display = 'none'
 
-				container.appendChild(slideNode1.container)
+        container.appendChild(slideNode1.container)
         container.appendChild(slideNode2.container)
 
-        nodeList.push(slideNode1, slideNode2)
-        count.value = count.value === maxCount.value ? 0 : count.value + 1
+        slideNodes.push(slideNode1, slideNode2)
+      }
+
+			// Init slide nodes when mounted
+      onMounted(() => {
+        initSlideNodes()
+        count.value = count.value >= maxCount.value ? 0 : count.value + 1
       })
 
 			// Reset slide nodes when source changed
-      watch(() => model.value, () => {
+      watch(() => computedModel.value, () => {
         currentItem.value = 0
-				clean(nodeList)
+				clean(slideNodes)
         clearTimeout(currentTimeout)
         nodeFlag = false
-        context.root.$nextTick(() => {
-					const firstItem = model.value[0]
-					const secondItem = model.value[1] ? model.value[1] :firstItem
-          const slideNode1 = nodeList[0]
-          const slideNode2 = nodeList[1]
+        context.root.$nextTick( async () => {
+					const firstItem = computedModel.value[0]
+					const secondItem = computedModel.value[1]
+          const slideNode1 = slideNodes[0]
+          const slideNode2 = slideNodes[1]
           setSrc(firstItem, slideNode1)
           setSrc(secondItem, slideNode2)
           slideNode1.container.style.display ='block'
           slideNode2.container.style.display = 'none'
+          if (slideNode1.video.style.display !== "none") {
+            await slideNode1.video.play()
+          }
 
-					count.value = count.value === maxCount.value ? 0 : 1
+          count.value = count.value === maxCount.value ? 0 : 1
         })
 
       }, {deep: true, lazy: true})
@@ -77,11 +87,11 @@
 			// Sliding logic
       watch(currentItem, (newVal, oldVal) => {
 				if (oldVal && newVal) {
-          const currentNode = nodeList[nodeFlag ? 1 : 0]
-          const nextNode = nodeList[nodeFlag ? 0 : 1]
+          const currentNode = slideNodes[nodeFlag ? 1 : 0]
+          const nextNode = slideNodes[nodeFlag ? 0 : 1]
 					const duration = (oldVal.duration ? oldVal.duration : currentNode.video.style.display !== 'none' ? Math.round(currentNode.video.duration * 1000) - getTransitionDuration(oldVal.transition, props) : defaultSlideDuration)
 					const transitionDuration = getTransitionDuration(newVal.transition, props)
-          currentTimeout = setTimeout(() => {
+          currentTimeout = setTimeout( () => {
             nextNode.container.style.display = 'block'
             const transition = currentNode.container.animate(...getTransition(newVal.transition, 'out', props))
             nextNode.container.animate(...getTransition(newVal.transition, 'in', props))
@@ -91,18 +101,16 @@
               currentNode.container.style.display = 'none'
               setSrc(nextItem.value, currentNode)
               nodeFlag = !nodeFlag
-              count.value = count.value === maxCount.value ? 0 : count.value + 1
+              count.value = count.value >= maxCount.value ? 0 : count.value + 1
             }
           }, duration - transitionDuration)
         }
 			}, {lazy: true})
 
-
-
 			// Clean up before destroyed
 			onBeforeUnmount(() => {
 			  if (context.refs.container.firstChild) {
-			    nodeList.map(slideNode => {
+			    slideNodes.map(slideNode => {
 			      context.refs.container.removeChild(slideNode.container)
 					})
 				}
