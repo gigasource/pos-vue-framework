@@ -33,7 +33,7 @@ export const GComboboxSingleSelectNoChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: 'sdf'
+      selected: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
     }
   },
   template: `
@@ -286,7 +286,7 @@ export const GComboboxPrimitiveArray = () => ({
   template: `
   <div data-app>
   {{selected}}
-  <g-combobox :items="items" label="Label" v-model="selected"  clearable>
+  <g-combobox itemText="text"  :items="items" label="Label" v-model="selected"  clearable>
    
   </g-combobox>
 </div>`,

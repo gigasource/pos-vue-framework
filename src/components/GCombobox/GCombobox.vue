@@ -1,7 +1,7 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {computed, reactive, ref} from '@vue/composition-api';
+  import {computed, watch, reactive, ref} from '@vue/composition-api';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
@@ -105,7 +105,8 @@
 
       //list selections
       const {internalValue: selectedItem, toggleItem} = makeCombobox(props, context)
-      const fieldItem = getSelectionsForCombobox(props, selectedItem)
+      const fieldItem = ref(null)
+			watch(() => props.items, () => fieldItem.value = getSelectionsForCombobox(props, selectedItem))
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {

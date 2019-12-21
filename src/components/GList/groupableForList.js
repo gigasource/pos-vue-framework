@@ -7,33 +7,24 @@ export function groupableForList(props, vModel) {
   //props.multiple: props.multiple items can be active at a time
   //allowDuplicate: choose one item props.multiple times
   const uniqueItems = ref([])
-
+  const isObjectList = ref(props.items && props.items.some(item => _.isObject(item) === true))
   watch(() => props.items, () => {
-    const isObjectList = props.items.some(item => _.isObject(item) === true)
-    const itemsHaveText = props.items.filter(item => item[props.itemText])
-
     if (props.items) {
-      if (isObjectList.value) {
-        if (props.returnObject) return uniqueItems.value = _.uniqWith(itemsHaveText.value, _.isEqual)
-        else if (props.itemValue) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
-        else if (props.itemText) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
-      } else return uniqueItems.value = _.uniq(props.items)
-    } else return uniqueItems.value = []
+      if (isObjectList.value) return uniqueItems.value = _.uniqWith(props.items, _.isEqual)
+      return uniqueItems.value = _.uniq(props.items)
+    }
+    return uniqueItems.value = []
   })
 
   const toggleItem = (item) => {
     if (props.multiple) {
-      if (props.returnObject) updateMultiple(item);
-      else {
-        if (props.itemValue) updateMultiple(item[props.itemValue])
-        else updateMultiple(item)
-      }
+      if (props.returnObject || !isObjectList.value) updateMultiple(item);
+      else if (props.itemValue) updateMultiple(item[props.itemValue])
+      else if (props.itemText) updateMultiple(item[props.itemText])
     } else {
-      if (props.returnObject) updateSingle(item);
-      else {
-        if (props.itemValue) updateSingle(item[props.itemValue])
-        else updateSingle(item)
-      }
+      if (props.returnObject|| !isObjectList.value) updateSingle(item);
+      else if(props.itemValue) updateSingle(item[props.itemValue])
+      else if(props.itemValue) updateSingle(item[props.itemText])
     }
   };
 
@@ -54,14 +45,15 @@ export function groupableForList(props, vModel) {
   };
 
   const isActiveItem = (item) => {
-    if (props.multiple) {
-      if (props.returnObject) return vModel.value.some(element => _.isEqual(element, item))
-      else return !!props.itemValue
-          ? vModel.value.includes(item[props.itemValue])
-          : vModel.value.includes(item)
-    }
-    if (props.returnObject) return _.isEqual(vModel.value, item)
-    else return !!props.itemValue ? item[props.itemValue] === vModel.value : item === vModel.value
+    const isObjectList = props.items.some(item => typeof  item === 'object')
+    if (props.multiple) return isObjectList ? vModel.value.some(element => _.isEqual(element, item))
+      || vModel.value.includes(item[props.itemValue])
+      || vModel.value.includes(item[props.itemText])
+      : vModel.value.some(el => el === item)
+
+    return isObjectList ?  _.isEqual(vModel.value, item)
+      || (!!props.itemValue && vModel.value === item[props.itemValue])
+      || (!!props.itemText && vModel.value === item[props.itemText]) : vModel.value === item
   };
 
   return {
@@ -72,12 +64,12 @@ export function groupableForList(props, vModel) {
 }
 
 export function makeListSelectable(props, context) {
-
+  const isObjectList = ref(props.items && props.items.some(item => _.isObject(item) === true))
   // 1 -> {a: 1, b: 2}
   //props.multiple --> props.returnObject ? props.value array --> object of items have value array
   const convertValueToInternalValue = function (value) {
     //primitive array
-    if (!props.itemValue || !value) return value;
+    if (!isObjectList.value || !value) return value;
     //for single select
     if (!Array.isArray(props.value)) {
       //{a:1, b:2} in value --> {a:1, b:2} inlist
@@ -94,7 +86,7 @@ export function makeListSelectable(props, context) {
       let itemsHaveValueInlist = props.items.filter(i => value.some(el => el === i[props.itemValue]))
       return itemsHaveValueInlist.length ? itemsHaveValueInlist.map(item => item[props.itemValue]) : value
     }
-    }
+  }
 
   // {a: 1, b: 2} -> 1
   const convertInternalValueToValue = function (internalValue) {

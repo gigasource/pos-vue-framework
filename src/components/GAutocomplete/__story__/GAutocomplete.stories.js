@@ -43,7 +43,7 @@ export const GAutocompleteSingleSelect = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: null,
+      selected: 'abc',
       filters: [
         {
           value: 0,
@@ -203,8 +203,8 @@ export const GAutocompleteSingleSelectPrimitive = () => ({
     hint: {default: text('hint', 'Hint')},
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: Number('counter', 25)},
-    itemText: {default: text('itemText', '')},
-    itemValue: {default: text('itemValue', '')},
+    itemText: {default: text('itemText', 'text')},
+    itemValue: {default: text('itemValue', 'value')},
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
     deletableChips: {default: boolean('deletable-chips', false)},
@@ -224,7 +224,7 @@ export const GAutocompleteSingleSelectPrimitive = () => ({
         'Ali Connors',
         'Ranee Carlson',
       ],
-      selected: 'Cindy Baker',
+      selected: 'abc',
       filters: [
         {
           value: 0,

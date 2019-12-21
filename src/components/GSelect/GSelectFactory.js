@@ -1,4 +1,4 @@
-import {computed} from '@vue/composition-api';
+import { computed, watch, ref } from '@vue/composition-api';
 import _ from "lodash";
 
 const listMultipleFilter = (props, selectedValue) => {
@@ -66,57 +66,66 @@ export function getList(props, selectedValue, state) {
 //selectedValue: object array --> return item match
 //then normalise item in form {text:, value:}
 export function getSelections(props, selectedValue) {
+  const isObjectList = props.items.some(item => _.isObject(item) === true)
   return computed(() => {
     if (!props.multiple) {
       let item = selectedValue.value;
       if (!item && item !== 0) return null;
-      if (!props.itemValue && (typeof item === 'string'||typeof item === 'number') ) return item;
-      if (props.itemValue && !props.returnObject) item = props.items.find(_item => _item[props.itemValue] === item) || item;
+      if (!isObjectList ) return props.items.find(el => el === item);
+      if (props.itemValue && !props.returnObject) item = props.items.find(_item => _item[props.itemValue] === item) ;
       else item = props.items.find(_item =>_.isEqual(item, _item))
-
-      return {text: item[props.itemText], value: item[props.itemValue]};
+      return item ?  {text: item[props.itemText], value: item[props.itemValue]} : '';
     }
     const list = selectedValue.value
+    if(!isObjectList) return list.map(item => props.items.find(el => el === item))
     if (props.returnObject) {
-      if(props.itemValue) return list.map(item => {
-          return {text: item[props.itemText], value: item[props.itemValue]}
-        })
-      else return list
+      if (props.itemValue) return list.map(item => ({ text: item[props.itemText], value: item[props.itemValue] }))
     }
     else if(props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item))
-    else return list.map(item => props.items.find(el => el === item))
   })
 }
 
 //same as getSelection but accept selections not in list
 export function getSelectionsForCombobox(props, selectedValue) {
-  return computed(() => {
-    if (!props.multiple) {
-      let item = selectedValue.value;
-      if (!item && item !== 0) return null
-      //primitive array
-      if (!props.itemValue && (typeof item === 'string'||typeof item === 'number') ) return item;
-      if (props.itemValue && !props.returnObject) {
-        let itemInList = props.items.find(_item => _item[props.itemValue] === item)
-        return itemInList !== undefined ? itemInList : item;
-      }
-      else item = props.items.find(_item =>_.isEqual(item, _item)) || item
+  if(props.items === null || props.items.length === 0) return props.multiple ? [] : ''
+  const isObjectList = props.items.some(item => _.isObject(item) === true)
+  if (!props.multiple) {
+    let item = selectedValue.value;
+    if (!item && item !== 0) return null
+    if (!isObjectList) return item;
+    if (props.itemValue && !props.returnObject) {item = props.items.find(_item => _item[props.itemValue] === item) || item}
+    else item = props.items.find(_item => _.isEqual(item, _item)) || item
+    return item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item;;
+  }
 
-      return {text: item[props.itemText], value: item[props.itemValue]} || '';
-    }
-    const list = selectedValue.value || []
-    if (props.returnObject) {
-      if(props.itemValue) return list.map(item => {
-        return item[props.itemValue] ?  {text: item[props.itemText], value: item[props.itemValue]} : item
-      })
-      else return list
-    }
-    else if(props.itemValue){
-      return list.map(item => {
-        let itemsHaveValue = props.items.find(el => el[props.itemValue] === item)
-         return itemsHaveValue ?  itemsHaveValue : item
-      })
-    }
+  const list = selectedValue.value || []
+  if (!isObjectList) return list
+  if (props.returnObject) {
+    if (props.itemValue) return list.map(item => item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item)
     return list
-  })
+  }
+  else if (props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item) || item)
+  return list
+  // watch(() => props.items, () => {
+  //
+  // })
+  // return computed(() => {
+  //   if (!props.multiple) {
+  //     let item = selectedValue.value;
+  //     if (!item && item !== 0) return null
+  //     if (!isObjectList) return item;
+  //     if (props.itemValue && !props.returnObject) {item = props.items.find(_item => _item[props.itemValue] === item) || item}
+  //     else item = props.items.find(_item => _.isEqual(item, _item)) || item
+  //     return { text: item[props.itemText], value: item[props.itemValue] };
+  //   }
+  //
+  //   const list = selectedValue.value || []
+  //   if (!isObjectList) return list
+  //   if (props.returnObject) {
+  //     if (props.itemValue) return list.map(item => item[props.itemValue] ? { text: item[props.itemText], value: item[props.itemValue] } : item)
+  //     return list
+  //   }
+  //   else if (props.itemValue) return list.map(item => props.items.find(el => el[props.itemValue] === item) || item)
+  //   return list
+  // })
 }
