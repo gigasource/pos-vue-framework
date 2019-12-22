@@ -55,7 +55,7 @@
       },
       nodeExpansionHistory: {
         type: Array,
-        default: [],
+        default: () => [],
       }
     },
     setup(props, context) {

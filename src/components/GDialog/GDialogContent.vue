@@ -67,6 +67,12 @@
         initComponent()
       })
 
+      const enableOutsideScroll = () => {
+        window.removeEventListener('wheel', onWheel)
+        window.removeEventListener('touchstart', onTouchStart)
+        window.removeEventListener('touchmove', onTouchMove)
+      }
+
 			const unwatch = watch(isActive, newVal => {
 			  if (newVal) {
           context.root.$nextTick(() => {
@@ -235,12 +241,6 @@
         window.addEventListener('wheel', onWheel, {passive: false})
         window.addEventListener('touchstart', onTouchStart, {passive: false})
         window.addEventListener('touchmove', onTouchMove, {passive: false})
-			}
-
-			const enableOutsideScroll = () => {
-        window.removeEventListener('wheel', onWheel)
-        window.removeEventListener('touchstart', onTouchStart)
-        window.removeEventListener('touchmove', onTouchMove)
 			}
 
       // Clean-up when destroy
