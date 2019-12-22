@@ -1,6 +1,6 @@
 <script>
-  import { inject } from '@vue/composition-api';
-  import { GExpandTransition } from '../transition/transition';
+  import {inject} from '@vue/composition-api';
+  import {GExpandTransition} from '../transition/transition';
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -10,17 +10,16 @@
     },
     props: {
       item: null,
-
-			header: String,
-		},
-    setup (props, context) {
-			const isActiveItem = inject('isActiveItem')
+      header: String,
+    },
+    setup(props, context) {
+      const isActiveItem = inject('isActiveItem')
 
       const genContent = function () {
         return <g-expand-transition>
           <div
-            class={['g-sections-item-content', { 'g-sections-item-content__active': isActiveItem(props.item) }]}
-            vShow={isActiveItem(props.item)}>
+              class={['g-sections-item-content', {'g-sections-item-content__active': isActiveItem(props.item)}]}
+              vShow={isActiveItem(props.item)}>
             <div class="g-sections-item-content-wrapper">
               {context.slots.default ? context.slots.default() : undefined}
             </div>
@@ -29,18 +28,18 @@
       }
 
       const genSectionsItem = function () {
-				return <div class="g-sections-item">
-					{genContent()}
-				</div>
-			}
+        return <div class="g-sections-item">
+          {genContent()}
+        </div>
+      }
 
-			return {
+      return {
         genSectionsItem
-			}
-		},
-		render() {
+      }
+    },
+    render() {
       return this.genSectionsItem()
-		}
+    }
   }
 </script>
 <style scoped lang="scss">
