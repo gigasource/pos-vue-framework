@@ -13,11 +13,11 @@
         <template v-for="(item, index) in renderList">
           <slot name="list-item" :isSelected="isActiveItem(item)" :item="item" :on="getListEvents(item, index)">
             <div
-                :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
-                class="g-list-item"
-                tabindex="0"
-                v-on="getListEvents(item, index)"
-                ref="listItemRef"
+              :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
+              class="g-list-item"
+              tabindex="0"
+              v-on="getListEvents(item, index)"
+              ref="listItemRef"
             >
               <slot :isSelected="isActiveItem(item, index)" :item="item" name="prepend">
                 <div :class="prependClasses" v-if="item.prepend &&  prependType && itemText">
@@ -30,7 +30,7 @@
               </slot>
               <slot name="content">
                 <div class="g-list-item-content">
-                  <div class="g-list-item-text">{{item[itemText]||item}}</div>
+                  <div class="g-list-item-text">{{itemTextFn(item) ||item}}</div>
                   <div class="g-list-item-text__sub"
                        v-if="lineNumber > 1">
                     {{item.subtext|| '&nbsp;'}}
@@ -78,7 +78,7 @@
               </slot>
               <slot name="content">
                 <div class="g-list-item-content">
-                  <div class="g-list-item-text">{{item[itemText]}}</div>
+                  <div class="g-list-item-text">{{itemTextFn(item)}}</div>
                   <div class="g-list-item-text__sub"
                        v-if="lineNumber > 1">
                     {{item.subtext || '&nbsp;'}}
@@ -146,9 +146,9 @@
       multiple: Boolean,
       mandatory: Boolean,
       allowDuplicates: Boolean,
-      itemValue: String,
+      itemValue: [String, Array, Function],
       itemText: {
-        type: String,
+        type: [String, Array, Function],
         default: ''
       },
       activeClass: String,
@@ -158,6 +158,23 @@
       appendIcon: String,
     },
     setup: function (props, context) {
+      function createItemFn(prop) {
+        return typeof prop === 'function'
+            ? prop
+            : item => {
+              if (!_.isObject(item)) return item
+
+              if (_.isArray(prop)) {
+                const key = prop.find(Object.keys(item).includes)
+                return item[key]
+              } else {
+                return item[prop]
+              }
+            }
+      }
+
+      const itemTextFn = computed(() => createItemFn(props.itemText))
+      const itemValueFn = computed(() => createItemFn(props.itemValue))
       //G list computed class
       //Computed subtext
       const lineNumber = computed(() => {
@@ -183,7 +200,7 @@
         'g-list__dense': props.dense,
         'g-list__inMenu': props.inMenu,
         'g-list__nav': props.nav,
-        'g-list__empty': !!props.items
+        'g-list__empty': !!props.items || props.items === null
 
       }));
 
@@ -268,7 +285,8 @@
       provide('selectable', props.selectable)
 
       return {
-
+        itemTextFn,
+        itemValueFn,
         classes,
         styles,
         prependClasses,

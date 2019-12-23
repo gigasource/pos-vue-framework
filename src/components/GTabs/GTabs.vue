@@ -162,13 +162,15 @@
       provide('slider-styles', sliderStyles);
 
       const genTabs = () => {
-        return props.items.map((item, index) => (
-            (context.slots.tab && context.slots.tab({item, index}))
-            || <g-tab active-text-color={activeTextColor.value} item={item} key={index}>
-              {genTabIcon(item)}
-              {item.title}
-            </g-tab>
-        ))
+        return context.slots.tabs
+            ? context.slots.tabs()
+            : props.items.map((item, index) => (
+                (context.slots.tab && context.slots.tab({item, index}))
+                || <g-tab active-text-color={activeTextColor.value} item={item} key={index}>
+                  {genTabIcon(item)}
+                  {item.title}
+                </g-tab>
+            ))
       }
 
       const genTabSlider = () => <div class="g-tabs-slider" style={sliderStyles}></div>
