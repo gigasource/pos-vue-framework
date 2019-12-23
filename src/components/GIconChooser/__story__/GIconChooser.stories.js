@@ -1,7 +1,7 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 import GIconChooser from '../GIconChooser'
-import GIconSearch from '../GIconSearch'
+import GIconChooserInputModel from '../GIconChooserInputModel';
 //
 export default {
   title: 'GIconChooser',
@@ -19,14 +19,12 @@ export const gIconChooser = () => ({
 
 
 export const gIconChooserModel = () => ({
-  components: { GIconChooser },
+  components: { GIconChooserInputModel },
   data() {
     return {
       model: { icon: 'fab fa-adversal' },
       field: { key: 'icon' }
     }
   },
-  template: `
-    <g-icon-chooser label='avatar' :model="model" :field="field"/>
-  `
+  template: `<g-icon-chooser-input-model label='avatar' :model="model" :field="field"/>`
 })
