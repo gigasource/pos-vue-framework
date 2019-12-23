@@ -966,12 +966,36 @@ describe("test", function() {
       items: [{ value: 1 }, { value: 2 }]
     });
 
-    //expect(parentVm.child.valueNormalize).toBe({value: 2});
+    expect(parentVm.child.valueNormalize).toBe({ value: 2 });
 
     expect(parentVm.child.selectList).toMatchInlineSnapshot(`
       Array [
         Object {
           "value": 1,
+        },
+      ]
+    `);
+
+    expect(parentVm.child.filterByValue.toString()).toMatchInlineSnapshot(
+      `"item => valueNormalize.value !== item"`
+    );
+  });
+  it("value normalize in case object array init obj single", async function() {
+    const parentVm = parentVmFactory({
+      itemValue: "value",
+      value: { value: 1 },
+      items: [{ value: 1 }, { value: 2 }]
+    });
+
+    expect(parentVm.child.valueNormalize).toBe({ value: 2 });
+
+    expect(parentVm.child.selectList).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "value": 1,
+        },
+        Object {
+          "value": 2,
         },
       ]
     `);
@@ -1063,34 +1087,32 @@ describe("test", function() {
 
   it("toggle in case object array returnObject single", async function() {
     const parentVm = parentVmFactory({
-      itemText: "text",
+      itemText: "value",
       value: { value: 1 },
       items: [{ value: 1 }, { value: 2 }, { value: 3 }],
       returnObject: true
     });
-
-    parentVm.child.toggle(parentVm.child.items[1]);
 
     expect(parentVm.child.valueNormalize).toMatchInlineSnapshot(`
       Object {
         "value": 1,
       }
     `);
+    parentVm.child.toggle(parentVm.child.items[0]);
+
 
     await parentVm.$nextTick();
     await parentVm.$nextTick();
 
-    expect(parentVm.child.valueNormalize).toMatchInlineSnapshot(`
-      Object {
-        "elm": undefined,
-        "value": 2,
-      }
-    `);
+    expect(parentVm.child.valueNormalize).toMatchInlineSnapshot(`undefined`);
 
     expect(parentVm.child.selectList).toMatchInlineSnapshot(`
       Array [
         Object {
           "value": 1,
+        },
+        Object {
+          "value": 2,
         },
         Object {
           "value": 3,
