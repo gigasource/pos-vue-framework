@@ -1,7 +1,7 @@
 $icon-size: 24px !default;
 $icon-size-dense: 20px !default;
 
-.g-icon.g-icon {
+.g-icon {
   align-items: center;
   display: inline-flex;
   font-feature-settings: 'liga';
@@ -13,9 +13,8 @@ $icon-size-dense: 20px !default;
   transition: default;
   vertical-align: middle;
   user-select: none;
-}
+  color: rgba(0, 0, 0, 0.54);
 
-.g-icon {
   &__right {
     margin-left: 16px;
   }

@@ -1,6 +1,7 @@
-import {keyCodes} from '../../utils/helpers';
+import { keyCodes } from '../../utils/helpers';
 
 export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
+  const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
   function onChipCloseClick(index = null) {
     if (props.multiple) {
       selectedItem.value.splice(index, 1);
@@ -24,6 +25,9 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   function onInputChange(text) {
     state.searchText = text
+    if (selectedItem.value && isInputDisplay) {
+      selectedItem.value = ''
+    }
     context.emit('update:searchText', text)
   }
 
@@ -39,7 +43,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputDelete() {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
+    if (isInputDisplay) {
       return
     }
     if (state.searchText) {
@@ -61,14 +65,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   const inputAddSelection = () => {
     if (state.searchText.trim().length > 0) {
-      let isNumberArray = props.itemValue ? props.items.some(item => typeof item[props.itemValue] === 'number') : props.items.some(item => typeof item === 'number')
-      let inputAddedItem;
-      if (props.returnObbject || props.itemValue) inputAddedItem = {
-        [props.itemText]: state.searchText,
-        [props.itemValue]: isNumberArray ? Number(state.searchText) : state.searchText
-      }
-      else inputAddedItem = isNumberArray ? Number(state.searchText) : state.searchText
-      toggleItem(inputAddedItem)
+      toggleItem(parseInt(state.searchText) || state.searchText)
       setSearch(props, context, selections, state)
     }
   }
