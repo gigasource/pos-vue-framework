@@ -123,7 +123,7 @@
       }
     },
     render() {
-      return this.genDialog()
+      return this.genDialog.bind(this)()
     }
   }
 </script>
