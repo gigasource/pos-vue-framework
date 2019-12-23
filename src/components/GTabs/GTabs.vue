@@ -114,7 +114,7 @@
       }
 
       const itemsRef = ref(null)
-      watch(() => [itemsRef.value, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
+      watch(() => [itemsRef.value, props.items, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
         calculateSliderStyle();
       });
 
