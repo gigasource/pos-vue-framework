@@ -1,6 +1,7 @@
 <script>
 	import _ from 'lodash';
-  import { ref, reactive, computed, onMounted } from '@vue/composition-api';
+  import { ref, reactive, computed, watch, set, onMounted } from '@vue/composition-api';
+  import { parseCssData, parseSelectorData } from './GCssCustomizerFactory';
   import { getInternalValue } from '../../mixins/getVModel';
   import { convertToUnit } from '../../utils/helpers';
   import GCssCustomizerLayout from './GCssCustomizerLayout'
@@ -25,6 +26,10 @@
         allPaths: [],
         activePath: '',
       })
+
+      const cssData = treeData.value.metaData && treeData.value.metaData.cssData ? ref(treeData.value.metaData.cssData) : ref({})
+
+      const stylesString = computed(() => parseCssData(cssData.value))
 
 			// Path
       function isRootPath (path) {
@@ -65,92 +70,30 @@
 				// debugger
 			})
 
-			// Tree Data logic
-			const getComponentName = path => _.get(treeData.value, path + 'name') || _.get(treeData.value, path + '.component')
-			const getComponentId = path => _.get(treeData.value, path + 'id') || _.get(treeData.value, path + '.id')
-
-			// Tree view logic
-      const genTreeView = () => {
-        return <div area="tree" class="g-css-customizer-tree">
-          <div class="g-css-customizer-tree-title">
-            Select
-          </div>
-					<div class="g-css-customizer-tree-content">
-						<g-btn small class="g-css-customizer-tree-reload" icon vOn:click={rebuildTreeData}>
-							<g-icon size="16" color="grey">fas fa-redo-alt</g-icon>
-						</g-btn>
-						<g-css-customizer-tree-view vModel={cssCustomizerTree} data={treeData.value} expandLevel={10}/>
-					</div>
-        </div>
-			}
-
-			// Actions
-
-			const saveData = () => {
-			  context.emit('save')
-			}
-
-			const genActions = () => {
-			  return <div area="action" class="g-css-customizer-action">
-					<div class="g-css-customizer-action-title">
-						Action
-					</div>
-          <div class="g-css-customizer-action-content">
-            <g-btn outlined vOn:click={saveData}>Save</g-btn>
-            <g-btn outlined>Cancel</g-btn>
-            <g-btn outlined vOn:click={() => context.emit('close')}>Close</g-btn>
-					</div>
-				</div>
-			}
-
 			// Preview
 			const model = ref('2019-12-10')
-			const genPreviewComponent = () => {
-				// return <g-btn ref="previewComponent">Test</g-btn>
-				return <g-date-picker vModel={model.value} ref="previewComponent">
-
-				</g-date-picker>
-			}
-
-
-			const genPreview = () => {
-			  return <div area="preview" class="g-css-customizer-preview" ref="preview">
-					{genPreviewComponent()}
-					<div class="test-class">
-					</div>
-					<style type="text/css">
-
-					</style>
-				</div>
-			}
 
 			// Code
-      const genText = (text) => {
-			  if (text.match(/#/) || text.match(/\d+/)) return <span class="g-css-customizer-code-number"> {text}</span>
-				else return <span class="g-css-customizer-code-string"> {text}</span>
-			}
+			const activeSelector = ref('')
 
-			const genCssClass = (component, id) => {
-			  return `${_.kebabCase(component)}-${id}`
-			}
-
-			const activeCssClass = computed(() => {
-			  if (isRootPath(cssCustomizerTree.activePath)) return _.get(treeData.value, cssCustomizerTree.activePath + 'classList')
-				return _.get(treeData.value, cssCustomizerTree.activePath + '.classList')
+			const activeCssSelectorList = computed(() => {
+        const selectorList = []
+        const classList = isRootPath(cssCustomizerTree.activePath) ? _.get(treeData.value, cssCustomizerTree.activePath + 'classList') : _.get(treeData.value, cssCustomizerTree.activePath + '.classList')
+        _.forEach(classList, val => {
+          selectorList.push(`.${val}`)
+        })
+        return selectorList
 			})
 
-			const cssCode = computed(() => {
-			  let temp = '{'
-				_.forEach(stylesObj.value, (val, key) => {
-				  val && (temp += `${_.kebabCase(key)}: ${val} !important;` + ' ')
-				})
-				temp += '}'
-				return temp
-			})
+      watch(() => activeCssSelectorList.value, newVal => {
+        console.log('switched', newVal)
+        activeSelector.value = newVal[0] || ''
+        console.log(activeSelector.value)
+      }, {lazy: true, deep: true})
 
 			const cssDisplayCode = computed(() => {
         const temp = []
-        _.forEach(stylesObj.value, (val, key) => {
+        _.forEach(cssData.value[activeSelector.value], (val, key) => {
           val && temp.push({
             property: _.kebabCase(key),
             value: val.split(' ')
@@ -159,72 +102,129 @@
         return temp
       })
 
-			const genDisplayCode = (item) => {
-				return <p>
-					<span>{item.property + ':'}</span>
-          {item.value.map(val => genText(val))};
-				</p>
-			}
-
-			const genCode = () => {
-			  return <div area="code" class="g-css-customizer-code">
-					<div class="g-css-customizer-code-title">
-						CSS
-					</div>
-					<g-combobox items={activeCssClass.value} label="selector"/>
-					{cssDisplayCode.value.map(item => genDisplayCode(item))}
-				</div>
-			}
-
 			// Design
+      const propertyList = ['backgroundColor', 'color', 'width', 'height', 'border', 'borderRadius', 'padding', 'margin']
 
-			const inputObj = reactive({
-        backgroundColor: '#ab3f67',
-        color: '#ffffff',
-        width: '100',
-        height: '50',
-				border: '1px solid lightgreen',
-				borderRadius: '20',
-			})
+      const reactiveSet = (obj, key, val) => {
+			  if (obj[key] === undefined) set(obj, key, val)
+        else obj[key] = val
+      }
 
-			const stylesObj = computed(() => ({
-				backgroundColor: inputObj.backgroundColor,
-				color: inputObj.color,
-				width: convertToUnit(inputObj.width),
-				height: convertToUnit(inputObj.height),
-				border: inputObj.border,
-				borderRadius: convertToUnit(inputObj.borderRadius)
-			}))
+      const inputObj = computed({
+        get: () => _.mapValues(_.groupBy(propertyList, val => val), (val, key) => {
+          if (cssData.value[activeSelector.value] && cssData.value[activeSelector.value][key]) {
+            if (key.search(/[W|w]idth|[H|h]eight/) > -1) {
+              return cssData.value[activeSelector.value][key].replace(/px$/, '')
+            }
+            else return cssData.value[activeSelector.value][key]
+          }
+          return ''
+        }),
+        set: val => {
+          inputObj.value[val.key] = val.value
+          if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
+          if (val.key.search(/[W|w]idth|[H|h]eight/) > -1) {
+            reactiveSet(cssData.value[activeSelector.value],val.key, convertToUnit(val.value))
+          } else {
+            reactiveSet(cssData.value[activeSelector.value],val.key, val.value)
+          }
+        }
+      })
 
-			const setStyle = (el, stylesObj) => {
-			  _.forEach(stylesObj, (val, key) => {
-			    // if (key === 'width') debugger
-			    el.style[key] = val || ""
-					return true
-				})
-			}
-
-			const resetStyle = (el, stylesObj) => {
-			  for (let key in stylesObj) {
-			    el.style[key] = ""
-				}
-			}
+      const onInput = (value, key) => {
+			  inputObj.value = {key: key, value: value}
+      }
 
 			const applyChanges = () => {
-			  const preview = context.refs.preview
-        const el = preview.querySelector(`[${scopedId.value}]`)
-        // setStyle(el, stylesObj.value)
-				const style = preview.querySelector('style')
-				// style.innerText = '.' + activeCssClass.value + ' ' + cssCode.value + '\r\n'
+			  // const preview = context.refs.preview
+				// const style = preview.querySelector('style')
+				// style.innerText = '.' + activeSelector.value + ' ' + cssCode.value + '\r\n'
+        // set(cssData.value, activeSelector.value, _.cloneDeep(stylesObj.value))
+        // context.root.$set(cssData.value, `.${activeSelector.value}`, _.cloneDeep(stylesObj.value))
 			}
 
 			const resetChanges = () => {
-        const preview = context.refs.preview
-        const el = preview.querySelector(`[${scopedId.value}]`)
-				// resetStyle(el, stylesObj.value)
-        const style = preview.querySelector('style')
-				style.innerText = ''
+
 			}
+
+      // Actions
+      const saveData = () => {
+        context.emit('save')
+      }
+
+      const close = () => {
+        context.emit('close')
+      }
+
+      // Render functions
+      const genText = (text) => {
+        if (text.match(/#/) || text.match(/\d+/)) return <span class="g-css-customizer-code-number"> {text}</span>
+        else return <span class="g-css-customizer-code-string"> {text}</span>
+      }
+
+      const genDisplayCode = (item) => {
+        return <p>
+          <span>{item.property + ':'}</span>
+          {item.value.map(val => genText(val))};
+        </p>
+      }
+
+      const genTreeView = () => {
+        return <div area="tree" class="g-css-customizer-tree">
+          <div class="g-css-customizer-tree-title">
+            Select
+          </div>
+          <div class="g-css-customizer-tree-content">
+            <g-btn small class="g-css-customizer-tree-reload" icon vOn:click={rebuildTreeData}>
+              <g-icon size="16" color="grey">fas fa-redo-alt</g-icon>
+            </g-btn>
+            <g-css-customizer-tree-view vModel={cssCustomizerTree} data={treeData.value} expandLevel={10}/>
+          </div>
+        </div>
+      }
+
+      const genActions = () => {
+        return <div area="action" class="g-css-customizer-action">
+          <div class="g-css-customizer-action-title">
+            Action
+          </div>
+          <div class="g-css-customizer-action-content">
+            <g-btn outlined vOn:click={saveData}>Save</g-btn>
+            <g-btn outlined>Cancel</g-btn>
+            <g-btn outlined vOn:click={close}>Close</g-btn>
+          </div>
+        </div>
+      }
+
+      const genPreviewComponent = () => {
+        // return <g-btn ref="previewComponent">Test</g-btn>
+        return <g-date-picker vModel={model.value} ref="previewComponent">
+
+        </g-date-picker>
+      }
+
+
+      const genPreview = () => {
+        return <div area="preview" class="g-css-customizer-preview" ref="preview">
+          {genPreviewComponent()}
+          <div class="test-class">
+          </div>
+          <style type="text/css">
+            {stylesString.value}
+          </style>
+        </div>
+      }
+
+
+      const genCode = () => {
+        return <div area="code" class="g-css-customizer-code">
+          <div class="g-css-customizer-code-title">
+            CSS
+          </div>
+          <g-combobox value={activeSelector.value} vOn:input={e => activeSelector.value = e} items={activeCssSelectorList.value} label="selector"/>
+          {cssDisplayCode.value.map(item => genDisplayCode(item))}
+        </div>
+      }
 
 			const genDesign = () => {
 			  return <div area="design" class="g-css-customizer-design">
@@ -232,12 +232,9 @@
 						Design
 					</div>
           <div class="g-css-customizer-design-content">
-						<g-text-field dense vModel={inputObj.backgroundColor} label="Background Color"/>
-						<g-text-field dense vModel={inputObj.color} label="Color"/>
-						<g-text-field dense vModel={inputObj.width} label="Width"/>
-						<g-text-field dense vModel={inputObj.height} label="Height"/>
-            <g-text-field dense vModel={inputObj.border} label="Border"/>
-            <g-text-field dense vModel={inputObj.borderRadius} label="Border Radius"/>
+            {propertyList.map(property => {
+              return <g-text-field dense label={property} value={inputObj.value[property]} vOn:input={e => onInput(e, property)}/>
+            })}
 						<g-btn outlined vOn:click={applyChanges}>Apply</g-btn>
             <g-btn outlined vOn:click={resetChanges}>Reset</g-btn>
           </div>
@@ -257,7 +254,10 @@
 			return {
 			  genCssCustomizer,
 				cssCustomizerTree,
-				activeCssClass
+        activeSelector,
+        cssData,
+        stylesString,
+        inputObj,
 			}
 		},
 		render () {
