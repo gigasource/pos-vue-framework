@@ -36,14 +36,32 @@
         return path === ''
       }
 
+      function getParentPath (path) {
+			  if (isRootPath(path)) return undefined
+        if (path.lastIndexOf('.children') > -1) return path.slice(0, path.lastIndexOf('.children'))
+        if (path.lastIndexOf('children') > -1) return path.slice(0, path.lastIndexOf('children'))
+      }
+
+      function getPathData(path, key) {
+        return isRootPath(path) ? _.get(treeData.value, path + key) : _.get(treeData.value, path + '.' + key)
+      }
+
+      function getClosestAncestorClassList(path) {
+			  const parentPath = getParentPath(path)
+        if (parentPath === undefined) return undefined
+        const parentClassList = getPathData(parentPath, 'classList')
+        if (parentClassList.length > 0) return parentClassList
+        else return getClosestAncestorClassList(parentPath)
+      }
+
 			const parseElement = (el) => {
-			  // debugger
 			  const obj = {}
         if (el instanceof Element) {
           obj['start'] = el.innerHTML ? el.outerHTML.slice(0, el.outerHTML.indexOf(el.innerHTML)) : el.outerHTML.slice(0, el.outerHTML.search(/<\/+/))
 					obj['end'] = el.innerHTML ? el.outerHTML.slice(el.outerHTML.indexOf(el.innerHTML) + el.innerHTML.length - el.outerHTML.length) : el.outerHTML.slice(obj['start'].length - el.outerHTML.length)
 					obj['start'] = obj['start'].replace(/ data-v-\w+=""/g, '')
 					obj['classList'] = [...el.classList]
+          obj['tag'] = el.tagName.toLowerCase()
           obj['children'] = []
           for (let childEl of el.childNodes) {
             const child = parseElement(childEl)
@@ -63,11 +81,7 @@
 
 			onMounted(() => {
 			  const previewComponent = context.refs.previewComponent
-				// previewComponent.$el.classList.add(genCssClass(getComponentName(cssCustomizerTree.activePath), getComponentId(cssCustomizerTree.activePath)))
-				// treeData.value = previewComponent.$el
-				// console.log(treeData.value.childNodes)
 				treeData.value = parseElement(previewComponent.$el)
-				// debugger
 			})
 
 			// Preview
@@ -78,17 +92,33 @@
 
 			const activeCssSelectorList = computed(() => {
         const selectorList = []
-        const classList = isRootPath(cssCustomizerTree.activePath) ? _.get(treeData.value, cssCustomizerTree.activePath + 'classList') : _.get(treeData.value, cssCustomizerTree.activePath + '.classList')
-        _.forEach(classList, val => {
-          selectorList.push(`.${val}`)
+        const classList = getPathData(cssCustomizerTree.activePath, 'classList')
+        const tag = getPathData(cssCustomizerTree.activePath, 'tag')
+        const parentPath = getParentPath(cssCustomizerTree.activePath)
+        const parentClassList = getPathData(parentPath, 'classList')
+        const closestNotEmptyClassList = getClosestAncestorClassList(cssCustomizerTree.activePath)
+        _.forEach(classList, cssClass => {
+          selectorList.push(`.${cssClass}`)
+        })
+        _.forEach(closestNotEmptyClassList, parentClass => {
+          if (tag) {
+            selectorList.push(`.${parentClass} ${tag}`)
+            selectorList.push(`.${parentClass}>${tag}`)
+            selectorList.push(`.${parentClass}+${tag}`)
+            selectorList.push(`.${parentClass}~${tag}`)
+          }
+          _.forEach(classList, childClass => {
+            selectorList.push(`.${parentClass} .${childClass}`)
+            selectorList.push(`.${parentClass}>.${childClass}`)
+            selectorList.push(`.${parentClass}+.${childClass}`)
+            selectorList.push(`.${parentClass}~.${childClass}`)
+          })
         })
         return selectorList
 			})
 
       watch(() => activeCssSelectorList.value, newVal => {
-        console.log('switched', newVal)
         activeSelector.value = newVal[0] || ''
-        console.log(activeSelector.value)
       }, {lazy: true, deep: true})
 
 			const cssDisplayCode = computed(() => {
@@ -121,7 +151,6 @@
           return ''
         }),
         set: val => {
-          inputObj.value[val.key] = val.value
           if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
           if (val.key.search(/[W|w]idth|[H|h]eight/) > -1) {
             reactiveSet(cssData.value[activeSelector.value],val.key, convertToUnit(val.value))
@@ -141,14 +170,23 @@
 				// style.innerText = '.' + activeSelector.value + ' ' + cssCode.value + '\r\n'
         // set(cssData.value, activeSelector.value, _.cloneDeep(stylesObj.value))
         // context.root.$set(cssData.value, `.${activeSelector.value}`, _.cloneDeep(stylesObj.value))
-			}
+        const previewComponentEl = context.refs.previewComponent.$el
+        const activeEl = _.get(previewComponentEl, cssCustomizerTree.activePath.replace(/children/g, 'childNodes'))
+        activeEl.classList.add(activeSelector.value.replace('.', ''))
+      }
 
 			const resetChanges = () => {
 
 			}
 
       // Actions
-      const saveData = () => {
+      const saveCssData = () => {
+        !treeData.value.metaData && (treeData.value.metaData = {})
+        treeData.value.metaData.cssData = cssData.value
+      }
+
+      const save = () => {
+        saveCssData()
         context.emit('save')
       }
 
@@ -189,7 +227,7 @@
             Action
           </div>
           <div class="g-css-customizer-action-content">
-            <g-btn outlined vOn:click={saveData}>Save</g-btn>
+            <g-btn outlined vOn:click={save}>Save</g-btn>
             <g-btn outlined>Cancel</g-btn>
             <g-btn outlined vOn:click={close}>Close</g-btn>
           </div>
@@ -221,7 +259,7 @@
           <div class="g-css-customizer-code-title">
             CSS
           </div>
-          <g-combobox value={activeSelector.value} vOn:input={e => activeSelector.value = e} items={activeCssSelectorList.value} label="selector"/>
+          <g-combobox value={activeSelector.value} vOn:input={e => activeSelector.value = e} items={activeCssSelectorList.value} label="selector" menuProps={{maxHeight: undefined}}/>
           {cssDisplayCode.value.map(item => genDisplayCode(item))}
         </div>
       }
