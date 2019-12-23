@@ -1,23 +1,23 @@
 <template>
   <div class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp"
        @mousedown="onMouseDown">
-    <div v-if="prependIcon" class="g-tf-prepend__outer" ref="prependRef" @click="onClickPrependOuter">
+    <div v-if="$slots['prepend-outer'] || prependIcon" class="g-tf-prepend__outer" ref="prependRef">
       <slot name="prepend-outer">
-        <g-icon :color=iconColor>{{prependIcon}}</g-icon>
+        <g-icon :color=iconColor @click="onClickPrependOuter">{{prependIcon}}</g-icon>
       </slot>
     </div>
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
       <div class='g-tf' :class="tfErrClasses">
-        <div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
+        <div v-if="$slots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner">
           <slot name="prepend-inner">
-            <g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
+            <g-icon :color=iconColor @click="onClickPrependInner">{{prependInnerIcon}}</g-icon>
           </slot>
         </div>
         <div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
           <div class="input">
-            <slot name="input-slot" :inputErrStyles="inputErrStyles"></slot>
+            <slot name="input-slot" :inputErrStyles="inputErrStyles"/>
             <input autocomplete="off"
                    :autofocus="autofocus"
                    class="g-tf-input"
@@ -39,7 +39,6 @@
               <span v-if="required" style="color: red">*</span>
             </label>
           </slot>
-
         </div>
         <div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
         <div class="g-tf-append__inner" @click="onClickAppendInner">

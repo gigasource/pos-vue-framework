@@ -1,15 +1,15 @@
 <script>
-  import { getInternalValue } from '../../mixins/getVModel'
-  import { getZIndex, convertToUnit } from '../../utils/helpers'
+  import {getInternalValue} from '../../mixins/getVModel'
+  import {getZIndex, convertToUnit} from '../../utils/helpers'
   import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
-  import { computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api'
+  import {computed, watch, onMounted, onBeforeUnmount} from '@vue/composition-api'
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
 
   export default {
     name: 'GDialogContent',
-    components: { GOverlay },
+    components: {GOverlay},
     directives: {
       ClickOutside
     },
@@ -44,8 +44,8 @@
     },
     setup(props, context) {
       const isActive = getInternalValue(props, context)
-      const { attachToRoot, detach } = detachable(props, context)
-      const { getMaxZIndex } = stackable(props, context)
+      const {attachToRoot, detach} = detachable(props, context)
+      const {getMaxZIndex} = stackable(props, context)
 
       // Stacking
       const wrapperZIndex = computed(() => {
@@ -100,7 +100,7 @@
       }
 
       // Scroll prevent
-      const composedPath = function(e) {
+      const composedPath = function (e) {
         if (e.composedPath) return e.composedPath()
 
         const path = []
@@ -121,17 +121,17 @@
         return path
       }
 
-      const hasScrollbar = function(el) {
+      const hasScrollbar = function (el) {
         if (!el || el.nodeType !== Node.ELEMENT_NODE) return false
         const style = window.getComputedStyle(el)
         return ['auto', 'scroll'].includes(style.overflowY) && el.scrollHeight > el.clientHeight
       }
 
-      const onEdge = function(el) {
+      const onEdge = function (el) {
         return el.scrollTop === 0 || el.scrollTop + el.clientHeight === el.scrollHeight
       }
 
-      const shouldScroll = function(el, delta) {
+      const shouldScroll = function (el, delta) {
         if (el.scrollTop === 0 && delta < 0) return true
         return el.scrollTop + el.clientHeight === el.scrollHeight && delta > 0
       }
@@ -236,7 +236,7 @@
         if (newVal) {
           disableOutsideScroll()
           context.root.$nextTick(() => {
-            context.refs.wrapper.focus()
+            context.refs.wrapper && context.refs.wrapper.focus()
           })
         } else {
           enableOutsideScroll()
@@ -316,7 +316,8 @@
           }
         }
 
-        return <g-overlay vOn:input={e => isActive.value = e} value={isActive.value} {...overlayData} vShow={renderOverlay.value}/>
+        return <g-overlay vOn:input={e => isActive.value = e} value={isActive.value} {...overlayData}
+                          vShow={renderOverlay.value}/>
       }
 
       function genDialog() {
@@ -336,94 +337,94 @@
   }
 </script>
 <style scoped lang="scss">
-	.g-dialog {
+  .g-dialog {
 
-		&-wrapper {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			position: fixed;
-			pointer-events: none;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
-			z-index: 6;
-			outline: none;
-		}
+    &-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 6;
+      outline: none;
+    }
 
-		&-content {
-			display: flex;
-			transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
+    &-content {
+      display: flex;
+      transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
 
-			&:not(.g-dialog-content__fullscreen) {
-				max-width: 90%;
-				max-height: 90%;
-			}
+      &:not(.g-dialog-content__fullscreen) {
+        max-width: 90%;
+        max-height: 90%;
+      }
 
-			> * {
-				width: 100%
-			}
+      > * {
+        width: 100%
+      }
 
-			> ::v-deep.g-card {
-				height: auto;
-				overflow-y: auto;
+      > ::v-deep.g-card {
+        height: auto;
+        overflow-y: auto;
 
-				> .g-card-title {
-					font-size: 2em;
-					font-weight: 500;
-				}
+        > .g-card-title {
+          font-size: 2em;
+          font-weight: 500;
+        }
 
-				> .g-card-actions {
-					justify-content: flex-end;
-				}
-			}
-		}
+        > .g-card-actions {
+          justify-content: flex-end;
+        }
+      }
+    }
 
-		&-content__active {
-			pointer-events: auto;
-		}
+    &-content__active {
+      pointer-events: auto;
+    }
 
-		&-content__scrollable {
-			> ::v-deep.g-card {
-				display: flex;
-				flex: 1 1 100%;
-				flex-direction: column;
-				max-height: 100%;
-				max-width: 100%;
+    &-content__scrollable {
+      > ::v-deep.g-card {
+        display: flex;
+        flex: 1 1 100%;
+        flex-direction: column;
+        max-height: 100%;
+        max-width: 100%;
 
-				> .g-card-title, .g-card-actions {
-					flex: 0 0 auto
-				}
+        > .g-card-title, .g-card-actions {
+          flex: 0 0 auto
+        }
 
-				> .g-card-text {
-					backface-visibility: hidden;
-					flex: 1 1 auto;
-					overflow-y: auto;
-				}
-			}
-		}
+        > .g-card-text {
+          backface-visibility: hidden;
+          flex: 1 1 auto;
+          overflow-y: auto;
+        }
+      }
+    }
 
-		&-content__fullscreen {
-			border-radius: 0;
-			margin: 0;
-			height: 100%;
-			position: fixed;
-			overflow-y: auto;
-			top: 0;
-			left: 0;
-			right: 0;
+    &-content__fullscreen {
+      border-radius: 0;
+      margin: 0;
+      height: 100%;
+      position: fixed;
+      overflow-y: auto;
+      top: 0;
+      left: 0;
+      right: 0;
 
-			> .g-card {
-				min-height: 100%;
-				min-width: 100%;
-				margin: 0 !important;
-				padding: 0 !important;
-			}
-		}
+      > .g-card {
+        min-height: 100%;
+        min-width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    }
 
-		&-wrapper__bottom {
-			align-items: flex-end;
-		}
-	}
+    &-wrapper__bottom {
+      align-items: flex-end;
+    }
+  }
 </style>
