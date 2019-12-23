@@ -44,11 +44,12 @@ export default function treeFactory({
   // will be consumed by custom genNode function
   const preGenNode = function ({node, path, childrenVNodes, isLast, isRoot, actualLevel}) {
     // initialize collapsed/expand
-    if (!treeStates[path]) set(treeStates, path, {
-      collapse: expandLevel <= actualLevel,
-      selected: false,
-      open: false
-    })
+    if (!treeStates[path]) {
+      set(treeStates, path, {
+        collapse: expandLevel <= actualLevel,
+        selected: false,
+      })
+    }
 
     const text = genText.value(node, isRoot);
     return genNode({node, text, childrenVNodes, isLast, state: treeStates[path], path})

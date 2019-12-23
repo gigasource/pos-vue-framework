@@ -60,7 +60,7 @@
       function initComponent() {
         attachToRoot(context.refs.overlay.$el)
         attachToRoot(context.refs.wrapper)
-				detach(context.refs.container)
+        detach(context.refs.container)
       }
 
       onMounted(() => {
@@ -121,15 +121,15 @@
         return path
       }
 
-			const hasScrollbar = function(el) {
+      const hasScrollbar = function(el) {
         if (!el || el.nodeType !== Node.ELEMENT_NODE) return false
         const style = window.getComputedStyle(el)
         return ['auto', 'scroll'].includes(style.overflowY) && el.scrollHeight > el.clientHeight
-			}
+      }
 
-			const onEdge = function(el) {
+      const onEdge = function(el) {
         return el.scrollTop === 0 || el.scrollTop + el.clientHeight === el.scrollHeight
-			}
+      }
 
       const shouldScroll = function(el, delta) {
         if (el.scrollTop === 0 && delta < 0) return true
@@ -173,13 +173,13 @@
         }
 
         return true
-			}
+      }
 
-			const onWheel = function (e) {
-			  if ((context.refs.overlay && e.target === context.refs.overlay.$el.firstChild) || checkPath(e)) e.preventDefault()
-			}
+      const onWheel = function (e) {
+        if ((context.refs.overlay && e.target === context.refs.overlay.$el.firstChild) || checkPath(e)) e.preventDefault()
+      }
 
-			const checkPathTouch = function (e) {
+      const checkPathTouch = function (e) {
         const path = e.path || composedPath(e)
         let delta = touchStartY - touchMoveY
         for (let index = 0; index < path.length; index++) {
@@ -196,41 +196,41 @@
         }
 
         return true
-			}
+      }
 
-			let touchStartY
-			let touchMoveY
-			let touchFlag = false
-			let shouldScrollTouchMove = false
+      let touchStartY
+      let touchMoveY
+      let touchFlag = false
+      let shouldScrollTouchMove = false
 
 
-			const onTouchStart = function (e) {
+      const onTouchStart = function (e) {
         touchFlag = true
-				touchStartY = e.touches[0].clientY
-			}
+        touchStartY = e.touches[0].clientY
+      }
 
-			const onTouchMove = function (e) {
+      const onTouchMove = function (e) {
         if (touchFlag) {
           touchMoveY = e.touches[0].clientY
           shouldScrollTouchMove = checkPathTouch(e)
-					touchFlag = false
-				}
+          touchFlag = false
+        }
         if (((context.refs.overlay && e.target === context.refs.overlay.$el.firstChild) || shouldScrollTouchMove) && e.cancelable) {
           e.preventDefault()
         }
-			}
+      }
 
-			const disableOutsideScroll = () => {
+      const disableOutsideScroll = () => {
         window.addEventListener('wheel', onWheel, {passive: false})
         window.addEventListener('touchstart', onTouchStart, {passive: false})
         window.addEventListener('touchmove', onTouchMove, {passive: false})
-			}
+      }
 
-			const enableOutsideScroll = () => {
+      const enableOutsideScroll = () => {
         window.removeEventListener('wheel', onWheel)
         window.removeEventListener('touchstart', onTouchStart)
         window.removeEventListener('touchmove', onTouchMove)
-			}
+      }
 
       const unwatch = watch(isActive, newVal => {
         if (newVal) {
@@ -246,7 +246,7 @@
       // Clean-up when destroy
       onBeforeUnmount(() => {
         unwatch()
-				enableOutsideScroll()
+        enableOutsideScroll()
         context.refs.wrapper && detach(context.refs.wrapper);
         context.refs.overlay && detach(context.refs.overlay.$el);
       });
