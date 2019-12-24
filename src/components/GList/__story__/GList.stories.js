@@ -96,7 +96,7 @@ export const gListSingleSelectPlayGround = () => ({
     prependType: { default: text('prependType', 'avatar') },
     subtextWrap: { default: boolean('subtextWrap', false) },
     mandatory: { default: boolean('mandatory', false) },
-    itemValue: { default: text('itemValue', 'text') },
+    itemValue: { default: text('itemValue', undefined) },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
     returnObject: { default: boolean('returnObject', false) },
@@ -497,7 +497,7 @@ export const gListSingleSectionSelect = () => ({
     `
       <div>
         selectedItem: {{testValue}}
-        <g-list :items="items" subheader="subheader" divider=true selectable itemText="text" returnObject>
+        <g-list v-model="testValue" :items="items" subheader="subheader" divider=true selectable itemText="text" returnObject>
         </g-list>
       </div>
       `,

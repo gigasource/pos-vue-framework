@@ -23,7 +23,7 @@ export const GSelectSingle = () => ({
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: number('counter', 25)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'value')},
+    itemValue: {default: text('itemValue', '')},
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
     mandatory: {default: boolean('mandatory', false)},
@@ -37,7 +37,7 @@ export const GSelectSingle = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected:  'https://cdn.vuetifyjs.com/images/lists/1.jpg'
+      selected:  {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'}
     }
   },
   template: `
@@ -134,7 +134,7 @@ export const GSelectMultiple = () => ({
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
-    returnObject: {default: boolean('returnObject', true)}
+    returnObject: {default: boolean('returnObject', false)}
   },
   data() {
     return {
@@ -223,10 +223,10 @@ export const GSelectSearchableSingleSelect = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+         'Jason Oner',
+         'Ranee Carlson',
+         'Cindy Baker',
+         'Ali Connors',
       ],
       selected: null
     }

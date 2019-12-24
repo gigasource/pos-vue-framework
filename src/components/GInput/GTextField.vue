@@ -24,7 +24,7 @@
                    :style="inputErrStyles"
                    :type="type"
                    :label="label"
-                   v-model="internalValue"
+                   v-model="internalValue "
                    :placeholder="placeholder"
                    :readonly="readOnly"
                    ref="input"
@@ -129,6 +129,10 @@
       },
 
       // basic props
+      prependValue: {
+        type: String,
+        default: '',
+      },
       value: [String, Number, Array, Object],
       type: {
         type: String,
@@ -142,16 +146,17 @@
       const tfWrapperClasses = getTfWrapperClasses(props);
 
       const {internalValue, rawInternalValue} = getInternalValue(props, context);
+      const tfValue = computed(() => props.prependValue + internalValue.value)
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active');
+      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, tfValue, isValidInput, isFocused, 'g-tf-label__active');
 
       //Activate non persistent hint
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
 
       //event handler function
-      const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput);
+      const {errorMessages, validate} = getValidate(props, isFocused, tfValue, isValidInput);
 
       const inputErrStyles = computed(() => isValidInput.value ? {} : {'color': 'red'})
       //change input border color
@@ -167,7 +172,7 @@
       } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
       //set legend width for label in outlined textfield
       const legendStyles = computed(() => {
-        if (!props.solo && props.label && (isFocused.value || internalValue.value || props.placeholder)) {
+        if (!props.solo && props.label && (isFocused.value || tfValue.value || props.placeholder)) {
           const margin = props.rounded ? (props.filled ? '24px' : '16px') : (props.shaped ? '12px' : '5px');
           return {
             'width': 'auto',
@@ -196,6 +201,7 @@
         //value
         internalValue,
         rawInternalValue,
+        tfValue,
         //calculated state
         isLabelActive,
         isFocused,

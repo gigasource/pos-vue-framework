@@ -110,6 +110,7 @@
   import GImg from '../GImg/GImg';
   import {keyCodes} from '../../utils/helpers';
   import {makeListSelectable} from './groupableForList';
+  import { makeListSelectable2 } from './listSelectFactory';
 
   export default {
     name: 'GList',
@@ -142,6 +143,7 @@
       },
       subtextWrap: Boolean,
       value: [String, Object, Number, Array],
+      externalNormalisedValue: [String, Object, Number, Array],
       selectable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
@@ -156,6 +158,10 @@
       returnObject: Boolean,
       svg: Boolean,
       appendIcon: String,
+      searchText: {
+        type: String,
+        default: ''
+      }
     },
     setup: function (props, context) {
       //G list computed class
@@ -244,7 +250,11 @@
       provide('getListEvents', getListEvents)
 
 
-      const {uniqueItems: renderList, internalValue, toggleItem, isActiveItem} = makeListSelectable(props, context);
+      //const {uniqueItems: renderList, internalValue, toggleItem, isActiveItem} = makeListSelectable(props, context);
+      const {selectableList : renderList,
+        normalisedValue : internalValue,
+        toggleItem,
+        isActiveItem,} = makeListSelectable2(props, context)
 
       //handler case:  list items in list
       const add = (item) => {

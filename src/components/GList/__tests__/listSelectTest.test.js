@@ -1023,6 +1023,16 @@ describe("test", function() {
         },
       ]
     `);
+    expect(parentVm.externalValueNormalize).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "value": 1,
+        },
+        Object {
+          "value": 2,
+        },
+      ]
+    `);
   });
 
   it("value normalize in case object array returnObject single", async function() {

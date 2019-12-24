@@ -1,16 +1,16 @@
 <script>
   import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu'
-  import {computed, reactive, ref} from '@vue/composition-api';
-  import {getList, getSelections} from '../GSelect/GSelectFactory';
+  import { computed, reactive, ref } from '@vue/composition-api';
+  import { getList, getSelections } from '../GSelect/GSelectFactory';
   import GChip from '../GChip/GChip';
   import GIcon from '../GIcon/GIcon';
   import GList from '../GList/GList';
   import _ from 'lodash'
-  import {getLabel, getValidate} from '../GInput/GInputFactory';
+  import { getLabel, getValidate } from '../GInput/GInputFactory';
   import GSelect from '../GSelect/GSelect';
-  import {getInputEventHandlers, setSearch} from './GAutocompleteFactory';
-  import {makeListSelectable} from '../GList/groupableForList';
+  import { getInputEventHandlers, setSearch } from './GAutocompleteFactory';
+  import { makeListSelectable } from '../GList/groupableForList';
 
   export default {
     name: 'GAutocomplete',
@@ -204,24 +204,24 @@
       }
 
       const textFieldScopedSlots = {
-        'clearable-slot': ({ iconColor }) =>
-          <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
-                 color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
+        // 'clearable-slot': ({ iconColor }) =>
+        //   <GIcon vOn:click={clearSelection} vShow={isDirty.value && props.clearable}
+        //          color={props.clearIconColor || iconColor}>{props.clearIcon}</GIcon>,
         'append-inner': ({ iconColor }) =>
           <GIcon color={iconColor}>arrow_drop_down</GIcon>,
         'input-slot': ({ inputErrStyles }) =>
           <div class="g-tf-input" style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
             {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
           </div>,
-        label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
-                            style={labelStyles.value}>{props.label}</label>,
-        ['input-message']: () => [<div v-show={props.counter} class={{
-          'g-tf-counter': true,
-          'g-tf-counter__error': !isValidInput.value
-        }}>{validateText.value.length}/{props.counter}</div>,
-          isValidInput.value ? <div class={['g-tf-hint', hintClasses.value]}>{props.hint}</div>
-            : <div class="g-tf-error">{errorMessages.value}</div>
-        ]
+        // label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
+        //                     style={labelStyles.value}>{props.label}</label>,
+        // ['input-message']: () => [<div v-show={props.counter} class={{
+        //   'g-tf-counter': true,
+        //   'g-tf-counter__error': !isValidInput.value
+        // }}>{validateText.value.length}/{props.counter}</div>,
+        //   isValidInput.value ? <div class={['g-tf-hint', hintClasses.value]}>{props.hint}</div>
+        //     : <div class="g-tf-error">{errorMessages.value}</div>
+        //]
       }
 
       const tfValue = computed(() => {
@@ -238,7 +238,8 @@
                 ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                   'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                   'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
-                value: tfValue.value
+                value: tfValue.value,
+                prependValue: validateText.value
               },
               on: {
                 'click:clearIcon': clearSelection,
@@ -305,35 +306,35 @@
 </script>
 <style lang="scss" scoped>
 
-  .g-autocomplete ::v-deep {
-    span {
-      margin: 3px
-    }
+	.g-autocomplete ::v-deep {
+		span {
+			margin: 3px
+		}
 
-    .g-tf-append__inner .g-icon:last-child {
-      transition: transform 0.4s;
-    }
+		.g-tf-append__inner .g-icon:last-child {
+			transition: transform 0.4s;
+		}
 
-    .input {
-      display: flex;
-    }
+		.input {
+			display: flex;
+		}
 
-    .g-tf-input {
-      flex-wrap: wrap;
-      display: flex;
-    }
+		.g-tf-input {
+			flex-wrap: wrap;
+			display: flex;
+		}
 
-    input {
-      flex-shrink: 0;
-      flex-basis: auto;
-      cursor: text;
-    }
-  }
+		input {
+			flex-shrink: 0;
+			flex-basis: auto;
+			cursor: text;
+		}
+	}
 
-  .g-autocomplete__active ::v-deep {
-    .g-tf-append__inner .g-icon:last-child {
-            transition: transform 0.4s;
-            transform: rotateZ(180deg);
-        }
-    }
+	.g-autocomplete__active ::v-deep {
+		.g-tf-append__inner .g-icon:last-child {
+			transition: transform 0.4s;
+			transform: rotateZ(180deg);
+		}
+	}
 </style>
