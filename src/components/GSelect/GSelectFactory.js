@@ -102,7 +102,8 @@ export function getSelections(props, selectedValue) {
       if (!item && item !== 0) return null;
       if (!isObjectList) return item;
       if (props.itemValue && !props.returnObject) item = props.items.find(_item => itemValueFn.value(_item) === item);
-      else item = props.items.find(_item => _.isEqual(item, _item))
+      //TODO: temporary fix, needs optimizing, Function in selectedValue is converted to Object -> _.equal doesn't work
+      else item = props.items.find(_item => itemTextFn.value(_item) === itemTextFn.value(item))
       return item ? {text: itemTextFn.value(item), value: itemValueFn.value(item)} : '';
     }
     const list = selectedValue.value
