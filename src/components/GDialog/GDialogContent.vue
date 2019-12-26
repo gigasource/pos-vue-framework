@@ -354,7 +354,6 @@
     }
 
     &-content {
-      display: flex;
       transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
 
       &:not(.g-dialog-content__fullscreen) {
@@ -367,7 +366,7 @@
       }
 
       > ::v-deep.g-card {
-        height: auto;
+        height: 100%;
         overflow-y: auto;
 
         > .g-card-title {
