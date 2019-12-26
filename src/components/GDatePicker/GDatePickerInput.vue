@@ -122,6 +122,12 @@
         showMenu: false,
       })
 
+      watch(() => props.value, () => {
+        if(state.value !== props.value) {
+          state.value = copyValue(props.value)
+        }
+      })
+
       function copyValue(val) {
         return (!props.multiple && !props.range) ? val : _.map(val, v => v)
       }
