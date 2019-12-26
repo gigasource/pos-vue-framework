@@ -122,9 +122,9 @@
         showMenu: false,
       })
 
-      watch(() => props.value, () => {
-        if(state.value !== props.value) {
-          state.value = copyValue(props.value)
+      watch(() => props.value, newValue => {
+        if(state.value !== newValue) {
+          state.value = copyValue(newValue)
         }
       })
 
