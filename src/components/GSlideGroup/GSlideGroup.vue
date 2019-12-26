@@ -168,7 +168,7 @@
         content.style.setProperty('willChange', 'transform')
       }
 
-      function  handleScrollOffset() {
+      function handleScrollOffset() {
         const { content, wrapper } = context.refs
         const maxScrollOffset = content.clientWidth - wrapper.clientWidth
 
@@ -181,10 +181,6 @@
 
       function onTouchMove(e) {
         scrollOffset.value = startX.value - e.touchmoveX;
-        handleScrollOffset();
-      }
-
-      function onTouchEnd(e) {
         handleScrollOffset();
       }
 
@@ -264,7 +260,6 @@
       const touchDirectiveValues = {
         start: (e) => overflowCheck(e, onTouchStart),
         move: (e) => overflowCheck(e, onTouchMove),
-        end: (e) => overflowCheck(e, onTouchEnd),
       }
 
       const selectedIndex = computed(() => {
