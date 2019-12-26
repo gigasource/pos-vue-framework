@@ -1,5 +1,5 @@
 <script>
-  import { computed, reactive } from '@vue/composition-api'
+  import { computed, reactive, watch } from '@vue/composition-api'
   import GMenu from '../GMenu/GMenu'
   import GDatePicker from '../GDatePicker/GDatePicker'
   import GTextField from '../GInput/GTextField'
