@@ -59,7 +59,7 @@ export const _computedDayNameInWeek = (props) => {
  * @returns {number}
  * @private
  */
-const _computedDaysBeforeFirstDayOfTheMonth = (props, displayedYear, displayedMonth) => computed(() => {
+export const _computedDaysBeforeFirstDayOfTheMonth = (props, displayedYear, displayedMonth) => computed(() => {
   const firstDayOfTheMonth = new Date(`${displayedYear.value}-${pad(displayedMonth.value + 1)}-01T00:00:00+00:00`)
   const weekDay = firstDayOfTheMonth.getUTCDay()
   return (weekDay - parseInt(props.firstDayOfWeek) + 7) % 7
@@ -213,9 +213,54 @@ export const _computedDatesInMonth = (props, state) => {
   })
 }
 
+export const cptAdjacentMonth = (date, adjacentDirection = 'next') => {
+  const direction = adjacentDirection === 'next' ? 1 : -1;
+  const dateValue = new Date(date);
+  const adjacentMonth = new Date(dateValue.getFullYear(), dateValue.getMonth() + direction, 1);
+  return {
+    year: adjacentMonth.getFullYear(),
+    month: (adjacentMonth.getMonth()) % 12 + 1
+  }
+}
+
+export const getLastNDaysOfMonth = (numberOfDays, month, year) => {
+  let daysInMonth = getDaysInMonth(month, year);
+  return daysInMonth.slice(Math.max(daysInMonth.length - numberOfDays, 1));
+};
+
+export const getFirstNDaysOfMonth = (numberOfDays, month, year) => {
+  let daysInMonth = getDaysInMonth(month, year);
+  return daysInMonth.slice(0, numberOfDays);
+};
+
+export const getDateItemObj = (props, date) => {
+  return {
+    // raw date value which will be used to change date picker state
+    value: date,
+    // formatted date which will be shown in view
+    formattedValue: null,
+    // boolean value indicate that whether the date can be selected
+    isAllowed: false,
+    // boolean value indicate that whether the date is selected or not
+    isSelected: false,
+    // boolean value indicate whether the date is current
+    isCurrent: false,
+    // events of selected date
+    events: _genEvents(props, date)
+  }
+}
+
+const getDaysInMonth = (month, year) => {
+  const tempDate = new Date(year, month - 1);
+  const numberOfDays = new Date(tempDate.getFullYear(), tempDate.getMonth() + 1, 0).getDate();
+  let dateArray = new Array(numberOfDays).fill('');
+  dateArray = dateArray.map((v, i) => dayjs(new Date(year, month - 1, i + 1)).format('YYYY-MM-DD'));
+  return dateArray;
+}
+
 export const computedDateTableModel = ({ props, context, state, cptIsMultiSelect }) => {
   const cptDayNames = _computedDayNameInWeek(props)
-  const cptDateRows = _computedDatesInMonth(props, state)
+  const cptDateRows = props._computedDatesInMonthCustom ? props._computedDatesInMonthCustom(props, state) : _computedDatesInMonth(props, state)
 
   return computed(() => ({
     dayNames: cptDayNames.value,
