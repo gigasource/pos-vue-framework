@@ -23,13 +23,17 @@ import GChip from './GChip/GChip';
 
 import GChipGroup from './GChipGroup/GChipGroup';
 
+import GColorPicker from './GColorPicker/GColorPicker';
+import GColorPickerInput from './GColorPicker/GColorPickerInput';
+import GColorPickerInputModel from './GColorPicker/GColorPickerInputModel';
+
 import GCombobox from './GCombobox/GCombobox';
 
 import GConnector from './GConnector/GConnector';
 import GDiagram from './GConnector/GDiagram';
 
 import GDatePicker from './GDatePicker/GDatePicker';
-
+import GDatePickerInput from './GDatePicker/GDatePickerInput';
 import GDateRangePicker from './GDatePicker/GDateRangePicker';
 
 import GDialog from './GDialog/GDialog';
@@ -48,6 +52,7 @@ import GIncDecNumberInput from './GGridGenerator/components/IncDecNumberInput';
 import GGridSelect from './GGridSelect/GGridSelect';
 
 import GIcon from './GIcon/GIcon';
+import GIconChooser from './GIconChooser/GIconChooser';
 
 import GImg from './GImg/GImg';
 
@@ -124,6 +129,7 @@ import GTextarea from './GTextarea/GTextarea';
 import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
+import GTimePickerInput from './GTimePicker/GTimePickerInput';
 
 import GTooltip from './GTooltip/GTooltip';
 import GTooltipContent from './GTooltip/GTooltipContent';
@@ -138,19 +144,16 @@ import GScrollWindowItem from './GWindow/GScrollWindowItem';
 import GWindow from './GWindow/GWindow';
 import GWindowItem from './GWindow/GWindowItem';
 
-import {getInternalValue, getVModel} from '../mixins/getVModel';
-export {getInternalValue, getVModel};
-
-import {getExpansionModel} from './GExpansion/GExpansionFactory';
-export {getExpansionModel};
-
-import colorHandler, {convertToUnit} from '../utils/helpers'
-export {colorHandler, convertToUnit};
-
-import Intersect from '../directives/intersect/intersect';
-export {Intersect};
-
 import GSnackbar from "./GSnackbar/GSnackbar";
+import GSubheader from './GSubheader/GSubheader';
+import GProgressBar from './GProgressBar/GProgressBar';
+import GSlider from './GSliderRemake/GSlider';
+import GRating from './GRating/GRating';
+
+import {getInternalValue, getVModel} from '../mixins/getVModel';
+import {getExpansionModel} from './GExpansion/GExpansionFactory';
+import colorHandler, {convertToUnit} from '../utils/helpers'
+import Intersect from '../directives/intersect/intersect';
 
 import {
   GCarouselTransition,
@@ -199,6 +202,15 @@ import {
 } from './transition/transition';
 
 export {
+  colorHandler,
+  convertToUnit,
+  Intersect,
+  getInternalValue,
+  getVModel,
+  getExpansionModel,
+}
+
+export {
   GAutocomplete,
   GAvatar,
   GBadge,
@@ -217,6 +229,7 @@ export {
   GConnector,
   GDiagram,
   GDatePicker,
+  GDatePickerInput,
   GDateRangePicker,
   GDialog,
   GDndDialog,
@@ -281,6 +294,7 @@ export {
   GTextarea,
   GTextareaJSX,
   GTimePicker,
+  GTimePickerInput,
   GTooltip,
   GTooltipContent,
   GToolbar,
@@ -334,4 +348,8 @@ export {
   GExpandTransition,
   GExpandXTransition,
   GSnackbar,
+  GSubheader,
+  GProgressBar,
+  GSlider,
+  GRating,
 }

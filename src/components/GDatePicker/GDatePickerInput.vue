@@ -1,5 +1,5 @@
 <script>
-  import { computed, reactive } from '@vue/composition-api'
+  import { computed, reactive, watch } from '@vue/composition-api'
   import GMenu from '../GMenu/GMenu'
   import GDatePicker from '../GDatePicker/GDatePicker'
   import GTextField from '../GInput/GTextField'
@@ -120,6 +120,12 @@
         value: initialDateValue,
         tempValue: _.cloneDeep(initialDateValue),
         showMenu: false,
+      })
+
+      watch(() => props.value, newValue => {
+        if(state.value !== newValue) {
+          state.value = copyValue(newValue)
+        }
       })
 
       function copyValue(val) {

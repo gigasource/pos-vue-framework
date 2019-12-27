@@ -129,8 +129,8 @@ export function getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, u
   return { adjustHours, adjustMinutes, adjustSeconds }
 }
 
-export const _12HourTimeRegex = /^(?<hours>1[0-2]|0?[1-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))? ?(?<meridiems>[AaPp][Mm])$/i
-export const _24HourTimeRegex = /^(?<hours>2[0-3]|[0-1]?[1-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))?$/i
+export const _12HourTimeRegex = /^(?<hours>1[0-2]|0?[0-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))? ?(?<meridiems>[AaPp][Mm])$/i
+export const _24HourTimeRegex = /^(?<hours>2[0-3]|[0-1]?[0-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))?$/i
 
 export default function (props, context) {
   let timeFormatStr = props.use24Hours ? 'HH:mm' : 'hh:mm'
@@ -149,14 +149,13 @@ export default function (props, context) {
     showPeriod: !props.use24Hours,
   })
 
-  watch(() => props.value, () => {
+  watch(() => props.value, (newVal) => {
     let timeRegex = props.use24Hours ? _24HourTimeRegex : _12HourTimeRegex
     let timeRegexResult
-    const newValue = props.value == null ? '' : String(props.value).trim()
-    if (newValue)
-      timeRegexResult = timeRegex.exec(props.value)
+    const newValue = !newVal ? '' : String(newVal).trim()
+    if (newValue) timeRegexResult = timeRegex.exec(newVal)
     if (!timeRegexResult) {
-      console.warn('Invalid time value ', props.value, timeRegex)
+      if (newValue) console.warn('Invalid time value ', newVal, timeRegex)
       timeRegexResult = timeRegex.exec(dayjs().format(timeFormatStr))
     }
     let timeObj = timeRegexResult.groups

@@ -63,7 +63,7 @@ export default (props, context) => {
     //   YYYY: when show year picker, YYYY value will be used to highlight current year
     //   YYYY: when show month picker, with YYYY is the year of month picker
     //   YYYY-MM: show date picker, with YYYY-MM is the month of date picker
-    viewportDate: dayjs().format( props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM'),
+    viewportDate: dayjs().format( props.type === 'date' ? 'DD/MM/YYYY': 'MM/YYYY'),
 
     // store selected value(s)
     // string if single mode is used
@@ -82,11 +82,11 @@ export default (props, context) => {
     // update viewport
     state.viewportDate = (cptIsMultiSelect.value
         ? props.value.length === 0
-                ? dayjs().format( props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM')
-                : props.focusOnFirstItem
-                    ? props.value[0]
-                    : props.value[props.value.length - 1]
-        : props.value
+          ? dayjs().format(props.type === 'date' ? 'DD/MM/YYYY' : 'MM/YYYY')
+          : props.focusOnFirstItem
+            ? props.value[0]
+            : props.value[props.value.length - 1]
+        : getValidInitialValue(props, cptIsMultiSelect)
     )
   })
 

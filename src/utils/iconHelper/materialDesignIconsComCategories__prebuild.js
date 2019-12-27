@@ -3,7 +3,7 @@
 // Read ./materialdesignicons_com/README.text to known how to get category model
 
 import _ from 'lodash'
-import { saveFile } from '../../../utils/helpers';
+import { saveFile } from '../helpers';
 // get all json file
 const jsonFiles = require.context('./materialdesignicons_com/', false, /^.*?.json$/).keys()
 

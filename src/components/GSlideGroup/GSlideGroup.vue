@@ -1,19 +1,19 @@
 <template>
-  <div v-resize="setWidths" :class="containerClasses">
+  <div :class="containerClasses" v-resize="setWidths">
     <div :class="slideGroupPrevClasses" @click="onAffixClick('prev')">
-      <slot name="prev" @click="onAffixClick('prev')">
+      <slot @click="onAffixClick('prev')" name="prev">
         <g-icon>{{prevIcon}}</g-icon>
       </slot>
     </div>
 
-    <div ref="wrapper" class="g-slide-group__wrapper">
-      <div ref="content" class="g-slide-group__content">
-        <slot :toggle="toggleItem" :isActive="isActiveItem"></slot>
+    <div v-touch="touchDirectiveValues" class="g-slide-group__wrapper" ref="wrapper">
+      <div class="g-slide-group__content" ref="content">
+        <slot :isActive="isActiveItem" :toggle="toggleItem"></slot>
       </div>
 
     </div>
     <div :class="slideGroupNextClasses" @click="onAffixClick('next')">
-      <slot name="next" @click="onAffixClick('next')">
+      <slot @click="onAffixClick('next')" name="next">
         <g-icon>{{nextIcon}}</g-icon>
       </slot>
     </div>
@@ -24,6 +24,7 @@
   import { computed, onBeforeUpdate, onUpdated, reactive, ref, watch } from '@vue/composition-api';
   import groupable from '../../mixins/groupable';
   import Resize from '../../directives/resize/resize';
+  import Touch from '../../directives/touch/touch';
   import GIcon from '../GIcon/GIcon';
 
   //TODO add stories + tests
@@ -58,7 +59,8 @@
       },
     },
     directives: {
-      Resize
+      Resize,
+      Touch
     },
     setup(props, context) {
       const data = reactive({
@@ -71,6 +73,7 @@
       const isOverflowing = ref(false);
       const internalItemsLength = ref(0);
       const scrollOffset = ref(0);
+      const startX = ref(0)
 
       //Styles & classes computed
       const slideGroupNextClasses = computed(() => {
@@ -101,7 +104,9 @@
       });
 
       onUpdated(() => {
-        if (internalItemsLength.value === (context.refs.content.children || []).length) return
+        if (internalItemsLength.value === (context.refs.content.children || []).length) {
+          return
+        }
         setWidths();
       });
 
@@ -109,7 +114,9 @@
       const hasAffixes = computed(() => props.showArrows && isOverflowing.value);
 
       const hasNext = computed(() => {
-        if (!hasAffixes) return false;
+        if (!hasAffixes) {
+          return false;
+        }
         const { content, wrapper } = data.widths;
         // Check one scroll ahead to know the width of right-most item
         return content > Math.abs(scrollOffset.value) + wrapper;
@@ -148,6 +155,35 @@
         scrollTo(location);
       }
 
+      function overflowCheck(e, fn) {
+        e.stopPropagation();
+        isOverflowing.value && fn(e)
+      }
+
+      function onTouchStart(e) {
+        const {content} = context.refs;
+        startX.value = scrollOffset.value + e.touchstartX;
+
+        content.style.setProperty('transition', 'none')
+        content.style.setProperty('willChange', 'transform')
+      }
+
+      function handleScrollOffset() {
+        const { content, wrapper } = context.refs
+        const maxScrollOffset = content.clientWidth - wrapper.clientWidth
+
+        if (scrollOffset.value < 0 || !isOverflowing.value) {
+          scrollOffset.value = 0;
+        } else if (scrollOffset.value >= maxScrollOffset) {
+          scrollOffset.value = maxScrollOffset
+        }
+      }
+
+      function onTouchMove(e) {
+        scrollOffset.value = startX.value - e.touchmoveX;
+        handleScrollOffset();
+      }
+
       function calculateUpdatedOffset(selectedElement, widths, currentScrollOffset) {
         const { offsetLeft, clientWidth } = selectedElement;
         const totalWidth = widths.wrapper + currentScrollOffset;
@@ -171,7 +207,9 @@
       }
 
       function scrollIntoView() {
-        if (!selectedItem.value) return
+        if (!selectedItem.value) {
+          return
+        }
 
         if (selectedIndex.value === 0 || (!props.centerActive && !isOverflowing.value)) {
           scrollOffset.value = 0;
@@ -219,6 +257,11 @@
         }
       });
 
+      const touchDirectiveValues = {
+        start: (e) => overflowCheck(e, onTouchStart),
+        move: (e) => overflowCheck(e, onTouchMove),
+      }
+
       const selectedIndex = computed(() => {
         return internalValue.value ? props.items.findIndex((i) => i === internalValue.value) : -1;
       });
@@ -248,6 +291,7 @@
         containerClasses,
         slideGroupPrevClasses,
         slideGroupNextClasses,
+        touchDirectiveValues,
         onAffixClick,
         toggleItem,
         isActiveItem
@@ -256,6 +300,6 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
   @import "GSlideGroup";
 </style>
