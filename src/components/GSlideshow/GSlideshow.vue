@@ -21,7 +21,7 @@
 			const defaultSlideDuration = 5000
 
       const computedModel = computed(() => {
-        if (model.value.length === 1) return model.value = [...model.value, ...model.value]
+        if (model.value.length === 1) return [Object.assign({}, ...model.value), Object.assign({}, ...model.value)]
         return model.value
       })
 
@@ -31,11 +31,16 @@
 			const nextCount = computed(() => count.value === maxCount.value ? 0 : count.value + 1)
 			const maxCount = computed(() => computedModel.value.length - 1)
 
+      const currentItem = ref({})
+      watch(count, newVal => {
+        currentItem.value = computedModel.value[newVal]
+      })
 
-			const currentItem = computed({get: () => computedModel.value[count.value], set: val => count.value = val})
 			const nextItem = computed(() => computedModel.value[nextCount.value])
 
 			let currentTimeout
+      let currentTransitionOut
+      let currentTransitionIn
 
       const initSlideNodes = () => {
         const container = context.refs.container
@@ -61,42 +66,49 @@
       })
 
 			// Reset slide nodes when source changed
-      watch(() => computedModel.value, () => {
-        currentItem.value = 0
-				clean(slideNodes)
+      watch(computedModel, async () => {
+        currentTransitionOut && currentTransitionOut.cancel()
+        currentTransitionIn && currentTransitionIn.cancel()
+        count.value = Infinity
+        await context.root.$nextTick()
+        count.value = 0
+        clean(slideNodes)
         clearTimeout(currentTimeout)
         nodeFlag = false
-        context.root.$nextTick( async () => {
-					const firstItem = computedModel.value[0]
-					const secondItem = computedModel.value[1]
-          const slideNode1 = slideNodes[0]
-          const slideNode2 = slideNodes[1]
-          setSrc(firstItem, slideNode1)
-          setSrc(secondItem, slideNode2)
-          slideNode1.container.style.display ='block'
-          slideNode2.container.style.display = 'none'
-          if (slideNode1.video.style.display !== "none") {
-            await slideNode1.video.play()
-          }
+        await context.root.$nextTick()
+        const firstItem = computedModel.value[0]
+        const secondItem = computedModel.value[1]
+        const slideNode1 = slideNodes[0]
+        const slideNode2 = slideNodes[1]
+        setSrc(firstItem, slideNode1)
+        setSrc(secondItem, slideNode2)
+        slideNode1.container.style.display ='block'
+        slideNode2.container.style.display = 'none'
+        if (slideNode1.video.style.display !== "none") {
+          await slideNode1.video.play()
+        }
+        count.value = count.value === maxCount.value ? 0 : 1
+      }, {lazy: true})
 
-          count.value = count.value === maxCount.value ? 0 : 1
-        })
-
-      }, {deep: true, lazy: true})
+      // Maximum setTimeout delay is 2147483647 ms
+      function customSetTimeout (callback, delay) {
+			  if (delay > 2147483646) currentTimeout = setTimeout(() => customSetTimeout(callback, delay - 2147483646), 2147483646)
+        else currentTimeout = setTimeout(callback, delay)
+      }
 
 			// Sliding logic
       watch(currentItem, (newVal, oldVal) => {
 				if (oldVal && newVal) {
           const currentNode = slideNodes[nodeFlag ? 1 : 0]
           const nextNode = slideNodes[nodeFlag ? 0 : 1]
-					const duration = (oldVal.duration ? oldVal.duration : currentNode.video.style.display !== 'none' ? Math.round(currentNode.video.duration * 1000) - getTransitionDuration(oldVal.transition, props) : defaultSlideDuration)
+					let duration = (oldVal.duration ? oldVal.duration : currentNode.video.style.display !== 'none' ? Math.round(currentNode.video.duration * 1000) - getTransitionDuration(oldVal.transition, props) : defaultSlideDuration)
 					const transitionDuration = getTransitionDuration(newVal.transition, props)
-          currentTimeout = setTimeout( () => {
+          customSetTimeout(() => {
             nextNode.container.style.display = 'block'
-            const transition = currentNode.container.animate(...getTransition(newVal.transition, 'out', props))
-            nextNode.container.animate(...getTransition(newVal.transition, 'in', props))
+            currentTransitionOut = currentNode.container.animate(...getTransition(newVal.transition, 'out', props))
+            currentTransitionIn = nextNode.container.animate(...getTransition(newVal.transition, 'in', props))
             nextNode.video.style.display !== 'none' && (nextNode.video.play())
-            transition.onfinish = () => {
+            currentTransitionOut.onfinish = () => {
               clearTimeout(currentTimeout)
               currentNode.container.style.display = 'none'
               setSrc(nextItem.value, currentNode)
