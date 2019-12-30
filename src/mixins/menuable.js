@@ -122,7 +122,10 @@ export default function menuable(props, context) {
     requestAnimationFrame(() => {
       const contentElement = context.refs.content;
       if (!contentElement || contentElement.style.display !== 'none') {
+        let left = contentElement.style.left
+        contentElement.style.left = '0'
         cb();
+        contentElement.style.left = left
         return;
       }
       contentElement.style.display = 'inline-block';

@@ -28,7 +28,8 @@
     name: 'GIconChooser',
     components: { GTextField, GDndDialog, GPagination, GIcon, GIconSearch, GBtn },
     props: {
-      label: String
+      label: String,
+      value: String,
     },
     setup(props, context) {
       const state = reactive({
@@ -46,10 +47,11 @@
         flipVertical: false,
         color: null,
         //
-        value: ''
+        value: props.value || ''
       })
 
       const iconSources = getIconSources()
+
       function initIconPickerDialogState() {
         state.currentView = viewStateEnum.sourceList
         state.selectedIconSource = iconSources[0]
@@ -81,19 +83,15 @@
       })
 
       // source list view
-      const iconSrcColors = [{
-        color: 'rgb(27, 105, 168)',
-        shadeColor: 'rgb(21, 84, 134)',
-      }, {
-        color: 'rgb(151, 42, 169)',
-        shadeColor: 'rgb(119, 33, 133)',
-      }, {
-        color: 'rgb(8, 144, 103)',
-        shadeColor: 'rgb(5, 90, 82)',
-      }]
+      const iconSrcColors = [
+        { color: 'rgb(27, 105, 168)', shadeColor: 'rgb(21, 84, 134)', },
+        { color: 'rgb(151, 42, 169)', shadeColor: 'rgb(119, 33, 133)', },
+        { color: 'rgb(8, 144, 103)', shadeColor: 'rgb(5, 90, 82)', }
+      ]
       function getIconSrcColor(index) {
         return iconSrcColors[index % iconSrcColors.length]
       }
+
       function renderIconSrc(iconSrc, id) {
         const color = getIconSrcColor(id)
         return (
@@ -125,10 +123,11 @@
 
       // source detail view
       const getCategoryClass = category => ({
-        "category-name" : true,
-        "category-name--selected": state.selectedCategory == category
+        'category-name': true,
+        'category-name--selected': state.selectedCategory == category
       })
       const addRemoveCategory = cate => state.selectedCategory = (state.selectedCategory == cate) ? null : cate
+
       function renderCategoryName(category) {
         return (category.icons.length == 0 ? null :
             <span class={getCategoryClass(category)}
@@ -140,14 +139,16 @@
       /*render icon*/
       const toggleIcon = icon => state.selectedIcon = (state.selectedIcon == icon) ? null : icon
       const getIconClass = (icon) => ({
-        "icon": true,
-        "icon--selected": icon == state.selectedIcon
+        'icon': true,
+        'icon--selected': icon == state.selectedIcon
       })
+
       function renderIconInGrid(icon) {
         return <span class={getIconClass(icon)} key={icon.value} vOn:click={() => toggleIcon(icon)}>
           <g-icon>{icon.value}</g-icon>
         </span>
       }
+
       function renderIconInList(icon) {
         return <div class="icon-wrapper" key={icon.value} vOn:click={() => toggleIcon(icon)}>
           {renderIconInGrid(icon)}
@@ -188,7 +189,7 @@
       }
 
       // render function
-      function renderIconChooserDialogContent() {
+      const renderFn = () => {
         return (
             <div class="g-icon-chooser__dialog-content">
               <g-icon-search
@@ -252,65 +253,18 @@
             </div>
         )
       }
-      return () => {
-        return <div class="g-icon-chooser">
-          <g-text-field
-              label={props.label}
-              placeholder="select icon"
-              prependIcon="search"
-              value={state.value}
-              appendInnerIcon={state.value}
-              vOn:click={() => {
-                state.showDialog = true
-                initIconPickerDialogState()
-              }}/>
-          <g-dnd-dialog
-              value={state.showDialog} vOn:input={v => state.showDialog = v}
-              scopedSlots={{ title: () => 'Icon Picker' }}
-              minHeight={710} height={710}
-              minWidth={630} width={630}
-              lazy>
-            {renderIconChooserDialogContent()}
-          </g-dnd-dialog>
-        </div>
+
+      return {
+        initIconPickerDialogState,
+        renderFn
       }
+    },
+    render(createElement, context) {
+      return this.renderFn()
     }
   }
 </script>
 <style scoped lang="scss">
-  .g-icon-chooser {
-    &__activator {
-      height: 40px;
-      display: inline-flex;
-      border: 1px solid #0003;
-      border-radius: 5px;
-      padding-left: 5px;
-
-      &:hover {
-        cursor: pointer;
-        border-color: #0006;
-      }
-
-      &__input {
-        padding: 5px;
-        border: none;
-        outline: none;
-        text-overflow: ellipsis;
-        border-right: 1px solid #0003;
-      }
-
-      &__preview {
-        padding: 0 5px;
-        min-width: 30px;
-        max-width: 30px;
-
-        &:hover {
-          background-color: #aaa;
-        }
-      }
-    }
-  }
-
   .g-icon-chooser__dialog-content {
     padding: 5px 5px;
     width: calc(100%);

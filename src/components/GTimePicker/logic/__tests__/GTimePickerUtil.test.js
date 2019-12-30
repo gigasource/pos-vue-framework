@@ -24,7 +24,7 @@ describe('/GTimePickerUtil', () => {
   describe('adjust time methods', () => {
     const state = { selectedTime: {} }
     const mockSetHours = jest.fn(v => {
-      debugger
+
     })
     const mockSetMinutes = jest.fn(v => {
     })

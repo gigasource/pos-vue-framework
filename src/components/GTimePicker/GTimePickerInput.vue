@@ -6,7 +6,7 @@
   import GTextField from '../GInput/GTextField'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
-  import { reactive, computed } from '@vue/composition-api';
+  import { reactive, watch } from '@vue/composition-api';
   import _ from 'lodash'
 
   GMenu.components['GTextField'] = GTextField
@@ -31,7 +31,13 @@
         shaped: Boolean,
         rounded: Boolean,
         flat: Boolean,
-        dense: Boolean
+        dense: Boolean,
+        clearable: Boolean,
+        showIcon: Boolean,
+        prependIcon: String,
+        prependInnerIcon: String,
+        appendIcon: String,
+        appendInnerIcon: String
       },
 
       // time picker props
@@ -56,14 +62,21 @@
         value: props.value || '',
       })
 
+      watch(() => props.value, newVal => {
+        const stringValue = newVal ? String(newVal).trim() : '';
+        if (stringValue) state.value = stringValue
+      })
+
       const updateInput = (value) => {
         state.value = value
         context.emit('input', value)
       }
 
-      const openTimePickerDialog = (e, menuScope) => {
-        context.refs[refIdTimePicker].showHoursPicker()
-        menuScope.toggleContent(e)
+      const openTimePickerDialog = (e, clickHandler) => {
+        clickHandler(e)
+        context.root.$nextTick(() => {
+          context.refs[refIdTimePicker] && context.refs[refIdTimePicker].showHoursPicker()
+        })
       }
       const closeTimePickerDialog = () => state.showMenu = false
 
@@ -75,20 +88,22 @@
             contentFillWidth={false}
             minWidth={300} nudgeBottom={10}
             scopedSlots={{
-              activator: gMenuScope =>
+              activator: ({on}) =>
                   <g-text-field
                       {...{
                         props: {
                           ..._.pick(props, [
-                            'disabled', 'readonly', 'required',
-                            'label',
+                            'disabled', 'readonly', 'required', 'clearable',
+                            'label', 'prependIcon', 'prependInnerIcon', 'appendIcon', 'appendInnerIcon',
                             'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
                           ]),
                           value: state.value,
-                          prependIcon: "access_time"
+                          ...props.showIcon && { prependIcon: 'access_time' },
                         }
                       }}
-                      vOn:click={e => openTimePickerDialog(e, gMenuScope)}/>
+                      vOn:click={e => openTimePickerDialog(e, on.click)}
+                      vOn:input={e => e.trim() && (state.value = e)}
+                  />
             }}>
           <g-time-picker
               ref={refIdTimePicker}

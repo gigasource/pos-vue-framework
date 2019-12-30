@@ -10,7 +10,6 @@ export default {
   decorators: [withKnobs]
 }
 
-
 export const listView = () => ({
   components: { GList, GSidebar },
   data() {
