@@ -1,4 +1,4 @@
-import { computed, ref, watch } from '@vue/composition-api';
+import { computed } from '@vue/composition-api';
 import _ from 'lodash';
 
 export function createItemFn(prop) {
@@ -53,8 +53,6 @@ export function makeListSelectable2(props, context) {
         return normalisedList.value.find(item => getValue.value(item) === value) || normalisedList.value.find(item => getText.value(item) === value)
       }
     }
-
-//todo: combobox case
     function normalise(value) {
       if (!inCombobox) return _normalise(value)
       else {
@@ -65,7 +63,7 @@ export function makeListSelectable2(props, context) {
     }
 
     let res
-    if (!props.multiple) res = props.value ? normalise(props.value) : undefined
+    if (!props.multiple) res = (props.value || props.value === 0) ? normalise(props.value) : undefined
     else res = props.value ? props.value.map(normalise) : []
     context.emit('update:externalNormalisedValue', res);
     context.emit('update:selectedValue', res);
@@ -79,15 +77,15 @@ export function makeListSelectable2(props, context) {
     return getValue.value(item);
   }
 
-  //todo: toggle function : toggle item into props.value
+  //todo: toggle function : toggle item emit value into props.value
   const toggleItem = (item) => {
     if (props.multiple) {
       if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') updateMultiple(item);
-      else if (getValue.value(item)) updateMultiple(getValue.value(item))
+      else if (getValue.value(item) || getValue.value(item) === 0) updateMultiple(getValue.value(item))
       else if (getText.value(item)) updateMultiple(getText.value(item))
     } else {
       if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') updateSingle(item);
-      else if (getValue.value(item)) updateSingle(getValue.value(item))
+      else if (getValue.value(item) || getValue.value(item) === 0) updateSingle(getValue.value(item))
       else if (getText.value(item)) updateSingle(getText.value(item))
     }
   };
@@ -100,7 +98,7 @@ export function makeListSelectable2(props, context) {
 
   const updateMultiple = (item) => {
     let _normalisedVal
-    if (listType.value !== 'objectWithValueOrText' || inCombobox ) _normalisedVal = [...normalisedValue.value]
+    if (listType.value !== 'objectWithValueOrText' || inCombobox) _normalisedVal = [...normalisedValue.value]
     else _normalisedVal = normalisedValue.value.map(item => getValue.value(item) || getText.value(item))
 
     if (normalisedValue.value.includes(item)) {
@@ -154,7 +152,7 @@ export function makeListSelectable2(props, context) {
           return props.filter(getText.value(item), searchText);
         });
       }
-      searchText= searchText.toString().toLowerCase()
+      searchText = searchText.toString().toLowerCase()
       const searchStartsWith = items.filter(item => {
         return getText.value(item).toString().toLowerCase().startsWith(searchText);
       });
@@ -169,10 +167,6 @@ export function makeListSelectable2(props, context) {
   const selectableList = computed(() => {
     return searchFn.value(selectableValues.value)
   })
-  // const selectableList = ref(null)
-  // watch(() => props.searchText, () => selectableList.value = searchFn.value(selectableValues.value)
-  // )
-
 
   function emitValue(val) {
     console.log('emit value: ', JSON.stringify(val));
@@ -204,7 +198,7 @@ export function getSelection2(props, context, selectedValue, listType, getText, 
       else if (getText.value(item) || getValue.value(item)) return { text: getText.value(item) || '', value: getValue.value(item) || '' }
       return ''
     }
-    const list = selectedValue.value
+    const list = selectedValue.value || []
     return list.map(item => {
       if (listType.value === 'primitive') return item
       else if (getText.value(item) || getValue.value(item)) return { text: getText.value(item) || '', value: getValue.value(item) || '' }
@@ -220,13 +214,13 @@ export function getSelection3(props, selectedValue, listType, getText, getValue)
       let _item = props.items.find(el => getValue.value(el) ? getValue.value(el) === item : getText.value(el) === item)
       if (!item && item !== 0) return ''
       if (listType.value === 'primitive') return item
-      return { text: getText.value(_item || item) || '', value: getValue.value(_item || item) || '' }
+      return { text: getText.value(_item || item) || '', value: (getValue.value(_item || item) || getValue.value(_item || item) === 0) ? getValue.value(_item || item) : '' }
     }
     const list = selectedValue.value || []
     return list.map(item => {
       let _item = props.items.find(el => getValue.value(el) ? getValue.value(el) === item : getText.value(el) === item)
       if (listType.value === 'primitive') return item
-      return { text: getText.value(_item || item) || '', value: getValue.value(_item || item) || '' }
+      return { text: getText.value(_item || item) || '', value: (getValue.value(_item || item) || getValue.value(_item || item) === 0) ? getValue.value(_item || item) : '' }
 
     })
   })

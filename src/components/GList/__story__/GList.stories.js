@@ -1,27 +1,31 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
 import GList from '../GList';
 import GListItem from '../GListItem';
 import GDivider from '../../GLayout/GDivider.vue';
 import {
-  GListItemIcon,
-  GListItemAvatar,
+  GListHeader,
   GListItemAction,
+  GListItemAvatar,
+  GListItemContent,
+  GListItemIcon,
   GListItemImage,
   GListItemImageBig,
-  GListItemContent,
-  GListItemText,
   GListItemSubText,
-  GListHeader
+  GListItemText
 } from '../GListFunctionalComponent'
-import NewList from '../NewList';
+import Vue from 'vue/dist/vue.common.js'
+import GContainer from '../../GLayout/GContainer';
+import GRow from '../../GLayout/GRow';
+import GCol from '../../GLayout/GCol';
+import GIcon from '../../GIcon/GIcon';
+import GBtn from '../../GBtn/GBtn';
 
 export default {
   title: 'GList',
   decorators: [withKnobs],
 };
 export const gListPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, NewList },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader},
   data() {
     return {
       items: [
@@ -54,7 +58,7 @@ export const gListPlayGround = () => ({
   },
   template:
     `
-      <new-list :items="items"
+      <g-list :items="items"
         :disabled="disabled"
         :rounded="rounded"
         :shaped="shaped"
@@ -71,7 +75,7 @@ export const gListPlayGround = () => ({
       `,
 })
 export const gListSingleSelectPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, NewList },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
       items: [
@@ -105,7 +109,7 @@ export const gListSingleSelectPlayGround = () => ({
   template:
     ` 
  <div>{{testValue}}
-      <new-list v-model="testValue"
+      <g-list v-model="testValue"
         :items="items"
         :disabled="disabled"
         :rounded="rounded"
@@ -124,12 +128,12 @@ export const gListSingleSelectPlayGround = () => ({
         :itemText="itemText"
         :returnObject="returnObject"
         :activeClass="activeClass">
-      </new-list>
+      </g-list>
       </div>
       `,
 })
 export const gListMultiSelectPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, NewList },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
       items: [
@@ -166,7 +170,7 @@ export const gListMultiSelectPlayGround = () => ({
   template:
       ` 
  <div>{{testValue}}
-      <new-list v-model="testValue"
+      <g-list v-model="testValue"
         :items="items"
         :disabled="disabled"
         :rounded="rounded"
@@ -187,7 +191,7 @@ export const gListMultiSelectPlayGround = () => ({
         itemText="text"
         :returnObject="returnObject"
         :activeClass="activeClass">
-      </new-list>
+      </g-list>
       </div>`,
 })
 export const gListInset = () => ({
@@ -838,12 +842,6 @@ export const gListNumberItems = () => ({
 
       `,
 })
-import Vue from 'vue/dist/vue.common.js'
-import GContainer from '../../GLayout/GContainer';
-import GRow from '../../GLayout/GRow';
-import GCol from '../../GLayout/GCol';
-import GIcon from '../../GIcon/GIcon';
-import GBtn from '../../GBtn/GBtn';
 
 
 describe('GList', function () {

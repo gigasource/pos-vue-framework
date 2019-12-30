@@ -1,5 +1,9 @@
-import {boolean, number, object, text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions'
+import { boolean, number, object, text, withKnobs } from '@storybook/addon-knobs';
+// testing
+import Vue from 'vue/dist/vue.common.js'
+import GCombobox from '../GCombobox';
+import GListItem from '../../GList/GListItem';
+import { GListItemContent, GListItemText } from '../../GList/GListFunctionalComponent';
 
 //
 export default {
@@ -8,7 +12,7 @@ export default {
 }
 
 export const GComboboxSingleSelectNoChips = () => ({
-  components: {GCombobox, NewCombobox},
+  components: {GCombobox},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -38,11 +42,11 @@ export const GComboboxSingleSelectNoChips = () => ({
   },
   template: `
   <div data-app>
-  <new-combobox :items="items" 
+  <g-combobox :items="items" 
   itemText="text"
   itemValue="value"        
              v-model="selected" >  
-</new-combobox>
+</g-combobox>
 </div>`,
 })
 export const GComboboxSingleSelectChips = () => ({
@@ -101,7 +105,7 @@ export const GComboboxSingleSelectChips = () => ({
 </div>`,
 })
 export const GComboboxMultiSelect = () => ({
-  components: {GCombobox, NewCombobox},
+  components: {GCombobox,},
   props: {
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
@@ -125,7 +129,7 @@ export const GComboboxMultiSelect = () => ({
   template: `
   <div data-app>
   {{selected}}
-  <new-combobox :items="items" 
+  <g-combobox :items="items" 
               :item-text="itemText" 
               :item-value="itemValue" 
              label="label"
@@ -176,7 +180,7 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
 </div>`,
 })
 export const GComboboxNoDataSlot = () => ({
-  components: {GCombobox, GListItem, GListItemContent, GListItemText, NewCombobox},
+  components: {GCombobox, GListItem, GListItemContent, GListItemText},
   props: {},
   data() {
     return {
@@ -189,7 +193,7 @@ export const GComboboxNoDataSlot = () => ({
   },
   template: `
   <div data-app>
-  <new-combobox itemText="text" returnObject :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
+  <g-combobox itemText="text" returnObject :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
     <template v-slot:no-data>
       <g-list-item>
         <g-list-item-content>
@@ -199,7 +203,7 @@ export const GComboboxNoDataSlot = () => ({
         </g-list-item-content>
       </g-list-item>
     </template>
-  </new-combobox>
+  </g-combobox>
 </div>`,
 })
 export const GComboboxSingleWithValidate = () => ({
@@ -288,13 +292,6 @@ export const test2 = () => ({
     )
   }
 })
-
-// testing
-import Vue from 'vue/dist/vue.common.js'
-import GCombobox from "../GCombobox";
-import GListItem from "../../GList/GListItem";
-import {GListItemContent, GListItemText} from "../../GList/GListFunctionalComponent";
-import NewCombobox from '../NewCombobox';
 
 describe('test', function () {
   it('should', function () {

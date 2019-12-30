@@ -1,5 +1,8 @@
-import {boolean, object, text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions'
+import { boolean, object, text, withKnobs } from '@storybook/addon-knobs';
+// testing
+import Vue from 'vue/dist/vue.common.js'
+import GAutocomplete from '../GAutocomplete';
+import GSelect from '../../GSelect/GSelect';
 
 //
 export default {
@@ -8,7 +11,7 @@ export default {
 }
 
 export const GAutocompleteSingleSelect = () => ({
-  components: {GAutocomplete, GSelect, NewAutocomplete},
+  components: {GAutocomplete, GSelect},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -77,7 +80,7 @@ export const GAutocompleteSingleSelect = () => ({
   >
   
 </g-select>
-  <new-autocomplete :items="items" 
+  <g-autocomplete :items="items" 
              :filter="activeFilter"
              :item-text="itemText" 
              :item-value="itemValue"  
@@ -465,11 +468,6 @@ export const GAutocompleteMultiSelectAllowDuplicate = () => ({
 <div>{{'filter:  '+activeFilter}} </div>
 </div>`,
 })
-// testing
-import Vue from 'vue/dist/vue.common.js'
-import GAutocomplete from "../GAutocomplete";
-import GSelect from "../../GSelect/GSelect";
-import NewAutocomplete from '../NewAutocomplete';
 
 describe('test', function () {
   it('should', function () {

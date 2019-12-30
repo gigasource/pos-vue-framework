@@ -1,5 +1,9 @@
-import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions'
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
+// testing
+import Vue from 'vue/dist/vue.common.js'
+import GListItem from '../../GList/GListItem';
+import { GListItemContent, GListItemText } from '../../GList/GListFunctionalComponent';
+import GSelect from '../GSelect';
 
 //
 export default {
@@ -132,20 +136,20 @@ export const GSelectMultiple = () => ({
     allowDuplicates: {type: Boolean, default: boolean('allow duplicates', false)},
     chips: {default: boolean('chips', false)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'value')},
+    itemValue: {default: text('itemValue', 'value2')},
     clearable: {default: boolean('clearable', false)},
     returnObject: {default: boolean('returnObject', false)}
   },
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {text: 'Jason Oner', value2: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Ranee Carlson', value2: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Cindy Baker', value2: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {text: 'Ali Connors', value2: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: [  {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},]
+      selected: [  {text: 'Jason Oner', value2: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Ranee Carlson', value2: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},]
     }
   },
   template: `
@@ -167,7 +171,7 @@ export const GSelectMultiple = () => ({
 </div>`
 })
 export const GSelectMultipleNotAllowDuplicates = () => ({
-  components: {GSelect, NewSelect},
+  components: {GSelect},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -192,7 +196,7 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
   template: `
 <div data-app>
 {{selected}}
-	<new-select
+	<g-select
 	returnObject
 			:items="items"
 			:item-text="itemText"
@@ -205,11 +209,11 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
 			multiple
 			:allow-duplicates="allowDuplicates"
 			v-model="selected">
-	</new-select>
+	</g-select>
 </div>`
 })
 export const GSelectSearchableSingleSelect = () => ({
-  components: {GSelect, NewSelect},
+  components: {GSelect},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -232,7 +236,7 @@ export const GSelectSearchableSingleSelect = () => ({
     }
   },
   template: `
-<div data-app><new-select
+<div data-app><g-select
 		:items="items"
 		:item-text="itemText"
 		:item-value="itemValue"
@@ -243,7 +247,7 @@ export const GSelectSearchableSingleSelect = () => ({
 		:clearable="clearable"
 		v-model="selected"
 		searchable>
-</new-select></div>`,
+</g-select></div>`,
 })
 export const GSelectSearchableMultipleSelect = () => ({
   components: {GSelect},
@@ -428,17 +432,6 @@ export const test2 = () => ({
     )
   }
 })
-
-// testing
-import Vue from 'vue/dist/vue.common.js'
-
-import GCheckbox from "../../GCheckbox/GCheckbox";
-import GTextField from "../../GInput/GTextField";
-import GListItem from "../../GList/GListItem";
-import {GListItemText, GListItemContent, GListItemSubText} from "../../GList/GListFunctionalComponent";
-import GDivider from "../../GLayout/GDivider";
-import GSelect from "../GSelect";
-import NewSelect from '../NewSelect';
 
 describe('test', function () {
   it('should', function () {

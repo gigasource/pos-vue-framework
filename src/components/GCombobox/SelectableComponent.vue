@@ -1,11 +1,10 @@
 <script>
-  import { getSelection3, makeListSelectable2 } from '../GList/listSelectFactory';
-  import { ref, computed, reactive, onMounted } from '@vue/composition-api'
+  import { getSelection2, makeListSelectable2 } from '../GList/listSelectFactory';
+  import { computed, reactive, ref } from '@vue/composition-api'
   import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
   import GMenu from '../GMenu/GMenu';
   import GList from '../GList/GList';
   import { Fragment } from 'vue-fragment';
-  import NewList from '../GList/NewList';
 
   export default {
     name: 'SelectableComponent',
@@ -46,6 +45,7 @@
           type: String,
           default: 'clear'
         },
+        clearIconColor: String,
         rules: Array,
         type: {
           type: String,
@@ -83,25 +83,25 @@
         default: () => []
       },
       itemText: {
-        type: String,
+        type: [String, Array, Function],
         default: 'text'
       },
       itemValue: {
-        type: String,
+        type: [String, Array, Function],
+        default: 'value'
       },
       value: null,
       returnObject: Boolean,
       searchText: String,
-      genSearchField: Function,
       genContent: Function,
       genActivator: Function,
 
     },
-    components: { NewList, GList, GMenu, Fragment },
+    components: { GList, GMenu, Fragment },
     setup: function (props, context) {
       const { getText, getValue, listType, selectableList, toggleItem } = makeListSelectable2(props, context)
-      const selectedValue = computed(() => props.value)
-      const formattedSelections = getSelection3(props, selectedValue, listType, getText, getValue)
+      const selectedValue = ref(props.value)
+      const formattedSelections = getSelection2(props, context, selectedValue, listType, getText, getValue)
       const selectionTexts = computed(() => {
         if (props.multiple) {
           return formattedSelections.value.map(item => {
@@ -124,12 +124,11 @@
       const validateText = computed(() => {
         if (props.component === 'select') return ''
         let selectionString = props.multiple ? selectionTexts.value.join('') : selectionTexts.value
-        return state.lazySearch || selectionString.value || state.searchText
+        return state.lazySearch || selectionString || state.searchText
       })
 
       const state = reactive({
         searchText: '',
-        fieldItem: null,
         lazySearch: props.multiple ? selectionTexts.value.join() : selectionTexts.value,
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
@@ -154,7 +153,7 @@
           setSearch(props, context, selectionTexts, state)
           showOptions.value = props.multiple
         }
-        return [<NewList
+        return [<GList
           {...{
             props: {
               inCombobox: props.component === 'combobox',
@@ -175,6 +174,7 @@
               input: e => {
                 context.emit('input', e)
               },
+              'update:selectedValue': e => selectedValue.value = e
             },
             scopedSlots: {
               content: () => context.slots.item ? context.slots.item() : null
@@ -215,9 +215,6 @@
           context.slots['append-item'] && context.slots['append-item']()
         ]
       }
-
-      //todo: inputAddSelection for autocomplete
-
 
       //genTextField
       const genMultiSelectionsSlot = () => {
@@ -288,32 +285,6 @@
         }
 
 
-      const genTextFieldProps = function (toggleContent) {
-        return (
-          <GTextField
-            {...{
-              props: {
-                ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
-                  'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                  'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly',]),
-                value: tfValue.value,
-                prependValue: validateText.value
-              },
-              on: {
-                'click:clearIcon': () => clearSelection(),
-                focus: () => onInputClick(),
-                blur: () => onInputBlur(),
-                click: toggleContent,
-                delete: onInputDelete,
-                enter: inputAddSelection,
-                keydown: (e) => onInputKeyDown(e),
-                input: (e) => onInputChange(e),
-              },
-              scopedSlots: textFieldScopedSlots
-            }}
-          />
-        )
-      }
       const defaultMenuProps = {
         closeOnClick: true,
         closeOnContentClick: false,
@@ -339,9 +310,9 @@
           },
           on: {
             input: (e) => isFocused.value ? showOptions.value = true : showOptions.value = e,
-          }
-        }}
-                       ref='menu'
+          },
+
+        }} ref='menu'
         />
 
       }
@@ -362,6 +333,7 @@
         listType,
         showOptions,
         isFocused,
+				validateText
 
       }
     },
