@@ -92,6 +92,10 @@
           type: [Number, String],
           default: 0
         }
+      },
+      //styling content
+      ... {
+        contentClass: String,
       }
     },
     setup(props, context) {

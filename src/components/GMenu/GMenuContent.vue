@@ -104,6 +104,10 @@
           default: true,
         },
       },
+      //styling content
+      ... {
+        contentClass: String
+      }
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
@@ -244,8 +248,13 @@
         return directives;
       }
 
+      const contentClasses = computed(() => ({
+        'g-menu--content': true,
+        [''+props.contentClass]: !!props.contentClass
+      }))
+
       const genMenuContent = () => <div style={contentStyles.value}
-                                        class="g-menu--content"
+                                        class={contentClasses.value}
                                         ref="content"
                                         {...{directives: genDirectives(), on: contentListeners}}>
         {context.slots.default && context.slots.default()}
