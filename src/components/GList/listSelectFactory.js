@@ -203,7 +203,7 @@ export function getSelection2(props, context, selectedValue, listType, getText, 
     const list = selectedValue.value || []
     return list.map(item => {
       if (listType.value === 'primitive') return item
-      else if (getText.value(item) || getValue.value(item)) return { text: getText.value(item) || '', value: (getValue.value(item) || getValue.value(item) === 0) ? getValue.value(item) : '' }
+      else if (isTruthy(getText.value(item)) || isTruthy(getValue.value(item)) ) return { text: isTruthy(getText.value(item)) ? getText.value(item) : '', value: isTruthy(getValue.value(item)) ?  getValue.value(item) : '' }
       return ''
     })
   })
