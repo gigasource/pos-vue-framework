@@ -149,7 +149,7 @@
                 inMenu: true,
                 selectable: true,
                 value: selectedValue.value,
-                externalNormalisedValue: selectedValue.value,
+                //externalNormalisedValue: selectedValue.value,
 								searchText: state.searchText
               },
               on: {

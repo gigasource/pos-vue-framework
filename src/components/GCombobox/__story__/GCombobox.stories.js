@@ -8,7 +8,7 @@ export default {
 }
 
 export const GComboboxSingleSelectNoChips = () => ({
-  components: {GCombobox},
+  components: {GCombobox, NewCombobox},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -38,23 +38,11 @@ export const GComboboxSingleSelectNoChips = () => ({
   },
   template: `
   <div data-app>
-  {{selected}}
-  <g-combobox :items="items" 
-             :item-text="itemText" 
-             :item-value="itemValue"  
-             :label="label"
-             :clearable="clearable"
-             :filled="filled"
-             :solo="solo"
-             :outlined="outlined"
-             :flat="flat"
-             :rounded="rounded"
-             :shaped="shaped"
-             :hint="hint"
-             :persistent="persistent"
-             :counter="counter"
-             :placeholder="placeholder"
-             v-model="selected" />
+  <new-combobox :items="items" 
+  itemText="text"
+  itemValue="value"        
+             v-model="selected" >  
+</new-combobox>
 </div>`,
 })
 export const GComboboxSingleSelectChips = () => ({
@@ -113,7 +101,7 @@ export const GComboboxSingleSelectChips = () => ({
 </div>`,
 })
 export const GComboboxMultiSelect = () => ({
-  components: {GCombobox},
+  components: {GCombobox, NewCombobox},
   props: {
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
@@ -137,7 +125,7 @@ export const GComboboxMultiSelect = () => ({
   template: `
   <div data-app>
   {{selected}}
-  <g-combobox :items="items" 
+  <new-combobox :items="items" 
               :item-text="itemText" 
               :item-value="itemValue" 
              label="label"
@@ -148,7 +136,7 @@ export const GComboboxMultiSelect = () => ({
              :deletableChips="deletableChips"
               :menuProps="menuProps"
              multiple 
-             clearable></g-combobox>
+             clearable/>
 </div>`,
 })
 export const GComboboxMultiSelectAllowDuplicates = () => ({
@@ -188,7 +176,7 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
 </div>`,
 })
 export const GComboboxNoDataSlot = () => ({
-  components: {GCombobox, GListItem, GListItemContent, GListItemText},
+  components: {GCombobox, GListItem, GListItemContent, GListItemText, NewCombobox},
   props: {},
   data() {
     return {
@@ -201,7 +189,7 @@ export const GComboboxNoDataSlot = () => ({
   },
   template: `
   <div data-app>
-  <g-combobox itemText="text" returnObject :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
+  <new-combobox itemText="text" returnObject :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
     <template v-slot:no-data>
       <g-list-item>
         <g-list-item-content>
@@ -211,7 +199,7 @@ export const GComboboxNoDataSlot = () => ({
         </g-list-item-content>
       </g-list-item>
     </template>
-  </g-combobox>
+  </new-combobox>
 </div>`,
 })
 export const GComboboxSingleWithValidate = () => ({
@@ -306,6 +294,7 @@ import Vue from 'vue/dist/vue.common.js'
 import GCombobox from "../GCombobox";
 import GListItem from "../../GList/GListItem";
 import {GListItemContent, GListItemText} from "../../GList/GListFunctionalComponent";
+import NewCombobox from '../NewCombobox';
 
 describe('test', function () {
   it('should', function () {

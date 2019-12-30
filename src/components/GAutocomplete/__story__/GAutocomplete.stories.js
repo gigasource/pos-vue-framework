@@ -8,7 +8,7 @@ export default {
 }
 
 export const GAutocompleteSingleSelect = () => ({
-  components: {GAutocomplete, GSelect},
+  components: {GAutocomplete, GSelect, NewAutocomplete},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -77,7 +77,7 @@ export const GAutocompleteSingleSelect = () => ({
   >
   
 </g-select>
-  <g-autocomplete :items="items" 
+  <new-autocomplete :items="items" 
              :filter="activeFilter"
              :item-text="itemText" 
              :item-value="itemValue"  
@@ -469,6 +469,7 @@ export const GAutocompleteMultiSelectAllowDuplicate = () => ({
 import Vue from 'vue/dist/vue.common.js'
 import GAutocomplete from "../GAutocomplete";
 import GSelect from "../../GSelect/GSelect";
+import NewAutocomplete from '../NewAutocomplete';
 
 describe('test', function () {
   it('should', function () {

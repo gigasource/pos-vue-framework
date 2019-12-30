@@ -1,4 +1,4 @@
-import { computed, ref } from '@vue/composition-api';
+import { computed, ref, watch } from '@vue/composition-api';
 import _ from 'lodash';
 
 export function createItemFn(prop) {
@@ -41,9 +41,10 @@ export function makeListSelectable2(props, context) {
   )
   const getText = computed(() => createItemFn(props.itemText))
   const getValue = computed(() => createItemFn(props.itemValue))
-
+  const inCombobox = props.component === 'combobox' || props.inCombobox
   //todo: normalised value: map value to an item in list if it existed
   const normalisedValue = computed(() => {
+
     const _normalise = function (value) {
       if (listType.value === 'primitive') return normalisedList.value.find(item => item === value)
       else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return normalisedList.value.find(item =>
@@ -55,7 +56,7 @@ export function makeListSelectable2(props, context) {
 
 //todo: combobox case
     function normalise(value) {
-      if (!props.freeItemAllow) return _normalise(value)
+      if (!inCombobox) return _normalise(value)
       else {
         let _normalisedVal = _normalise(value)
         if (_normalisedVal) return _normalisedVal
@@ -67,11 +68,12 @@ export function makeListSelectable2(props, context) {
     if (!props.multiple) res = props.value ? normalise(props.value) : undefined
     else res = props.value ? props.value.map(normalise) : []
     context.emit('update:externalNormalisedValue', res);
+    context.emit('update:selectedValue', res);
     return res
   })
 
   function unNormalise(item) {
-    if (listType.value !== 'objectArrayReturnValue') {
+    if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') {
       return item
     }
     return getValue.value(item);
@@ -80,11 +82,11 @@ export function makeListSelectable2(props, context) {
   //todo: toggle function : toggle item into props.value
   const toggleItem = (item) => {
     if (props.multiple) {
-      if (listType.value !== 'objectWithValueOrText') updateMultiple(item);
+      if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') updateMultiple(item);
       else if (getValue.value(item)) updateMultiple(getValue.value(item))
       else if (getText.value(item)) updateMultiple(getText.value(item))
     } else {
-      if (listType.value !== 'objectWithValueOrText') updateSingle(item);
+      if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') updateSingle(item);
       else if (getValue.value(item)) updateSingle(getValue.value(item))
       else if (getText.value(item)) updateSingle(getText.value(item))
     }
@@ -98,22 +100,22 @@ export function makeListSelectable2(props, context) {
 
   const updateMultiple = (item) => {
     let _normalisedVal
-    if (listType.value !== 'objectWithValueOrText') _normalisedVal = [...normalisedValue.value]
+    if (listType.value !== 'objectWithValueOrText' || inCombobox ) _normalisedVal = [...normalisedValue.value]
     else _normalisedVal = normalisedValue.value.map(item => getValue.value(item) || getText.value(item))
 
     if (normalisedValue.value.includes(item)) {
       if (props.allowDuplicates) {
         _normalisedVal.push(item)
-        emitValue(unNormalise(_normalisedVal))
+        emitValue(_normalisedVal.map(unNormalise))
       } else {
-        if (normalisedValue.value.length === 1 && props.mandatory) emitValue(unNormalise(normalisedValue.value))
+        if (normalisedValue.value.length === 1 && props.mandatory) emitValue(normalisedValue.value.map(unNormalise()))
         else {
           _normalisedVal.splice(normalisedValue.value.indexOf(item))
         }
       }
     } else {
       _normalisedVal.push(item)
-      emitValue(unNormalise(_normalisedVal))
+      emitValue(_normalisedVal.map(unNormalise))
     }
 
   };
@@ -139,8 +141,11 @@ export function makeListSelectable2(props, context) {
     if (props.allowDuplicates) return normalisedList.value
     return normalisedList.value.filter(item => !normalisedValue.value.some(el => _.isEqual(el, item)))
   })
+
   const searchFn = computed(() => {
-    let searchText = props.searchText
+
+    let searchText = props.searchText || ''
+
     if (_.isEmpty(searchText.trim() || searchText)) return items => items;
     //todo: search logic
     return items => {
@@ -149,6 +154,7 @@ export function makeListSelectable2(props, context) {
           return props.filter(getText.value(item), searchText);
         });
       }
+      searchText= searchText.toString().toLowerCase()
       const searchStartsWith = items.filter(item => {
         return getText.value(item).toString().toLowerCase().startsWith(searchText);
       });
@@ -163,10 +169,16 @@ export function makeListSelectable2(props, context) {
   const selectableList = computed(() => {
     return searchFn.value(selectableValues.value)
   })
+  // const selectableList = ref(null)
+  // watch(() => props.searchText, () => selectableList.value = searchFn.value(selectableValues.value)
+  // )
+
 
   function emitValue(val) {
     console.log('emit value: ', JSON.stringify(val));
+    console.log('input')
     context.emit('input', val);
+
   }
 
   return {

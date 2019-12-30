@@ -14,13 +14,14 @@ import {
   GListItemSubText,
   GListHeader
 } from '../GListFunctionalComponent'
+import NewList from '../NewList';
 
 export default {
   title: 'GList',
   decorators: [withKnobs],
 };
 export const gListPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, NewList },
   data() {
     return {
       items: [
@@ -40,7 +41,7 @@ export const gListPlayGround = () => ({
     nav: { default: boolean('nav', false) },
     multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type: [String, Boolean], default: boolean('divider', false) },
+    divider: { type: [String, Boolean], default: boolean('divider', true) },
     prependType: { default: text('prependType', 'avatar') },
     subtextWrap: { default: boolean('subtextWrap', false) },
     selectable: { default: boolean('selectable', false) },
@@ -53,7 +54,7 @@ export const gListPlayGround = () => ({
   },
   template:
     `
-      <g-list :items="items"
+      <new-list :items="items"
         :disabled="disabled"
         :rounded="rounded"
         :shaped="shaped"
@@ -70,7 +71,7 @@ export const gListPlayGround = () => ({
       `,
 })
 export const gListSingleSelectPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, NewList },
   data() {
     return {
       items: [
@@ -80,7 +81,7 @@ export const gListSingleSelectPlayGround = () => ({
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
       ],
-      testValue: 'Jason'
+      testValue: 'Jason Oner'
     }
   },
   props: {
@@ -104,7 +105,7 @@ export const gListSingleSelectPlayGround = () => ({
   template:
     ` 
  <div>{{testValue}}
-      <g-list v-model="testValue"
+      <new-list v-model="testValue"
         :items="items"
         :disabled="disabled"
         :rounded="rounded"
@@ -123,12 +124,12 @@ export const gListSingleSelectPlayGround = () => ({
         :itemText="itemText"
         :returnObject="returnObject"
         :activeClass="activeClass">
-      </g-list>
+      </new-list>
       </div>
       `,
 })
 export const gListMultiSelectPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader, NewList },
   data() {
     return {
       items: [
@@ -165,7 +166,7 @@ export const gListMultiSelectPlayGround = () => ({
   template:
       ` 
  <div>{{testValue}}
-      <g-list v-model="testValue"
+      <new-list v-model="testValue"
         :items="items"
         :disabled="disabled"
         :rounded="rounded"
@@ -179,16 +180,15 @@ export const gListMultiSelectPlayGround = () => ({
         :prependType="prependType"
         :subtextWrap="subtextWrap"
         selectable
-        :multiple="multiple"
+        multiple
         :mandatory="mandatory"
         :allowDuplicates="allowDuplicates"
-        :itemValue="itemValue"
-        :itemText="itemText"
+        itemValue="prepend"
+        itemText="text"
         :returnObject="returnObject"
         :activeClass="activeClass">
-      </g-list>
-      </div>
-      `,
+      </new-list>
+      </div>`,
 })
 export const gListInset = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
@@ -583,7 +583,7 @@ export const gListMultiSelect = () => ({
       `
       <div>
         selectedItem: {{testValue}}
-        <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense" :subheader="subheader" :divider="divider" itemText="text" selectable multiple :allowDuplicates="allowDuplicates">
+        <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense"  :divider="divider" itemText="text" selectable multiple :allowDuplicates="allowDuplicates">
         </g-list>
       </div>
       `,

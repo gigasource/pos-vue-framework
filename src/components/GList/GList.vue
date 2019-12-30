@@ -116,6 +116,7 @@
     name: 'GList',
     components: {GImg, GAvatar, GIcon, GDivider},
     props: {
+      inCombobox: Boolean,
       height: String,
       width: String,
       disabled: Boolean,

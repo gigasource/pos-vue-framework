@@ -167,7 +167,7 @@ export const GSelectMultiple = () => ({
 </div>`
 })
 export const GSelectMultipleNotAllowDuplicates = () => ({
-  components: {GSelect},
+  components: {GSelect, NewSelect},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -192,7 +192,7 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
   template: `
 <div data-app>
 {{selected}}
-	<g-select
+	<new-select
 	returnObject
 			:items="items"
 			:item-text="itemText"
@@ -205,11 +205,11 @@ export const GSelectMultipleNotAllowDuplicates = () => ({
 			multiple
 			:allow-duplicates="allowDuplicates"
 			v-model="selected">
-	</g-select>
+	</new-select>
 </div>`
 })
 export const GSelectSearchableSingleSelect = () => ({
-  components: {GSelect},
+  components: {GSelect, NewSelect},
   props: {
     label: {default: text('Input label', 'Label')},
     placeholder: {default: text('Input placeholder', '')},
@@ -232,7 +232,7 @@ export const GSelectSearchableSingleSelect = () => ({
     }
   },
   template: `
-<div data-app><g-select
+<div data-app><new-select
 		:items="items"
 		:item-text="itemText"
 		:item-value="itemValue"
@@ -243,7 +243,7 @@ export const GSelectSearchableSingleSelect = () => ({
 		:clearable="clearable"
 		v-model="selected"
 		searchable>
-</g-select></div>`,
+</new-select></div>`,
 })
 export const GSelectSearchableMultipleSelect = () => ({
   components: {GSelect},
@@ -438,6 +438,7 @@ import GListItem from "../../GList/GListItem";
 import {GListItemText, GListItemContent, GListItemSubText} from "../../GList/GListFunctionalComponent";
 import GDivider from "../../GLayout/GDivider";
 import GSelect from "../GSelect";
+import NewSelect from '../NewSelect';
 
 describe('test', function () {
   it('should', function () {

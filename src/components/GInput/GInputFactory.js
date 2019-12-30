@@ -1,7 +1,7 @@
 export function getLabel(context, props, internalValue, isValidInput, isFocused,
                          labelActiveClass = 'g-tf-label__active') {
   //Activate label
-  const isDirty = computed(() => !!internalValue.value)
+  const isDirty = computed(() => !!internalValue.value || internalValue.value === 0)
   const isLabelActive = computed(() => {
     const datetimeInputTypes = ['date', 'datetime', 'datetime-local', 'month', 'time', 'week']
 

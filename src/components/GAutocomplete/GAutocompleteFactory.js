@@ -1,29 +1,34 @@
-import {keyCodes} from '../../utils/helpers';
+import { keyCodes } from '../../utils/helpers';
+import { ref } from '@vue/composition-api'
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem) {
+export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, showOptions) {
+  const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
+
   function onChipCloseClick(index = null) {
-    if (props.multiple) {
-      selectedItem.value.splice(index, 1);
-    } else {
-      selectedItem.value = null
-    }
+    let _value = props.multiple ? selectedItem.value.splice(index, 1) : null
+    context.emit('input', _value)
   }
 
   function clearSelection() {
-    selectedItem.value = props.multiple ? [] : ''
-    setSearch(props, context, selections, state)
+    // selectedItem.value = props.multiple ? [] : ''
+    if(props.component !== 'select') setSearch(props, context, selections, state)
+    context.emit('input', props.multiple ? [] : '')
   }
 
   function onInputKeyDown(e) {
-    resetSelectionsDisplay(state)
+    if(props.component !== 'select')resetSelectionsDisplay(state)
     if (e.keyCode === keyCodes.down) {
-      const listRef = context.refs.list
+      const listRef = context.refs.menu.$refs.list
       listRef.$el.getElementsByClassName('g-list-item')[0].focus()
     }
   }
 
   function onInputChange(text) {
+    if(props.component === 'select') return
     state.searchText = text
+    if (selectedItem.value && isInputDisplay && props.component === 'combobox') {
+      context.emit('input', '')
+    }
     context.emit('update:searchText', text)
   }
 
@@ -39,9 +44,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputDelete() {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
-      return
-    }
+    if (isInputDisplay) return
     if (state.searchText) {
       return state.pressDeleteTimes = 0
     } else {
@@ -60,15 +63,9 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   const inputAddSelection = () => {
+    if (props.component !== 'combobox') return
     if (state.searchText.trim().length > 0) {
-      let isNumberArray = props.itemValue ? props.items.some(item => typeof item[props.itemValue] === 'number') : props.items.some(item => typeof item === 'number')
-      let inputAddedItem;
-      if (props.returnObbject || props.itemValue) inputAddedItem = {
-        [props.itemText]: state.searchText,
-        [props.itemValue]: isNumberArray ? Number(state.searchText) : state.searchText
-      }
-      else inputAddedItem = isNumberArray ? Number(state.searchText) : state.searchText
-      toggleItem(inputAddedItem)
+      toggleItem(parseInt(state.searchText) || state.searchText)
       setSearch(props, context, selections, state)
     }
   }
@@ -93,3 +90,65 @@ export function setSearch(props, context, selections, state) {
     state.searchText = ''
   })
 }
+
+//shared render functions
+// export function genMenu(props, showOptions, isFocused) {
+//   const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
+//   return <g-menu {...{
+//     props: {
+//       ...Object.assign(defaultMenuProps, props.menuProps),
+//       nudgeBottom: nudgeBottom.value,
+//       value: showOptions.value,
+//       eager: props.eager,
+//     },
+//     scopedSlots: {
+//       activator: () => props.genActivator,
+//       default: () => props.genMenuContent
+//     },
+//     on: {
+//       input: (e) => isFocused.value ? showOptions.value = true : showOptions.value = e,
+//     }
+//   }}
+//   />
+// }
+//
+// export function genComponent(props, showOptions) {
+//   let activeClass = props.component + '__active'
+//   return <div class={[props.component, { [activeClass]: showOptions.value }]}>
+//     {genMenu(showOptions)}
+//   </div>
+// }
+//
+// export function genList(props, context, showOptions, selectedValue, state) {
+//   return <GList
+//     {...{
+//       props: {
+//         items: props.items,
+//         itemText: props.itemText,
+//         itemValue: props.itemValue,
+//         returnObject: props.returnObject,
+//         mandatory: props.mandatory,
+//         allowDuplicates: props.allowDuplicates,
+//         multiple: props.multiple,
+//         inMenu: true,
+//         selectable: true,
+//         value: selectedValue.value,
+//         //externalNormalisedValue: selectedValue.value,
+//         searchText: state.searchText
+//       },
+//       on: {
+//         'click:item': () => showOptions.value = props.multiple,
+//         input: e => {
+//           selectedValue.value = e
+//           context.emit('input', e)
+//         },
+//       },
+//       scopedSlots: {
+//         content: () => context.slots.item && context.slots.item()
+//       }
+//     }}
+//     ref="list"
+//   />
+// }
+
+
