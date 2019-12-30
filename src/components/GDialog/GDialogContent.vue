@@ -297,8 +297,10 @@
           ]
         }
 
+        const transitionName = computed(() => props.bottom ? 'dialog-bottom-transition' : 'dialog-transition')
+
         return <div {...wrapperData}>
-          <transition name="dialog-transition">
+          <transition name={transitionName.value}>
             <div {...contentData} vShow={isActive.value}>
               {context.slots.default ? context.slots.default() : undefined}
             </div>
