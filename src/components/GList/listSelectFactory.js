@@ -189,7 +189,7 @@ export function makeListSelectable2(props, context) {
 
 }
 function isTruthy(value){
-  return value === 0 || value === true || value !== undefined|| value !== '' || value !==null
+  return value === 0 || !!value
 }
 export function getSelection2(props, context, selectedValue, listType, getText, getValue) {
   return computed(() => {
