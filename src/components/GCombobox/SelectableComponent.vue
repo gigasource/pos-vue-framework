@@ -1,5 +1,5 @@
 <script>
-  import { getSelection2, makeListSelectable2 } from '../GList/listSelectFactory';
+  import { getSelection2, getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
   import { computed, reactive, ref } from '@vue/composition-api'
   import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
   import GMenu from '../GMenu/GMenu';
@@ -102,17 +102,7 @@
       const { getText, getValue, listType, selectableList, toggleItem } = makeListSelectable2(props, context)
       const selectedValue = ref(props.value)
       const formattedSelections = getSelection2(props, context, selectedValue, listType, getText, getValue)
-      const selectionTexts = computed(() => {
-        if (props.multiple) {
-          return formattedSelections.value.map(item => {
-            return item ? (item['text'] || item['value'] || item) : ''
-          })
-        }
-        return formattedSelections.value || formattedSelections.value === 0
-          ? formattedSelections.value['text'] || formattedSelections.value['value'] || formattedSelections.value
-          : ''
-
-      })
+      const selectionTexts = getSelectionText(props, formattedSelections)
 
       const tfValue = computed(() => {
         if (props.component !== 'select') return (props.multiple || props.chips || props.smallChips || props.deletableChips

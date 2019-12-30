@@ -188,20 +188,22 @@ export function makeListSelectable2(props, context) {
 
 
 }
-
+function isTruthy(value){
+  return value === 0 || value === true || value !== undefined|| value !== '' || value !==null
+}
 export function getSelection2(props, context, selectedValue, listType, getText, getValue) {
   return computed(() => {
     if (!props.multiple) {
       let item = selectedValue.value && selectedValue.value
       if (!item && item !== 0) return ''
       if (listType.value === 'primitive') return item
-      else if (getText.value(item) || getValue.value(item)) return { text: getText.value(item) || '', value: getValue.value(item) || '' }
+      else if (isTruthy(getText.value(item)) || isTruthy(getValue.value(item)) ) return { text: isTruthy(getText.value(item)) ? getText.value(item) : '', value: isTruthy(getValue.value(item)) ?  getValue.value(item) : '' }
       return ''
     }
     const list = selectedValue.value || []
     return list.map(item => {
       if (listType.value === 'primitive') return item
-      else if (getText.value(item) || getValue.value(item)) return { text: getText.value(item) || '', value: getValue.value(item) || '' }
+      else if (getText.value(item) || getValue.value(item)) return { text: getText.value(item) || '', value: (getValue.value(item) || getValue.value(item) === 0) ? getValue.value(item) : '' }
       return ''
     })
   })
@@ -223,6 +225,24 @@ export function getSelection3(props, selectedValue, listType, getText, getValue)
       return { text: getText.value(_item || item) || '', value: (getValue.value(_item || item) || getValue.value(_item || item) === 0) ? getValue.value(_item || item) : '' }
 
     })
+  })
+}
+export function getSelectionText(props, selection){
+  return computed(() => {
+    if (props.multiple) {
+      return selection.value.map(item => {
+        if (item || item === 0) {
+          if (item['text'] ||  item['text'] === 0) return  item['text']
+          if (item['value'] ||  item['value'] === 0) return  item['value']
+          else return item}
+        return ''
+      })
+    }
+    if (selection.value || selection.value === 0) {
+      if (selection.value['text'] ||  selection.value['text'] === 0) return  selection.value['text']
+      if (selection.value['value'] ||  selection.value['value'] === 0) return  selection.value['value']
+      else return selection.value}
+    return ''
   })
 }
 

@@ -1,5 +1,4 @@
 import { keyCodes } from '../../utils/helpers';
-import { ref } from '@vue/composition-api'
 
 export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, showOptions) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
@@ -91,64 +90,5 @@ export function setSearch(props, context, selections, state) {
   })
 }
 
-//shared render functions
-// export function genMenu(props, showOptions, isFocused) {
-//   const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
-//   return <g-menu {...{
-//     props: {
-//       ...Object.assign(defaultMenuProps, props.menuProps),
-//       nudgeBottom: nudgeBottom.value,
-//       value: showOptions.value,
-//       eager: props.eager,
-//     },
-//     scopedSlots: {
-//       activator: () => props.genActivator,
-//       default: () => props.genMenuContent
-//     },
-//     on: {
-//       input: (e) => isFocused.value ? showOptions.value = true : showOptions.value = e,
-//     }
-//   }}
-//   />
-// }
-//
-// export function genComponent(props, showOptions) {
-//   let activeClass = props.component + '__active'
-//   return <div class={[props.component, { [activeClass]: showOptions.value }]}>
-//     {genMenu(showOptions)}
-//   </div>
-// }
-//
-// export function genList(props, context, showOptions, selectedValue, state) {
-//   return <GList
-//     {...{
-//       props: {
-//         items: props.items,
-//         itemText: props.itemText,
-//         itemValue: props.itemValue,
-//         returnObject: props.returnObject,
-//         mandatory: props.mandatory,
-//         allowDuplicates: props.allowDuplicates,
-//         multiple: props.multiple,
-//         inMenu: true,
-//         selectable: true,
-//         value: selectedValue.value,
-//         //externalNormalisedValue: selectedValue.value,
-//         searchText: state.searchText
-//       },
-//       on: {
-//         'click:item': () => showOptions.value = props.multiple,
-//         input: e => {
-//           selectedValue.value = e
-//           context.emit('input', e)
-//         },
-//       },
-//       scopedSlots: {
-//         content: () => context.slots.item && context.slots.item()
-//       }
-//     }}
-//     ref="list"
-//   />
-// }
 
 
