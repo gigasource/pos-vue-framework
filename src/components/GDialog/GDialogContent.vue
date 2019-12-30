@@ -355,10 +355,12 @@
 
     &-content {
       transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
+      width: 100%;
 
       &:not(.g-dialog-content__fullscreen) {
         max-width: 90%;
         max-height: 90%;
+        height: 100%;
       }
 
       > * {
@@ -414,7 +416,8 @@
       left: 0;
       right: 0;
 
-      > .g-card {
+      > ::v-deep .g-card {
+        height: 100%;
         min-height: 100%;
         min-width: 100%;
         margin: 0 !important;
