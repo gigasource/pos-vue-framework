@@ -1,5 +1,5 @@
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed, inject } from '@vue/composition-api';
   import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
   import GIcon from '../GIcon/GIcon';
   import { getInternalValue } from '../../mixins/getVModel';
@@ -39,12 +39,14 @@
 
 			const computedData = computed(() => props.data)
 
-			const togglePath = (path) => {
-        tree.value.activePath = path
+			const togglePath = (node, path) => {
+        if (node.tag) tree.value.activePath = path
 			}
 
+			const mouseEnterElement = inject('mouseEnterElement')
+      const mouseLeaveElement = inject('mouseLeaveElement')
+
 			const genTextPretty = (html) => {
-        // debugger
 				let temp = html.replace(/="|"|<\/*|>/g, match => ` ${match} `)
 				temp = temp.split(' ')
 				let printResource = _.map(temp, (val, index, arr) => {
@@ -80,14 +82,20 @@
       }
 
       const genCloseTag = (node, path) => {
-        return <div class={['tree-view-node', {'tree-view-node__active': path === tree.value.activePath}]} vOn:click={() => togglePath(path)}>
-					{genTextPretty(genEndTag(node))}
+        return <div class={['tree-view-node', {'tree-view-node__active': path === tree.value.activePath}]}
+                    vOn:click={() => togglePath(node, path)}
+                    vOn:mouseenter={() => {if (node.tag) mouseEnterElement(path)}}
+                    vOn:mouseleave={() => {if (node.tag) mouseLeaveElement()}}>
+          {genTextPretty(genEndTag(node))}
 				</div>
 			}
 
-      const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
+      const genNode = function ({node, childrenVNodes, state, path}) {
         return <li>
-					<div class={['tree-view-node', {'tree-view-node__active': path === tree.value.activePath}]} vOn:click={() => togglePath(path)}>
+					<div class={['tree-view-node', {'tree-view-node-text': !node.tag, 'tree-view-node__active': path === tree.value.activePath}]}
+               vOn:click={() => togglePath(node, path)}
+               vOn:mouseenter={() => {if (node.tag) mouseEnterElement(path)}}
+               vOn:mouseleave={() => {if (node.tag) mouseLeaveElement(path)}}>
 						<span class="tree-view-prepend">
 							{childrenVNodes && genIcon(state)}
 						</span>
@@ -190,7 +198,7 @@
 
 	.tree-view-node {
 
-		&:not(.tree-view-node__active):hover {
+		&:not(.tree-view-node__active):not(.tree-view-node-text):hover {
 			background-color: #e6edf1;
 		}
 
