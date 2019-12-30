@@ -368,7 +368,7 @@
       }
 
       > ::v-deep.g-card {
-        height: 100%;
+        height: auto;
         overflow-y: auto;
 
         > .g-card-title {
