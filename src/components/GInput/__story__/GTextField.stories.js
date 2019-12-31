@@ -552,7 +552,7 @@ export const TextFieldValidate = () => ({
     clearable: {default: boolean('clearable', false)},
   },
   template: `<g-text-field :label="label"
-                            prependIcon="person"
+                            prependInnerIcon="person"
                            :clearable="clearable"
                            :filled="filled"
                            :solo="solo"

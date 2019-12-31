@@ -128,7 +128,6 @@
     name: 'GTextField',
     components: { GIcon },
     props: {
-      list: String,
       ...{//display props
         label: String,
         placeholder: String,
