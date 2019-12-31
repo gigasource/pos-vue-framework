@@ -250,7 +250,7 @@
 
       const contentClasses = computed(() => ({
         'g-menu--content': true,
-        [''+props.contentClass]: !!props.contentClass
+        [props.contentClass]: !!props.contentClass
       }))
 
       const genMenuContent = () => <div style={contentStyles.value}

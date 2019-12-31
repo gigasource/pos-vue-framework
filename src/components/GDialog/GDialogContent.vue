@@ -281,7 +281,7 @@
             'g-dialog-content__active': isActive.value,
             'g-dialog-content__scrollable': props.scrollable,
             'g-dialog-content__fullscreen': props.fullscreen,
-            ['' + props.contentClass]: !!props.contentClass,
+            [props.contentClass]: !!props.contentClass,
           },
           style: {
             maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
@@ -300,8 +300,6 @@
             }
           ]
         }
-        console.log(props.contentClass)
-        console.log(contentData)
 
         const transitionName = computed(() => props.bottom ? 'dialog-bottom-transition' : 'dialog-transition')
 
