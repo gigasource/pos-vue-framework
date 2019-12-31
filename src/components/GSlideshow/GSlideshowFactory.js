@@ -168,7 +168,7 @@ class Node {
 
   async getDuration() {
     if (this.item.duration) return this.item.duration;
-    let duration = this.video.style.display === 'block' ? Math.round(this.video.duration * 1000) : defaultSlideDuration
+    let duration = this._display && this.item.type === 'video' ? Math.round(this.video.duration * 1000) : defaultSlideDuration
     while (isNaN(duration)) {
       await delay(10)
       duration = Math.round(this.video.duration * 1000)
