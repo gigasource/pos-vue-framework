@@ -226,7 +226,7 @@
         const firstPropKey = Object.keys(node)[0];
         if (isRoot) return key;
 				if (typeof node !== 'object') return key;
-        if (firstPropKey) return firstPropKey;
+        return firstPropKey;
       }
 
       const { treeStates, genTree } = GTreeFactory({
