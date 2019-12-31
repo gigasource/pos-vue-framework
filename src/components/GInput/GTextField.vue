@@ -36,7 +36,7 @@
 						>
 					</div>
 					<slot name="label">
-						<label class="g-tf-label" :class="labelClasses" :style="labelStyles">
+						<label v-if="label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
 							{{label}}
 							<span v-if="required" style="color: red">*</span>
 						</label>
@@ -95,7 +95,7 @@
 						 v-bind="attrs"
 		>
 			<slot name="label">
-				<label v-if="!solo" class="g-tf-label" :class="labelClasses" :style="labelStyles">
+				<label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
 					{{label}}
 					<span v-if="required" style="color: red">*</span>
 				</label>

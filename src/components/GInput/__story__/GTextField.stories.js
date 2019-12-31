@@ -672,10 +672,162 @@ import GCol from '../../GLayout/GCol';
 import GRow from '../../GLayout/GRow';
 import GTextFieldBs from '../GTextFieldBs';
 import GList from '../../GList/GList';
+import { DefaultChip } from '../../GChip/__story__/GChip.stories';
+export const TextField = (props, text1) => ({
+  components: {GTextField, GIcon},
+  data() {
+    return {
+      text1: text1,
+      rules: {
 
-describe('test', function () {
-  it('should', function () {
-    const vm = new Vue(test1()).$mount();
-    // your expect here
-  })
+        required: value => !!value || 'Required',
+        counter: value => value.length > 4 || 'Min 5 characters',
+        email: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail'
+        }
+      },
+      mask: 'XXXX-XXXX',
+    }
+  },
+  props: props,
+  template: `<g-text-field :label="label"
+                           :clearable="clearable"
+                           :filled="filled"
+                           :solo="solo"
+                           :outlined="outlined"
+                           :flat="flat"
+                           :dense="dense"
+                           :rounded="rounded"
+                           :shaped="shaped"
+                           :hint="hint"
+                           :persistent="persistent"
+                           :counter="counter"
+                           :placeholder="placeholder"
+                           :prefix="prefix"
+                           :suffix="suffix"
+                           :type="type"
+                           :prepend-icon="prependIcon"
+                           :append-icon="appendIcon"
+                           :prepend-inner-icon="prependInnerIcon"
+                           :append-inner-icon="appendInnerIcon"
+                           v-model="text1"
+                           :rules="[rules.required, rules.counter]">
+              </g-text-field>`,
+});
+describe('render lite input test', function () {
+  it('should render full textfield', function () {
+    const props = {
+      label: {default: text('Input label', 'Label')},
+      placeholder: {default: text('Input placeholder', '')},
+      filled: {default: boolean('filled', false)},
+      solo: {default: boolean('solo', false)},
+      outlined: {default: boolean('outlined', false)},
+      flat: {default: boolean('flat', false)},
+      dense: {default: boolean('dense', false)},
+      rounded: {default: boolean('rounded', false)},
+      shaped: {default: boolean('shaped', false)},
+      clearable: {default: boolean('clearable', false)},
+      hint: {default: text('hint', 'Hint')},
+      persistent: {default: boolean('persistent', false)},
+      counter: {type: [String, Number], default: number('counter', 25)},
+      prefix: {default: text('prefix', '')},
+      suffix: {default: text('suffix', '')},
+      type: {default: text('type', 'text')},
+      prependIcon: {default: text('prepend Icon', 'person')},
+      appendIcon: {default: text('append Icon', 'mdi-bike')},
+      prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
+      appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
+    }
+    const vm = new Vue(TextField(props, '')).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+  it('should render lite textfield', function () {
+    const props = {
+      label: {default: text('Input label', 'Label')},
+      placeholder: {default: text('Input placeholder', '')},
+      filled: {default: boolean('filled', false)},
+      solo: {default: boolean('solo', false)},
+      outlined: {default: boolean('outlined', false)},
+      flat: {default: boolean('flat', false)},
+      dense: {default: boolean('dense', false)},
+      rounded: {default: boolean('rounded', false)},
+      shaped: {default: boolean('shaped', false)},
+      clearable: {default: boolean('clearable', false)},
+      hint: {default: text('hint', 'Hint')},
+      persistent: {default: boolean('persistent', false)},
+      counter: {type: [String, Number], default: number('counter', 25)},
+      prefix: {default: text('prefix', '')},
+      suffix: {default: text('suffix', '')},
+      type: {default: text('type', 'text')},
+      prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
+      appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
+    }
+    const vm = new Vue(TextField(props, '')).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+
+  it('should render full textfield', function () {
+    const vm = new Vue(TextFieldShapedAndRounded()).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+  it('should render lite textfield and validate wrong value', function () {
+    const props = {
+      label: {default: 'Label'},
+      counter: {default: 10},
+      placeholder: {default: 'Input placeholder'},
+      hint: {default: text('hint', 'Hint')},
+      prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
+      appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
+    }
+    const vm = new Vue(TextField(props, '1')).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+  it('should render lite textfield and not render label', function () {
+    const props = {
+      label: {default: 'Label'},
+      solo: {default: true},
+      counter: {default: 10},
+      placeholder: {default: 'Input placeholder'},
+      hint: {default: text('hint', 'Hint')},
+      prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
+      appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
+    }
+    const vm = new Vue(TextField(props, '1')).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+
+  it('should render full textfield outer slot', function () {
+    const vm = new Vue({
+      components: {GTextField, GIcon},
+      props: {
+        appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
+      },
+      template: `<g-text-field>
+                          <template v-slot:prepend-outer>
+                          </template>
+                          <template v-slot:append-inner>
+                          <g-icon>{{appendInnerIcon}}</g-icon>
+                          </template>
+                          <template v-slot:append-outer>
+                          </template>
+              </g-text-field>`,
+    }).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+  it('should render lite textfield inner slot', function () {
+    const vm = new Vue({
+      components: {GTextField, GIcon},
+      props: {
+        appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
+      },
+      template: `<g-text-field>
+                          <template v-slot:append-inner>
+                          <g-icon>{{appendInnerIcon}}</g-icon>
+                          </template>
+              </g-text-field>`,
+    }).$mount();
+    expect(vm.$el.outerHTML).toMatchSnapshot()
+  });
+
 })
