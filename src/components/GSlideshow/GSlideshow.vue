@@ -63,6 +63,9 @@
       onMounted(() => {
         initSlideNodes()
         count.value = count.value >= maxCount.value ? 0 : count.value + 1
+        if (slideNodes[0].video.style.display !== "none") {
+          slideNodes[0].video.play()
+        }
       })
 
 			// Reset slide nodes when source changed
@@ -96,12 +99,20 @@
         else currentTimeout = setTimeout(callback, delay)
       }
 
+      function delay (ms) {
+        return new Promise(resolve => setTimeout(resolve, ms))
+      }
+
 			// Sliding logic
-      watch(currentItem, (newVal, oldVal) => {
+      watch(currentItem, async (newVal, oldVal) => {
 				if (oldVal && newVal) {
           const currentNode = slideNodes[nodeFlag ? 1 : 0]
           const nextNode = slideNodes[nodeFlag ? 0 : 1]
 					let duration = (oldVal.duration ? oldVal.duration : currentNode.video.style.display !== 'none' ? Math.round(currentNode.video.duration * 1000) - getTransitionDuration(oldVal.transition, props) : defaultSlideDuration)
+          while (isNaN(duration)) {
+            await delay(10)
+            duration = Math.round(currentNode.video.duration * 1000)
+          }
 					const transitionDuration = getTransitionDuration(newVal.transition, props)
           customSetTimeout(() => {
             nextNode.container.style.display = 'block'
