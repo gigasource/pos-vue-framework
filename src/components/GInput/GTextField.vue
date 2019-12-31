@@ -31,7 +31,9 @@
 									 @change="onChange"
 									 @focus="onFocus"
 									 @blur="onBlur"
-									 @keydown="onKeyDown">
+									 @keydown="onKeyDown"
+									 v-bind="attrs"
+						>
 					</div>
 					<slot name="label">
 						<label class="g-tf-label" :class="labelClasses" :style="labelStyles">
@@ -89,7 +91,9 @@
 						 @change="onChange"
 						 @focus="onFocus"
 						 @blur="onBlur"
-						 @keydown="onKeyDown">
+						 @keydown="onKeyDown"
+						 v-bind="attrs"
+		>
 			<slot name="label">
 				<label v-if="!solo" class="g-tf-label" :class="labelClasses" :style="labelStyles">
 					{{label}}
@@ -234,10 +238,13 @@
       const tfMessages = computed(() => {
         if (errorMessages.value.length || !isValidInput.value) return errorMessages.value
         else if (props.hint) return props.hint
+
       })
+			const attrs = computed(() => context.attrs)
 
 
       return {
+        attrs,
         //calculated styles and classes
         tfType,
         labelClasses,
