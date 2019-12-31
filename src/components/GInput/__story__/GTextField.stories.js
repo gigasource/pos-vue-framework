@@ -671,6 +671,7 @@ import GContainer from '../../GLayout/GContainer';
 import GCol from '../../GLayout/GCol';
 import GRow from '../../GLayout/GRow';
 import GTextFieldBs from '../GTextFieldBs';
+import GList from '../../GList/GList';
 
 describe('test', function () {
   it('should', function () {

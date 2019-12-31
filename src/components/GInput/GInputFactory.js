@@ -1,7 +1,11 @@
 export function getLabel(context, props, internalValue, isValidInput, isFocused,
-                         labelActiveClass = 'g-tf-label__active') {
+                         [labelActiveClass] = 'g-tf-label__active') {
+  const tfType = computed(() => {
+    if (context.slots['prepend-outer'] || context.slots['append-outer'] || props.prependIcon || props.appendIcon || props.outlined) return 'full'
+    return 'lite'
+  })
   //Activate label
-  const isDirty = computed(() => !!internalValue.value)
+  const isDirty = computed(() => !!internalValue.value || internalValue.value === 0)
   const isLabelActive = computed(() => {
     const datetimeInputTypes = ['date', 'datetime', 'datetime-local', 'month', 'time', 'week']
 
@@ -22,6 +26,18 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   const prefixWidth = reactive({
     value: 0
   })
+  const prependRef = ref(null)
+ // const prependWidth = ref(0)
+  const prependWidth = computed(() => {
+    let i = props.filled
+    return prependRef.value && prependRef.value.offsetWidth
+  })
+  // watch([() => prependRef.value, () => props.filled] ,() => {
+  //   context.root.$nextTick(() => {
+  //     prependWidth.value = prependRef.value && prependRef.value.offsetWidth
+  //   })
+  // })
+
 
   watch(() => props.prefix, () => {
     context.root.$nextTick(() => {
@@ -30,29 +46,44 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   })
 
   const labelStyles = computed(() => {
-    if (isLabelActive.value && prefixWidth.value) {
-      if (props.outlined) {
-        if (props.filled) {
-          if (props.rounded) return {'transform': `translateY(-28px) translateX(${-prefixWidth.value}px)  scale(0.75)`}
-          return {'transform': `translateY(-${props.dense ? 26 : 28}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
+    if (tfType.value === 'full') {
+      if (isLabelActive.value && prefixWidth.value) {
+        if (props.outlined) {
+          if (props.filled) {
+            if (props.rounded) return { 'transform': `translateY(-28px) translateX(${-prefixWidth.value}px)  scale(0.75)` }
+            return { 'transform': `translateY(-${props.dense ? 26 : 28}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)` }
+          } else {
+            return { 'transform': `translateY(-${props.dense ? 22 : 26}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)` }
+          }
+        } else if (props.filled) {
+          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)` }
         } else {
-          return {'transform': `translateY(-${props.dense ? 22 : 26}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)`}
+          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)` }
         }
-      } else if (props.filled) {
-        return {'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${-prefixWidth.value - 6}px)  scale(0.75)`}
-      } else {
-        return {'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${-prefixWidth.value + 6}px)  scale(0.75)`}
       }
+    } else {
+      if(!isLabelActive.value && prependWidth.value){
+        return {'padding-left': `${prependWidth.value}px`}
+      }
+      if (isLabelActive.value && prependWidth.value) {
+        if (props.filled) {
+          //if(props.shaped) return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value 6}px)  scale(0.75)` }
+          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
+        } else {
+          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
+        }
+      }
+
     }
   })
 
-  return {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef}
+  return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef, prependRef }
 }
 
-import {computed, reactive, ref, watch} from '@vue/composition-api';
+import { computed, reactive, ref, watch } from '@vue/composition-api';
 
 
-import {convertToUnit, keyCodes} from '../../utils/helpers';
+import { convertToUnit, keyCodes } from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
@@ -92,9 +123,9 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
       isValidInput.value = true
     }
 
-  }, !props.value ? {lazy: true} : null)
+  }, !props.value ? { lazy: true } : null)
 
-  return {errorMessages, validate};
+  return { errorMessages, validate };
 }
 
 export function getSlotEventListeners(context) {
@@ -185,14 +216,14 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     }
   }
 
-  return {onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown}
+  return { onClick, onFocus, onBlur, onClearIconClick, onMouseDown, onMouseUp, onChange, onKeyDown }
 }
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref(props.value || '');
+  const rawInternalValue = ref((props.value || props.value ===0) ? props.value : '');
 
-  watch(() => props.value, () => rawInternalValue.value = props.value, {lazy: true});
+  watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
 
   const internalValue = computed({
 
@@ -203,5 +234,5 @@ export function getInternalValue(props, context) {
     }
   });
 
-  return {internalValue, rawInternalValue};
+  return { internalValue, rawInternalValue };
 }
