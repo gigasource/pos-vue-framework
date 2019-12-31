@@ -366,7 +366,7 @@
       &:not(.g-dialog-content__fullscreen) {
         max-width: 90%;
         max-height: 90%;
-        height: 100%;
+        height: auto;
       }
 
       > * {
