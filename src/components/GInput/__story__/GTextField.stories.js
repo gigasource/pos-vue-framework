@@ -1,6 +1,6 @@
-import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions'
-import { mask } from 'vue-the-mask'
+import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
+import {action} from '@storybook/addon-actions'
+import {mask} from 'vue-the-mask'
 
 
 //
@@ -10,7 +10,7 @@ export default {
 }
 
 export const TextFieldPlayGround = () => ({
-  components: { GTextField, GIcon },
+  components: {GTextField, GIcon},
   data() {
     return {
       text1: '',
@@ -27,26 +27,26 @@ export const TextFieldPlayGround = () => ({
     }
   },
   props: {
-    label: { default: text('Input label', 'Label') },
-    placeholder: { default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    dense: { default: boolean('dense', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    clearable: { default: boolean('clearable', false) },
-    hint: { default: text('hint', 'Hint') },
-    persistent: { default: boolean('persistent', false) },
-    counter: { type: [String, Number], default: number('counter', 25) },
-    prefix: { default: text('prefix', '') },
-    suffix: { default: text('suffix', '') },
-    type: { default: text('type', 'text') },
-    prependIcon: { default: text('prepend Icon', 'person') },
-    appendIcon: { default: text('append Icon', 'mdi-bike') },
-    prependInnerIcon: { default: text('prepend Inner Icon', 'mdi-glasses') },
-    appendInnerIcon: { default: text('append Inner Icon', 'mdi-ninja') },
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    dense: {default: boolean('dense', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
+    hint: {default: text('hint', 'Hint')},
+    persistent: {default: boolean('persistent', false)},
+    counter: {type: [String, Number], default: number('counter', 25)},
+    prefix: {default: text('prefix', '')},
+    suffix: {default: text('suffix', '')},
+    type: {default: text('type', 'text')},
+    prependIcon: {default: text('prepend Icon', 'person')},
+    appendIcon: {default: text('append Icon', 'mdi-bike')},
+    prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
+    appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
   },
   template: `<g-text-field :label="label"
                            :clearable="clearable"
@@ -80,11 +80,11 @@ export const TextFieldPlayGround = () => ({
               </g-text-field>`,
 });
 export const TextFieldShapedAndRounded = () => ({
-  components: { GTextField, GContainer, GRow, GCol},
+  components: {GTextField, GContainer, GRow, GCol},
   props: {
-    label: { default: text('Input label', 'Label') },
-    placeholder: { default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
   },
   template: `
 <g-container>
@@ -98,7 +98,7 @@ export const TextFieldShapedAndRounded = () => ({
 
 
 export const TextFieldDisableandReadonly = () => ({
-  components: { GTextField, GContainer, GRow, GCol },
+  components: {GTextField, GContainer, GRow, GCol},
   template: `
           <g-container>
             <g-row>
@@ -121,14 +121,14 @@ export const TextFieldDisableandReadonly = () => ({
 `,
 });
 export const TextFieldDense = () => ({
-  components: { GTextField, GIcon, GContainer, GCol, GRow },
+  components: {GTextField, GIcon, GContainer, GCol, GRow},
   setup() {
     return () => (
       <g-container>
         <g-row
           class="bg-grey-lighten-5">
           <g-col>
-            <g-text-field label="Normal" placeholder="placeholder" />
+            <g-text-field label="Normal" placeholder="placeholder"/>
           </g-col>
           <g-col>
             <g-text-field label="Dense" placeholder="placeholder" dense/>
@@ -145,7 +145,7 @@ export const TextFieldDense = () => ({
         <g-row
           class="bg-grey-lighten-5">
           <g-col>
-            <g-text-field label="Normal" placeholder="placeholder"  solo/>
+            <g-text-field label="Normal" placeholder="placeholder" solo/>
           </g-col>
           <g-col>
             <g-text-field label="Dense" placeholder="placeholder" dense solo/>
@@ -165,7 +165,7 @@ export const TextFieldDense = () => ({
   },
 });
 export const TextFieldIcon = () => ({
-  components: { GTextField, GIcon, GContainer, GCol, GRow },
+  components: {GTextField, GIcon, GContainer, GCol, GRow},
   setup() {
     return () => (
       <g-container>
@@ -211,7 +211,7 @@ export const TextFieldIcon = () => ({
   },
 });
 export const TextFieldClearable = () => ({
-  components: { GTextField, GIcon, GContainer, GCol, GRow },
+  components: {GTextField, GIcon, GContainer, GCol, GRow},
   setup() {
     return () => (
       <g-container>
@@ -241,7 +241,7 @@ export const TextFieldClearable = () => ({
 });
 //todo:solo, filled, outlined
 export const TextFieldStyles = () => ({
-  components: { GTextField, GIcon, GContainer, GCol, GRow },
+  components: {GTextField, GIcon, GContainer, GCol, GRow},
   setup() {
     return () => (
       <g-container>
@@ -249,7 +249,7 @@ export const TextFieldStyles = () => ({
           class="bg-grey-lighten-5">
           <g-col>
             Regular
-            <g-text-field type="week" label="Regular"  />
+            <g-text-field type="week" label="Regular"/>
           </g-col>
           <g-col>
             Solo
@@ -274,7 +274,7 @@ export const TextFieldStyles = () => ({
 });
 //todo: counter
 export const TextFieldCounter = () => ({
-  components: { GTextField, GIcon },
+  components: {GTextField, GIcon},
   data() {
     return {
       text1: '',
@@ -289,15 +289,15 @@ export const TextFieldCounter = () => ({
     }
   },
   props: {
-    label: { default: text('Input label', 'Label') },
-    placeholder: { default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    clearable: { default: boolean('clearable', false) },
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
   },
   template: `<g-text-field :label="label"
                            :clearable="clearable"
@@ -314,7 +314,7 @@ export const TextFieldCounter = () => ({
 });
 //todo:password
 export const TextFieldPasswordType = () => ({
-  components: { GTextField, GIcon, GContainer, GCol, GRow },
+  components: {GTextField, GIcon, GContainer, GCol, GRow},
   setup() {
     return () => (
       <g-container>
@@ -325,8 +325,8 @@ export const TextFieldPasswordType = () => ({
 });
 //todo:mask
 export const TextFieldUsingMask = () => ({
-  components: { GTextField, GContainer },
-  directives: { mask },
+  components: {GTextField, GContainer},
+  directives: {mask},
   data() {
     return {
       text2: '',
@@ -343,10 +343,10 @@ export const TextFieldUsingMask = () => ({
 });
 //todo: hint
 export const TextFieldHint = () => ({
-  components: { GTextField, GIcon },
+  components: {GTextField, GIcon},
   props: {
-    hint: { default: text('hint', 'Why so serious') },
-    persistent: { default: boolean('persistent', false) },
+    hint: {default: text('hint', 'Why so serious')},
+    persistent: {default: boolean('persistent', false)},
   },
   template: `<g-text-field label="Hint"
                            :hint="hint"
@@ -354,11 +354,11 @@ export const TextFieldHint = () => ({
               </g-text-field>`,
 });
 export const TextFieldCustomHint = () => ({
-  components: { GTextField, GContainer, GRow, GCol, GIcon},
+  components: {GTextField, GContainer, GRow, GCol, GIcon},
   props: {
-    label: { default: text('Input label', 'Label') },
-    placeholder: { default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
   },
   template: `
 <g-container>
@@ -373,16 +373,16 @@ export const TextFieldCustomHint = () => ({
 `,
 });
 export const TextFieldRequired = () => ({
-  components: { GTextField, GIcon },
+  components: {GTextField, GIcon},
   data() {
     return {
       text: ''
     }
   },
   props: {
-    hint: { default: text('hint', 'Input is required!') },
-    persistent: { default: boolean('persistent', false) },
-    required: { default: boolean('required', true) },
+    hint: {default: text('hint', 'Input is required!')},
+    persistent: {default: boolean('persistent', false)},
+    required: {default: boolean('required', true)},
   },
   template: `<g-text-field label="Label"
 :required="required"
@@ -394,17 +394,17 @@ export const TextFieldRequired = () => ({
 //todo: prefix, suffix
 
 export const TextFieldPrefixAndSuffix = () => ({
-  components: { GTextField, GIcon },
+  components: {GTextField, GIcon},
   props: {
-    label:{ default: text('label', 'Label') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    prefix: { default: text('prefix', '$') },
-    suffix: { default: text('suffix', ':)') },
+    label: {default: text('label', 'Label')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    prefix: {default: text('prefix', '$')},
+    suffix: {default: text('suffix', ':)')},
   },
   template: `<g-text-field :label="label"
                            :filled="filled"
@@ -419,7 +419,7 @@ export const TextFieldPrefixAndSuffix = () => ({
 });
 //todo: icon event, icon slot
 export const TextFieldIconEvent = () => ({
-  components: { GTextField },
+  components: {GTextField},
   props: {},
   data: () => ({
     message: "Click icon to fire icon's events",
@@ -482,7 +482,7 @@ export const TextFieldIconEvent = () => ({
 });
 //todo: label slot
 export const TextFieldLabelSlot = () => ({
-  components: { GTextField, GContainer , GIcon},
+  components: {GTextField, GContainer, GIcon},
   template: `
               <g-container>
                 <g-text-field >
@@ -496,11 +496,11 @@ export const TextFieldLabelSlot = () => ({
 });
 
 export const TextFieldAppendSlot = () => ({
-  components: { GTextField, GContainer , GIcon},
+  components: {GTextField, GContainer, GIcon},
   template: `
               <g-container>
                 <g-text-field >
-                 <template v-slot:appendOuter>
+                 <template v-slot:append-outer>
                  <div class="g-tf-append__outer">
                  <g-icon>check</g-icon>
                  </div>
@@ -510,11 +510,11 @@ export const TextFieldAppendSlot = () => ({
 `,
 });
 export const TextFieldTypes = () => ({
-  components: { GTextField, GContainer , GIcon},
- props:{
-   type:{ default: text('type', 'text') },
- }
- ,
+  components: {GTextField, GContainer, GIcon},
+  props: {
+    type: {default: text('type', 'text')},
+  }
+  ,
   template: `
               <g-container>
                 <g-text-field label="Label" :type="type" >
@@ -525,7 +525,7 @@ export const TextFieldTypes = () => ({
 });
 //todo: validate
 export const TextFieldValidate = () => ({
-  components: { GTextField, GIcon },
+  components: {GTextField, GIcon},
   data() {
     return {
       text1: '',
@@ -541,15 +541,15 @@ export const TextFieldValidate = () => ({
     }
   },
   props: {
-    label: { default: text('Input label', 'Label') },
-    placeholder: { default: text('Input placeholder', '') },
-    filled: { default: boolean('filled', false) },
-    solo: { default: boolean('solo', false) },
-    outlined: { default: boolean('outlined', false) },
-    flat: { default: boolean('flat', false) },
-    rounded: { default: boolean('rounded', false) },
-    shaped: { default: boolean('shaped', false) },
-    clearable: { default: boolean('clearable', false) },
+    label: {default: text('Input label', 'Label')},
+    placeholder: {default: text('Input placeholder', '')},
+    filled: {default: boolean('filled', false)},
+    solo: {default: boolean('solo', false)},
+    outlined: {default: boolean('outlined', false)},
+    flat: {default: boolean('flat', false)},
+    rounded: {default: boolean('rounded', false)},
+    shaped: {default: boolean('shaped', false)},
+    clearable: {default: boolean('clearable', false)},
   },
   template: `<g-text-field :label="label"
                             prependIcon="person"
@@ -565,17 +565,18 @@ export const TextFieldValidate = () => ({
                            :rules="[rules.required, rules.counter, rules.max]">
               </g-text-field>`,
 });
-export const TextFieldBoostrap= () => ({
-  components: { GTextFieldBs },
-  directives: { mask },
-  props:{
+export const TextFieldBoostrap = () => ({
+  components: {GTextFieldBs},
+  directives: {mask},
+  props: {
     required: {default: boolean('required', false)},
     clearable: {default: boolean('clearable', true)}
   },
   data() {
     return {
       rules: {
-        max: value => value.length < 3||'Exceeded' },
+        max: value => value.length < 3 || 'Exceeded'
+      },
     }
   },
   template:
@@ -585,7 +586,7 @@ export const TextFieldBoostrap= () => ({
 								 :required="required"
 								 :clearable="clearable"
 								 :rules="[rules.max]">
-      <template #prependContent>
+      <template #prepend-content>
         Prepend
       </template>
       <template v-slot:prepend="{onClick}">
@@ -596,7 +597,7 @@ export const TextFieldBoostrap= () => ({
         </div>
       </template>
     
-      <template #appendContent>
+      <template #append-content>
         Append
       </template>
       <template v-slot:append="{onClick}">
@@ -611,17 +612,14 @@ export const TextFieldBoostrap= () => ({
 
 });
 
-export const AllInputTypes= () => ({
-  components: { GTextField, GRow, GCol },
+export const AllInputTypes = () => ({
+  components: {GTextField, GRow, GCol},
   data() {
-    return {
-
-    }
+    return {}
   },
-  props: {
-  },
+  props: {},
   template:
-      `<template>
+    `<template>
         <g-row>
           <g-col xs3>
             <g-text-field type="date" label="date"></g-text-field>

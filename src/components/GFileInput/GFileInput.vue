@@ -105,6 +105,7 @@
       const onClearIconClick = function () {
         internalValue.value = props.multiple ? [] : null
         context.refs.input.value = ''
+        context.emit('clear')
       }
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
 
@@ -307,7 +308,7 @@
       }
 
       function genAppendOuter() {
-        return <div class="g-tf-append__outer" ref="appendOuter">
+        return <div class="g-tf-append__outer" ref="append-outer">
           <g-icon>{props.appendOuterIcon}</g-icon>
         </div>
       }

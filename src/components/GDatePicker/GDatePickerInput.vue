@@ -1,5 +1,5 @@
 <script>
-  import { computed, reactive } from '@vue/composition-api'
+  import { computed, reactive, watch } from '@vue/composition-api'
   import GMenu from '../GMenu/GMenu'
   import GDatePicker from '../GDatePicker/GDatePicker'
   import GTextField from '../GInput/GTextField'
@@ -122,6 +122,12 @@
         showMenu: false,
       })
 
+      watch(() => props.value, newValue => {
+        if(state.value !== newValue) {
+          state.value = copyValue(newValue)
+        }
+      })
+
       function copyValue(val) {
         return (!props.multiple && !props.range) ? val : _.map(val, v => v)
       }
@@ -152,7 +158,7 @@
 
       function gTextFieldInputScopedSlots() {
         return {
-          inputSlot: ({ inputErrStyles }) =>
+          'input-slot': ({ inputErrStyles }) =>
               <div style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
                 { props.multiple ? renderMultipleDates() : renderSingleOrDateRanges()}
               </div>

@@ -2,38 +2,39 @@
   <div class="bs-tf-wrapper" :class="wrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
     <label class="bs-tf-label">
       <slot name="label">
-				<template v-if="required">
-					{{label}}
-					<span style="color: red">*</span>
-				</template>
-				<template v-else>{{label}}</template>
-			</slot>
+        <template v-if="required">
+          {{label}}
+          <span style="color: red">*</span>
+        </template>
+        <template v-else>{{label}}</template>
+      </slot>
     </label>
     <div class="bs-tf-input-group">
-      <div class="bs-tf-input-prepend" @click="onClickPrepend" v-if="$slots.prependContent">
+      <div class="bs-tf-input-prepend" @click="onClickPrepend" v-if="$slots['prepend-content']">
 				<span class="bs-tf-input-text">
-					<slot name="prependContent"></slot>
+					<slot name="prepend-content"></slot>
 				</span>
       </div>
-			<div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}]">
-				<slot name="prepend" :on-click="onClickPrepend"></slot>
-				<input class="bs-tf-input"
-							 type="text"
-							 ref="input"
-							 :placeholder="placeholder"
-							 :class="{'bs-tf-input-has-prepend': ($slots.prependContent || $slots.prepend),
-                      'bs-tf-input-has-append': ($slots.appendContent || $slots.append)}"
-							 v-model="internalValue"
-							 @change="onChange"
-							 @focus="onFocus"
-							 @blur="onBlur"
-							 @keydown="onKeyDown">
-				<slot name="append" :on-click="onClickAppend"></slot>
-			</div>
+      <div
+        :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}]">
+        <slot name="prepend" :on-click="onClickPrepend"></slot>
+        <input class="bs-tf-input"
+               type="text"
+               ref="input"
+               :placeholder="placeholder"
+               :class="{'bs-tf-input-has-prepend': ($slots['prepend-content'] || $slots.prepend),
+                      'bs-tf-input-has-append': ($slots['append-content'] || $slots.append)}"
+               v-model="internalValue"
+               @change="onChange"
+               @focus="onFocus"
+               @blur="onBlur"
+               @keydown="onKeyDown">
+        <slot name="append" :on-click="onClickAppend"></slot>
+      </div>
 
-      <div class="bs-tf-input-append" @click="onClickAppend" v-if="$slots.appendContent">
+      <div class="bs-tf-input-append" @click="onClickAppend" v-if="$slots['append-content']">
         <span class="bs-tf-input-text">
-					<slot name="appendContent"></slot>
+					<slot name="append-content"></slot>
 				</span>
       </div>
 
@@ -50,7 +51,7 @@
 
   export default {
     name: 'GTextFieldBs',
-    components: { GIcon },
+    components: {GIcon},
     props: {
       ...{//display props
         label: String,
@@ -58,14 +59,14 @@
         //input states
         disabled: Boolean,
         readOnly: Boolean,
-				clearable: Boolean,
+        clearable: Boolean,
       },
       clearIcon: {
         type: String,
         default: 'clear'
       },
       //rules and validation props
-			required: Boolean,
+      required: Boolean,
       rules: Array,
       hint: String,
       validateOnBlur: Boolean,
@@ -76,8 +77,8 @@
         type: String,
         default: 'text',
       },
-			small: Boolean,
-			large: Boolean,
+      small: Boolean,
+      large: Boolean,
     },
     setup: function (props, context) {
       const {internalValue} = getInternalValue(props, context);
@@ -97,17 +98,17 @@
       const onClickAppend = () => context.emit('click :append');
 
       const wrapperClasses = computed(() => ({
-				'bs-tf__small': props.small,
-				'bs-tf__large': props.large,
+        'bs-tf__small': props.small,
+        'bs-tf__large': props.large,
         'g-tf--wrapper-disabled': props.disabled,
-				'g-tf--wrapper-readonly': props.readOnly
-			}));
+        'g-tf--wrapper-readonly': props.readOnly
+      }));
 
       return {
         internalValue,
         isValidInput,
-				isFocused,
-				isDirty,
+        isFocused,
+        isDirty,
         //calculated error
         errorMessages,
         //event listeners
@@ -121,7 +122,7 @@
         onClickPrepend,
         onClickAppend,
         onClearIconClick,
-				wrapperClasses
+        wrapperClasses
       }
     }
   }
@@ -143,7 +144,7 @@
   }
 
   .bs-tf-input-group,
-	.bs-tf-inner-input-group,
+  .bs-tf-inner-input-group,
   .bs-tf-input-prepend,
   .bs-tf-input-append {
     display: flex;

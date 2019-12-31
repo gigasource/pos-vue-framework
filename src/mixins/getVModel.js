@@ -1,6 +1,6 @@
 import { computed, ref, watch } from '@vue/composition-api';
 
-function getVModel(props, context) {
+export function getVModel(props, context) {
   return computed({
     get: () => props.value,
     set: value => {
@@ -9,16 +9,22 @@ function getVModel(props, context) {
   })
 }
 
-export function getInternalValue(prop, context, event = 'input') {
-  const rawInternalValue = ref(prop.value);
+export function getInternalValue(props, context, event = 'input') {
+  const rawInternalValue = ref(props.value);
 
-  watch(() => prop.value, () => rawInternalValue.value = prop.value, { lazy: true });
+  watch(() => props.value, () => {
+    if (rawInternalValue.value !== props.value) {
+      rawInternalValue.value = props.value
+    }
+  }, { lazy: true });
 
   return computed({
     get: () => rawInternalValue.value,
     set: (value) => {
-      rawInternalValue.value = value;
-      context.emit(event, rawInternalValue.value)
+      if (rawInternalValue.value !== value) {
+        rawInternalValue.value = value;
+        context.emit(event, rawInternalValue.value)
+      }
     }
   });
 }

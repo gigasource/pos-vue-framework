@@ -1,6 +1,7 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import GSidebar from '../GSidebar';
 import GList from '../../GList/GList';
+import GIcon from '../../GIcon/GIcon';
 import GSideBarTreeView from '../GSideBarTreeView'
 import { reactive, ref } from '@vue/composition-api'
 
@@ -8,7 +9,6 @@ export default {
   title: 'GSidebar',
   decorators: [withKnobs]
 }
-
 
 export const listView = () => ({
   components: { GList, GSidebar },
@@ -79,7 +79,7 @@ export const listView = () => ({
 
 
 export const treeView = () => ({
-  components: { GSideBarTreeView, GSidebar },
+  components: { GSideBarTreeView, GSidebar, GIcon },
   setup(props, context) {
     const data = ref([
       {
@@ -110,7 +110,7 @@ export const treeView = () => ({
       { subheader: 'APPLICATIONS', type: 'subheader' },
       { title: 'Mail', icon: 'mail_outline', badge: '5 new', badgeColor: 'pink accent 2' },
       { title: 'Chat', icon: 'chat_bubble_outline' },
-      { title: 'ToDo', },
+      { title: 'ToDo', appendIcon: 'open_in_new'},
       { title: 'Contacts', icon: 'import_contacts' },
       { title: 'Calendar', icon: 'today' },
       {
@@ -185,7 +185,8 @@ export const treeView = () => ({
           data={data.value}
           rounded
           vOn:input={e => state.value = e}
-          value={state.value}/>
+          value={state.value}>
+        </g-side-bar-tree-view>
       </g-sidebar>
   }
 });

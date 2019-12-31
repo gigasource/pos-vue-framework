@@ -11,7 +11,8 @@
     "watch-sass": "nodemon -e scss -x \" npm run compile-sass\"",
     "test": "jest",
     "storybook": "start-storybook -s ./src/assets -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "test-chunk": "vue-cli-service build src/testChunk/main.js && cd ./dist && http-server"
   },
   "dependencies": {
     "material-design-icons-iconfont": "^5.0.1",

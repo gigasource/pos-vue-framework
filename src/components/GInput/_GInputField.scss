@@ -1,4 +1,5 @@
 @import "../../style/elevation";
+
 input {
   border: transparent;
   font-family: "Muli", sans-serif;
@@ -63,7 +64,7 @@ input[type=text] {
     bottom: -1px;
     width: 100%;
     height: 1px;
-    background-color: rgba(0, 0, 0, 0.87);
+    background-color: rgba(0, 0, 0, 0.42);
   }
 
   &::after {
@@ -97,6 +98,7 @@ input[type=text] {
     font-size: 16px;
     outline: none;
     background-color: transparent;
+    color: rgba(0, 0, 0, 0.87);
   }
 
   &-affix {
@@ -118,6 +120,7 @@ input[type=text] {
     transition: 0.3s;
     pointer-events: none;
     font-size: 16px;
+    color: rgba(0, 0, 0, 0.54);
 
     &__active {
       transform: translateY(-18px) scale(0.75);
@@ -129,10 +132,6 @@ input[type=text] {
 
     &__error {
       color: red !important;
-    }
-
-    &__disabled, &__readOnly {
-      color: rgba(0, 0, 0, 0.54) !important;
     }
   }
 
@@ -251,9 +250,10 @@ input[type=text] {
     display: none;
   }
 
-  .g-tf-prepend__inner ~.inputGroup .g-tf-input{
+  .g-tf-prepend__inner ~ .inputGroup .g-tf-input {
     padding-left: 0;
   }
+
   .g-tf-input {
     padding: 8px;
     border-radius: 4px;
@@ -415,7 +415,8 @@ input[type=text] {
   .g-tf-label:not(.g-tf-label__active) {
     left: 6px;
   }
-  .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active{
+
+  .g-tf-prepend__inner ~ .inputGroup .g-tf-label__active {
     transform: translateY(-26px) translateX(-5px) scale(0.75);
   }
 

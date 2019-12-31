@@ -1,15 +1,15 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { onBeforeUnmount, onMounted, reactive, ref, onUnmounted, computed } from '@vue/composition-api';
+  import { onBeforeUnmount, reactive, ref, onUnmounted, computed, onMounted, watch } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
-  import menuable from '../../mixins/menuable';
   import detachable from '../../mixins/detachable';
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
+  import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'GMenu',
-    components: { GMenuContent },
+    components: { GMenuContent, Fragment },
     directives: {
       ClickOutside
     },
@@ -17,7 +17,7 @@
       // basic
       ...{
         value: Boolean,
-        lazy: Boolean,
+        eager: Boolean,
         activator: null,
       },
       // positioning
@@ -96,19 +96,9 @@
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
-      const { detach } = detachable(props, context);
       const { runDelay } = delayable(props)
-
-
-      //template refs
-      const el = ref(null);
-      const activator = computed(() => {
-        if (props.activator) return props.activator
-
-        return (context.refs.activator && context.refs.activator.children.length > 0)
-            ? context.refs.activator.children[0]
-            : context.refs.activator
-      })
+      let activatorEl = ref(null);
+      let activatorVNode
 
       const state = reactive({
         top: 0,
@@ -116,14 +106,13 @@
         isFirstRender: true,
       });
 
-      onBeforeUnmount(() => {
-        if (context.refs.activator) detach(context.refs.activator)
+      onMounted(function () {
+        activatorEl.value = activatorVNode && activatorVNode[0] && activatorVNode[0].elm
       })
 
-      onUnmounted(() => isActive.value = false)
+      onBeforeUnmount(() => isActive.value = false)
 
       function toggleContent(event) {
-        if (props.lazy && state.isFirstRender) state.isFirstRender = false
         const activator = event.target || event.currentTarget;
         if (!activator) {
           return
@@ -131,11 +120,15 @@
         isActive.value = !isActive.value;
       }
 
+      watch(isActive, val => {
+        if (val && !props.eager && state.isFirstRender) state.isFirstRender = false;
+      }, { lazy: true })
+
       const genContent = () => {
         const contentOptions = {
           props: {
             ...props,
-            activator,
+            activator: activatorEl,
             hasJustFocused: state.hasJustFocused,
           },
           on: {
@@ -146,56 +139,70 @@
           },
           ref: 'content'
         }
-        return <g-menu-content {...contentOptions} ref="content">
+        return <g-menu-content {...contentOptions}>
           {context.slots.default()}
         </g-menu-content>
       }
 
-      const activatorData = {
-        on: {
-          ...(props.openOnHover && !props.disabled) && {
-            mouseenter(event) {
-              runDelay('open', () => {
-                if (state.hasJustFocused || isActive.value) {
-                  return
-                }
-                toggleContent(event);
-                state.hasJustFocused = true;
-              })
-            },
-            mouseleave(event) {
-              runDelay('close', () => {
-                const content = context.refs.content
-                if (content && content.$el.contains(event.relatedTarget)) {
-                  return
-                }
-                isActive.value = false
-                state.hasJustFocused = false
-              })
-            }
+      const on = !props.disabled && {
+        ...props.openOnHover && {
+          mouseenter(event) {
+            runDelay('open', () => {
+              if (state.hasJustFocused || isActive.value) {
+                return
+              }
+              toggleContent(event);
+              state.hasJustFocused = true;
+            })
+          },
+          mouseleave(event) {
+            runDelay('close', () => {
+              const content = context.refs.content
+              if (content && content.$el.contains(event.relatedTarget)) {
+                return
+              }
+              isActive.value = false
+              state.hasJustFocused = false
+            })
           }
         },
-        staticClass: 'g-menu--activator',
-        ref: 'activator'
+        click(event) {
+          toggleContent(event)
+        }
       }
 
-      const genWrapper = () =>
-        <div ref="el" class="g-menu">
-          <div {...activatorData}>{context.slots.activator && context.slots.activator({ toggleContent, on: activatorData.on })}</div>
-          {props.lazy ? (!state.isFirstRender && genContent()) : genContent()}
-        </div>
+      const genWrapper = function () {
+        const _activatorVNode = context.slots.activator && context.slots.activator({ toggleContent, on });
+        activatorVNode = _activatorVNode
+
+        return <fragment>
+          {_activatorVNode}
+          {props.eager ? genContent() : (!state.isFirstRender && genContent())}
+        </fragment>;
+      }
+
       return {
         state,
         isActive,
-        genWrapper
+        genWrapper,
+        activatorEl
       }
     },
     render() {
-      return this.genWrapper()
+      return this.genWrapper.bind(this)()
     }
   }
 </script>
 
 <style scoped lang="scss">
-	@import "GMenu";
+  @import "../../style/elevation";
+
+  .g-menu--content {
+    position: absolute;
+    display: inline-block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    contain: content;
+    @include elevation(2);
+  }
 </style>

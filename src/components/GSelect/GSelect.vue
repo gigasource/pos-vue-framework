@@ -1,14 +1,12 @@
 <script>
   import GTextField from "../GInput/GTextField";
   import GMenu from "../GMenu/GMenu"
-  import {makeSelectable} from "../../mixins/groupable";
-  import {reactive, ref, computed, toRefs} from "@vue/composition-api";
+  import {computed, reactive, ref} from "@vue/composition-api";
   import {getList, getSelections} from "./GSelectFactory";
   import GChip from "../GChip/GChip";
   import GIcon from "../GIcon/GIcon";
   import GList from "../GList/GList";
   import _ from "lodash"
-  import {isSelected} from "../GDatePicker/logic/TableUtil";
   import GListItem from "../GList/GListItem";
   import {GListItemContent, GListItemText} from "../GList/GListFunctionalComponent";
   import {keyCodes} from "../../utils/helpers";
@@ -57,15 +55,9 @@
       //menu props
       menuProps: {
         type: Object,
-        default: () => ({
-          closeOnClick: true,
-          closeOnContentClick: false,
-          maxHeight: 300,
-          offsetY: true,
-          offsetOverflow: true,
-          top: false,
-        })
+        default: () => ({})
       },
+      eager: Boolean,
       //item textfieldValue props
       chips: Boolean,
       smallChips: Boolean,
@@ -86,15 +78,30 @@
         type: Boolean,
         default: true
       },
-      appendIcon: {
-        type: String,
-        default: 'arrow_drop_down'
-      },
+      appendIcon: String,
       appendSvg: Boolean,
       required: Boolean,
       returnObject: Boolean,
     },
     setup: function (props, context) {
+      function createItemFn(prop) {
+        return typeof prop === 'function'
+            ? prop
+            : item => {
+              if (!_.isObject(item)) return item
+
+              if (_.isArray(prop)) {
+                const key = prop.find(Object.keys(item).includes)
+                return item[key]
+              } else {
+                return item[prop]
+              }
+            }
+      }
+
+      const itemTextFn = computed(() => createItemFn(props.itemText))
+      const itemValueFn = computed(() => createItemFn(props.itemValue))
+
       const state = reactive({
         searchText: '',
         fieldItem: null
@@ -104,14 +111,14 @@
       const {internalValue: selectedValue} = makeListSelectable(props, context)
 
       const fieldItem = getSelections(props, selectedValue)
-      const tfDisplaySelections = computed(() => {
+      const selectionTexts = computed(() => {
         if (props.multiple) {
           return fieldItem.value.map(item => {
-            return item ? (item[props.itemText] || item[props.itemValue] || item) : ''
+            return item ? (itemTextFn.value(item) || itemValueFn.value(item) || item) : ''
           })
         }
-        return fieldItem.value || fieldItem.value === 0 ? fieldItem.value[props.itemText] ||
-            fieldItem.value[props.itemValue] ||
+        return fieldItem.value || fieldItem.value === 0 ? itemTextFn.value(fieldItem.value) ||
+            itemValueFn.value(fieldItem.value) ||
             fieldItem.value.toString() : ''
       })
 
@@ -147,7 +154,7 @@
                     itemText: props.itemText,
                     itemValue: props.itemValue,
                     returnObject: props.returnObject,
-                    mandatory: props.mandatory,
+                    mandatory: true,
                     allowDuplicates: props.allowDuplicates,
                     multiple: props.multiple,
                     inMenu: true,
@@ -158,8 +165,8 @@
                     'click:item': () => showOptions.value = props.multiple,
                     input: e => selectedValue.value = e,
                   },
-                  scopedSlots:{
-                    content: () =>  context.slots.item && context.slots.item()
+                  scopedSlots: {
+                    content: () => context.slots.item && context.slots.item()
                   }
                 }}
                 ref="list"
@@ -185,32 +192,34 @@
       const deleteItemColor = ref('#1d1d1d')
       const genMultiSelectionsSlot = () => {
         if (props.chips || props.allowDuplicates) {
-          return tfDisplaySelections.value.map((item, index) => <GChip small={props.smallChips}
-                                                              close={props.deletableChips}
-                                                              vOn:close={() => onChipCloseClick(index)}>{item}
+          return selectionTexts.value.map((item, index) => <GChip small={props.smallChips}
+                                                                  close={props.deletableChips}
+                                                                  vOn:close={() => onChipCloseClick(index)}>{item}
           </GChip>)
         }
-        return tfDisplaySelections.value.map(function (item, index) {
-          if (index === tfDisplaySelections.value.length - 1) return <div
+        return selectionTexts.value.map(function (item, index) {
+          if (index === selectionTexts.value.length - 1) return <div
               style={{'color': deleteItemColor.value, 'padding-right': '5px'}}>{item}</div>
           return <div style={{'padding-right': '5px'}}>{item + ', '} </div>
         })
       }
 
       const genSingleSelectionSlot = () => {
-        if (props.chips && tfDisplaySelections.value) {
+        if (props.chips && selectionTexts.value) {
           return <GChip small={props.smallChips}
                         close={props.deletableChips}
-                        vOn:close={() => onChipCloseClick()}>{tfDisplaySelections.value}</GChip>
+                        vOn:close={() => onChipCloseClick()}>{selectionTexts.value}</GChip>
         }
-        return tfDisplaySelections.value
+        return selectionTexts.value
       }
       const getTextFieldScopedSlots = {
-        appendInner: ({iconColor}) =>
-            <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>,
-        inputSlot: ({inputErrStyles}) =>
+        'append-inner': ({iconColor}) =>
+            [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+              context.slots['append-inner'] && context.slots['append-inner'](),
+              props.appendIcon && <GIcon color={iconColor} svg={props.appendSvg}>{props.appendIcon}</GIcon>],
+        'input-slot': ({inputErrStyles}) =>
             <div class="g-tf-input selections" style={[{'color': '#1d1d1d'}, inputErrStyles]}>
-              {tfDisplaySelections.value.length === 0 ?
+              {selectionTexts.value.length === 0 ?
                   <div style="color : rgba(0, 0, 0, 0.32)">{props.placeholder}</div> : null}
               {props.multiple ? genMultiSelectionsSlot() : genSingleSelectionSlot()}
             </div>
@@ -221,9 +230,9 @@
         state.searchText = ''
       }
 
-      const textfieldValue = computed(() => {
-        if (props.multiple) return tfDisplaySelections.value.join(', ')
-        return tfDisplaySelections.value
+      const tfValue = computed(() => {
+        if (props.multiple) return selectionTexts.value.join(', ')
+        return selectionTexts.value
       })
 
       const genTextField = (typeof props.genTextFieldFn === 'function' && props.genTextFieldFn) || function (toggleContent) {
@@ -234,7 +243,7 @@
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                       'rules', 'type', 'disabled', 'readOnly', 'required']),
-                    value: textfieldValue.value
+                    value: tfValue.value
                   },
                   on: {
                     'click:clearIcon': () => clearSelection(),
@@ -252,14 +261,25 @@
       //gen menu
       function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
+
+        const defaultMenuProps = {
+          closeOnClick: true,
+          closeOnContentClick: false,
+          maxHeight: 300,
+          offsetY: true,
+          offsetOverflow: true,
+          top: false,
+        }
+
         return <g-menu {...{
           props: {
-            ...props.menuProps,
+            ...Object.assign(defaultMenuProps, props.menuProps),
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
+            eager: props.eager,
           },
           scopedSlots: {
-            activator: ({toggleContent}) => genTextField(toggleContent, showOptions)
+            activator: ({toggleContent}) => genTextField(toggleContent)
           },
           on: {
             input: e => showOptions.value = e,
@@ -286,7 +306,7 @@
         options,
         state,
         selectedValue,
-        tfDisplaySelections,
+        selectionTexts,
         showOptions,
         fieldItem
       }
@@ -298,33 +318,32 @@
 </script>
 <style scoped lang="scss">
   .g-select::v-deep {
-    .g-menu--activator {
-      span {
-        margin: 3px
-      }
-      .g-tf-append__inner .g-icon:last-child {
-        transition: transform 0.4s;
-      }
-
-      .g-tf-input {
-        display: flex;
-      }
-
-      .input {
-        display: flex;
-      }
-
-      input {
-        flex-shrink: 1;
-        flex-grow: 1;
-        flex-basis: 0;
-      }
-
+    span {
+      margin: 3px
     }
+
+    .g-tf-append__inner .g-icon.g-icon__arrow  {
+      transition: transform 0.4s;
+    }
+
+    .g-tf-input {
+      display: flex;
+    }
+
+    .input {
+      display: flex;
+    }
+
+    input {
+      flex-shrink: 1;
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+
   }
 
   .g-select__active::v-deep {
-    .g-tf-append__inner .g-icon:last-child {
+    .g-tf-append__inner .g-icon.g-icon__arrow {
       transition: transform 0.4s;
       transform: rotateZ(180deg);
     }

@@ -13,8 +13,8 @@
 
       return () =>
         <transition name={_transition.value}>
-          <div vShow={show.value} className="g-tab-item">
-            {context.slots.default()}
+          <div vShow={show.value} class="g-tab-item">
+            {context.slots.default && context.slots.default()}
           </div>
         </transition>
     }

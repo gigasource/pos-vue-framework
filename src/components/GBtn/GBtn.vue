@@ -78,11 +78,11 @@
           }
         };
 
-        return <button {...nodeData}>
+        return <div {...nodeData}>
           <span class="g-btn__content">
             {this.$slots.default}
           </span>
-        </button>
+        </div>
       };
 
       return genBtn();

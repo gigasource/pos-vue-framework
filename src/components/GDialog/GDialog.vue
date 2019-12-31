@@ -35,7 +35,7 @@
       fullscreen: Boolean,
 
       // Lazy/Eager
-      lazy: Boolean,
+      eager: Boolean,
 
       // Overlay styling
       overlayColor: String,
@@ -52,7 +52,7 @@
       const isBooted = reactive({
         value: false
       });
-      const renderContent = computed(() => isBooted.value || !props.lazy);
+      const renderContent = computed(() => isBooted.value || props.eager);
 
       onMounted(() => {
         attachToParent(context.refs.activator)
@@ -60,7 +60,7 @@
 
       const unwatch = watch(isActive, newVal => {
         if (newVal) {
-          if (props.lazy) {
+          if (!props.eager) {
             isBooted.value = true;
           }
         }
@@ -123,7 +123,7 @@
       }
     },
     render() {
-      return this.genDialog()
+      return this.genDialog.bind(this)()
     }
   }
 </script>

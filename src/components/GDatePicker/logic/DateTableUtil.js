@@ -168,7 +168,7 @@ export const _computedDatesInMonth = (props, state) => {
     while (dayBeforeFirstDayOfMonths--)
       week.push({ isBlank: true })
 
-    const currentDate =  dayjs().format('YYYY-MM-DD')
+    const currentDate =  dayjs().format('DD/MM/YYYY')
 
     // add days in month
     const daysInMonth = cptDaysInMonth.value

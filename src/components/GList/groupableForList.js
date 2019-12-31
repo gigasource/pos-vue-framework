@@ -1,38 +1,55 @@
 import _ from 'lodash'
-import {computed, ref, watch} from '@vue/composition-api';
-import {getInternalValue} from "../../utils/helpers";
+import {ref, watch, computed} from '@vue/composition-api';
+import {getInternalValue} from '../../utils/helpers';
+
+function createItemFn(prop) {
+  return typeof prop === 'function'
+    ? prop
+    : item => {
+      if (!_.isObject(item)) return item
+
+      if (_.isArray(prop)) {
+        const key = prop.find(Object.keys(item).includes)
+        return item[key]
+      } else {
+        return item[prop]
+      }
+    }
+}
 
 export function groupableForList(props, vModel) {
+  const itemTextFn = computed(() => createItemFn(props.itemText))
+  const itemValueFn = computed(() => createItemFn(props.itemValue))
+
   //props.mandatory: requires at least 1 to be active at all times, unless value is null/undefined (at init)
   //props.multiple: props.multiple items can be active at a time
   //allowDuplicate: choose one item props.multiple times
   const uniqueItems = ref([])
-
+  const isObjectList = ref(props.items && props.items.some(item => _.isObject(item) === true))
   watch(() => props.items, () => {
-    const isObjectList = props.items.some(item => _.isObject(item) === true)
-    const itemsHaveText = props.items.filter(item => item[props.itemText])
-
     if (props.items) {
-      if (isObjectList.value) {
-        if (props.returnObject) return uniqueItems.value = _.uniqWith(itemsHaveText.value, _.isEqual)
-        else if (props.itemValue) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
-        else if (props.itemText) return uniqueItems.value = _.uniqBy(itemsHaveText.value, props.itemText)
-      } else return uniqueItems.value = _.uniq(props.items)
-    } else return uniqueItems.value = []
+      if (isObjectList.value) return uniqueItems.value = _.uniqWith(props.items, _.isEqual)
+      return uniqueItems.value = _.uniq(props.items)
+    }
+    return uniqueItems.value = []
   })
 
   const toggleItem = (item) => {
+    const isObject = typeof item === 'object'
     if (props.multiple) {
-      if (props.returnObject) updateMultiple(item);
-      else {
-        if (props.itemValue) updateMultiple(item[props.itemValue])
-        else updateMultiple(item)
+      if (props.returnObject || !isObjectList.value) {
+        updateMultiple(item)
+      } else if (props.itemValue) {
+        isObject ? updateMultiple(itemValueFn.value(item)) : updateMultiple(item)
+      } else if (props.itemText) {
+        isObject ? updateMultiple(itemTextFn.value(item)) : updateMultiple(item)
       }
     } else {
-      if (props.returnObject) updateSingle(item);
-      else {
-        if (props.itemValue) updateSingle(item[props.itemValue])
-        else updateSingle(item)
+      if (props.returnObject || !isObjectList.value) updateSingle(item);
+      else if (props.itemValue) {
+        isObject ? updateSingle(itemValueFn.value(item)) : updateSingle(item)
+      } else if (props.itemText) {
+        isObject ? updateSingle(itemTextFn.value(item)) : updateSingle(item)
       }
     }
   };
@@ -54,14 +71,15 @@ export function groupableForList(props, vModel) {
   };
 
   const isActiveItem = (item) => {
-    if (props.multiple) {
-      if (props.returnObject) return vModel.value.some(element => _.isEqual(element, item))
-      else return !!props.itemValue
-          ? vModel.value.includes(item[props.itemValue])
-          : vModel.value.includes(item)
-    }
-    if (props.returnObject) return _.isEqual(vModel.value, item)
-    else return !!props.itemValue ? item[props.itemValue] === vModel.value : item === vModel.value
+    const isObjectList = props.items.some(item => typeof item === 'object')
+    if (props.multiple) return isObjectList ? vModel.value.some(element => _.isEqual(element, item))
+      || vModel.value.includes(itemValueFn.value(item))
+      || vModel.value.includes(itemTextFn.value(item))
+      : vModel.value.some(el => el === item)
+
+    return isObjectList ? _.isEqual(vModel.value, item)
+      || (!!props.itemValue && vModel.value === itemValueFn.value(item))
+      || (!!props.itemText && vModel.value === itemTextFn.value(item)) : vModel.value === item
   };
 
   return {
@@ -72,27 +90,30 @@ export function groupableForList(props, vModel) {
 }
 
 export function makeListSelectable(props, context) {
+  const itemValueFn = computed(() => createItemFn(props.itemValue))
 
+  const isObjectList = ref(props.items && props.items.some(_.isObject))
   // 1 -> {a: 1, b: 2}
   //props.multiple --> props.returnObject ? props.value array --> object of items have value array
   const convertValueToInternalValue = function (value) {
     //primitive array
-    if (!props.itemValue || !value) return value;
+    if (!isObjectList.value || !value) return value;
     //for single select
     if (!Array.isArray(props.value)) {
       //{a:1, b:2} in value --> {a:1, b:2} inlist
       if (props.returnObject) return props.items.find(i => _.isEqual(i, value)) || value
       // 1  value, props.itemValue: a -->  {a:1} in list --> 1
       else if (props.itemValue) return value;
-
     }
     //props.multiple select
     if (props.returnObject) {
       let itemInList = props.items.filter(i => value.some(el => _.isEqual(el, i)))
       return itemInList.length ? itemInList : value
     } else if (props.itemValue) {
-      let itemsHaveValueInlist = props.items.filter(i => value.some(el => el === i[props.itemValue]))
-      return itemsHaveValueInlist.length ? itemsHaveValueInlist.map(item => item[props.itemValue]) : value
+      let itemsHaveValueInlist = props.items.filter(i => value.some(el => el === itemValueFn.value(i)))
+      return itemsHaveValueInlist.length ? itemsHaveValueInlist.map(item => itemValueFn.value(item)) : value
+    } else {
+      return value
     }
   }
 
@@ -135,7 +156,6 @@ export function makeListSelectable(props, context) {
   })
 
   const {uniqueItems, toggleItem, isActiveItem} = groupableForList(props, rawInternalValue);
-
   return {uniqueItems, toggleItem, isActiveItem, internalValue: rawInternalValue};
 }
 

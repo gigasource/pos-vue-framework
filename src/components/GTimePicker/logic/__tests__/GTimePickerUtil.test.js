@@ -2,21 +2,20 @@
 import { createLocalVue } from '@vue/test-utils'
 import plugin, { computed } from '@vue/composition-api'
 import { getFormattedHours, getAdjustTimeMethods } from '../GTimePickerUtil';
-import { HourConvention } from '../GTimePickerUtil';
 
 describe('/GTimePickerUtil', () => {
   createLocalVue().use(plugin)
 
   describe('getFormattedHours', () => {
     it('Should return 12 instead of 0 in 12 hour convention', () => {
-      expect(getFormattedHours(0, { hourConvention: HourConvention._12HRS })).toBe(12)
+      expect(getFormattedHours(0, { use24Hours: false })).toBe(12)
 
       for (let i = 1; i < 12; ++i) {
-        expect(getFormattedHours(i, { hourConvention: HourConvention._12HRS })).toBe(i)
+        expect(getFormattedHours(i, { use24Hours: false  })).toBe(i)
       }
 
       for (let i = 0; i < 24; ++i) {
-        expect(getFormattedHours(i, { hourConvention: HourConvention._24HRS })).toBe(i)
+        expect(getFormattedHours(i, { use24Hours: true })).toBe(i)
       }
     })
   })
@@ -25,7 +24,7 @@ describe('/GTimePickerUtil', () => {
   describe('adjust time methods', () => {
     const state = { selectedTime: {} }
     const mockSetHours = jest.fn(v => {
-      debugger
+
     })
     const mockSetMinutes = jest.fn(v => {
     })

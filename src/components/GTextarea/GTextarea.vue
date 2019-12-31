@@ -51,7 +51,7 @@
         </div>
       </div>
     </fieldset>
-    <div v-if="appendOuterIcon" class="g-tf-append__outer" @click="onClickAppendOuter" ref="appendOuter">
+    <div v-if="appendOuterIcon" class="g-tf-append__outer" @click="onClickAppendOuter" ref="append-outer">
       <slot name="append-outer">
         <g-icon>{{appendOuterIcon}}</g-icon>
       </slot>

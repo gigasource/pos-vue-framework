@@ -1,12 +1,13 @@
 <script>
-  import { computed, onBeforeUnmount, onMounted, watch } from '@vue/composition-api';
+  import {computed, onBeforeUnmount, onMounted, ref, watch} from '@vue/composition-api';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
-  import { convertToUnit } from '../../utils/helpers';
+  import {convertToUnit} from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
   import stackable from '../../mixins/stackable';
+  import dependent from '../../mixins/dependent';
 
   export default {
     name: 'GMenuContent',
@@ -19,7 +20,6 @@
       // basic
       ...{
         value: Boolean,
-        lazy: Boolean
       },
       // positioning
       ...{
@@ -92,15 +92,27 @@
           type: [Number, String],
           default: 0
         }
-      }
+      },
+      // dependent mixin
+      ...{
+        closeDependents: {
+          type: Boolean,
+          default: true,
+        },
+        isDependent: {
+          type: Boolean,
+          default: true,
+        },
+      },
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
-      const { attachToRoot, detach } = detachable(props, context);
+      const {attachToRoot, detach} = detachable(props, context);
       const {
         updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow
       } = menuable(props, context);
-      const { getMaxZIndex } = stackable(props, context)
+      const {getMaxZIndex} = stackable(props, context)
+
 
       function getResizeObserver() {
         let activatorResizeObserver = undefined
@@ -135,16 +147,24 @@
 
       // update dimensions when toggled on
       watch(() => props.value, newVal => {
-        if (newVal) updateDimensions(props.activator.value)
-      })
+        if (newVal) {
+          context.root.$nextTick(() => {
+            updateDimensions(props.activator.value)
+          })
+        }
+      }, {lazy: true})
 
-      onMounted(() => {
-        attachToRoot()
+      let rootEl
+      const getOpenDependentElements = ref(null)
+
+      onMounted(function () {
+        rootEl = attachToRoot()
+        getOpenDependentElements.value = dependent(this)
       })
 
       onBeforeUnmount(() => {
         resizeObserver.destroy();
-        detach(context.refs.content)
+        if (rootEl) rootEl.removeChild(context.refs.content) // menu content is mounted to root element
       })
 
       const calculatedLeft = computed(() => {
@@ -179,12 +199,12 @@
       }))
 
       const contentListeners = {
-        ...(props.closeOnContentClick) && {
+        ...props.closeOnContentClick && {
           click() {
             if (isActive.value) isActive.value = false
           }
         },
-        ...(props.openOnHover) && {
+        ...props.openOnHover && {
           mouseleave() {
             if (isActive.value) isActive.value = false
           }
@@ -204,7 +224,9 @@
           },
           arg: {
             closeConditional: closeConditional,
-            include: () => [context.parent.$el]
+            include: () => {
+              return [context.parent.$el, ...getOpenDependentElements.value()];
+            }
           },
         }
         //equates to v-show="value" in template
@@ -222,12 +244,21 @@
         return directives;
       }
 
-      return () => <div style={contentStyles.value}
-                        class="g-menu--content"
-                        ref="content"
-                        {...{ directives: genDirectives(), on: contentListeners }}>
-        {context.slots.default()}
-      </div>
+      const genMenuContent = () => <div style={contentStyles.value}
+                                        class="g-menu--content"
+                                        ref="content"
+                                        {...{directives: genDirectives(), on: contentListeners}}>
+        {context.slots.default && context.slots.default()}
+      </div>;
+
+      return {
+        isActive,
+        getOpenDependentElements,
+        genMenuContent
+      }
+    },
+    render() {
+      return this.genMenuContent()
     }
   }
 </script>

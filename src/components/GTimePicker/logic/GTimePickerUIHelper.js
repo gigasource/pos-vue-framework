@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { computed } from '@vue/composition-api'
-import { HourConvention } from './GTimePickerUtil'
 import { range0_11, range12_23, range0_59 } from './GTimePickerUtil';
+import { ActiveTimePicker } from './GTimePickerUtil';
 
 // ---- Clicked target
 /**
@@ -115,15 +115,14 @@ export function _calcNumberPositionStyle(length, ratio = 1) {
 
 // hour number position
 export const range0_23PositionStyle = [..._calcNumberPositionStyle(range0_11.length), ..._calcNumberPositionStyle(range12_23.length, 0.6)]
-export const range0_23PositionStyle1 = [..._calcNumberPositionStyle(range0_11.length, 0.6), ..._calcNumberPositionStyle(range12_23.length, 1)]
 // minute & second position
 export const range0_59PositionStyle = _calcNumberPositionStyle(range0_59.length)
 
 // ---- Clock's hand
 const _computedHandHeightAndTop = (props, state) => {
   return computed(() => {
-    if (   state.activeTimePicker.hour
-        && props.hourConvention === HourConvention._24HRS
+    if (   state.activeTimePicker === ActiveTimePicker.hour
+        && props.use24Hours
         && state.selectedTime.hours >= 12)
     {
       // get short hand
@@ -143,18 +142,19 @@ const _computedHandHeightAndTop = (props, state) => {
 const _computedHandTransform = (state) => {
   return computed(() => {
     let degree = 0
-    if (state.activeTimePicker.hour) {
+    if (state.activeTimePicker === ActiveTimePicker.hour) {
       // 12 hours
       // 30 = 360 / 12
-      degree = range0_11.indexOf(state.selectedTime.hours) * 30
-      if (degree < 0)
-        degree = range12_23.indexOf(state.selectedTime.hours) * 30
+      degree = _.findIndex(range0_11, hours => hours === Number(state.selectedTime.hours)) * 30
+      if (degree < 0) {
+        degree = _.findIndex(range12_23, hours => hours === Number(state.selectedTime.hours)) * 30
+      }
     }
-    else if (state.activeTimePicker.minute) {
-      degree = range0_59.indexOf(state.selectedTime.minutes) * 6
+    else if (state.activeTimePicker === ActiveTimePicker.minute) {
+      degree = _.findIndex(range0_59, minutes => minutes === Number(state.selectedTime.minutes)) * 6
     }// 360 / 60
-    else if (state.activeTimePicker.second) {
-      degree = range0_59.indexOf(state.selectedTime.seconds) * 6
+    else if (state.activeTimePicker === ActiveTimePicker.second) {
+      degree = _.findIndex(range0_59, seconds => seconds === Number(state.selectedTime.seconds)) * 6
     }
 
     return { 'transform': `rotate(${degree}deg)` }

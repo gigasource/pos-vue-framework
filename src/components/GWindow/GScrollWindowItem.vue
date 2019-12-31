@@ -1,6 +1,5 @@
 <script>
-  import { createElement as h, computed, onMounted, ref, reactive, inject, onBeforeUnmount } from '@vue/composition-api';
-  import { convertToUnit } from '../../utils/helpers';
+  import { inject, onBeforeUnmount, onMounted, reactive } from '@vue/composition-api';
   import Intersect from '../../directives/intersect/intersect';
 
   export default {
@@ -8,24 +7,10 @@
     directives: {
       Intersect
     },
-    props: {
-      disabled: Boolean,
-      reverseTransition: {
-        type: [Boolean, String],
-        default: undefined,
-      },
-      transition: {
-        type: [Boolean, String],
-        default: undefined,
-      }
-    },
     setup(props, context) {
       const register = inject('register');
       const unregister = inject('unregister');
-      const internalValue = inject('internalValue');
-      const windowData = inject('windowData');
-      const internalReverse = inject('internalReverse');
-      const windowComputedTransition = inject('windowComputedTransition');
+
       onMounted(function () {
         register(this);
       });
@@ -35,19 +20,12 @@
       });
 
       const data = reactive({
-        isActive: false,
-        inTransition: false,
         value: null
       });
 
-      const computedTransition = computed(() => {
-          if (!internalReverse.value) {
-            return props.transition ? props.transition || '' : windowComputedTransition.value
-          }
-
-          return props.reverseTransition ? props.reverseTransition || '' : windowComputedTransition.value
-        }
-      );
+      const intersectCb = () => {
+        context.emit('input', data.value)
+      }
 
       function genWindowItem() {
         const nodeData = {
@@ -56,36 +34,24 @@
             {
               name: 'intersect',
               arg: {
-                root: context.parent.$el,
-                threshold: 0.99
+                root: undefined,
+                threshold: 0.999
               },
-              value: () => {
-                internalValue.value = data.value
-              }
+              value: intersectCb
             }
           ]
         };
-
         return <div {...nodeData}> {this.$slots.default}</div>
-      }
-
-      function genScrollWindowItem() {
-        return h('transition', {
-          props: {
-            name: this.computedTransition,
-          }
-        }, [this.genWindowItem.bind(this)()])
       }
 
       return {
         data,
-        computedTransition,
         genWindowItem,
-        genScrollWindowItem
+        intersectCb
       }
     },
     render() {
-      return this.genScrollWindowItem.bind(this)()
+      return this.genWindowItem.bind(this)()
     }
   }
 </script>
@@ -105,6 +71,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 100px;
   }
 </style>
