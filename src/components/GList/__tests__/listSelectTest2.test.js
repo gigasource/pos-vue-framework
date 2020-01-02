@@ -27,23 +27,6 @@ const parentVmFactory = attrs =>
             default: () => item => item.value
           },
           isPrimitiveArray: Boolean,
-          itemType: {
-            default() {
-              if (this.items.length > 0) {
-                if (typeof this.items[0] === 'object' && this.returnObject) {
-                  return 'objectArrayReturnObject';
-                }
-                if (typeof this.items[0] === 'object') {
-                  return 'objectArrayReturnValue';
-                }
-                return 'primitiveArray';
-              } else {
-                if (this.isPrimitiveArray) return 'primitiveArray';
-                if (this.returnObject) return 'objectArrayReturnObject';
-                return 'objectArrayReturnValue';
-              }
-            }
-          },
           value: {
             type: null,
             default() {
@@ -75,7 +58,6 @@ const parentVmFactory = attrs =>
           const formattedSelection = getSelection2(props, context,  normalisedValue, listType, getText, getValue)
           const selectionTexts = getSelectionText(props, formattedSelection)
           const selectionString = computed(() => props.multiple ? selectionTexts.value.join(', ') : selectionTexts.value.toString())
-          const searchText = ref('');
           return {
             getText,
             getValue,

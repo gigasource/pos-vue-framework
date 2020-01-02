@@ -1,5 +1,5 @@
 <script>
-  import { getSelection2, getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
+  import { getSelection2, getSelection3, getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
   import { computed, reactive, ref } from '@vue/composition-api'
   import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
   import GMenu from '../GMenu/GMenu';
@@ -101,7 +101,7 @@
     setup: function (props, context) {
       const { getText, getValue, listType, selectableList, toggleItem } = makeListSelectable2(props, context)
       const selectedValue = ref(props.value)
-      const formattedSelections = getSelection2(props, context, selectedValue, listType, getText, getValue)
+      const formattedSelections = props.component === 'combobox' ? getSelection3(props, selectedValue, listType, getText, getValue ) : getSelection2(props, context, selectedValue, listType, getText, getValue)
       const selectionTexts = getSelectionText(props, formattedSelections)
 
       const tfValue = computed(() => {
@@ -143,7 +143,7 @@
           setSearch(props, context, selectionTexts, state)
           showOptions.value = props.multiple
         }
-        return [<GList
+        return <GList
           {...{
             props: {
               inCombobox: props.component === 'combobox',
@@ -172,10 +172,9 @@
           }
           }
           ref="list"
-        />]
-
-
+        />
       }
+
       const searchFocused = ref(false)
       const genSearchField = () => {
         return <GTextField placeholder="Search"
@@ -184,7 +183,7 @@
                            clearable
                            ref="searchText"
                            autofocus={searchFocused.value}
-                           vOn:keydown={(e) => onInputKeyDown(e)}
+                           vOn:keydown={onInputKeyDown}
                            style="margin-bottom: 0; background-color: transparent"
         />
       }
@@ -254,19 +253,19 @@
                 props: {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly','clearIconColor']),
+                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
                   value: tfValue.value,
                   prependValue: props.component === 'select' ? '' : validateText.value
                 },
                 on: {
-                  'click:clearIcon': () => clearSelection(),
+                  'click:clearIcon': clearSelection,
                   click: [toggleContent, inputClick],
-                  focus: () => {onInputClick()},
-                  blur: () => onInputBlur(),
+                  focus: onInputClick,
+                  blur: onInputBlur,
                   delete: onInputDelete,
                   enter: inputAddSelection,
-                  keydown: (e) => onInputKeyDown(e),
-                  input: (e) => onInputChange(e),
+                  keydown: onInputKeyDown,
+                  input: onInputChange,
                 },
                 scopedSlots: textFieldScopedSlots
               }}
@@ -299,7 +298,7 @@
             default: () => genMenuContent(showOptions)
           },
           on: {
-            input: (e) => isFocused.value ? showOptions.value = true : showOptions.value = e,
+            input: (e) => showOptions.value = isFocused.value ? true : e,
           },
 
         }} ref='menu'
@@ -308,8 +307,7 @@
       }
 
       function genComponent() {
-        let activeClass = props.component + '__active'
-        return <div class={[props.component, { [activeClass]: showOptions.value }]}>
+        return <div class={[props.component, { [`${props.component}__active`]: showOptions.value }]}>
           {genMenu(showOptions)}
         </div>
       }
@@ -323,7 +321,7 @@
         listType,
         showOptions,
         isFocused,
-				validateText
+        validateText
 
       }
     },

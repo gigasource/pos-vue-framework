@@ -73,9 +73,8 @@
 </template>
 
 <script>
-  import {ref, computed} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
-  import VueTheMask from 'vue-the-mask'
+  import { computed, ref } from '@vue/composition-api';
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -129,6 +128,7 @@
       },
 
       // basic props
+      // todo: doc
       prependValue: {
         type: String,
         default: '',

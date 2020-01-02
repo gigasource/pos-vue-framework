@@ -191,6 +191,8 @@ export function makeListSelectable2(props, context) {
 function isTruthy(value){
   return value === 0 || !!value
 }
+
+//get select for select and autocomplete
 export function getSelection2(props, context, selectedValue, listType, getText, getValue) {
   return computed(() => {
     if (!props.multiple) {
@@ -209,6 +211,7 @@ export function getSelection2(props, context, selectedValue, listType, getText, 
   })
 }
 
+//get select for combobox
 export function getSelection3(props, selectedValue, listType, getText, getValue) {
   return computed(() => {
     if (!props.multiple) {
