@@ -163,6 +163,7 @@ class Node {
         this.videoSource.src = item.src
         this.video.style.display = 'block'
         this.image.style.display = 'none'
+        this.video.load()
     }
   }
 
@@ -198,6 +199,8 @@ export default function GSlideshowFactory (props, context, NodeClass = Node, upd
   );
   const maxCount = computed(() => computedModel.value.length - 1);
 
+  let nodeFlag = false
+
   watch(count, newVal => {
     currentItem.value = computedModel.value[newVal];
   }, {sync: true});
@@ -215,13 +218,15 @@ export default function GSlideshowFactory (props, context, NodeClass = Node, upd
     context.refs.slideContainer && context.refs.slideContainer.appendChild(slideNodes[0].container)
     context.refs.slideContainer && context.refs.slideContainer.appendChild(slideNodes[1].container)
     count.value = count.value >= maxCount.value ? 0 : count.value + 1
-    updateStatus && updateStatus();
+    updateStatus && updateStatus(slideNodes.map(i => i.item.src));
   })
+
+  watch(count, () => nodeFlag = !nodeFlag)
 
   watch(currentItem, async (_currentItem, _lastItem) => {
     if (_lastItem && _currentItem) {
-      const currentNode = slideNodes[(count.value + 1) % 2];
-      const nextNode = slideNodes[count.value % 2];
+      const currentNode = slideNodes[Number(nodeFlag)];
+      const nextNode = slideNodes[Number(!nodeFlag)];
 
       let duration = await currentNode.getDuration()
       const transitionDuration = getTransitionDuration(_currentItem.transition, props);
@@ -235,7 +240,7 @@ export default function GSlideshowFactory (props, context, NodeClass = Node, upd
           currentNode.display = false;
           currentNode.setMedia(nextItem.value);
           count.value = count.value >= maxCount.value ? 0 : count.value + 1;
-          updateStatus && updateStatus();
+          updateStatus && updateStatus(slideNodes.map(i => i.item.src));
         };
       }, duration - transitionDuration);
     }

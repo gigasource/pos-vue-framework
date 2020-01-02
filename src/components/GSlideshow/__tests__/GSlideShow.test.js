@@ -70,8 +70,8 @@ const parentVmFactory = attrs => {
           //play video here
         }
 
-        setSrc(src) {
-          this.src = src.src;
+        setMedia(item) {
+          this.item = item;
           /*context.emit("update:status", _.cloneDeep({
             count: count.value,
             //currentItem: currentItem.value,
@@ -94,29 +94,21 @@ const parentVmFactory = attrs => {
         }
       }
 
-      async function updateStatus() {
-        await context.root.$nextTick() && await context.root.$nextTick();
-        context.emit("update:status", _.cloneDeep({
-          count: count.value,
-          currentItem: currentItem.value,
-          nextItem: nextItem.value,
-        }));
-      }
-
       let cb;
 
       const {
         count,
         currentItem,
         nextItem
-      } = GSlideshowFactory(props, context, Node, () => cb && cb())
+      } = GSlideshowFactory(props, context, Node, (_lastItem) => cb && cb(_lastItem))
 
-      cb = async function () {
+      cb = async function (_lastItem) {
         await context.root.$nextTick() && await context.root.$nextTick();
         context.emit("update:status", _.cloneDeep({
           count: count.value,
-          currentItem: currentItem.value,
-          nextItem: nextItem.value,
+          current: _lastItem
+          //currentItem: currentItem.value,
+          //nextItem: nextItem.value,
         }));
       }
     },
@@ -201,12 +193,14 @@ describe("GSlideShow", function () {
         {src: "src1", type: "image", transition: "None", duration: 50},
         {src: "src2", type: "image", transition: "None", duration: 50},
         {src: "src3", type: "image", transition: "None", duration: 50},
+        {src: "src4", type: "image", transition: "None", duration: 50},
+        {src: "src5", type: "image", transition: "None", duration: 50},
       ]
     });
 
-    setTimeout(() => {
-      vm.value.push({src: "src4", type: "image", transition: "None", duration: 50});
-    }, 150)
+    // setTimeout(() => {
+    //   vm.value.push({src: "src4", type: "image", transition: "None", duration: 50});
+    // }, 150)
 
     setTimeout(() => {
       expect(protocols).toMatchSnapshot();
