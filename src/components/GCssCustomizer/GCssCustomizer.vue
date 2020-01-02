@@ -17,10 +17,12 @@
   import GCardTitle from '../GCard/GCardTitle';
   import {GCardText, GCardActions} from '../GCard/GCardFunctionalComponent';
   import GCssCustomizerStylePreview from './GCssCustomizerStylePreview';
+  import GCssCustomizerDesignPanel from './GCssCustomizerDesignPanel';
 
   export default {
     name: 'GCssCustomizer',
     components: {
+      GCssCustomizerDesignPanel,
       GCardText,
       GCardActions,
       GCardTitle,
@@ -109,11 +111,12 @@
 
       const buildSelectorList = (treeNode, prefix) => {
         treeNode.selectorList = []
+        const parentClassList = getPathData(getParentPath(prefix), 'classList')
         const closestNotEmptyClassList = getClosestAncestorClassList(prefix)
         _.forEach(treeNode.classList, cssClass => {
           treeNode.selectorList.push(`.${cssClass}`)
         })
-        _.forEach(closestNotEmptyClassList, parentClass => {
+        _.forEach(parentClassList, parentClass => {
           if (treeNode.tag) {
             treeNode.selectorList.push(`.${parentClass} ${treeNode.tag}`)
             treeNode.selectorList.push(`.${parentClass}>${treeNode.tag}`)
@@ -123,6 +126,17 @@
             treeNode.selectorList.push(`.${parentClass}>.${childClass}`)
           })
         })
+
+        if (!parentClassList || parentClassList.length === 0) {
+          _.forEach(closestNotEmptyClassList, parentClass => {
+            if (treeNode.tag) {
+              treeNode.selectorList.push(`.${parentClass} ${treeNode.tag}`)
+            }
+            _.forEach(treeNode.classList, childClass => {
+              treeNode.selectorList.push(`.${parentClass} .${childClass}`)
+            })
+          })
+        }
 
         if (treeNode.children) {
           for (let i = 0; i < treeNode.children.length; i++) {
@@ -136,7 +150,7 @@
           const matchedElementPathList = _.map(el.parentNode.querySelectorAll(selector), 'treePath')
           for (let path of matchedElementPathList) {
             const selectorList = getSelectorList(path)
-            if (!selectorList.includes(selector)) selectorList.push(selector)
+            if (selectorList && !selectorList.includes(selector)) selectorList.push(selector)
           }
         }
       }
@@ -145,7 +159,6 @@
         const previewComponent = context.refs.previewComponent
         treeData.value = parseElement(previewComponent.$el, '')
         buildSelectorList(treeData.value, '')
-        addCustomSelector(previewComponent.$el)
 
         // return to root if activePath is not found on the new tree
         if (_.get(treeData.value, cssCustomizerTree.activePath) === undefined) cssCustomizerTree.activePath = ''
@@ -155,7 +168,8 @@
         const previewComponent = context.refs.previewComponent
         rebuildTreeData()
         addTreePathToDom(treeData.value, '')
-        setActiveTreeTargetPosition(previewComponent.$el)
+        addCustomSelector(previewComponent.$el)
+        setActiveTreeTargetPosition()
 
         // modify _update function of preview component to rebuild tree when preview component updated
         const _update = previewComponent._update;
@@ -168,6 +182,11 @@
               rebuildTreeData()
               setTimeout(() => {
                 addTreePathToDom(treeData.value, '')
+                addCustomSelector(previewComponent.$el)
+                if (selectorTargetFlag.value) {
+                  cancelSelectorTargetAnimation()
+                  animateSelectorTarget(previewComponent.$el.parentNode)
+                }
                 ignoreRun = false;
               }, 100)
             })
@@ -178,6 +197,7 @@
       // Target hover functionality
       const targetFlag = ref(false)
 
+      // Set tree target div position and dimension to target or to 0 if target is not passed
       const setActiveTreeTargetPosition = target => {
         const activeTreeTarget = context.refs.activeTreeTarget
         const rect = target ? target.getBoundingClientRect() : {}
@@ -521,17 +541,20 @@
           <div class="g-css-customizer-design-title">
             Design
           </div>
-          <div class="g-css-customizer-design-content">
-            {propertyList.map(property => {
-              return <g-text-field dense label={property} value={inputObj.value[property]}
-                                   vOn:input={e => onInput(e, property)}/>
-            })}
-            <g-btn outlined vOn:click={applyChanges}>Apply</g-btn>
-            <g-btn outlined vOn:click={resetChanges}>Reset</g-btn>
-          </div>
+          <g-css-customizer-design-panel>
+
+          </g-css-customizer-design-panel>
         </div>
       }
 
+      // <div className="g-css-customizer-design-content">
+      //   {propertyList.map(property => {
+      //     return <g-text-field dense label={property} value={inputObj.value[property]}
+      //                          vOn:input={e => onInput(e, property)}/>
+      //   })}
+      //   <g-btn outlined vOn:click={applyChanges}>Apply</g-btn>
+      //   <g-btn outlined vOn:click={resetChanges}>Reset</g-btn>
+      // </div>
       const genCssCustomizer = () => {
         return <g-grid-layout class="g-css-customizer-container" layout={GCssCustomizerLayout}>
           {genTreeView()}
