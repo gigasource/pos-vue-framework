@@ -30,7 +30,7 @@
 <script>
   import GMenu from '../../components/GMenu/GMenu'
   import GTextField from '../GInput/GTextField'
-  const GColorPicker = import('./GColorPicker')
+  const GColorPicker = () => import('./GColorPicker')
 
   GMenu.components['GTextField'] = GTextField
 
