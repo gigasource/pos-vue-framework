@@ -1,7 +1,7 @@
 export function getLabel(context, props, internalValue, isValidInput, isFocused,
                          [labelActiveClass] = 'g-tf-label__active') {
   const tfType = computed(() => {
-    if (context.slots['prepend-outer'] || context.slots['append-outer'] || props.prependIcon || props.appendIcon || props.outlined) return 'full'
+    if (context.slots['prepend-outer']  || props.prependIcon || props.outlined) return 'full'
     return 'lite'
   })
   //Activate label
@@ -27,16 +27,18 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
     value: 0
   })
   const prependRef = ref(null)
- // const prependWidth = ref(0)
-  const prependWidth = computed(() => {
-    let i = props.filled
-    return prependRef.value && prependRef.value.offsetWidth
-  })
-  // watch([() => prependRef.value, () => props.filled] ,() => {
-  //   context.root.$nextTick(() => {
-  //     prependWidth.value = prependRef.value && prependRef.value.offsetWidth
-  //   })
+ const prependWidth = ref(0)
+  // const prependWidth = computed(() => {
+  //   let i = props.filled
+  //   console.log(prependRef.value && prependRef.value.offsetWidth)
+  //   return prependRef.value && prependRef.value.offsetWidth
   // })
+  watch([() => prependRef.value, () => props.filled] ,() => {
+    context.root.$nextTick(() => {
+      console.log(prependRef.value && prependRef.value.offsetWidth)
+      prependWidth.value = prependRef.value && prependRef.value.offsetWidth
+    })
+  })
 
 
   watch(() => props.prefix, () => {
@@ -63,6 +65,7 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
       }
     } else {
       if(!isLabelActive.value && prependWidth.value){
+        console.log(prependWidth.value)
         return {'padding-left': `${prependWidth.value}px`}
       }
       if (isLabelActive.value && prependWidth.value) {
