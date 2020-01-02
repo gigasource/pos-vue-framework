@@ -70,15 +70,71 @@
 			</div>
 		</slot>
 	</div>
-	<!--	<div v-else class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp"-->
-	<!--			 @mousedown="onMouseDown">-->
-	<div v-else style="margin: 16px 0 24px 0;" :class="[ tfWrapperClasses, tfErrWrapperClass, tfErrClasses, {'g-tf': true},]" @click="onClick" @mouseup="onMouseUp"
+	<div v-else-if="appendIcon || $slots['append-outer']" class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]"  @click="onClick" @mouseup="onMouseUp"
 			 @mousedown="onMouseDown">
+		<div class="g-tf" :class="tfErrClasses">
+			<div v-if="$slots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner" ref="prependRef">
+				<slot name="prepend-inner" :iconColor="iconColor">
+					<g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
+				</slot>
+			</div>
+			{{prefix}}
+			<input autocomplete="off"
+						 :autofocus="autofocus"
+						 class="g-tf-input"
+						 :style="inputErrStyles"
+						 :type="type"
+						 :label="label"
+						 v-model="internalValue"
+						 :placeholder="placeholder"
+						 :readonly="readOnly"
+						 ref="input"
+						 @change="onChange"
+						 @focus="onFocus"
+						 @blur="onBlur"
+						 @keydown="onKeyDown"
+						 v-bind="attrs"
+			>
+			<slot name="label">
+				<label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
+					{{label}}
+					<span v-if="required" style="color: red">*</span>
+				</label>
+			</slot>
+
+			<div v-if="$slots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner" @click="onClickAppendInner">
+				<slot name="clearable-slot" :iconColor="iconColor">
+					<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
+				</slot>
+				<slot name="append-inner" :iconColor="iconColor">
+					<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
+				</slot>
+			</div>
+
+			<slot name="input-message" :isValid="isValidInput" :errorMess="errorMessages">
+				<span class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</span>
+				<span class="g-tf-hint" v-else-if="isValidInput && hint || $slots['hint']" :class="hintClasses">
+					<slot name="hint">{{hint}}</slot>
+				</span>
+				<span v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
+					{{internalValue.toString().length}} / {{counter}}
+				</span>
+			</slot>
+		</div>
+		<slot name="append-outer">
+			<div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
+				<g-icon :color=iconColor>{{appendIcon}}</g-icon>
+			</div>
+		</slot>
+	</div>
+	<div v-else style="margin: 16px 0 24px 0" :class="[tfWrapperClasses, tfErrClasses, {'g-tf': true},]">
 		<div v-if="$slots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner" ref="prependRef">
-			<slot name="prepend-inner">
+			<slot name="prepend-inner" :iconColor="iconColor">
 				<g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
 			</slot>
 		</div>
+		<span v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}	</span>
+
 		<input autocomplete="off"
 					 :autofocus="autofocus"
 					 class="g-tf-input"
@@ -120,7 +176,7 @@
 			</span>
 		</slot>
 	</div>
-	<!--	</div>-->
+
 
 
 </template>
@@ -129,10 +185,11 @@
   import { computed, ref } from '@vue/composition-api';
   import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
+  import { Fragment } from 'vue-fragment';
 
   export default {
     name: 'GTextField',
-    components: { GIcon },
+    components: { GIcon, Fragment  },
     props: {
       ...{//display props
         label: String,

@@ -1,7 +1,7 @@
 export function getLabel(context, props, internalValue, isValidInput, isFocused,
                          [labelActiveClass] = 'g-tf-label__active') {
   const tfType = computed(() => {
-    if (context.slots['prepend-outer']  || props.prependIcon || props.outlined) return 'full'
+    if (context.slots['prepend-outer'] || props.prependIcon || props.outlined) return 'full'
     return 'lite'
   })
   //Activate label
@@ -27,15 +27,14 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
     value: 0
   })
   const prependRef = ref(null)
- const prependWidth = ref(0)
+  const prependWidth = ref(0)
   // const prependWidth = computed(() => {
   //   let i = props.filled
   //   console.log(prependRef.value && prependRef.value.offsetWidth)
   //   return prependRef.value && prependRef.value.offsetWidth
   // })
-  watch([() => prependRef.value, () => props.filled] ,() => {
+  watch([() => prependRef.value, () => props.filled], () => {
     context.root.$nextTick(() => {
-      console.log(prependRef.value && prependRef.value.offsetWidth)
       prependWidth.value = prependRef.value && prependRef.value.offsetWidth
     })
   })
@@ -64,16 +63,18 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
         }
       }
     } else {
-      if(!isLabelActive.value && prependWidth.value){
-        console.log(prependWidth.value)
-        return {'padding-left': `${prependWidth.value}px`}
+      if (!isLabelActive.value && (prependWidth.value || prefixWidth.value)) {
+        return { 'padding-left': `${prependWidth.value + prefixWidth.value}px` }
       }
-      if (isLabelActive.value && prependWidth.value) {
-        if (props.filled) {
-          //if(props.shaped) return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value 6}px)  scale(0.75)` }
-          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
-        } else {
-          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
+      if (isLabelActive.value && (prependWidth.value || prefixWidth.value)) {
+        if (!prefixWidth.value) return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
+        else {
+          if (props.filled) {
+            if (props.rounded) return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value - 4}px)  scale(0.75)` }
+            if (props.shaped) return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value - 10}px)  scale(0.75)` }
+            return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value -6}px)  scale(0.75)` }
+          }
+          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value + 6}px)  scale(0.75)` }
         }
       }
 
@@ -224,7 +225,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref((props.value || props.value ===0) ? props.value : '');
+  const rawInternalValue = ref((props.value || props.value === 0) ? props.value : '');
 
   watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
 
