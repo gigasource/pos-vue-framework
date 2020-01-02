@@ -33,7 +33,11 @@
         flat: Boolean,
         dense: Boolean,
         clearable: Boolean,
-        showIcon: Boolean
+        showIcon: Boolean,
+        prependIcon: String,
+        prependInnerIcon: String,
+        appendIcon: String,
+        appendInnerIcon: String
       },
 
       // time picker props
@@ -90,7 +94,7 @@
                         props: {
                           ..._.pick(props, [
                             'disabled', 'readonly', 'required', 'clearable',
-                            'label',
+                            'label', 'prependIcon', 'prependInnerIcon', 'appendIcon', 'appendInnerIcon',
                             'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
                           ]),
                           value: state.value,

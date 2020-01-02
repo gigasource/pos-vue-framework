@@ -33,7 +33,7 @@ import GConnector from './GConnector/GConnector';
 import GDiagram from './GConnector/GDiagram';
 
 import GDatePicker from './GDatePicker/GDatePicker';
-
+import GDatePickerInput from './GDatePicker/GDatePickerInput';
 import GDateRangePicker from './GDatePicker/GDateRangePicker';
 
 import GDialog from './GDialog/GDialog';
@@ -229,6 +229,7 @@ export {
   GConnector,
   GDiagram,
   GDatePicker,
+  GDatePickerInput,
   GDateRangePicker,
   GDialog,
   GDndDialog,
