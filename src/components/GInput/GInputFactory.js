@@ -64,6 +64,9 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
       }
     } else {
       if (!isLabelActive.value && (prependWidth.value || prefixWidth.value)) {
+        if(props.filled) {
+          if(props.rounded || props.shaped ) return { 'padding-left': `${prependWidth.value + prefixWidth.value -17}px` }
+          return  { 'padding-left': `${prependWidth.value + prefixWidth.value - 12}px` }}
         return { 'padding-left': `${prependWidth.value + prefixWidth.value}px` }
       }
       if (isLabelActive.value && (prependWidth.value || prefixWidth.value)) {

@@ -470,7 +470,7 @@ export const TextFieldPrefixAndSuffix = () => ({
     solo: {default: boolean('solo', false)},
     outlined: {default: boolean('outlined', false)},
     flat: {default: boolean('flat', false)},
-    rounded: {default: boolean('rounded', true)},
+    rounded: {default: boolean('rounded', false)},
     shaped: {default: boolean('shaped', false)},
     prefix: {default: text('prefix', '$')},
     suffix: {default: text('suffix', ':)')},
@@ -484,6 +484,7 @@ export const TextFieldPrefixAndSuffix = () => ({
                            :shaped="shaped"
                            :prefix="prefix"
                            :suffix="suffix"
+                           appendIcon="check"
                            >
               </g-text-field>`,
 });

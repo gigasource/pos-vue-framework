@@ -1,7 +1,7 @@
 <template>
-	<div v-if="tfType === 'full'" class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp"
+	<div v-if="tfType === 'full'" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp"
 			 @mousedown="onMouseDown">
-		<div v-if="$slots['prepend-outer'] || prependIcon" class="g-tf-prepend__outer">
+		<div v-if="$scopedSlots['prepend-outer'] || prependIcon" class="g-tf-prepend__outer">
 			<slot name="prepend-outer">
 				<g-icon :color=iconColor @click="onClickPrependOuter">{{prependIcon}}</g-icon>
 			</slot>
@@ -9,7 +9,7 @@
 		<fieldset>
 			<legend :style="legendStyles">{{label}}</legend>
 			<div class='g-tf' :class="tfErrClasses">
-				<div v-if="$slots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" ref="prependRef">
+				<div v-if="$scopedSlots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" ref="prependRef">
 					<slot name="prepend-inner">
 						<g-icon :color=iconColor @click="onClickPrependInner">{{prependInnerIcon}}</g-icon>
 					</slot>
@@ -70,19 +70,20 @@
 			</div>
 		</slot>
 	</div>
-	<div v-else-if="appendIcon || $slots['append-outer']" class="g-tf-wrapper" :class="[tfWrapperClasses, tfErrWrapperClass]"  @click="onClick" @mouseup="onMouseUp"
+	<div v-else :class="[tfWrapperClasses, tfErrWrapperClass]" :style="tfWrapperStyles" @click="onClick" @mouseup="onMouseUp"
 			 @mousedown="onMouseDown">
-		<div class="g-tf" :class="tfErrClasses">
-			<div v-if="$slots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner" ref="prependRef">
+		<component :is="dynamicTag" :class="['g-tf', tfErrClasses]">
+			<div v-if="$scopedSlots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner" ref="prependRef">
 				<slot name="prepend-inner" :iconColor="iconColor">
 					<g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
 				</slot>
 			</div>
-			{{prefix}}
+			<span v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}} </span>
+
 			<input autocomplete="off"
 						 :autofocus="autofocus"
 						 class="g-tf-input"
-						 :style="inputErrStyles"
+						 :style="[inputStyles, inputErrStyles]"
 						 :type="type"
 						 :label="label"
 						 v-model="internalValue"
@@ -102,7 +103,7 @@
 				</label>
 			</slot>
 
-			<div v-if="$slots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner" @click="onClickAppendInner">
+			<div v-if="$scopedSlots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner" @click="onClickAppendInner">
 				<slot name="clearable-slot" :iconColor="iconColor">
 					<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
 				</slot>
@@ -113,72 +114,22 @@
 
 			<slot name="input-message" :isValid="isValidInput" :errorMess="errorMessages">
 				<span class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</span>
-				<span class="g-tf-hint" v-else-if="isValidInput && hint || $slots['hint']" :class="hintClasses">
+				<span class="g-tf-hint" v-else-if="isValidInput && hint || $scopedSlots['hint']" :class="hintClasses">
 					<slot name="hint">{{hint}}</slot>
 				</span>
 				<span v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
 					{{internalValue.toString().length}} / {{counter}}
 				</span>
 			</slot>
-		</div>
-		<slot name="append-outer">
-			<div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
+		</component>
+
+		<div v-if="appendIcon || $scopedSlots['append-outer']" class="g-tf-append__outer" @click="onClickAppendOuter">
+			<slot name="append-outer">
 				<g-icon :color=iconColor>{{appendIcon}}</g-icon>
-			</div>
-		</slot>
-	</div>
-	<div v-else style="margin: 16px 0 24px 0" :class="[tfWrapperClasses, tfErrClasses, {'g-tf': true},]">
-		<div v-if="$slots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner" ref="prependRef">
-			<slot name="prepend-inner" :iconColor="iconColor">
-				<g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
-			</slot>
-		</div>
-		<span v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}	</span>
-
-		<input autocomplete="off"
-					 :autofocus="autofocus"
-					 class="g-tf-input"
-					 :style="inputErrStyles"
-					 :type="type"
-					 :label="label"
-					 v-model="internalValue"
-					 :placeholder="placeholder"
-					 :readonly="readOnly"
-					 ref="input"
-					 @change="onChange"
-					 @focus="onFocus"
-					 @blur="onBlur"
-					 @keydown="onKeyDown"
-					 v-bind="attrs"
-		>
-		<slot name="label">
-			<label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
-				{{label}}
-				<span v-if="required" style="color: red">*</span>
-			</label>
-		</slot>
-		<div v-if="$slots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner" @click="onClickAppendInner">
-			<slot name="clearable-slot" :iconColor="iconColor">
-				<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
-			</slot>
-			<slot name="append-inner" :iconColor="iconColor">
-				<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 			</slot>
 		</div>
 
-		<slot name="input-message" :isValid="isValidInput" :errorMess="errorMessages">
-			<span class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</span>
-			<span class="g-tf-hint" v-else-if="isValidInput && hint || $slots['hint']" :class="hintClasses">
-				<slot name="hint">{{hint}}</slot>
-			</span>
-			<span v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
-				{{internalValue.toString().length}} / {{counter}}
-			</span>
-		</slot>
 	</div>
-
-
-
 </template>
 
 <script>
@@ -189,7 +140,7 @@
 
   export default {
     name: 'GTextField',
-    components: { GIcon, Fragment  },
+    components: { GIcon, Fragment },
     props: {
       ...{//display props
         label: String,
@@ -248,8 +199,15 @@
     setup(props, context) {
       //TODO: test tf messages
       //TODO: filled, solo style
+      const tfType = computed(() => {
+        if (context.slots['prepend-outer'] || props.prependIcon || props.outlined) return 'full'
+        if(props.appendIcon || context.slots['append-outer']) return 'lite'
+        return 'no-wrapper'
+      })
       const tfWrapperClasses = computed(() => {
         return {
+          'g-tf-wrapper': tfType.value !== 'no-wrapper',
+					'g-tf': tfType.value === 'no-wrapper',
           'g-tf-wrapper__disabled': props.disabled,
           'g-tf__filled': props.filled,
           'g-tf__outlined': props.outlined,
@@ -260,6 +218,7 @@
           'g-tf__dense': props.dense,
         }
       })
+			const tfWrapperStyles = computed(() => tfType.value === 'no-wrapper' ? {'margin': '16px 0 24px 0'} : null)
 
       const { internalValue, rawInternalValue } = getInternalValue(props, context);
       const isValidInput = ref(true)
@@ -274,6 +233,7 @@
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
 
       const inputErrStyles = computed(() => isValidInput.value ? {} : { 'color': 'red' })
+			const inputStyles = computed(() => tfType.value !== 'full' && props.filled ? {'padding-left': 0} : null )
       //change input border color
       const tfErrClasses = computed(() => isValidInput.value ? {} : { 'g-tf__error': true })
 
@@ -300,10 +260,6 @@
         if (!isValidInput.value) return 'red'
         if (isFocused.value) return 'rgb(24, 103, 192)'
       })
-      const tfType = computed(() => {
-        if (context.slots['prepend-outer'] || props.prependIcon || props.outlined) return 'full'
-        return 'lite'
-      })
 
       const tfMessages = computed(() => {
         if (errorMessages.value.length || !isValidInput.value) return errorMessages.value
@@ -311,9 +267,10 @@
 
       })
       const attrs = computed(() => context.attrs)
-
+			const dynamicTag = computed(() => tfType.value === 'no-wrapper' ? 'template' : 'div')
 
       return {
+        dynamicTag,
         attrs,
         //calculated styles and classes
         tfType,
@@ -323,7 +280,9 @@
         tfWrapperClasses,
         hintClasses,
         inputErrStyles,
+				inputStyles,
         iconColor,
+        tfWrapperStyles,
         //value
         internalValue,
         rawInternalValue,
@@ -356,21 +315,6 @@
         legendStyles,
       }
     }
-  }
-
-  function getTfWrapperClasses(props) {
-    return computed(() => {
-      return {
-        'g-tf-wrapper__disabled': props.disabled,
-        'g-tf__filled': props.filled,
-        'g-tf__outlined': props.outlined,
-        'g-tf__solo': props.solo,
-        'g-tf__rounded': props.rounded,
-        'g-tf__shaped': props.shaped,
-        'g-tf__flat': props.flat,
-        'g-tf__dense': props.dense,
-      }
-    })
   }
 
 </script>

@@ -243,7 +243,7 @@
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                       'rules', 'type', 'disabled', 'readOnly', 'required']),
-                    value: tfValue.value
+                    value: tfValue.value,
                   },
                   on: {
                     'click:clearIcon': () => clearSelection(),
