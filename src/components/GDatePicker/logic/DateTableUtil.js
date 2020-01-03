@@ -2,9 +2,10 @@ import { computed } from '@vue/composition-api'
 import { pad } from './utils';
 import { createRange } from '../../../utils/helpers';
 import { setBackgroundColor } from '../../../mixins/colorable'
-import { isSelected, computedDisplayMonth, computedDisplayYear, isAllowed, applyNewSelectedValue } from './TableUtil'
+import { applyNewSelectedValue, computedDisplayMonth, computedDisplayYear, isAllowed, isSelected } from './TableUtil'
 import dayjs from 'dayjs';
 import isLeapYear from 'dayjs/plugin/isLeapYear'
+
 dayjs.extend(isLeapYear)
 
 /**
@@ -213,13 +214,12 @@ export const _computedDatesInMonth = (props, state) => {
   })
 }
 
-export const cptAdjacentMonth = (date, adjacentDirection = 'next') => {
-  const direction = adjacentDirection === 'next' ? 1 : -1;
-  const dateValue = new Date(date);
-  const adjacentMonth = new Date(dateValue.getFullYear(), dateValue.getMonth() + direction, 1);
+export const cptAdjacentMonth = (date, direction = 'next') => {
+  const adjacentMonth = dayjs(date).add(direction === 'next' ? 1 : -1, 'month')
+
   return {
-    year: adjacentMonth.getFullYear(),
-    month: (adjacentMonth.getMonth()) % 12 + 1
+    year: adjacentMonth.year(),
+    month: (adjacentMonth.month()) % 12 + 1
   }
 }
 
