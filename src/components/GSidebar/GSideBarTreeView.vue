@@ -202,6 +202,8 @@
           on: {
             click: (e) => {
               e.stopPropagation()
+              if (node.type === 'subheader') return
+
               if (node.clickable || !childrenVNodes) {
                 context.emit('node-selected', node, path)
                 context.emit('input', path)
@@ -233,7 +235,7 @@
         }
 
         return <li class={!treeStates[path].collapse && childrenVNodes && 'g-treeview__open'}>
-          <a {...data}>
+          <a {...data} style={node && node.type === 'subheader' && 'cursor: default'}>
             {icon}
             <span style={node.textColor && textStyle}>{text}</span>
             <g-spacer/>
