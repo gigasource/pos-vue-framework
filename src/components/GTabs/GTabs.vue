@@ -48,7 +48,9 @@
         model.value = props.items.find(item => !item.disabled);
       }
       provide('model', model);
-      provide('items', props.items)
+
+      const items = computed(() => props.items)
+      provide('items', items)
 
       const {getColorType, convertColorClass} = colorHandler();
 
