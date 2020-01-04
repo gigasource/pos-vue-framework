@@ -40,7 +40,7 @@
 
     </div>
     <div class="bs-tf-error-message" v-if="!isValidInput">{{errorMessages}}</div>
-    <div class="bs-tf-message" v-else>{{hint}}</div>
+    <div class="bs-tf-message" v-else-if="hint">{{hint}}</div>
   </div>
 </template>
 
