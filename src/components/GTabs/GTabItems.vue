@@ -10,15 +10,16 @@
     },
     setup(props, context) {
       const model = inject('model', getVModel(props, context))
-      const items = inject('items', props.items)
+      const computedItems = computed(() => props.items)
+      const items = inject('items', computedItems)
       provide('model', model);
 
       const transition = ref('g-tab-transition');
       provide('transition', transition);
 
       watch(() => model.value, (newVal, oldVal) => {
-        const newIndex = items.findIndex(item => item === newVal);
-        const oldIndex = items.findIndex(item => item === oldVal);
+        const newIndex = items.value.findIndex(item => item === newVal);
+        const oldIndex = items.value.findIndex(item => item === oldVal);
         if (newIndex < oldIndex) {
           transition.value = 'g-tab-transition-reverse';
         } else {
