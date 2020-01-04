@@ -1,6 +1,6 @@
 <template>
   <transition name="g-snack-transition">
-    <div v-if="isActive"
+    <div v-show="isActive"
          class="g-snack"
          :class="snackClasses">
       <div class="g-snack-wrapper"
