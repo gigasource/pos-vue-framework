@@ -1,5 +1,5 @@
 <script>
-  import { ref, reactive, computed, watch, set, onMounted } from '@vue/composition-api';
+  import { ref } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
@@ -73,7 +73,7 @@
       const size = [{ type: 'input', prefix: 'W', value: '9' }, { type: 'input', prefix: 'H', value: '11' }, { type: 'button', icon: 'icon-pns_angle' }]
       const rotation = [{ type: 'input', prepend: 'icon-pns_rotation', value: '100%' }, { type: 'input', prepend: 'icon-pns_chain', value: '0' }]
       const genPositionAndSizing = () => {
-        return <g-css-customizer-position-form category={3} list1={position} list2={size} list3={rotation}>
+        return <g-css-customizer-position-form list1={position} list2={size} list3={rotation}>
 
         </g-css-customizer-position-form>
       }

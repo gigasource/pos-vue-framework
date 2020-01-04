@@ -18,7 +18,7 @@
 <template>
 	<div>
 		<g-row v-for="i in 3" :key="i" class="g-transform container">
-			<component class="item" v-for="(item, index) in list(i)" :is="dynamicTag(item)" v-bind="attrs(item)" :key="index" v-on="eventHandlers(item)">
+			<component class="item" v-for="(item, index) in list(i)" :is="dynamicTag(item)" v-bind="attrs(item)" :key="index" v-on="eventHandlers(item, index, i)">
 				<g-icon size="15" svg v-if="item.icon">{{item.icon}}</g-icon>
 			</component>
 		</g-row>
@@ -28,8 +28,7 @@
 </template>
 <script>
   import GCssCustomizerInput from './GCssCustomizerInput';
-  import { computed, ref, set } from '@vue/composition-api';
-  import { getInternalValue } from '../../utils/helpers';
+  import { computed } from '@vue/composition-api';
   import GRow from '../GLayout/GRow';
   import { Fragment } from 'vue-fragment';
   import GIcon from '../GIcon/GIcon';
@@ -95,12 +94,14 @@
           items: item.type === 'select' && item.list,
         }
       }
-      const internalValue = ref('')
-      // set(internalValue.value, 'position', props.position.map(item => ''))
-      // set(internalValue.value, 'size', props.size.map(item => ''))
-      const eventHandlers = (item) => {
+      //todo: get internalValue
+
+      const eventHandlers = (item, index, i) => {
         if (item.value) return {
-          input: (e) => item.value = e
+          input: (e) => {
+            item.value = e
+            context.emit('input', [props.list1, props.list2, props.list3])
+          }
         }
         return {
           click: ''
@@ -131,7 +132,6 @@
         attrs,
         list,
         styles,
-        internalValue,
         dynamicTag,
         eventHandlers,
       }
