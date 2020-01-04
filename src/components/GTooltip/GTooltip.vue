@@ -1,10 +1,10 @@
 <template>
   <span class="g-tooltip" ref="el">
     <g-tooltip-content
-        v-if="state.lazy"
-        :show="state.isActive"
-        :activator="activator"
-        v-bind="props">
+      v-if="props.removeContentOnClose ? (state.lazy && show) : state.lazy"
+      :show="state.isActive"
+      :activator="activator"
+      v-bind="props">
       <slot></slot>
     </g-tooltip-content>
     <div class="g-tooltip__activator" ref="activator">
@@ -14,14 +14,14 @@
 </template>
 
 <script>
-  import { computed, onMounted, reactive, ref } from '@vue/composition-api'
+  import {computed, onMounted, reactive, ref} from '@vue/composition-api'
   import delayable from '../../mixins/delayable';
   import detachable from '../../mixins/detachable';
   import GTooltipContent from './GTooltipContent';
 
   export default {
     name: 'GTooltip',
-    components: { GTooltipContent },
+    components: {GTooltipContent},
     props: {
       /*position w window*/
       ...{
@@ -108,6 +108,7 @@
           type: [Number, String],
           default: 0,
         },
+        removeContentOnClose: Boolean,
       },
       /*look & feel*/
       ...{
@@ -122,10 +123,11 @@
         zIndex: {
           type: [Number, String],
           default: 999999
-        }
+        },
       },
     },
     setup(props, context) {
+      const show = ref(false)
       // tooltip state
       const state = reactive({
         // Boolean value indicate that whether tooltip content will be shown or not
@@ -134,8 +136,8 @@
         // Boolean value indicate that whether tooltip content will be rendered or not
         lazy: false
       })
-      const { runDelay } = delayable(props, state)
-      const { attachToParent } = detachable(props, context)
+      const {runDelay} = delayable(props, state)
+      const {attachToParent} = detachable(props, context)
 
       //// ACTIVATOR
       // This variable will be used by Tooltip content to calculate position
@@ -145,17 +147,20 @@
 
         if (props.openOnHover) {
           listeners.mouseenter = () => {
-            if (!state.lazy)
-              state.lazy = true
+            if (!state.lazy) state.lazy = true
+
+            show.value = true
             runDelay('open')
           }
           listeners.mouseleave = () => {
+            show.value = false
             runDelay('close')
           }
         } else {
           listeners.click = () => {
-            if (!state.lazy)
-              state.lazy = true
+            if (!state.lazy) state.lazy = true
+
+            show.value = !show.value
             state.isActive = !state.isActive
           }
         }
@@ -179,6 +184,7 @@
         state,
         activator,
         activatorListeners,
+        show,
       }
     }
   }
