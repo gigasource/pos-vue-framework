@@ -15,15 +15,16 @@
     "test-chunk": "vue-cli-service build src/testChunk/main.js && cd ./dist && http-server"
   },
   "dependencies": {
-    "material-design-icons-iconfont": "^5.0.1",
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@mdi/font": "^4.5.95",
     "@mdi/js": "^4.5.95",
-    "vue-the-mask": "^0.11.1",
+    "copy-to-clipboard": "^3.2.0",
+    "material-design-icons-iconfont": "^5.0.1",
+    "moment": "^2.24.0",
+    "resolve-url-loader": "^3.1.0",
     "vue-svg-loader": "^0.15.0",
     "vue-template-compiler": "^2.6.10",
-    "copy-to-clipboard": "^3.2.0",
-    "resolve-url-loader": "^3.1.0"
+    "vue-the-mask": "^0.11.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

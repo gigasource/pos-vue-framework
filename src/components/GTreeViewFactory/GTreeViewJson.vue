@@ -1,13 +1,23 @@
 <script>
-  import { computed } from '@vue/composition-api';
-  import { getPropsNameAZPrimitiveFirst } from './util'
+  import {computed} from '@vue/composition-api';
+  import {getPropsNameAZPrimitiveFirst} from './util'
   import GTreeFactory from './GTreeFactory';
   import GIcon from '../GIcon/GIcon';
-
+  import Vue from 'vue';
 
   export default {
     name: 'GTreeViewJson',
-    components: { GIcon },
+    components: {
+      GIcon,
+      wrapper: {
+        components: {GIcon},
+        //functional: true,
+        props: ['state'],
+        render(h, context) {
+          return this.$attrs.renderFn(this.state);
+        }
+      }
+    },
     props: {
       expandLevel: {
         type: Number,
@@ -16,7 +26,6 @@
       data: [Object, Array],
       itemText: [Function, String],
       // coloring
-
     },
     setup(props, context) {
       // TODO:
@@ -29,12 +38,14 @@
       // Instead, each prop of an object nodeDesc will use this method to get corresponding class
       function getNodeClass(nodeDesc) {
         let outputClass = 'g-tree-view__item-value-'
-        if (nodeClassFromValueType.indexOf(nodeDesc.valueType) >= 0)
+        if (nodeClassFromValueType.indexOf(nodeDesc.valueType) >= 0) {
           outputClass += nodeDesc.valueType
-        else
+        } else {
           outputClass += typeof (nodeDesc.value)
+        }
         return outputClass
       }
+
       const nodeClassFromValueType = ['array', 'null', 'function']
 
       // Format displayed text value of a node
@@ -64,11 +75,11 @@
           return [
             <span class='g-tree-view__item-value-object'>Object &#123;&nbsp;</span>,
             nodeDesc.value.outputValues.map(outputValue => [
-                  <span class="g-tree-view__item-var-name">{outputValue.varName}</span>,
-                  <span class='g-tree-view__item-separate-symbol'>:&nbsp;</span>,
-                  genValueNode(outputValue),
-                  <span class='g-tree-view__item-separate-symbol'>,&nbsp;</span>
-                ]
+                <span class="g-tree-view__item-var-name">{outputValue.varName}</span>,
+                <span class='g-tree-view__item-separate-symbol'>:&nbsp;</span>,
+                genValueNode(outputValue),
+                <span class='g-tree-view__item-separate-symbol'>,&nbsp;</span>
+              ]
             ),
             nodeDesc.value.moreSymbol ? <span class='g-tree-view__item-separate-symbol'>...</span> : undefined,
             <span class='g-tree-view__item-value-object'> &#125;</span>
@@ -79,7 +90,7 @@
       }
 
       function createValueDesc(name, value, type) {
-        return { varName: name, value: value, valueType: type }
+        return {varName: name, value: value, valueType: type}
       }
 
       function jsonStringifyReplacer(object) {
@@ -124,74 +135,80 @@
 
       const itemText = props.itemText || ((node, isRoot) => {
         let nodeDescription;
-        if (isRoot) {
-          if (node == undefined) {
-            nodeDescription = { varName: 'Result', valueType: 'null', value: 'null' }
+        if (isRoot || (typeof node === 'object' && Object.keys(node).length > 1)) {
+          if (node === undefined) {
+            nodeDescription = {varName: 'Result', valueType: 'null', value: 'null'}
           } else if (Array.isArray(node)) {
-            nodeDescription = { varName: 'Result', valueType: 'array', value: node }
+            nodeDescription = {varName: 'Result', valueType: 'array', value: node}
           } else if (typeof (node) === 'object') {
-            nodeDescription = { varName: 'Result', valueType: 'object', value: jsonStringifyReplacer(node) }
+            nodeDescription = {varName: 'Result', valueType: 'object', value: jsonStringifyReplacer(node)}
           } else {
-            nodeDescription = { varName: 'Result', value: node, valueType: typeof node }
+            nodeDescription = {varName: 'Result', value: node, valueType: typeof node}
           }
         } else {
           if (typeof node === 'object') {
             const firstPropName = Object.keys(node)[0]
             const firstPropValue = node[firstPropName]
             if (Array.isArray(firstPropValue)) {
-              nodeDescription = { varName: firstPropName, valueType: 'array', value: firstPropValue }
+              nodeDescription = {varName: firstPropName, valueType: 'array', value: firstPropValue}
             } else if (firstPropValue === null) {
-              nodeDescription = { varName: firstPropName, valueType: 'null', value: 'null' }
+              nodeDescription = {varName: firstPropName, valueType: 'null', value: 'null'}
             } else if (typeof firstPropValue === 'object') {
-              nodeDescription = { varName: firstPropName, valueType: 'object', value: jsonStringifyReplacer(firstPropValue) }
+              nodeDescription = {
+                varName: firstPropName,
+                valueType: 'object',
+                value: jsonStringifyReplacer(firstPropValue)
+              }
             } else {
-              nodeDescription = { varName: firstPropName, value: firstPropValue, valueType: typeof firstPropValue }
+              nodeDescription = {varName: firstPropName, value: firstPropValue, valueType: typeof firstPropValue}
             }
           } else {
-            nodeDescription = { value: node, valueType: typeof node }
+            nodeDescription = {value: node, valueType: typeof node}
           }
         }
 
         // render list item ([icon] [varName] = [ValueNode])
         return [
           nodeDescription.valueType === 'object'
-              ? <g-icon small color="orange">reorder</g-icon>
-              : nodeDescription.valueType === 'array'
-              ? <g-icon small color="blue">list</g-icon>
-              : <g-icon small color="blue">local_atm</g-icon>,
+            ? <g-icon small color="orange">reorder</g-icon>
+            : nodeDescription.valueType === 'array'
+            ? <g-icon small color="blue">list</g-icon>
+            : <g-icon small color="blue">local_atm</g-icon>,
           <span>&nbsp;</span>,
           nodeDescription.varName ?
-              [<span class="g-tree-view__item-var-name">{nodeDescription.varName}</span>,
-                <span class='g-tree-view__item-separate-symbol'>&nbsp;=&nbsp;</span>]
-              : undefined,
+            [<span class="g-tree-view__item-var-name">{nodeDescription.varName}</span>,
+              <span class='g-tree-view__item-separate-symbol'>&nbsp;=&nbsp;</span>]
+            : undefined,
           genValueNode(nodeDescription)
         ]
       })
       //text: result generated by itemText function
-      const genNode = function ({node, text , childrenVNodes, isLast, state, path}) {
-        return (
-            <li>
-              <span class={['g-tree-view__item', { 'g-tree-view__item--expandable': childrenVNodes != null }]}
-                    vOn:click={() => childrenVNodes && (state.collapse = !state.collapse)}>
-                {
-                  childrenVNodes
-                      ? <g-icon small color="red"> {state.collapse ? 'chevron_right' : 'expand_more'}</g-icon>
-                      : <span style='display: inline-block; width: 15px;'></span>
-                }
-                {text}
-              </span>
-              {!state.collapse ? childrenVNodes : null}
-            </li>
+      const genNode = function ({node, text, childrenVNodes, isLast, state, path}) {
+        //console.log('genNode', path)
+        const renderFn = () => (
+          <li>
+            <span class={['g-tree-view__item', {'g-tree-view__item--expandable': childrenVNodes != null}]}
+                  vOn:click={() => childrenVNodes && (state.collapse = !state.collapse)}>
+              {
+                childrenVNodes
+                  ? <g-icon small color="red"> {state.collapse ? 'chevron_right' : 'expand_more'}</g-icon>
+                  : <span style='display: inline-block; width: 15px;'></span>
+              }
+              {text}
+            </span>
+            {!state.collapse ? childrenVNodes : null}
+          </li>
         )
+        return <wrapper renderFn={renderFn} state={state}></wrapper>
       }
       const genWrapper = function (childrenVNodes) {
         return <ul>{childrenVNodes}</ul>
       }
       const genRootWrapper = function (childrenVNodes) {
         return (
-            <div root>
-              <ul>{childrenVNodes}</ul>
-            </div>
+          <div root>
+            <ul>{childrenVNodes}</ul>
+          </div>
         )
       }
 
@@ -199,15 +216,16 @@
         if (Array.isArray(node)) {
           return node
         } else if (typeof node === 'object') {
-          const converter = node => Object.keys(node).map(k => ({ [k]: node[k] }))
+          const converter = node => Object.keys(node).map(k => ({[k]: node[k]}))
           const firstPropValue = node[Object.keys(node)[0]];
 
-          if (isRoot) {
+          if (isRoot || Object.keys(node).length > 1) {
             return converter(node)
           } else if (Array.isArray(firstPropValue)) {
             return firstPropValue.map((item, index) => {
-              if (typeof item === 'object')
-                return ({ [index]: item })
+              if (typeof item === 'object') {
+                return ({[index]: item})
+              }
               return item
             })
           } else if (firstPropValue === null) {
@@ -222,25 +240,26 @@
         }
       }
 
-      const itemPath = function (node, { key, path, isRoot }) {
+      const itemPath = function (node, {key, path, isRoot}) {
         const firstPropKey = Object.keys(node)[0];
         if (isRoot) return key;
-				if (typeof node !== 'object') return key;
+        if (typeof node !== 'object' || Object.keys(node).length > 1) return key;
         if (firstPropKey) return firstPropKey;
       }
 
-      const { treeStates, genTree } = GTreeFactory({
+      const {treeStates, genTree} = GTreeFactory({
+        treeStates: Vue.observable({}),
         genNode,
         genWrapper,
         genRootWrapper,
-        data: props.data,
+        data: computed(() => props.data),
         itemText,
-				itemPath,
+        itemPath,
         itemChildren,
         expandLevel: props.expandLevel
       })
 
-      return { treeStates, genTree }
+      return {genTree}
     },
     render() {
       return this.genTree()

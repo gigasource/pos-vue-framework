@@ -41,6 +41,9 @@
       overlayOpacity: [Number, String],
 
       bottom: Boolean,
+
+      //content class for styling
+      contentClass: String,
     },
     setup(props, context) {
       const isActive = getInternalValue(props, context)
@@ -277,7 +280,8 @@
           class: {
             'g-dialog-content__active': isActive.value,
             'g-dialog-content__scrollable': props.scrollable,
-            'g-dialog-content__fullscreen': props.fullscreen
+            'g-dialog-content__fullscreen': props.fullscreen,
+            [props.contentClass]: !!props.contentClass,
           },
           style: {
             maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
@@ -297,8 +301,10 @@
           ]
         }
 
+        const transitionName = computed(() => props.bottom ? 'dialog-bottom-transition' : 'dialog-transition')
+
         return <div {...wrapperData}>
-          <transition name="dialog-transition">
+          <transition name={transitionName.value}>
             <div {...contentData} vShow={isActive.value}>
               {context.slots.default ? context.slots.default() : undefined}
             </div>
@@ -355,10 +361,12 @@
 
     &-content {
       transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 1ms;
+      width: 100%;
 
       &:not(.g-dialog-content__fullscreen) {
         max-width: 90%;
         max-height: 90%;
+        height: auto;
       }
 
       > * {
@@ -366,7 +374,7 @@
       }
 
       > ::v-deep.g-card {
-        height: 100%;
+        height: auto;
         overflow-y: auto;
 
         > .g-card-title {
@@ -414,7 +422,8 @@
       left: 0;
       right: 0;
 
-      > .g-card {
+      > ::v-deep .g-card {
+        height: 100%;
         min-height: 100%;
         min-width: 100%;
         margin: 0 !important;

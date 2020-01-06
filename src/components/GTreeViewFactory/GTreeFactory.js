@@ -19,8 +19,6 @@ export default function treeFactory({
                                       data,
                                       treeStates = reactive({}),
                                     }) {
-  const refData = isRef(data) ? data : ref(data)
-
   // Block traverse down from this node
   // Boolean value returned indicate that execution for current node should be stopped immediately or not
   // true: stop execution - false: continue execute
@@ -37,8 +35,8 @@ export default function treeFactory({
   })
 
   const genText = computed(() => typeof itemText === 'function'
-    ? itemText
-    : (node, __) => node && node[itemText])
+      ? itemText
+      : (node, __) => node && node[itemText])
 
   // A function do some stuff to prepare data which
   // will be consumed by custom genNode function
@@ -56,8 +54,8 @@ export default function treeFactory({
   }
 
   const _itemChildren = computed(() => typeof itemChildren === 'function'
-    ? itemChildren
-    : node => node && node[itemChildren])
+      ? itemChildren
+      : node => node && node[itemChildren])
 
   const genTree = function () {
     // Get level_ of parent node if it's not root node
@@ -77,7 +75,7 @@ export default function treeFactory({
       }
     }
 
-    const treeVNodeWithoutRoot = traverse(refData.value).map(function (node) {
+    const treeVNodeWithoutRoot = traverse(data.value).map(function (node) {
       if (nodeShouldBeBlocked(this) || typeof node !== 'object') return
 
       const isLastNode = () => this.parent && this.parent.node.length - 1 === +this.key
@@ -116,14 +114,14 @@ export default function treeFactory({
         } else {
           const childrenVNodes = Array.isArray(nodeAfterConvert[childrenProp]) && nodeAfterConvert[childrenProp].length > 0 ? genWrapper(nodeAfterConvert[childrenProp]) : null;
           this.update(preGenNode({
-              node: rawNode,
-              path: path.join('.'),
-              childrenVNodes,
-              isLast: isLastNode(),
-              isRoot: this.isRoot,
-              actualLevel: this._level
-            }),
-            true)
+                node: rawNode,
+                path: path.join('.'),
+                childrenVNodes,
+                isLast: isLastNode(),
+                isRoot: this.isRoot,
+                actualLevel: this._level
+              }),
+              true)
         }
 
       })

@@ -34,6 +34,10 @@
       centerActive: Boolean,
       icon: Boolean,
       alignWithTitle: Boolean,
+      showArrows: {
+        type: Boolean,
+        default: true
+      }
     },
     setup(props, context) {
       const model = getVModel(props, context);
@@ -44,7 +48,9 @@
         model.value = props.items.find(item => !item.disabled);
       }
       provide('model', model);
-      provide('items', props.items)
+
+      const items = computed(() => props.items)
+      provide('items', items)
 
       const {getColorType, convertColorClass} = colorHandler();
 
@@ -114,7 +120,7 @@
       }
 
       const itemsRef = ref(null)
-      watch(() => [itemsRef.value, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
+      watch(() => [itemsRef.value, props.items, props.grow, props.right, props.center, props.vertical, props.sliderSize, props.sliderColor, props.alignWithTitle, props.icon], () => {
         calculateSliderStyle();
       });
 
@@ -179,6 +185,7 @@
         if (!fullTitle) return
         const slideGroupData = {
           props: {
+            showArrows: props.showArrows,
             centerActive: props.centerActive,
             items: props.items,
           },
