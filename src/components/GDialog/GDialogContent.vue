@@ -41,6 +41,9 @@
       overlayOpacity: [Number, String],
 
       bottom: Boolean,
+
+      //content class for styling
+      contentClass: String,
     },
     setup(props, context) {
       const isActive = getInternalValue(props, context)
@@ -277,7 +280,8 @@
           class: {
             'g-dialog-content__active': isActive.value,
             'g-dialog-content__scrollable': props.scrollable,
-            'g-dialog-content__fullscreen': props.fullscreen
+            'g-dialog-content__fullscreen': props.fullscreen,
+            [props.contentClass]: !!props.contentClass,
           },
           style: {
             maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
@@ -297,8 +301,10 @@
           ]
         }
 
+        const transitionName = computed(() => props.bottom ? 'dialog-bottom-transition' : 'dialog-transition')
+
         return <div {...wrapperData}>
-          <transition name="dialog-transition">
+          <transition name={transitionName.value}>
             <div {...contentData} vShow={isActive.value}>
               {context.slots.default ? context.slots.default() : undefined}
             </div>
@@ -360,7 +366,7 @@
       &:not(.g-dialog-content__fullscreen) {
         max-width: 90%;
         max-height: 90%;
-        height: 100%;
+        height: auto;
       }
 
       > * {
