@@ -1,7 +1,7 @@
 <template>
   <span class="g-tooltip" ref="el">
     <g-tooltip-content
-      v-if="props.removeContentOnClose ? (state.lazy && show) : state.lazy"
+      v-if="props.removeContentOnClose ? (state.lazy && renderContent) : state.lazy"
       :show="state.isActive"
       :activator="activator"
       v-bind="props">
@@ -127,7 +127,7 @@
       },
     },
     setup(props, context) {
-      const show = ref(false)
+      const renderContent = ref(false)
       // tooltip state
       const state = reactive({
         // Boolean value indicate that whether tooltip content will be shown or not
@@ -149,19 +149,24 @@
           listeners.mouseenter = () => {
             if (!state.lazy) state.lazy = true
 
-            show.value = true
-            runDelay('open')
+            runDelay('open', () => {
+              state.isActive = true
+              renderContent.value = true
+            })
           }
           listeners.mouseleave = () => {
-            show.value = false
-            runDelay('close')
+
+            runDelay('close', () => {
+              state.isActive = false
+              renderContent.value = false
+            })
           }
         } else {
           listeners.click = () => {
             if (!state.lazy) state.lazy = true
 
-            show.value = !show.value
             state.isActive = !state.isActive
+            renderContent.value = !renderContent.value
           }
         }
 
@@ -184,7 +189,7 @@
         state,
         activator,
         activatorListeners,
-        show,
+        renderContent,
       }
     }
   }
