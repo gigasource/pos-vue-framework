@@ -1,4 +1,4 @@
-import GAutocomplete from "./GAutocomplete/GAutocomplete";
+import GAutocomplete from './GAutocomplete/GAutocomplete';
 
 import GAvatar from './GAvatar/GAvatar';
 
@@ -6,13 +6,13 @@ import GBadge from './GBadge/GBadge';
 
 import GBreadcrumbs from './GBreadcrumbs/GBreadcrumbs';
 import GBreadcrumbsItem from './GBreadcrumbs/GBreadcrumbsItem';
-import {GBreadcrumbsDivider} from './GBreadcrumbs/GBreadcrumbsFunctionalComponent';
+import { GBreadcrumbsDivider } from './GBreadcrumbs/GBreadcrumbsFunctionalComponent';
 
 import GBtn from './GBtn/GBtn';
 
 import GCard from './GCard/GCard';
 import GCardTitle from './GCard/GCardTitle';
-import {GCardActions, GCardText, GCardSubtitle} from './GCard/GCardFunctionalComponent';
+import { GCardActions, GCardText, GCardSubtitle } from './GCard/GCardFunctionalComponent';
 
 import GCarousel from './GCarousels/GCarousel';
 import GCarouselItem from './GCarousels/GCarouselItem';
@@ -114,7 +114,7 @@ import GStepper from './GStepper/GStepper';
 import GStepperContent from './GStepper/GStepperContent';
 import GStepperContents from './GStepper/GStepperContents';
 import GStepperStep from './GStepper/GStepperStep';
-import {GStepperHeader} from './GStepper/GStepperFunctionalComponent';
+import { GStepperHeader } from './GStepper/GStepperFunctionalComponent';
 
 import GSwitch from './GSwitch/GSwitch';
 
@@ -144,16 +144,18 @@ import GScrollWindowItem from './GWindow/GScrollWindowItem';
 import GWindow from './GWindow/GWindow';
 import GWindowItem from './GWindow/GWindowItem';
 
-import GSnackbar from "./GSnackbar/GSnackbar";
+import GSnackbar from './GSnackbar/GSnackbar';
 import GSubheader from './GSubheader/GSubheader';
 import GProgressBar from './GProgressBar/GProgressBar';
 import GSlider from './GSliderRemake/GSlider';
 import GRating from './GRating/GRating';
 
-import {getInternalValue, getVModel} from '../mixins/getVModel';
-import {getExpansionModel} from './GExpansion/GExpansionFactory';
-import colorHandler, {convertToUnit} from '../utils/helpers'
+import { getInternalValue, getVModel } from '../mixins/getVModel';
+import { getExpansionModel } from './GExpansion/GExpansionFactory';
+import colorHandler, { convertToUnit } from '../utils/helpers'
 import Intersect from '../directives/intersect/intersect';
+import { setBackgroundColor, setTextColor } from '../mixins/colorable';
+import GDatePickerUtil from './GDatePicker/logic/GDatePickerUtil';
 
 import {
   GCarouselTransition,
@@ -208,6 +210,9 @@ export {
   getInternalValue,
   getVModel,
   getExpansionModel,
+  setBackgroundColor,
+  setTextColor,
+  GDatePickerUtil
 }
 
 export {
