@@ -1,15 +1,14 @@
 <script>
   import _ from 'lodash'
   import {ref, reactive, computed, watch, set, inject, onMounted} from '@vue/composition-api';
-  import {getInternalValue} from '../../mixins/getVModel';
   import {convertToUnit} from '../../utils/helpers';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
   import GColorPicker from '../GColorPicker/GColorPicker';
   import GCheckbox from '../GCheckbox/GCheckbox';
-  import GTextField from '../GInput/GTextField';
   import GMenu from '../GMenu/GMenu';
+  import GCssCustomizerInput from './GCssCustomizerInput';
   import GSections from '../GExpansion/GSections';
   import GSectionsHeader from '../GExpansion/GSectionsHeader';
   import GSectionsItem from '../GExpansion/GSectionsItem';
@@ -17,12 +16,19 @@
   export default {
     name: "GCssCustomizerDesignPanel",
     components: {
+      GCssCustomizerInput,
       GSectionsHeader,
-      GSectionsItem, GSections, GTextField, GBtn, GIcon, GGridSelect, GColorPicker, GCheckbox, GMenu
+      GSectionsItem,
+      GSections,
+      GBtn,
+      GIcon,
+      GGridSelect,
+      GColorPicker,
+      GCheckbox,
+      GMenu,
     },
     props: {
       activeSelector: String,
-      value: Object
     },
     setup(props, context) {
       const activeSections = ref([])
@@ -65,6 +71,19 @@
         effects: []
       }
 
+      const defaultEffectData = {
+        type: 'dropShadow',
+        shadowBlur: 4,
+        layerBlur: 4,
+        x: 4,
+        y: 4,
+        color: {
+          value: '#000000',
+          alpha: 0.25
+        },
+        active: true
+      }
+
       const designData = ref(_.cloneDeep(defaultDesignData))
 
       watch(() => props.activeSelector, () => {
@@ -90,6 +109,7 @@
         return `${strokeData.width}px solid ${colorToRGBA(strokeData.color)}`
       }
 
+      // TODO: add support for gradient color
       const updateColor = (inputColor, color) => {
         if (inputColor.angle) {
           return
@@ -110,7 +130,7 @@
         }
       }
 
-      const shadowToCCS  = effectData => {
+      const shadowToCSS  = effectData => {
         const shadowData = _.filter(effectData, val => val.type.indexOf('Shadow') > -1 && val.active)
         return _.reduce(shadowData, (acc, val, index) => {
           let temp = ''
@@ -434,11 +454,29 @@
       const setEffectProperty = (effect, property, value) => {
         set(effect, property, value)
         set(effect, 'active', true)
+        if (effect.type.indexOf('Shadow') > -1) {
+          setStyle('boxShadow', shadowToCSS(effectData.value))
+          getStyle('filter') && setStyle('filter', undefined)
+        }
+        else if (effect.type.indexOf('Blur') > -1) {
+          setStyle('filter', blurToCSS(effectData.value))
+          getStyle('boxShadow') && setStyle('boxShadow', undefined)
+        }
+        setDesignState(designData.value)
       }
 
       const setEffectColor = (effect, key, value) => {
         set(effect.color, key, value)
         set(effect, 'active', true)
+        setStyle('boxShadow', shadowToCSS(effectData.value))
+        setDesignState(designData.value)
+      }
+
+      const setEffectCheckbox = (effect, val) => {
+        effect.active = val
+        if (effect.type.indexOf('Shadow') > -1) setStyle('boxShadow', shadowToCSS(effectData.value))
+        else if (effect.type.indexOf('Blur') > -1) setStyle('filter', blurToCSS(effectData.value))
+        setDesignState(designData.value)
       }
 
       const updateEffectColor = (effect, inputColor) => {
@@ -461,33 +499,22 @@
           set(effect.color, 'alpha', undefined)
         }
         set(effect, 'active', true)
-      }
-
-      watch(() => effectData.value, newVal => {
-        setStyle('boxShadow', shadowToCCS(newVal))
-        setStyle('filter', blurToCSS(newVal))
+        setStyle('boxShadow', shadowToCSS(effectData.value))
         setDesignState(designData.value)
-      }, {lazy: true, deep: true})
+      }
 
       const addEffectBtn = e => {
         if (activeSections.value.includes(4)) e.stopPropagation()
-        effectData.value.push({
-          type: 'dropShadow',
-          shadowBlur: 4,
-          layerBlur: 4,
-          x: 4,
-          y: 4,
-          color: {
-            value: '#000000',
-            alpha: 0.25
-          },
-          active: true
-        })
+        effectData.value.push(_.cloneDeep(defaultEffectData))
         effectMenu.value.push(false)
+        setStyle('boxShadow', shadowToCSS(effectData.value))
+        setDesignState(designData.value)
       }
 
       const removeEffectBtn = index => {
         effectData.value.splice(index, 1)
+        setStyle('boxShadow', shadowToCSS(effectData.value))
+        setDesignState(designData.value)
       }
 
       // Render functions
@@ -532,15 +559,15 @@
 
         return <div class="g-css-customizer-design-panel-section-content">
           <g-checkbox vModel={fillCheckbox.value}/>
-          <g-menu {...data} vModel={fillMenu.value}>
+          <g-menu {...data} vModel={fillMenu.value} nudgeLeft="376" nudgeTop="36">
             <g-color-picker vOn:color={color => updateColor(color, fillColorPicker)}/>
           </g-menu>
-          <input type="text" maxLength="6" size="7" style="text-transform: uppercase"
+          <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
                  value={fillColorInput.value}
-                 vOn:change={e => fillColorInput.value = e.target.value}/>
-          <input type="text" maxLength="4" size="5" style="margin-left: 20px"
+                 vOn:change={e => fillColorInput.value = e}/>
+          <g-css-customizer-input class="g-css-customizer-design-panel-percentage-input"
                  value={fillAlphaInput.value}
-                 vOn:change={e => fillAlphaInput.value = e.target.value}/>
+                 vOn:change={e => fillAlphaInput.value = e}/>
         </div>
       }
 
@@ -576,18 +603,18 @@
 
         return <div class="g-css-customizer-design-panel-section-content">
           <g-checkbox vModel={strokeCheckbox.value}/>
-          <g-menu {...menuData} vModel={strokeMenu.value}>
+          <g-menu {...menuData} vModel={strokeMenu.value} nudgeLeft="376" nudgeTop="36">
             <g-color-picker vOn:color={color => updateColor(color, strokeColorPicker)}/>
           </g-menu>
-          <input type="text" maxLength="6" size="7" style="text-transform: uppercase"
+          <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
                  value={strokeColorInput.value}
-                 vOn:change={e => strokeColorInput.value = e.target.value}/>
-          <input type="text" maxLength="4" size="5" style="margin-left: 20px"
+                 vOn:change={e => strokeColorInput.value = e}/>
+          <g-css-customizer-input class="g-css-customizer-design-panel-percentage-input"
                  value={strokeAlphaInput.value}
-                 vOn:change={e => strokeAlphaInput.value = e.target.value}/>
-          <input type="text" maxLength="5" size="6" style="margin-left: 16px"
+                 vOn:change={e => strokeAlphaInput.value = e}/>
+          <g-css-customizer-input class="g-css-customizer-design-panel-length-input"
                  value={strokeWidthInput.value}
-                 vOn:change={e => strokeWidthInput.value = e.target.value}/>
+                 vOn:change={e => strokeWidthInput.value = e}/>
           <g-grid-select class="g-css-customizer-design-panel-stroke-position"
                          vModel={strokePosition.value}
                          grid={false}
@@ -599,48 +626,68 @@
       }
 
       const genPaddingShort = () => {
-        return <input type="text" maxLength="4" size="4" style="margin-left: 8px" value={paddingInput.value} vOn:change={e => paddingInput.value = e.target.value}/>
+        return <g-css-customizer-input
+            class="g-css-customizer-design-panel-length-input-prefixed"
+            prefix="P"
+            value={paddingInput.value}
+            vOn:change={e => paddingInput.value = e}/>
       }
 
       const genPaddingLong = (item, index) => {
-        return <input type="text" maxLength="4" size="4" style="margin-left: 8px" value={item}
-                      vOn:change={e => paddingInput.value = {index: index, value: e.target.value}}/>
+        if (index === 0) return <g-css-customizer-input
+            class="g-css-customizer-design-panel-length-input-prefixed"
+            prefix="P"
+            value={item}
+            vOn:change={e => paddingInput.value = {index: index, value: e}}/>
+        return <g-css-customizer-input
+            class="g-css-customizer-design-panel-length-input"
+            value={item}
+            vOn:change={e => paddingInput.value = {index: index, value: e}}/>
       }
 
       const genPaddingSection = () => {
         return <div class="g-css-customizer-design-panel-section-content g-css-customizer-design-panel-section-content__justify" >
-          <div style="display: flex">
+          <div class="g-css-customizer-design-panel-space-input">
             <g-checkbox vModel={paddingCheckbox.value}/>
-            <p style="margin-right: 8px; font-size: 14px; color: grey">P</p>
             {spaceData.value.padding.mode === 'short' ? genPaddingShort() : paddingInput.value.map((item, index) => genPaddingLong(item, index))}
           </div>
           <div>
             <g-btn flat style="width: 20px; min-width: 12px; height: 20px; padding: 0;" vOn:click={() => switchSpaceMode('padding')}>
-              <g-icon size="16">fas fa-expand</g-icon>
+              <g-icon size="16" color="grey">fas fa-expand</g-icon>
             </g-btn>
           </div>
         </div>
       }
 
       const genMarginShort = () => {
-        return <input type="text" maxLength="4" size="4" style="margin-left: 8px" value={marginInput.value} vOn:change={e => marginInput.value = e.target.value}/>
+        return <g-css-customizer-input
+            class="g-css-customizer-design-panel-length-input-prefixed"
+            prefix="M"
+            value={marginInput.value}
+            vOn:change={e => marginInput.value = e}/>
       }
 
       const genMarginLong = (item, index) => {
-        return <input type="text" maxLength="4" size="4" style="margin-left: 8px" value={item}
-                      vOn:change={e => marginInput.value = {index: index, value: e.target.value}}/>
+        if (index === 0) return <g-css-customizer-input
+            class="g-css-customizer-design-panel-length-input-prefixed"
+            prefix="M"
+            value={item}
+            vOn:change={e => marginInput.value = {index: index, value: e}}/>
+        return <g-css-customizer-input
+            class="g-css-customizer-design-panel-length-input"
+            value={item}
+            vOn:change={e => marginInput.value = {index: index, value: e}}/>
       }
 
       const genMarginSection = () => {
         return <div class="g-css-customizer-design-panel-section-content g-css-customizer-design-panel-section-content__justify" >
-          <div style="display: flex">
+          <div class="g-css-customizer-design-panel-space-input">
             <g-checkbox vModel={marginCheckbox.value}/>
-            <p style="margin-right: 8px; font-size: 14px; color: grey">M</p>
             {spaceData.value.margin.mode === 'short' ? genMarginShort() : marginInput.value.map((item, index) => genMarginLong(item, index))}
           </div>
           <div>
             <g-btn flat style="width: 20px; min-width: 12px; height: 20px; padding: 0;" vOn:click={() => switchSpaceMode('margin')}>
-              <g-icon size="16">fas fa-expand</g-icon>
+              <g-icon size="16" color="grey">fas fa-expand</g-icon>
             </g-btn>
           </div>
         </div>
@@ -672,25 +719,24 @@
                 </div>,
                 <div class="g-css-customizer-design-panel-effect-shadow-editor-input"
                      style={{gridArea: `${propertyText}input`}}>
-                  <input type="text" maxLength="4" size="4" value={convertToUnit(effect[property])}
-                         vOn:change={e => setEffectProperty(effect, property, parseLength(e.target.value))}/>
+                  <g-css-customizer-input value={convertToUnit(effect[property])}
+                                          vOn:change={e => setEffectProperty(effect, property, parseLength(e))}/>
                 </div>
               ]
             })
           }
           <div class="g-css-customizer-design-panel-effect-shadow-editor-color">
-            <g-menu value={effectColorPickerMenu.value[index]}
+            <g-menu  nudgeLeft="338" nudgeTop="36" value={effectColorPickerMenu.value[index]}
                     vOn:input={e => set(effectColorPickerMenu.value, index, e)} {...colorPikerMenuData}>
               <g-color-picker vOn:color={color => updateEffectColor(effect, color)}/>
             </g-menu>
-            <input type="text" maxLength="6" size="7"
+            <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
                    value={effect.color.value.replace(/^#/, '')}
-                   vOn:change={e => setEffectColor(effect, 'value', `#${e.target.value}`)}/>
+                   vOn:change={e => setEffectColor(effect, 'value', `#${e}`)}/>
           </div>
           <div class="g-css-customizer-design-panel-effect-shadow-editor-alpha">
-            <input type="text" maxLength="4" size="5"
-                   value={`${effect.color.alpha * 100}%`}
-                   vOn:change={e => setEffectColor(effect, 'alpha', parsePercentage(e.target.value))}/>
+            <g-css-customizer-input value={`${effect.color.alpha * 100}%`}
+                                    vOn:change={e => setEffectColor(effect, 'alpha', parsePercentage(e))}/>
           </div>
         </div>
       }
@@ -704,8 +750,9 @@
             Blur
           </div>
           <div class="g-css-customizer-design-panel-effect-blur-editor-input">
-            <input type="text" maxLength="4" size="4" value={convertToUnit(effect['layerBlur'])}
-                   vOn:change={e => setEffectProperty(effect, 'layerBlur', parseLength(e.target.value))}/>
+            <g-css-customizer-input class="g-css-customizer-design-panel-length-input"
+                                    value={convertToUnit(effect['layerBlur'])}
+                                    vOn:change={e => setEffectProperty(effect, 'layerBlur', parseLength(e))}/>
           </div>
         </div>
       }
@@ -723,13 +770,13 @@
 
         return <div class="g-css-customizer-design-panel-section-content g-css-customizer-design-panel-section-content__justify">
           <div style="display: flex">
-            <g-checkbox inputValue={effect.active} vOn:change={e => effect.active = e}/>
+            <g-checkbox inputValue={effect.active} vOn:change={e => setEffectCheckbox(effect, e)}/>
             <select value={effect.type} vOn:change={e => setEffectProperty(effect, 'type', e.target.value)}>
               {effectList.value.map(item => <option value={item.value} disabled={item.value === 'layerBlur' && effect.type !== 'layerBlur' && _.find(effectData.value, {type: 'layerBlur'})}>
                 {item.text}
               </option>)}
             </select>
-            <g-menu value={effectMenu.value[index]} vOn:input={e => set(effectMenu.value, index, e)} {...menuData}>
+            <g-menu value={effectMenu.value[index]} vOn:input={e => set(effectMenu.value, index, e)} {...menuData} nudgeLeft="435" nudgeTop="32">
               {effect.type.indexOf('Shadow') > -1 && genShadowEditor(effect, index)}
               {effect.type.indexOf('Blur') > -1 && genBlurEditor(effect, index)}
             </g-menu>
@@ -815,6 +862,7 @@
   }
 
   .g-css-customizer-design-panel {
+    overflow-y: auto;
 
     &-section {
       padding: 10px 0 10px 8px;
@@ -878,7 +926,7 @@
     &-effect-shadow-editor {
       background-color: white;
       border: 1px solid #E0E0E0;
-      width: 240px;
+      width: 260px;
       height: 160px;
       display: grid;
       grid-template-columns: 1.5fr 1fr 1fr;
@@ -899,7 +947,7 @@
         font-weight: bold;
       }
 
-      &-title, &-input, &-alpha {
+      &-title {
         display: flex;
         align-items: center;
         font-size: 14px;
@@ -909,6 +957,13 @@
         input {
           font-size: 14px
         }
+      }
+
+      &-input, &-alpha {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        padding: 0 7px;
       }
 
       &-color {
@@ -929,10 +984,8 @@
           background: $transparentImg repeat;
         }
 
-        input {
-          font-size: 14px;
-          text-transform: uppercase;
-          padding-left: 8px;
+        .g-css-customizer-design-panel-color-input {
+          padding: 0 7px 0 5px;
         }
       }
     }
@@ -940,7 +993,7 @@
     &-effect-blur-editor {
       background-color: white;
       border: 1px solid #E0E0E0;
-      width: 240px;
+      width: 260px;
       height: 80px;
       display: grid;
       grid-template-columns: 0.4fr 1fr;
@@ -969,6 +1022,47 @@
         input {
           font-size: 14px
         }
+      }
+    }
+
+    &-color-input {
+      width: 82px;
+      padding-left: 12px;
+      line-height: normal;
+
+      ::v-deep.g-tf-input {
+        text-transform: uppercase;
+      }
+    }
+
+    &-percentage-input {
+      width: 54px;
+    }
+
+    &-length-input {
+      width: 48px;
+
+      &-prefixed {
+        width: 68px;
+
+        ::v-deep.g-tf {
+          align-items: center;
+        }
+
+        ::v-deep.g-tf-affix {
+          width: 20px;
+          font-size: 14px;
+          padding: 0 6px;
+        }
+      }
+    }
+
+    &-space-input {
+      display: flex;
+      align-items: center;
+
+      ::v-deep.g-checkbox {
+        padding-left: 20px;
       }
     }
   }

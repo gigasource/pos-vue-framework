@@ -11,6 +11,10 @@
 	.g-tf {
 		padding: 2px;
 
+    &-input {
+      font-size: 14px;
+    }
+
 		&:focus-within {
 			padding: 1px;
 			border: 1px solid rgb(24, 103, 192);

@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash';
   import {ref, reactive, computed, watch, set, provide, onMounted} from '@vue/composition-api';
-  import {parseCssData, isEmptySelector} from './GCssCustomizerFactory';
+  import {parseCssData, genSelectorDisplayData} from './GCssCustomizerFactory';
   import {getInternalValue} from '../../mixins/getVModel';
   import {convertToUnit, openFile, saveFile} from '../../utils/helpers';
   import GCssCustomizerLayout from './GCssCustomizerLayout'
@@ -125,12 +125,12 @@
         })
         _.forEach(parentClassList, parentClass => {
           if (treeNode.tag) {
-            treeNode.selectorList.push(`.${parentClass} ${treeNode.tag}`)
             treeNode.selectorList.push(`.${parentClass}>${treeNode.tag}`)
+            treeNode.selectorList.push(`.${parentClass} ${treeNode.tag}`)
           }
           _.forEach(treeNode.classList, childClass => {
-            treeNode.selectorList.push(`.${parentClass} .${childClass}`)
             treeNode.selectorList.push(`.${parentClass}>.${childClass}`)
+            treeNode.selectorList.push(`.${parentClass} .${childClass}`)
           })
         })
 
@@ -229,16 +229,10 @@
       const toggleTargetMode = () => {
         const previewComponent = context.refs.previewComponent
         if (!targetFlag.value) {
-          // for (let i = 0; i < previewComponent.$el.children.length; i++) {
-          //   previewComponent.$el.children[i].style.pointerEvents = 'none'
-          // }
           previewComponent.$el.addEventListener('mousemove', mouseMove)
           previewComponent.$el.addEventListener('mousedown', mouseDown)
           targetFlag.value = true
         } else {
-          // for (let i = 0; i < previewComponent.$el.children.length; i++) {
-          //   previewComponent.$el.children[i].style.pointerEvents = 'auto'
-          // }
           previewComponent.$el.removeEventListener('mousemove', mouseMove)
           previewComponent.$el.removeEventListener('mousedown', mouseDown)
           targetFlag.value = false
@@ -306,6 +300,7 @@
       }
 
       const animateSelectorTarget = (el) => {
+        if (!selectorTargetFlag.value) return
         const targetList = el.querySelectorAll(activeSelector.value)
         for (let target of targetList) {
           const targetDiv = createTargetDiv(target)
@@ -357,7 +352,10 @@
       })
 
       watch(() => activeCssSelectorList.value, () => {
-        activeSelector.value = activeCssSelectorList.value[0] || ''
+        const firstEditedSelector = _.find(activeCssSelectorList.value, selector => {
+          return cssData.value[selector] && !_.isEmpty(_.pickBy(cssData.value[selector].data, val => val))
+        })
+        activeSelector.value = firstEditedSelector || activeCssSelectorList.value[0] || ''
       }, {lazy: true, deep: true})
 
       watch(() => activeSelector.value, newVal => {
@@ -374,20 +372,20 @@
         }
       }, {lazy: true})
 
-      const cssDisplayCode = computed(() => {
-        const temp = []
-        _.forEach(activeSelectorData.value, (val, key) => {
-          val !== undefined && val !== '' && temp.push({
-            property: _.kebabCase(key),
-            value: val.split(' ')
-          })
-        })
-        return temp
-      })
+      const changeSelector = async selector => {
+        const previewComponent = context.refs.previewComponent
+        const domNode = previewComponent.$el.parentNode.querySelector(selector)
+        cssCustomizerTree.activePath = domNode.treePath
+        await context.root.$nextTick()
+        activeSelector.value = selector
+        cancelSelectorTargetAnimation()
+        animateSelectorTarget(previewComponent.$el.parentNode)
+      }
+
+      const cssDisplayCode = computed(() => genSelectorDisplayData(activeSelectorData.value))
+
 
       // Design
-      const propertyList = ['backgroundColor', 'color', 'width', 'height', 'border', 'borderRadius', 'padding', 'margin']
-
       const reactiveSet = (obj, key, val) => {
         if (obj[key] === undefined) set(obj, key, val)
         else obj[key] = val
@@ -410,11 +408,6 @@
       }
 
       const setDesignState =  designData => {
-        // if (!activeSelectorDesignState.value) {
-        //   if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
-        //   reactiveSet(cssData.value[activeSelector.value], 'designState', {})
-        // }
-        // reactiveSet(activeSelectorDesignState.value, key, val)
         activeSelectorDesignState.value = designData
       }
 
@@ -422,42 +415,6 @@
       provide('setStyle', setStyle)
       provide('getDesignState', getDesignState)
       provide('setDesignState', setDesignState)
-
-      // const inputObj = computed({
-      //   get: () => _.mapValues(_.groupBy(propertyList, val => val), (val, key) => {
-      //     if (activeSelectorData.value && activeSelectorData.value[key]) {
-      //       if (key.search(/[W|w]idth|[H|h]eight/) > -1) {
-      //         return activeSelectorData.value[key].replace(/px$/, '')
-      //       } else return activeSelectorData.value[key]
-      //     }
-      //     return ''
-      //   }),
-      //   set: val => {
-      //     if (!activeSelectorData.value) reactiveSet(cssData.value, activeSelector.value, {})
-      //     if (val.key.search(/[W|w]idth|[H|h]eight/) > -1) {
-      //       reactiveSet(activeSelectorData.value, val.key, convertToUnit(val.value))
-      //     } else if (val.value !== '') {
-      //       reactiveSet(activeSelectorData.value, val.key, val.value)
-      //     } else {
-      //       reactiveSet(activeSelectorData.value, val.key, undefined)
-      //     }
-      //     if (isEmptySelector(activeSelectorData.value)) {
-      //       reactiveSet(cssData.value, activeSelector.value, undefined)
-      //     }
-      //   }
-      // })
-      //
-      // const onInput = (value, key) => {
-      //   inputObj.value = {key: key, value: value}
-      // }
-
-      const applyChanges = () => {
-
-      }
-
-      const resetChanges = () => {
-        reactiveSet(cssData.value, activeSelector.value, undefined)
-      }
 
       // Actions
       const saveCssData = () => {
@@ -491,15 +448,16 @@
       const openStylePreviewDialog = () => stylePreviewDialog.value = true
 
       // Render functions
-      const genText = (text) => {
-        if (text.match(/#/) || text.match(/\d+/)) return <span class="g-css-customizer-code-number"> {text}</span>
-        else return <span class="g-css-customizer-code-string"> {text}</span>
+      const genText = (val, index, item) => {
+        return <span class={`g-css-customizer-code-${val.type}`}>
+          {val.type === 'delimiter' || (item[index - 1] && item[index - 1].string === '(') ? val.string : ' ' + val.string}
+        </span>
       }
 
       const genDisplayCode = (item) => {
         return <p>
           <span>{item.property + ':'}</span>
-          {item.value.map(val => genText(val))};
+          {item.value.map((val, index) => genText(val, index, item))};
         </p>
       }
 
@@ -565,11 +523,13 @@
           </div>
           <g-combobox value={activeSelector.value} vOn:input={e => activeSelector.value = e}
                       items={activeCssSelectorList.value} label="selector" menuProps={{maxHeight: '100%'}}/>
-          {cssDisplayCode.value.map(item => genDisplayCode(item))}
-          <g-css-customizer-style-preview vModel={stylePreviewDialog.value} cssData={cssData.value}/>
+          <div class="g-css-customizer-code-content">
+            {cssDisplayCode.value.map(item => genDisplayCode(item))}
+            <g-css-customizer-style-preview vModel={stylePreviewDialog.value} cssData={cssData.value} vOn:changeSelector={changeSelector}/>
             <g-icon class="g-css-customizer-code-show" size="16" color="red" vOn:click={toggleSelectorTargetMode}>
               {selectorTargetFlag.value ? 'far fa-eye' : 'far fa-eye-slash'}
             </g-icon>
+          </div>
         </div>
       }
 
@@ -578,20 +538,10 @@
           <div class="g-css-customizer-design-title">
             Design
           </div>
-          <g-css-customizer-design-panel vModel={cssData.value} activeSelector={activeSelector.value}>
-
-          </g-css-customizer-design-panel>
+          <g-css-customizer-design-panel activeSelector={activeSelector.value}/>
         </div>
       }
 
-      // <div className="g-css-customizer-design-content">
-      //   {propertyList.map(property => {
-      //     return <g-text-field dense label={property} value={inputObj.value[property]}
-      //                          vOn:input={e => onInput(e, property)}/>
-      //   })}
-      //   <g-btn outlined vOn:click={applyChanges}>Apply</g-btn>
-      //   <g-btn outlined vOn:click={resetChanges}>Reset</g-btn>
-      // </div>
       const genCssCustomizer = () => {
         return <g-grid-layout class="g-css-customizer-container" layout={GCssCustomizerLayout}>
           {genTreeView()}
@@ -700,7 +650,15 @@
       }
 
       &-string {
-        color: #20A471
+        color: #20A471;
+      }
+
+      &-function {
+        color: #725EE1;
+      }
+
+      &-delimiter {
+        color: #212121;
       }
 
       &-show {

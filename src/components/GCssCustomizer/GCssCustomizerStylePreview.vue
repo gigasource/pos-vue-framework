@@ -7,6 +7,7 @@
   import { GCardText, GCardActions } from '../GCard/GCardFunctionalComponent';
   import GBtn from '../GBtn/GBtn';
   import {getInternalValue} from '../../mixins/getVModel';
+  import {genSelectorDisplayData} from './GCssCustomizerFactory';
 
   export default {
     name: "GCssCustomizerStylePreview",
@@ -22,34 +23,14 @@
         return _.map(props.cssData, (val, key) => {
           return {
             selector: key,
-            data: _.compact(_.map(val.data, (val, key) => {
-              let temp = ''
-              if (val) temp = _.trim(val.replace(/\(|\)/g, match => ` ${match} `))
-              temp = temp.split(' ')
-              if (val !== undefined && val !== '') return {
-                property: _.kebabCase(key),
-                value: _.map(temp, (val, index, arr) => {
-                  let type
-                  if (val) {
-                    if (val.search(/\d+/) > -1) type = 'number'
-                    else if (arr[index + 1] === '(') type = 'function'
-                    else if (val === '(' || val === ')') type = 'bracket'
-                    else type = 'string'
-                    return {
-                      type: type,
-                      string: val
-                    }
-                  }
-                })
-              }
-            }))
+            data: genSelectorDisplayData(val.data)
           }
         })
       })
 
       const genText = (val, index, item) => {
         return <span class={`g-css-customizer-style-preview-${val.type}`}>
-          {val.type === 'bracket' || (item[index - 1] && item[index - 1].string === '(') ? val.string : ' ' + val.string}
+          {val.type === 'delimiter' || (item[index - 1] && item[index - 1].string === '(') ? val.string : ' ' + val.string}
         </span>
       }
 
@@ -63,7 +44,10 @@
       const genSelector = (item) => {
         return <div class="g-css-customizer-style-preview">
           <p>
-            <span class="g-css-customizer-style-preview-selector">{item.selector}</span>
+            <span class="g-css-customizer-style-preview-selector"
+                  vOn:click={() => context.emit('changeSelector', item.selector)}>
+              {item.selector}
+            </span>
             <span>{' {'}</span>
           </p>
           {item.data.map(item => genProperty(item))}
@@ -108,7 +92,15 @@
     }
 
     &-selector {
+      padding: 1px;
+      border-radius: 5px;
       color: #C93756;
+    }
+
+    &-selector:hover {
+      background-color: #C93756;
+      color: #FFFFFF;
+      cursor: pointer;
     }
 
     &-number {
@@ -123,7 +115,7 @@
       color: #725EE1;
     }
 
-    &-quote {
+    &-delimiter {
       color: #212121;
     }
   }
