@@ -173,13 +173,13 @@
         }
 
         const icon = (node.type !== 'divider' && node.type !== 'subheader') &&
-            ((context.slots.icon && context.slots.icon({node})) ||
-                <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}
-                        svg={node.svgIcon}>{node.icon || ''}</g-icon>)
+          ((context.slots.icon && context.slots.icon({node})) ||
+            <g-icon class={["g-treeview-icon", node.iconType === 'small' && "g-treeview-icon__small"]}
+                    svg={node.svgIcon}>{node.icon || ''}</g-icon>)
 
         // gen children
         const children = childrenVNodes &&
-            <div vShow={!treeStates[path].collapse} class="g-treeview-children">{childrenVNodes}</div>
+          <div vShow={!treeStates[path].collapse} class="g-treeview-children">{childrenVNodes}</div>
 
         // gen badge
         const badgeScopedSlots = {
@@ -193,15 +193,17 @@
         // gen node
         const data = {
           class: [node.type !== 'subheader' && node.type !== 'divider'
-              ? 'g-treeview-item waves-effect'
-              : null,
+            ? 'g-treeview-item waves-effect'
+            : null,
             props.rounded ? 'g-treeview-item__rounded' : null,
             (!childrenVNodes || node.clickable) && treeStates[path].selected
-                ? 'g-treeview__active'
-                : null],
+              ? 'g-treeview__active'
+              : null],
           on: {
             click: (e) => {
               e.stopPropagation()
+              if (node.type === 'subheader') return
+
               if (node.clickable || !childrenVNodes) {
                 context.emit('node-selected', node, path)
                 context.emit('input', path)
@@ -233,7 +235,7 @@
         }
 
         return <li class={!treeStates[path].collapse && childrenVNodes && 'g-treeview__open'}>
-          <a {...data}>
+          <a {...data} style={node && node.type === 'subheader' && 'cursor: default'}>
             {icon}
             <span style={node.textColor && textStyle}>{text}</span>
             <g-spacer/>
@@ -241,8 +243,8 @@
             {node && node.type !== 'divider' && node.type !== 'subheader' &&
             context.slots['prepend-icon'] && context.slots['prepend-icon']({node, path})}
             <span
-                class='g-treeview-action'
-                vShow={childrenVNodes}>
+              class='g-treeview-action'
+              vShow={childrenVNodes}>
             <g-icon vOn:click={e => toggleNodeExpansion(e, path)}>
               {treeStates[path].collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
             </g-icon>
@@ -267,7 +269,7 @@
         genNode,
         genWrapper: genChildrenNodeWrapper,
         genRootWrapper,
-        data: props.data,
+        data: computed(() => props.data),
         itemText: itemTextFn,
         itemChildren: props.itemChildren,
         expandLevel: props.expandLevel,

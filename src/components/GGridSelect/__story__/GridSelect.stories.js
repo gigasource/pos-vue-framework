@@ -73,6 +73,10 @@ export const buttons = () => ({
       type: Boolean,
       default: boolean('show as grid', false)
     },
+    mandatory: {
+      type: Boolean,
+      default: boolean('mandatory', false)
+    },
     multiple: {
       type: Boolean,
       default: boolean('multiple', true)
@@ -96,6 +100,7 @@ export const buttons = () => ({
       <g-grid-select :items="itemList"
                      :item-text="itemText"
                      :item-value="itemValue"
+                     :mandatory="mandatory"
                      :multiple="multiple"
                      :return-object="returnObject"
                      :grid="grid"
@@ -168,6 +173,10 @@ export const cardSelect = () => ({
     selectedList: [],
   }),
   props: {
+    mandatory: {
+      type: Boolean,
+      default: boolean('mandatory', false)
+    },
     multiple: {
       type: Boolean,
       default: boolean('multiple', true)
@@ -196,6 +205,7 @@ export const cardSelect = () => ({
       <g-grid-select :items="itemList"
                      :item-text="itemText"
                      :item-value="itemValue"
+                     :mandatory="mandatory"
                      :multiple="multiple"
                      :grid="grid"
                      :return-object="returnObject"

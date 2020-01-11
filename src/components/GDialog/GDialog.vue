@@ -42,6 +42,9 @@
       overlayOpacity: [Number, String],
 
       bottom: Boolean,
+
+      //content class for styling
+      contentClass: String,
     },
     setup(props, context) {
       const isActive = getInternalValue(props, context);

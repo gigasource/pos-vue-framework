@@ -6,7 +6,7 @@
   import GCard from '../GCard/GCard';
   import { GCardActions } from '../GCard/GCardFunctionalComponent';
   import GSpacer from '../GLayout/GSpacer';
-  import getVModel from '../../mixins/getVModel';
+  import {getInternalValue} from '../../mixins/getVModel';
 
   export default {
     name: 'GGridSelect',
@@ -38,7 +38,7 @@
       }
     },
     setup(props, context) {
-      const internalValue = getVModel(props, context)
+      const internalValue = getInternalValue(props, context)
 
       const options = computed(() => {
         if (Array.isArray(props.items)) return props.items;
@@ -54,6 +54,7 @@
       function toggleSelect(originalItem) {
         const returnItem = convertToReturnItem(originalItem);
         if (props.multiple) {
+          if (internalValue.value.length <= 1 && _.includes(internalValue.value, returnItem) && props.mandatory) return
           if (_.includes(internalValue.value, returnItem)) {
             internalValue.value.splice(internalValue.value.indexOf(returnItem), 1);
           } else {
@@ -61,6 +62,7 @@
             else internalValue.value.push(returnItem);
           }
         } else {
+          if (internalValue.value === returnItem && props.mandatory) return
           internalValue.value = internalValue.value === returnItem ? null : returnItem;
         }
       }
