@@ -8,7 +8,7 @@
     </div>
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
-      <div class='g-tf' :class="tfErrClasses">
+			<div class='g-tf' :class="tfClasses">
         <div v-if="prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner">
           <slot name="prepend-inner">
             <g-icon>{{prependInnerIcon}}</g-icon>
@@ -159,7 +159,7 @@
         }
       })
       //change input border color
-      const tfErrClasses = computed(() => isValidInput.value ? {} : {'g-tf__error': true})
+      const tfClasses = computed(() => isValidInput.value ? {} : { 'g-tf__error': true })
 
       const tfErrWrapperClass = computed(() => ({'g-tf-wrapper__error': !isValidInput.value}));
 
@@ -213,7 +213,7 @@
         //calculated styles and classes
         labelClasses,
         labelStyles,
-        tfErrClasses,
+        tfClasses,
         tfWrapperClasses,
         hintClasses,
         tearStyles,

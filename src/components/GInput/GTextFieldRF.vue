@@ -141,8 +141,8 @@
       }
 
       const genInput = () => {
-        const tfErrClasses = computed(() => isValidInput.value ? {} : {'g-tf__error': true})
-        return <div class={['g-tf', tfErrClasses]}>
+        const tfClasses = computed(() => isValidInput.value ? {} : { 'g-tf__error': true })
+        return <div class={['g-tf', tfClasses]}>
           <div class="g-tf--prepend__inner" vOn:click={onClickPrependInner}>
             {genIconSlot('prepend-inner')}
           </div>

@@ -3,7 +3,7 @@
        @mousedown="onMouseDown">
     <div v-if="$slots['prepend-outer'] || prependIcon" class="g-tf-prepend__outer" ref="prependRef">
       <slot name="prepend-outer">
-        <g-icon :color=iconColor @click="onClickPrependOuter">{{prependIcon}}</g-icon>
+        <g-icon :svg="svg" :color=iconColor @click="onClickPrependOuter">{{prependIcon}}</g-icon>
       </slot>
     </div>
     <fieldset>
@@ -11,7 +11,7 @@
       <div class='g-tf' :class="tfErrClasses">
         <div v-if="$slots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner">
           <slot name="prepend-inner">
-            <g-icon :color=iconColor @click="onClickPrependInner">{{prependInnerIcon}}</g-icon>
+            <g-icon :svg="svg" :color=iconColor @click="onClickPrependInner">{{prependInnerIcon}}</g-icon>
           </slot>
         </div>
         <div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
@@ -41,13 +41,13 @@
           </slot>
         </div>
         <div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
-        <div class="g-tf-append__inner" @click="onClickAppendInner">
+        <div v-if="$slots['append-inner'] || appendIcon" class="g-tf-append__inner" @click="onClickAppendInner">
           <slot name="clearable-slot" :iconColor="iconColor">
             <g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
           </slot>
 
           <slot name="append-inner" :iconColor="iconColor">
-            <g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
+            <g-icon :svg="svg" :color=iconColor>{{appendInnerIcon}}</g-icon>
           </slot>
         </div>
         <slot name="input-message">
@@ -55,7 +55,7 @@
           <div class="g-tf-hint" v-else-if="isValidInput && hint" :class="hintClasses">
             <slot name="hint">{{hint}}</slot>
           </div>
-          <div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
+          <div v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
             {{internalValue.length}} / {{counter}}
           </div>
         </slot>
@@ -64,7 +64,7 @@
 
     <slot name="append-outer">
       <div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
-        <g-icon :color=iconColor>{{appendIcon}}</g-icon>
+        <g-icon :svg="svg" :color=iconColor>{{appendIcon}}</g-icon>
       </div>
     </slot>
 
@@ -73,14 +73,14 @@
 </template>
 
 <script>
-  import {ref, computed} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
+  import { ref, computed } from '@vue/composition-api';
+  import { getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate } from './GInputFactory';
   import VueTheMask from 'vue-the-mask'
   import GIcon from '../GIcon/GIcon';
 
   export default {
     name: 'GTextField',
-    components: {GIcon},
+    components: { GIcon },
     props: {
       ...{//display props
         label: String,
@@ -93,6 +93,7 @@
           type: String,
           default: 'clear'
         },
+        svg: Boolean,
         prefix: String,
         suffix: String,
         //input states
@@ -140,25 +141,25 @@
 
       const tfWrapperClasses = getTfWrapperClasses(props);
 
-      const {internalValue, rawInternalValue} = getInternalValue(props, context);
+      const { internalValue, rawInternalValue } = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active');
+      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef } = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active');
 
       //Activate non persistent hint
-      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? {'g-tf-hint__active': true} : {})
+      const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
 
       //event handler function
-      const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput);
+      const { errorMessages, validate } = getValidate(props, isFocused, internalValue, isValidInput);
 
-      const inputErrStyles = computed(() => isValidInput.value ? {} : {'color': 'red'})
+      const inputErrStyles = computed(() => isValidInput.value ? {} : { 'color': 'red' })
       //change input border color
       const tfErrClasses = computed(() => isValidInput.value ? {} : {'g-tf__error': true})
 
-      const tfErrWrapperClass = computed(() => ({'g-tf-wrapper__error': !isValidInput.value}));
+      const tfErrWrapperClass = computed(() => ({ 'g-tf-wrapper__error': !isValidInput.value }));
 
-      const {onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner,} = getSlotEventListeners(context);
+      const { onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner, } = getSlotEventListeners(context);
 
       const {
         onClick, onFocus, onBlur, onClearIconClick,
