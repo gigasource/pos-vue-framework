@@ -1,6 +1,6 @@
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { provide, ref, watch, inject } from '@vue/composition-api'
+  import { provide, ref, watch, inject, computed } from '@vue/composition-api'
 
   export default {
     name: 'GTabItems',
