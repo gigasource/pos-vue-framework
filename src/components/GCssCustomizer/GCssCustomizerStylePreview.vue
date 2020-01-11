@@ -22,25 +22,41 @@
         return _.map(props.cssData, (val, key) => {
           return {
             selector: key,
-            data: _.compact(_.map(val, (val, key) => {
+            data: _.compact(_.map(val.data, (val, key) => {
+              let temp = ''
+              if (val) temp = _.trim(val.replace(/\(|\)/g, match => ` ${match} `))
+              temp = temp.split(' ')
               if (val !== undefined && val !== '') return {
                 property: _.kebabCase(key),
-                value: val.split(' ')
+                value: _.map(temp, (val, index, arr) => {
+                  let type
+                  if (val) {
+                    if (val.search(/\d+/) > -1) type = 'number'
+                    else if (arr[index + 1] === '(') type = 'function'
+                    else if (val === '(' || val === ')') type = 'bracket'
+                    else type = 'string'
+                    return {
+                      type: type,
+                      string: val
+                    }
+                  }
+                })
               }
             }))
           }
         })
       })
 
-      const genText = (text) => {
-        if (text.match(/#/) || text.match(/\d+/)) return <span class="g-css-customizer-style-preview-number"> {text}</span>
-        else return <span class="g-css-customizer-style-preview-string"> {text}</span>
+      const genText = (val, index, item) => {
+        return <span class={`g-css-customizer-style-preview-${val.type}`}>
+          {val.type === 'bracket' || (item[index - 1] && item[index - 1].string === '(') ? val.string : ' ' + val.string}
+        </span>
       }
 
       const genProperty = (item) => {
-        return <p>
+        return <p class="g-css-customizer-style-preview-property">
           <span>{item.property + ':'}</span>
-          {item.value.map(val => genText(val))};
+          {item.value.map((val, index) => genText(val, index, item.value))};
         </p>
       }
 
@@ -87,8 +103,12 @@
     font-size: 14px;
     color: #444444;
 
+    &-property {
+      margin-left: 16px;
+    }
+
     &-selector {
-      color: #C93756
+      color: #C93756;
     }
 
     &-number {
@@ -96,7 +116,15 @@
     }
 
     &-string {
-       color: #20A471
+       color: #20A471;
+    }
+
+    &-function {
+      color: #725EE1;
+    }
+
+    &-quote {
+      color: #212121;
     }
   }
 

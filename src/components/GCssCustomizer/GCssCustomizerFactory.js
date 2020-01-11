@@ -11,8 +11,8 @@ export function parseSelectorData (selectorData) {
 
 export function parseCssData (cssData) {
   return _.reduce(cssData, (acc, val, key) => {
-    const selectorStyleString = parseSelectorData(val)
-    if (selectorStyleString !== '{}') return `${acc} ${key} ${parseSelectorData(val)} \r\n`
+    const selectorStyleString = parseSelectorData(val.data)
+    if (selectorStyleString !== '{}') return `${acc} ${key} ${selectorStyleString} \r\n`
     else return acc
   }, '')
 }

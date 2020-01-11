@@ -55,6 +55,13 @@
 
       const activeSelector = ref('')
 
+          const activeSelectorData = computed(() => cssData.value[activeSelector.value] && cssData.value[activeSelector.value].data)
+
+      const activeSelectorDesignState = computed({
+        get: () => cssData.value[activeSelector.value] && cssData.value[activeSelector.value].designState,
+        set: value => cssData.value[activeSelector.value] && (cssData.value[activeSelector.value].designState = value)
+      })
+
       // Path
       function isRootPath(path) {
         return path === ''
@@ -369,7 +376,7 @@
 
       const cssDisplayCode = computed(() => {
         const temp = []
-        _.forEach(cssData.value[activeSelector.value], (val, key) => {
+        _.forEach(activeSelectorData.value, (val, key) => {
           val !== undefined && val !== '' && temp.push({
             property: _.kebabCase(key),
             value: val.split(' ')
@@ -386,33 +393,63 @@
         else obj[key] = val
       }
 
-      const inputObj = computed({
-        get: () => _.mapValues(_.groupBy(propertyList, val => val), (val, key) => {
-          if (cssData.value[activeSelector.value] && cssData.value[activeSelector.value][key]) {
-            if (key.search(/[W|w]idth|[H|h]eight/) > -1) {
-              return cssData.value[activeSelector.value][key].replace(/px$/, '')
-            } else return cssData.value[activeSelector.value][key]
-          }
-          return ''
-        }),
-        set: val => {
-          if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
-          if (val.key.search(/[W|w]idth|[H|h]eight/) > -1) {
-            reactiveSet(cssData.value[activeSelector.value], val.key, convertToUnit(val.value))
-          } else if (val.value !== '') {
-            reactiveSet(cssData.value[activeSelector.value], val.key, val.value)
-          } else {
-            reactiveSet(cssData.value[activeSelector.value], val.key, undefined)
-          }
-          if (isEmptySelector(cssData.value[activeSelector.value])) {
-            reactiveSet(cssData.value, activeSelector.value, undefined)
-          }
-        }
-      })
-
-      const onInput = (value, key) => {
-        inputObj.value = {key: key, value: value}
+      const getStyle = key => {
+        return _.get(activeSelectorData.value, key)
       }
+
+      const setStyle = (key, val) => {
+        if (!activeSelectorData.value) {
+          if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
+          reactiveSet(cssData.value[activeSelector.value], 'data', {})
+        }
+        reactiveSet(activeSelectorData.value, key, val)
+      }
+
+      const getDesignState = () => {
+        return activeSelectorDesignState.value
+      }
+
+      const setDesignState =  designData => {
+        // if (!activeSelectorDesignState.value) {
+        //   if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
+        //   reactiveSet(cssData.value[activeSelector.value], 'designState', {})
+        // }
+        // reactiveSet(activeSelectorDesignState.value, key, val)
+        activeSelectorDesignState.value = designData
+      }
+
+      provide('getStyle', getStyle)
+      provide('setStyle', setStyle)
+      provide('getDesignState', getDesignState)
+      provide('setDesignState', setDesignState)
+
+      // const inputObj = computed({
+      //   get: () => _.mapValues(_.groupBy(propertyList, val => val), (val, key) => {
+      //     if (activeSelectorData.value && activeSelectorData.value[key]) {
+      //       if (key.search(/[W|w]idth|[H|h]eight/) > -1) {
+      //         return activeSelectorData.value[key].replace(/px$/, '')
+      //       } else return activeSelectorData.value[key]
+      //     }
+      //     return ''
+      //   }),
+      //   set: val => {
+      //     if (!activeSelectorData.value) reactiveSet(cssData.value, activeSelector.value, {})
+      //     if (val.key.search(/[W|w]idth|[H|h]eight/) > -1) {
+      //       reactiveSet(activeSelectorData.value, val.key, convertToUnit(val.value))
+      //     } else if (val.value !== '') {
+      //       reactiveSet(activeSelectorData.value, val.key, val.value)
+      //     } else {
+      //       reactiveSet(activeSelectorData.value, val.key, undefined)
+      //     }
+      //     if (isEmptySelector(activeSelectorData.value)) {
+      //       reactiveSet(cssData.value, activeSelector.value, undefined)
+      //     }
+      //   }
+      // })
+      //
+      // const onInput = (value, key) => {
+      //   inputObj.value = {key: key, value: value}
+      // }
 
       const applyChanges = () => {
 
@@ -541,7 +578,7 @@
           <div class="g-css-customizer-design-title">
             Design
           </div>
-          <g-css-customizer-design-panel>
+          <g-css-customizer-design-panel vModel={cssData.value} activeSelector={activeSelector.value}>
 
           </g-css-customizer-design-panel>
         </div>
@@ -570,9 +607,9 @@
         cssCustomizerTree,
         activeSelector,
         activeCssSelectorList,
+        activeSelectorData,
         cssData,
         stylesString,
-        inputObj,
       }
     },
     render() {
@@ -685,7 +722,7 @@
       &-target {
         position: absolute;
         top: 8px;
-        right: 260px;
+        right: 310px;
       }
     }
 
