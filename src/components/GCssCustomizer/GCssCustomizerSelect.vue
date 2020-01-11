@@ -63,7 +63,6 @@
 
 
 		.input {
-			height: 40px;
 			display: flex;
 			padding: 4px 16px;
 

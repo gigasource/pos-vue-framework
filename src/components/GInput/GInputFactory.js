@@ -151,7 +151,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onChange(event) {
-    context.emit('change', event)
+    context.emit('change', internalValue.value)
   }
 
   const state = {
