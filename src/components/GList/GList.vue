@@ -13,11 +13,11 @@
         <template v-for="(item, index) in renderList">
           <slot name="list-item" :isSelected="isActiveItem(item)" :item="item" :on="getListEvents(item, index)">
             <div
-              :class="{'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
-              class="g-list-item"
-              tabindex="0"
-              v-on="getListEvents(item, index)"
-              ref="listItemRef"
+                :class="{'g-list-item__disabled': item.disabled,'g-list-item__active': isActiveItem(item), [activeClass]: isActiveItem(item), 'waves-effect': true, 'waves-auto': true}"
+                class="g-list-item"
+                tabindex="0"
+                v-on="getListEvents(item, index)"
+                ref="listItemRef"
             >
               <slot :isSelected="isActiveItem(item, index)" :item="item" name="prepend">
                 <div :class="prependClasses" v-if="item.prepend &&  prependType && itemText">
@@ -25,7 +25,7 @@
                   <g-avatar v-else-if="prependType==='avatar'">
                     <g-img :src="item.prepend"/>
                   </g-avatar>
-                  <g-img v-else-if="prependType==='image'" :src="item.prepend"/>
+                  <g-img v-else-if="prependType==='image' && item.prepend" :src="item.prepend"/>
                 </div>
               </slot>
               <slot name="content">

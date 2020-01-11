@@ -1,15 +1,13 @@
 <script>
-
-
-  import GSelect from '../GSelect/GSelect';
+  import GCombobox from '../GCombobox/GCombobox';
 
   export default {
-    name: 'GCssCustomizerSelect',
-    mixins: [GSelect],
+    name: 'GCssCustomizerCombobox',
+    mixins: [GCombobox],
   }
 </script>
 <style scoped lang="scss">
-	.g-select::v-deep {
+	.g-combobox::v-deep {
 		span {
 			margin: 3px
 		}
@@ -133,7 +131,7 @@
 	}
 
 
-	.g-select__active::v-deep {
+	.g-combobox__active::v-deep {
 		.g-tf-append__inner .g-icon:last-child {
 			transform: rotateZ(180deg);
 		}
@@ -152,12 +150,6 @@
 				.g-list-item-content {
 					padding-left: 36px;
 					margin-left: 0;
-				}
-
-				&__disabled {
-					.g-list-item-text {
-						color: lightslategray;
-					}
 				}
 			}
 
