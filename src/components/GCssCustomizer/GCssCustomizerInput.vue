@@ -19,7 +19,7 @@
 
 		&:hover {
 			padding: 1px;
-			border: 1px solid #424242;
+			border: 1px solid #BDBDBD;
 			border-radius: 4px;
 
 			&:focus-within {
@@ -37,6 +37,10 @@
 	.g-tf::before, .g-tf::after {
 		display: none;
 
+	}
+
+	.g-tf-wrapper:not(.g-tf__filled):not(.g-tf__outlined) .g-tf-prepend__inner ~ .inputGroup {
+		padding: 0;
 	}
 
 	.g-tf-affix {

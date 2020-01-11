@@ -1,20 +1,3 @@
-<!--<template>-->
-<!--	<div :style="styles" class="g-transform container">-->
-<!--		<div class="item" v-for="i in position">-->
-<!--			<component :is="dynamicTag(i)" :prefix="i.prefix">-->
-
-<!--			</component>-->
-<!--&lt;!&ndash;			<g-css-customizer-input :placeholder="position[i-1].placeholder" :prefix="position.prefix" v-model="internalValue.position[i-1]">&ndash;&gt;-->
-
-<!--&lt;!&ndash;			</g-css-customizer-input>&ndash;&gt;-->
-<!--&lt;!&ndash;		</div>&ndash;&gt;-->
-<!--&lt;!&ndash;		<div class="item" v-for="i in size.length">&ndash;&gt;-->
-<!--&lt;!&ndash;			<g-css-customizer-input :placeholder="size[i-1].placeholder" :prefix="size.prefix" v-model="internalValue.size[i-1]">&ndash;&gt;-->
-
-<!--&lt;!&ndash;			</g-css-customizer-input>&ndash;&gt;-->
-<!--		</div>-->
-<!--	</div>-->
-<!--</template>-->
 <template>
 	<div>
 		<g-row v-for="i in 3" :key="i" class="g-transform container">
@@ -28,7 +11,7 @@
 </template>
 <script>
   import GCssCustomizerInput from './GCssCustomizerInput';
-  import { computed } from '@vue/composition-api';
+  import { computed, ref, reactive } from '@vue/composition-api';
   import GRow from '../GLayout/GRow';
   import { Fragment } from 'vue-fragment';
   import GIcon from '../GIcon/GIcon';
@@ -37,14 +20,13 @@
   import GCssCustomizerSelect from './GCssCustomizerSelect';
 
   export default {
-    name: 'GCssCustomizerPositionForm',
+    name: 'GCssCustomizerInputForm',
     components: { GCssCustomizerInput, GRow, Fragment, GIcon, GBtn, GSelect, GCssCustomizerSelect },
     props: {
       top: { type: String, default: '' },
       left: { type: String, default: '' },
       width: String,
       height: String,
-      category: Number,
       list1: {
         type: Array,
         default: () => {
@@ -95,16 +77,28 @@
         }
       }
       //todo: get internalValue
+      //options: truyen value, sinh component tu value, v-model value
+      //truyen list, computed value, emit value
+      const internalValue = ref(props.value)
 
       const eventHandlers = (item, index, i) => {
         if (item.value) return {
           input: (e) => {
+            if (item.type === 'input') return
             item.value = e
-            context.emit('input', [props.list1, props.list2, props.list3])
-          }
-        }
-        return {
-          click: ''
+            internalValue.value[item.name] = parseInt(e) || e
+            context.emit('change', internalValue.value)
+          },
+          enter: (e) => {
+            item.value = e
+            internalValue.value[item.name] = parseInt(e) || e
+            context.emit('change', internalValue.value)
+          },
+          change: (e) => {
+            item.value = e
+            internalValue.value[item.name] = parseInt(e) || e
+            context.emit('change', internalValue.value)
+          },
         }
       }
       const styles = computed(() => ({
@@ -134,6 +128,7 @@
         styles,
         dynamicTag,
         eventHandlers,
+        internalValue
       }
     }
   }

@@ -1,5 +1,5 @@
 <script>
-  import { ref } from '@vue/composition-api';
+  import { reactive, ref } from '@vue/composition-api';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
@@ -7,11 +7,11 @@
   import GRow from '../GLayout/GRow';
   import GCheckbox from '../GCheckbox/GCheckbox';
   import GTextField from '../GInput/GTextField';
-  import GCssCustomizerPositionForm from './GCssCustomizerPositionForm';
+  import GCssCustomizerInputForm from './GCssCustomizerInputForm';
 
   export default {
     name: 'GCssCustomizerDesignPanel',
-    components: { GCssCustomizerPositionForm, GTextField, GBtn, GIcon, GGridSelect, GColorPicker, GRow, GCheckbox },
+    components: { GCssCustomizerInputForm, GTextField, GBtn, GIcon, GGridSelect, GColorPicker, GRow, GCheckbox },
     props: {},
     setup(props, context) {
       const alignItemList = ref([
@@ -67,25 +67,44 @@
         </g-grid-select>
       }
 
+      const basic = ref({
+        X: 41,
+        Y: 711,
+        W: 9,
+        H: 11,
+        rotation: 100,
+        borderRadius: 0,
+      })
 
+      const textOptions = ref({
+          fontFamily: 'Roboto',
+          fontStyle: 'Regular',
+          fontSize: 12,
+          lineHeight: 22,
+          textPercent: 0,
+          lineSpace: 0,
+        }
+      )
+
+
+      const position = [{ type: 'input', prefix: 'X', name: 'X', value: basic.value.X }, { type: 'input', prefix: 'Y', name: 'Y', value: '711' },]
+      const size = [{ type: 'input', prefix: 'W', name: 'W', value: '9' }, { type: 'input', prefix: 'H', name: 'H', value: '11' }]
+      const rotation = [{ type: 'input', name: 'rotation', prepend: 'icon-pns_rotation', value: '100%' }, { type: 'input', prepend: 'icon-pns_chain', name: 'borderRadius', value: '0' }]
       //gen Transform
-      const position = [{ type: 'input', prefix: 'X', value: '41' }, { type: 'input', prefix: 'Y', value: '711' },]
-      const size = [{ type: 'input', prefix: 'W', value: '9' }, { type: 'input', prefix: 'H', value: '11' }, { type: 'button', icon: 'icon-pns_angle' }]
-      const rotation = [{ type: 'input', prepend: 'icon-pns_rotation', value: '100%' }, { type: 'input', prepend: 'icon-pns_chain', value: '0' }]
       const genPositionAndSizing = () => {
-        return <g-css-customizer-position-form list1={position} list2={size} list3={rotation}>
+        return <g-css-customizer-input-form value={basic.value} list1={position} list2={size} list3={rotation} vOn:change={(e) => basic.value = e}>
 
-        </g-css-customizer-position-form>
+        </g-css-customizer-input-form>
       }
 
       //gen TextOptions
-      const family = [{ type: 'select', value: 'Roboto', list: ['Regular', 'Bold', 'Italic'] }]
-      const format = [{ type: 'select', value: 'Regular', list: ['Regular', 'Bold', 'Italic'] }, {}, { type: 'input', prepend: 'icon', value: '12px' }]
-      const lineSpace = [{ type: 'input', prepend: 'icon-tops_line_height', value: '22' }, { type: 'input', prepend: 'icon-tops_text_percent', value: '0' }, { type: 'input', prepend: 'icon-tops_line_space', value: '0%' }]
+      const family = [{ type: 'select', name: 'fontFamily', value: 'Roboto', list: ['Regular', 'Bold', 'Italic'] }]
+      const format = [{ type: 'select', name: 'fontStyle', value: 'Regular', list: ['Regular', 'Bold', 'Italic'] }, {}, { type: 'input', name: 'fontSize', prepend: 'icon', value: '12px' }]
+      const lineSpace = [{ type: 'input', prepend: 'icon-tops_line_height', name: 'lineHeight', value: '22' }, { type: 'input', prepend: 'icon-tops_text_percent', name: 'textPercent', value: '0' }, { type: 'input', prepend: 'icon-tops_line_space', name: 'lineSpace', value: '0%' }]
       const genTextOptions = () => {
-        return <g-css-customizer-position-form list1={family} list2={format} list3={lineSpace}>
+        return <g-css-customizer-input-form value={textOptions.value} list1={family} list2={format} list3={lineSpace} vOn:input={(e) => textOptions.value = e}>
 
-        </g-css-customizer-position-form>
+        </g-css-customizer-input-form>
       }
 
       const
@@ -101,6 +120,7 @@
       return {
         genDesignPanel,
         align,
+        basic,
       }
     },
     render() {

@@ -28,7 +28,7 @@
 
 			&:hover {
 				padding: 1px;
-				border: 1px solid #424242;
+				border: 1px solid #BDBDBD;
 				border-radius: 4px;
 
 				&:focus-within {
