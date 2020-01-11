@@ -1,8 +1,13 @@
 <template>
 	<div>
-		<g-row v-for="i in 3" :key="i" class="g-transform container">
+		<g-row nowrap :style="styles" v-for="i in 3" :key="i" class="g-transform container">
 			<component class="item" v-for="(item, index) in list(i)" :is="dynamicTag(item)" v-bind="attrs(item)" :key="index" v-on="eventHandlers(item, index, i)">
-				<g-icon size="15" svg v-if="item.icon">{{item.icon}}</g-icon>
+				<template v-slot:itemPrepend="{isSelected, item}">
+					<div v-if="isSelected" class="g-list-item-icon">
+						<g-icon size="12px">{{item.prependIcon}}</g-icon>
+					</div>
+				</template>
+
 			</component>
 		</g-row>
 	</div>
@@ -11,17 +16,18 @@
 </template>
 <script>
   import GCssCustomizerInput from './GCssCustomizerInput';
-  import { computed, ref, reactive } from '@vue/composition-api';
+  import { computed, ref } from '@vue/composition-api';
   import GRow from '../GLayout/GRow';
   import { Fragment } from 'vue-fragment';
   import GIcon from '../GIcon/GIcon';
   import GBtn from '../GBtn/GBtn';
   import GSelect from '../GSelect/GSelect';
   import GCssCustomizerSelect from './GCssCustomizerSelect';
+  import GCssCustomizerCombobox from './GCssCustomizerCombobox';
 
   export default {
     name: 'GCssCustomizerInputForm',
-    components: { GCssCustomizerInput, GRow, Fragment, GIcon, GBtn, GSelect, GCssCustomizerSelect },
+    components: { GCssCustomizerInput, GRow, Fragment, GIcon, GBtn, GSelect, GCssCustomizerSelect, GCssCustomizerCombobox },
     props: {
       top: { type: String, default: '' },
       left: { type: String, default: '' },
@@ -73,7 +79,10 @@
           svg: item.value && true,
           flat: item.icon && true,
           ripple: item.icon && false,
-          items: item.type === 'select' && item.list,
+          items: item.type !== 'input' && item.list,
+          disabled: item.disabled,
+          itemText: 'text',
+          itemValue: 'text',
         }
       }
       //todo: get internalValue
@@ -111,10 +120,10 @@
         switch (i.type) {
           case 'input':
             return 'g-css-customizer-input'
-          case 'button':
-            return 'g-btn'
           case 'select':
             return 'g-css-customizer-select'
+          case 'combobox':
+            return 'g-css-customizer-combobox'
           case undefined:
             return 'span'
 
@@ -134,27 +143,25 @@
   }
 </script>
 <style scoped lang="scss">
+
+
 	.g-transform {
+		.item {
+			margin: 2px;
+		}
+
 		&:first-child {
 			padding-top: 24px;
 		}
 
-		&:last-child {
-			border-bottom: 1px solid gray;
-			padding-bottom: 10px;
-		}
 
 		&.g-row {
 			justify-content: start;
 
 		}
 
-		.g-tf-wrapper.item ::v-deep {
-			width: 33%;
-		}
 
 		.g-select::v-deep {
-			width: 33%;
 
 			.input {
 				padding: 0 0 0 6px;
@@ -173,7 +180,6 @@
 		}
 
 		span {
-			width: 33%;
 		}
 
 	}

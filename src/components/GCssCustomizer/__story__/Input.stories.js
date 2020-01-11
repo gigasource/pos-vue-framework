@@ -1,5 +1,6 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
+import GCssCustomizerInputGroup from '../GCssCustomizerInputGroup';
 
 //
 export default {
@@ -31,16 +32,28 @@ export const test2 = () => ({
 </div>
 `,
 })
-//
-//
-// export const test2 = () => ({
-//   components: {},
-//   setup() {
-//     return () => (
-//       <g></g>
-//     )
-//   }
-// })
+export const inputGroup = () => ({
+  components: { GCssCustomizerInputGroup },
+  props: {},
+  data() {
+    return {
+      value: [0, 0, 0, 0],
+      prepend: 'check',
+
+    }
+  },
+  methods: {
+    input: function (event) {
+      this.value[event.index] = event.value
+    }
+  },
+  template: `
+  <div>
+  <g-css-customizer-input-group :value="value" :prepend="prepend" v-on:input="input"/>
+</div>
+`,
+})
+
 
 // testing
 import Vue from 'vue/dist/vue.common.js'

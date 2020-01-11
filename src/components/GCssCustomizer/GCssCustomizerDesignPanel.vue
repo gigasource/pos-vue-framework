@@ -8,10 +8,12 @@
   import GCheckbox from '../GCheckbox/GCheckbox';
   import GTextField from '../GInput/GTextField';
   import GCssCustomizerInputForm from './GCssCustomizerInputForm';
+  import GCssCustomizerInputGroup from './GCssCustomizerInputGroup';
+  import GDivider from '../GLayout/GDivider';
 
   export default {
     name: 'GCssCustomizerDesignPanel',
-    components: { GCssCustomizerInputForm, GTextField, GBtn, GIcon, GGridSelect, GColorPicker, GRow, GCheckbox },
+    components: { GDivider, GCssCustomizerInputGroup, GCssCustomizerInputForm, GTextField, GBtn, GIcon, GGridSelect, GColorPicker, GRow, GCheckbox },
     props: {},
     setup(props, context) {
       const alignItemList = ref([
@@ -89,17 +91,23 @@
 
       const position = [{ type: 'input', prefix: 'X', name: 'X', value: basic.value.X }, { type: 'input', prefix: 'Y', name: 'Y', value: '711' },]
       const size = [{ type: 'input', prefix: 'W', name: 'W', value: '9' }, { type: 'input', prefix: 'H', name: 'H', value: '11' }]
-      const rotation = [{ type: 'input', name: 'rotation', prepend: 'icon-pns_rotation', value: '100%' }, { type: 'input', prepend: 'icon-pns_chain', name: 'borderRadius', value: '0' }]
-      //gen Transform
-      const genPositionAndSizing = () => {
-        return <g-css-customizer-input-form value={basic.value} list1={position} list2={size} list3={rotation} vOn:change={(e) => basic.value = e}>
+      const rotation = ref([{ type: 'input', name: 'rotation', prepend: 'icon-pns_rotation', value: '100%' }, { type: 'input', prepend: 'icon-pns_chain', name: 'borderRadius', value: '0', disabled: true }])
+      const borderRadiusArray = ref([basic.value.borderRadius, basic.value.borderRadius, basic.value.borderRadius, basic.value.borderRadius,])
 
-        </g-css-customizer-input-form>
+      //gen Transform
+
+      const genPositionAndSizing = () => {
+        return [
+          <g-css-customizer-input-form width="145px" value={basic.value} list1={position} list2={size} list3={rotation.value} vOn:change={(e) => basic.value = e}/>,
+          rotation.value[1].disabled ?
+            <g-css-customizer-input-group width="145px" value={borderRadiusArray.value} prepend={rotation.value[1].prepend} vOn:input={e => basic.value.borderRadius = e}/> : null,
+          <g-divider/>
+        ]
       }
 
       //gen TextOptions
-      const family = [{ type: 'select', name: 'fontFamily', value: 'Roboto', list: ['Regular', 'Bold', 'Italic'] }]
-      const format = [{ type: 'select', name: 'fontStyle', value: 'Regular', list: ['Regular', 'Bold', 'Italic'] }, {}, { type: 'input', name: 'fontSize', prepend: 'icon', value: '12px' }]
+      const family = [{ type: 'combobox', name: 'fontFamily', value: 'Roboto', list: [{ text: 'Roboto', prependIcon: 'check' }, { text: 'SuperBow', prependIcon: 'check' }, { text: 'Ariel', prependIcon: 'check' }] }]
+      const format = [{ type: 'select', name: 'fontStyle', value: 'Bold', list: [{ text: 'Regular', prependIcon: 'check', disabled: true }, { text: 'Bold', prependIcon: 'check' }, { text: 'Italic', prependIcon: 'check' }] }, {}, { type: 'input', name: 'fontSize', prepend: 'icon', value: '12px' }]
       const lineSpace = [{ type: 'input', prepend: 'icon-tops_line_height', name: 'lineHeight', value: '22' }, { type: 'input', prepend: 'icon-tops_text_percent', name: 'textPercent', value: '0' }, { type: 'input', prepend: 'icon-tops_line_space', name: 'lineSpace', value: '0%' }]
       const genTextOptions = () => {
         return <g-css-customizer-input-form value={textOptions.value} list1={family} list2={format} list3={lineSpace} vOn:input={(e) => textOptions.value = e}>
@@ -121,6 +129,7 @@
         genDesignPanel,
         align,
         basic,
+        rotation
       }
     },
     render() {
@@ -134,6 +143,12 @@
 		padding: 0 0 10px 0;
 		border-bottom: 1px solid grey;
 		justify-content: space-between;
+	}
+
+	::v-deep.g-divider {
+		background-color: #1d1d1d;
+		height: 2px;
+		margin-top: 10px;
 	}
 
 	.g-css-customizer-design-panel {

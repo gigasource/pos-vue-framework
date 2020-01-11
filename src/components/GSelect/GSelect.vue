@@ -37,6 +37,7 @@
           type: [Boolean, Number, String],
           default: false
         },
+        prependIcon: String,
         placeholder: String,
         label: String,
         prefix: String,
@@ -166,7 +167,9 @@
                     input: e => selectedValue.value = e,
                   },
                   scopedSlots: {
-                    content: () => context.slots.item && context.slots.item()
+                    content: () => context.slots.item && context.slots.item(),
+                    prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
+                    // prepend: ({isSelected, item}) => isSelected? <div class="g-list-item-icon"><g-icon>{item.prependIcon}</g-icon></div> : null
                   }
                 }}
                 ref="list"
@@ -242,7 +245,7 @@
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly', 'required']),
+                      'rules', 'type', 'disabled', 'readOnly', 'required',]),
                     value: tfValue.value
                   },
                   on: {
@@ -277,6 +280,7 @@
             nudgeBottom: nudgeBottom.value,
             value: showOptions.value,
             eager: props.eager,
+            contentClass: 'in-select'
           },
           scopedSlots: {
             activator: ({toggleContent}) => genTextField(toggleContent)
