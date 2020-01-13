@@ -41,8 +41,8 @@ export const _computedDayNameInWeek = (props) => {
   const weekDays = computed(() => {
     const first = parseInt(props.firstDayOfWeek, 10)
     return weekdayFormatter.value
-        ? createRange(7).map(i => weekdayFormatter.value(`2017-01-${first + i + 15}`)) // 2017-01-15 is Sunday
-        : createRange(7).map(i => ['S', 'M', 'T', 'W', 'T', 'F', 'S'][(i + first) % 7])
+      ? createRange(7).map(i => weekdayFormatter.value(`2017-01-${first + i + 15}`)) // 2017-01-15 is Sunday
+      : createRange(7).map(i => ['S', 'M', 'T', 'W', 'T', 'F', 'S'][(i + first) % 7])
   })
 
   return computed(() => {
@@ -80,11 +80,11 @@ export function _computedWeekNumber(props, cptYear, cptMonth) {
       dayOfYear++
     }
     const offset = (
-        cptYear.value +
-        ((cptYear.value - 1) >> 2) -
-        Math.floor((cptYear.value - 1) / 100) +
-        Math.floor((cptYear.value - 1) / 400) -
-        Number(props.firstDayOfWeek)
+      cptYear.value +
+      ((cptYear.value - 1) >> 2) -
+      Math.floor((cptYear.value - 1) / 100) +
+      Math.floor((cptYear.value - 1) / 400) -
+      Number(props.firstDayOfWeek)
     ) % 7
     return Math.floor((dayOfYear + offset) / 7) + 1
   })
@@ -122,6 +122,7 @@ export function _getEventColors(date, props) {
 
   return eventColors.filter(v => v)
 }
+
 export function _genEvents(props, date) {
   const eventColors = _getEventColors(date, props)
   if (eventColors.length) {
@@ -140,8 +141,9 @@ export function _addRangeInformation(dateItem, state, date) {
       dateItem.isRangeEnd = true
     }
 
-    if (!(dateItem.isRangeStart || dateItem.isRangeEnd))
+    if (!(dateItem.isRangeStart || dateItem.isRangeEnd)) {
       dateItem.isInRange = true
+    }
   }
 }
 
@@ -169,7 +171,7 @@ export const _computedDatesInMonth = (props, state) => {
     while (dayBeforeFirstDayOfMonths--)
       week.push({ isBlank: true })
 
-    const currentDate =  dayjs().format('DD/MM/YYYY')
+    const currentDate = dayjs().format('DD/MM/YYYY')
 
     // add days in month
     const daysInMonth = cptDaysInMonth.value
@@ -281,3 +283,16 @@ export const computedDateTableModel = ({ props, context, state, cptIsMultiSelect
     }
   }))
 }
+
+const DateTableUtil = {
+  _addRangeInformation,
+  _computedDaysBeforeFirstDayOfTheMonth,
+  _computedDaysInMonth,
+  _computedWeekNumber,
+  cptAdjacentMonth,
+  getDateItemObj,
+  getFirstNDaysOfMonth,
+  getLastNDaysOfMonth
+}
+
+export default DateTableUtil

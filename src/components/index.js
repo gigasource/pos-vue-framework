@@ -157,8 +157,8 @@ import Intersect from '../directives/intersect/intersect';
 import { setBackgroundColor, setTextColor } from '../mixins/colorable';
 import GDatePickerUtil from './GDatePicker/logic/GDatePickerUtil';
 import { pad } from './GDatePicker/logic/utils';
-import { computedDisplayMonth, computedDisplayYear, isAllowed, isSelected } from './GDatePicker/logic/TableUtil'
-
+import DateTableUtil from './GDatePicker/logic/DateTableUtil'
+import TableUtil from './GDatePicker/logic/TableUtil';
 import {
   GCarouselTransition,
   GCarouselReverseTransition,
@@ -215,10 +215,8 @@ export {
   setBackgroundColor,
   setTextColor,
   GDatePickerUtil,
-  computedDisplayMonth,
-  computedDisplayYear,
-  isAllowed,
-  isSelected,
+  TableUtil,
+  DateTableUtil,
   pad,
 }
 
