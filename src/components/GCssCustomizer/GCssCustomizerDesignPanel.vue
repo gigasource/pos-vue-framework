@@ -454,21 +454,8 @@
       const setEffectProperty = (effect, property, value) => {
         set(effect, property, value)
         set(effect, 'active', true)
-        if (effect.type.indexOf('Shadow') > -1) {
-          setStyle('boxShadow', shadowToCSS(effectData.value))
-          getStyle('filter') && setStyle('filter', undefined)
-        }
-        else if (effect.type.indexOf('Blur') > -1) {
-          setStyle('filter', blurToCSS(effectData.value))
-          getStyle('boxShadow') && setStyle('boxShadow', undefined)
-        }
-        setDesignState(designData.value)
-      }
-
-      const setEffectColor = (effect, key, value) => {
-        set(effect.color, key, value)
-        set(effect, 'active', true)
         setStyle('boxShadow', shadowToCSS(effectData.value))
+        setStyle('filter', blurToCSS(effectData.value))
         setDesignState(designData.value)
       }
 
@@ -507,13 +494,17 @@
         if (activeSections.value.includes(4)) e.stopPropagation()
         effectData.value.push(_.cloneDeep(defaultEffectData))
         effectMenu.value.push(false)
+        effectColorPickerMenu.value.push(false)
         setStyle('boxShadow', shadowToCSS(effectData.value))
         setDesignState(designData.value)
       }
 
       const removeEffectBtn = index => {
         effectData.value.splice(index, 1)
+        effectMenu.value.splice(index, 1)
+        effectColorPickerMenu.value.splice(index, 1)
         setStyle('boxShadow', shadowToCSS(effectData.value))
+        setStyle('filter', blurToCSS(effectData.value))
         setDesignState(designData.value)
       }
 
@@ -732,11 +723,11 @@
             </g-menu>
             <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
                    value={effect.color.value.replace(/^#/, '')}
-                   vOn:change={e => setEffectColor(effect, 'value', `#${e}`)}/>
+                   vOn:change={e => setEffectProperty(effect.color, 'value', `#${e}`)}/>
           </div>
           <div class="g-css-customizer-design-panel-effect-shadow-editor-alpha">
             <g-css-customizer-input value={`${effect.color.alpha * 100}%`}
-                                    vOn:change={e => setEffectColor(effect, 'alpha', parsePercentage(e))}/>
+                                    vOn:change={e => setEffectProperty(effect.color, 'alpha', parsePercentage(e))}/>
           </div>
         </div>
       }
@@ -770,7 +761,7 @@
 
         return <div class="g-css-customizer-design-panel-section-content g-css-customizer-design-panel-section-content__justify">
           <div style="display: flex">
-            <g-checkbox inputValue={effect.active} vOn:change={e => setEffectCheckbox(effect, e)}/>
+            <g-checkbox inputValue={effect.active} vOn:change={e => setEffectProperty(effect, 'active', e)}/>
             <select value={effect.type} vOn:change={e => setEffectProperty(effect, 'type', e.target.value)}>
               {effectList.value.map(item => <option value={item.value} disabled={item.value === 'layerBlur' && effect.type !== 'layerBlur' && _.find(effectData.value, {type: 'layerBlur'})}>
                 {item.text}
