@@ -18,11 +18,13 @@
   import {GCardText, GCardActions} from '../GCard/GCardFunctionalComponent';
   import GCssCustomizerStylePreview from './GCssCustomizerStylePreview';
   import GCssCustomizerDesignPanel from './GCssCustomizerDesignPanel';
+  import GCssCustomizerDesignPanel2 from './GCssCustomizerDesignPanel2';
 
   export default {
     name: 'GCssCustomizer',
     components: {
       GCssCustomizerDesignPanel,
+      GCssCustomizerDesignPanel2,
       GCardText,
       GCardActions,
       GCardTitle,
@@ -538,7 +540,7 @@
           <div class="g-css-customizer-design-title">
             Design
           </div>
-          <g-css-customizer-design-panel activeSelector={activeSelector.value}/>
+          <g-css-customizer-design-panel2 activeSelector={activeSelector.value}/>
         </div>
       }
 

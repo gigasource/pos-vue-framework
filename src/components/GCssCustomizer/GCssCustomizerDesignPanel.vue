@@ -12,10 +12,14 @@
   import GSections from '../GExpansion/GSections';
   import GSectionsHeader from '../GExpansion/GSectionsHeader';
   import GSectionsItem from '../GExpansion/GSectionsItem';
+  import GCssCustomizerInputForm from './GCssCustomizerInputForm';
+  import GCssCustomizer from './GCssCustomizer';
 
   export default {
     name: "GCssCustomizerDesignPanel",
     components: {
+      GCssCustomizer,
+      GCssCustomizerInputForm,
       GCssCustomizerInput,
       GSectionsHeader,
       GSectionsItem,
@@ -180,6 +184,11 @@
           icon: 'icon-align_bottom'
         },
       ])
+
+      // Basic functionality
+      const genLengthInputValue = prop => {
+
+      }
 
       // Fill functionality
       const fillData = computed({
@@ -453,16 +462,9 @@
 
       const setEffectProperty = (effect, property, value) => {
         set(effect, property, value)
-        set(effect, 'active', true)
+        if (property !== 'active') set(effect, 'active', true)
         setStyle('boxShadow', shadowToCSS(effectData.value))
         setStyle('filter', blurToCSS(effectData.value))
-        setDesignState(designData.value)
-      }
-
-      const setEffectCheckbox = (effect, val) => {
-        effect.active = val
-        if (effect.type.indexOf('Shadow') > -1) setStyle('boxShadow', shadowToCSS(effectData.value))
-        else if (effect.type.indexOf('Blur') > -1) setStyle('filter', blurToCSS(effectData.value))
         setDesignState(designData.value)
       }
 
@@ -534,6 +536,12 @@
         return <g-grid-select class="g-css-customizer-design-panel-section" grid={false} items={alignItemList.value}
                               itemText="itemText" itemValue="value" {...data} vModel={align.value}>
         </g-grid-select>
+      }
+
+      const genBasicSection = () => {
+        return <div class="g-css-customizer-design-panel-section-content">
+          <g-css-customizer-input />
+        </div>
       }
 
       const genFillSection = () => {

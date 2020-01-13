@@ -35,7 +35,21 @@
 	}
 
 	.g-tf-wrapper {
-		margin: 0
+		margin: 0;
+
+		.g-tf-affix {
+			font-family: Roboto;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 12px;
+			line-height: 22px;
+			color: rgba(0, 0, 0, 0.54);
+			padding: 3px 6px 0 6px;
+		}
+
+		.g-tf-affix:last-child {
+			padding: 3px 6px 0 0;
+		}
 	}
 
 	.g-tf::before, .g-tf::after {
