@@ -1,10 +1,12 @@
 
 <script>
-  import SelectableComponent from '../GCombobox/SelectableComponent';
+  import GMenu from '../GMenu/GMenu';
+  import GList from '../GList/GList';
+  import { SelectableComponent } from '../GCombobox/selectableComponentFactory';
 
   export default {
     name: 'GAutocomplete',
-    components: { SelectableComponent },
+    components: { GList, GMenu },
     props: {
       //select props
       width: [String, Number],
@@ -50,6 +52,7 @@
 
       },
 
+
       //list props
       searchable: {
         type: Boolean,
@@ -74,7 +77,10 @@
       chips: Boolean,
       smallChips: Boolean,
       deletableChips: Boolean,
-      items: { type: Array, default: () => [] },
+      items: {
+        type: Array,
+        default: () => []
+      },
       itemText: {
         type: [String, Array, Function],
         default: 'text'
@@ -84,36 +90,21 @@
         default: 'value'
       },
       value: null,
-      filter: Function,
-      noFilter: Boolean,
       returnObject: Boolean,
+      searchText: String,
+      genContent: Function,
+      genActivator: Function,
+
     },
     setup: function (props, context) {
-      function genAutoComplete(){
-        return <selectable-component {...{
-          props:{
-            ...props,
-            value: props.value,
-            component: 'autocomplete',
-          },
-          on:{
-            input: (e) => {
-              context.emit('input', e)
-            }
-          },
-          scopedSlots:{
-            'no-data': () => context.slots['no-data'] && context.slots['no-data']()
-          }
-        }}
-        />
-      }
+      const {genComponent} = SelectableComponent({...props, component: 'autocomplete'}, context)
       return {
-        genAutoComplete
-			}
+        genComponent
+      }
     },
-		render() {
-      return this.genAutoComplete()
-		}
+    render(){
+      return this.genComponent()
+    }
   }
 </script>
 <style scoped lang="scss" >

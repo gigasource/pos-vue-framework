@@ -67,6 +67,7 @@ export function makeListSelectable2(props, context) {
     else res = props.value ? props.value.map(normalise) : []
     context.emit('update:externalNormalisedValue', res);
     context.emit('update:selectedValue', res);
+    console.log('update:selectedValue')
     return res
   })
 
@@ -122,13 +123,13 @@ export function makeListSelectable2(props, context) {
   //todo: check item active (selected or not)
   const isActiveItem = (item) => {
     if (props.multiple) return listType.value !== 'primitive' ? normalisedValue.value.some(element => _.isEqual(element, item))
-      || normalisedValue.value.includes(item[props.itemValue])
-      || normalisedValue.value.includes(item[props.itemText])
+      || normalisedValue.value.includes(getText.value(item))
+      || normalisedValue.value.includes(getValue.value(item))
       : normalisedValue.value.some(el => el === item)
 
     return listType.value !== 'primitive' ? _.isEqual(normalisedValue.value, item)
-      || (!!props.itemValue && normalisedValue.value === item[props.itemValue])
-      || (!!props.itemText && normalisedValue.value === item[props.itemText])
+      || (!!props.itemValue && normalisedValue.value === getValue.value(item))
+      || (!!props.itemText && normalisedValue.value === getText.value(item))
       : normalisedValue.value === item
   };
 
@@ -192,6 +193,32 @@ function isTruthy(value){
   return value === 0 || !!value
 }
 
+//todo: getText Function
+//todo: in combobox case
+export function getSelectionText(props, selectedValue, listType, getText, getValue) {
+  return computed(() => {
+    if (!props.multiple) {
+      let item = selectedValue.value && selectedValue.value
+      let _item = props.items.find(el => getValue.value(el) ? getValue.value(el) === item : getText.value(el) === item)
+      if (!item && item !== 0) return ''
+      if (listType.value === 'primitive') return item
+      if (isTruthy(getText.value(_item|| item))) return getText.value(_item|| item)
+      if (isTruthy(getValue.value(_item|| item))) return getValue.value(_item|| item)
+      return ''
+    }
+
+    const list = selectedValue.value || []
+    return list.map(item => {
+      let _item = props.items.find(el => getValue.value(el) ? getValue.value(el) === item : getText.value(el) === item)
+      if (listType.value === 'primitive') return item
+      if (isTruthy(getText.value(_item|| item))) return getText.value(_item|| item)
+      if (isTruthy(getValue.value(_item|| item))) return getValue.value(_item|| item)
+      return ''
+    })
+  })
+}
+
+
 //get select for select and autocomplete
 export function getSelection2(props, context, selectedValue, listType, getText, getValue) {
   return computed(() => {
@@ -230,7 +257,7 @@ export function getSelection3(props, selectedValue, listType, getText, getValue)
     })
   })
 }
-export function getSelectionText(props, selection){
+export function getSelectionText2(props, selection){
   return computed(() => {
     if (props.multiple) {
       return selection.value.map(item => {

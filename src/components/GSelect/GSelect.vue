@@ -1,15 +1,18 @@
 
 <script>
-  import SelectableComponent from '../GCombobox/SelectableComponent';
+  import GList from '../GList/GList';
+  import GMenu from '../GMenu/GMenu';
+  import { SelectableComponent } from '../GCombobox/selectableComponentFactory';
 
   export default {
     name: 'GSelect',
-    components: { SelectableComponent },
+    components: { GList, GMenu },
     props: {
       //select props
       width: [String, Number],
       //text field's props
       ...{
+
         //textfield style
         ...{
           filled: Boolean,
@@ -17,7 +20,8 @@
           outlined: Boolean,
           flat: Boolean,
           rounded: Boolean,
-          shaped: Boolean
+          shaped: Boolean,
+          dense: Boolean
         },
         //textfield parts
         clearable: Boolean,
@@ -31,20 +35,29 @@
         label: String,
         prefix: String,
         suffix: String,
+        appendIcon: String,
+        prependIcon: String,
+        prependInnerIcon: String,
+        appendInnerIcon: String,
+        clearIcon: {
+          type: String,
+          default: 'clear'
+        },
+        clearIconColor: String,
         rules: Array,
         type: {
           type: String,
           default: 'text'
         }
+
       },
-      clearIcon: {
-        type: String,
-        default: 'clear'
-      },
-      clearIconColor: String,
+
 
       //list props
-      searchable: Boolean,
+      searchable: {
+        type: Boolean,
+        default: true
+      },
       multiple: Boolean,
       allowDuplicates: Boolean,
       //menu props
@@ -64,7 +77,10 @@
       chips: Boolean,
       smallChips: Boolean,
       deletableChips: Boolean,
-      items: Array,
+      items: {
+        type: Array,
+        default: () => []
+      },
       itemText: {
         type: [String, Array, Function],
         default: 'text'
@@ -74,43 +90,21 @@
         default: 'value'
       },
       value: null,
-      appendIcon: {
-        type: String,
-        default: ''
-      },
-      appendSvg: Boolean,
-      required: Boolean,
       returnObject: Boolean,
+      searchText: String,
+      genContent: Function,
+      genActivator: Function,
+
     },
     setup: function (props, context) {
-      function genSelect(){
-        return <selectable-component {...{
-          props:{
-            ...props,
-            value: props.value,
-            component: 'select',
-          },
-          on:{
-            input: (e) => {
-              context.emit('input', e)
-            }
-          },
-          scopedSlots:{
-            'no-data': () => context.slots['no-data'] && context.slots['no-data']()
-          }
-        }}
-        />
-      }
-
-
-
+      const {genComponent} = SelectableComponent({...props, component: 'select'}, context)
       return {
-        genSelect
-			}
+        genComponent
+      }
     },
-		render(){
-      return this.genSelect()
-		}
+    render(){
+      return this.genComponent()
+    }
   }
 </script>
 <style scoped lang="scss">

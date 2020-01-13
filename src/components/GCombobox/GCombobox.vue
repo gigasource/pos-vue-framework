@@ -1,10 +1,12 @@
-
 <script>
-  import SelectableComponent from './SelectableComponent';
+  import { SelectableComponent } from './selectableComponentFactory';
+  import GList from '../GList/GList';
+  import GMenu from '../GMenu/GMenu';
 
   export default {
     name: 'GCombobox',
-    components: { SelectableComponent },
+    components: { GList, GMenu },
+		// components:{SelectableComponent},
     props: {
       //select props
       width: [String, Number],
@@ -61,7 +63,14 @@
       //menu props
       menuProps: {
         type: Object,
-        default: () => ({})
+        default: () => ({
+          closeOnClick: true,
+          closeOnContentClick: false,
+          maxHeight: 300,
+          offsetY: true,
+          offsetOverflow: true,
+          top: false,
+        })
       },
       eager: Boolean,
       //item textfieldValue props
@@ -83,34 +92,19 @@
       value: null,
       returnObject: Boolean,
       searchText: String,
+      genContent: Function,
+      genActivator: Function,
+
     },
     setup: function (props, context) {
-
-      function genCombobox(){
-				return <selectable-component {...{
-				  props:{
-				    ...props,
-						value: props.value,
-						component: 'combobox',
-          },
-					on:{
-				    input: (e) => {
-							context.emit('input', e)
-				    }
-          },
-					scopedSlots:{
-				    'no-data': () => context.slots['no-data'] && context.slots['no-data']()
-          }
-				}}
-				/>
-			}
+			const {genComponent} = SelectableComponent({...props, component: 'combobox'}, context)
       return {
-        genCombobox
-			}
+        genComponent
+      }
     },
-		render(){
-      return this.genCombobox()
-		}
+    render(){
+      return this.genComponent()
+    }
   }
 </script>
 <style scoped lang="scss" >
