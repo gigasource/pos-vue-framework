@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<g-row nowrap :style="styles" v-for="i in 3" :key="i" class="g-transform container">
+		<g-row nowrap :style="styles" v-for="i in lineBreak" :key="i" class="g-transform container">
 			<component class="item" v-for="(item, index) in list(i)" :is="dynamicTag(item)" v-bind="attrs(item)" :key="index" v-on="eventHandlers(item, index, i)">
 				<template v-slot:itemPrepend="{isSelected, item}">
 					<div v-if="isSelected" class="g-list-item-icon">
@@ -33,24 +33,13 @@
       left: { type: String, default: '' },
       width: String,
       height: String,
-      list1: {
+      componentList: {
         type: Array,
         default: () => {
           return []
         }
       },
-      list2: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
-      list3: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
+
       value: {
         type: Object,
         default: () => {
@@ -59,17 +48,25 @@
       },
     },
     setup: function (props, context) {
-      const list = (i) => {
-        switch (i) {
-          case 1:
-            return props.list1
-          case 2:
-            return props.list2
-          case 3:
-            return props.list3
-
-
+      const lineBreak = ref(1)
+      const endFlag = computed(() => {
+          let endFlagIndex = []
+          props.componentList.map((item, index) => {
+            if (item.type === 'endLine') {
+              lineBreak.value++
+              endFlagIndex.push(index)
+            }
+          })
+          return endFlagIndex
         }
+      )
+
+      const list = (i) => {
+        let _i = i - 1
+        if (_i === 0) return props.componentList.slice(0, endFlag.value[0])
+        if (_i === endFlag.length) return props.componentList.slice(endFlag.value[_i], props.componentList.length)
+        return props.componentList.slice(endFlag.value[_i - 1], endFlag.value[_i])
+
       }
       const attrs = (item) => {
         return {
@@ -133,6 +130,8 @@
       }
 
       return {
+        endFlag,
+        lineBreak,
         attrs,
         list,
         styles,
