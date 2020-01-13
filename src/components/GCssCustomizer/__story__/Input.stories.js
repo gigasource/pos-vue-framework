@@ -1,6 +1,7 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
 import GCssCustomizerInputGroup from '../GCssCustomizerInputGroup';
+import GCssCustomizerCombobox from '../GCssCustomizerCombobox';
 
 //
 export default {
@@ -54,6 +55,22 @@ export const inputGroup = () => ({
 `,
 })
 
+export const combobox = () => ({
+  components: { GCssCustomizerCombobox },
+  props: {},
+  data() {
+    return {
+      list: ['Regular', 'Bold', 'Italic'],
+      select: null
+
+    }
+  },
+  template: `
+  <div>
+  <g-css-customizer-combobox :items="list" multiple v-model="select"/>
+</div>
+`,
+})
 
 // testing
 import Vue from 'vue/dist/vue.common.js'

@@ -76,13 +76,14 @@
           prefix: item.prefix,
           prependInnerIcon: item.prepend,
           value: item.value,
-          svg: item.value && true,
+          svg: true,
           flat: item.icon && true,
           ripple: item.icon && false,
           items: item.type !== 'input' && item.list,
           disabled: item.disabled,
           itemText: 'text',
           itemValue: 'text',
+          suffix: item.suffix,
         }
       }
       //todo: get internalValue
@@ -148,6 +149,10 @@
 	.g-transform {
 		.item {
 			margin: 2px;
+		}
+
+		.g-select ~ .g-tf-wrapper {
+			max-width: 22%;
 		}
 
 		&:first-child {

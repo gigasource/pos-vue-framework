@@ -89,29 +89,29 @@
       )
 
 
-      const position = [{ type: 'input', prefix: 'X', name: 'X', value: basic.value.X }, { type: 'input', prefix: 'Y', name: 'Y', value: '711' },]
-      const size = [{ type: 'input', prefix: 'W', name: 'W', value: '9' }, { type: 'input', prefix: 'H', name: 'H', value: '11' }]
-      const rotation = ref([{ type: 'input', name: 'rotation', prepend: 'icon-pns_rotation', value: '100%' }, { type: 'input', prepend: 'icon-pns_chain', name: 'borderRadius', value: '0', disabled: true }])
+      const position = [{ type: 'input', prefix: 'X', name: 'X', value: basic.value.X }, { type: 'input', prefix: 'Y', name: 'Y', value: basic.value.Y },]
+      const size = [{ type: 'input', prefix: 'W', name: 'W', value: basic.value.W }, { type: 'input', prefix: 'H', name: 'H', value: basic.value.H }]
+      const rotation = ref([{ type: 'input', name: 'rotation', prepend: 'icon-pns_rotation', value: basic.value.rotation, suffix: '%' }, { type: 'input', prepend: 'icon-pns_chain', name: 'borderRadius', value: basic.value.borderRadius, disabled: true }])
       const borderRadiusArray = ref([basic.value.borderRadius, basic.value.borderRadius, basic.value.borderRadius, basic.value.borderRadius,])
 
       //gen Transform
 
       const genPositionAndSizing = () => {
         return [
-          <g-css-customizer-input-form width="145px" value={basic.value} list1={position} list2={size} list3={rotation.value} vOn:change={(e) => basic.value = e}/>,
+          <g-css-customizer-input-form width="145px" value={basic.value} list1={position} list2={size} list3={rotation.value} vOn:change={(e) => {basic.value = e}}/>,
           rotation.value[1].disabled ?
-            <g-css-customizer-input-group width="145px" value={borderRadiusArray.value} prepend={rotation.value[1].prepend} vOn:input={e => basic.value.borderRadius = e}/> : null,
+            <g-css-customizer-input-group width="145px" value={borderRadiusArray.value} prepend={rotation.value[1].prepend} vOn:input={e => basic.value.borderRadius = e}/>
+            : null,
           <g-divider/>
         ]
       }
 
       //gen TextOptions
-      const family = [{ type: 'combobox', name: 'fontFamily', value: 'Roboto', list: [{ text: 'Roboto', prependIcon: 'check' }, { text: 'SuperBow', prependIcon: 'check' }, { text: 'Ariel', prependIcon: 'check' }] }]
-      const format = [{ type: 'select', name: 'fontStyle', value: 'Bold', list: [{ text: 'Regular', prependIcon: 'check', disabled: true }, { text: 'Bold', prependIcon: 'check' }, { text: 'Italic', prependIcon: 'check' }] }, {}, { type: 'input', name: 'fontSize', prepend: 'icon', value: '12px' }]
-      const lineSpace = [{ type: 'input', prepend: 'icon-tops_line_height', name: 'lineHeight', value: '22' }, { type: 'input', prepend: 'icon-tops_text_percent', name: 'textPercent', value: '0' }, { type: 'input', prepend: 'icon-tops_line_space', name: 'lineSpace', value: '0%' }]
+      const family = [{ type: 'combobox', name: 'fontFamily', value: textOptions.value.fontFamily, list: [{ text: 'Roboto', prependIcon: 'check' }, { text: 'SuperBow', prependIcon: 'check' }, { text: 'Ariel', prependIcon: 'check' }] }]
+      const format = [{ type: 'select', name: 'fontStyle', value: textOptions.value.fontStyle, list: [{ text: 'Regular', prependIcon: 'check', disabled: true }, { text: 'Bold', prependIcon: 'check' }, { text: 'Italic', prependIcon: 'check' }] }, {}, { type: 'input', name: 'fontSize', value: textOptions.value.fontSize, suffix: 'px' }]
+      const lineSpace = [{ type: 'input', prepend: 'icon-tops_line_height', name: 'lineHeight', value: textOptions.value.lineHeight }, { type: 'input', prepend: 'icon-tops_text_percent', name: 'textPercent', value: textOptions.value.textPercent }, { type: 'input', prepend: 'icon-tops_line_space', name: 'lineSpace', value: textOptions.value.lineSpace, suffix: '%' }]
       const genTextOptions = () => {
         return <g-css-customizer-input-form value={textOptions.value} list1={family} list2={format} list3={lineSpace} vOn:input={(e) => textOptions.value = e}>
-
         </g-css-customizer-input-form>
       }
 

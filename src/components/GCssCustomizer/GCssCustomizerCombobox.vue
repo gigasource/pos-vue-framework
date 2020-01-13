@@ -38,13 +38,13 @@
 				}
 			}
 
-			.g-tf-input.selections div {
+			input {
 				font-family: Roboto;
 				font-style: normal;
 				font-weight: normal;
 				font-size: 12px;
 				line-height: 22px;
-				color: rgba(0, 0, 0, 0.54);
+				color: #000000;
 			}
 		}
 
@@ -64,14 +64,14 @@
 
 		.input {
 			display: flex;
-			padding: 4px 16px;
+			padding: 0 0 0 6px;;
 
 			font-family: Roboto;
 			font-style: normal;
 			font-weight: normal;
 			font-size: 12px;
 			line-height: 22px;
-			color: rgba(0, 0, 0, 0.54);
+			color: #000000;
 		}
 
 		.g-tf-label {

@@ -168,6 +168,9 @@
                 'click:item': onClickItem,
                 input: e => selectedItem.value = e,
               },
+              scopedSlots: {
+                prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
+              }
             }
             }
             ref="list"
@@ -239,9 +242,9 @@
               context.slots['append-inner'] && context.slots['append-inner']()],
         'append-outer': () => context.slots['append-outer'] && context.slots['append-outer'](),
         'input-slot': ({inputErrStyles}) =>
-            <Fragment>
+          <template style={{ display: 'flex' }}>
               {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
-            </Fragment>,
+          </template>,
         label: () => <label for="input" class={['g-tf-label', labelClasses.value]}
                             style={labelStyles.value}>{props.label}</label>,
         ['input-message']: () => [<div v-show={props.counter} class={{
