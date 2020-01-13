@@ -27,9 +27,10 @@ export const isSelected = (props, state, value) => {
       return state.selectedValues[0] === value
     } else if (state.selectedValues.length === 2) {
       return state.selectedValues[0] <= value && value <= state.selectedValues[1]
-    } else return false
-  }
-  else if (props.multiple) {
+    } else {
+      return false
+    }
+  } else if (props.multiple) {
     return state.selectedValues.indexOf(value) !== -1
   } else {
     return value === state.selectedValues
@@ -54,8 +55,9 @@ export const _isValueInRange = (value, min, max) => {
  * @publicForTestOnly
  */
 export function _isDateAllowed(value, filterFn) {
-  if (typeof filterFn !== 'function')
+  if (typeof filterFn !== 'function') {
     return true
+  }
 
   return filterFn(value)
 }
@@ -98,3 +100,11 @@ export function applyNewSelectedValue(props, state, newValue) {
     state.selectedValues = newValue
   }
 }
+
+const TableUtil = {
+  computedDisplayMonth,
+  computedDisplayYear,
+  isAllowed,
+  isSelected
+}
+export default TableUtil
