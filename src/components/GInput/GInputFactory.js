@@ -65,12 +65,17 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
     } else {
       if (!isLabelActive.value && (prependWidth.value || prefixWidth.value)) {
         if(props.filled) {
-          if(props.rounded || props.shaped ) return { 'padding-left': `${prependWidth.value + prefixWidth.value -17}px` }
-          return  { 'padding-left': `${prependWidth.value + prefixWidth.value - 12}px` }}
-        return { 'padding-left': `${prependWidth.value + prefixWidth.value}px` }
+          if(props.rounded || props.shaped ) return { 'padding-left': `${prependWidth.value + prefixWidth.value -5}px` }
+          return  { 'padding-left': `${prependWidth.value + prefixWidth.value}px` }}
+        return { 'padding-left': `${prependWidth.value + prefixWidth.value -1}px` }
       }
       if (isLabelActive.value && (prependWidth.value || prefixWidth.value)) {
-        if (!prefixWidth.value) return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
+        if (!prefixWidth.value) {
+          if(props.filled) {
+            if(props.rounded||props.shaped)return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value- 5}px)  scale(0.75)` }
+            return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }}
+          return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
+        }
         else {
           if (props.filled) {
             if (props.rounded) return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value - 4}px)  scale(0.75)` }

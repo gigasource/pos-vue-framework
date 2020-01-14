@@ -103,18 +103,18 @@ export const TextFieldPlayGroundLite = () => ({
     solo: {default: boolean('solo', false)},
     outlined: {default: boolean('outlined', false)},
     flat: {default: boolean('flat', false)},
-    dense: {default: boolean('dense', false)},
+    dense: {default: boolean('dense', true)},
     rounded: {default: boolean('rounded', false)},
-    shaped: {default: boolean('shaped', true)},
+    shaped: {default: boolean('shaped', false)},
     clearable: {default: boolean('clearable', false)},
     hint: {default: text('hint', 'Hint')},
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: number('counter', 25)},
-    prefix: {default: text('prefix', '')},
+    prefix: {default: text('prefix', 'prefix')},
     suffix: {default: text('suffix', '')},
     type: {default: text('type', 'text')},
     prependIcon: {default: text('prepend Icon', '')},
-    appendIcon: {default: text('append Icon', 'check')},
+    appendIcon: {default: text('append Icon', '')},
     prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
     appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
   },
@@ -141,11 +141,7 @@ export const TextFieldPlayGroundLite = () => ({
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">
                           
-                          <template v-slot:append-inner>
-                          <g-icon>{{appendInnerIcon}}</g-icon>
-                          </template>
-                          <template v-slot:append-outer>
-                          </template>
+                         
               </g-text-field>`,
 });
 export const TextFieldShapedAndRounded = () => ({
