@@ -41,7 +41,8 @@ export function SelectableComponent(props, context) {
   })
 
   const listSearchText = computed(() => {
-    if (lazySearch.value === selectionTexts.value) return ''
+    let selectionString = props.multiple ? selectionTexts.value.join('') : selectionTexts.value
+    if (lazySearch.value === selectionString) return ''
     return lazySearch.value
   })
 
