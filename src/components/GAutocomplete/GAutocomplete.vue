@@ -1,13 +1,14 @@
-
 <script>
-  import GMenu from '../GMenu/GMenu';
-  import GList from '../GList/GList';
   import { SelectableComponent } from '../GCombobox/selectableComponentFactory';
+
 
   export default {
     name: 'GAutocomplete',
-    components: { GList, GMenu },
     props: {
+      component: {
+        type: String,
+        default: 'autocomplete'
+      },
       //select props
       width: [String, Number],
       //text field's props
@@ -73,6 +74,8 @@
         })
       },
       eager: Boolean,
+      genContent: Function,
+      genActivator: Function,
       //item textfieldValue props
       chips: Boolean,
       smallChips: Boolean,
@@ -92,22 +95,42 @@
       value: null,
       returnObject: Boolean,
       searchText: String,
-      genContent: Function,
-      genActivator: Function,
-
+      normalise: Function,
     },
     setup: function (props, context) {
-      const {genComponent} = SelectableComponent({...props, component: 'autocomplete'}, context)
+      const {
+        genComponent,
+        selectedValue,
+        selectionTexts,
+        listType,
+        prependText,
+        tfValue,
+        lazySearch,
+        listSearchText,
+        state,
+				selectableList
+      } = SelectableComponent(props, context)
+
       return {
-        genComponent
+        genComponent,
+        selectedValue,
+        selectionTexts,
+        listType,
+        prependText,
+        tfValue,
+        lazySearch,
+        listSearchText,
+        state,
+				selectableList
       }
     },
-    render(){
+    render() {
       return this.genComponent()
+
     }
   }
 </script>
-<style scoped lang="scss" >
+<style scoped lang="scss">
 	.autocomplete ::v-deep {
 		span {
 			margin: 3px

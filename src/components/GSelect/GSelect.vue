@@ -1,13 +1,13 @@
-
 <script>
-  import GList from '../GList/GList';
-  import GMenu from '../GMenu/GMenu';
   import { SelectableComponent } from '../GCombobox/selectableComponentFactory';
 
   export default {
     name: 'GSelect',
-    components: { GList, GMenu },
     props: {
+      component: {
+        type: String,
+				default: 'select'
+			},
       //select props
       width: [String, Number],
       //text field's props
@@ -73,6 +73,8 @@
         })
       },
       eager: Boolean,
+      genContent: Function,
+      genActivator: Function,
       //item textfieldValue props
       chips: Boolean,
       smallChips: Boolean,
@@ -91,19 +93,38 @@
       },
       value: null,
       returnObject: Boolean,
-      searchText: String,
-      genContent: Function,
-      genActivator: Function,
-
+      normalise: Function,
     },
     setup: function (props, context) {
-      const {genComponent} = SelectableComponent({...props, component: 'select'}, context)
+      const {
+        genComponent,
+        selectedValue,
+        selectionTexts,
+        listType,
+        prependText,
+        tfValue,
+        lazySearch,
+        listSearchText,
+        state,
+        selectableList
+      } = SelectableComponent(props, context)
+
       return {
-        genComponent
+        genComponent,
+        selectedValue,
+        selectionTexts,
+        listType,
+        prependText,
+        tfValue,
+        lazySearch,
+        listSearchText,
+        state,
+        selectableList
       }
     },
-    render(){
+    render() {
       return this.genComponent()
+
     }
   }
 </script>

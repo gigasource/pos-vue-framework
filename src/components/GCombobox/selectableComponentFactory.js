@@ -1,29 +1,30 @@
 import { getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
 import { computed, reactive, ref, watch } from '@vue/composition-api'
-import { getInputEventHandlers } from '../GAutocomplete/GAutocompleteFactory';
 import GMenu from '../GMenu/GMenu';
 import GList from '../GList/GList';
 import GTextField from '../GInput/GTextField';
 import GIcon from '../GIcon/GIcon';
+import GChip from '../GChip/GChip';
+import { getInputEventHandlers } from './eventHandlersFactory';
 
 export function SelectableComponent(props, context) {
 
-  const { getText, getValue, listType, selectableList, toggleItem } = makeListSelectable2(props, context)
+  const { getText, getValue, listType } = makeListSelectable2(props, context)
 
   //menu content lazy by default, preload selectedValue
-  const selectedValue = ref(props.value)
+  const selectedValue = ref(null)
   watch(() => props.value, () => selectedValue.value = props.value)
 
   const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
 
   const lazySearch = ref(props.multiple ? selectionTexts.value.join('') : selectionTexts.value)
+  watch(() => selectionTexts.value, () => lazySearch.value = props.multiple ? selectionTexts.value.join('') : selectionTexts.value)
 
   const tfValue = computed(() => {
     if (props.component !== 'select' && !(props.multiple || props.chips || props.smallChips || props.deletableChips
       || !selectionTexts.value)) return lazySearch.value
     if (props.component === 'select') return props.multiple ? selectionTexts.value.join(', ') : selectionTexts.value
   })
-
 
   //for textField validation and state calculation in case textField doesn't have value itself
   const prependText = computed(() => {
@@ -55,8 +56,9 @@ export function SelectableComponent(props, context) {
     onInputChange,
     inputAddSelection,
 
-  } = getInputEventHandlers(props, context, state, selectionTexts, selectedValue, toggleItem, lazySearch, listSearchText)
+  } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText)
 
+  const selectableList = ref(props.items)
 
   const genList = (state) => {
     const onClickItem = () => {
@@ -83,7 +85,8 @@ export function SelectableComponent(props, context) {
           input: e => {
             context.emit('input', e)
           },
-          'update:selectedValue': e => selectedValue.value = e
+          'update:selectedValue': e => selectedValue.value = e,
+          'update:list': e => selectableList.value = e,
         },
         scopedSlots: {
           content: () => context.slots.item ? context.slots.item() : null,
@@ -244,7 +247,9 @@ export function SelectableComponent(props, context) {
     prependText,
     tfValue,
     lazySearch,
-    listSearchText
+    listSearchText,
+    state,
+    selectableList
 
   }
 }

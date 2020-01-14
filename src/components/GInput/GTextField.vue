@@ -55,7 +55,7 @@
           <div class="g-tf-hint" v-else-if="isValidInput && hint" :class="hintClasses">
             <slot name="hint">{{hint}}</slot>
           </div>
-          <div v-show="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
+          <div v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
             {{internalValue.length}} / {{counter}}
           </div>
         </slot>

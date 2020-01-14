@@ -65,7 +65,6 @@ export function makeListSelectable2(props, context) {
     let res
     if (!props.multiple) res = (props.value || props.value === 0) ? normalise(props.value) : undefined
     else res = props.value ? props.value.map(normalise) : []
-    context.emit('update:externalNormalisedValue', res);
     context.emit('update:selectedValue', res);
     console.log('update:selectedValue')
     return res
@@ -166,6 +165,7 @@ export function makeListSelectable2(props, context) {
     };
   });
   const selectableList = computed(() => {
+    context.emit('update:list', searchFn.value(selectableValues.value))
     return searchFn.value(selectableValues.value)
   })
 

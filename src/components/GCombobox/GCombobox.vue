@@ -1,18 +1,18 @@
 <script>
+
   import { SelectableComponent } from './selectableComponentFactory';
-  import GList from '../GList/GList';
-  import GMenu from '../GMenu/GMenu';
 
   export default {
     name: 'GCombobox',
-    components: { GList, GMenu },
-		// components:{SelectableComponent},
     props: {
+      component: {
+        type: String,
+        default: 'combobox'
+      },
       //select props
       width: [String, Number],
       //text field's props
       ...{
-
         //textfield style
         ...{
           filled: Boolean,
@@ -35,29 +35,20 @@
         label: String,
         prefix: String,
         suffix: String,
-        appendIcon: String,
-        prependIcon: String,
-        prependInnerIcon: String,
-        appendInnerIcon: String,
-        clearIcon: {
-          type: String,
-          default: 'clear'
-        },
-        clearIconColor: String,
         rules: Array,
         type: {
           type: String,
           default: 'text'
         }
-
       },
-
+      clearIcon: {
+        type: String,
+        default: 'clear'
+      },
+      clearIconColor: String,
 
       //list props
-      searchable: {
-        type: Boolean,
-        default: true
-      },
+      searchable: Boolean,
       multiple: Boolean,
       allowDuplicates: Boolean,
       //menu props
@@ -77,10 +68,7 @@
       chips: Boolean,
       smallChips: Boolean,
       deletableChips: Boolean,
-      items: {
-        type: Array,
-        default: () => []
-      },
+      items: Array,
       itemText: {
         type: [String, Array, Function],
         default: 'text'
@@ -90,24 +78,49 @@
         default: 'value'
       },
       value: null,
+      appendIcon: {
+        type: String,
+        default: ''
+      },
+      appendSvg: Boolean,
+      required: Boolean,
       returnObject: Boolean,
-      searchText: String,
-      genContent: Function,
-      genActivator: Function,
-
+      normalise: Function,
     },
     setup: function (props, context) {
-			const {genComponent} = SelectableComponent({...props, component: 'combobox'}, context)
+      const {
+        genComponent,
+        selectedValue,
+        selectionTexts,
+        listType,
+        prependText,
+        tfValue,
+        lazySearch,
+        listSearchText,
+        state,
+        selectableList
+      } = SelectableComponent(props, context)
+
       return {
-        genComponent
+        genComponent,
+        selectedValue,
+        selectionTexts,
+        listType,
+        prependText,
+        tfValue,
+        lazySearch,
+        listSearchText,
+        state,
+        selectableList
       }
     },
-    render(){
+    render() {
       return this.genComponent()
+
     }
   }
 </script>
-<style scoped lang="scss" >
+<style scoped lang="scss">
 	.combobox ::v-deep {
 		span {
 			margin: 3px

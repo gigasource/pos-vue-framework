@@ -52,6 +52,7 @@
         type: [String, Array, Function],
         default: 'value'
       },
+			normalise: Function,
       activeClass: String,
       inMenu: Boolean,
       returnObject: Boolean,

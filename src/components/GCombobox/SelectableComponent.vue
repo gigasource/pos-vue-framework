@@ -1,7 +1,7 @@
 <script>
-  import { getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
-  import { computed, reactive, ref, watch } from '@vue/composition-api'
-  import { getInputEventHandlers } from '../GAutocomplete/GAutocompleteFactory';
+  import { getSelection2, getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
+  import { computed, reactive, ref } from '@vue/composition-api'
+  import { getInputEventHandlers, setSearch } from '../GAutocomplete/GAutocompleteFactory';
   import GMenu from '../GMenu/GMenu';
   import GList from '../GList/GList';
   import { Fragment } from 'vue-fragment';
@@ -100,41 +100,31 @@
     components: { GList, GMenu, Fragment },
     setup: function (props, context) {
       const { getText, getValue, listType, selectableList, toggleItem } = makeListSelectable2(props, context)
-
-      //menu content lazy by default, preload selectedValue
       const selectedValue = ref(props.value)
-      watch(() => props.value, () => selectedValue.value = props.value)
-
+      const formattedSelections = getSelection2(props, context, selectedValue, listType, getText, getValue)
       const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
 
-      const lazySearch = ref(props.multiple ? selectionTexts.value.join('') : selectionTexts.value)
-
       const tfValue = computed(() => {
-        if (props.component !== 'select' && !(props.multiple || props.chips || props.smallChips || props.deletableChips
-          || !selectionTexts.value)) return lazySearch.value
-        if (props.component === 'select') return props.multiple ? selectionTexts.value.join(', ') : selectionTexts.value
+        if (props.component !== 'select') return (props.multiple || props.chips || props.smallChips || props.deletableChips
+          || !selectionTexts.value) ?
+          state.searchText : state.lazySearch
+        return props.multiple ? selectionTexts.value.join(', ') : selectionTexts.value
       })
 
-
-			//for textField validation and state calculation in case textField doesn't have value itself
-      const prependText = computed(() => {
+      const validateText = computed(() => {
         if (props.component === 'select') return ''
-        return props.multiple ? selectionTexts.value.join('') : selectionTexts.value
+        let selectionString = props.multiple ? selectionTexts.value.join('') : selectionTexts.value
+        return state.lazySearch || selectionString || state.searchText
       })
 
       const state = reactive({
         searchText: '',
+        lazySearch: props.multiple ? selectionTexts.value.join() : selectionTexts.value,
         lastItemColor: '#1d1d1d',
         pressDeleteTimes: 0,
-        isFocused: false,
-        showOptions: false
       })
-
-      const listSearchText = computed(() => {
-        if (lazySearch.value === selectionTexts.value) return ''
-        return lazySearch.value
-      })
-
+      const showOptions = ref(false)
+      const isFocused = ref(false);
 
       const {
         onChipCloseClick,
@@ -146,14 +136,14 @@
         onInputChange,
         inputAddSelection,
 
-      } = getInputEventHandlers(props, context, state, selectionTexts, selectedValue, toggleItem, lazySearch, listSearchText)
+      } = getInputEventHandlers(props, context, state, selectionTexts, selectedValue, isFocused, toggleItem, showOptions)
 
-
-      const genList = (state) => {
+      const genList = (showOptions) => {
         const onClickItem = () => {
-          state.showOptions = props.multiple
+          setSearch(props, context, selectionTexts, state)
+          showOptions.value = props.multiple
         }
-        return <GList
+        return [<GList
           {...{
             props: {
               inCombobox: props.component === 'combobox',
@@ -167,7 +157,7 @@
               selectable: true,
               inMenu: true,
               value: props.value,
-              searchText: listSearchText.value
+              searchText: state.searchText
             },
             on: {
               'click:item': onClickItem,
@@ -182,18 +172,19 @@
           }
           }
           ref="list"
-        />
-      }
+        />]
 
+
+      }
       const searchFocused = ref(false)
       const genSearchField = () => {
         return <GTextField placeholder="Search"
-                           vOn:input={e => lazySearch.value = e}
-                           value={listSearchText.value}
+                           vOn:input={e => state.searchText = e}
+                           value={state.searchText}
                            clearable
                            ref="searchText"
                            autofocus={searchFocused.value}
-                           vOn:keydown={onInputKeyDown}
+                           vOn:keydown={(e) => onInputKeyDown(e)}
                            style="margin-bottom: 0; background-color: transparent"
         />
       }
@@ -205,12 +196,12 @@
 
       }
 
-      const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
+      const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (showOptions) {
         return [
           props.component === 'select' && props.searchable ? genSearchField() : null,
           context.slots['prepend-item'] && context.slots['prepend-item'](),
           genNoDataSlot(),
-          genList(state),
+          genList(showOptions),
           context.slots['append-item'] && context.slots['append-item']()
         ]
       }
@@ -253,8 +244,6 @@
           </template>,
       }
 
-
-//todo: v-model textField
       const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
         function (toggleContent) {
           function inputClick() {
@@ -267,19 +256,19 @@
                 props: {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
+                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly','clearIconColor']),
                   value: tfValue.value,
-                  prependValue: props.component === 'select' ? '' : prependText.value
+                  prependValue: props.component === 'select' ? '' : validateText.value
                 },
                 on: {
-                  'click:clearIcon': clearSelection,
+                  'click:clearIcon': () => clearSelection(),
                   click: [toggleContent, inputClick],
-                  focus: onInputClick,
-                  blur: onInputBlur,
+                  focus: () => {onInputClick()},
+                  blur: () => onInputBlur(),
                   delete: onInputDelete,
                   enter: inputAddSelection,
-                  keydown: onInputKeyDown,
-                  input: onInputChange,
+                  keydown: (e) => onInputKeyDown(e),
+                  input: (e) => onInputChange(e),
                 },
                 scopedSlots: textFieldScopedSlots
               }}
@@ -298,21 +287,21 @@
       }
 
 
-      function genMenu(state) {
+      function genMenu(showOptions) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
         return <g-menu {...{
           props: {
             ...Object.assign(defaultMenuProps, props.menuProps),
             nudgeBottom: nudgeBottom.value,
-            value: state.showOptions,
+            value: showOptions.value,
             eager: props.eager,
           },
           scopedSlots: {
             activator: ({ toggleContent }) => genTextField(toggleContent),
-            default: () => genMenuContent(state)
+            default: () => genMenuContent(showOptions)
           },
           on: {
-            input: (e) => state.showOptions = state.isFocused ? true : e,
+            input: (e) => isFocused.value ? showOptions.value = true : showOptions.value = e,
           },
 
         }} ref='menu'
@@ -321,20 +310,23 @@
       }
 
       function genComponent() {
-        return <div class={[props.component, { [`${props.component}__active`]: state.showOptions }]}>
-          {genMenu(state)}
+        console.log('gen component')
+        let activeClass = props.component + '__active'
+        return <div class={[props.component, { [activeClass]: showOptions.value }]}>
+          {genMenu(showOptions)}
         </div>
       }
 
       return {
         genComponent,
         selectedValue,
+        formattedSelections,
         selectionTexts,
+        state,
         listType,
-        prependText,
-        tfValue,
-        lazySearch,
-        listSearchText
+        showOptions,
+        isFocused,
+				validateText
 
       }
     },
