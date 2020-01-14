@@ -39,7 +39,7 @@
       },
       subtextWrap: Boolean,
       value: [String, Object, Number, Array],
-      externalNormalisedValue: [String, Object, Number, Array],
+      externalNormalizedValue: [String, Object, Number, Array],
       selectable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
@@ -52,7 +52,7 @@
         type: [String, Array, Function],
         default: 'value'
       },
-			normalise: Function,
+			normalize: Function,
       activeClass: String,
       inMenu: Boolean,
       returnObject: Boolean,
@@ -66,7 +66,7 @@
     setup: function (props, context) {
       const {
         selectableList: renderList,
-        normalisedValue: internalValue,
+        normalizedValue: internalValue,
         toggleItem,
         isActiveItem,
       } = makeListSelectable2(props, context)

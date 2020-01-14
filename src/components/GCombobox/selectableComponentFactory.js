@@ -80,7 +80,7 @@ export function SelectableComponent(props, context) {
           inMenu: true,
           value: props.value,
           searchText: listSearchText.value,
-          normalise: props.normalise,
+          normalize: props.normalize,
         },
         on: {
           'click:item': onClickItem,

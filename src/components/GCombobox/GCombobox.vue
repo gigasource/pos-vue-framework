@@ -85,7 +85,7 @@
       appendSvg: Boolean,
       required: Boolean,
       returnObject: Boolean,
-      normalise: Function,
+      normalize: Function,
     },
     setup: function (props, context) {
       const {

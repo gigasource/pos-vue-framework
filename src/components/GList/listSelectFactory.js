@@ -30,7 +30,7 @@ export function makeListSelectable2(props, context) {
     }
 
   })
-  const normalisedList = computed(() => {
+  const normalizedList = computed(() => {
       let value = props.value
 
       if (_.isArray(props.items)) {
@@ -42,35 +42,35 @@ export function makeListSelectable2(props, context) {
   const getText = computed(() => createItemFn(props.itemText))
   const getValue = computed(() => createItemFn(props.itemValue))
   const inCombobox = props.component === 'combobox' || props.inCombobox
-  //todo: normalised value: map value to an item in list if it existed
-  const normalisedValue = computed(() => {
+  //todo: normalized value: map value to an item in list if it existed
+  const normalizedValue = computed(() => {
 
-    const _normalise = function (value) {
-      if (listType.value === 'primitive') return normalisedList.value.find(item => item === value)
-      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return normalisedList.value.find(item =>
+    const _normalize = props.normalize || function (value) {
+      if (listType.value === 'primitive') return normalizedList.value.find(item => item === value)
+      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return normalizedList.value.find(item =>
         _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
       else {
-        return normalisedList.value.find(item => getValue.value(item) === value) || normalisedList.value.find(item => getText.value(item) === value)
+        return normalizedList.value.find(item => getValue.value(item) === value) || normalizedList.value.find(item => getText.value(item) === value)
       }
     }
-    function normalise(value) {
-      if (!inCombobox) return _normalise(value)
+    function normalize(value) {
+      if (!inCombobox) return _normalize(value, props.items)
       else {
-        let _normalisedVal = _normalise(value)
-        if (_normalisedVal) return _normalisedVal
+        let _normalizedVal = _normalize(value, props.items)
+        if (_normalizedVal) return _normalizedVal
         return value
       }
     }
 
     let res
-    if (!props.multiple) res = (props.value || props.value === 0) ? normalise(props.value) : undefined
-    else res = props.value ? props.value.map(normalise) : []
+    if (!props.multiple) res = (props.value || props.value === 0) ? normalize(props.value) : undefined
+    else res = props.value ? props.value.map(normalize) : []
     context.emit('update:selectedValue', res);
     console.log('update:selectedValue')
     return res
   })
 
-  function unNormalise(item) {
+  function unNormalize(item) {
     if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') {
       return item
     }
@@ -91,29 +91,29 @@ export function makeListSelectable2(props, context) {
   };
 
   const updateSingle = (item) => {
-    const isSame = normalisedValue.value === item;
+    const isSame = normalizedValue.value === item;
     if (isSame && props.mandatory) return;
-    isSame ? emitValue(undefined) : emitValue(unNormalise(item));
+    isSame ? emitValue(undefined) : emitValue(unNormalize(item));
   };
 
   const updateMultiple = (item) => {
-    let _normalisedVal
-    if (listType.value !== 'objectWithValueOrText' || inCombobox) _normalisedVal = [...normalisedValue.value]
-    else _normalisedVal = normalisedValue.value.map(item => getValue.value(item) || getText.value(item))
+    let _normalizedVal
+    if (listType.value !== 'objectWithValueOrText' || inCombobox) _normalizedVal = [...normalizedValue.value]
+    else _normalizedVal = normalizedValue.value.map(item => getValue.value(item) || getText.value(item))
 
-    if (normalisedValue.value.includes(item)) {
+    if (normalizedValue.value.includes(item)) {
       if (props.allowDuplicates) {
-        _normalisedVal.push(item)
-        emitValue(_normalisedVal.map(unNormalise))
+        _normalizedVal.push(item)
+        emitValue(_normalizedVal.map(unNormalize))
       } else {
-        if (normalisedValue.value.length === 1 && props.mandatory) emitValue(normalisedValue.value.map(unNormalise()))
+        if (normalizedValue.value.length === 1 && props.mandatory) emitValue(normalizedValue.value.map(unNormalize()))
         else {
-          _normalisedVal.splice(normalisedValue.value.indexOf(item))
+          _normalizedVal.splice(normalizedValue.value.indexOf(item))
         }
       }
     } else {
-      _normalisedVal.push(item)
-      emitValue(_normalisedVal.map(unNormalise))
+      _normalizedVal.push(item)
+      emitValue(_normalizedVal.map(unNormalize))
     }
 
   };
@@ -121,23 +121,23 @@ export function makeListSelectable2(props, context) {
 
   //todo: check item active (selected or not)
   const isActiveItem = (item) => {
-    if (props.multiple) return listType.value !== 'primitive' ? normalisedValue.value.some(element => _.isEqual(element, item))
-      || normalisedValue.value.includes(getText.value(item))
-      || normalisedValue.value.includes(getValue.value(item))
-      : normalisedValue.value.some(el => el === item)
+    if (props.multiple) return listType.value !== 'primitive' ? normalizedValue.value.some(element => _.isEqual(element, item))
+      || normalizedValue.value.includes(getText.value(item))
+      || normalizedValue.value.includes(getValue.value(item))
+      : normalizedValue.value.some(el => el === item)
 
-    return listType.value !== 'primitive' ? _.isEqual(normalisedValue.value, item)
-      || (!!props.itemValue && normalisedValue.value === getValue.value(item))
-      || (!!props.itemText && normalisedValue.value === getText.value(item))
-      : normalisedValue.value === item
+    return listType.value !== 'primitive' ? _.isEqual(normalizedValue.value, item)
+      || (!!props.itemValue && normalizedValue.value === getValue.value(item))
+      || (!!props.itemText && normalizedValue.value === getText.value(item))
+      : normalizedValue.value === item
   };
 
 
   //todo: this is list filter by selectedItem, searchText
   const selectableValues = computed(() => {
-    if (!props.multiple) return normalisedList.value
-    if (props.allowDuplicates) return normalisedList.value
-    return normalisedList.value.filter(item => !normalisedValue.value.some(el => _.isEqual(el, item)))
+    if (!props.multiple) return normalizedList.value
+    if (props.allowDuplicates) return normalizedList.value
+    return normalizedList.value.filter(item => !normalizedValue.value.some(el => _.isEqual(el, item)))
   })
 
   const searchFn = computed(() => {
@@ -180,9 +180,9 @@ export function makeListSelectable2(props, context) {
     getText,
     getValue,
     listType,
-    normalisedList,
+    normalizedList,
     selectableList,
-    normalisedValue,
+    normalizedValue,
     toggleItem,
     isActiveItem,
   }

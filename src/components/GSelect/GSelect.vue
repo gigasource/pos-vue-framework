@@ -93,7 +93,7 @@
       },
       value: null,
       returnObject: Boolean,
-      normalise: Function,
+      normalize: Function,
     },
     setup: function (props, context) {
       const {

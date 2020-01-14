@@ -95,7 +95,7 @@
       value: null,
       returnObject: Boolean,
       searchText: String,
-      normalise: Function,
+      normalize: Function,
     },
     setup: function (props, context) {
       const {
