@@ -43,7 +43,7 @@
 					</slot>
 				</div>
 				<div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
-				<div class="g-tf-append__inner" @click="onClickAppendInner">
+				<div v-if="$scopedSlots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner" @click="onClickAppendInner">
 					<slot name="clearable-slot" :iconColor="iconColor">
 						<g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
 					</slot>
@@ -52,23 +52,24 @@
 						<g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
 					</slot>
 				</div>
-				<slot name="input-message">
+				<slot name="input-message" :isValid="isValidInput" :errorMess="errorMessages">
 					<div class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</div>
-					<div class="g-tf-hint" v-else-if="isValidInput && hint" :class="hintClasses">
+					<div class="g-tf-hint" v-else-if="isValidInput && hint || $scopedSlots['hint']" :class="hintClasses">
 						<slot name="hint">{{hint}}</slot>
 					</div>
 					<div v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
-						{{internalValue.length}} / {{counter}}
+						{{internalValue.toString().length}} / {{counter}}
 					</div>
 				</slot>
 			</div>
 		</fieldset>
 
-		<slot name="append-outer">
-			<div v-if="appendIcon" class="g-tf-append__outer" @click="onClickAppendOuter">
+		<div v-if="appendIcon|| $scopedSlots['append-outer']" class="g-tf-append__outer" @click="onClickAppendOuter">
+			<slot name="append-outer">
 				<g-icon :color=iconColor>{{appendIcon}}</g-icon>
-			</div>
-		</slot>
+			</slot>
+		</div>
+
 	</div>
 	<div v-else :class="[tfWrapperClasses, tfErrWrapperClass]" :style="tfWrapperStyles" @click="onClick" @mouseup="onMouseUp"
 			 @mousedown="onMouseDown">
@@ -113,7 +114,11 @@
 			</div>
 
 			<slot name="input-message" :isValid="isValidInput" :errorMess="errorMessages">
-				<span class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</span>
+				<span class="g-tf-error" v-if="!isValidInput && errorMessages">
+					<slot name="errorMessage" :isValidInput="isValidInput">
+						{{errorMessages}}
+					</slot>
+				</span>
 				<span class="g-tf-hint" v-else-if="isValidInput && hint || $scopedSlots['hint']" :class="hintClasses">
 					<slot name="hint">{{hint}}</slot>
 				</span>
@@ -201,13 +206,13 @@
       //TODO: filled, solo style
       const tfType = computed(() => {
         if (context.slots['prepend-outer'] || props.prependIcon || props.outlined) return 'full'
-        if(props.appendIcon || context.slots['append-outer']) return 'lite'
+        if (props.appendIcon || context.slots['append-outer']) return 'lite'
         return 'no-wrapper'
       })
       const tfWrapperClasses = computed(() => {
         return {
           'g-tf-wrapper': tfType.value !== 'no-wrapper',
-					'g-tf': tfType.value === 'no-wrapper',
+          'g-tf': tfType.value === 'no-wrapper',
           'g-tf-wrapper__disabled': props.disabled,
           'g-tf__filled': props.filled,
           'g-tf__outlined': props.outlined,
@@ -218,7 +223,7 @@
           'g-tf__dense': props.dense,
         }
       })
-			const tfWrapperStyles = computed(() => tfType.value === 'no-wrapper' ? {'margin': '16px 0 24px 0'} : null)
+      const tfWrapperStyles = computed(() => tfType.value === 'no-wrapper' ? { 'margin': '16px 0 24px 0' } : null)
 
       const { internalValue, rawInternalValue } = getInternalValue(props, context);
       const isValidInput = ref(true)
@@ -233,7 +238,7 @@
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
 
       const inputErrStyles = computed(() => isValidInput.value ? {} : { 'color': 'red' })
-			const inputStyles = computed(() => tfType.value !== 'full' && props.filled ? {'padding-left': 0} : null )
+      const inputStyles = computed(() => tfType.value !== 'full' && props.filled ? { 'padding-left': 0 } : null)
       //change input border color
       const tfErrClasses = computed(() => isValidInput.value ? {} : { 'g-tf__error': true })
 
@@ -267,7 +272,7 @@
 
       })
       const attrs = computed(() => context.attrs)
-			const dynamicTag = computed(() => tfType.value === 'no-wrapper' ? 'template' : 'div')
+      const dynamicTag = computed(() => tfType.value === 'no-wrapper' ? 'template' : 'div')
 
       return {
         dynamicTag,
@@ -280,7 +285,7 @@
         tfWrapperClasses,
         hintClasses,
         inputErrStyles,
-				inputStyles,
+        inputStyles,
         iconColor,
         tfWrapperStyles,
         //value
