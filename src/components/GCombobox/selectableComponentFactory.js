@@ -17,19 +17,19 @@ export function SelectableComponent(props, context) {
 
   const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
 
-  const lazySearch = ref(props.multiple ? selectionTexts.value.join('') : selectionTexts.value)
-  watch(() => selectionTexts.value, () => lazySearch.value = props.multiple ? selectionTexts.value.join('') : selectionTexts.value)
+  const lazySearch = ref(selectionTexts.value.join(''))
+  watch(() => selectionTexts.value, () => lazySearch.value = selectionTexts.value.join(''))
 
   const tfValue = computed(() => {
     if (props.component !== 'select' && !(props.multiple || props.chips || props.smallChips || props.deletableChips
       || !selectionTexts.value)) return lazySearch.value
-    if (props.component === 'select') return props.multiple ? selectionTexts.value.join(', ') : selectionTexts.value
+    if (props.component === 'select') return selectionTexts.value.join(', ')
   })
 
   //for textField validation and state calculation in case textField doesn't have value itself
   const prependText = computed(() => {
     if (props.component === 'select') return ''
-    return props.multiple ? selectionTexts.value.join('') : selectionTexts.value
+    return selectionTexts.value.join('')
   })
 
   const state = reactive({
@@ -41,8 +41,7 @@ export function SelectableComponent(props, context) {
   })
 
   const listSearchText = computed(() => {
-    let selectionString = props.multiple ? selectionTexts.value.join('') : selectionTexts.value
-    if (lazySearch.value === selectionString) return ''
+    if (lazySearch.value === selectionTexts.value.join('')) return ''
     return lazySearch.value
   })
 
@@ -131,30 +130,29 @@ export function SelectableComponent(props, context) {
   }
 
   //genTextField
-  const genMultiSelectionsSlot = () => {
-    if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) {
-      return selectionTexts.value.map((item, index) => <GChip small={props.smallChips}
-                                                              close={props.deletableChips}
-                                                              vOn:close={() => onChipCloseClick(index)}>{item}
-      </GChip>)
-    }
-
-    return selectionTexts.value.map(function (item, index) {
-        if (index === selectionTexts.value.length - 1) {
-          return <div
-            style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+  const genSelectionSlot = () => {
+    return selectionTexts.value.map((item, index) => {
+        //chips
+        if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) return <GChip small={props.smallChips}
+                                                                                                            close={props.deletableChips}
+                                                                                                            vOn:close={() => onChipCloseClick(index)}>{item}
+        </GChip>
+        //multiple in 3 component no chips
+        else if (props.multiple) {
+          if (index === selectionTexts.value.length - 1) {
+            return <div
+              style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+          }
+          return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
         }
-        return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
+        //single in select
+        else if (props.component === 'select') return selectionTexts.value.join('')
       }
     )
+
+
   }
-  const genSingleChipSlot = () => {
-    if ((props.chips || props.smallChips || props.deletableChips) && selectionTexts.value) {
-      return <GChip small={props.smallChips} close={props.deletableChips}
-                    vOn:close={() => onChipCloseClick()}>{selectionTexts.value}</GChip>
-    }
-    if (props.component === 'select') return selectionTexts.value
-  }
+
   const textFieldScopedSlots = {
     ...context.slots['append-inner'] && {
       'append-inner': ({ iconColor }) =>
@@ -164,7 +162,7 @@ export function SelectableComponent(props, context) {
     ...context.slots['append-outer'] && { 'append-outer': () => context.slots['append-outer']() },
     'input-slot': () =>
       <template style={{ display: 'flex' }}>
-        {props.multiple ? genMultiSelectionsSlot() : genSingleChipSlot()}
+        {genSelectionSlot()}
       </template>,
   }
 

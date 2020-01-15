@@ -42,7 +42,9 @@ export const GComboboxSingleSelectNoChips = () => ({
   },
   template: `
   <div data-app>
+  {{selected}}
   <g-combobox :items="items" 
+  returnObject
   itemText="text"
   itemValue="value"        
              v-model="selected" >  
