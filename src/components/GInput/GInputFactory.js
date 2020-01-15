@@ -49,10 +49,7 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   return {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef}
 }
 
-import {computed, reactive, ref, watch} from '@vue/composition-api';
-
-
-import {convertToUnit, keyCodes} from '../../utils/helpers';
+import { computed, reactive, ref, watch } from '@vue/composition-api';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
@@ -192,7 +189,7 @@ export function getInternalValue(props, context) {
   // text field internalValue
   const rawInternalValue = ref(props.value || '');
 
-  watch(() => props.value, () => rawInternalValue.value = props.value, {lazy: true});
+  watch(() => props.value, () => rawInternalValue.value = props.value);
 
   const internalValue = computed({
 

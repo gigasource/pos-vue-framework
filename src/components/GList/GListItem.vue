@@ -5,16 +5,16 @@
 </template>
 
 <script>
-	import { computed, inject, ref } from '@vue/composition-api';
+  import { computed, inject, ref } from '@vue/composition-api';
 
-	export default {
+  export default {
 		name: 'GListItem',
 		props: {
 			height: String,
 			disabled: Boolean,
 			twoLine: Boolean,
 			threeLine: Boolean,
-			value: [String, Number, Object],
+			value: [String, Number, Object, Function],
 			inList: Boolean,
 		},
 		setup(props, context) {

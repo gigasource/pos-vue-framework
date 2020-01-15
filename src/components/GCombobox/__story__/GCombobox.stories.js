@@ -32,7 +32,7 @@ export const GComboboxSingleSelectNoChips = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Jason', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
@@ -79,7 +79,7 @@ export const GComboboxSingleSelectChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: 'kk'
+      selected: 'll'
     }
   },
   template: `
@@ -285,7 +285,36 @@ export const GComboboxPrimitiveArray = () => ({
   </g-combobox>
 </div>`,
 })
-
+export const GComboboxNormalizeProps = () => ({
+  components: {GCombobox, GListItem, GListItemContent, GListItemText},
+  props: {},
+  data() {
+    return {
+      items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }],
+      selected: () => 4,
+      normalize: (value, items, isFromInput) => {
+        // value from input
+        //if (isFromInput) return { a: value, b: eval(`() => ${value}`) };
+        if (isFromInput) return { a: value, b: eval(`() => ${value}`) };
+        // value in items
+        const found = items.find(i => value && i.b.toString() === value.toString());
+        if (found) return found;
+        // value from v-model but not in items
+        return { a: value(), b: value };
+      },
+    }
+  },
+  computed:{
+    selectionString () {return this.selected.toString()}
+  },
+  template: `
+  <div data-app>
+  {{selectionString}}
+  <g-combobox :normalize="normalize" itemText="a" itemValue="b" :items="items" label="Label" v-model="selected"  clearable>
+   
+  </g-combobox>
+</div>`,
+})
 export const test2 = () => ({
   components: {},
   setup() {

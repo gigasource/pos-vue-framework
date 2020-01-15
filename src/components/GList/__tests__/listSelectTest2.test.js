@@ -3,12 +3,12 @@ import Vue from 'vue/dist/vue.common.js';
 import { getSelectionText, makeListSelectable2 } from '../listSelectFactory';
 import _ from 'lodash'
 
-const expectTest = (value) =>{
+const expectTest = (value) => {
   let _value = value
-  if(_.isArray(value) && _.isObject(value[0])){
-    if(_.isObject(value[0])) _value = value.map(item => _.pick(item, ['a', 'b']))
+  if (_.isArray(value) && _.isObject(value[0])) {
+    if (_.isObject(value[0])) _value = value.map(item => _.pick(item, ['a', 'b']))
   }
-  if(!_.isArray(value) && typeof value === 'object') _value = _.omit(value, ['elm', 'isRootInsert',  '__ob__'])
+  if (!_.isArray(value) && typeof value === 'object') _value = _.omit(value, ['elm', 'isRootInsert', '__ob__'])
   return expect(_value)
 }
 const parentVmFactory = attrs =>
@@ -25,7 +25,7 @@ const parentVmFactory = attrs =>
           filter: {
             type: Function
           },
-          component: String,
+          inCombobox: Boolean,
           items: {
             type: Array,
             default: () => []
@@ -88,13 +88,18 @@ const parentVmFactory = attrs =>
         selection: null,
         ...attrs,
       };
+
     },
+
     render(h) {
       //return <child vModel={this.parentValue}/>
       return (
         <child
           {...{
-            props: this.$data,
+            props: {
+              ...this.$data,
+              inCombobox: this.$data.component === 'combobox'
+            },
             on: {
               'update:externalNormalizedValue': val => {
                 console.log('update:externalNormalisedValue', val);
@@ -112,6 +117,8 @@ const parentVmFactory = attrs =>
       );
     },
     mounted() {
+      const { toggleItem } = makeListSelectable2(this.$data, this)
+      this.parentToggleItem = toggleItem
       this.child = this.$refs.child;
     }
   }).$mount();
@@ -232,9 +239,6 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 2 })
     expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(false)
     expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[1])).toBe(true)
-    const isEqual = (val1, val2) =>{
-      return getValue.value(val1) === getValue.value(val2) && getText.value(val1) === getText.value(val2)
-    }
 
   });
   it('single returnObject init value is value ', async function () {
@@ -655,7 +659,7 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
       `() => 1`
     );
-    parentVm.child.toggleItem('4');
+    parentVm.parentToggleItem('4');
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
@@ -685,14 +689,15 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
       `() => 4`
     );
-    parentVm.child.toggleItem('5');
+    //parentVm.child.toggleItem('5');
+    parentVm.child.toggleItem(parentVm.child.selectableList[0]);
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
-      '() => 5'
+      '() => 1'
     );
     expectTest(parentVm.child.selectionString).toEqual(
-      '5'
+      '1'
     );
   });
 

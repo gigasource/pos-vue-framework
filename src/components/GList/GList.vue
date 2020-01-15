@@ -38,7 +38,7 @@
         default: 'avatar',
       },
       subtextWrap: Boolean,
-      value: [String, Object, Number, Array],
+      value: [String, Object, Number, Array, Function],
       externalNormalizedValue: [String, Object, Number, Array],
       selectable: Boolean,
       multiple: Boolean,

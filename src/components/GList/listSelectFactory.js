@@ -17,6 +17,9 @@ export function createItemFn(prop) {
 }
 
 export function makeListSelectable2(props, context) {
+  const getText = computed(() => createItemFn(props.itemText))
+  const getValue = computed(() => createItemFn(props.itemValue))
+  const inCombobox = props.component === 'combobox' || props.inCombobox
   const listType = computed(() => {
     if (props.items.length > 0) {
       const isObjectType = props.items.some(item => typeof item === 'object')
@@ -30,20 +33,20 @@ export function makeListSelectable2(props, context) {
     }
 
   })
+
   const normalizedList = computed(() => {
       if (_.isArray(props.items)) {
-        return (listType.value === 'primitive') ? _.uniq(props.items) : _.uniqWith(props.items.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
+        let c = _
+        return (listType.value === 'primitive') ? _.uniq(props.items) : c.uniqWith(props.items.map(item => _.omit(item, ['elm', 'isRootInsert'])), c.isEqual)
       }
       return []
     }
   )
-  const getText = computed(() => createItemFn(props.itemText))
-  const getValue = computed(() => createItemFn(props.itemValue))
-  const inCombobox = props.component === 'combobox' || props.inCombobox
+
 
   //todo: normalized value: map value to an item in list if it existed
 
-  function normalize(value, isFromInput) {
+  const normalize = (value, isFromInput) => {
     const _normalize = props.normalize || function (value) {
       if (listType.value === 'primitive') return props.items.find(item => item === value)
       else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return props.items.find(item =>
@@ -66,6 +69,7 @@ export function makeListSelectable2(props, context) {
     if (!props.multiple) res = (props.value || props.value === 0) ? normalize(props.value) : undefined
     else res = props.value ? props.value.map(normalize) : []
     context.emit('update:selectedValue', res);
+    console.log('update:selectedValue', res)
     if (process.env.NODE_ENV === 'test') console.log('update:selectedValue')
     return res
   })
@@ -80,7 +84,8 @@ export function makeListSelectable2(props, context) {
   //todo: toggle function : toggle item emit value into props.value
   const toggleItem = (item) => {
     const _update = props.multiple ? updateMultiple : updateSingle;
-    const normalizedItem = normalize(item, true);
+    const isFromInput = props.component === 'combobox'
+    const normalizedItem = isFromInput ? normalize(item, isFromInput) : item;
     if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') _update(normalizedItem);
     else if (getValue.value(item) || getValue.value(item) === 0) _update(getValue.value(normalizedItem))
     else if (getText.value(item)) _update(getText.value(normalizedItem))
@@ -181,6 +186,7 @@ export function makeListSelectable2(props, context) {
     normalizedValue,
     toggleItem,
     isActiveItem,
+    normalize
   }
 
 

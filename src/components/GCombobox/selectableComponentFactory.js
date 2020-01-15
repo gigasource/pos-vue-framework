@@ -1,5 +1,5 @@
 import { getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
-import { computed, reactive, ref, watch } from '@vue/composition-api'
+import { computed, reactive, ref } from '@vue/composition-api'
 import GMenu from '../GMenu/GMenu';
 import GList from '../GList/GList';
 import GTextField from '../GInput/GTextField';
@@ -9,21 +9,20 @@ import { getInputEventHandlers } from './eventHandlersFactory';
 
 export function SelectableComponent(props, context) {
 
-  const { getText, getValue, listType } = makeListSelectable2(props, context)
+  const { getText, getValue, listType, toggleItem, normalize } = makeListSelectable2(props, context)
 
   //menu content lazy by default, preload selectedValue
-  const selectedValue = ref(null)
-  watch(() => props.value, () => selectedValue.value = props.value)
+  const selectedValue = ref(props.value)
+  //watch(() => props.value, () => selectedValue.value = props.value)
 
   const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
 
-  const lazySearch = ref(selectionTexts.value.join(''))
-  watch(() => selectionTexts.value, () => lazySearch.value = selectionTexts.value.join(''))
+  const lazySearch = ref('')
 
   const tfValue = computed(() => {
-    if (props.component !== 'select' && !(props.multiple || props.chips || props.smallChips || props.deletableChips
-      || !selectionTexts.value)) return lazySearch.value
     if (props.component === 'select') return selectionTexts.value.join(', ')
+    return (props.component !== 'select' && !(props.multiple || props.chips || props.smallChips || props.deletableChips)) ? selectionTexts.value.join('') : lazySearch.value
+
   })
 
   //for textField validation and state calculation in case textField doesn't have value itself
@@ -56,7 +55,7 @@ export function SelectableComponent(props, context) {
     onInputChange,
     inputAddSelection,
 
-  } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText)
+  } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, toggleItem)
 
   const selectableList = ref(props.items)
 
@@ -86,7 +85,10 @@ export function SelectableComponent(props, context) {
           input: e => {
             context.emit('input', e)
           },
-          'update:selectedValue': e => selectedValue.value = e,
+          'update:selectedValue': e => {
+            selectedValue.value = e
+            context.emit('list update value')
+          },
           'update:list': e => selectableList.value = e,
         },
         scopedSlots: {
@@ -140,8 +142,10 @@ export function SelectableComponent(props, context) {
         //multiple in 3 component no chips
         else if (props.multiple) {
           if (index === selectionTexts.value.length - 1) {
-            return <div
+            if (props.component === 'select') return <div
               style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+            return <div
+              style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item + ', '}</div>
           }
           return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
         }
