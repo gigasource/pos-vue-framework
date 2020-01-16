@@ -1,26 +1,31 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
 import GList from '../GList';
 import GListItem from '../GListItem';
 import GDivider from '../../GLayout/GDivider.vue';
 import {
-  GListItemIcon,
-  GListItemAvatar,
+  GListHeader,
   GListItemAction,
+  GListItemAvatar,
+  GListItemContent,
+  GListItemIcon,
   GListItemImage,
   GListItemImageBig,
-  GListItemContent,
-  GListItemText,
   GListItemSubText,
-  GListHeader
+  GListItemText
 } from '../GListFunctionalComponent'
+import Vue from 'vue/dist/vue.common.js'
+import GContainer from '../../GLayout/GContainer';
+import GRow from '../../GLayout/GRow';
+import GCol from '../../GLayout/GCol';
+import GIcon from '../../GIcon/GIcon';
+import GBtn from '../../GBtn/GBtn';
 
 export default {
   title: 'GList',
   decorators: [withKnobs],
 };
 export const gListPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader},
   data() {
     return {
       items: [
@@ -40,7 +45,7 @@ export const gListPlayGround = () => ({
     nav: { default: boolean('nav', false) },
     multiSection: { default: boolean('multiSection', false) },
     subheader: { default: text('subheader', 'subheader') },
-    divider: { type: [String, Boolean], default: boolean('divider', false) },
+    divider: { type: [String, Boolean], default: boolean('divider', true) },
     prependType: { default: text('prependType', 'avatar') },
     subtextWrap: { default: boolean('subtextWrap', false) },
     selectable: { default: boolean('selectable', false) },
@@ -80,7 +85,7 @@ export const gListSingleSelectPlayGround = () => ({
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
       ],
-      testValue: 'Jason'
+      testValue: 'Jason Oner'
     }
   },
   props: {
@@ -96,7 +101,7 @@ export const gListSingleSelectPlayGround = () => ({
     prependType: { default: text('prependType', 'avatar') },
     subtextWrap: { default: boolean('subtextWrap', false) },
     mandatory: { default: boolean('mandatory', false) },
-    itemValue: { default: text('itemValue', 'text') },
+    itemValue: { default: text('itemValue', undefined) },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
     returnObject: { default: boolean('returnObject', false) },
@@ -179,16 +184,15 @@ export const gListMultiSelectPlayGround = () => ({
         :prependType="prependType"
         :subtextWrap="subtextWrap"
         selectable
-        :multiple="multiple"
+        multiple
         :mandatory="mandatory"
         :allowDuplicates="allowDuplicates"
-        :itemValue="itemValue"
-        :itemText="itemText"
+        itemValue="prepend"
+        itemText="text"
         :returnObject="returnObject"
         :activeClass="activeClass">
       </g-list>
-      </div>
-      `,
+      </div>`,
 })
 export const gListInset = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
@@ -497,7 +501,7 @@ export const gListSingleSectionSelect = () => ({
     `
       <div>
         selectedItem: {{testValue}}
-        <g-list :items="items" subheader="subheader" divider=true selectable itemText="text" returnObject>
+        <g-list v-model="testValue" :items="items" subheader="subheader" divider=true selectable itemText="text" returnObject>
         </g-list>
       </div>
       `,
@@ -583,7 +587,7 @@ export const gListMultiSelect = () => ({
       `
       <div>
         selectedItem: {{testValue}}
-        <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense" :subheader="subheader" :divider="divider" itemText="text" selectable multiple :allowDuplicates="allowDuplicates">
+        <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense"  :divider="divider" itemText="text" selectable multiple :allowDuplicates="allowDuplicates">
         </g-list>
       </div>
       `,
@@ -838,12 +842,6 @@ export const gListNumberItems = () => ({
 
       `,
 })
-import Vue from 'vue/dist/vue.common.js'
-import GContainer from '../../GLayout/GContainer';
-import GRow from '../../GLayout/GRow';
-import GCol from '../../GLayout/GCol';
-import GIcon from '../../GIcon/GIcon';
-import GBtn from '../../GBtn/GBtn';
 
 
 describe('GList', function () {

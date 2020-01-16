@@ -1,6 +1,6 @@
 import { keyCodes } from '../../utils/helpers';
 
-export function getInputEventHandlers(props, context, state, selections, selectedItem, isFocused, toggleItem, showOptions) {
+export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, toggleItem) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
 
   function onChipCloseClick(index = null) {
@@ -9,13 +9,12 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function clearSelection() {
-    // selectedItem.value = props.multiple ? [] : ''
-    if(props.component !== 'select') setSearch(props, context, selections, state)
-    context.emit('input', props.multiple ? [] : '')
+    if (props.component !== 'select')
+      context.emit('input', props.multiple ? [] : '')
   }
 
   function onInputKeyDown(e) {
-    if(props.component !== 'select')resetSelectionsDisplay(state)
+    if (props.component !== 'select') resetSelectionsDisplay(state)
     if (e.keyCode === keyCodes.down) {
       const listRef = context.refs.menu.$refs.list
       listRef.$el.getElementsByClassName('g-list-item')[0].focus()
@@ -23,28 +22,23 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputChange(text) {
-    if(props.component === 'select') return
-    state.searchText = text
-    if (selectedItem.value && isInputDisplay && props.component === 'combobox') {
-      context.emit('input', '')
-    }
-    context.emit('update:searchText', text)
+    if (props.component === 'select') return
+    lazySearch.value = text
   }
 
   function onInputClick() {
     resetSelectionsDisplay(state)
-    isFocused.value = true
-    state.lazySearch ? state.searchText = '' : null
+    state.isFocused = true
   }
 
   function onInputBlur() {
-    isFocused.value = false
+    state.isFocused = false
     resetSelectionsDisplay(state)
   }
 
   function onInputDelete() {
     if (isInputDisplay) return
-    if (state.searchText) {
+    if (searchText.value) {
       return state.pressDeleteTimes = 0
     } else {
       if (state.pressDeleteTimes === 0) {
@@ -55,7 +49,11 @@ export function getInputEventHandlers(props, context, state, selections, selecte
         return state.pressDeleteTimes++
       }
       if (state.pressDeleteTimes === 2) {
-        props.multiple ? selectedItem.value.pop() : selectedItem.value = null
+
+        if (props.multiple) {
+          selectedItem.value.pop()
+          context.emit('input', selectedItem.value)
+        } else {context.emit('input', null)}
         return state.pressDeleteTimes
       }
     }
@@ -63,9 +61,9 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   const inputAddSelection = () => {
     if (props.component !== 'combobox') return
-    if (state.searchText.trim().length > 0) {
-      toggleItem(parseInt(state.searchText) || state.searchText)
-      setSearch(props, context, selections, state)
+    if (lazySearch.value.trim().length > 0) {
+      toggleItem((parseInt(lazySearch.value) || lazySearch.value))
+      lazySearch.value = ''
     }
   }
 
@@ -76,19 +74,10 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 }
 
 export function resetSelectionsDisplay(state) {
-
   state.pressDeleteTimes = 0
   state.lastItemColor = '#1d1d1d'
 }
 
-export function setSearch(props, context, selections, state) {
-  context.root.$nextTick(() => {
-    if (!props.multiple && !(props.chips || props.smallChips || props.deletableChips)) {
-      state.lazySearch = selections.value
-    }
-    state.searchText = ''
-  })
-}
 
 
 
