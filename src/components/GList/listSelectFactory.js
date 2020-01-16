@@ -84,12 +84,14 @@ export function makeListSelectable2(props, context) {
   //todo: toggle function : toggle item emit value into props.value
   const toggleItem = (item) => {
     const _update = props.multiple ? updateMultiple : updateSingle;
-    const isFromInput = props.component === 'combobox'
-    const normalizedItem = isFromInput ? normalize(item, isFromInput) : item;
-    if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') _update(normalizedItem);
-    else if (getValue.value(item) || getValue.value(item) === 0) _update(getValue.value(normalizedItem))
-    else if (getText.value(item)) _update(getText.value(normalizedItem))
+    if (listType.value !== 'objectWithValueOrText' || typeof item !== 'object') _update(item);
+    else if (getValue.value(item) || getValue.value(item) === 0) _update(getValue.value(item))
+    else if (getText.value(item)) _update(getText.value(item))
   };
+
+  function addValueFromInput(val) {
+    toggleItem(normalize(val, true));
+  }
 
   const updateSingle = (item) => {
     const isSame = normalizedValue.value === item;

@@ -1,4 +1,4 @@
-import { computed, ref, watch } from '@vue/composition-api';
+import { computed } from '@vue/composition-api';
 import Vue from 'vue/dist/vue.common.js';
 import { getSelectionText, makeListSelectable2 } from '../listSelectFactory';
 import _ from 'lodash'
@@ -28,7 +28,7 @@ const parentVmFactory = attrs =>
           inCombobox: Boolean,
           items: {
             type: Array,
-            default: () => []
+            default: () => Vue.observable([])
           },
           itemText: {
             default: () => item => item.text
@@ -62,9 +62,6 @@ const parentVmFactory = attrs =>
             toggleItem,
             isActiveItem,
           } = makeListSelectable2(props, context);
-          const valRef = ref(props.value)
-          watch(() => props.value, () => valRef.value = props.value)
-          //const formattedSelection = getSelection3(props, valRef, listType, getText, getValue)
           const selectionTexts = getSelectionText(props, normalizedValue, listType, getText, getValue)
           const selectionString = computed(() => selectionTexts.value.join(', '))
           return {
@@ -92,7 +89,6 @@ const parentVmFactory = attrs =>
     },
 
     render(h) {
-      //return <child vModel={this.parentValue}/>
       return (
         <child
           {...{
@@ -108,7 +104,7 @@ const parentVmFactory = attrs =>
               'update:selection': val => {
                 console.log('update:selection', val);
                 this.selection = val;
-              }
+              },
             }
           }}
           ref={'child'}
@@ -117,8 +113,6 @@ const parentVmFactory = attrs =>
       );
     },
     mounted() {
-      const { toggleItem } = makeListSelectable2(this.$data, this)
-      this.parentToggleItem = toggleItem
       this.child = this.$refs.child;
     }
   }).$mount();
@@ -659,12 +653,6 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
       `() => 1`
     );
-    parentVm.parentToggleItem('4');
-    await parentVm.$nextTick();
-    await parentVm.$nextTick();
-    expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
-      '() => 4'
-    );
   });
 
   it('single returnValue combobox normalize when value is not in items', async function () {
@@ -701,5 +689,30 @@ describe('test', function () {
     );
   });
 
+
   //todo: case items is empty by beginning
+
+
+  it('single returnValue combobox items empty in beginning', async function () {
+    const parentVm = parentVmFactory({
+      component: 'combobox',
+      multiple: false,
+      itemText: 'a',
+      itemValue: 'b',
+      returnObject: false,
+      value: null,
+      items: []
+    });
+    expectTest(parentVm.child.normalizedValue).toEqual(undefined);
+    parentVm.items = [{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 3, b: 4 }, { a: 6, b: 7 }, { a: 6, b: 7 }]
+    await parentVm.$nextTick();
+    await parentVm.$nextTick();
+    expectTest(parentVm.child.selectableList).toEqual([{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 6, b: 7 }])
+    parentVm.child.toggleItem(parentVm.child.selectableList[0]);
+    await parentVm.$nextTick();
+    await parentVm.$nextTick();
+    expectTest(parentVm.child.normalizedValue).toEqual({ a: 1, b: 2 });
+    expectTest(parentVm.child.selectionString).toEqual('1');
+
+  });
 });
