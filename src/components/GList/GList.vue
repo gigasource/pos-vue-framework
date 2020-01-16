@@ -1,8 +1,8 @@
 <script>
   import GDivider from '../GLayout/GDivider';
-  import { makeListSelectable2 } from './listSelectFactory';
+  import { createItemFn } from './listSelectFactory';
   import GIcon from '../GIcon/GIcon';
-  import { computed, provide } from '@vue/composition-api';
+  import { computed, provide, ref } from '@vue/composition-api';
   import GImg from '../GImg/GImg';
   import GAvatar from '../GAvatar/GAvatar';
   import { keyCodes } from '../../utils/helpers';
@@ -39,7 +39,6 @@
       },
       subtextWrap: Boolean,
       value: [String, Object, Number, Array, Function],
-      externalNormalizedValue: [String, Object, Number, Array],
       selectable: Boolean,
       multiple: Boolean,
       mandatory: Boolean,
@@ -52,24 +51,31 @@
         type: [String, Array, Function],
         default: 'value'
       },
-			normalize: Function,
       activeClass: String,
       inMenu: Boolean,
       returnObject: Boolean,
       svg: Boolean,
       appendIcon: String,
-      searchText: {
-        type: String,
-        default: ''
-      }
     },
     setup: function (props, context) {
-      const {
-        selectableList: renderList,
-        normalizedValue: internalValue,
-        toggleItem,
-        isActiveItem,
-      } = makeListSelectable2(props, context)
+      // const {
+      //   selectableList: renderList,
+      //   normalizedValue: internalValue,
+      //   toggleItem,
+      //   isActiveItem,
+      // } = makeListSelectable2(props, context)
+      const getText = computed(() => createItemFn(props.itemText))
+      const getValue = computed(() => createItemFn(props.itemValue))
+
+      const internalValue = ref(props.value)
+      const isPrimitiveList = computed(() => props.items.some(item => typeof item !== 'object'))
+      const renderList = computed(() => {
+          if (_.isArray(props.items)) {
+            return (isPrimitiveList.value) ? _.uniq(props.items) : _.uniqWith(props.items.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
+          }
+          return []
+        }
+      )
 
       function onArrowDown(index) {
         index < ((renderList.value && renderList.value.length) - 1) ? index += 1 : index = 0
@@ -84,11 +90,7 @@
       }
 
       function onSelect(item) {
-        if (!props.selectable) {
-          return;
-        }
-        toggleItem(item)
-        context.emit('click:item')
+        context.emit('click:item', item)
       }
 
       const getListEvents = (item, index) => {
@@ -103,7 +105,7 @@
                 onArrowUp(index)
                 break
               case keyCodes.enter:
-                onSelect(item, index)
+                onSelect(item)
                 break
             }
           }
@@ -177,15 +179,15 @@
       }
 
       function genItem(item, index) {
-        return <div class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
+        return <div class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), 'g-list-item__disabled': item.disabled, [props.activeClass]: isActiveItem(item) }]}
                     tabIndex="0"
-										{...{on: getListEvents(item, index)}}
+                    {...{ on: getListEvents(item, index) }}
                     ref="listItemRef"
         >
           {
-            [(context.slots['prepend'] && context.slots['prepend']({isSelected: isActiveItem(item), item: item}) )|| genItemPrepend(item),
+            [(context.slots['prepend'] && context.slots['prepend']({ isSelected: isActiveItem(item), item: item })) || genItemPrepend(item),
               (context.slots['content'] && context.slots['content']()) || genItemContent(item),
-              (context.slots['append'] && context.slots['append']({isSelected: isActiveItem(item), item: item})) || genItemAppend(item),
+              (context.slots['append'] && context.slots['append']({ isSelected: isActiveItem(item), item: item })) || genItemAppend(item),
             ]
           }
         </div>
@@ -212,7 +214,7 @@
 
 
         return [
-          props.subheader? genSubheader() : null,
+          props.subheader ? genSubheader() : null,
           renderList.value.map(fn)
         ]
 
@@ -241,6 +243,7 @@
           {(props.multiSection) ? genMultiSectionList() : genSingleSectionList()}
         </div>
       }
+
       provide('getListEvents', getListEvents)
       const add = (item) => {
         if (renderList.value.includes(item)) {
@@ -256,9 +259,16 @@
           }
         }
       }
+      const isActiveItem = (item) => {
+        let _normalizedValue = props.multiple ? props.value : [props.value]
+        return !isPrimitiveList.value ? _normalizedValue.some(element => _.isEqual(element, item))
+          || _normalizedValue.some(element => _.isEqual(element, getValue.value(item)))
+          || _normalizedValue.some(element => _.isEqual(element, getText.value(item)))
+          : _normalizedValue.some(el => el === item)
+
+      };
       provide('add', add)
       provide('listInternalValue', internalValue)
-      provide('toggleItem', toggleItem)
       provide('isActiveItem', isActiveItem)
       provide('selectable', props.selectable)
 
@@ -266,7 +276,7 @@
       return {
         genList,
         renderList,
-				internalValue,
+        internalValue,
       }
     },
     render() {

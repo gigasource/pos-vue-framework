@@ -49,7 +49,7 @@
 			const singleItemEvents = () => {
 				return {
 					click: () => {
-						context.emit('singleItemClick')
+						context.emit('singleItemClick', props.value)
 					},
 				}
 			}

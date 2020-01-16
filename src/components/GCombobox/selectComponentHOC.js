@@ -100,18 +100,23 @@ const componentsFactory = (component, componentName) => {
       searchText: String,
       genContent: Function,
       genActivator: Function,
-
+      normalize: Function,
     },
     components: { GList, GMenu },
     setup: function (props, context) {
-      const { getText, getValue, listType, addValueFromInput } = makeListSelectable2(props, context)
-
-      //menu content lazy by default, preload selectedValue
-      const selectedValue = ref(props.value)
-
-      const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
+      const {
+        getText,
+        getValue,
+        listType,
+        selectableValues,
+        normalizedValue: selectedValue,
+        toggleItem,
+        addValueFromInput,
+        searchFn
+      } = makeListSelectable2(props, context)
 
       const lazySearch = ref('')
+      const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
 
       const tfValue = computed(() => {
         if (props.component === 'select') return selectionTexts.value.join(', ')
@@ -136,6 +141,9 @@ const componentsFactory = (component, componentName) => {
         if (lazySearch.value === selectionTexts.value.join('')) return ''
         return lazySearch.value
       })
+      const renderList = computed(() => {
+        return searchFn(listSearchText.value, selectableValues.value)
+      })
 
 
       const {
@@ -150,17 +158,17 @@ const componentsFactory = (component, componentName) => {
 
       } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput)
 
-      const selectableList = ref(props.items)
 
       const genList = (state) => {
-        const onClickItem = () => {
+        const onClickItem = (e) => {
           state.showOptions = props.multiple
+          toggleItem(e)
         }
         return <GList
           {...{
             props: {
               inCombobox: props.component === 'combobox',
-              items: props.items,
+              items: renderList.value,
               itemText: props.itemText,
               itemValue: props.itemValue,
               returnObject: props.returnObject,
@@ -169,20 +177,10 @@ const componentsFactory = (component, componentName) => {
               multiple: props.multiple,
               selectable: true,
               inMenu: true,
-              value: props.value,
-              searchText: listSearchText.value,
-              normalize: props.normalize,
+              value: selectedValue.value
             },
             on: {
-              'click:item': onClickItem,
-              input: e => {
-                context.emit('input', e)
-              },
-              'update:selectedValue': e => {
-                selectedValue.value = e
-                context.emit('list update value')
-              },
-              'update:list': e => selectableList.value = e,
+              'click:item': e => onClickItem(e),
             },
             scopedSlots: {
               content: () => context.slots.item ? context.slots.item() : null,
@@ -208,7 +206,7 @@ const componentsFactory = (component, componentName) => {
       }
 
       function genNoDataSlot() {
-        if (!selectableList.value.length) return <div>
+        if (!renderList.value.length) return <div>
           {context.slots['no-data'] && context.slots['no-data']()}
         </div>
 
@@ -346,7 +344,7 @@ const componentsFactory = (component, componentName) => {
         lazySearch,
         listSearchText,
         state,
-        selectableList
+        renderList
 
       }
     },

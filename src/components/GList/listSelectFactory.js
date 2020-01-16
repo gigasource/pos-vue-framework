@@ -16,6 +16,10 @@ export function createItemFn(prop) {
     }
 }
 
+const log = (val) => {
+  if (process.env.NODE_ENV === 'test') console.log(val)
+}
+
 export function makeListSelectable2(props, context) {
   const getText = computed(() => createItemFn(props.itemText))
   const getValue = computed(() => createItemFn(props.itemValue))
@@ -36,8 +40,7 @@ export function makeListSelectable2(props, context) {
 
   const normalizedList = computed(() => {
       if (_.isArray(props.items)) {
-        let c = _
-        return (listType.value === 'primitive') ? _.uniq(props.items) : c.uniqWith(props.items.map(item => _.omit(item, ['elm', 'isRootInsert'])), c.isEqual)
+        return (listType.value === 'primitive') ? _.uniq(props.items) : _.uniqWith(props.items.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
       }
       return []
     }
@@ -69,8 +72,8 @@ export function makeListSelectable2(props, context) {
     if (!props.multiple) res = (props.value || props.value === 0) ? normalize(props.value) : undefined
     else res = props.value ? props.value.map(normalize) : []
     context.emit('update:selectedValue', res);
-    console.log('update:selectedValue', res)
-    if (process.env.NODE_ENV === 'test') console.log('update:selectedValue')
+    log('update:selectedValue', res)
+    log('update:selectedValue')
     return res
   })
 
@@ -121,18 +124,6 @@ export function makeListSelectable2(props, context) {
 
   };
 
-
-  //todo: check item active (selected or not)
-  const isActiveItem = (item) => {
-    let _normalizedValue = props.multiple ? normalizedValue.value : [normalizedValue.value]
-    return listType.value !== 'primitive' ? _normalizedValue.some(element => _.isEqual(element, item))
-      || _normalizedValue.some(element => _.isEqual(element, getValue.value(item)))
-      || _normalizedValue.some(element => _.isEqual(element, getText.value(item)))
-      : _normalizedValue.some(el => el === item)
-
-  };
-
-
   //todo: this is list filter by selectedItem, searchText
   const selectableValues = computed(() => {
     if (!props.multiple) return normalizedList.value
@@ -140,38 +131,32 @@ export function makeListSelectable2(props, context) {
     return normalizedList.value.filter(item => !normalizedValue.value.some(el => _.isEqual(el, item)))
   })
 
-  const searchFn = computed(() => {
+  const searchFn = (searchText, items) => {
 
-    let searchText = props.searchText || ''
+    let _searchText = searchText || ''
 
-    if (_.isEmpty(searchText.trim() || searchText)) return items => items;
+    if (_.isEmpty(_searchText.trim() || _searchText)) return items;
     //todo: search logic
-    return items => {
       if (props.filter) {
         return items.filter(item => {
-          return props.filter(getText.value(item), searchText);
+          return props.filter(getText.value(item), _searchText);
         });
       }
-      searchText = searchText.toString().toLowerCase()
+      _searchText = _searchText.toString().toLowerCase()
       const searchStartsWith = items.filter(item => {
-        return getText.value(item).toString().toLowerCase().startsWith(searchText);
+        return getText.value(item).toString().toLowerCase().startsWith(_searchText);
       });
 
       const searchIncludes = items.filter(i => !searchStartsWith.includes(i)).filter(item => {
-        return getText.value(item).toString().toLowerCase().includes(searchText);
+        return getText.value(item).toString().toLowerCase().includes(_searchText);
       });
 
       return searchStartsWith.concat(searchIncludes);
-    };
-  });
-  const selectableList = computed(() => {
-    context.emit('update:list', searchFn.value(selectableValues.value))
-    return searchFn.value(selectableValues.value)
-  })
+  }
 
   function emitValue(val) {
-    console.log('emit value: ', JSON.stringify(val));
-    console.log('input')
+    log('emit value: ', JSON.stringify(val));
+    log('input')
     context.emit('input', val);
 
   }
@@ -181,12 +166,12 @@ export function makeListSelectable2(props, context) {
     getValue,
     listType,
     normalizedList,
-    selectableList,
+    selectableValues,
     normalizedValue,
     toggleItem,
-    isActiveItem,
     normalize,
-    addValueFromInput
+    addValueFromInput,
+    searchFn
   }
 
 
