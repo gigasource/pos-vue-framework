@@ -62,7 +62,7 @@ const componentsFactory = (component, componentName) => {
       //list props
       searchable: {
         type: Boolean,
-        default: true
+        default: false
       },
       multiple: Boolean,
       allowDuplicates: Boolean,
@@ -104,11 +104,10 @@ const componentsFactory = (component, componentName) => {
     },
     components: { GList, GMenu },
     setup: function (props, context) {
-      const { getText, getValue, listType, toggleItem, normalize } = makeListSelectable2(props, context)
+      const { getText, getValue, listType, addValueFromInput } = makeListSelectable2(props, context)
 
       //menu content lazy by default, preload selectedValue
       const selectedValue = ref(props.value)
-      //watch(() => props.value, () => selectedValue.value = props.value)
 
       const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
 
@@ -122,7 +121,6 @@ const componentsFactory = (component, componentName) => {
 
       //for textField validation and state calculation in case textField doesn't have value itself
       const prependText = computed(() => {
-        if (props.component === 'select') return ''
         return selectionTexts.value.join('')
       })
 
@@ -150,7 +148,7 @@ const componentsFactory = (component, componentName) => {
         onInputChange,
         inputAddSelection,
 
-      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, toggleItem)
+      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput)
 
       const selectableList = ref(props.items)
 
@@ -246,12 +244,12 @@ const componentsFactory = (component, componentName) => {
             }
             //single in select
             else if (props.component === 'select') return selectionTexts.value.join('')
+            else return null
           }
         )
 
 
       }
-
       const textFieldScopedSlots = {
         ...context.slots['append-inner'] && {
           'append-inner': ({ iconColor }) =>
@@ -281,7 +279,7 @@ const componentsFactory = (component, componentName) => {
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                     'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
                   value: tfValue.value,
-                  prependValue: props.component === 'select' ? '' : prependText.value
+                  prependValue: prependText.value
                 },
                 on: {
                   'click:clearIcon': clearSelection,

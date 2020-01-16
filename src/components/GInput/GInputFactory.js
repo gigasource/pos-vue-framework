@@ -28,11 +28,6 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   })
   const prependRef = ref(null)
   const prependWidth = ref(0)
-  // const prependWidth = computed(() => {
-  //   let i = props.filled
-  //   console.log(prependRef.value && prependRef.value.offsetWidth)
-  //   return prependRef.value && prependRef.value.offsetWidth
-  // })
   watch([() => prependRef.value, () => props.filled], () => {
     context.root.$nextTick(() => {
       prependWidth.value = prependRef.value && prependRef.value.offsetWidth
@@ -72,7 +67,7 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
       if (isLabelActive.value && (prependWidth.value || prefixWidth.value)) {
         if (!prefixWidth.value) {
           if(props.filled) {
-            if(props.rounded||props.shaped)return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value- 5}px)  scale(0.75)` }
+            if(props.rounded||props.shaped)return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value-2}px)  scale(0.75)` }
             return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }}
           return { 'transform': `translateY(-${props.dense ? 12 : 16}px) translateX(${prependWidth.value}px)  scale(0.75)` }
         }
@@ -93,9 +88,6 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
 }
 
 import { computed, reactive, ref, watch } from '@vue/composition-api';
-
-
-import { convertToUnit, keyCodes } from '../../utils/helpers';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
@@ -161,15 +153,13 @@ export function getSlotBsEventListeners(context) {
 export function getEvents(props, context, internalValue, isFocused, isValidInput, validate) {
   function onClick(event) {
     if (props.disabled) return;
-    if (!isFocused.value) context.refs.input.focus();
+    if (!isFocused.value) context.refs.input && context.refs.input.focus();
     isFocused.value = true;
     context.emit('click', event);
   }
 
   function onFocus(event) {
-    if (!context.refs.input) {
-      return;
-    }
+    if (!context.refs.input) return;
     if (document.activeElement !== context.refs.input) {
       context.refs.input.focus();
     }

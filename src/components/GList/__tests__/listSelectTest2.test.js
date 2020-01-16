@@ -232,7 +232,6 @@ describe('test', function () {
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 2 })
     expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(false)
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[1])).toBe(true)
 
   });
   it('single returnObject init value is value ', async function () {

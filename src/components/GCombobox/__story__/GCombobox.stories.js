@@ -44,6 +44,7 @@ export const GComboboxSingleSelectNoChips = () => ({
   <div data-app>
   {{selected}}
   <g-combobox :items="items" 
+   prefix="check"
   returnObject
   itemText="text"
   itemValue="value"        
@@ -305,11 +306,11 @@ export const GComboboxNormalizeProps = () => ({
     }
   },
   computed:{
-    selectionString () {return this.selected.toString()}
+    //selectionString () {return this.selected.toString()}
   },
   template: `
   <div data-app>
-  {{selectionString}}
+  {{selected}}
   <g-combobox :normalize="normalize" itemText="a" itemValue="b" :items="items" label="Label" v-model="selected"  clearable>
    
   </g-combobox>

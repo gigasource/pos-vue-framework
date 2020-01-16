@@ -18,7 +18,9 @@
 			display: flex;
 			flex-wrap: wrap;
 		}
-
+		.g-tf-affix{
+			padding: 0 6px 4px 6px;
+		}
 		.g-tf-input {
 			flex-wrap: wrap;
 			display: flex;

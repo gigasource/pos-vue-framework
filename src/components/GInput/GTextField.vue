@@ -71,7 +71,7 @@
 		</div>
 
 	</div>
-	<div v-else :class="[tfWrapperClasses, tfErrWrapperClass]" :style="tfWrapperStyles" @click="onClick" @mouseup="onMouseUp"
+	<div v-else :class="['g-tf-wrapper',tfWrapperClasses, tfErrWrapperClass]" :style="tfWrapperStyles" @click="onClick" @mouseup="onMouseUp"
 			 @mousedown="onMouseDown">
 		<div v-if="$scopedSlots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" @click="onClickPrependInner" ref="prependRef">
 			<slot name="prepend-inner" :iconColor="iconColor">
@@ -79,29 +79,29 @@
 			</slot>
 		</div>
 		<span v-if="prefix" class="g-tf-affix" :style="affixStyles" ref="prefixRef">{{prefix}} </span>
-
-		<input autocomplete="off"
-					 :autofocus="autofocus"
-					 class="g-tf-input"
-					 :style="[inputErrStyles]"
-					 :type="type"
-					 :label="label"
-					 v-model="internalValue"
-					 :placeholder="placeholder"
-					 :readonly="readOnly"
-					 ref="input"
-					 @change="onChange"
-					 @focus="onFocus"
-					 @blur="onBlur"
-					 @keydown="onKeyDown"
-					 v-bind="attrs"
-		>
-		<slot name="label">
-			<label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
-				{{label}}
-				<span v-if="required" style="color: red">*</span>
-			</label>
-		</slot>
+		<slot name="input-slot"/>
+			<input autocomplete="off"
+						 :autofocus="autofocus"
+						 class="g-tf-input"
+						 :style="[inputErrStyles]"
+						 :type="type"
+						 :label="label"
+						 v-model="internalValue"
+						 :placeholder="placeholder"
+						 :readonly="readOnly"
+						 ref="input"
+						 @change="onChange"
+						 @focus="onFocus"
+						 @blur="onBlur"
+						 @keydown="onKeyDown"
+						 v-bind="attrs"
+			>
+			<slot name="label">
+				<label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
+					{{label}}
+					<span v-if="required" style="color: red">*</span>
+				</label>
+			</slot>
 		<span v-if="suffix" class="g-tf-affix" :style="affixStyles">{{suffix}} </span>
 
 		<div v-if="$scopedSlots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner" @click="onClickAppendInner">
@@ -150,6 +150,7 @@
           type: String,
           default: 'clear'
         },
+        clearIconColor: String,
         prefix: String,
         suffix: String,
         //input states
@@ -185,6 +186,11 @@
       },
 
       // basic props
+      // value use for validation when input doesn't have value itself
+      prependValue: {
+        type: String,
+        default: '',
+      },
       value: [String, Number, Array, Object],
       type: {
         type: String,
@@ -194,8 +200,6 @@
 
     },
     setup(props, context) {
-      //TODO: test tf messages
-      //TODO: filled, solo style
       const tfType = computed(() => {
         if (context.slots['prepend-outer'] || props.prependIcon || props.outlined || props.appendIcon || context.slots['append-outer']) return 'full'
         return 'lite'
@@ -216,19 +220,20 @@
       })
       const tfWrapperStyles = computed(() => tfType.value === 'no-wrapper' ? { 'margin': '16px 0 24px 0' } : null)
 
-      const { internalValue, rawInternalValue } = getInternalValue(props, context);
+      const {internalValue, rawInternalValue} = getInternalValue(props, context);
+      const tfValue = computed(() => props.prependValue + internalValue.value)
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
-      const { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef, prependRef } = getLabel(context, props, internalValue, isValidInput, isFocused, 'g-tf-label__active');
-
-
-      const { errorMessages, validate } = getValidate(props, isFocused, internalValue, isValidInput);
+      const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef, prependRef} = getLabel(context, props, tfValue, isValidInput, isFocused, 'g-tf-label__active');
 
       //Activate non persistent hint
       const hintClasses = computed(() => (props.persistent || (isFocused.value && isValidInput.value)) ? { 'g-tf-hint__active': true } : {})
 
-      const inputErrStyles = computed(() => isValidInput.value ? {} : { 'color': 'red' })
+      //event handler function
+      const {errorMessages, validate} = getValidate(props, isFocused, tfValue, isValidInput);
+
+      const inputErrStyles = computed(() => isValidInput.value ? {} : {'color': 'red'})
       //change input border color
       const tfErrClasses = computed(() => isValidInput.value ? {} : { 'g-tf__error': true })
 
@@ -252,15 +257,11 @@
         }
       });
       const iconColor = computed(() => {
-        if (!isValidInput.value) return 'red'
-        if (isFocused.value) return 'rgb(24, 103, 192)'
-      })
+        if (isFocused.value) {
+          if (!isValidInput.value) return 'red'
+          return 'rgb(24, 103, 192)'
+      }})
 
-      const tfMessages = computed(() => {
-        if (errorMessages.value.length || !isValidInput.value) return errorMessages.value
-        else if (props.hint) return props.hint
-
-      })
       const attrs = computed(() => context.attrs)
       const affixStyles = computed(() => {
         if (props.filled) {
@@ -291,7 +292,6 @@
         //value
         internalValue,
         rawInternalValue,
-        tfMessages,
         //calculated state
         isLabelActive,
         isFocused,

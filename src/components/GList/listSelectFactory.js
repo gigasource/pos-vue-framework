@@ -124,15 +124,12 @@ export function makeListSelectable2(props, context) {
 
   //todo: check item active (selected or not)
   const isActiveItem = (item) => {
-    if (props.multiple) return listType.value !== 'primitive' ? normalizedValue.value.some(element => _.isEqual(element, item))
-      || normalizedValue.value.includes(getText.value(item))
-      || normalizedValue.value.includes(getValue.value(item))
-      : normalizedValue.value.some(el => el === item)
+    let _normalizedValue = props.multiple ? normalizedValue.value : [normalizedValue.value]
+    return listType.value !== 'primitive' ? _normalizedValue.some(element => _.isEqual(element, item))
+      || _normalizedValue.some(element => _.isEqual(element, getValue.value(item)))
+      || _normalizedValue.some(element => _.isEqual(element, getText.value(item)))
+      : _normalizedValue.some(el => el === item)
 
-    return listType.value !== 'primitive' ? _.isEqual(normalizedValue.value, item)
-      || (!!props.itemValue && normalizedValue.value === getValue.value(item))
-      || (!!props.itemText && normalizedValue.value === getText.value(item))
-      : normalizedValue.value === item
   };
 
 
@@ -188,7 +185,8 @@ export function makeListSelectable2(props, context) {
     normalizedValue,
     toggleItem,
     isActiveItem,
-    normalize
+    normalize,
+    addValueFromInput
   }
 
 

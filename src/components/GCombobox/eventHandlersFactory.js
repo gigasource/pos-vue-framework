@@ -1,6 +1,6 @@
 import { keyCodes } from '../../utils/helpers';
 
-export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, toggleItem) {
+export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
 
   function onChipCloseClick(index = null) {
@@ -9,7 +9,6 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
   }
 
   function clearSelection() {
-    if (props.component !== 'select')
       context.emit('input', props.multiple ? [] : '')
   }
 
@@ -62,7 +61,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
   const inputAddSelection = () => {
     if (props.component !== 'combobox') return
     if (lazySearch.value.trim().length > 0) {
-      toggleItem((parseInt(lazySearch.value) || lazySearch.value))
+      addValueFromInput((parseInt(lazySearch.value) || lazySearch.value))
       lazySearch.value = ''
     }
   }
