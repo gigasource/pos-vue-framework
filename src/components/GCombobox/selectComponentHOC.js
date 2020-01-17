@@ -102,7 +102,6 @@ const componentsFactory = (component, componentName) => {
       genActivator: Function,
       normalize: Function,
     },
-    components: { GListDisplay, GMenu },
     setup: function (props, context) {
       const {
         getText,
@@ -147,7 +146,6 @@ const componentsFactory = (component, componentName) => {
       const renderList = computed(() => {
         return searchFn(listSearchText.value, selectableValues.value)
       })
-
       const addActiveClass = () => {
         renderList.value.map((item, index) => {
           let listRef = context.refs['menu'].$refs['list']
@@ -157,7 +155,6 @@ const componentsFactory = (component, componentName) => {
             : context.root.$nextTick(() => domItem && domItem.classList.remove('g-list-item__active'))
         })
       }
-
 
       const genList = (state) => {
         const onClickItem = (e) => {
@@ -216,24 +213,6 @@ const componentsFactory = (component, componentName) => {
         />
       }
 
-      function genNoDataSlot() {
-        if (!renderList.value.length) return <div>
-          {context.slots['no-data'] && context.slots['no-data']()}
-        </div>
-
-      }
-
-      const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
-        return [
-          props.component === 'select' && props.searchable ? genSearchField() : null,
-          context.slots['prepend-item'] && context.slots['prepend-item'](),
-          genNoDataSlot(),
-          genList(state),
-          context.slots['append-item'] && context.slots['append-item']()
-        ]
-      }
-
-      //genTextField
       const genSelectionSlot = () => {
         return selectionTexts.value.map((item, index) => {
             //chips
@@ -304,7 +283,7 @@ const componentsFactory = (component, componentName) => {
           )
         }
 
-
+        //gen Menu
       const defaultMenuProps = {
         closeOnClick: true,
         closeOnContentClick: false,
@@ -313,8 +292,22 @@ const componentsFactory = (component, componentName) => {
         offsetOverflow: true,
         top: false,
       }
+      function genNoDataSlot() {
+        if (!renderList.value.length) return <div>
+          {context.slots['no-data'] && context.slots['no-data']()}
+        </div>
 
+      }
 
+      const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
+        return [
+          props.component === 'select' && props.searchable ? genSearchField() : null,
+          context.slots['prepend-item'] && context.slots['prepend-item'](),
+          genNoDataSlot(),
+          genList(state),
+          context.slots['append-item'] && context.slots['append-item']()
+        ]
+      }
       function genMenu(state) {
         const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
         return <GMenu {...{
