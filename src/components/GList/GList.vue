@@ -38,7 +38,11 @@
         default: 'avatar',
       },
       subtextWrap: Boolean,
-      value: [String, Object, Number, Array, Function],
+			selectable: Boolean,
+      value: {
+        type: [String, Object, Number, Array, Function],
+				default: null
+			},
       multiple: Boolean,
       mandatory: Boolean,
       allowDuplicates: Boolean,
@@ -59,7 +63,7 @@
     },
     setup: function (props, context) {
       const {
-        selectableList: renderList,
+        selectableValues: renderList,
         normalizedValue: internalValue,
         toggleItem,
         isActiveItem,
@@ -78,6 +82,7 @@
       }
 
       function onSelect(item) {
+        debugger
         if (!props.selectable) {
           return;
         }
@@ -203,8 +208,6 @@
 
             (props.divider && index < renderList.value.length - 1) ? genDivider() : null]
         }
-
-
         return [
           props.subheader? genSubheader() : null,
           renderList.value.map(fn)

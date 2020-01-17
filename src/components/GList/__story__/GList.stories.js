@@ -53,7 +53,7 @@ export const gListPlayGround = () => ({
     multiple: { default: boolean('multiple', false) },
     mandatory: { default: boolean('mandatory', false) },
     allowDuplicates: { default: boolean('allowDuplicates', false) },
-    itemValue: { default: text('itemValue', '') },
+    itemValue: { default: text('itemValue', 'prepend') },
     itemText: { default: text('itemText', 'text') },
     activeClass: { default: text('activeClass', '') },
   },
@@ -230,7 +230,7 @@ export const GListSelectProp = () => ({
 
     ` <div>
  {{selected}}
-      <g-list ref="listComponent" multiple returnObject v-model="selected" :onSelectFn="toggleItem"  :items="items" subheader="subheader" :divider='divider' :prependType="prependType" itemText="text" itemValue="prepend"  >
+      <g-list ref="listComponent" selectable multiple returnObject v-model="selected" :onSelectFn="toggleItem"  :items="items" subheader="subheader" :divider='divider' :prependType="prependType" itemText="text" itemValue="prepend"  >
       </g-list>
 </div>
  

@@ -157,10 +157,9 @@ export function makeListSelectable2(props, context) {
   const selectableList = computed(() => searchFn('', selectableValues))
 
   //check if item is selected
-  const isPrimitiveList = computed(() => props.items.some(item => typeof item !== 'object'))
   const isActiveItem = (item) => {
     let _normalizedValue = props.multiple ? props.value||[] : [props.value]
-    return !isPrimitiveList.value ? _normalizedValue.some(element => _.isEqual(element, item))
+    return listType.value !== 'primitive' ? _normalizedValue.some(element => _.isEqual(element, item))
       || _normalizedValue.some(element => _.isEqual(element, getValue.value(item)))
       || _normalizedValue.some(element => _.isEqual(element, getText.value(item)))
       : _normalizedValue.some(el => el === item)
