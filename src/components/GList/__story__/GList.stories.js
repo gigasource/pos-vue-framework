@@ -19,13 +19,14 @@ import GRow from '../../GLayout/GRow';
 import GCol from '../../GLayout/GCol';
 import GIcon from '../../GIcon/GIcon';
 import GBtn from '../../GBtn/GBtn';
+import { makeListSelectable2 } from '../listSelectFactory';
 
 export default {
   title: 'GList',
   decorators: [withKnobs],
 };
 export const gListPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader},
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
       items: [
@@ -144,7 +145,7 @@ export const gListMultiSelectPlayGround = () => ({
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
       ],
-      testValue: [ ]
+      testValue: []
     }
   },
   props: {
@@ -168,7 +169,7 @@ export const gListMultiSelectPlayGround = () => ({
     returnObject: { default: boolean('returnObject', false) },
   },
   template:
-      ` 
+    ` 
  <div>{{testValue}}
       <g-list v-model="testValue"
         :items="items"
@@ -194,27 +195,45 @@ export const gListMultiSelectPlayGround = () => ({
       </g-list>
       </div>`,
 })
-export const gListInset = () => ({
+export const GListSelectProp = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
+    let self = this
     return {
+      selected: [{ text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/1.jpg' }],
       items: [
         { text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/1.jpg' },
         { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
         { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
         { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
-      ]
+      ],
+      self: self
+    }
+  },
+  methods: {
+    toggleItem: function (item) {
+      let context = this.self.$refs.listComponent
+      context.emit = context.$emit
+      let props = this.self.$refs.listComponent._props
+      const { toggleItem } = makeListSelectable2(props, context)
+      return toggleItem(item)
+
     }
   },
   props: {
     divider: { default: text('divider', 'inset') },
     prependType: { default: text('prependType', 'avatar') },
     itemText: { default: text('itemText', 'text') },
+
   },
   template:
-    `
-      <g-list :items="items" subheader="subheader" :divider='divider' :prependType="prependType" :itemText="itemText"  >
+
+    ` <div>
+ {{selected}}
+      <g-list ref="listComponent" multiple returnObject v-model="selected" :onSelectFn="toggleItem"  :items="items" subheader="subheader" :divider='divider' :prependType="prependType" itemText="text" itemValue="prepend"  >
       </g-list>
+</div>
+ 
       `,
 })
 export const gListDense = () => ({
@@ -253,7 +272,7 @@ export const gListShapedInset = () => ({
       ]
     }
   },
-  props:{
+  props: {
     itemText: { default: text('itemText', 'text') },
   },
   template:
@@ -273,10 +292,10 @@ export const gListNav = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason Oner', subtext: "Jason the ant", prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        { text: 'Jason Oner', subtext: 'Jason the ant', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
       ]
     }
   },
@@ -322,7 +341,7 @@ export const gListTwoLineWithWrapper = () => ({
       ]
     }
   },
-  props:{
+  props: {
     itemText: { default: text('itemText', 'text') },
   },
   template:
@@ -343,7 +362,7 @@ export const gListThreeLine = () => ({
       ]
     }
   },
-  props:{
+  props: {
     itemText: { default: text('itemText', 'text') },
   },
   template:
@@ -485,7 +504,7 @@ export const gListMultiSection = () => ({
 })
 
 export const gListSingleSectionSelect = () => ({
-  components: {GList},
+  components: { GList },
   data() {
     return {
       items: [
@@ -584,7 +603,7 @@ export const gListMultiSelect = () => ({
     allowDuplicates: { default: boolean('allowDuplicates', false) },
   },
   template:
-      `
+    `
       <div>
         selectedItem: {{testValue}}
         <g-list v-model="testValue" :items="items" :rounded="rounded" :dense="dense"  :divider="divider" itemText="text" selectable multiple :allowDuplicates="allowDuplicates">
@@ -593,7 +612,7 @@ export const gListMultiSelect = () => ({
       `,
 })
 export const gListSelectMandatory = () => ({
-  components: {GList},
+  components: { GList },
   data() {
     return {
       items: [
@@ -652,7 +671,7 @@ export const gListAsMenuContent = () => ({
         { text: 'Lock', prepend: 'lock' },
         { text: 'Log out', prepend: 'keyboard_tab' },
       ],
-      list2:[
+      list2: [
         { text: ' A new order has been placed!', subtext: '2 hours ago', prepend: 'add_shopping_cart', color: 'cyan' },
         { text: '  Completed the task', subtext: '3 days ago', prepend: 'star', color: 'red' },
         { text: '  Settings updated', subtext: '4 days ago', prepend: 'settings', color: 'teal' },
@@ -699,10 +718,10 @@ export const gListFreeRender = () => ({
   data() {
     return {
       testValue: null,
-      items:[
-        {text: 'item1', value: 1},
-        {text: 'item2', value: 2},
-        {text: 'item3', value: 3},
+      items: [
+        { text: 'item1', value: 1 },
+        { text: 'item2', value: 2 },
+        { text: 'item3', value: 3 },
       ]
     }
   },
@@ -713,7 +732,7 @@ export const gListFreeRender = () => ({
   },
 
   template:
-      `
+    `
       <div>
       {{testValue}}
         <template>
@@ -741,7 +760,7 @@ export const gListPrimitiveItems = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
-      items: ['Jason Oner','Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors'],
+      items: ['Jason Oner', 'Jason Oner', 'Ranee Carlson', 'Cindy Baker', 'Ali Connors'],
       selected: null
     }
   },
@@ -766,7 +785,7 @@ export const gListPrimitiveItems = () => ({
     activeClass: { default: text('activeClass', '') },
   },
   template:
-      `<div>
+    `<div>
 {{selected}}
       <g-list :items="items"
         :disabled="disabled"
@@ -794,8 +813,8 @@ export const gListNumberItems = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
-      items: [1, 7537, 35, 88, 0 , 1 ],
-      selected: [1,0]
+      items: [1, 7537, 35, 88, 0, 1],
+      selected: [1, 0]
     }
   },
   props: {
@@ -819,7 +838,7 @@ export const gListNumberItems = () => ({
     activeClass: { default: text('activeClass', '') },
   },
   template:
-      `<div>
+    `<div>
 {{selected}}
       <g-list :items="items"
         :disabled="disabled"

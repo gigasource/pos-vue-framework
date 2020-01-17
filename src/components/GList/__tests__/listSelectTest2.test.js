@@ -57,9 +57,10 @@ const parentVmFactory = attrs =>
             getValue,
             listType,
             normalizedList,
-            selectableList,
+            selectableValues,
             normalizedValue,
             toggleItem,
+            addValueFromInput,
             isActiveItem,
           } = makeListSelectable2(props, context);
           const selectionTexts = getSelectionText(props, normalizedValue, listType, getText, getValue)
@@ -69,9 +70,10 @@ const parentVmFactory = attrs =>
             getValue,
             listType,
             normalizedList,
-            selectableList,
+            selectableValues,
             normalizedValue,
             toggleItem,
+            addValueFromInput,
             isActiveItem,
             selectionTexts,
             selectionString
@@ -127,12 +129,12 @@ describe('test', function () {
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
     expectTest(parentVm.child.normalizedList).toEqual([0, 1, 2, 3, 6])
     expectTest(parentVm.child.normalizedValue).toEqual(1)
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[1])).toBe(true)
-    expectTest(parentVm.child.selectableList).toEqual([0, 1, 2, 3, 6])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[1])).toBe(true)
+    expectTest(parentVm.child.selectableValues).toEqual([0, 1, 2, 3, 6])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(true)
+    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[0])).toBe(true)
     expectTest(parentVm.child.normalizedValue).toEqual(0)
     expectTest(parentVm.child.selectionString).toEqual('0')
 
@@ -148,7 +150,7 @@ describe('test', function () {
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
     expectTest(parentVm.child.normalizedList).toEqual([1, 2, 3, 6])
     expectTest(parentVm.child.normalizedValue).toEqual(1)
-    expectTest(parentVm.child.selectableList).toEqual([1, 2, 3, 6])
+    expectTest(parentVm.child.selectableValues).toEqual([1, 2, 3, 6])
     parentVm.child.toggleItem(parentVm.child.items[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
@@ -165,7 +167,7 @@ describe('test', function () {
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
     expectTest(parentVm.child.normalizedList).toEqual([1, 2, 3, 6])
     expectTest(parentVm.child.normalizedValue).toEqual([2])
-    expectTest(parentVm.child.selectableList).toEqual([1, 3, 6])
+    expectTest(parentVm.child.selectableValues).toEqual([1, 3, 6])
     parentVm.child.toggleItem(parentVm.child.items[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
@@ -186,15 +188,15 @@ describe('test', function () {
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
     expectTest(parentVm.child.normalizedList).toEqual([0, 1, 2, 3, 6])
     expectTest(parentVm.child.normalizedValue).toEqual([2])
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[2])).toBe(true)
-    expectTest(parentVm.child.selectableList).toEqual([0, 1, 2, 3, 6])
+    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[2])).toBe(true)
+    expectTest(parentVm.child.selectableValues).toEqual([0, 1, 2, 3, 6])
     parentVm.child.toggleItem(parentVm.child.items[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([2, 0])
     expectTest(parentVm.child.selectionString).toEqual('2, 0')
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(true)
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(true)
+    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[0])).toBe(true)
+    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[0])).toBe(true)
   });
   it('multiple, primitive, mandatory', async function () {
     const parentVm = parentVmFactory({
@@ -207,8 +209,8 @@ describe('test', function () {
     });
     expectTest(parentVm.child.normalizedList).toEqual([1, 2, 3, 6])
     expectTest(parentVm.child.normalizedValue).toEqual([1])
-    expectTest(parentVm.child.selectableList).toEqual([2, 3, 6])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([2, 3, 6])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([1, 2])
@@ -223,15 +225,15 @@ describe('test', function () {
       items: [{ a: 0 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 0 })
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(true)
+    //expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[0])).toBe(true)
     expectTest(parentVm.child.selectionString).toEqual('0')
     expectTest(parentVm.child.normalizedList).toEqual([{ a: 0 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 0 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[1])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 0 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[1])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 2 })
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(false)
+    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[0])).toBe(false)
 
   });
   it('single returnObject init value is value ', async function () {
@@ -244,12 +246,12 @@ describe('test', function () {
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1 })
     expectTest(parentVm.child.normalizedList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
     parentVm.child.toggleItem(parentVm.child.items[2])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 3 })
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
     expectTest(parentVm.child.selectionString).toEqual('3')
 
 
@@ -263,8 +265,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1 })
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[2])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[2])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 3 })
@@ -282,8 +284,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1 })
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[2])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[2])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 3 })
@@ -303,8 +305,8 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 2, b: 1 })
     expectTest(parentVm.child.value).toEqual(1)
     expectTest(parentVm.child.selectionString).toEqual('2')
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 3, b: 7 }, { a: 6, b: 8 },])
-    parentVm.child.toggleItem(parentVm.child.selectableList[2])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 3, b: 7 }, { a: 6, b: 8 },])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[2])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 3, b: 7 })
@@ -324,8 +326,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
@@ -343,8 +345,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 1 }])
@@ -361,8 +363,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }])
@@ -381,8 +383,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 1 }])
@@ -399,8 +401,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
@@ -417,8 +419,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 },])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 3 },])
@@ -436,8 +438,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 },])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 1 }])
@@ -453,8 +455,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
@@ -472,8 +474,8 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 },])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 3 },])
@@ -491,8 +493,8 @@ describe('test', function () {
       items: [{ a: 1, b: 1 }, { a: 2, b: 2 }, { a: 3, b: 3 }, { a: 3, b: 3 }, { a: 6, b: 6 }, { a: 6, b: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }, { a: 2, b: 2 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1, b: 1 }, { a: 2, b: 2 }, { a: 3, b: 3 }, { a: 6, b: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1, b: 1 }, { a: 2, b: 2 }, { a: 3, b: 3 }, { a: 6, b: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }, { a: 2, b: 2 }, { a: 1, b: 1 }])
@@ -508,8 +510,8 @@ describe('test', function () {
       items: [{ a: 1, b: 1 }, { a: 3, b: 2 }, { a: 3, b: 3 }, { a: 3, b: 3 }, { a: 6, b: 6 }, { a: 6, b: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }])
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 3, b: 2 }, { a: 3, b: 3 }, { a: 6, b: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 3, b: 2 }, { a: 3, b: 3 }, { a: 6, b: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }, { a: 3, b: 2 }])
@@ -531,8 +533,8 @@ describe('test', function () {
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
     expectTest(parentVm.child.normalizedList).toEqual([1, 2, 3, 6])
     expectTest(parentVm.child.selectionTexts).toEqual([1])
-    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableList[0])).toBe(true)
-    expectTest(parentVm.child.selectableList).toEqual([1, 2, 3, 6])
+    expectTest(parentVm.child.isActiveItem(parentVm.child.selectableValues[0])).toBe(true)
+    expectTest(parentVm.child.selectableValues).toEqual([1, 2, 3, 6])
     parentVm.child.toggleItem(7)
     await parentVm.$nextTick();
     await parentVm.$nextTick();
@@ -553,7 +555,7 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1, b: 2 })
     expectTest(parentVm.child.selectionTexts).toEqual([2])
     expectTest(parentVm.child.selectionString).toEqual('2')
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 6, b: 7 }])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 6, b: 7 }])
     parentVm.child.toggleItem(5)
     await parentVm.$nextTick();
     await parentVm.$nextTick();
@@ -575,8 +577,8 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue).toEqual(9)
     expectTest(parentVm.child.selectionTexts).toEqual([9])
     expectTest(parentVm.child.selectionString).toEqual('9')
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 6 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1 })
@@ -598,7 +600,7 @@ describe('test', function () {
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 2 }])
     expectTest(parentVm.child.selectionTexts).toEqual([2])
     expectTest(parentVm.child.selectionString).toEqual('2')
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 2, b: 3 }, { a: 3, b: 4 }, { a: 6, b: 7 }])
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 2, b: 3 }, { a: 3, b: 4 }, { a: 6, b: 7 }])
     parentVm.child.toggleItem(2)
     await parentVm.$nextTick();
     await parentVm.$nextTick();
@@ -633,10 +635,7 @@ describe('test', function () {
 
   it('single returnObject combobox normalize when value is not in items', async function () {
     const parentVm = parentVmFactory({
-      normalize: (value, items, isFromInput) => {
-        if (isFromInput) {
-          return { a: value, b: eval(`() => ${value}`) };
-        }
+      normalize: (value, items) => {
         const found = items.find(i => value && i.b.toString() === value.toString());
         if (found) return found;
         return value;
@@ -677,7 +676,7 @@ describe('test', function () {
       `() => 4`
     );
     //parentVm.child.toggleItem('5');
-    parentVm.child.toggleItem(parentVm.child.selectableList[0]);
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0]);
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
@@ -688,7 +687,36 @@ describe('test', function () {
     );
   });
 
-
+  it('multiple returnValue combobox normalize when value is not in items', async function () {
+    const parentVm = parentVmFactory({
+      normalize: (value, items, isFromInput) => {
+        if (isFromInput) return { a: value, b: eval(`() => ${value}`) };
+        const found = items.find(i => value && i.b.toString() === value.toString());
+        if (found) return found;
+        return { a: value(), b: value };
+      },
+      component: 'combobox',
+      multiple: true,
+      itemText: 'a',
+      itemValue: 'b',
+      returnObject: false,
+      value: [() => 4],
+      items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }]
+    });
+    expect(parentVm.child.normalizedValue[0].b.toString()).toEqual(
+      `() => 4`
+    );
+    //parentVm.child.toggleItem('5');
+    parentVm.child.addValueFromInput('1');
+    await parentVm.$nextTick();
+    await parentVm.$nextTick();
+    expect(parentVm.child.normalizedValue[1].b.toString()).toEqual(
+      '() => 1'
+    );
+    expect(parentVm.child.selectionString).toEqual(
+      '4, 1'
+    );
+  });
   //todo: case items is empty by beginning
 
 
@@ -706,8 +734,8 @@ describe('test', function () {
     parentVm.items = [{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 3, b: 4 }, { a: 6, b: 7 }, { a: 6, b: 7 }]
     await parentVm.$nextTick();
     await parentVm.$nextTick();
-    expectTest(parentVm.child.selectableList).toEqual([{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 6, b: 7 }])
-    parentVm.child.toggleItem(parentVm.child.selectableList[0]);
+    expectTest(parentVm.child.selectableValues).toEqual([{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 6, b: 7 }])
+    parentVm.child.toggleItem(parentVm.child.selectableValues[0]);
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1, b: 2 });

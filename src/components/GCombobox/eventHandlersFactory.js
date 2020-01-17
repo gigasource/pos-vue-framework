@@ -9,7 +9,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
   }
 
   function clearSelection() {
-      context.emit('input', props.multiple ? [] : '')
+    context.emit('input', props.multiple ? [] : '')
   }
 
   function onInputKeyDown(e) {
@@ -77,6 +77,23 @@ export function resetSelectionsDisplay(state) {
   state.lastItemColor = '#1d1d1d'
 }
 
+export function getListEventHandlers(list, context) {
+
+  function onListArrowDown(index) {
+    index < ((list && list.length) - 1) ? index += 1 : index = 0
+    context.refs.menu.$refs.list.$el.getElementsByClassName('g-list-item')[index].focus()
+  }
+
+  function onListArrowUp(index) {
+    index > 0 ? index -= 1 : index = (list && (list.length-1))
+    context.refs.menu.$refs.list.$el.getElementsByClassName('g-list-item')[index].focus()
+  }
+
+  return {
+    onListArrowDown,
+    onListArrowUp
+  }
+}
 
 
 

@@ -1,11 +1,11 @@
-import GList from '../GList/GList';
 import GMenu from '../GMenu/GMenu';
 import { getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
 import { computed, reactive, ref } from '@vue/composition-api';
-import { getInputEventHandlers } from './eventHandlersFactory';
+import { getInputEventHandlers, getListEventHandlers } from './eventHandlersFactory';
 import GTextField from '../GInput/GTextField';
 import GChip from '../GChip/GChip';
 import GIcon from '../GIcon/GIcon';
+import GListDisplay from '../GList/GListDisplay';
 
 const componentsFactory = (component, componentName) => {
   return {
@@ -102,7 +102,7 @@ const componentsFactory = (component, componentName) => {
       genActivator: Function,
       normalize: Function,
     },
-    components: { GList, GMenu },
+    components: { GListDisplay, GMenu },
     setup: function (props, context) {
       const {
         getText,
@@ -112,7 +112,8 @@ const componentsFactory = (component, componentName) => {
         normalizedValue: selectedValue,
         toggleItem,
         addValueFromInput,
-        searchFn
+        searchFn,
+        isActiveItem
       } = makeListSelectable2(props, context)
 
       const lazySearch = ref('')
@@ -137,6 +138,8 @@ const componentsFactory = (component, componentName) => {
         showOptions: false
       })
 
+
+      //gen List
       const listSearchText = computed(() => {
         if (lazySearch.value === selectionTexts.value.join('')) return ''
         return lazySearch.value
@@ -145,7 +148,49 @@ const componentsFactory = (component, componentName) => {
         return searchFn(listSearchText.value, selectableValues.value)
       })
 
+      const addActiveClass = () => {
+        renderList.value.map((item, index) => {
+          let listRef = context.refs['menu'].$refs['list']
+          let domItem = listRef && listRef.$el.getElementsByClassName('g-list-item')[index]
+          isActiveItem(item)
+            ? context.root.$nextTick(() => domItem && domItem.classList.add('g-list-item__active'))
+            : context.root.$nextTick(() => domItem && domItem.classList.remove('g-list-item__active'))
+        })
+      }
 
+
+      const genList = (state) => {
+        const onClickItem = (e) => {
+          state.showOptions = props.multiple
+          toggleItem(e)
+        }
+        addActiveClass()
+
+        const { onListArrowDown, onListArrowUp } = getListEventHandlers(renderList.value, context)
+        return <GListDisplay
+          {...{
+            props: {
+              items: renderList.value,
+              itemText: props.itemText,
+              inMenu: true,
+            },
+            on: {
+              'click:item': e => onClickItem(e),
+              'keydown:down': e => onListArrowDown(e),
+              'keydown:up': e => onListArrowUp(e),
+              'keydown:enter': e => onClickItem(e)
+            },
+            scopedSlots: {
+              content: () => context.slots.item ? context.slots.item() : null,
+              prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
+            }
+          }
+          }
+          ref="list"
+        />
+      }
+
+      //gen TextField
       const {
         onChipCloseClick,
         clearSelection,
@@ -157,40 +202,6 @@ const componentsFactory = (component, componentName) => {
         inputAddSelection,
 
       } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput)
-
-
-      const genList = (state) => {
-        const onClickItem = (e) => {
-          state.showOptions = props.multiple
-          toggleItem(e)
-        }
-        return <GList
-          {...{
-            props: {
-              inCombobox: props.component === 'combobox',
-              items: renderList.value,
-              itemText: props.itemText,
-              itemValue: props.itemValue,
-              returnObject: props.returnObject,
-              mandatory: true,
-              allowDuplicates: props.allowDuplicates,
-              multiple: props.multiple,
-              selectable: true,
-              inMenu: true,
-              value: selectedValue.value
-            },
-            on: {
-              'click:item': e => onClickItem(e),
-            },
-            scopedSlots: {
-              content: () => context.slots.item ? context.slots.item() : null,
-              prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
-            }
-          }
-          }
-          ref="list"
-        />
-      }
 
       const searchFocused = ref(false)
       const genSearchField = () => {
@@ -236,7 +247,7 @@ const componentsFactory = (component, componentName) => {
                 if (props.component === 'select') return <div
                   style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
                 return <div
-                  style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item + ', '}</div>
+                  style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
               }
               return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
             }
@@ -261,8 +272,6 @@ const componentsFactory = (component, componentName) => {
           </template>,
       }
 
-
-//todo: v-model textField
       const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
         function (toggleContent) {
           function inputClick() {
@@ -344,8 +353,7 @@ const componentsFactory = (component, componentName) => {
         lazySearch,
         listSearchText,
         state,
-        renderList
-
+        renderList,
       }
     },
     render() {

@@ -292,26 +292,23 @@ export const GComboboxNormalizeProps = () => ({
   data() {
     return {
       items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }],
-      selected: () => 4,
+      selected: [() => 4],
       normalize: (value, items, isFromInput) => {
-        // value from input
-        //if (isFromInput) return { a: value, b: eval(`() => ${value}`) };
+        debugger
         if (isFromInput) return { a: value, b: eval(`() => ${value}`) };
-        // value in items
         const found = items.find(i => value && i.b.toString() === value.toString());
         if (found) return found;
-        // value from v-model but not in items
         return { a: value(), b: value };
       },
     }
   },
   computed:{
-    //selectionString () {return this.selected.toString()}
+    selectionString () {return this.selected.map(item => item.toString())}
   },
   template: `
   <div data-app>
-  {{selected}}
-  <g-combobox :normalize="normalize" itemText="a" itemValue="b" :items="items" label="Label" v-model="selected"  clearable>
+  {{selectionString}}
+  <g-combobox multiple :normalize="normalize" itemText="a" itemValue="b" :items="items" label="Label" v-model="selected"  clearable>
    
   </g-combobox>
 </div>`,
