@@ -4,6 +4,7 @@
   width: 100%;
   max-width: 100%;
   contain: layout;
+  position: relative; //safari cant read contain layout
   border-radius: 0 0 16px 16px;
 
   &-content,
