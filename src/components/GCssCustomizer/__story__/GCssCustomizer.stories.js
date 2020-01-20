@@ -69,7 +69,7 @@ export const Demo = () => ({
     <div data-app>
       <g-btn @click="openCssCustomizer">Open</g-btn>
       <g-btn @click="resetTreeData">Reset TreeData</g-btn>
-      <g-dialog v-model="dialog" fullscreen lazy>
+      <g-dialog v-model="dialog" fullscreen persistent lazy>
         <g-css-customizer v-model="treeData" @close="closeCssCustomizer" @save="saveTreeData" @cancel="cancel">
           
         </g-css-customizer>

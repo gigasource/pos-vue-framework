@@ -10,6 +10,7 @@
 <style scoped lang="scss">
 	.g-tf {
 		padding: 2px;
+    align-items: flex-end;
 
     &-input {
       font-size: 14px;
@@ -41,10 +42,11 @@
 			font-family: Roboto;
 			font-style: normal;
 			font-weight: normal;
-			font-size: 12px;
+      width: 20px;
+			font-size: 14px;
 			line-height: 22px;
 			color: rgba(0, 0, 0, 0.54);
-			padding: 3px 6px 0 6px;
+			padding: 0 6px;
 		}
 
 		.g-tf-affix:last-child {

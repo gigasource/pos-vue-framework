@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import {ref, reactive, computed, watch, set, inject, onMounted} from '@vue/composition-api';
-  import {convertToUnit} from '../../utils/helpers';
+  import {Length, Angle, Color, LineStyle, cssLineStyleList} from './GCssCustomizerHelper';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
@@ -14,10 +14,12 @@
   import GSectionsItem from '../GExpansion/GSectionsItem';
   import GCssCustomizerInputForm from './GCssCustomizerInputForm';
   import GCssCustomizer from './GCssCustomizer';
+  import GCssCustomizerSelect from './GCssCustomizerSelect';
 
   export default {
     name: "GCssCustomizerDesignPanel2",
     components: {
+      GCssCustomizerSelect,
       GCssCustomizer,
       GCssCustomizerInputForm,
       GCssCustomizerInput,
@@ -41,12 +43,12 @@
 
       const defaultDesignData = {
         basic: {
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 100,
-          rotation: 0,
-          borderRadius: 0,
+          x: new Length(0),
+          y: new Length(0),
+          width: new Length(100),
+          height: new Length(100),
+          rotation: new Angle(0),
+          borderRadius: new Length(0),
         },
         text: {
           fontFamily: 'Roboto',
@@ -55,21 +57,15 @@
           lineHeight: 22,
           letterSpacing: 0,
           textAlign: 'Left',
-          align: 'Top'
+          align: 'Top',
         },
         fill: {
-          color: {
-            value: '#C4C4C4',
-            alpha: 1
-          }
+          color: new Color('#C4C4C4')
         },
         stroke: {
-          color: {
-            value: '#1080EC',
-            alpha: 1,
-          },
-          width: 1,
-          mode: 'inside'
+          width: new Length(1),
+          style: new LineStyle('solid'),
+          color: new Color('#1080EC'),
         },
         space: {
           padding: {
@@ -99,16 +95,250 @@
 
       const designData = ref(_.cloneDeep(defaultDesignData))
 
+      watch(() => props.activeSelector, () => {
+        const activeDesignState = getDesignState()
+        if (activeDesignState) reconstructBasic(getDesignState())
+        else designData.value = _.cloneDeep(defaultDesignData)
+      }, {lazy: true})
 
+      const getStyle = inject('getStyle')
+      const setStyle = inject('setStyle')
+      const getDesignState = inject('getDesignState')
+      const setDesignState = inject('setDesignState')
+
+      // Basic functionality
+      const designPropertyList = ref({
+        basic: [
+          {key: 'x', prefix: 'X', cssKey: 'top', constructor: Length},
+          {key: 'y', prefix: 'Y', cssKey: 'left', constructor: Length},
+          {key: 'width', prefix: 'W', cssKey: 'width', constructor: Length},
+          {key: 'height', prefix: 'H', cssKey: 'height', constructor: Length},
+          {key: 'rotation', prependInnerIcon: 'icon-pns_rotation', cssKey: 'transform', constructor: Angle},
+          {key: 'borderRadius', prependInnerIcon: 'icon-pns_chain', cssKey: 'borderRadius', constructor: Length}
+        ],
+        fill: [
+          {key: 'color', cssKey: 'backgroundColor', constructor: Color}
+        ],
+        stroke: [
+          {key: 'width', prefix: 'W', cssKey: 'borderWidth', constructor: Length},
+          {key: 'style', cssKey: 'borderStyle', constructor: LineStyle},
+          {key: 'color', cssKey: 'borderColor', constructor: Color}
+        ]
+      })
+
+      const basicToCSS = () => {
+        for (let item of designPropertyList.value.basic) {
+          const prop = designData.value.basic[item.key]
+          if (prop.active) {
+            if (item.key !== 'rotation') setStyle(item.cssKey, prop.toCSS())
+            else setStyle(item.cssKey, `rotate(${prop.value})`)
+          } else if (getStyle(item.cssKey)) {
+            setStyle(item.cssKey, undefined)
+          }
+        }
+      }
+
+      const reconstructBasic = inputDesignData => {
+        for (let item of designPropertyList.value.basic) {
+          designData.value.basic[item.key] = new item.constructor(..._.values(inputDesignData.basic[item.key]))
+        }
+      }
+
+      // Fill functionality
+      const fillMenu = ref(false)
+
+      const fillToCSS = () => {
+        for (let item of designPropertyList.value.fill) {
+          const prop = designData.value.fill[item.key]
+          if (prop.active) {
+            setStyle(item.cssKey, prop.toCSS())
+          } else if (getStyle(item.cssKey)) {
+            setStyle(item.cssKey, undefined)
+          }
+        }
+      }
+
+      // Stroke functionality
+      const strokeMenu = ref(false)
+
+      const strokeToCSS = () => {
+        for (let item of designPropertyList.value.stroke) {
+          const prop = designData.value.stroke[item.key]
+          if (prop.active) {
+            setStyle(item.cssKey, prop.toCSS())
+          } else if (getStyle(item.cssKey)) {
+            setStyle(item.cssKey, undefined)
+          }
+        }
+      }
+
+      const strokeCheckbox = computed({
+        get: () => {
+          let temp = false
+          for (let item of designPropertyList.value.stroke) {
+            const prop = designData.value.stroke[item.key]
+            temp = temp || prop.active
+          }
+          if (temp) strokeCheckbox.value = temp
+          return temp
+        },
+        set: value => {
+          for (let item of designPropertyList.value.stroke) {
+            const prop = designData.value.stroke[item.key]
+            prop.active = value
+          }
+        }
+      })
+
+
+      watch(() => designData.value, () => {
+        basicToCSS()
+        fillToCSS()
+        strokeToCSS()
+        setDesignState(designData.value)
+      }, {lazy: true, deep: true})
+
+      // Render functions
+      const genCheckbox = prop => {
+        return <g-checkbox inputValue={prop.active} vOn:change={e => prop.active = e}/>
+      }
+
+      const genInputShort = (item, prop, width) => {
+        return <g-css-customizer-input class="g-css-customizer-design-panel-basic-input"
+                                       prefix={item.prefix}
+                                       svg={true}
+                                       prependInnerIcon={item.prependInnerIcon}
+                                       value={prop.value}
+                                       style={{width: width}}
+                                       vOn:change={e => prop.value = e}/>
+      }
+
+      const genInputLong = (item, val, index, prop) => {
+        if (index === 0) return <g-css-customizer-input class="g-css-customizer-design-panel-basic-input__prefixed"
+                                                        prefix={item.prefix}
+                                                        svg={true}
+                                                        prependInnerIcon={item.prependInnerIcon}
+                                                        value={val}
+                                                        vOn:change={e => prop.value = {string: e, index: index}}/>
+        else return <g-css-customizer-input class="g-css-customizer-design-panel-basic-input__long"
+                                            value={val}
+                                            vOn:change={e => prop.value = {string: e, index: index}}/>
+      }
+
+      const genBasicInput = item => {
+        return <div class={`g-css-customizer-design-panel-basic-input-wrapper__${designData.value.basic[item.key].mode}`}>
+          {genCheckbox(designData.value.basic[item.key])}
+          {designData.value.basic[item.key].mode === 'long'
+            ? designData.value.basic[item.key].value.map((val, index) => genInputLong(item, val, index, designData.value.basic[item.key]))
+            : genInputShort(item, designData.value.basic[item.key])}
+        </div>
+      }
+
+      const genBasicSection = () => {
+        return <div class="g-css-customizer-design-panel-basic">
+          {designPropertyList.value.basic.map(item => genBasicInput(item))}
+          <g-btn class="g-css-customizer-design-panel-btn" flat
+                 vOn:click={() => designData.value.basic.borderRadius.toggleMode()}>
+            <g-icon size="16" color="grey">fas fa-expand</g-icon>
+          </g-btn>
+        </div>
+      }
+
+      const genFillSection = () => {
+        const data = {
+          scopedSlots: {
+            activator: ({on}) => {
+              return <div class="g-css-customizer-design-panel-color-preview-transparent">
+                <div class="g-css-customizer-design-panel-color-preview" vOn:click={on.click}
+                     style={{backgroundColor: designData.value.fill.color.rgba}}/>
+              </div>
+            }
+          }
+        }
+
+        return <div class="g-css-customizer-design-panel-section-content">
+          {genCheckbox(designData.value.fill.color)}
+          <g-menu {...data} vModel={fillMenu.value} nudgeLeft="376" nudgeTop="36">
+            <g-color-picker vOn:color={color => designData.value.fill.color.value = color}/>
+          </g-menu>
+          <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
+                                  value={designData.value.fill.color.hex}
+                                  vOn:change={e => designData.value.fill.color.hex = e}/>
+          <g-css-customizer-input class="g-css-customizer-design-panel-percentage-input"
+                                  value={designData.value.fill.color.alpha}
+                                  vOn:change={e => designData.value.fill.color.alpha = e}/>
+        </div>
+      }
+
+      const genStrokeSection = () => {
+        const menuData = {
+          scopedSlots: {
+            activator: ({on}) => {
+              return <div class="g-css-customizer-design-panel-color-preview-transparent">
+                <div class="g-css-customizer-design-panel-color-preview" vOn:click={on.click}
+                     style={{backgroundColor: designData.value.stroke.color.rgba}}/>
+              </div>
+            }
+          }
+        }
+
+        return <div class="g-css-customizer-design-panel-section-content">
+          <g-checkbox inputValue={strokeCheckbox.value} vOn:change={e => strokeCheckbox.value = e}/>
+          <g-menu {...menuData} vModel={strokeMenu.value} nudgeLeft="376" nudgeTop="36">
+            <g-color-picker vOn:color={color => designData.value.stroke.color.value = color}/>
+          </g-menu>
+          <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
+                                  value={designData.value.stroke.color.hex}
+                                  vOn:change={e => designData.value.stroke.color.hex = e}/>
+          <g-css-customizer-input class="g-css-customizer-design-panel-percentage-input"
+                                  value={designData.value.stroke.color.alpha}
+                                  vOn:change={e => designData.value.stroke.color.alpha = e}/>
+          <g-css-customizer-select class="g-css-customizer-design-panel-section-content-select-style"
+                                   value={designData.value.stroke.style.value}
+                                   vOn:input={e => designData.value.stroke.style.value = e} items={cssLineStyleList}/>
+          <div class={`g-css-customizer-design-panel-basic-input-wrapper__long`}>
+            <g-checkbox style="opacity: 0;"/>
+            {designData.value.stroke.width.mode === 'long'
+              ? designData.value.stroke.width.value.map((val, index) => genInputLong(designPropertyList.value.stroke[0], val, index, designData.value.stroke.width))
+              : genInputShort(designPropertyList.value.stroke[0], designData.value.stroke.width, '32%')}
+          </div>
+          <g-btn class="g-css-customizer-design-panel-btn" flat
+                 vOn:click={() => designData.value.stroke.width.toggleMode()}>
+            <g-icon size="16" color="grey">fas fa-expand</g-icon>
+          </g-btn>
+        </div>
+      }
 
       const genDesignPanel = () => {
         return <div class="g-css-customizer-design-panel">
+          {genBasicSection()}
+          <g-sections vModel={activeSections.value} multiple={true}>
+            {
+              sectionsList.value.map((section, index) => {
+                return <g-sections-header key={`header${index}`}>
+                  {section}
+                </g-sections-header>
+              })
+            }
+            <g-sections-item key="text">
 
+            </g-sections-item>
+            <g-sections-item key="fill">
+              {genFillSection()}
+            </g-sections-item>
+            <g-sections-item key="stroke">
+              {genStrokeSection()}
+            </g-sections-item>
+            <g-sections-item key="space">
+
+            </g-sections-item>
+          </g-sections>
         </div>
       }
 
       return {
         genDesignPanel,
+        designData,
       }
     },
     render() {
@@ -129,15 +359,68 @@
     font-size: 14px;
     font-weight: bold;
     color: #212121;
-    padding: 0 8px;
+    padding: 0 4px;
   }
 
   .g-sections-item::v-deep .g-sections-item-content-wrapper {
-    padding: 0 8px 16px;
+    padding: 0 4px 10px;
+  }
+
+  ::v-deep.g-checkbox-wrapper {
+    margin: 0;
+  }
+
+  ::v-deep.g-checkbox {
+    padding-left: 32px;
   }
 
   .g-css-customizer-design-panel {
     overflow-y: auto;
+
+    &-btn {
+      width: 20px !important;
+      min-width: 12px !important;
+      height: 20px !important;
+      padding: 0 !important;
+      margin-left: auto;
+      align-self: center;
+    }
+
+    &-basic {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0 4px 10px;
+
+      &-input {
+        width: 100%;
+
+        &__prefixed {
+          width: 32%;
+        }
+
+        &__long {
+          width: 22%;
+        }
+
+        &-wrapper__short {
+          width: 45%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        &-wrapper__long {
+          width: 90%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+        }
+      }
+
+      ::v-deep.g-checkbox-checkmark::before {
+        top: 2px;
+      }
+    }
 
     &-section {
       padding: 10px 0 10px 8px;
@@ -150,16 +433,20 @@
       &-content {
         display: flex;
         align-items: center;
-        padding-top: 4px;
         flex-wrap: wrap;
 
         &__justify {
           justify-content: space-between;
         }
 
-        input {
-          font-size: 14px;
-          margin-left: 16px;
+        &-select-style {
+          width: 20%;
+
+          .g-menu--content.in-select {
+            .g-list-item {
+              width: 10px
+            }
+          }
         }
 
         ::v-deep.g-checkbox-wrapper {
@@ -171,7 +458,7 @@
         }
 
         ::v-deep.g-checkbox-checkmark::before {
-          top: 1px;
+          top: 2px;
         }
 
         ::v-deep.g-css-customizer-design-panel-color-preview {
@@ -191,11 +478,6 @@
 
     &-section:first-child {
       padding: 0 0 10px 4px;
-    }
-
-    &-stroke-position {
-      margin-top: 16px;
-      margin-right: 20px;
     }
 
     &-effect-shadow-editor {

@@ -410,7 +410,7 @@
       }
 
       const setDesignState =  designData => {
-        activeSelectorDesignState.value = designData
+        activeSelectorDesignState.value = _.cloneDeep(designData)
       }
 
       provide('getStyle', getStyle)

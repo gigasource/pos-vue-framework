@@ -61,12 +61,15 @@
 
 		.g-tf-input {
 			display: flex;
+      font-size: 14px;
+      line-height: 22px;
+      padding: 0;
 		}
 
 
 		.input {
 			display: flex;
-			padding: 4px 16px;
+			padding: 0 8px;
 
 			font-family: Roboto;
 			font-style: normal;
@@ -150,7 +153,7 @@
 				min-height: 28px;
 
 				.g-list-item-content {
-					padding-left: 36px;
+					padding-left: 4px;
 					margin-left: 0;
 				}
 
