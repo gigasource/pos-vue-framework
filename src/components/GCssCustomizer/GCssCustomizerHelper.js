@@ -4,6 +4,22 @@ import { set } from '@vue/composition-api'
 const cssLengthUnitList = ['cm', 'mm', 'in', 'px', 'pt', 'pc', 'em', 'ex', 'ch', 'rem', 'vw', 'vh', 'lh', 'rlh', 'vmin', 'vmax', '%']
 const cssAngleUnitList = ['deg', 'grad', 'rad', 'turn']
 export const cssLineStyleList = ['dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset']
+export const cssFontFamilyList = [
+    'Arial',
+    'Roboto',
+    'Times New Roman',
+    'Times',
+    'Courier New',
+    'Verdana',
+    'Georgia',
+    'Palatino',
+    'Garamond',
+    'Bookman',
+    'Comic Sans MS',
+    'Candara',
+    'Impact'
+]
+export const cssFontStyleList = ['normal', 'bold', 'lighter', 'bolder', '100', '200', '300', '400', '500', '600', '700', '800', '900',]
 
 export class Length {
   constructor(value = 0, unit = 'px', active = false, mode = 'short') {
@@ -194,11 +210,51 @@ export class LineStyle {
 }
 
 export class FontFamily {
-  constructor(value) {
+  constructor(value = 'Roboto', active = false) {
     this._value = value
+    this._active = active
   }
 
+  get value () {
+    return this._value
+  }
 
+  set value (string) {
+    this._value = cssFontFamilyList.includes(string) ? string : 'Roboto'
+    this._active = true
+  }
+
+  get active () {
+    return this._active
+  }
+
+  set active (bool) {
+    this._active = Boolean(bool)
+  }
+}
+
+export class FontWeight {
+  constructor(value = 'normal', active = false) {
+    this._value = value
+    this._active = active
+  }
+
+  get value () {
+    return this._value
+  }
+
+  set value (string) {
+    this._value = cssFontStyleList.includes(string) ? string : 'normal'
+    this._active = true
+  }
+
+  get active () {
+    return this._active
+  }
+
+  set active (bool) {
+    this._active = Boolean(bool)
+  }
 }
 
 function parseLengthString (string) {
