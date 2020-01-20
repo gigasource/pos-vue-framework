@@ -37,7 +37,10 @@
           type: [Boolean, Number, String],
           default: false
         },
+        appendIcon: String,
         prependIcon: String,
+        prependInnerIcon: String,
+        appendInnerIcon: String,
         placeholder: String,
         label: String,
         prefix: String,
@@ -245,7 +248,7 @@
                   props: {
                     ..._.pick(props, ['filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                       'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                      'rules', 'type', 'disabled', 'readOnly', 'required',]),
+                      'rules', 'type', 'disabled', 'readOnly', 'required', 'prependIcon', 'prependInnerIcon', 'appendIcon', 'appendInnerIcon']),
                     value: tfValue.value
                   },
                   on: {
