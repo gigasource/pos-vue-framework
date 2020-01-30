@@ -156,7 +156,9 @@ import colorHandler, { convertToUnit } from '../utils/helpers'
 import Intersect from '../directives/intersect/intersect';
 import { setBackgroundColor, setTextColor } from '../mixins/colorable';
 import GDatePickerUtil from './GDatePicker/logic/GDatePickerUtil';
-
+import { pad } from './GDatePicker/logic/utils';
+import DateTableUtil from './GDatePicker/logic/DateTableUtil'
+import TableUtil from './GDatePicker/logic/TableUtil';
 import {
   GCarouselTransition,
   GCarouselReverseTransition,
@@ -212,7 +214,10 @@ export {
   getExpansionModel,
   setBackgroundColor,
   setTextColor,
-  GDatePickerUtil
+  GDatePickerUtil,
+  TableUtil,
+  DateTableUtil,
+  pad,
 }
 
 export {
