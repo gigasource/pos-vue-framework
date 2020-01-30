@@ -8,12 +8,14 @@
 </script>
 <style scoped lang="scss">
 	.g-combobox::v-deep {
+    width: 100%;
+
 		span {
 			margin: 3px
 		}
 
 		.g-tf-wrapper {
-			margin: 0
+			margin: 0;
 		}
 
 
@@ -42,7 +44,7 @@
 				font-family: Roboto;
 				font-style: normal;
 				font-weight: normal;
-				font-size: 12px;
+				font-size: 14px;
 				line-height: 22px;
 				color: #000000;
 			}
@@ -64,7 +66,7 @@
 
 		.input {
 			display: flex;
-			padding: 0 0 0 6px;;
+			padding: 0 0 0 8px;
 
 			font-family: Roboto;
 			font-style: normal;

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { set } from '@vue/composition-api'
+import {ref, set} from '@vue/composition-api'
 
 const cssLengthUnitList = ['cm', 'mm', 'in', 'px', 'pt', 'pc', 'em', 'ex', 'ch', 'rem', 'vw', 'vh', 'lh', 'rlh', 'vmin', 'vmax', '%']
 const cssAngleUnitList = ['deg', 'grad', 'rad', 'turn']
@@ -19,12 +19,27 @@ export const cssFontFamilyList = [
     'Candara',
     'Impact'
 ]
-export const cssFontStyleList = ['normal', 'bold', 'lighter', 'bolder', '100', '200', '300', '400', '500', '600', '700', '800', '900',]
+export const cssFontStyleList = ['Normal', 'Bold', 'Lighter', 'Bolder', '100', '200', '300', '400', '500', '600', '700', '800', '900',]
+export const effectList = [
+  {
+    value: 'dropShadow',
+    text: 'Drop Shadow'
+  },
+  {
+    value: 'innerShadow',
+    text: 'Inner Shadow'
+  },
+  {
+    value: 'layerBlur',
+    text: 'Layer Blur'
+  }
+]
 
 export class Length {
-  constructor(value = 0, unit = 'px', active = false, mode = 'short') {
+  constructor(value = 0, unit = 'px', defaultUnit = 'px', active = false, mode = 'short') {
     this._value = value
     this._unit = unit
+    this._defaultUnit = defaultUnit
     this._active = active
     this._mode = mode
   }
@@ -40,11 +55,11 @@ export class Length {
     if (inputValue instanceof Object) {
       const input = parseLengthString(inputValue.string)
       set(this._value, inputValue.index, !isNaN(input.value) ? input.value : 0)
-      set(this._unit, inputValue.index, cssLengthUnitList.includes(input.unit) ? input.unit : 'px')
+      set(this._unit, inputValue.index, cssLengthUnitList.includes(input.unit) ? input.unit : this._defaultUnit)
     } else {
       const input = parseLengthString(inputValue)
       this._value = !isNaN(input.value) ? input.value : 0
-      this._unit = cssLengthUnitList.includes(input.unit) ? input.unit : 'px'
+      this._unit = cssLengthUnitList.includes(input.unit) ? input.unit : this._defaultUnit
     }
     this._active = true
   }
@@ -107,6 +122,10 @@ export class Angle {
 
   get mode () {
     return this._mode
+  }
+
+  toCSS () {
+    return `rotate(${this.value})`
   }
 }
 
@@ -231,6 +250,10 @@ export class FontFamily {
   set active (bool) {
     this._active = Boolean(bool)
   }
+
+  toCSS() {
+    return this.value
+  }
 }
 
 export class FontWeight {
@@ -254,6 +277,50 @@ export class FontWeight {
 
   set active (bool) {
     this._active = Boolean(bool)
+  }
+
+  toCSS () {
+    return this._value.toLowerCase()
+  }
+}
+
+export class Effect {
+  constructor(type = 'dropShadow', shadowBlur = {value: 4}, layerBlur = {value: 4}, x= {value: 4}, y = {value : 4}, color = {value: '#000000', alpha: 0.25}, active= true) {
+    this._type = type
+    this.shadowBlur = new Length(..._.values(shadowBlur))
+    this.layerBlur = new Length(..._.values(layerBlur))
+    this.x = new Length(..._.values(x))
+    this.y = new Length(..._.values(y))
+    this.color = new Color(..._.values(color))
+    this._active = active
+  }
+
+  get type () {
+    return this._type
+  }
+
+  set type (string) {
+    this._type = string
+    this._active = true
+  }
+
+  get active () {
+    return this.shadowBlur.active || this.layerBlur.active || this.x.active || this.y.active || this.color.active || this._active
+  }
+
+  set active (bool) {
+    this.shadowBlur.active = Boolean(bool)
+    this.layerBlur.active = Boolean(bool)
+    this.x.active = Boolean(bool)
+    this.y.active = Boolean(bool)
+    this.color.active = Boolean(bool)
+    this._active = Boolean(bool)
+  }
+
+  toCSS () {
+    if (this._type === 'layerBlur') return `blur(${this.layerBlur.toCSS()})`
+    else if (this._type === 'dropShadow') return `${this.x.toCSS()} ${this.y.toCSS()} ${this.shadowBlur.toCSS()} ${this.color.toCSS()}`
+    else return `inset ${this.x.toCSS()} ${this.y.toCSS()} ${this.shadowBlur.toCSS()} ${this.color.toCSS()}`
   }
 }
 

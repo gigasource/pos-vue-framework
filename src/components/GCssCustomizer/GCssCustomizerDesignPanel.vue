@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
-  import {ref, reactive, computed, watch, set, inject, onMounted} from '@vue/composition-api';
-  import {convertToUnit} from '../../utils/helpers';
+  import { ref, reactive, computed, watch, set, inject, onMounted } from '@vue/composition-api';
+  import { Length, Angle, Color, LineStyle, FontFamily, FontWeight, Effect, cssLineStyleList, cssFontFamilyList, cssFontStyleList, effectList } from './GCssCustomizerModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
@@ -12,14 +12,20 @@
   import GSections from '../GExpansion/GSections';
   import GSectionsHeader from '../GExpansion/GSectionsHeader';
   import GSectionsItem from '../GExpansion/GSectionsItem';
-  import GCssCustomizerInputForm from './GCssCustomizerInputForm';
   import GCssCustomizer from './GCssCustomizer';
+  import GCssCustomizerSelect from './GCssCustomizerSelect';
+  import GCombobox from '../GCombobox/GCombobox';
+  import GSelect from '../GSelect/GSelect';
+  import GCssCustomizerCombobox from './GCssCustomizerCombobox';
 
   export default {
-    name: "GCssCustomizerDesignPanel",
+    name: 'GCssCustomizerDesignPanel',
     components: {
+      GCssCustomizerCombobox,
+      GSelect,
+      GCombobox,
+      GCssCustomizerSelect,
       GCssCustomizer,
-      GCssCustomizerInputForm,
       GCssCustomizerInput,
       GSectionsHeader,
       GSectionsItem,
@@ -37,658 +43,340 @@
     setup(props, context) {
       const activeSections = ref([])
 
-      const sectionsList = ref(['Fill', 'Stroke', 'Space'])
+      const sectionsList = ref(['Text', 'Fill', 'Stroke', 'Space'])
 
       const defaultDesignData = {
         basic: {
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 100,
-          rotation: 0,
-          borderRadius: 0,
+          x: new Length(0),
+          y: new Length(0),
+          width: new Length(100),
+          height: new Length(100),
+          rotation: new Angle(0),
+          borderRadius: new Length(0),
+        },
+        text: {
+          fontFamily: new FontFamily('Roboto'),
+          fontSize: new Length(14),
+          fontWeight: new FontWeight('Normal'),
+          lineHeight: new Length(22),
+          letterSpacing: new Length(0, 'em', 'em'),
+          textAlign: 'Left',
+          align: 'Top',
         },
         fill: {
-          color: {
-            value: '#C4C4C4',
-            alpha: 1
-          }
+          color: new Color('#C4C4C4')
         },
         stroke: {
-          color: {
-            value: '#1080EC',
-            alpha: 1,
-          },
-          width: 1,
-          mode: 'inside'
+          width: new Length(1),
+          style: new LineStyle('solid'),
+          color: new Color('#1080EC'),
         },
         space: {
-          padding: {
-            value: 5,
-            mode: 'short'
-          },
-          margin: {
-            value: 5,
-            mode: 'short'
-          }
+          padding: new Length(5),
+          margin: new Length(5),
         },
         effects: []
       }
 
-      const defaultEffectData = {
-        type: 'dropShadow',
-        shadowBlur: 4,
-        layerBlur: 4,
-        x: 4,
-        y: 4,
-        color: {
-          value: '#000000',
-          alpha: 0.25
-        },
-        active: true
-      }
-
       const designData = ref(_.cloneDeep(defaultDesignData))
 
+      const designPropertyList = ref({
+        basic: [
+          { key: 'x', prefix: 'X', cssKey: 'top', constructor: Length },
+          { key: 'y', prefix: 'Y', cssKey: 'left', constructor: Length },
+          { key: 'width', prefix: 'W', cssKey: 'width', constructor: Length },
+          { key: 'height', prefix: 'H', cssKey: 'height', constructor: Length },
+          { key: 'rotation', prependInnerIcon: 'icon-pns_rotation', cssKey: 'transform', constructor: Angle },
+          { key: 'borderRadius', prependInnerIcon: 'icon-pns_chain', cssKey: 'borderRadius', constructor: Length }
+        ],
+        text: [
+          { key: 'fontFamily', cssKey: 'fontFamily', constructor: FontFamily },
+          { key: 'fontWeight', appendInnerIcon: 'icon-arrow_drop_down', cssKey: 'fontWeight', constructor: FontWeight },
+          { key: 'fontSize', cssKey: 'fontSize', constructor: Length },
+          { key: 'lineHeight', prependInnerIcon: 'icon-tops_line_height', cssKey: 'lineHeight', constructor: Length},
+          { key: 'letterSpacing', prependInnerIcon: 'icon-tops_letter_spacing', cssKey: 'letterSpacing', constructor: Length}
+        ],
+        fill: [
+          { key: 'color', cssKey: 'backgroundColor', constructor: Color }
+        ],
+        stroke: [
+          { key: 'width', prefix: 'W', cssKey: 'borderWidth', constructor: Length },
+          { key: 'style', cssKey: 'borderStyle', constructor: LineStyle },
+          { key: 'color', cssKey: 'borderColor', constructor: Color }
+        ],
+        space: [
+          { key: 'padding', prefix: 'P', cssKey: 'padding', constructor: Length},
+          { key: 'margin', prefix: 'M', cssKey: 'margin', constructor: Length}
+        ],
+      })
+
+      const reconstructDesignData = inputDesignData => {
+        for (let section in designPropertyList.value) {
+          for (let item of designPropertyList.value[section]) {
+            designData.value[section][item.key] = new item.constructor(..._.values(inputDesignData[section][item.key]))
+          }
+        }
+
+        set(designData.value, 'effects', [])
+        for (let effect of inputDesignData.effects) {
+          designData.value.effects.push(new Effect(..._.values(effect)))
+        }
+      }
+
       watch(() => props.activeSelector, () => {
-        designData.value = getDesignState() || _.cloneDeep(defaultDesignData)
-      }, {lazy: true})
+        const activeDesignState = getDesignState()
+        if (activeDesignState) reconstructDesignData(getDesignState())
+        else designData.value = _.cloneDeep(defaultDesignData)
+      }, { lazy: true })
 
       const getStyle = inject('getStyle')
       const setStyle = inject('setStyle')
       const getDesignState = inject('getDesignState')
       const setDesignState = inject('setDesignState')
 
-      // Helpers
-      const colorToRGBA = color => {
-        const r = parseInt(`0x${color.value.substring(1, 3)}`)
-        const g = parseInt(`0x${color.value.substring(3, 5)}`)
-        const b = parseInt(`0x${color.value.substring(5, 7)}`)
-        if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
-          return `rgba(${r}, ${g}, ${b}, ${color.alpha})`
-        }
-      }
-
-      const strokeToCSS = strokeData => {
-        return `${strokeData.width}px solid ${colorToRGBA(strokeData.color)}`
-      }
-
-      // TODO: add support for gradient color
-      const updateColor = (inputColor, color) => {
-        if (inputColor.angle) {
-          return
-        } else if (inputColor.value) {
-          color.value = inputColor.value
-        } else {
-          color.value = inputColor
-        }
-      }
-
-      const spaceToCSS = spaceData => {
-        if (_.isArray(spaceData)) {
-          return _.reduce(spaceData, (acc, val) => {
-            return acc = acc + convertToUnit(val) + ' '
-          }, '')
-        } else {
-          return convertToUnit(spaceData)
-        }
-      }
-
+      // Conversion
       const shadowToCSS  = effectData => {
         const shadowData = _.filter(effectData, val => val.type.indexOf('Shadow') > -1 && val.active)
         return _.reduce(shadowData, (acc, val, index) => {
-          let temp = ''
-          if (val.active) {
-            if (val.type === 'innerShadow') temp += 'inset '
-            temp += `${convertToUnit(val.x)} ${convertToUnit(val.y)} ${convertToUnit(val.shadowBlur)} ${colorToRGBA(val.color)}`
-            if (index < shadowData.length - 1) temp += ', '
-          }
+          let temp = val.toCSS()
+          if (index < shadowData.length - 1) temp += ', '
           return acc += temp
         }, '')
       }
 
       const blurToCSS = effectData => {
         const blurData = _.find(effectData, val => val.type.indexOf('Blur') > -1 && val.active)
-        if (blurData !== undefined) return `blur(${convertToUnit(blurData.layerBlur)})`
+        if (blurData !== undefined) return blurData.toCSS()
       }
 
-      const parseLength = str => isNaN(parseInt(str)) ? 0 : parseInt(str)
+      const designToCSS = () => {
+        for (let section in designPropertyList.value) {
+          for (let item of designPropertyList.value[section]) {
+            const prop = designData.value[section][item.key]
+            if (prop.active) {
+              setStyle(item.cssKey, prop.toCSS())
+            } else if (getStyle(item.cssKey)) {
+              setStyle(item.cssKey, undefined)
+            }
+          }
+        }
 
-      const parsePercentage = str => !isNaN(parseFloat(str)) ? parseFloat(str) / 100 : 0
-
-      // Align functionality
-      const align = ref('')
-      const alignItemList = ref([
-        {
-          value: 'left',
-          icon: 'icon-align_left'
-        },
-        {
-          value: 'center',
-          icon: 'icon-align_center_horizontal'
-        },
-        {
-          value: 'right',
-          icon: 'icon-align_right'
-        },
-        {
-          value: 'top',
-          icon: 'icon-align_top'
-        },
-        {
-          value: 'center-vertical',
-          icon: 'icon-align_center_vertical'
-        },
-        {
-          value: 'bottom',
-          icon: 'icon-align_bottom'
-        },
-      ])
-
-      // Basic functionality
-      const genLengthInputValue = prop => {
-
+        setStyle('boxShadow', shadowToCSS(designData.value.effects))
+        setStyle('filter', blurToCSS(designData.value.effects))
       }
 
       // Fill functionality
-      const fillData = computed({
-        get: () => designData.value['fill'],
-        set: value => designData.value['fill'] = value
-      })
-
-      const fillColorPicker = computed({
-        get: () => {
-          return colorToRGBA(fillData.value.color)
-        },
-        set: value => {
-          if (value.length === 7) {
-            fillData.value.color.value = value
-            fillData.value.color.alpha = 1
-            setStyle('backgroundColor', colorToRGBA(fillData.value.color))
-            setDesignState(designData.value)
-          } else if (value.length === 9) {
-            fillData.value.color.value = value.substring(0, 7)
-            const alpha = parseInt(`0x${value.substring(7, 9)}`) / 256
-            fillData.value.color.alpha = alpha >= 1 ? 1 : alpha.toFixed(2)
-            setStyle('backgroundColor', colorToRGBA(fillData.value.color))
-            setDesignState(designData.value)
-          } else {
-            fillData.value.color.value = undefined
-            fillData.value.color.alpha = undefined
-            setStyle('backgroundColor', undefined)
-            setDesignState(designData.value)
-          }
-        }
-      })
-
-      const fillColorInput = computed({
-        get: () => fillData.value.color.value.replace(/^#/, ''),
-        set: value => {
-          fillData.value.color.value = `#${value}`
-          setStyle('backgroundColor', colorToRGBA(fillData.value.color))
-          setDesignState(designData.value)
-        }
-      })
-
-      const fillAlphaInput = computed({
-        get: () => `${fillData.value.color.alpha * 100}%`,
-        set: value => {
-          fillData.value.color.alpha = !isNaN(parseFloat(value)) ? parseFloat(value) / 100 : 0
-          setStyle('backgroundColor', colorToRGBA(fillData.value.color))
-          setDesignState(designData.value)
-        }
-      })
-
-      const fillCheckbox = computed({
-        get: () => {
-          return getStyle('backgroundColor') !== undefined
-        },
-        set: value => {
-          if (value) {
-            setStyle('backgroundColor', colorToRGBA(fillData.value.color))
-          } else {
-            setStyle('backgroundColor', undefined)
-          }
-        }
-      })
-
       const fillMenu = ref(false)
 
       // Stroke functionality
-      const strokeModeList = ref([
-        {
-          value: 'center',
-          text: 'Center'
-        },
-        {
-          value: 'inside',
-          text: 'Inside'
-        },
-        {
-          value: 'outside',
-          text: 'Outside'
-        }
-      ])
-
-      const strokeData = computed({
-        get: () => designData.value['stroke'],
-        set: value => designData.value['stroke'] = value
-      })
-
-      const strokeColorPicker = computed({
-        get: () => {
-          return colorToRGBA(strokeData.value.color)
-        },
-        set: value => {
-          if (value.length === 7) {
-            strokeData.value.color.value = value
-            strokeData.value.color.alpha = 1
-            setStyle('border', strokeToCSS(strokeData.value))
-            setDesignState(designData.value)
-          } else if (value.length === 9) {
-            strokeData.value.color.value = value.substring(0, 7)
-            const alpha = parseInt(`0x${value.substring(7, 9)}`) / 256
-            strokeData.value.color.alpha = alpha >= 1 ? 1 : alpha.toFixed(2)
-            setStyle('border', strokeToCSS(strokeData.value))
-            setDesignState(designData.value)
-          } else {
-            strokeData.value.color.value = undefined
-            strokeData.value.color.alpha = undefined
-            setStyle('border', undefined)
-          }
-        }
-      })
-
-      const strokeAlphaInput = computed({
-        get: () => `${strokeData.value.color.alpha * 100}%`,
-        set: value => {
-          strokeData.value.color.alpha = !isNaN(parseFloat(value)) ? parseFloat(value) / 100 : 0
-          setStyle('border', strokeToCSS(strokeData.value))
-          setDesignState(designData.value)
-        }
-      })
-
-      const strokeColorInput = computed({
-        get: () => strokeData.value.color.value.replace(/^#/, ''),
-        set: value => {
-          strokeData.value.color.value = `#${value}`
-          setStyle('border', strokeToCSS(strokeData.value))
-          setDesignState(designData.value)
-        }
-      })
-
-      const strokeWidthInput = computed({
-        get: () => `${strokeData.value.width}px`,
-        set: value => {
-          strokeData.value.width = !isNaN(parseInt(value)) ? parseInt(value) : 0
-          setStyle('border', strokeToCSS(strokeData.value))
-          setDesignState(designData.value)
-        }
-      })
+      const strokeMenu = ref(false)
 
       const strokeCheckbox = computed({
         get: () => {
-          return getStyle('border') !== undefined
+          let temp = false
+          for (let item of designPropertyList.value.stroke) {
+            const prop = designData.value.stroke[item.key]
+            temp = temp || prop.active
+          }
+          if (temp) strokeCheckbox.value = temp
+          return temp
         },
         set: value => {
-          if (value) {
-            setStyle('border', strokeToCSS(strokeData.value))
-          } else {
-            setStyle('border', undefined)
+          for (let item of designPropertyList.value.stroke) {
+            const prop = designData.value.stroke[item.key]
+            prop.active = value
           }
         }
       })
 
-      const strokePosition = computed({
-        get: () => strokeData.value.mode,
-        set: value => {
-          strokeData.value.mode = value
-          // setStyle('border', strokeToCSS(strokeData.value))
-        }
-      })
-
-      const strokeMenu = ref(false)
-
-      // Space functionality
-      const spaceData = computed({
-        get: () => designData.value['space'],
-        set: value => designData.value['space'] = value
-      })
-
-      const switchSpaceMode = key => {
-        if (spaceData.value[key].mode === 'short') {
-          spaceData.value[key].value = [spaceData.value[key].value, spaceData.value[key].value, spaceData.value[key].value, spaceData.value[key].value]
-          spaceData.value[key].mode = 'long'
-          if (getStyle(key) !== undefined) setStyle(key, spaceToCSS(spaceData.value[key].value))
-          setDesignState(designData.value)
-        } else {
-          spaceData.value[key].value = spaceData.value[key].value[0]
-          spaceData.value[key].mode = 'short'
-          if (getStyle(key) !== undefined) setStyle(key, spaceToCSS(spaceData.value[key].value))
-          setDesignState(designData.value)
-        }
-      }
-
-      const paddingInput = computed({
-        get: () => {
-          if (spaceData.value.padding.value instanceof Array) {
-            return _.map(spaceData.value.padding.value, pos => `${pos}px`)
-          } else {
-            return `${spaceData.value.padding.value}px`
-          }
-        },
-        set: value => {
-          if (value instanceof Object) {
-            set(spaceData.value.padding.value, value.index, !isNaN(parseInt(value.value)) ? parseInt(value.value) : 0)
-          } else {
-            spaceData.value.padding.value = !isNaN(parseInt(value)) ? parseInt(value) : 0
-          }
-          setStyle('padding', spaceToCSS(spaceData.value.padding.value))
-          setDesignState(designData.value)
-        }
-      })
-
-      const paddingCheckbox = computed({
-        get: () => {
-          return getStyle('padding') !== undefined
-        },
-        set: value => {
-          if (value) {
-            setStyle('padding', spaceToCSS(spaceData.value.padding.value))
-          } else {
-            setStyle('padding', undefined)
-          }
-        }
-      })
-
-      const marginInput = computed({
-        get: () => {
-          if (spaceData.value.margin.value instanceof Array) {
-            return _.map(spaceData.value.margin.value, pos => `${pos}px`)
-          } else {
-            return `${spaceData.value.margin.value}px`
-          }
-        },
-        set: value => {
-          if (value instanceof Object) {
-            set(spaceData.value.margin.value, value.index, !isNaN(parseInt(value.value)) ? parseInt(value.value) : 0)
-          } else {
-            spaceData.value.margin.value = !isNaN(parseInt(value)) ? parseInt(value) : 0
-          }
-          setStyle('margin', spaceToCSS(spaceData.value.margin.value))
-          setDesignState(designData.value)
-        }
-      })
-
-      const marginCheckbox = computed({
-        get: () => {
-          return getStyle('margin') !== undefined
-        },
-        set: value => {
-          if (value) {
-            setStyle('margin', spaceToCSS(spaceData.value.margin.value))
-          } else {
-            setStyle('margin', undefined)
-          }
-        }
-      })
-
-      // Effects functionality
-      const effectList = ref([
-        {
-          value: 'dropShadow',
-          text: 'Drop Shadow'
-        },
-        {
-          value: 'innerShadow',
-          text: 'Inner Shadow'
-        },
-        {
-          value: 'layerBlur',
-          text: 'Layer Blur'
-        }
-      ])
-
-      const shadowEffectPropertyList = ref(['shadowBlur', 'x','y'])
-
-      const effectData = computed({
-        get: () => designData.value['effects'],
-        set: value => designData.value['effects'] = value
-      })
-
+      // Effect functionality
       const effectMenu = ref([])
 
       const effectColorPickerMenu = ref([])
 
-      const setEffectProperty = (effect, property, value) => {
-        set(effect, property, value)
-        if (property !== 'active') set(effect, 'active', true)
-        setStyle('boxShadow', shadowToCSS(effectData.value))
-        setStyle('filter', blurToCSS(effectData.value))
-        setDesignState(designData.value)
-      }
+      const shadowEffectPropertyList = ref(['shadowBlur', 'x','y'])
 
-      const updateEffectColor = (effect, inputColor) => {
-        let color
-        if (inputColor.angle) return
-        else if (inputColor.value) {
-          color = inputColor.value
-        } else {
-          color = inputColor
-        }
-        if (color.length === 7) {
-          set(effect.color, 'value', color)
-          set(effect.color, 'alpha', 1)
-        } else if (color.length === 9) {
-          set(effect.color, 'value', color.substring(0, 7))
-          const alpha = parseInt(`0x${color.substring(7, 9)}`) / 256
-          set(effect.color, 'alpha', alpha >= 1 ? 1 : alpha.toFixed(2))
-        } else {
-          set(effect.color, 'value', undefined)
-          set(effect.color, 'alpha', undefined)
-        }
-        set(effect, 'active', true)
-        setStyle('boxShadow', shadowToCSS(effectData.value))
-        setDesignState(designData.value)
-      }
-
-      const addEffectBtn = e => {
-        if (activeSections.value.includes(4)) e.stopPropagation()
-        effectData.value.push(_.cloneDeep(defaultEffectData))
+      const addEffect = e => {
+        if (activeSections.value.includes(sectionsList.value.length + 1)) e.stopPropagation()
+        designData.value.effects.push(new Effect())
         effectMenu.value.push(false)
         effectColorPickerMenu.value.push(false)
-        setStyle('boxShadow', shadowToCSS(effectData.value))
-        setDesignState(designData.value)
       }
 
-      const removeEffectBtn = index => {
-        effectData.value.splice(index, 1)
+      const removeEffect = index => {
+        designData.value.effects.splice(index, 1)
         effectMenu.value.splice(index, 1)
         effectColorPickerMenu.value.splice(index, 1)
-        setStyle('boxShadow', shadowToCSS(effectData.value))
-        setStyle('filter', blurToCSS(effectData.value))
-        setDesignState(designData.value)
       }
 
-      // Render functions
-      const genAlign = () => {
-        const data = {
-          scopedSlots: {
-            default: ({toggleSelect, item, index}) => {
-              return <GBtn flat style="margin-right: 4px; width: 28px; min-width: 12px; height: 28px; padding: 0px 4px;"
-                           vOn:click={() => toggleSelect(item)} ripple={false}>
-                <GIcon svg size="20">
-                  {item.icon}
-                </GIcon>
-              </GBtn>
-            },
-            selected: ({toggleSelect, item, index}) => {
-              return <GBtn flat style="margin-right: 4px; width: 28px; min-width: 12px; height: 28px; padding: 0px 4px;"
-                           vOn:click={() => toggleSelect(item)} backgroundColor="#E0E0E0" ripple={false}>
-                <GIcon svg size="20">
-                  {item.icon}
-                </GIcon>
-              </GBtn>
-            },
-          }
-        }
+      watch(() => designData.value, () => {
+        designToCSS()
+        setDesignState(designData.value)
+      }, { lazy: true, deep: true })
 
-        return <g-grid-select class="g-css-customizer-design-panel-section" grid={false} items={alignItemList.value}
-                              itemText="itemText" itemValue="value" {...data} vModel={align.value}>
-        </g-grid-select>
+      // Render functions
+      const genCheckbox = prop => {
+        return <g-checkbox inputValue={prop.active} vOn:change={e => prop.active = e}/>
+      }
+
+      const genInputShort = (item, prop, width) => {
+        return <g-css-customizer-input class="g-css-customizer-design-panel-basic-input"
+                                       prefix={item.prefix}
+                                       svg={true}
+                                       prependInnerIcon={item.prependInnerIcon}
+                                       value={prop.value}
+                                       style={{ width: width }}
+                                       vOn:change={e => prop.value = e}/>
+      }
+
+      const genInputLong = (item, val, index, prop) => {
+        if (index === 0) return <g-css-customizer-input class="g-css-customizer-design-panel-basic-input__prefixed"
+                                                        prefix={item.prefix}
+                                                        svg={true}
+                                                        prependInnerIcon={item.prependInnerIcon}
+                                                        value={val}
+                                                        vOn:change={e => prop.value = { string: e, index: index }}/>
+        else return <g-css-customizer-input class="g-css-customizer-design-panel-basic-input__long"
+                                            value={val}
+                                            vOn:change={e => prop.value = { string: e, index: index }}/>
+      }
+
+      const genBasicInput = item => {
+        return <div class={`g-css-customizer-design-panel-basic-input-wrapper__${designData.value.basic[item.key].mode}`}>
+          {genCheckbox(designData.value.basic[item.key])}
+          {designData.value.basic[item.key].mode === 'long'
+            ? designData.value.basic[item.key].value.map((val, index) => genInputLong(item, val, index, designData.value.basic[item.key]))
+            : genInputShort(item, designData.value.basic[item.key])}
+        </div>
       }
 
       const genBasicSection = () => {
+        return <div class="g-css-customizer-design-panel-basic">
+          {designPropertyList.value.basic.map(item => genBasicInput(item))}
+          <g-btn class="g-css-customizer-design-panel-btn" flat
+                 vOn:click={() => designData.value.basic.borderRadius.toggleMode()}>
+            <g-icon size="16" color="grey">fas fa-expand</g-icon>
+          </g-btn>
+        </div>
+      }
+
+      const genTextSectionCombobox = (prop) => {
+        return <div class="g-css-customizer-design-panel-basic-input-wrapper__long">
+          {genCheckbox(prop)}
+          <g-css-customizer-combobox items={cssFontFamilyList} value={prop.value} vOn:input={e => prop.value = e}/>
+        </div>
+      }
+
+      const genTextSectionSelect = (prop) => {
+        return <div class="g-css-customizer-design-panel-basic-input-wrapper__short">
+          {genCheckbox(prop)}
+          <g-css-customizer-select items={cssFontStyleList} value={prop.value} vOn:input={e => prop.value = e}/>
+        </div>
+      }
+
+      const genTextSectionInput = (item, prop) => {
+        return <div class="g-css-customizer-design-panel-basic-input-wrapper__short">
+          {genCheckbox(prop)}
+          {genInputShort(item, prop)}
+        </div>
+      }
+
+      const genTextSection = () => {
         return <div class="g-css-customizer-design-panel-section-content">
-          <g-css-customizer-input />
+          {genTextSectionCombobox(designData.value.text.fontFamily)}
+          {genTextSectionSelect(designData.value.text.fontWeight)}
+          {designPropertyList.value.text.map(item => item.constructor === Length && genTextSectionInput(item, designData.value.text[item.key]))}
         </div>
       }
 
       const genFillSection = () => {
         const data = {
           scopedSlots: {
-            activator: ({on}) => {
+            activator: ({ on }) => {
               return <div class="g-css-customizer-design-panel-color-preview-transparent">
                 <div class="g-css-customizer-design-panel-color-preview" vOn:click={on.click}
-                     style={{backgroundColor: fillColorPicker.value}}/>
+                     style={{ backgroundColor: designData.value.fill.color.rgba }}/>
               </div>
             }
           }
         }
 
         return <div class="g-css-customizer-design-panel-section-content">
-          <g-checkbox vModel={fillCheckbox.value}/>
+          <g-checkbox class="g-css-customizer-design-panel-color-checkbox"
+                      inputValue={designData.value.fill.color.active}
+                      vOn:change={e => designData.value.fill.color.active = e}/>
           <g-menu {...data} vModel={fillMenu.value} nudgeLeft="376" nudgeTop="36">
-            <g-color-picker vOn:color={color => updateColor(color, fillColorPicker)}/>
+            <g-color-picker vOn:color={color => designData.value.fill.color.value = color}/>
           </g-menu>
           <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
-                 value={fillColorInput.value}
-                 vOn:change={e => fillColorInput.value = e}/>
+                                  value={designData.value.fill.color.hex}
+                                  vOn:change={e => designData.value.fill.color.hex = e}/>
           <g-css-customizer-input class="g-css-customizer-design-panel-percentage-input"
-                 value={fillAlphaInput.value}
-                 vOn:change={e => fillAlphaInput.value = e}/>
+                                  value={designData.value.fill.color.alpha}
+                                  vOn:change={e => designData.value.fill.color.alpha = e}/>
         </div>
       }
 
       const genStrokeSection = () => {
         const menuData = {
           scopedSlots: {
-            activator: ({on}) => {
+            activator: ({ on }) => {
               return <div class="g-css-customizer-design-panel-color-preview-transparent">
                 <div class="g-css-customizer-design-panel-color-preview" vOn:click={on.click}
-                     style={{backgroundColor: strokeColorPicker.value}}/>
+                     style={{ backgroundColor: designData.value.stroke.color.rgba }}/>
               </div>
             }
           }
         }
 
-        const gridSelectData = {
-          scopedSlots: {
-            default: ({toggleSelect, item, index}) => {
-              return <GBtn flat small ripple={false} vOn:click={() => toggleSelect(item)}
-                           style="font-size: 14px; text-transform: capitalize">
-                {item.text}
-              </GBtn>
-            },
-            selected: ({toggleSelect, item, index}) => {
-              return <GBtn flat small ripple={false}
-                           vOn:click={() => toggleSelect(item)}
-                           backgroundColor="#E0E0E0" style="font-size: 14px; text-transform: capitalize">
-                {item.text}
-              </GBtn>
-            }
-          }
-        }
 
         return <div class="g-css-customizer-design-panel-section-content">
-          <g-checkbox vModel={strokeCheckbox.value}/>
+          <g-checkbox class="g-css-customizer-design-panel-color-checkbox"
+                      inputValue={strokeCheckbox.value}
+                      vOn:change={e => strokeCheckbox.value = e}/>
           <g-menu {...menuData} vModel={strokeMenu.value} nudgeLeft="376" nudgeTop="36">
-            <g-color-picker vOn:color={color => updateColor(color, strokeColorPicker)}/>
+            <g-color-picker vOn:color={color => designData.value.stroke.color.value = color}/>
           </g-menu>
           <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
-                 value={strokeColorInput.value}
-                 vOn:change={e => strokeColorInput.value = e}/>
+                                  value={designData.value.stroke.color.hex}
+                                  vOn:change={e => designData.value.stroke.color.hex = e}/>
           <g-css-customizer-input class="g-css-customizer-design-panel-percentage-input"
-                 value={strokeAlphaInput.value}
-                 vOn:change={e => strokeAlphaInput.value = e}/>
-          <g-css-customizer-input class="g-css-customizer-design-panel-length-input"
-                 value={strokeWidthInput.value}
-                 vOn:change={e => strokeWidthInput.value = e}/>
-          <g-grid-select class="g-css-customizer-design-panel-stroke-position"
-                         vModel={strokePosition.value}
-                         grid={false}
-                         mandatory={true}
-                         items={strokeModeList.value}
-                         itemText="itemText"
-                         itemValue="value" {...gridSelectData}/>
+                                  value={designData.value.stroke.color.alpha}
+                                  vOn:change={e => designData.value.stroke.color.alpha = e}/>
+          <g-css-customizer-select class="g-css-customizer-design-panel-section-content-select-style"
+                                   value={designData.value.stroke.style.value}
+                                   vOn:input={e => designData.value.stroke.style.value = e} items={cssLineStyleList}/>
+          <div class={`g-css-customizer-design-panel-basic-input-wrapper__long`}>
+            <g-checkbox style="opacity: 0;"/>
+            {designData.value.stroke.width.mode === 'long'
+              ? designData.value.stroke.width.value.map((val, index) => genInputLong(designPropertyList.value.stroke[0], val, index, designData.value.stroke.width))
+              : genInputShort(designPropertyList.value.stroke[0], designData.value.stroke.width, '32%')}
+          </div>
+          <g-btn class="g-css-customizer-design-panel-btn" flat
+                 vOn:click={() => designData.value.stroke.width.toggleMode()}>
+            <g-icon size="16" color="grey">fas fa-expand</g-icon>
+          </g-btn>
         </div>
       }
 
-      const genPaddingShort = () => {
-        return <g-css-customizer-input
-            class="g-css-customizer-design-panel-length-input-prefixed"
-            prefix="P"
-            value={paddingInput.value}
-            vOn:change={e => paddingInput.value = e}/>
-      }
-
-      const genPaddingLong = (item, index) => {
-        if (index === 0) return <g-css-customizer-input
-            class="g-css-customizer-design-panel-length-input-prefixed"
-            prefix="P"
-            value={item}
-            vOn:change={e => paddingInput.value = {index: index, value: e}}/>
-        return <g-css-customizer-input
-            class="g-css-customizer-design-panel-length-input"
-            value={item}
-            vOn:change={e => paddingInput.value = {index: index, value: e}}/>
-      }
-
-      const genPaddingSection = () => {
-        return <div class="g-css-customizer-design-panel-section-content g-css-customizer-design-panel-section-content__justify" >
-          <div class="g-css-customizer-design-panel-space-input">
-            <g-checkbox vModel={paddingCheckbox.value}/>
-            {spaceData.value.padding.mode === 'short' ? genPaddingShort() : paddingInput.value.map((item, index) => genPaddingLong(item, index))}
-          </div>
-          <div>
-            <g-btn flat style="width: 20px; min-width: 12px; height: 20px; padding: 0;" vOn:click={() => switchSpaceMode('padding')}>
-              <g-icon size="16" color="grey">fas fa-expand</g-icon>
-            </g-btn>
-          </div>
+      const genSpaceInput = item => {
+        return <div class={`g-css-customizer-design-panel-basic-input-wrapper__long`}>
+          {genCheckbox(designData.value.space[item.key])}
+          {designData.value.space[item.key].mode === 'long'
+              ? designData.value.space[item.key].value.map((val, index) => genInputLong(item, val, index, designData.value.space[item.key]))
+              : genInputShort(item, designData.value.space[item.key], '32%')}
         </div>
       }
 
-      const genMarginShort = () => {
-        return <g-css-customizer-input
-            class="g-css-customizer-design-panel-length-input-prefixed"
-            prefix="M"
-            value={marginInput.value}
-            vOn:change={e => marginInput.value = e}/>
-      }
-
-      const genMarginLong = (item, index) => {
-        if (index === 0) return <g-css-customizer-input
-            class="g-css-customizer-design-panel-length-input-prefixed"
-            prefix="M"
-            value={item}
-            vOn:change={e => marginInput.value = {index: index, value: e}}/>
-        return <g-css-customizer-input
-            class="g-css-customizer-design-panel-length-input"
-            value={item}
-            vOn:change={e => marginInput.value = {index: index, value: e}}/>
-      }
-
-      const genMarginSection = () => {
-        return <div class="g-css-customizer-design-panel-section-content g-css-customizer-design-panel-section-content__justify" >
-          <div class="g-css-customizer-design-panel-space-input">
-            <g-checkbox vModel={marginCheckbox.value}/>
-            {spaceData.value.margin.mode === 'short' ? genMarginShort() : marginInput.value.map((item, index) => genMarginLong(item, index))}
-          </div>
-          <div>
-            <g-btn flat style="width: 20px; min-width: 12px; height: 20px; padding: 0;" vOn:click={() => switchSpaceMode('margin')}>
+      const genSpaceSection = () => {
+        return <div class="g-css-customizer-design-panel-section-content">
+          {designPropertyList.value.space.map(item => [
+            genSpaceInput(item),
+            <g-btn class="g-css-customizer-design-panel-btn" flat
+                   vOn:click={() => designData.value.space[item.key].toggleMode()}>
               <g-icon size="16" color="grey">fas fa-expand</g-icon>
             </g-btn>
-          </div>
+          ])}
         </div>
       }
 
@@ -698,7 +386,7 @@
             activator: ({on}) => {
               return <div class="g-css-customizer-design-panel-color-preview-transparent">
                 <div class="g-css-customizer-design-panel-color-preview" vOn:click={on.click}
-                     style={{backgroundColor: colorToRGBA(effect.color)}}/>
+                     style={{backgroundColor: effect.color.rgba}}/>
               </div>
             }
           }
@@ -718,24 +406,24 @@
                 </div>,
                 <div class="g-css-customizer-design-panel-effect-shadow-editor-input"
                      style={{gridArea: `${propertyText}input`}}>
-                  <g-css-customizer-input value={convertToUnit(effect[property])}
-                                          vOn:change={e => setEffectProperty(effect, property, parseLength(e))}/>
+                  <g-css-customizer-input value={effect[property].value}
+                                          vOn:change={e => effect[property].value = e}/>
                 </div>
               ]
             })
           }
           <div class="g-css-customizer-design-panel-effect-shadow-editor-color">
             <g-menu  nudgeLeft="338" nudgeTop="36" value={effectColorPickerMenu.value[index]}
-                    vOn:input={e => set(effectColorPickerMenu.value, index, e)} {...colorPikerMenuData}>
-              <g-color-picker vOn:color={color => updateEffectColor(effect, color)}/>
+                     vOn:input={e => set(effectColorPickerMenu.value, index, e)} {...colorPikerMenuData}>
+              <g-color-picker vOn:color={color => effect.color.value = color}/>
             </g-menu>
             <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
-                   value={effect.color.value.replace(/^#/, '')}
-                   vOn:change={e => setEffectProperty(effect.color, 'value', `#${e}`)}/>
+                                    value={effect.color.hex}
+                                    vOn:change={e => effect.color.hex = e}/>
           </div>
           <div class="g-css-customizer-design-panel-effect-shadow-editor-alpha">
-            <g-css-customizer-input value={`${effect.color.alpha * 100}%`}
-                                    vOn:change={e => setEffectProperty(effect.color, 'alpha', parsePercentage(e))}/>
+            <g-css-customizer-input value={effect.color.alpha}
+                                    vOn:change={e => effect.color.alpha = e}/>
           </div>
         </div>
       }
@@ -750,8 +438,8 @@
           </div>
           <div class="g-css-customizer-design-panel-effect-blur-editor-input">
             <g-css-customizer-input class="g-css-customizer-design-panel-length-input"
-                                    value={convertToUnit(effect['layerBlur'])}
-                                    vOn:change={e => setEffectProperty(effect, 'layerBlur', parseLength(e))}/>
+                                    value={effect['layerBlur'].value}
+                                    vOn:change={e => effect['layerBlur'].value = e}/>
           </div>
         </div>
       }
@@ -760,37 +448,33 @@
         const menuData = {
           scopedSlots: {
             activator: ({on}) => {
-              return <GBtn flat style="width: 20px; min-width: 12px; height: 20px; padding: 0; margin-left: 16px" vOn:click={on.click}>
+              return <GBtn flat style="width: 20px; min-width: 12px; height: 20px; padding: 0; margin-left: 8px" vOn:click={on.click}>
                 <GIcon size="16" color="grey">far fa-sun</GIcon>
               </GBtn>
             }
           }
         }
 
-        return <div class="g-css-customizer-design-panel-section-content g-css-customizer-design-panel-section-content__justify">
-          <div style="display: flex">
-            <g-checkbox inputValue={effect.active} vOn:change={e => setEffectProperty(effect, 'active', e)}/>
-            <select value={effect.type} vOn:change={e => setEffectProperty(effect, 'type', e.target.value)}>
-              {effectList.value.map(item => <option value={item.value} disabled={item.value === 'layerBlur' && effect.type !== 'layerBlur' && _.find(effectData.value, {type: 'layerBlur'})}>
-                {item.text}
-              </option>)}
-            </select>
-            <g-menu value={effectMenu.value[index]} vOn:input={e => set(effectMenu.value, index, e)} {...menuData} nudgeLeft="435" nudgeTop="32">
-              {effect.type.indexOf('Shadow') > -1 && genShadowEditor(effect, index)}
-              {effect.type.indexOf('Blur') > -1 && genBlurEditor(effect, index)}
-            </g-menu>
+        return <div class="g-css-customizer-design-panel-section-content">
+          <div class="g-css-customizer-design-panel-effect-wrapper">
+            {genCheckbox(effect)}
+            <g-css-customizer-select class="g-css-customizer-design-panel-section-content-select-effect"
+                                     value={effect.type} vOn:input={e => effect.type = e}
+                                     items={effectList} itemText="text" itemValue="value"/>
           </div>
-          <div>
-            <g-btn flat style="width: 20px; min-width: 12px; height: 20px; padding: 0; margin-left: 16px" vOn:click={() => removeEffectBtn(index)}>
-              <g-icon size="16" color="grey">fas fa-minus</g-icon>
-            </g-btn>
-          </div>
+          <g-menu value={effectMenu.value[index]} vOn:input={e => set(effectMenu.value, index, e)} {...menuData} nudgeLeft="448" nudgeTop="32">
+            {effect.type.indexOf('Shadow') > -1 && genShadowEditor(effect, index)}
+            {effect.type.indexOf('Blur') > -1 && genBlurEditor(effect, index)}
+          </g-menu>
+          <g-btn flat class="g-css-customizer-design-panel-btn" style="margin-left: auto" vOn:click={() => removeEffect(index)}>
+            <g-icon size="16" color="grey">fas fa-minus</g-icon>
+          </g-btn>
         </div>
       }
 
       const genDesignPanel = () => {
         return <div class="g-css-customizer-design-panel">
-          {genAlign()}
+          {genBasicSection()}
           <g-sections vModel={activeSections.value} multiple={true}>
             {
               sectionsList.value.map((section, index) => {
@@ -801,23 +485,25 @@
             }
             <g-sections-header key="headerEffects">
               Effects
-              <g-icon size="16" vOn:click={addEffectBtn}>
+              <g-icon size="16" vOn:click={addEffect}>
                 fas fa-plus
               </g-icon>
             </g-sections-header>
+            <g-sections-item key="text">
+              {genTextSection()}
+            </g-sections-item>
             <g-sections-item key="fill">
               {genFillSection()}
             </g-sections-item>
             <g-sections-item key="stroke">
               {genStrokeSection()}
             </g-sections-item>
-            <g-sections-item key="margin">
-              {genPaddingSection()}
-              {genMarginSection()}
+            <g-sections-item key="space">
+              {genSpaceSection()}
             </g-sections-item>
-            <g-sections-item key="effects" class={{'g-sections-item__empty': effectData.value.length === 0}}>
-              {effectData.value.map((effect, index) => genEffectSection(effect, index))}
-              <div/>
+            <g-sections-item key="effects" class={{'g-sections-item__empty': designData.value.effects.length === 0}}>
+              {designData.value.effects.map((effect, index) => genEffectSection(effect, index))}
+              <span/>
             </g-sections-item>
           </g-sections>
         </div>
@@ -825,14 +511,7 @@
 
       return {
         genDesignPanel,
-        align,
-        fillData,
-        strokeData,
-        spaceData,
         designData,
-        effectData,
-        paddingInput,
-        activeSections,
       }
     },
     render() {
@@ -842,233 +521,289 @@
 </script>
 
 <style scoped lang="scss">
-  $transparentImg: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC);
+	$transparentImg: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGCQwoKxgqGgcJA5h3yFAAs8BRWVSwooAAAAAElFTkSuQmCC);
 
-  ::v-deep.g-row {
-    justify-content: space-between;
-  }
+	::v-deep.g-row {
+		justify-content: space-between;
+	}
 
-  .g-sections-header::v-deep {
-    height: 40px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #212121;
-    padding: 0 8px;
-  }
+	.g-sections-header::v-deep {
+		height: 40px;
+		font-size: 14px;
+		font-weight: bold;
+		color: #212121;
+		padding: 0 4px;
+	}
 
-  .g-sections-item::v-deep .g-sections-item-content-wrapper {
-    padding: 0 8px 16px;
-  }
+	.g-sections-item::v-deep .g-sections-item-content-wrapper {
+		padding: 0 4px 10px;
+	}
 
-  .g-css-customizer-design-panel {
-    overflow-y: auto;
+	::v-deep.g-checkbox-wrapper {
+		margin: 0;
+	}
 
-    &-section {
-      padding: 10px 0 10px 8px;
+	.g-css-customizer-design-panel {
+		overflow-y: auto;
 
-      &-header {
-        font-size: 14px;
-        font-weight: bold;
-      }
+		&-btn {
+			width: 20px !important;
+			min-width: 12px !important;
+			height: 20px !important;
+			padding: 0 !important;
+			margin-left: auto;
+			align-self: center;
+		}
 
-      &-content {
+		&-basic {
+			display: flex;
+			flex-wrap: wrap;
+			padding: 0 4px 10px;
+
+			&-input {
+				width: 100%;
+
+				&__prefixed {
+					width: 32%;
+				}
+
+				&__long {
+					width: 22%;
+				}
+
+				&-wrapper__short {
+					width: 45%;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+				}
+
+				&-wrapper__long {
+					width: 90%;
+					display: flex;
+					align-items: center;
+					justify-content: flex-start;
+				}
+			}
+
+			::v-deep.g-checkbox-checkmark::before {
+				top: 2px;
+			}
+		}
+
+		&-section {
+			padding: 10px 0 10px 8px;
+
+			&-header {
+				font-size: 14px;
+				font-weight: bold;
+			}
+
+			&-content {
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+
+				&-select {
+          &-style {
+            width: 20%;
+
+            .g-menu--content.in-select {
+              .g-list-item {
+                width: 10px
+              }
+            }
+          }
+				}
+
+				::v-deep.g-checkbox-wrapper {
+					margin: 0;
+				}
+
+				::v-deep.g-checkbox-checkmark::before {
+					top: 2px;
+				}
+
+				::v-deep.g-css-customizer-design-panel-color-preview {
+					width: 100%;
+					height: 100%;
+				}
+
+				::v-deep.g-css-customizer-design-panel-color-preview-transparent {
+					position: relative;
+					width: 20px;
+					height: 20px;
+					border: 1px solid #E0E0E0;
+					background: $transparentImg repeat;
+				}
+			}
+		}
+
+		&-section:first-child {
+			padding: 0 0 10px 4px;
+		}
+
+		&-effect {
+      &-wrapper {
+        width: 60%;
         display: flex;
         align-items: center;
-        padding-top: 4px;
-        flex-wrap: wrap;
-
-        &__justify {
-          justify-content: space-between;
-        }
-
-        input {
-          font-size: 14px;
-          margin-left: 16px;
-        }
-
-        ::v-deep.g-checkbox-wrapper {
-          margin: 0;
-        }
-
-        ::v-deep.g-checkbox {
-          padding-left: 32px;
-        }
-
-        ::v-deep.g-checkbox-checkmark::before {
-          top: 1px;
-        }
-
-        ::v-deep.g-css-customizer-design-panel-color-preview {
-          width: 100%;
-          height: 100%;
-        }
-
-        ::v-deep.g-css-customizer-design-panel-color-preview-transparent {
-          position: relative;
-          width: 20px;
-          height: 20px;
-          border: 1px solid #E0E0E0;
-          background: $transparentImg repeat;
-        }
-      }
-    }
-
-    &-section:first-child {
-      padding: 0 0 10px 4px;
-    }
-
-    &-stroke-position {
-      margin-top: 16px;
-      margin-right: 20px;
-    }
-
-    &-effect-shadow-editor {
-      background-color: white;
-      border: 1px solid #E0E0E0;
-      width: 260px;
-      height: 160px;
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr;
-      grid-template-rows: 1fr 1fr 1fr 1fr;
-      grid-template-areas:
-        "header header header"
-        "blurtitle xtitle ytitle"
-        "blurinput xinput yinput"
-        "colorinput alphainput .";
-
-      &-header {
-        grid-area: header;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid #E0E0E0;
-        padding: 0 16px;
-        font-size: 14px;
-        font-weight: bold;
       }
 
-      &-title {
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        padding-left: 16px;
-        color: grey;
+			&-shadow-editor {
+        background-color: white;
+        border: 1px solid #E0E0E0;
+        width: 260px;
+        height: 160px;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+        grid-template-areas:
+            "header header header"
+            "blurtitle xtitle ytitle"
+            "blurinput xinput yinput"
+            "colorinput alphainput .";
 
-        input {
-          font-size: 14px
-        }
-      }
-
-      &-input, &-alpha {
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        padding: 0 7px;
-      }
-
-      &-color {
-        display: flex;
-        align-items: center;
-        padding-left: 16px;
-
-        ::v-deep.g-css-customizer-design-panel-color-preview {
-          width: 100%;
-          height: 100%;
-        }
-
-        ::v-deep.g-css-customizer-design-panel-color-preview-transparent {
-          position: relative;
-          width: 20px;
-          height: 20px;
-          border: 1px solid #E0E0E0;
-          background: $transparentImg repeat;
-        }
-
-        .g-css-customizer-design-panel-color-input {
-          padding: 0 7px 0 5px;
-        }
-      }
-    }
-
-    &-effect-blur-editor {
-      background-color: white;
-      border: 1px solid #E0E0E0;
-      width: 260px;
-      height: 80px;
-      display: grid;
-      grid-template-columns: 0.4fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      grid-template-areas:
-          "header header"
-          "blurtitle blurinput";
-
-      &-header {
-        grid-area: header;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid #E0E0E0;
-        padding: 0 16px;
-        font-size: 14px;
-        font-weight: bold;
-      }
-
-      &-title, &-input {
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        padding-left: 16px;
-        color: grey;
-
-        input {
-          font-size: 14px
-        }
-      }
-    }
-
-    &-color-input {
-      width: 82px;
-      padding-left: 12px;
-      line-height: normal;
-
-      ::v-deep.g-tf-input {
-        text-transform: uppercase;
-      }
-    }
-
-    &-percentage-input {
-      width: 54px;
-    }
-
-    &-length-input {
-      width: 48px;
-
-      &-prefixed {
-        width: 68px;
-
-        ::v-deep.g-tf {
+        &-header {
+          grid-area: header;
+          display: flex;
           align-items: center;
-        }
-
-        ::v-deep.g-tf-affix {
-          width: 20px;
+          border-bottom: 1px solid #E0E0E0;
+          padding: 0 16px;
           font-size: 14px;
-          padding: 0 6px;
+          font-weight: bold;
+        }
+
+        &-title {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          padding-left: 16px;
+          color: grey;
+
+          input {
+            font-size: 14px
+          }
+        }
+
+        &-input, &-alpha {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          padding: 0 7px;
+        }
+
+        &-color {
+          display: flex;
+          align-items: center;
+          padding-left: 16px;
+
+          ::v-deep.g-css-customizer-design-panel-color-preview {
+            width: 100%;
+            height: 100%;
+          }
+
+          ::v-deep.g-css-customizer-design-panel-color-preview-transparent {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #E0E0E0;
+            background: $transparentImg repeat;
+          }
+
+          .g-css-customizer-design-panel-color-input {
+            padding: 0 7px 0 5px;
+          }
         }
       }
-    }
 
-    &-space-input {
-      display: flex;
-      align-items: center;
+      &-blur-editor {
+        background-color: white;
+        border: 1px solid #E0E0E0;
+        width: 260px;
+        height: 80px;
+        display: grid;
+        grid-template-columns: 0.4fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas:
+            "header header"
+            "blurtitle blurinput";
 
+        &-header {
+          grid-area: header;
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid #E0E0E0;
+          padding: 0 16px;
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        &-title, &-input {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          padding-left: 16px;
+          color: grey;
+
+          input {
+            font-size: 14px
+          }
+        }
+      }
+		}
+
+		&-color-input {
+			width: 82px;
+			padding-left: 12px;
+			line-height: normal;
+
+			::v-deep.g-tf-input {
+				text-transform: uppercase;
+			}
+		}
+
+    &-color-checkbox {
       ::v-deep.g-checkbox {
-        padding-left: 20px;
+        padding-left: 32px;
       }
     }
-  }
 
-  ::v-deep.g-sections-item__empty {
-    .g-sections-item-content-wrapper {
-      padding: 0
-    }
-  }
+		&-percentage-input {
+			width: 54px;
+		}
+
+		&-length-input {
+			width: 48px;
+
+			&-prefixed {
+				width: 68px;
+
+				::v-deep.g-tf {
+					align-items: center;
+				}
+
+				::v-deep.g-tf-affix {
+					width: 20px;
+					font-size: 14px;
+					padding: 0 6px;
+				}
+			}
+		}
+
+		&-space-input {
+			display: flex;
+			align-items: center;
+
+			::v-deep.g-checkbox {
+				padding-left: 20px;
+			}
+		}
+	}
+
+	::v-deep.g-sections-item__empty {
+		.g-sections-item-content-wrapper {
+			padding: 0
+		}
+	}
 </style>

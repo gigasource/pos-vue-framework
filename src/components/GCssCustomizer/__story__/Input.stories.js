@@ -1,6 +1,5 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions'
-import GCssCustomizerInputGroup from '../GCssCustomizerInputGroup';
 import GCssCustomizerCombobox from '../GCssCustomizerCombobox';
 
 //
@@ -30,27 +29,6 @@ export const test2 = () => ({
   template: `
   <div>
   <g-css-customizer-select :items="list" v-model="value"/>
-</div>
-`,
-})
-export const inputGroup = () => ({
-  components: { GCssCustomizerInputGroup },
-  props: {},
-  data() {
-    return {
-      value: [0, 0, 0, 0],
-      prepend: 'check',
-
-    }
-  },
-  methods: {
-    input: function (event) {
-      this.value[event.index] = event.value
-    }
-  },
-  template: `
-  <div>
-  <g-css-customizer-input-group :value="value" :prepend="prepend" v-on:input="input"/>
 </div>
 `,
 })
