@@ -457,7 +457,7 @@
       const genDisplayCode = (item) => {
         return <p>
           <span>{item.property + ':'}</span>
-          {item.value.map((val, index) => genText(val, index, item))};
+          {item.value.map((val, index) => genText(val, index, item.value))};
         </p>
       }
 

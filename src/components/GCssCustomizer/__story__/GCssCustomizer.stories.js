@@ -69,6 +69,7 @@ export const Demo = () => ({
     <div data-app>
       <g-btn @click="openCssCustomizer">Open</g-btn>
       <g-btn @click="resetTreeData">Reset TreeData</g-btn>
+      <h5>Please click RESET TREEDATA button on the very first run to create localStorage key!</h5>
       <g-dialog v-model="dialog" fullscreen persistent lazy>
         <g-css-customizer v-model="treeData" @close="closeCssCustomizer" @save="saveTreeData" @cancel="cancel">
           
