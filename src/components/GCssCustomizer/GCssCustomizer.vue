@@ -375,11 +375,13 @@
       const changeSelector = async selector => {
         const previewComponent = context.refs.previewComponent
         const domNode = previewComponent.$el.parentNode.querySelector(selector)
-        cssCustomizerTree.activePath = domNode.treePath
-        await context.root.$nextTick()
-        activeSelector.value = selector
-        cancelSelectorTargetAnimation()
-        animateSelectorTarget(previewComponent.$el.parentNode)
+        if (domNode) {
+          cssCustomizerTree.activePath = domNode.treePath
+          await context.root.$nextTick()
+          activeSelector.value = selector
+          cancelSelectorTargetAnimation()
+          animateSelectorTarget(previewComponent.$el.parentNode)
+        }
       }
 
       const cssDisplayCode = computed(() => genSelectorDisplayData(activeSelectorData.value))
