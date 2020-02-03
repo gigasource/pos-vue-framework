@@ -161,8 +161,10 @@
           }
         }
 
-        setStyle('boxShadow', shadowToCSS(designData.value.effects))
-        setStyle('filter', blurToCSS(designData.value.effects))
+        if (designData.value.effects.length > 0) {
+          setStyle('boxShadow', shadowToCSS(designData.value.effects))
+          setStyle('filter', blurToCSS(designData.value.effects))
+        }
       }
 
       // Fill functionality
