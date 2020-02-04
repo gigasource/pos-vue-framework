@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import { computed, inject, ref } from '@vue/composition-api';
+  import { computed, inject } from '@vue/composition-api';
 
   export default {
 		name: 'GListItem',
@@ -15,7 +15,10 @@
 			twoLine: Boolean,
 			threeLine: Boolean,
 			value: [String, Number, Object, Function],
-			inList: Boolean,
+			inList: {
+			  type: Boolean,
+				default: true
+			},
 		},
 		setup(props, context) {
 			const classes = computed(() => {
@@ -39,13 +42,19 @@
 				}
 			});
 
-			//handle listItem in List case
-			const add = props.inList ? inject('add') : null
-			const {isItemAdded, index} = props.inList? add(props.value):{ isItemAdded: true, index: 0}
-			const isActiveItem = props.inList ? inject('isActiveItem') : null
-			const selectable = props.inList ?  inject('selectable') : null
-			const inListEvents = props.inList ? inject('getListEvents') : null
-			const internalValue = ref(null)
+      const selectable = props.inList ?  inject('selectable') : null
+      //handle listItem in selectable list case
+
+			if(selectable){
+        var add = props.inList ? inject('add') : null
+        var {isItemAdded, index} = props.inList? add(props.value):{ isItemAdded: true, index: 0}
+        var isActiveItem = props.inList ? inject('isActiveItem') : null
+        var inListEvents = props.inList ? inject('getListEvents') : null
+			}
+			// const add = props.inList ? inject('add') : null
+      // const {isItemAdded, index} = props.inList? add(props.value):{ isItemAdded: true, index: 0}
+      // const isActiveItem = props.inList ? inject('isActiveItem') : null
+			// const inListEvents = props.inList ? inject('getListEvents') : null
 			const singleItemEvents = () => {
 				return {
 					click: () => {
@@ -60,7 +69,6 @@
 				classes,
 				styles,
 				listItemEvents,
-				internalValue,
 				isItemAdded,
 				singleItemEvents
 			}

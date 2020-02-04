@@ -112,7 +112,8 @@ const componentsFactory = (component, componentName) => {
         toggleItem,
         addValueFromInput,
         searchFn,
-        isActiveItem
+        isActiveItem,
+        unNormalize
       } = makeListSelectable2(props, context)
 
       const lazySearch = ref('')
@@ -198,7 +199,7 @@ const componentsFactory = (component, componentName) => {
         onInputChange,
         inputAddSelection,
 
-      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput)
+      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput, unNormalize)
 
       const searchFocused = ref(false)
       const genSearchField = () => {

@@ -185,7 +185,8 @@ export function makeListSelectable2(props, context) {
     normalize,
     addValueFromInput,
     searchFn,
-    isActiveItem
+    isActiveItem,
+    unNormalize
   }
 
 

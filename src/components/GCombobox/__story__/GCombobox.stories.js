@@ -294,7 +294,6 @@ export const GComboboxNormalizeProps = () => ({
       items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }],
       selected: [() => 4],
       normalize: (value, items, isFromInput) => {
-        debugger
         if (isFromInput) return { a: value, b: eval(`() => ${value}`) };
         const found = items.find(i => value && i.b.toString() === value.toString());
         if (found) return found;

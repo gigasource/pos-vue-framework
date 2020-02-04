@@ -401,6 +401,7 @@ describe('test', function () {
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
+    expectTest(parentVm.child.value).toEqual([{ a: 1 }])
     expectTest(parentVm.child.selectableValues).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
     parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();

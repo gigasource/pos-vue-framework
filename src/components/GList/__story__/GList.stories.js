@@ -1,5 +1,6 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import GList from '../GList';
+import GListDisplay from '../GListDisplay';
 import GListItem from '../GListItem';
 import GDivider from '../../GLayout/GDivider.vue';
 import {
@@ -714,7 +715,7 @@ export const gListAsMenuContent = () => ({
       </div>`,
 })
 export const gListFreeRender = () => ({
-  components: { GList, GIcon, GListItemIcon, GContainer, GDivider, GRow, GBtn, GListItem, GListItemContent },
+  components: { GList, GListDisplay, GIcon, GListItemIcon, GContainer, GDivider, GRow, GBtn, GListItem, GListItemContent },
   data() {
     return {
       testValue: null,
@@ -736,7 +737,7 @@ export const gListFreeRender = () => ({
       <div>
       {{testValue}}
         <template>
-        <g-list  selectable v-model="testValue" itemText="" itemValue="" 
+        <g-list-display selectable v-model="testValue" itemText="" itemValue="" 
         :multiple="multiple"
         :allowDuplicates="allowDuplicates"
         :selectable="selectable">
@@ -752,7 +753,7 @@ export const gListFreeRender = () => ({
         <g-list-item :value="items[2].text">
         <g-list-item-content>Item 3</g-list-item-content>
         </g-list-item>
-        </g-list>
+        </g-list-display>
         </template>
       </div>`,
 })

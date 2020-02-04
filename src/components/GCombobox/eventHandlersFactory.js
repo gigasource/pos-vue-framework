@@ -1,10 +1,11 @@
 import { keyCodes } from '../../utils/helpers';
 
-export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput) {
+export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput, unNormalize) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
 
-  function onChipCloseClick(index = null) {
-    let _value = props.multiple ? selectedItem.value.splice(index, 1) : null
+  function onChipCloseClick(index) {
+    if(props.multiple) selectedItem.value.splice(index, 1)
+    let _value = props.multiple ? selectedItem.value.map(unNormalize) : null
     context.emit('input', _value)
   }
 
@@ -51,7 +52,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
 
         if (props.multiple) {
           selectedItem.value.pop()
-          context.emit('input', selectedItem.value)
+          context.emit('input', selectedItem.value.map(unNormalize))
         } else {context.emit('input', null)}
         return state.pressDeleteTimes
       }
