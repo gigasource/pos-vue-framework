@@ -12,9 +12,9 @@
 </template>
 
 <script>
-  import { computed, ref, watch } from '@vue/composition-api';
+  import {computed, ref, watch} from '@vue/composition-api';
   import colorHandler from '../../utils/helpers';
-  import { isEqual, xorWith, cloneDeep } from 'lodash';
+  import {isEqual, xorWith, cloneDeep} from 'lodash';
 
   export default {
     name: 'GCheckbox',
@@ -60,9 +60,9 @@
             // none selected
             isDeterminate.value = true;
             isActive.value = false;
-          } else if (internalValue.value.length === 0){
+          } else if (internalValue.value.length === 0) {
             isDeterminate.value = true;
-            if(isActive.value === props.inputValue) { //default to uncheck
+            if (isActive.value === props.inputValue) { //default to uncheck
               isActive.value = false
             }
           } else if (xorWith(internalValue.value, props.value, isEqual).length === 0) {
@@ -83,7 +83,7 @@
         }
       });
       //define props color is a class or a css style
-      const { getColorType, convertColorClass } = colorHandler();
+      const {getColorType, convertColorClass} = colorHandler();
       const type = computed(() => getColorType(props.color));
       const colorClass = computed(() => convertColorClass(props.color));
 
@@ -99,7 +99,7 @@
       const checkboxStyle = computed(() => {
         const style = {};
         if (type.value === 'style') {
-          Object.assign(style, { 'color': props.color });
+          Object.assign(style, {'color': props.color});
         }
         return style;
       });
