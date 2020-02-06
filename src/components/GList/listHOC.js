@@ -6,7 +6,8 @@ import { createItemFn, makeListSelectable2 } from './listSelectFactory';
 import { keyCodes } from '../../utils/helpers';
 import { computed, provide } from '@vue/composition-api';
 
-const  listFactory = (name) =>  {
+const listFactory = (name) => {
+  const selectable = name === 'GList'
   return {
     name: name,
     props: {
@@ -43,7 +44,7 @@ const  listFactory = (name) =>  {
       subtextWrap: Boolean,
       selectable: {
         type: Boolean,
-        default:  name === "GList"
+        default: selectable
       },
       value: {
         type: [String, Object, Number, Array, Function],
@@ -73,7 +74,7 @@ const  listFactory = (name) =>  {
         normalizedValue: internalValue,
         toggleItem,
         isActiveItem,
-      } = props.selectable ? makeListSelectable2(props, context) : {}
+      } = selectable ? makeListSelectable2(props, context) : {}
 
       const getText = computed(() => createItemFn(props.itemText))
 
@@ -99,17 +100,17 @@ const  listFactory = (name) =>  {
 
       const getListEvents = (item, index) => {
         return {
-          click: () => props.selectable ? onSelect(item) : context.emit('click:item', item),
+          click: () => selectable ? onSelect(item) : context.emit('click:item', item),
           keydown: (e) => {
             switch (e.keyCode) {
               case keyCodes.down:
-                props.selectable ? onArrowDown(index) : context.emit('keydown:down', index)
+                selectable ? onArrowDown(index) : context.emit('keydown:down', index)
                 break
               case keyCodes.up:
-                props.selectable ? onArrowUp(index) : context.emit('keydown:up', index)
+                selectable ? onArrowUp(index) : context.emit('keydown:up', index)
                 break
               case keyCodes.enter:
-                props.selectable ? onSelect(item) : context.emit('keydown:enter', item)
+                selectable ? onSelect(item) : context.emit('keydown:enter', item)
                 break
             }
           }
@@ -240,7 +241,7 @@ const  listFactory = (name) =>  {
         }
         return [
           props.subheader ? genSubheader() : null,
-          props.selectable ? renderList.value.map(genListItemSelectable) : props.items.map(genListItemDisplayOnly)
+          selectable ? renderList.value.map(genListItemSelectable) : props.items.map(genListItemDisplayOnly)
         ]
 
       }
@@ -255,8 +256,7 @@ const  listFactory = (name) =>  {
         'g-list__dense': props.dense,
         'g-list__inMenu': props.inMenu,
         'g-list__nav': props.nav,
-        'g-list__empty': !!props.items
-
+        'g-list__empty': selectable ? !renderList.value.length : !props.items.length
       }));
       const styles = computed(() => ({
         ...props.height && { 'height': props.height },
@@ -264,14 +264,14 @@ const  listFactory = (name) =>  {
       }));
 
       function genList() {
+        debugger
         const genListWithItem = (props.multiSection) ? genMultiSectionList() : genSingleSectionList()
-        return <div class={['g-list', classes.value]} style={styles.value} ref="list" vOn:click={(e) => context.emit('click', e)}>
+        return <div class={['g-list', 'check', classes.value]} style={styles.value} ref="list" vOn:click={(e) => context.emit('click', e)}>
           {context.slots['default'] ? context.slots['default']() : genListWithItem}
         </div>
       }
 
-      if (props.selectable) {
-        console.log('selectable')
+      if (selectable) {
         provide('getListEvents', getListEvents)
         const add = (item) => {
           if (renderList.value.includes(item)) {
@@ -295,7 +295,7 @@ const  listFactory = (name) =>  {
       provide('selectable', props.selectable)
 
 
-      return props.selectable
+      return selectable
         ? {
           genList,
           renderList,
