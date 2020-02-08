@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { ref, reactive, computed, watch, set, inject, onMounted } from '@vue/composition-api';
-  import { Length, Angle, Color, LineStyle, FontFamily, FontWeight, Effect, cssLineStyleList, cssFontFamilyList, cssFontStyleList, effectList } from './GCssCustomizerModel';
+  import { Length, Angle, Color, Display, Position, LineStyle, FontFamily, FontWeight, Effect, CustomProperty, cssLineStyleList, cssDisplayList, cssPositionList, cssFontFamilyList, cssFontStyleList, effectList } from './GCssCustomizerModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
@@ -47,6 +47,8 @@
 
       const defaultDesignData = {
         basic: {
+          display: new Display('block'),
+          position: new Position('static'),
           x: new Length(0),
           y: new Length(0),
           width: new Length(100),
@@ -55,13 +57,13 @@
           borderRadius: new Length(0),
         },
         text: {
+          color: new Color('#212121'),
           fontFamily: new FontFamily('Roboto'),
           fontSize: new Length(14),
           fontWeight: new FontWeight('Normal'),
           lineHeight: new Length(22),
           letterSpacing: new Length(0, 'em', 'em'),
           textAlign: 'Left',
-          align: 'Top',
         },
         fill: {
           color: new Color('#C4C4C4')
@@ -75,21 +77,25 @@
           padding: new Length(5),
           margin: new Length(5),
         },
-        effects: []
+        effects: undefined,
+        custom: undefined,
       }
 
       const designData = ref(_.cloneDeep(defaultDesignData))
 
       const designPropertyList = ref({
         basic: [
-          { key: 'x', prefix: 'X', cssKey: 'top', constructor: Length },
-          { key: 'y', prefix: 'Y', cssKey: 'left', constructor: Length },
+          { key: 'display', prefix: 'D', cssKey: 'display', constructor: Display},
+          { key: 'position', prefix: 'P', cssKey: 'position', constructor: Position},
+          { key: 'x', prefix: 'T', cssKey: 'top', constructor: Length },
+          { key: 'y', prefix: 'L', cssKey: 'left', constructor: Length },
           { key: 'width', prefix: 'W', cssKey: 'width', constructor: Length },
           { key: 'height', prefix: 'H', cssKey: 'height', constructor: Length },
           { key: 'rotation', prependInnerIcon: 'icon-pns_rotation', cssKey: 'transform', constructor: Angle },
           { key: 'borderRadius', prependInnerIcon: 'icon-pns_chain', cssKey: 'borderRadius', constructor: Length }
         ],
         text: [
+          { key: 'color', cssKey: 'color', constructor: Color },
           { key: 'fontFamily', cssKey: 'fontFamily', constructor: FontFamily },
           { key: 'fontWeight', appendInnerIcon: 'icon-arrow_drop_down', cssKey: 'fontWeight', constructor: FontWeight },
           { key: 'fontSize', cssKey: 'fontSize', constructor: Length },
@@ -161,11 +167,29 @@
           }
         }
 
-        if (designData.value.effects.length > 0) {
+        if (designData.value.effects) {
           setStyle('boxShadow', shadowToCSS(designData.value.effects))
           setStyle('filter', blurToCSS(designData.value.effects))
         }
+
+        if (designData.value.custom) {
+          for (let customProperty of designData.value.custom) {
+            if (customProperty.active) setStyle(customProperty.key, customProperty.value)
+            else if (getStyle(customProperty.key)) {
+              setStyle(customProperty.key , undefined)
+            }
+          }
+        }
       }
+
+      watch(() => designData.value, () => {
+        designToCSS()
+        setDesignState(designData.value)
+      }, { lazy: true, deep: true })
+
+
+      // Text functionality
+      const textMenu = ref(false)
 
       // Fill functionality
       const fillMenu = ref(false)
@@ -200,6 +224,7 @@
 
       const addEffect = e => {
         if (activeSections.value.includes(sectionsList.value.length + 1)) e.stopPropagation()
+        if (!designData.value.effects) designData.value.effects = []
         designData.value.effects.push(new Effect())
         effectMenu.value.push(false)
         effectColorPickerMenu.value.push(false)
@@ -211,10 +236,16 @@
         effectColorPickerMenu.value.splice(index, 1)
       }
 
-      watch(() => designData.value, () => {
-        designToCSS()
-        setDesignState(designData.value)
-      }, { lazy: true, deep: true })
+      // Custom functionality
+      const addCustomProperty = e => {
+        if (activeSections.value.includes(sectionsList.value.length + 2)) e.stopPropagation()
+        if (!designData.value.custom) designData.value.custom = []
+        designData.value.custom.push(new CustomProperty())
+      }
+
+      const removeCustomProperty = index => {
+        designData.value.custom.splice(index, 1)
+      }
 
       // Render functions
       const genCheckbox = prop => {
@@ -243,6 +274,16 @@
                                             vOn:change={e => prop.value = { string: e, index: index }}/>
       }
 
+      const genSelect = (item, prop, itemList) => {
+        return <div class="g-css-customizer-design-panel-basic-input-wrapper__short">
+          {genCheckbox(prop)}
+          <g-css-customizer-select items={itemList}
+                                   value={prop.value}
+                                   prefix={item.prefix}
+                                   vOn:input={e => prop.value = e}/>
+        </div>
+      }
+
       const genBasicInput = item => {
         return <div class={`g-css-customizer-design-panel-basic-input-wrapper__${designData.value.basic[item.key].mode}`}>
           {genCheckbox(designData.value.basic[item.key])}
@@ -254,7 +295,9 @@
 
       const genBasicSection = () => {
         return <div class="g-css-customizer-design-panel-basic">
-          {designPropertyList.value.basic.map(item => genBasicInput(item))}
+          {genSelect(designPropertyList.value.basic[0], designData.value.basic.display, cssDisplayList)}
+          {genSelect(designPropertyList.value.basic[1], designData.value.basic.position, cssPositionList)}
+          {designPropertyList.value.basic.map(item => (item.constructor === Length || item.constructor === Angle) && genBasicInput(item))}
           <g-btn class="g-css-customizer-design-panel-btn" flat
                  vOn:click={() => designData.value.basic.borderRadius.toggleMode()}>
             <g-icon size="16" color="grey">fas fa-expand</g-icon>
@@ -284,7 +327,30 @@
       }
 
       const genTextSection = () => {
+        const data = {
+          scopedSlots: {
+            activator: ({ on }) => {
+              return <div class="g-css-customizer-design-panel-color-preview-transparent">
+                <div class="g-css-customizer-design-panel-color-preview" vOn:click={on.click}
+                     style={{ backgroundColor: designData.value.text.color.rgba }}/>
+              </div>
+            }
+          }
+        }
+
         return <div class="g-css-customizer-design-panel-section-content">
+          <g-checkbox class="g-css-customizer-design-panel-color-checkbox"
+                      inputValue={designData.value.text.color.active}
+                      vOn:change={e => designData.value.text.color.active = e}/>
+          <g-menu {...data} vModel={textMenu.value} nudgeLeft="376" nudgeTop="36">
+            <g-color-picker vOn:color={color => designData.value.text.color.value = color}/>
+          </g-menu>
+          <g-css-customizer-input class="g-css-customizer-design-panel-color-input"
+                                  value={designData.value.text.color.hex}
+                                  vOn:change={e => designData.value.text.color.hex = e}/>
+          <g-css-customizer-input class="g-css-customizer-design-panel-percentage-input"
+                                  value={designData.value.text.color.alpha}
+                                  vOn:change={e => designData.value.text.color.alpha = e}/>
           {genTextSectionCombobox(designData.value.text.fontFamily)}
           {genTextSectionSelect(designData.value.text.fontWeight)}
           {designPropertyList.value.text.map(item => item.constructor === Length && genTextSectionInput(item, designData.value.text[item.key]))}
@@ -474,6 +540,22 @@
         </div>
       }
 
+      const genCustomSection = (customProperty, index) => {
+        return <div class="g-css-customizer-design-panel-section-content">
+          <div class="g-css-customizer-design-panel-custom-wrapper">
+            {genCheckbox(customProperty)}
+            <g-css-customizer-input class="g-css-customizer-design-panel-custom-key" value={customProperty.key} vOn:change={e => customProperty.key = e}/>
+            <span>:</span>
+            <g-css-customizer-input class="g-css-customizer-design-panel-custom-value" value={customProperty.value}
+                                    vOn:change={e => customProperty.value = e}/>
+            <g-btn flat class="g-css-customizer-design-panel-btn" style="margin-left: auto"
+                   vOn:click={() => removeCustomProperty(index)}>
+              <g-icon size="16" color="grey">fas fa-minus</g-icon>
+            </g-btn>
+          </div>
+        </div>
+      }
+
       const genDesignPanel = () => {
         return <div class="g-css-customizer-design-panel">
           {genBasicSection()}
@@ -491,6 +573,12 @@
                 fas fa-plus
               </g-icon>
             </g-sections-header>
+            <g-sections-header key="headerCustom">
+              Custom
+              <g-icon size="16" vOn:click={addCustomProperty}>
+                fas fa-plus
+              </g-icon>
+            </g-sections-header>
             <g-sections-item key="text">
               {genTextSection()}
             </g-sections-item>
@@ -503,8 +591,12 @@
             <g-sections-item key="space">
               {genSpaceSection()}
             </g-sections-item>
-            <g-sections-item key="effects" class={{'g-sections-item__empty': designData.value.effects.length === 0}}>
-              {designData.value.effects.map((effect, index) => genEffectSection(effect, index))}
+            <g-sections-item key="effects" class={{'g-sections-item__empty': !designData.value.effects || (designData.value.effects && designData.value.effects.length === 0)}}>
+              {designData.value.effects && designData.value.effects.map((effect, index) => genEffectSection(effect, index))}
+              <span/>
+            </g-sections-item>
+            <g-sections-item key="custom" class={{'g-sections-item__empty': !designData.value.custom || (designData.value.custom && designData.value.custom.length === 0)}}>
+              {designData.value.custom && designData.value.custom.map((customProperty, index) => genCustomSection(customProperty, index))}
               <span/>
             </g-sections-item>
           </g-sections>
@@ -754,6 +846,22 @@
         }
       }
 		}
+
+    &-custom {
+      &-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+      }
+
+      &-key {
+        width: 30%
+      }
+
+      &-value {
+        width: 70%
+      }
+    }
 
 		&-color-input {
 			width: 82px;

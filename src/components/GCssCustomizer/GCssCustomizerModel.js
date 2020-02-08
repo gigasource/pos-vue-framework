@@ -3,6 +3,8 @@ import {ref, set} from '@vue/composition-api'
 
 const cssLengthUnitList = ['cm', 'mm', 'in', 'px', 'pt', 'pc', 'em', 'ex', 'ch', 'rem', 'vw', 'vh', 'lh', 'rlh', 'vmin', 'vmax', '%']
 const cssAngleUnitList = ['deg', 'grad', 'rad', 'turn']
+export const cssDisplayList = ['none', 'block', 'inline', 'inline-block', 'flow', 'table', 'flex', 'grid', 'ruby']
+export const cssPositionList = ['static', 'relative', 'absolute', 'fixed', 'sticky']
 export const cssLineStyleList = ['dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset']
 export const cssFontFamilyList = [
     'Arial',
@@ -34,6 +36,7 @@ export const effectList = [
     text: 'Layer Blur'
   }
 ]
+const reservedKeyList = ['width', 'height', 'top', 'left', 'bottom', 'right', 'display', 'position', 'borderRadius', 'backgroundColor', 'color', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderColor', 'borderWidth', 'borderStyle', 'padding', 'margin', 'boxShadow', 'filter']
 
 export class Length {
   constructor(value = 0, unit = 'px', defaultUnit = 'px', active = false, mode = 'short') {
@@ -200,6 +203,62 @@ export class Color {
   }
 }
 
+export class Display {
+  constructor(value = 'block', active = false) {
+    this._value = value;
+    this._active = active;
+  }
+
+  get value () {
+    return this._value
+  }
+
+  set value (string) {
+    this._value = cssDisplayList.includes(string) ? string : 'block'
+    this._active = true
+  }
+
+  get active () {
+    return this._active
+  }
+
+  set active (bool) {
+    this._active = Boolean(bool)
+  }
+
+  toCSS () {
+    return this.value
+  }
+}
+
+export class Position {
+  constructor(value = 'static', active = false) {
+    this._value = value;
+    this._active = active;
+  }
+
+  get value () {
+    return this._value
+  }
+
+  set value (string) {
+    this._value = cssPositionList.includes(string) ? string : 'static'
+    this._active = true
+  }
+
+  get active () {
+    return this._active
+  }
+
+  set active (bool) {
+    this._active = Boolean(bool)
+  }
+
+  toCSS () {
+    return this.value
+  }
+}
+
 export class LineStyle {
   constructor(value = 'solid', active = false) {
     this._value = value
@@ -321,6 +380,40 @@ export class Effect {
     if (this._type === 'layerBlur') return `blur(${this.layerBlur.toCSS()})`
     else if (this._type === 'dropShadow') return `${this.x.toCSS()} ${this.y.toCSS()} ${this.shadowBlur.toCSS()} ${this.color.toCSS()}`
     else return `inset ${this.x.toCSS()} ${this.y.toCSS()} ${this.shadowBlur.toCSS()} ${this.color.toCSS()}`
+  }
+}
+
+export class CustomProperty {
+  constructor(key = '', value = '', active = true) {
+    this._key = key
+    this._value = value
+    this._active = active
+  }
+
+  get key () {
+    return this._key
+  }
+
+  set key (string) {
+    this._key = !reservedKeyList.includes(string) ? string : ''
+    this._active = true
+  }
+
+  get value () {
+    return this._value
+  }
+
+  set value (string) {
+    this._value = string
+    this._active = true
+  }
+
+  get active () {
+    return this._active
+  }
+
+  set active (bool) {
+    this._active = Boolean(bool)
   }
 }
 

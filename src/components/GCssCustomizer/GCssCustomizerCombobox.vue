@@ -150,7 +150,7 @@
 				min-height: 28px;
 
 				.g-list-item-content {
-					padding-left: 36px;
+					padding-left: 4px;
 					margin-left: 0;
 				}
 			}
