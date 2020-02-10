@@ -9,10 +9,10 @@ export function parseSelectorData (selectorData) {
   return temp
 }
 
-export function parseCssData (cssData) {
+export function parseCssData (cssData, previewClass = '') {
   return _.reduce(cssData, (acc, val, key) => {
     const selectorStyleString = parseSelectorData(val.data)
-    if (selectorStyleString !== '{}') return `${acc} ${key} ${selectorStyleString} \r\n`
+    if (selectorStyleString !== '{}') return `${acc} ${previewClass} ${key} ${selectorStyleString} \r\n`
     else return acc
   }, '')
 }

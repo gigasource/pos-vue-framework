@@ -51,7 +51,7 @@
 
       const cssData = treeData.value.metaData && treeData.value.metaData.cssData ? ref(treeData.value.metaData.cssData) : ref({})
 
-      const stylesString = computed(() => parseCssData(cssData.value))
+      const stylesString = computed(() => parseCssData(cssData.value, '.g-css-customizer-preview-component'))
 
       const activeSelector = ref('')
 
@@ -107,7 +107,7 @@
       }
 
       const addTreePathToDom = (treeNode, prefix) => {
-        const treeNodeEl = isRootPath(treeNode.domPath) ? context.refs.previewComponent.$el : _.get(context.refs.previewComponent.$el, treeNode.domPath)
+        const treeNodeEl = isRootPath(treeNode.domPath) ? context.slots.default()[0].elm : _.get(context.slots.default()[0].elm, treeNode.domPath)
         treeNodeEl['treePath'] = prefix
         if (treeNode.children) {
           for (let i = 0; i < treeNode.children.length; i++) {
@@ -163,8 +163,8 @@
       }
 
       const rebuildTreeData = () => {
-        const previewComponent = context.refs.previewComponent
-        treeData.value = parseElement(previewComponent.$el, '')
+        const previewComponentEl = context.slots.default()[0].elm
+        treeData.value = parseElement(previewComponentEl, '')
         buildSelectorList(treeData.value, '')
 
         // return to root if activePath is not found on the new tree
@@ -172,13 +172,14 @@
       }
 
       onMounted(() => {
-        const previewComponent = context.refs.previewComponent
+        const previewComponentElm = context.slots.default()[0].elm
         rebuildTreeData()
         addTreePathToDom(treeData.value, '')
-        addCustomSelector(previewComponent.$el)
+        addCustomSelector(previewComponentElm)
         setActiveTreeTargetPosition()
 
         // modify _update function of preview component to rebuild tree when preview component updated
+        const previewComponent = context.slots.default()[0].context
         const _update = previewComponent._update;
         let ignoreRun = false
         previewComponent._update = function () {
@@ -227,14 +228,14 @@
       }
 
       const toggleTargetMode = () => {
-        const previewComponent = context.refs.previewComponent
+        const previewComponentEl = context.slots.default()[0].elm
         if (!targetFlag.value) {
-          previewComponent.$el.addEventListener('mousemove', mouseMove)
-          previewComponent.$el.addEventListener('mousedown', mouseDown)
+          previewComponentEl.addEventListener('mousemove', mouseMove)
+          previewComponentEl.addEventListener('mousedown', mouseDown)
           targetFlag.value = true
         } else {
-          previewComponent.$el.removeEventListener('mousemove', mouseMove)
-          previewComponent.$el.removeEventListener('mousedown', mouseDown)
+          previewComponentEl.removeEventListener('mousemove', mouseMove)
+          previewComponentEl.removeEventListener('mousedown', mouseDown)
           targetFlag.value = false
           setActiveTreeTargetPosition()
         }
@@ -242,7 +243,7 @@
 
       // Tree Hover functionality
       const mouseEnterElement = (path) => {
-        const previewComponentEl = context.refs.previewComponent.$el
+        const previewComponentEl = context.slots.default()[0].elm
         const hoverEl = isRootPath(path) ? previewComponentEl : _.get(previewComponentEl, _.get(treeData.value, path + '.domPath'))
         if (!(hoverEl instanceof Element)) return
         setActiveTreeTargetPosition(hoverEl)
@@ -324,17 +325,14 @@
       }
 
       watch([() => activeSelector.value, () => selectorTargetFlag.value], () => {
-        const previewComponent = context.refs.previewComponent
+        const previewComponentEl = context.slots.default()[0].elm
         if (selectorTargetFlag.value && activeSelector.value) {
           cancelSelectorTargetAnimation()
-          animateSelectorTarget(previewComponent.$el.parentNode)
+          animateSelectorTarget(previewComponentEl.parentNode)
         } else {
           cancelSelectorTargetAnimation()
         }
       }, {lazy: true})
-
-      // Preview
-      const model = ref('2019-12-10')
 
       // Selector and css code
       const getSelectorList = (treePath) => {
@@ -360,7 +358,7 @@
 
       watch(() => activeSelector.value, newVal => {
         if (newVal && !activeCssSelectorList.value.includes(newVal)) {
-          const previewComponentElParent = context.refs.previewComponent.$el.parentNode
+          const previewComponentElParent = context.slots.default()[0].elm.parentNode
           const matchedElementPathList = _.map(previewComponentElParent.querySelectorAll(activeSelector.value), 'treePath')
           for (let path of matchedElementPathList) {
             const selectorList = getSelectorList(path)
@@ -373,14 +371,14 @@
       }, {lazy: true})
 
       const changeSelector = async selector => {
-        const previewComponent = context.refs.previewComponent
-        const domNode = previewComponent.$el.parentNode.querySelector(selector)
+        const previewComponentEl = context.slots.default()[0].elm
+        const domNode = previewComponentEl.parentNode.querySelector(selector)
         if (domNode) {
           cssCustomizerTree.activePath = domNode.treePath
           await context.root.$nextTick()
           activeSelector.value = selector
           cancelSelectorTargetAnimation()
-          animateSelectorTarget(previewComponent.$el.parentNode)
+          animateSelectorTarget(previewComponentEl.parentNode)
         }
       }
 
@@ -445,7 +443,7 @@
         openFile({multiple: false, mimeType: 'application/json'}, async files => {
           const data = await files[0].text()
           cssData.value = JSON.parse(data)
-          addCustomSelector(context.refs.previewComponent.$el)
+          addCustomSelector(context.slots.default()[0].elm)
         })
       }
 
@@ -502,16 +500,11 @@
         </div>
       }
 
-      const genPreviewComponent = () => {
-        // return <g-btn ref="previewComponent">Test</g-btn>
-        return <g-date-picker vModel={model.value} ref="previewComponent">
-
-        </g-date-picker>
-      }
-
       const genPreview = () => {
         return <div area="preview" class="g-css-customizer-preview" ref="preview">
-          {genPreviewComponent()}
+          <div class="g-css-customizer-preview-component">
+            {context.slots.default()}
+          </div>
           <div class="test-class">
           </div>
           <style type="text/css">

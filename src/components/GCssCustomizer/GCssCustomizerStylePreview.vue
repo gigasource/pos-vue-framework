@@ -1,5 +1,5 @@
 <script>
-  import { ref, reactive, computed, watch, set, onMounted } from '@vue/composition-api';
+  import { computed } from '@vue/composition-api';
   import _ from 'lodash'
   import GDialog from '../GDialog/GDialog';
   import GCard from '../GCard/GCard';

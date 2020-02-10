@@ -3,6 +3,7 @@ import { ref, reactive, computed } from '@vue/composition-api';
 import GCssCustomizer from '../GCssCustomizer';
 import GDialog from '../../GDialog/GDialog';
 import GBtn from '../../GBtn/GBtn';
+import GDatePicker from '../../GDatePicker/GDatePicker';
 
 export default {
   title: 'GCssCustomizer',
@@ -10,7 +11,7 @@ export default {
 }
 
 export const Demo = () => ({
-  components: { GDialog, GBtn, GCssCustomizer },
+  components: { GDialog, GBtn, GDatePicker, GCssCustomizer },
   props: {},
   setup (props, context) {
     const dialog = ref(false)
@@ -19,6 +20,7 @@ export const Demo = () => ({
 
     const revertTreeData = ref(undefined)
 
+    const date = ref('2019-12-10')
     const resetTreeData = () => {
       const treeData = {
         "name": "GBtn",
@@ -58,6 +60,7 @@ export const Demo = () => ({
     return {
       dialog,
       treeData,
+      date,
       openCssCustomizer,
       closeCssCustomizer,
       resetTreeData,
@@ -72,7 +75,8 @@ export const Demo = () => ({
       <h5>Please click RESET TREEDATA button on the very first run to create localStorage key!</h5>
       <g-dialog v-model="dialog" fullscreen persistent lazy>
         <g-css-customizer v-model="treeData" @close="closeCssCustomizer" @save="saveTreeData" @cancel="cancel">
-          
+          <g-date-picker v-model="date"/>
+<!--          <g-btn>TEST</g-btn>-->
         </g-css-customizer>
       </g-dialog>
     </div>

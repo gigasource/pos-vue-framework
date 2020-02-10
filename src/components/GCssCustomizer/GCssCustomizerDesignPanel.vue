@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { ref, reactive, computed, watch, set, inject, onMounted } from '@vue/composition-api';
+  import { ref, computed, watch, set, inject } from '@vue/composition-api';
   import { Length, Angle, Color, Display, Position, LineStyle, FontFamily, FontWeight, Effect, CustomProperty, cssLineStyleList, cssDisplayList, cssPositionList, cssFontFamilyList, cssFontStyleList, effectList } from './GCssCustomizerModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
@@ -874,11 +874,11 @@
       }
 
       &-key {
-        width: 30%
+        width: 40%
       }
 
       &-value {
-        width: 70%
+        width: 60%
       }
     }
 
