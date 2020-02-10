@@ -402,7 +402,14 @@
           if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
           reactiveSet(cssData.value[activeSelector.value], 'data', {})
         }
-        reactiveSet(activeSelectorData.value, key, val)
+        if (key) reactiveSet(activeSelectorData.value, key, val)
+      }
+
+      const deleteStyle = key => {
+        if (activeSelectorData.value) {
+          setStyle(key, undefined)
+          delete activeSelectorData.value[key]
+        }
       }
 
       const getDesignState = () => {
@@ -415,6 +422,7 @@
 
       provide('getStyle', getStyle)
       provide('setStyle', setStyle)
+      provide('deleteStyle', deleteStyle)
       provide('getDesignState', getDesignState)
       provide('setDesignState', setDesignState)
 

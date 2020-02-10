@@ -116,6 +116,8 @@
         ],
       })
 
+      let customCache = []
+
       const reconstructDesignData = inputDesignData => {
         for (let section in designPropertyList.value) {
           for (let item of designPropertyList.value[section]) {
@@ -124,8 +126,17 @@
         }
 
         set(designData.value, 'effects', [])
-        for (let effect of inputDesignData.effects) {
-          designData.value.effects.push(new Effect(..._.values(effect)))
+        if (inputDesignData.effects) {
+          for (let effect of inputDesignData.effects) {
+            designData.value.effects.push(new Effect(..._.values(effect)))
+          }
+        }
+
+        set(designData.value, 'custom', [])
+        if (inputDesignData.custom) {
+          for (let customProperty of inputDesignData.custom) {
+            designData.value.custom.push(new CustomProperty(..._.values(customProperty)))
+          }
         }
       }
 
@@ -137,6 +148,7 @@
 
       const getStyle = inject('getStyle')
       const setStyle = inject('setStyle')
+      const deleteStyle = inject('deleteStyle')
       const getDesignState = inject('getDesignState')
       const setDesignState = inject('setDesignState')
 
@@ -162,7 +174,7 @@
             if (prop.active) {
               setStyle(item.cssKey, prop.toCSS())
             } else if (getStyle(item.cssKey)) {
-              setStyle(item.cssKey, undefined)
+              deleteStyle(item.cssKey)
             }
           }
         }
@@ -171,21 +183,28 @@
           setStyle('boxShadow', shadowToCSS(designData.value.effects))
           setStyle('filter', blurToCSS(designData.value.effects))
         }
-
-        if (designData.value.custom) {
-          for (let customProperty of designData.value.custom) {
-            if (customProperty.active) setStyle(customProperty.key, customProperty.value)
-            else if (getStyle(customProperty.key)) {
-              setStyle(customProperty.key , undefined)
-            }
-          }
-        }
       }
 
       watch(() => designData.value, () => {
         designToCSS()
         setDesignState(designData.value)
       }, { lazy: true, deep: true })
+
+      watch(() => designData.value.custom, () => {
+        for (let customProperty of customCache) {
+          deleteStyle(customProperty.key)
+        }
+
+        if (designData.value.custom) {
+          for (let customProperty of designData.value.custom) {
+            if (customProperty.active) setStyle(customProperty.key, customProperty.value)
+            else if (getStyle(customProperty.key)) {
+              deleteStyle(customProperty.key)
+            }
+          }
+          customCache = _.cloneDeep(designData.value.custom)
+        }
+      }, {lazy: true, deep: true})
 
 
       // Text functionality
@@ -545,7 +564,7 @@
           <div class="g-css-customizer-design-panel-custom-wrapper">
             {genCheckbox(customProperty)}
             <g-css-customizer-input class="g-css-customizer-design-panel-custom-key" value={customProperty.key} vOn:change={e => customProperty.key = e}/>
-            <span>:</span>
+            <span style="padding: 0 4px; font-size: 14px">:</span>
             <g-css-customizer-input class="g-css-customizer-design-panel-custom-value" value={customProperty.value}
                                     vOn:change={e => customProperty.value = e}/>
             <g-btn flat class="g-css-customizer-design-panel-btn" style="margin-left: auto"
