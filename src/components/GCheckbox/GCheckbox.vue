@@ -53,7 +53,7 @@
         isDeterminate.value = false;
       }
       //change determinate & active state when value changes
-      watch(() => [internalValue.value, props.value], () => {
+      watch(() => [internalValue.value, props.value], (newVal, oldVal) => {
         //inputValue & value is both array
         if (props.multiple) {
           if (!internalValue.value) {
@@ -63,6 +63,10 @@
           } else if (internalValue.value.length === 0) {
             isDeterminate.value = true;
             if (isActive.value === props.inputValue) { //default to uncheck
+              isActive.value = false
+            }
+            //check when props.value change
+            if(props.value.length > 0 || (oldVal && oldVal.length > 0)) {
               isActive.value = false
             }
           } else if (xorWith(internalValue.value, props.value, isEqual).length === 0) {
