@@ -160,7 +160,16 @@
 
       const addCustomSelector = (el) => {
         for (let selector of _.keys(cssData.value)) {
-          const matchedElementPathList = _.map(el.parentNode.querySelectorAll(selector), 'treePath')
+          let matchedElementList = el.parentNode.querySelectorAll(selector)
+          if (matchedElementList && matchedElementList.length === 0) {
+            for (let pseudo of cssPseudoList) {
+              const realSelector = selector.replace(pseudo, '')
+              if (realSelector !== selector) {
+                matchedElementList = el.parentNode.querySelectorAll(realSelector)
+              }
+            }
+          }
+          const matchedElementPathList = _.map(matchedElementList, 'treePath')
           for (let path of matchedElementPathList) {
             const selectorList = getSelectorList(path)
             if (selectorList && !selectorList.includes(selector)) selectorList.push(selector)
