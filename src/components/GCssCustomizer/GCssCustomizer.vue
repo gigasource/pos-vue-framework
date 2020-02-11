@@ -145,6 +145,11 @@
           })
         }
 
+        _.forEach(treeNode.classList, cssClass => {
+          treeNode.selectorList.push(`.${cssClass}::before`)
+          treeNode.selectorList.push(`.${cssClass}::after`)
+        })
+
         if (treeNode.children) {
           for (let i = 0; i < treeNode.children.length; i++) {
             buildSelectorList(treeNode.children[i], prefix ? prefix + '.children.' + i : prefix + 'children.' + i)

@@ -4,6 +4,7 @@ import GCssCustomizer from '../GCssCustomizer';
 import GDialog from '../../GDialog/GDialog';
 import GBtn from '../../GBtn/GBtn';
 import GDatePicker from '../../GDatePicker/GDatePicker';
+import GTextField from '../../GInput/GTextField';
 
 export default {
   title: 'GCssCustomizer',
@@ -11,7 +12,7 @@ export default {
 }
 
 export const Demo = () => ({
-  components: { GDialog, GBtn, GDatePicker, GCssCustomizer },
+  components: { GDialog, GBtn, GDatePicker, GTextField, GCssCustomizer },
   props: {},
   setup (props, context) {
     const dialog = ref(false)
@@ -75,8 +76,9 @@ export const Demo = () => ({
       <h5>Please click RESET TREEDATA button on the very first run to create localStorage key!</h5>
       <g-dialog v-model="dialog" fullscreen persistent lazy>
         <g-css-customizer v-model="treeData" @close="closeCssCustomizer" @save="saveTreeData" @cancel="cancel">
-          <g-date-picker v-model="date"/>
+<!--          <g-date-picker v-model="date"/>-->
 <!--          <g-btn>TEST</g-btn>-->
+          <g-text-field></g-text-field>
         </g-css-customizer>
       </g-dialog>
     </div>
