@@ -39,6 +39,7 @@
     },
     props: {
       activeSelector: String,
+      resetState: Boolean,
     },
     setup(props, context) {
       const activeSections = ref([])
@@ -145,6 +146,10 @@
         if (activeDesignState) reconstructDesignData(getDesignState())
         else designData.value = _.cloneDeep(defaultDesignData)
       }, { lazy: true })
+
+      watch(() => props.resetState, () => {
+        designData.value = _.cloneDeep(defaultDesignData)
+      })
 
       const getStyle = inject('getStyle')
       const setStyle = inject('setStyle')

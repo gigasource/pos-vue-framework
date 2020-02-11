@@ -76,9 +76,9 @@ export const Demo = () => ({
       <h5>Please click RESET TREEDATA button on the very first run to create localStorage key!</h5>
       <g-dialog v-model="dialog" fullscreen persistent lazy>
         <g-css-customizer v-model="treeData" @close="closeCssCustomizer" @save="saveTreeData" @cancel="cancel">
-<!--          <g-date-picker v-model="date"/>-->
+          <g-date-picker v-model="date"/>
 <!--          <g-btn>TEST</g-btn>-->
-          <g-text-field></g-text-field>
+<!--          <g-text-field label="hello"/>-->
         </g-css-customizer>
       </g-dialog>
     </div>

@@ -55,7 +55,7 @@
 
       const activeSelector = ref('')
 
-          const activeSelectorData = computed(() => cssData.value[activeSelector.value] && cssData.value[activeSelector.value].data)
+      const activeSelectorData = computed(() => cssData.value[activeSelector.value] && cssData.value[activeSelector.value].data)
 
       const activeSelectorDesignState = computed({
         get: () => cssData.value[activeSelector.value] && cssData.value[activeSelector.value].designState,
@@ -184,7 +184,7 @@
         setActiveTreeTargetPosition()
 
         // modify _update function of preview component to rebuild tree when preview component updated
-        const previewComponent = context.slots.default()[0].context
+        const previewComponent = context.slots.default()[0].componentInstance
         const _update = previewComponent._update;
         let ignoreRun = false
         previewComponent._update = function () {
@@ -419,7 +419,7 @@
         return activeSelectorDesignState.value
       }
 
-      const setDesignState =  designData => {
+      const setDesignState = designData => {
         activeSelectorDesignState.value = _.cloneDeep(designData)
       }
 
@@ -430,6 +430,17 @@
       provide('setDesignState', setDesignState)
 
       // Actions
+      let resetDesignPanel = false
+
+      const resetStyle = () => {
+        if (cssData.value[activeSelector.value]) {
+          resetDesignPanel = !resetDesignPanel
+          reactiveSet(cssData.value[activeSelector.value], 'data', undefined)
+          delete cssData.value[activeSelector.value]
+        }
+      }
+
+
       const saveCssData = () => {
         !treeData.value.metaData && (treeData.value.metaData = {})
         treeData.value.metaData.cssData = cssData.value
@@ -533,10 +544,16 @@
                       items={activeCssSelectorList.value} label="selector" menuProps={{maxHeight: '100%'}}/>
           <div class="g-css-customizer-code-content">
             {cssDisplayCode.value.map(item => genDisplayCode(item))}
-            <g-css-customizer-style-preview vModel={stylePreviewDialog.value} cssData={cssData.value} vOn:changeSelector={changeSelector}/>
-            <g-icon class="g-css-customizer-code-show" size="16" color="red" vOn:click={toggleSelectorTargetMode}>
-              {selectorTargetFlag.value ? 'far fa-eye' : 'far fa-eye-slash'}
-            </g-icon>
+            <g-css-customizer-style-preview vModel={stylePreviewDialog.value} cssData={cssData.value}
+                                            vOn:changeSelector={changeSelector}/>
+            <div class="g-css-customizer-code-action">
+              <g-icon class="g-css-customizer-code-icon" size="16" color="red" vOn:click={toggleSelectorTargetMode}>
+                {selectorTargetFlag.value ? 'fas fa-eye' : 'fas fa-eye-slash'}
+              </g-icon>
+              <g-icon class="g-css-customizer-code-icon" size="16" color="teal" vOn:click={resetStyle}>
+                fas fa-trash
+              </g-icon>
+            </div>
           </div>
         </div>
       }
@@ -546,7 +563,7 @@
           <div class="g-css-customizer-design-title">
             Design
           </div>
-          <g-css-customizer-design-panel activeSelector={activeSelector.value}/>
+          <g-css-customizer-design-panel activeSelector={activeSelector.value} resetState={resetDesignPanel}/>
         </div>
       }
 
@@ -669,7 +686,13 @@
         color: #212121;
       }
 
-      &-show {
+      &-icon {
+        padding-left: 4px
+      }
+
+      &-action {
+        display: flex;
+        align-items: center;
         position: absolute;
         top: 20px;
         right: 12px;
