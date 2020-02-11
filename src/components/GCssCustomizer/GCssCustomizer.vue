@@ -4,6 +4,7 @@
   import {parseCssData, genSelectorDisplayData} from './GCssCustomizerFactory';
   import {getInternalValue} from '../../mixins/getVModel';
   import {convertToUnit, openFile, saveFile} from '../../utils/helpers';
+  import {cssPseudoList} from './GCssCustomizerModel';
   import GCssCustomizerLayout from './GCssCustomizerLayout'
   import GGridLayout from '../GGridGenerator/GGridLayout';
   import GCssCustomizerTreeView from './GCssCustomizerTreeView';
@@ -145,10 +146,10 @@
           })
         }
 
-        _.forEach(treeNode.classList, cssClass => {
-          treeNode.selectorList.push(`.${cssClass}::before`)
-          treeNode.selectorList.push(`.${cssClass}::after`)
-        })
+        // _.forEach(treeNode.classList, cssClass => {
+        //   treeNode.selectorList.push(`.${cssClass}::before`)
+        //   treeNode.selectorList.push(`.${cssClass}::after`)
+        // })
 
         if (treeNode.children) {
           for (let i = 0; i < treeNode.children.length; i++) {
@@ -176,12 +177,16 @@
         if (_.get(treeData.value, cssCustomizerTree.activePath) === undefined) cssCustomizerTree.activePath = ''
       }
 
-      onMounted(() => {
+      const refreshTree = () => {
         const previewComponentElm = context.slots.default()[0].elm
         rebuildTreeData()
         addTreePathToDom(treeData.value, '')
         addCustomSelector(previewComponentElm)
         setActiveTreeTargetPosition()
+      }
+
+      onMounted(() => {
+        refreshTree()
 
         // modify _update function of preview component to rebuild tree when preview component updated
         const previewComponent = context.slots.default()[0].componentInstance
@@ -361,16 +366,32 @@
         activeSelector.value = firstEditedSelector || activeCssSelectorList.value[0] || ''
       }, {lazy: true, deep: true})
 
-      watch(() => activeSelector.value, newVal => {
+      watch(() => activeSelector.value, (newVal, oldVal) => {
         if (newVal && !activeCssSelectorList.value.includes(newVal)) {
           const previewComponentElParent = context.slots.default()[0].elm.parentNode
-          const matchedElementPathList = _.map(previewComponentElParent.querySelectorAll(activeSelector.value), 'treePath')
-          for (let path of matchedElementPathList) {
-            const selectorList = getSelectorList(path)
-            if (!selectorList.includes(activeSelector.value)) selectorList.push(activeSelector.value)
+          let matchedElementList = undefined
+          try {
+            matchedElementList = previewComponentElParent.querySelectorAll(activeSelector.value)
+          } catch (err) {
+            console.log(err)
+            activeSelector.value = oldVal
           }
-          if (!matchedElementPathList.includes(cssCustomizerTree.activePath)) {
-            cssCustomizerTree.activePath = matchedElementPathList[0]
+          if (matchedElementList && matchedElementList.length > 0) {
+            const matchedElementPathList = _.map(previewComponentElParent.querySelectorAll(activeSelector.value), 'treePath')
+            for (let path of matchedElementPathList) {
+              const selectorList = getSelectorList(path)
+              if (!selectorList.includes(activeSelector.value)) selectorList.push(activeSelector.value)
+            }
+            if (!matchedElementPathList.includes(cssCustomizerTree.activePath)) {
+              cssCustomizerTree.activePath = matchedElementPathList[0]
+            }
+          } else if (matchedElementList && matchedElementList.length === 0) {
+            for (let selector of activeCssSelectorList.value) {
+              const rest = activeSelector.value.replace(selector, '')
+              if (cssPseudoList.includes(rest)) {
+                activeCssSelectorList.value = activeSelector.value
+              }
+            }
           }
         }
       }, {lazy: true})
@@ -493,6 +514,9 @@
           <div class="g-css-customizer-tree-content">
             <g-css-customizer-tree-view vModel={cssCustomizerTree} data={treeData.value} expandLevel={10}/>
           </div>
+          <g-icon class="g-css-customizer-tree-icon" size="16" color="teal" vOn:click={refreshTree}>
+            fas fa-sync
+          </g-icon>
         </div>
       }
 
@@ -550,7 +574,7 @@
               <g-icon class="g-css-customizer-code-icon" size="16" color="red" vOn:click={toggleSelectorTargetMode}>
                 {selectorTargetFlag.value ? 'fas fa-eye' : 'fas fa-eye-slash'}
               </g-icon>
-              <g-icon class="g-css-customizer-code-icon" size="16" color="teal" vOn:click={resetStyle}>
+              <g-icon class="g-css-customizer-code-icon" size="16" color="black" vOn:click={resetStyle}>
                 fas fa-trash
               </g-icon>
             </div>
@@ -621,7 +645,6 @@
       flex: 1 1 100%;
       background-color: white;
 
-
       &-title {
         position: relative;
         overflow: hidden;
@@ -645,6 +668,11 @@
         backface-visibility: hidden;
         flex: 1 1 auto;
         overflow-y: auto;
+
+        &::-webkit-scrollbar{
+          width: 4px;
+          height: 30px;
+        }
       }
     }
 
@@ -716,7 +744,7 @@
     }
 
     &-tree {
-      &-reload {
+      &-icon {
         position: absolute;
         top: 16px;
         right: 12px;

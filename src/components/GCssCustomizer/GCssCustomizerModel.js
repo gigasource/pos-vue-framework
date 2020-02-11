@@ -37,6 +37,10 @@ export const effectList = [
   }
 ]
 const reservedKeyList = ['width', 'height', 'top', 'left', 'bottom', 'right', 'display', 'position', 'borderRadius', 'backgroundColor', 'color', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderColor', 'borderWidth', 'borderStyle', 'padding', 'margin', 'boxShadow', 'filter']
+export const cssPseudoList = [
+    ':link', ':visited', ':active', ':first-child', ':hover', ':focus', ':target', ':root', ':last-child', ':first-of-type', ':last-of-type', ':only-child', ':empty',
+    '::after', '::back-drop', '::before', '::cue', '::cue-region', '::first-letter', '::first-line', '::grammar-error', '::marker', '::placeholder', '::selection'
+]
 
 export class Length {
   constructor(value = 0, unit = 'px', defaultUnit = 'px', active = false, mode = 'short') {

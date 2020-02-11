@@ -88,8 +88,8 @@
         basic: [
           { key: 'display', prefix: 'D', cssKey: 'display', constructor: Display},
           { key: 'position', prefix: 'P', cssKey: 'position', constructor: Position},
-          { key: 'x', prefix: 'T', cssKey: 'top', constructor: Length },
-          { key: 'y', prefix: 'L', cssKey: 'left', constructor: Length },
+          { key: 'x', prefix: 'L', cssKey: 'top', constructor: Length },
+          { key: 'y', prefix: 'T', cssKey: 'left', constructor: Length },
           { key: 'width', prefix: 'W', cssKey: 'width', constructor: Length },
           { key: 'height', prefix: 'H', cssKey: 'height', constructor: Length },
           { key: 'rotation', prependInnerIcon: 'icon-pns_rotation', cssKey: 'transform', constructor: Angle },
