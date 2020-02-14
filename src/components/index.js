@@ -108,8 +108,6 @@ import GSimpleTable from './GSimpleTable/GSimpleTable';
 
 import GSlideGroup from './GSlideGroup/GSlideGroup';
 
-import GSliderRemake from './GSliderRemake/GSlider.vue';
-
 import GStepper from './GStepper/GStepper';
 import GStepperContent from './GStepper/GStepperContent';
 import GStepperContents from './GStepper/GStepperContents';
@@ -147,7 +145,7 @@ import GWindowItem from './GWindow/GWindowItem';
 import GSnackbar from './GSnackbar/GSnackbar';
 import GSubheader from './GSubheader/GSubheader';
 import GProgressBar from './GProgressBar/GProgressBar';
-import GSlider from './GSliderRemake/GSlider';
+import GSlider from './GSlider/GSlider';
 import GRating from './GRating/GRating';
 
 import { getInternalValue, getVModel } from '../mixins/getVModel';

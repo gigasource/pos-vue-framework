@@ -1,4 +1,4 @@
-import {getEventHandler, parseKeyDown, parseMouseMove} from '../GSliderRemake/GSliderFactory';
+import {getEventHandler, parseKeyDown, parseMouseMove} from '../GSlider/GSliderFactory';
 
 export function getRangeSliderEventHandler(props, context, state, internalValue, minValue, maxValue) {
 
