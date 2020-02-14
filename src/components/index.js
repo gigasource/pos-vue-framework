@@ -287,7 +287,6 @@ export {
   GSideBarTreeView,
   GSimpleTable,
   GSlideGroup,
-  GSliderRemake,
   GStepper,
   GStepperContent,
   GStepperContents,
