@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { ref, computed, watch, set, inject } from '@vue/composition-api';
-  import { Length, Angle, Color, Display, Position, LineStyle, FontFamily, FontWeight, Effect, CustomProperty, cssLineStyleList, cssDisplayList, cssPositionList, cssFontFamilyList, cssFontStyleList, effectList } from './GCssCustomizerModel';
+  import { Length, Angle, Color, Display, Position, LineStyle, FontFamily, FontWeight, Effect, cssLineStyleList, cssDisplayList, cssPositionList, cssFontFamilyList, cssFontStyleList, effectList } from './GCssCustomizerModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
@@ -17,11 +17,13 @@
   import GCombobox from '../GCombobox/GCombobox';
   import GSelect from '../GSelect/GSelect';
   import GCssCustomizerCombobox from './GCssCustomizerCombobox';
+  import GTextarea from '../GTextarea/GTextarea';
 
   export default {
     name: 'GCssCustomizerDesignPanel',
     components: {
       GCssCustomizerCombobox,
+      GTextarea,
       GSelect,
       GCombobox,
       GCssCustomizerSelect,
@@ -44,7 +46,7 @@
     setup(props, context) {
       const activeSections = ref([])
 
-      const sectionsList = ref(['Text', 'Fill', 'Stroke', 'Space'])
+      const sectionsList = ref(['Basic', 'Text', 'Fill', 'Stroke', 'Space'])
 
       const defaultDesignData = {
         basic: {
@@ -79,7 +81,7 @@
           margin: new Length(5),
         },
         effects: undefined,
-        custom: undefined,
+        custom: '',
       }
 
       const designData = ref(_.cloneDeep(defaultDesignData))
@@ -88,8 +90,8 @@
         basic: [
           { key: 'display', prefix: 'D', cssKey: 'display', constructor: Display},
           { key: 'position', prefix: 'P', cssKey: 'position', constructor: Position},
-          { key: 'x', prefix: 'L', cssKey: 'top', constructor: Length },
-          { key: 'y', prefix: 'T', cssKey: 'left', constructor: Length },
+          { key: 'x', prefix: 'T', cssKey: 'top', constructor: Length },
+          { key: 'y', prefix: 'L', cssKey: 'left', constructor: Length },
           { key: 'width', prefix: 'W', cssKey: 'width', constructor: Length },
           { key: 'height', prefix: 'H', cssKey: 'height', constructor: Length },
           { key: 'rotation', prependInnerIcon: 'icon-pns_rotation', cssKey: 'transform', constructor: Angle },
@@ -133,12 +135,7 @@
           }
         }
 
-        set(designData.value, 'custom', [])
-        if (inputDesignData.custom) {
-          for (let customProperty of inputDesignData.custom) {
-            designData.value.custom.push(new CustomProperty(..._.values(customProperty)))
-          }
-        }
+        set(designData.value, 'custom', inputDesignData.custom)
       }
 
       watch(() => props.activeSelector, () => {
@@ -185,8 +182,12 @@
         }
 
         if (designData.value.effects) {
-          setStyle('boxShadow', shadowToCSS(designData.value.effects))
-          setStyle('filter', blurToCSS(designData.value.effects))
+          const shadowString = shadowToCSS(designData.value.effects)
+          const blurString = blurToCSS(designData.value.effects)
+          if (shadowString) setStyle('boxShadow', shadowString)
+          else deleteStyle('boxShadow')
+          if (blurString) setStyle('filter', blurString)
+          else deleteStyle('filter')
         }
       }
 
@@ -194,23 +195,6 @@
         designToCSS()
         setDesignState(designData.value)
       }, { lazy: true, deep: true })
-
-      watch(() => designData.value.custom, () => {
-        for (let customProperty of customCache) {
-          deleteStyle(customProperty.key)
-        }
-
-        if (designData.value.custom) {
-          for (let customProperty of designData.value.custom) {
-            if (customProperty.active) setStyle(customProperty.key, customProperty.value)
-            else if (getStyle(customProperty.key)) {
-              deleteStyle(customProperty.key)
-            }
-          }
-          customCache = _.cloneDeep(designData.value.custom)
-        }
-      }, {lazy: true, deep: true})
-
 
       // Text functionality
       const textMenu = ref(false)
@@ -261,15 +245,26 @@
       }
 
       // Custom functionality
-      const addCustomProperty = e => {
-        if (activeSections.value.includes(sectionsList.value.length + 2)) e.stopPropagation()
-        if (!designData.value.custom) designData.value.custom = []
-        designData.value.custom.push(new CustomProperty())
-      }
+      watch(() => designData.value.custom, () => {
+        for (let customKey of customCache) {
+          deleteStyle(customKey)
+        }
 
-      const removeCustomProperty = index => {
-        designData.value.custom.splice(index, 1)
-      }
+        customCache = []
+        if (designData.value.custom) {
+          const customPropertyList = designData.value.custom.split('\n')
+          for (let customProperty of customPropertyList) {
+            const customStringList = customProperty.replace(';', '').split(':')
+            if (customStringList.length === 2) {
+              const customKey = customStringList[0].trim()
+              const customValue = customStringList[1].trim()
+              if(customKey && customValue) setStyle(customKey, customValue)
+              customCache.push(customKey)
+            }
+          }
+        }
+        setDesignState(designData.value)
+      }, {lazy: true, deep: true})
 
       // Render functions
       const genCheckbox = prop => {
@@ -318,7 +313,7 @@
       }
 
       const genBasicSection = () => {
-        return <div class="g-css-customizer-design-panel-basic">
+        return <div class="g-css-customizer-design-panel-section-content">
           {genSelect(designPropertyList.value.basic[0], designData.value.basic.display, cssDisplayList)}
           {genSelect(designPropertyList.value.basic[1], designData.value.basic.position, cssPositionList)}
           {designPropertyList.value.basic.map(item => (item.constructor === Length || item.constructor === Angle) && genBasicInput(item))}
@@ -564,25 +559,14 @@
         </div>
       }
 
-      const genCustomSection = (customProperty, index) => {
-        return <div class="g-css-customizer-design-panel-section-content">
-          <div class="g-css-customizer-design-panel-custom-wrapper">
-            {genCheckbox(customProperty)}
-            <g-css-customizer-input class="g-css-customizer-design-panel-custom-key" value={customProperty.key} vOn:change={e => customProperty.key = e}/>
-            <span style="padding: 0 4px; font-size: 14px">:</span>
-            <g-css-customizer-input class="g-css-customizer-design-panel-custom-value" value={customProperty.value}
-                                    vOn:change={e => customProperty.value = e}/>
-            <g-btn flat class="g-css-customizer-design-panel-btn" style="margin-left: auto"
-                   vOn:click={() => removeCustomProperty(index)}>
-              <g-icon size="16" color="grey">fas fa-minus</g-icon>
-            </g-btn>
-          </div>
+      const genCustomSection = () => {
+        return <div class="g-css-customizer-design-panel-custom">
+          <g-textarea value={designData.value.custom} vOn:change={e => designData.value.custom = e}/>
         </div>
       }
 
       const genDesignPanel = () => {
         return <div class="g-css-customizer-design-panel">
-          {genBasicSection()}
           <g-sections vModel={activeSections.value} multiple={true}>
             {
               sectionsList.value.map((section, index) => {
@@ -599,10 +583,10 @@
             </g-sections-header>
             <g-sections-header key="headerCustom">
               Custom
-              <g-icon size="16" vOn:click={addCustomProperty}>
-                fas fa-plus
-              </g-icon>
             </g-sections-header>
+            <g-sections-item key="basic">
+              {genBasicSection()}
+            </g-sections-item>
             <g-sections-item key="text">
               {genTextSection()}
             </g-sections-item>
@@ -619,9 +603,8 @@
               {designData.value.effects && designData.value.effects.map((effect, index) => genEffectSection(effect, index))}
               <span/>
             </g-sections-item>
-            <g-sections-item key="custom" class={{'g-sections-item__empty': !designData.value.custom || (designData.value.custom && designData.value.custom.length === 0)}}>
-              {designData.value.custom && designData.value.custom.map((customProperty, index) => genCustomSection(customProperty, index))}
-              <span/>
+            <g-sections-item key="custom">
+              {genCustomSection()}
             </g-sections-item>
           </g-sections>
         </div>
@@ -885,6 +868,14 @@
       &-value {
         width: 60%
       }
+
+      &::v-deep .g-tf-input {
+        font-size: 12px;
+      }
+
+      &::v-deep .g-tf-wrapper {
+        margin: 0;
+      }
     }
 
 		&-color-input {
@@ -933,11 +924,15 @@
 				padding-left: 20px;
 			}
 		}
-	}
 
-	::v-deep.g-sections-item__empty {
-		.g-sections-item-content-wrapper {
-			padding: 0
-		}
+    &::v-deep .g-sections-header:first-child {
+      border-top: none;
+    }
+
+    ::v-deep.g-sections-item__empty {
+      .g-sections-item-content-wrapper {
+        padding: 0
+      }
+    }
 	}
 </style>

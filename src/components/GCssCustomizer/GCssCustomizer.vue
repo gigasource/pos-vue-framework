@@ -15,6 +15,7 @@
   import GCombobox from '../GCombobox/GCombobox';
   import GDialog from '../GDialog/GDialog';
   import GCard from '../GCard/GCard';
+  import GChip from '../GChip/GChip';
   import GCardTitle from '../GCard/GCardTitle';
   import {GCardText, GCardActions} from '../GCard/GCardFunctionalComponent';
   import GCssCustomizerStylePreview from './GCssCustomizerStylePreview';
@@ -24,6 +25,7 @@
     name: 'GCssCustomizer',
     components: {
       GCssCustomizerDesignPanel,
+      GChip,
       GCardText,
       GCardActions,
       GCardTitle,
@@ -359,7 +361,7 @@
         return _.get(treeData.value, treePath + '.selectorList')
       }
 
-      const activeCssSelectorList = computed({
+      const activeSelectorList = computed({
         get: () => {
           return getSelectorList(cssCustomizerTree.activePath)
         },
@@ -368,15 +370,25 @@
         }
       })
 
-      watch(() => activeCssSelectorList.value, () => {
-        const firstEditedSelector = _.find(activeCssSelectorList.value, selector => {
+      // const modifiedSelectorList = computed(() => {
+      //   return _.filter(activeSelectorList.value, selector => cssData.value[selector] && !_.isEmpty(cssData.value[selector].data) || selector === activeSelector.value)
+      // })
+
+      const modifiedSelectorList = ref([])
+
+      watch([() => cssData.value, () => activeSelector.value], () => {
+        modifiedSelectorList.value = _.filter(activeSelectorList.value, selector => cssData.value[selector] && !_.isEmpty(cssData.value[selector].data))
+      }, {lazy: true, deep: true})
+
+      watch(() => activeSelectorList.value, () => {
+        const firstEditedSelector = _.find(activeSelectorList.value, selector => {
           return cssData.value[selector] && !_.isEmpty(_.pickBy(cssData.value[selector].data, val => val))
         })
-        activeSelector.value = firstEditedSelector || activeCssSelectorList.value[0] || ''
+        activeSelector.value = firstEditedSelector || activeSelectorList.value[0] || ''
       }, {lazy: true, deep: true})
 
       watch(() => activeSelector.value, (newVal, oldVal) => {
-        if (newVal && !activeCssSelectorList.value.includes(newVal)) {
+        if (newVal && !activeSelectorList.value.includes(newVal)) {
           const previewComponentElParent = context.slots.default()[0].elm.parentNode
           let matchedElementList = undefined
           try {
@@ -395,10 +407,10 @@
               cssCustomizerTree.activePath = matchedElementPathList[0]
             }
           } else if (matchedElementList && matchedElementList.length === 0) {
-            for (let selector of activeCssSelectorList.value) {
+            for (let selector of activeSelectorList.value) {
               const rest = activeSelector.value.replace(selector, '')
               if (cssPseudoList.includes(rest)) {
-                activeCssSelectorList.value = activeSelector.value
+                activeSelectorList.value = activeSelector.value
               }
             }
           }
@@ -574,7 +586,15 @@
             CSS
           </div>
           <g-combobox value={activeSelector.value} vOn:input={e => activeSelector.value = e}
-                      items={activeCssSelectorList.value} label="selector" menuProps={{maxHeight: '100%'}}/>
+                      items={activeSelectorList.value} label="selector" menuProps={{maxHeight: '100%'}}/>
+          <div className="g-css-customizer-code-modified">
+            {modifiedSelectorList.value && modifiedSelectorList.value.map(selector => {
+              return <g-chip class="g-css-customizer-code-chip" outlined
+                             textColor={selector === activeSelector.value ? 'green' : '#212121'}
+                             vOn:click={() => activeSelector.value = selector}>{selector}
+              </g-chip>
+            })}
+          </div>
           <div class="g-css-customizer-code-content">
             {cssDisplayCode.value.map(item => genDisplayCode(item))}
             <g-css-customizer-style-preview vModel={stylePreviewDialog.value} cssData={cssData.value}
@@ -614,10 +634,11 @@
         genCssCustomizer,
         cssCustomizerTree,
         activeSelector,
-        activeCssSelectorList,
+        activeSelectorList,
         activeSelectorData,
         cssData,
         stylesString,
+        modifiedSelectorList,
       }
     },
     render() {
@@ -727,12 +748,30 @@
         padding-left: 4px
       }
 
+      &-chip {
+        &.g-chip {
+          font-size: 10px;
+          height: auto;
+          padding: 0 8px;
+          max-width: 33%;
+        }
+
+        &.g-chip::v-deep .g-chip__content {
+          overflow: hidden;
+          text-overflow: clip;
+        }
+      }
+
       &-action {
         display: flex;
         align-items: center;
         position: absolute;
         top: 20px;
         right: 12px;
+      }
+
+      &::v-deep .g-tf-wrapper {
+        margin-bottom: 6px;
       }
     }
 

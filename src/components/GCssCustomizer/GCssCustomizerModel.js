@@ -3,6 +3,7 @@ import {ref, set} from '@vue/composition-api'
 
 const cssLengthUnitList = ['cm', 'mm', 'in', 'px', 'pt', 'pc', 'em', 'ex', 'ch', 'rem', 'vw', 'vh', 'lh', 'rlh', 'vmin', 'vmax', '%']
 const cssAngleUnitList = ['deg', 'grad', 'rad', 'turn']
+const cssSpecialValue = ['auto','inherit' ,'initial', 'unset']
 export const cssDisplayList = ['none', 'block', 'inline', 'inline-block', 'flow', 'table', 'flex', 'grid', 'ruby']
 export const cssPositionList = ['static', 'relative', 'absolute', 'fixed', 'sticky']
 export const cssLineStyleList = ['dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset']
@@ -55,6 +56,7 @@ export class Length {
     if (this._value instanceof Array) {
       return this._value.map((value, index) => `${value}${this._unit[index]}`)
     }
+    else if (cssSpecialValue.includes(this._value)) return this._value
     else return `${this._value}${this._unit}`
   }
 
@@ -64,9 +66,12 @@ export class Length {
       set(this._value, inputValue.index, !isNaN(input.value) ? input.value : 0)
       set(this._unit, inputValue.index, cssLengthUnitList.includes(input.unit) ? input.unit : this._defaultUnit)
     } else {
-      const input = parseLengthString(inputValue)
-      this._value = !isNaN(input.value) ? input.value : 0
-      this._unit = cssLengthUnitList.includes(input.unit) ? input.unit : this._defaultUnit
+      if (cssSpecialValue.includes(inputValue)) this._value = inputValue
+      else {
+        const input = parseLengthString(inputValue)
+        this._value = !isNaN(input.value) ? input.value : 0
+        this._unit = cssLengthUnitList.includes(input.unit) ? input.unit : this._defaultUnit
+      }
     }
     this._active = true
   }
