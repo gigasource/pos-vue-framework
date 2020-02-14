@@ -1,6 +1,6 @@
 <script>
   import {computed, reactive, watch} from '@vue/composition-api';
-  import {helperFunctions} from "../GSliderRemake/GSliderFactory";
+  import {helperFunctions} from "../GSlider/GSliderFactory";
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
@@ -341,5 +341,5 @@
 
 <style scoped lang="scss">
   @import "GRangeSlider";
-  @import "../GSliderRemake/_GSlider.scss";
+  @import "../GSlider/_GSlider.scss";
 </style>
