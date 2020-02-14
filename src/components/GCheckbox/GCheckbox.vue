@@ -1,20 +1,20 @@
 <template>
-	<div class="g-checkbox-wrapper">
-		<div class="g-checkbox" :class="checkboxClass" :style="checkboxStyle" @click="toggle">
-			<input type="checkbox" ref="input" :checked="isActive.value">
-			<span class="g-checkbox-checkmark"></span>
-			<div class="g-checkbox-hover"></div>
-			<slot name="label">
-				<label class="g-checkbox-label">{{label}}</label>
-			</slot>
-		</div>
-	</div>
+  <div class="g-checkbox-wrapper">
+    <div class="g-checkbox" :class="checkboxClass" :style="checkboxStyle" @click="toggle">
+      <input type="checkbox" ref="input" :checked="isActive.value">
+      <span class="g-checkbox-checkmark"></span>
+      <div class="g-checkbox-hover"></div>
+      <slot name="label">
+        <label class="g-checkbox-label">{{label}}</label>
+      </slot>
+    </div>
+  </div>
 </template>
 
 <script>
-  import { computed, ref, watch } from '@vue/composition-api';
+  import {computed, ref, watch} from '@vue/composition-api';
   import colorHandler from '../../utils/helpers';
-  import { isEqual, xorWith, cloneDeep } from 'lodash';
+  import {isEqual, xorWith, cloneDeep} from 'lodash';
 
   export default {
     name: 'GCheckbox',
@@ -53,17 +53,26 @@
         isDeterminate.value = false;
       }
       //change determinate & active state when value changes
-      watch(() => [internalValue.value, props.value], () => {
+      watch(() => [internalValue.value, props.value], (newVal, oldVal) => {
         //inputValue & value is both array
         if (props.multiple) {
-          if (xorWith(internalValue.value, props.value, isEqual).length === 0) {
-            // equal arrays (all selected)
-            isDeterminate.value = true;
-            isActive.value = true;
-          } else if (!internalValue.value || internalValue.value.length === 0) {
+          if (!internalValue.value) {
             // none selected
             isDeterminate.value = true;
             isActive.value = false;
+          } else if (internalValue.value.length === 0) {
+            isDeterminate.value = true;
+            if (isActive.value === props.inputValue) { //default to uncheck
+              isActive.value = false
+            }
+            //check when props.value change
+            if(props.value.length > 0 || (oldVal && oldVal.length > 0)) {
+              isActive.value = false
+            }
+          } else if (xorWith(internalValue.value, props.value, isEqual).length === 0) {
+            // equal arrays (all selected)
+            isDeterminate.value = true;
+            isActive.value = true;
           } else {
             // partially selected
             isDeterminate.value = false;
@@ -78,7 +87,7 @@
         }
       });
       //define props color is a class or a css style
-      const { getColorType, convertColorClass } = colorHandler();
+      const {getColorType, convertColorClass} = colorHandler();
       const type = computed(() => getColorType(props.color));
       const colorClass = computed(() => convertColorClass(props.color));
 
@@ -94,7 +103,7 @@
       const checkboxStyle = computed(() => {
         const style = {};
         if (type.value === 'style') {
-          Object.assign(style, { 'color': props.color });
+          Object.assign(style, {'color': props.color});
         }
         return style;
       });
@@ -136,5 +145,5 @@
 </script>
 
 <style scoped lang="scss">
- @import "GCheckbox";
+  @import "GCheckbox";
 </style>

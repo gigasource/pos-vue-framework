@@ -139,7 +139,7 @@
     setup(props, context) {
       const tfWrapperClasses = getTfWrapperClasses(props);
 
-      const internalValue = getInternalValue(props, context);
+      const {internalValue} = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
 
@@ -198,7 +198,7 @@
         props.autoGrow && calculateInputHeight()
       }
 
-      watch(() => internalValue, newVal => {
+      watch(internalValue, newVal => {
         !newVal && calculateInputHeight()
         props.autoGrow && calculateInputHeight()
       })
