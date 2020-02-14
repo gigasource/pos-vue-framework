@@ -513,11 +513,14 @@
         context.emit('close')
       }
 
+      let load = false
+
       const loadCssFile = () => {
         openFile({multiple: false, mimeType: 'application/json'}, async files => {
           const data = await files[0].text()
           cssData.value = JSON.parse(data)
           addCustomSelector(context.slots.default()[0].elm)
+          load = !load
         })
       }
 
@@ -632,7 +635,7 @@
           <div class="g-css-customizer-design-title">
             Design
           </div>
-          <g-css-customizer-design-panel activeSelector={activeSelector.value} resetState={resetDesignPanel}/>
+          <g-css-customizer-design-panel activeSelector={activeSelector.value} resetState={resetDesignPanel} load={load}/>
         </div>
       }
 
