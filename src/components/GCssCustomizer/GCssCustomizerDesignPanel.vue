@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { ref, computed, watch, set, inject } from '@vue/composition-api';
-  import { Length, Angle, Color, Display, Position, LineStyle, FontFamily, FontWeight, Effect, cssLineStyleList, cssDisplayList, cssPositionList, cssFontFamilyList, cssFontStyleList, effectList } from './GCssCustomizerModel';
+  import { Length, Angle, Color, Display, Position, LineStyle, FontFamily, FontWeight, Effect, cssLineStyleList, cssDisplayList, cssPositionList, cssFontFamilyList, cssFontStyleList, effectList, reservedKeyList } from './GCssCustomizerModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import GGridSelect from '../GGridSelect/GGridSelect';
@@ -122,9 +122,13 @@
       let customCache = []
 
       const reconstructDesignData = inputDesignData => {
+        designData.value = _.cloneDeep(defaultDesignData)
+
         for (let section in designPropertyList.value) {
-          for (let item of designPropertyList.value[section]) {
-            designData.value[section][item.key] = new item.constructor(..._.values(inputDesignData[section][item.key]))
+          if (inputDesignData[section]) for (let item of designPropertyList.value[section]) {
+            if (inputDesignData[section][item.key]) {
+              designData.value[section][item.key] = new item.constructor(..._.values(inputDesignData[section][item.key]))
+            }
           }
         }
 
@@ -135,7 +139,7 @@
           }
         }
 
-        set(designData.value, 'custom', inputDesignData.custom)
+        inputDesignData.custom && set(designData.value, 'custom', inputDesignData.custom)
       }
 
       watch(() => props.activeSelector, () => {
@@ -153,6 +157,7 @@
       const deleteStyle = inject('deleteStyle')
       const getDesignState = inject('getDesignState')
       const setDesignState = inject('setDesignState')
+      const deleteDesignState = inject('deleteDesignState')
 
       // Conversion
       const shadowToCSS  = effectData => {
@@ -191,9 +196,23 @@
         }
       }
 
+      const saveDesignState = () => {
+        for (let section in designPropertyList.value) {
+          for (let item of designPropertyList.value[section]) {
+            const prop = designData.value[section][item.key]
+            if (prop.modified) {
+              setDesignState(section, item.key, designData.value[section][item.key])
+            }
+          }
+        }
+
+        if (designData.value.effects && designData.value.effects.length > 0) setDesignState('effects', null, designData.value.effects)
+        if (designData.value.custom) setDesignState('custom', null, designData.value.custom)
+      }
+
       watch(() => designData.value, () => {
         designToCSS()
-        setDesignState(designData.value)
+        saveDesignState()
       }, { lazy: true, deep: true })
 
       // Text functionality
@@ -258,13 +277,18 @@
             if (customStringList.length === 2) {
               const customKey = customStringList[0].trim()
               const customValue = customStringList[1].trim()
-              if(customKey && customValue) setStyle(customKey, customValue)
-              customCache.push(customKey)
+              if(customKey && customValue && !reservedKeyList.includes(customKey)) {
+                setStyle(customKey, customValue)
+                customCache.push(customKey)
+              }
             }
           }
         }
-        setDesignState(designData.value)
       }, {lazy: true, deep: true})
+
+      const updateCustomString = _.debounce(function (e) {
+        designData.value.custom = e
+      }, 1000)
 
       // Render functions
       const genCheckbox = prop => {
@@ -561,7 +585,7 @@
 
       const genCustomSection = () => {
         return <div class="g-css-customizer-design-panel-custom">
-          <g-textarea value={designData.value.custom} vOn:change={e => designData.value.custom = e}/>
+          <g-textarea value={designData.value.custom} vOn:input={updateCustomString}/>
         </div>
       }
 

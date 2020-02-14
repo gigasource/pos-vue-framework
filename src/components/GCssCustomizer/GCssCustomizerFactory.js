@@ -34,7 +34,7 @@ export function genSelectorDisplayData (selectorData) {
       value: _.map(temp, (val, index, arr) => {
         let type
         if (val) {
-          if (val.search(/\d+/) > -1) type = 'number'
+          if (val.search(/^\d+/) > -1) type = 'number'
           else if (arr[index + 1] === '(') type = 'function'
           else if (val === '(' || val === ')' || val === ',') type = 'delimiter'
           else type = 'string'

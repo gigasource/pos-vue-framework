@@ -461,8 +461,23 @@
         return activeSelectorDesignState.value
       }
 
-      const setDesignState = designData => {
-        activeSelectorDesignState.value = _.cloneDeep(designData)
+      const setDesignState = (section, key, val) => {
+        if (!activeSelectorDesignState.value) {
+          if (!cssData.value[activeSelector.value]) reactiveSet(cssData.value, activeSelector.value, {})
+          reactiveSet(cssData.value[activeSelector.value], 'designState', {})
+        }
+        if (!activeSelectorDesignState.value[section]) reactiveSet(cssData.value[activeSelector.value]['designState'], section, {})
+        if (key) reactiveSet(cssData.value[activeSelector.value]['designState'][section], key, val)
+        if (key === null) reactiveSet(cssData.value[activeSelector.value]['designState'], section, val)
+      }
+
+      const deleteDesignState = (section, key) => {
+        if (key) {
+          delete cssData.value[activeSelector.value][section][key]
+          if (_.isEmpty(cssData.value[activeSelector.value][section])) delete cssData.value[activeSelector.value][section]
+        } else {
+          delete cssData.value[activeSelector.value][section]
+        }
       }
 
       provide('getStyle', getStyle)
@@ -470,6 +485,7 @@
       provide('deleteStyle', deleteStyle)
       provide('getDesignState', getDesignState)
       provide('setDesignState', setDesignState)
+      provide('deleteDesignState', deleteDesignState)
 
       // Actions
       let resetDesignPanel = false
@@ -782,6 +798,7 @@
       border-bottom: 0;
       border-left: 2px solid grey;
       border-right: 2px solid grey;
+      overflow: auto;
       /*position: relative;*/
 
       &-target {

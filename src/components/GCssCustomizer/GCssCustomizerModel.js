@@ -37,19 +37,20 @@ export const effectList = [
     text: 'Layer Blur'
   }
 ]
-const reservedKeyList = ['width', 'height', 'top', 'left', 'bottom', 'right', 'display', 'position', 'borderRadius', 'backgroundColor', 'color', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderColor', 'borderWidth', 'borderStyle', 'padding', 'margin', 'boxShadow', 'filter']
+export const reservedKeyList = ['width', 'height', 'top', 'left', 'bottom', 'right', 'display', 'position', 'borderRadius', 'backgroundColor', 'color', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderColor', 'borderWidth', 'borderStyle', 'padding', 'margin', 'boxShadow', 'filter']
 export const cssPseudoList = [
     ':link', ':visited', ':active', ':first-child', ':hover', ':focus', ':target', ':root', ':last-child', ':first-of-type', ':last-of-type', ':only-child', ':empty',
     '::after', '::back-drop', '::before', '::cue', '::cue-region', '::first-letter', '::first-line', '::grammar-error', '::marker', '::placeholder', '::selection'
 ]
 
 export class Length {
-  constructor(value = 0, unit = 'px', defaultUnit = 'px', active = false, mode = 'short') {
+  constructor(value = 0, unit = 'px', defaultUnit = 'px', active = false, mode = 'short', modified = false) {
     this._value = value
     this._unit = unit
     this._defaultUnit = defaultUnit
     this._active = active
     this._mode = mode
+    this._modified = modified
   }
 
   get value () {
@@ -73,7 +74,7 @@ export class Length {
         this._unit = cssLengthUnitList.includes(input.unit) ? input.unit : this._defaultUnit
       }
     }
-    this._active = true
+    this.active = true
   }
 
   get active () {
@@ -82,6 +83,11 @@ export class Length {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   get mode () {
@@ -106,11 +112,12 @@ export class Length {
 }
 
 export class Angle {
-  constructor(value, unit = 'deg', active = false, mode = 'short') {
+  constructor(value, unit = 'deg', active = false, mode = 'short', modified = false) {
     this._value = value
     this._unit = unit
     this._active = active
     this._mode = mode
+    this._modified = modified
   }
 
   get value () {
@@ -121,7 +128,7 @@ export class Angle {
     const input = parseLengthString(string)
     this._value = !isNaN(input.value) ? input.value : 0
     this._unit = cssAngleUnitList.includes(input.unit) ? input.unit : 'deg'
-    this._active = true
+    this.active = true
   }
 
   get active () {
@@ -130,6 +137,11 @@ export class Angle {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   get mode () {
@@ -142,10 +154,11 @@ export class Angle {
 }
 
 export class Color {
-  constructor(value, alpha = 1, active = false) {
+  constructor(value, alpha = 1, active = false, modified = false) {
     this._value = value
     this._alpha = alpha
     this._active = active
+    this._modified = modified
   }
 
   get value () {
@@ -168,7 +181,7 @@ export class Color {
       const alpha = parseInt(`0x${color.substring(7, 9)}`) / 256
       this._alpha = alpha >= 1 ? 1 : alpha.toFixed(2)
     }
-    this._active = true
+    this.active = true
   }
 
   get hex () {
@@ -177,7 +190,7 @@ export class Color {
 
   set hex (string) {
     this._value = `#${string}`
-    this._active = true
+    this.active = true
   }
 
   get alpha () {
@@ -187,7 +200,7 @@ export class Color {
   set alpha (string) {
     const alpha = parseFloat(string)
     this._alpha = !isNaN(alpha) ? alpha / 100 : 0
-    this._active = true
+    this.active = true
   }
 
   get rgba () {
@@ -205,6 +218,11 @@ export class Color {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   toCSS () {
@@ -213,9 +231,10 @@ export class Color {
 }
 
 export class Display {
-  constructor(value = 'block', active = false) {
+  constructor(value = 'block', active = false, modified = false) {
     this._value = value;
     this._active = active;
+    this._modified = modified
   }
 
   get value () {
@@ -224,7 +243,7 @@ export class Display {
 
   set value (string) {
     this._value = cssDisplayList.includes(string) ? string : 'block'
-    this._active = true
+    this.active = true
   }
 
   get active () {
@@ -233,6 +252,11 @@ export class Display {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   toCSS () {
@@ -241,9 +265,10 @@ export class Display {
 }
 
 export class Position {
-  constructor(value = 'static', active = false) {
+  constructor(value = 'static', active = false, modified = false) {
     this._value = value;
     this._active = active;
+    this._modified = modified
   }
 
   get value () {
@@ -252,7 +277,7 @@ export class Position {
 
   set value (string) {
     this._value = cssPositionList.includes(string) ? string : 'static'
-    this._active = true
+    this.active = true
   }
 
   get active () {
@@ -261,6 +286,11 @@ export class Position {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   toCSS () {
@@ -269,9 +299,10 @@ export class Position {
 }
 
 export class LineStyle {
-  constructor(value = 'solid', active = false) {
+  constructor(value = 'solid', active = false, modified = false) {
     this._value = value
     this._active = active
+    this._modified = modified
   }
 
   get value () {
@@ -280,7 +311,7 @@ export class LineStyle {
 
   set value (string) {
     this._value = cssLineStyleList.includes(string) ? string : 'solid'
-    this._active = true
+    this.active = true
   }
 
   get active () {
@@ -289,6 +320,11 @@ export class LineStyle {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   toCSS () {
@@ -297,9 +333,10 @@ export class LineStyle {
 }
 
 export class FontFamily {
-  constructor(value = 'Roboto', active = false) {
+  constructor(value = 'Roboto', active = false, modified) {
     this._value = value
     this._active = active
+    this._modified = modified
   }
 
   get value () {
@@ -308,7 +345,7 @@ export class FontFamily {
 
   set value (string) {
     this._value = cssFontFamilyList.includes(string) ? string : 'Roboto'
-    this._active = true
+    this.active = true
   }
 
   get active () {
@@ -317,6 +354,11 @@ export class FontFamily {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   toCSS() {
@@ -325,9 +367,10 @@ export class FontFamily {
 }
 
 export class FontWeight {
-  constructor(value = 'normal', active = false) {
+  constructor(value = 'normal', active = false, modified) {
     this._value = value
     this._active = active
+    this._modified = modified
   }
 
   get value () {
@@ -336,7 +379,7 @@ export class FontWeight {
 
   set value (string) {
     this._value = cssFontStyleList.includes(string) ? string : 'normal'
-    this._active = true
+    this.active = true
   }
 
   get active () {
@@ -345,6 +388,11 @@ export class FontWeight {
 
   set active (bool) {
     this._active = Boolean(bool)
+    if (!this._modified) this._modified = true
+  }
+
+  get modified () {
+    return this._modified
   }
 
   toCSS () {
