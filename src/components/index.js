@@ -23,14 +23,7 @@ import GChip from './GChip/GChip';
 
 import GChipGroup from './GChipGroup/GChipGroup';
 
-import GColorPicker from './GColorPicker/GColorPicker';
-import GColorPickerInput from './GColorPicker/GColorPickerInput';
-import GColorPickerInputModel from './GColorPicker/GColorPickerInputModel';
-
 import GCombobox from './GCombobox/GCombobox';
-
-import GConnector from './GConnector/GConnector';
-import GDiagram from './GConnector/GDiagram';
 
 import GDatePicker from './GDatePicker/GDatePicker';
 import GDatePickerInput from './GDatePicker/GDatePickerInput';
@@ -44,15 +37,11 @@ import GExpansion from './GExpansion/GExpansion';
 
 import GFileInput from './GFileInput/GFileInput';
 
-import GGridGenerator from './GGridGenerator/components/GGridGenerator';
-import GEditViewInput from './GGridGenerator/components/EditViewInput';
 import GGridLayout from './GGridGenerator/GGridLayout';
-import GIncDecNumberInput from './GGridGenerator/components/IncDecNumberInput';
 
 import GGridSelect from './GGridSelect/GGridSelect';
 
 import GIcon from './GIcon/GIcon';
-import GIconChooser from './GIconChooser/GIconChooser';
 
 import GImg from './GImg/GImg';
 
@@ -135,9 +124,6 @@ import GTooltip from './GTooltip/GTooltip';
 import GTooltipContent from './GTooltip/GTooltipContent';
 
 import GToolbar from './GToolbar/GToolbar';
-
-import GTreeViewExample from './GTreeViewFactory/GTreeViewExample';
-import GTreeViewJson from './GTreeViewFactory/GTreeViewJson';
 
 import GScrollWindow from './GWindow/GScrollWindow';
 import GScrollWindowItem from './GWindow/GScrollWindowItem';
@@ -236,8 +222,6 @@ export {
   GCheckbox,
   GChip,
   GChipGroup,
-  GConnector,
-  GDiagram,
   GDatePicker,
   GDatePickerInput,
   GDateRangePicker,
@@ -245,10 +229,7 @@ export {
   GDndDialog,
   GExpansion,
   GFileInput,
-  GGridGenerator,
-  GEditViewInput,
   GGridLayout,
-  GIncDecNumberInput,
   GGridSelect,
   GIcon,
   GImg,
@@ -308,8 +289,6 @@ export {
   GTooltip,
   GTooltipContent,
   GToolbar,
-  GTreeViewExample,
-  GTreeViewJson,
   GScrollWindow,
   GScrollWindowItem,
   GWindow,
