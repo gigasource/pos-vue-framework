@@ -145,15 +145,17 @@
         return <ul class={[props.noPadding && 'no-padding']}>{childrenVNodes}</ul>
       }
 
-      const genNode = function ({node, text, childrenVNodes, path}) {
-        if (treeStates[path] && props.nodeExpansionHistory.includes(path)) treeStates[path].collapse = false
+      const genNode = function ({node, text, childrenVNodes, path, isLast}) {
+        if (treeStates[path] && props.nodeExpansionHistory.includes(path)) {
+          treeStates[path].collapse = false
+        }
 
         return <tree-node-wrapper {...{
-          scopedSlots: {default: () => genNodeContent({node, text, childrenVNodes, path})}
+          scopedSlots: {default: () => genNodeContent({node, text, childrenVNodes, path, isLast})}
         }}/>
       }
 
-      const genNodeContent = function ({node, text, childrenVNodes, path}) {
+      const genNodeContent = function ({node, text, childrenVNodes, path, isLast}) {
         // gen icon
         const isChildNode = path.split('.').length > 2
         if (props.itemIcon) {
@@ -205,7 +207,7 @@
               if (node.type === 'subheader') return
 
               if (node.clickable || !childrenVNodes) {
-                context.emit('node-selected', node, path)
+                context.emit('node-selected', node, path, treeStates[path])
                 context.emit('input', path)
 
                 node.href
@@ -230,29 +232,42 @@
           },
         }
 
-        const textStyle = {
+        const textColor = {
           'color': node.textColor
         }
 
-        return <li class={!treeStates[path].collapse && childrenVNodes && 'g-treeview__open'}>
+        const fallbackContent = <li class={!treeStates[path].collapse && childrenVNodes && 'g-treeview__open'}>
           <a {...data} style={node && node.type === 'subheader' && 'cursor: default'}>
             {icon}
-            <span style={node.textColor && textStyle}>{text}</span>
+            <span style={node.textColor && textColor}>{text}</span>
             <g-spacer/>
             {badge}
             {node && node.type !== 'divider' && node.type !== 'subheader' &&
             context.slots['prepend-icon'] && context.slots['prepend-icon']({node, path})}
-            <span
-              class='g-treeview-action'
-              vShow={childrenVNodes}>
-            <g-icon vOn:click={e => toggleNodeExpansion(e, path)}>
-              {treeStates[path].collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
-            </g-icon>
-          </span>
+            <span class='g-treeview-action' vShow={childrenVNodes}>
+              <g-icon vOn:click={e => toggleNodeExpansion(e, path)}>
+                {treeStates[path].collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
+              </g-icon>
+            </span>
             {appendIcon}
           </a>
           <g-expand-transition>{children}</g-expand-transition>
         </li>
+
+        return (context.slots['default']
+          && context.slots['default'](
+            {
+              node,
+              nodeState: treeStates[path],
+              nodeData: data,
+              nodePath: path,
+              nodeText: text,
+              toggleNodeExpansion,
+              childrenVNodes: children,
+              isLast,
+            }
+          ))
+          || fallbackContent
       }
 
       const itemTextFn = (typeof props.itemText === 'function' && props.itemText) || ((node, isRoot) => {

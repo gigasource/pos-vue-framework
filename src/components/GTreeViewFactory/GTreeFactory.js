@@ -28,8 +28,12 @@ export default function treeFactory({
   }
 
   itemPath = (typeof itemPath === 'function' && itemPath) || ((n, {key}) => {
-    if (key && typeof itemChildren === 'string') {
-      return `${itemChildren}.${key}`;
+    if (key) {
+      if (typeof itemChildren === 'string') {
+        return `${itemChildren}.${key}`
+      } else if (typeof itemChildren === 'function') {
+        return `item.${key}`
+      }
     }
     return key;
   })
@@ -78,7 +82,19 @@ export default function treeFactory({
     const treeVNodeWithoutRoot = traverse(data.value).map(function (node) {
       if (nodeShouldBeBlocked(this) || typeof node !== 'object') return
 
-      const isLastNode = () => this.parent && this.parent.node.length - 1 === +this.key
+      const isLastNode = () => {
+        if (!this.parent) return false
+        let length
+        if (Array.isArray(this.parent.node_)) {
+          length = this.parent.node_.length
+        } else if (Array.isArray(_itemChildren.value(this.parent.node_))) {
+          length = _itemChildren.value(this.parent.node_).length
+        } else {
+          return false
+        }
+
+        return length - 1 === +this.key
+      }
 
       // since original object has been modified, this.level no longer correct anymore
       // that why we need to cache the _level value in this object
