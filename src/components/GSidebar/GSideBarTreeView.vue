@@ -226,6 +226,14 @@
               e.stopPropagation()
               context.emit('mouseleave', e, path)
             },
+            mouseover: (e) => {
+              e.stopPropagation()
+              context.emit('mouseover', e, path)
+            },
+            mouseout: (e) => {
+              e.stopPropagation()
+              context.emit('mouseout', e, path)
+            },
             dblclick(e) {
               toggleNodeExpansion(e, path)
             }
