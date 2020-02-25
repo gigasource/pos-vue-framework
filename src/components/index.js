@@ -82,6 +82,7 @@ import GMenuContent from './GMenu/GMenuContent';
 import GOverlay from './GOverlay/GOverlay';
 
 import GPicker from './GPicker/GPicker';
+import GProgressCircular from './GProgressCircular/GProgressCircular';
 
 import GRadio from './GRadio/GRadio';
 import GRadioGroup from './GRadio/GRadioGroup';
@@ -336,6 +337,7 @@ export {
   GSnackbar,
   GSubheader,
   GProgressBar,
+  GProgressCircular,
   GSlider,
   GRating,
 }
