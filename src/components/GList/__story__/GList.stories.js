@@ -20,7 +20,7 @@ export default {
   decorators: [withKnobs],
 };
 export const gListPlayGround = () => ({
-  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  components: { GDivider, GIcon, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
       items: [
@@ -66,7 +66,11 @@ export const gListPlayGround = () => ({
         :prependType="prependType"
         :subtextWrap="subtextWrap"
         :itemText="itemText"
-      />
+      >
+      <template v-slot:prepend>
+      <g-icon>check</g-icon>
+</template>
+</g-list>
       `,
 })
 export const gListSingleSelectPlayGround = () => ({

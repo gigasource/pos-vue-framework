@@ -151,7 +151,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onChange(event) {
-    context.emit('change', event)
+    context.emit('change', internalValue.value)
   }
 
   const state = {
@@ -190,7 +190,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref(props.value || '');
+  const rawInternalValue = ref(props.value === 0 ? 0 : props.value || '');
 
   watch(() => props.value, () => rawInternalValue.value = props.value, {lazy: true});
 
