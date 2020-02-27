@@ -1,6 +1,6 @@
 <script>
   import GDivider from '../GLayout/GDivider';
-  import { makeListSelectable2 } from './listSelectFactory';
+  import { makeListSelectable } from './listSelectFactory';
   import GIcon from '../GIcon/GIcon';
   import { computed, provide } from '@vue/composition-api';
   import GImg from '../GImg/GImg';
@@ -69,7 +69,7 @@
         normalizedValue: internalValue,
         toggleItem,
         isActiveItem,
-      } = makeListSelectable2(props, context)
+      } = makeListSelectable(props, context)
 
       function onArrowDown(index) {
         index < ((renderList.value && renderList.value.length) - 1) ? index += 1 : index = 0

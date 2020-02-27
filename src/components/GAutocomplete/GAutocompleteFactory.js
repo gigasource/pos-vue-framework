@@ -10,12 +10,12 @@ export function getInputEventHandlers(props, context, state, selections, selecte
 
   function clearSelection() {
     // selectedItem.value = props.multiple ? [] : ''
-    if(props.component !== 'select') setSearch(props, context, selections, state)
+    if (props.component !== 'select') setSearch(props, context, selections, state)
     context.emit('input', props.multiple ? [] : '')
   }
 
   function onInputKeyDown(e) {
-    if(props.component !== 'select')resetSelectionsDisplay(state)
+    if (props.component !== 'select') resetSelectionsDisplay(state)
     if (e.keyCode === keyCodes.down) {
       const listRef = context.refs.menu.$refs.list
       listRef.$el.getElementsByClassName('g-list-item')[0].focus()
@@ -23,7 +23,7 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   function onInputChange(text) {
-    if(props.component === 'select') return
+    if (props.component === 'select') return
     state.searchText = text
     if (selectedItem.value && isInputDisplay && props.component === 'combobox') {
       context.emit('input', '')
@@ -70,7 +70,14 @@ export function getInputEventHandlers(props, context, state, selections, selecte
   }
 
   return {
-    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection, onInputChange
+    onChipCloseClick,
+    clearSelection,
+    onInputKeyDown,
+    onInputClick,
+    onInputBlur,
+    onInputDelete,
+    inputAddSelection,
+    onInputChange
   }
 
 }

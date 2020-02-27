@@ -1,6 +1,6 @@
 import GList from '../GList/GList';
 import GMenu from '../GMenu/GMenu';
-import { getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
+import { getSelectionText, makeListSelectable } from '../GList/listSelectFactory';
 import { computed, reactive, ref } from '@vue/composition-api';
 import { getInputEventHandlers } from './eventHandlersFactory';
 import GTextField from '../GInput/GTextField';
@@ -56,7 +56,6 @@ const componentsFactory = (component, componentName) => {
           type: String,
           default: 'text'
         }
-
       },
 
       //list props
@@ -104,7 +103,7 @@ const componentsFactory = (component, componentName) => {
     },
     components: { GList, GMenu },
     setup: function (props, context) {
-      const { getText, getValue, listType, addValueFromInput } = makeListSelectable2(props, context)
+      const { getText, getValue, listType, addValueFromInput, emitValue } = makeListSelectable(props, context)
 
       //menu content lazy by default, preload selectedValue
       const selectedValue = ref(props.value)
@@ -147,8 +146,7 @@ const componentsFactory = (component, componentName) => {
         onInputDelete,
         onInputChange,
         inputAddSelection,
-
-      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput)
+      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput, emitValue)
 
       const selectableList = ref(props.items)
 
@@ -186,7 +184,10 @@ const componentsFactory = (component, componentName) => {
             },
             scopedSlots: {
               content: () => context.slots.item ? context.slots.item() : null,
-              prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
+              prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({
+                isSelected,
+                item
+              }),
             }
           }
           }
@@ -208,9 +209,11 @@ const componentsFactory = (component, componentName) => {
       }
 
       function genNoDataSlot() {
-        if (!selectableList.value.length) return <div>
-          {context.slots['no-data'] && context.slots['no-data']()}
-        </div>
+        if (!selectableList.value.length) {
+          return <div>
+            {context.slots['no-data'] && context.slots['no-data']()}
+          </div>
+        }
 
       }
 
@@ -228,23 +231,30 @@ const componentsFactory = (component, componentName) => {
       const genSelectionSlot = () => {
         return selectionTexts.value.map((item, index) => {
             //chips
-            if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) return <GChip small={props.smallChips}
-                                                                                                                close={props.deletableChips}
-                                                                                                                vOn:close={() => onChipCloseClick(index)}>{item}
-            </GChip>
+            if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) {
+              return <GChip small={props.smallChips}
+                            close={props.deletableChips}
+                            vOn:close={() => onChipCloseClick(index)}>{item}
+              </GChip>
+            }
             //multiple in 3 component no chips
             else if (props.multiple) {
               if (index === selectionTexts.value.length - 1) {
-                if (props.component === 'select') return <div
-                  style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+                if (props.component === 'select') {
+                  return <div
+                    style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+                }
                 return <div
                   style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item + ', '}</div>
               }
-              return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
+              return <div style={{ 'padding': '0 5px 4px 0' }}>{item + ', '} </div>
             }
             //single in select
-            else if (props.component === 'select') return selectionTexts.value.join('')
-            else return null
+            else if (props.component === 'select') {
+              return selectionTexts.value.join('')
+            } else {
+              return null
+            }
           }
         )
 

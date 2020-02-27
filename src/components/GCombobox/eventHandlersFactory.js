@@ -1,15 +1,19 @@
 import { keyCodes } from '../../utils/helpers';
 
-export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput) {
+export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput, emitValue) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
 
   function onChipCloseClick(index = null) {
-    let _value = props.multiple ? selectedItem.value.splice(index, 1) : null
-    context.emit('input', _value)
+    if (props.multiple) {
+      selectedItem.value.splice(index, 1)
+    } else {
+      selectedItem.value = null
+    }
+    emitValue(selectedItem.value)
   }
 
   function clearSelection() {
-      context.emit('input', props.multiple ? [] : '')
+    emitValue(props.multiple ? [] : '')
   }
 
   function onInputKeyDown(e) {
@@ -51,8 +55,10 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
 
         if (props.multiple) {
           selectedItem.value.pop()
-          context.emit('input', selectedItem.value)
-        } else {context.emit('input', null)}
+          emitValue(selectedItem.value)
+        } else {
+          emitValue(null)
+        }
         return state.pressDeleteTimes
       }
     }
@@ -67,7 +73,14 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
   }
 
   return {
-    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection, onInputChange
+    onChipCloseClick,
+    clearSelection,
+    onInputKeyDown,
+    onInputClick,
+    onInputBlur,
+    onInputDelete,
+    inputAddSelection,
+    onInputChange
   }
 
 }
