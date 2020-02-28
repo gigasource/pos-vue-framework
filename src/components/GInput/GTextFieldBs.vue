@@ -58,7 +58,7 @@
         placeholder: String,
         //input states
         disabled: Boolean,
-        readOnly: Boolean,
+        readonly: Boolean,
         clearable: Boolean,
       },
       clearIcon: {
@@ -100,8 +100,8 @@
       const wrapperClasses = computed(() => ({
         'bs-tf__small': props.small,
         'bs-tf__large': props.large,
-        'g-tf--wrapper-disabled': props.disabled,
-        'g-tf--wrapper-readonly': props.readOnly
+        'bs-tf-wrapper--disabled': props.disabled,
+        'bs-tf-wrapper--readonly': props.readonly
       }));
 
       return {
@@ -135,6 +135,15 @@
     cursor: text;
     width: calc(100% - 10px);
     margin: 4px 5px 8px;
+
+    &--disabled,
+    &--readonly {
+      pointer-events: none;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+    }
   }
 
   .bs-tf-label {
