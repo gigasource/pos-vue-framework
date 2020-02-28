@@ -1,6 +1,6 @@
 import { computed } from '@vue/composition-api';
 import Vue from 'vue/dist/vue.common.js';
-import { getSelectionText, makeListSelectable2 } from '../listSelectFactory';
+import { getSelectionText, makeListSelectable } from '../listSelectFactory';
 import _ from 'lodash'
 
 const expectTest = (value) => {
@@ -62,7 +62,7 @@ const parentVmFactory = attrs =>
             toggleItem,
             addValueFromInput,
             isActiveItem,
-          } = makeListSelectable2(props, context);
+          } = makeListSelectable(props, context);
           const selectionTexts = getSelectionText(props, normalizedValue, listType, getText, getValue)
           const selectionString = computed(() => selectionTexts.value.join(', '))
           return {

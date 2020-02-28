@@ -2,7 +2,7 @@ import GAvatar from '../GAvatar/GAvatar';
 import GImg from '../GImg/GImg';
 import GIcon from '../GIcon/GIcon';
 import GDivider from '../GLayout/GDivider';
-import { createItemFn, makeListSelectable2 } from './listSelectFactory';
+import { createItemFn, makeListSelectable } from './listSelectFactory';
 import { keyCodes } from '../../utils/helpers';
 import { computed, provide } from '@vue/composition-api';
 
@@ -74,7 +74,7 @@ const listFactory = (name) => {
         normalizedValue: internalValue,
         toggleItem,
         isActiveItem,
-      } = selectable ? makeListSelectable2(props, context) : {}
+      } = selectable ? makeListSelectable(props, context) : {}
 
       const getText = computed(() => createItemFn(props.itemText))
 
@@ -264,10 +264,11 @@ const listFactory = (name) => {
       }));
 
       function genList() {
-        debugger
         const genListWithItem = (props.multiSection) ? genMultiSectionList() : genSingleSectionList()
         return <div class={['g-list', 'check', classes.value]} style={styles.value} ref="list" vOn:click={(e) => context.emit('click', e)}>
+          {context.slots['prepend-item'] && context.slots['prepend-item']()}
           {context.slots['default'] ? context.slots['default']() : genListWithItem}
+          {context.slots['append-item'] && context.slots['append-item']()}
         </div>
       }
 

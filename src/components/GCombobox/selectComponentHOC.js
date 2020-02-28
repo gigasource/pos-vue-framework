@@ -1,5 +1,5 @@
 import GMenu from '../GMenu/GMenu';
-import { getSelectionText, makeListSelectable2 } from '../GList/listSelectFactory';
+import { getSelectionText, makeListSelectable } from '../GList/listSelectFactory';
 import { computed, reactive, ref } from '@vue/composition-api';
 import { getInputEventHandlers, getListEventHandlers } from './eventHandlersFactory';
 import GTextField from '../GInput/GTextField';
@@ -114,7 +114,7 @@ const componentsFactory = (component, componentName) => {
         searchFn,
         isActiveItem,
         unNormalize
-      } = makeListSelectable2(props, context)
+      } = makeListSelectable(props, context)
 
       const lazySearch = ref('')
       const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
@@ -179,6 +179,8 @@ const componentsFactory = (component, componentName) => {
               'keydown:enter': e => onClickItem(e)
             },
             scopedSlots: {
+              'prepend-item': () => context.slots['prepend-item'] && context.slots['prepend-item'](),
+              'append-item': () => context.slots['append-item'] && context.slots['append-item'](),
               content: () => context.slots.item ? context.slots.item() : null,
               prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
             }
@@ -229,7 +231,7 @@ const componentsFactory = (component, componentName) => {
                 return <div
                   style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
               }
-              return <div style={{ 'padding-right': '5px' }}>{item + ', '} </div>
+              return <div style={{ 'padding': '0 5px 4px 0' }}>{item + ', '} </div>
             }
             //single in select
             else if (props.component === 'select') return selectionTexts.value.join('')
@@ -303,10 +305,10 @@ const componentsFactory = (component, componentName) => {
       const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
         return [
           props.component === 'select' && props.searchable ? genSearchField() : null,
-          context.slots['prepend-item'] && context.slots['prepend-item'](),
+          // context.slots['prepend-item'] && context.slots['prepend-item'](),
           genNoDataSlot(),
           genList(state),
-          context.slots['append-item'] && context.slots['append-item']()
+          // context.slots['append-item'] && context.slots['append-item']()
         ]
       }
       function genMenu(state) {

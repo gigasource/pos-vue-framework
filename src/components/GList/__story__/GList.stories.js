@@ -20,7 +20,7 @@ import GRow from '../../GLayout/GRow';
 import GCol from '../../GLayout/GCol';
 import GIcon from '../../GIcon/GIcon';
 import GBtn from '../../GBtn/GBtn';
-import { makeListSelectable2 } from '../listSelectFactory';
+import { makeListSelectable } from '../listSelectFactory';
 
 export default {
   title: 'GList',
@@ -216,7 +216,7 @@ export const GListSelectProp = () => ({
       let context = this.self.$refs.listComponent
       context.emit = context.$emit
       let props = this.self.$refs.listComponent._props
-      const { toggleItem } = makeListSelectable2(props, context)
+      const { toggleItem } = makeListSelectable(props, context)
       return toggleItem(item)
 
     }

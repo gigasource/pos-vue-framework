@@ -20,7 +20,7 @@ const log = (val) => {
   if (process.env.NODE_ENV === 'test') console.log(val)
 }
 
-export function makeListSelectable2(props, context) {
+export function makeListSelectable(props, context) {
   const getText = computed(() => createItemFn(props.itemText))
   const getValue = computed(() => createItemFn(props.itemValue))
   const inCombobox = (props.component && props.component === 'combobox') || props.inCombobox
