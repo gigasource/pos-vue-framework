@@ -196,8 +196,8 @@
       })
 
       const contentStyles = computed(() => ({
-        top: props.auto ? convertToUnit(props.clientY) : calculatedTop.value,
-        left: props.auto ? convertToUnit(props.clientX) :  calculatedLeft.value,
+        top: calculatedTop.value,
+        left: calculatedLeft.value,
         maxHeight: calculatedMaxHeight.value,
         minWidth: calculatedMinWidth.value,
         maxWidth: calculatedMaxWidth.value,
