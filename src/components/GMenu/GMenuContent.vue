@@ -54,7 +54,9 @@
         positionX: [Number, String],
         positionY: [Number, String],
         allowOverflow: Boolean,
-        offsetOverflow: Boolean
+        offsetOverflow: Boolean,
+        clientX: [Number, String],
+        clientY: [Number, String]
       },
       // toggling
       ...{
@@ -194,8 +196,8 @@
       })
 
       const contentStyles = computed(() => ({
-        top: calculatedTop.value,
-        left: calculatedLeft.value,
+        top: props.auto ? convertToUnit(props.clientY) : calculatedTop.value,
+        left: props.auto ? convertToUnit(props.clientX) :  calculatedLeft.value,
         maxHeight: calculatedMaxHeight.value,
         minWidth: calculatedMinWidth.value,
         maxWidth: calculatedMaxWidth.value,
