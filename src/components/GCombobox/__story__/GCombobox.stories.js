@@ -1,9 +1,5 @@
-import { boolean, number, object, text, withKnobs } from '@storybook/addon-knobs';
-// testing
-import Vue from 'vue/dist/vue.common.js'
-import GCombobox from '../GCombobox';
-import GListItem from '../../GList/GListItem';
-import { GListItemContent, GListItemText } from '../../GList/GListFunctionalComponent';
+import {boolean, number, object, text, withKnobs} from '@storybook/addon-knobs';
+import {action} from '@storybook/addon-actions'
 
 //
 export default {
@@ -32,24 +28,33 @@ export const GComboboxSingleSelectNoChips = () => ({
   data() {
     return {
       items: [
-        {text: 'Jason', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Jason Oner', subtitle: "Jason the ant", value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
         {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
+      selected: 'sdf'
     }
   },
   template: `
   <div data-app>
   {{selected}}
   <g-combobox :items="items" 
-   prefix="check"
-  returnObject
-  itemText="text"
-  itemValue="value"        
-             v-model="selected" >  
-</g-combobox>
+             :item-text="itemText" 
+             :item-value="itemValue"  
+             :label="label"
+             :clearable="clearable"
+             :filled="filled"
+             :solo="solo"
+             :outlined="outlined"
+             :flat="flat"
+             :rounded="rounded"
+             :shaped="shaped"
+             :hint="hint"
+             :persistent="persistent"
+             :counter="counter"
+             :placeholder="placeholder"
+             v-model="selected" />
 </div>`,
 })
 export const GComboboxSingleSelectChips = () => ({
@@ -80,7 +85,7 @@ export const GComboboxSingleSelectChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: 'll'
+      selected: 'kk'
     }
   },
   template: `
@@ -108,7 +113,7 @@ export const GComboboxSingleSelectChips = () => ({
 </div>`,
 })
 export const GComboboxMultiSelect = () => ({
-  components: {GCombobox,},
+  components: {GCombobox},
   props: {
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
@@ -143,7 +148,7 @@ export const GComboboxMultiSelect = () => ({
              :deletableChips="deletableChips"
               :menuProps="menuProps"
              multiple 
-             clearable/>
+             clearable></g-combobox>
 </div>`,
 })
 export const GComboboxMultiSelectAllowDuplicates = () => ({
@@ -281,37 +286,12 @@ export const GComboboxPrimitiveArray = () => ({
   template: `
   <div data-app>
   {{selected}}
-  <g-combobox itemText="text"  :items="items" label="Label" v-model="selected"  clearable>
+  <g-combobox :items="items" label="Label" v-model="selected"  clearable>
    
   </g-combobox>
 </div>`,
 })
-export const GComboboxNormalizeProps = () => ({
-  components: {GCombobox, GListItem, GListItemContent, GListItemText},
-  props: {},
-  data() {
-    return {
-      items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }],
-      selected: [() => 4],
-      normalize: (value, items, isFromInput) => {
-        if (isFromInput) return { a: value, b: eval(`() => ${value}`) };
-        const found = items.find(i => value && i.b.toString() === value.toString());
-        if (found) return found;
-        return { a: value(), b: value };
-      },
-    }
-  },
-  computed:{
-    selectionString () {return this.selected.map(item => item.toString())}
-  },
-  template: `
-  <div data-app>
-  {{selectionString}}
-  <g-combobox multiple :normalize="normalize" itemText="a" itemValue="b" :items="items" label="Label" v-model="selected"  clearable>
-   
-  </g-combobox>
-</div>`,
-})
+
 export const test2 = () => ({
   components: {},
   setup() {
@@ -320,6 +300,12 @@ export const test2 = () => ({
     )
   }
 })
+
+// testing
+import Vue from 'vue/dist/vue.common.js'
+import GCombobox from "../GCombobox";
+import GListItem from "../../GList/GListItem";
+import {GListItemContent, GListItemText} from "../../GList/GListFunctionalComponent";
 
 describe('test', function () {
   it('should', function () {

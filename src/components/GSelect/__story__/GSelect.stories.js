@@ -1,9 +1,5 @@
-import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
-// testing
-import Vue from 'vue/dist/vue.common.js'
-import GListItem from '../../GList/GListItem';
-import { GListItemContent, GListItemText } from '../../GList/GListFunctionalComponent';
-import GSelect from '../GSelect';
+import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
+import {action} from '@storybook/addon-actions'
 
 //
 export default {
@@ -27,7 +23,7 @@ export const GSelectSingle = () => ({
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: number('counter', 25)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', '')},
+    itemValue: {default: text('itemValue', 'value')},
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
     mandatory: {default: boolean('mandatory', false)},
@@ -41,7 +37,7 @@ export const GSelectSingle = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected:  {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'}
+      selected:  'https://cdn.vuetifyjs.com/images/lists/1.jpg'
     }
   },
   template: `
@@ -136,20 +132,20 @@ export const GSelectMultiple = () => ({
     allowDuplicates: {type: Boolean, default: boolean('allow duplicates', false)},
     chips: {default: boolean('chips', false)},
     itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'value2')},
+    itemValue: {default: text('itemValue', 'value')},
     clearable: {default: boolean('clearable', false)},
-    returnObject: {default: boolean('returnObject', false)}
+    returnObject: {default: boolean('returnObject', true)}
   },
   data() {
     return {
       items: [
-        {text: 'Jason Oner', value2: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value2: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-        {text: 'Cindy Baker', value2: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-        {text: 'Ali Connors', value2: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: [  {text: 'Jason Oner', value2: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-        {text: 'Ranee Carlson', value2: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},]
+      selected: [  {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
+        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},]
     }
   },
   template: `
@@ -227,10 +223,10 @@ export const GSelectSearchableSingleSelect = () => ({
   data() {
     return {
       items: [
-         'Jason Oner',
-         'Ranee Carlson',
-         'Cindy Baker',
-         'Ali Connors',
+        {text: 'Jason Oner', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Ranee Carlson', value: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
+        {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
+        {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
       selected: null
     }
@@ -432,6 +428,16 @@ export const test2 = () => ({
     )
   }
 })
+
+// testing
+import Vue from 'vue/dist/vue.common.js'
+
+import GCheckbox from "../../GCheckbox/GCheckbox";
+import GTextField from "../../GInput/GTextField";
+import GListItem from "../../GList/GListItem";
+import {GListItemText, GListItemContent, GListItemSubText} from "../../GList/GListFunctionalComponent";
+import GDivider from "../../GLayout/GDivider";
+import GSelect from "../GSelect";
 
 describe('test', function () {
   it('should', function () {
