@@ -55,8 +55,9 @@
         positionY: [Number, String],
         allowOverflow: Boolean,
         offsetOverflow: Boolean,
+        absolute: Boolean,
         clientX: [Number, String],
-        clientY: [Number, String]
+        clientY: [Number, String],
       },
       // toggling
       ...{

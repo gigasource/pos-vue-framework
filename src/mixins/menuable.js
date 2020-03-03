@@ -39,7 +39,7 @@ export default function menuable(props, context) {
     const contentDimensions = dimensions.content;
     let top = 0;
 
-    if (props.auto) return props.clientY
+    if (props.absolute) return props.clientY
     if (props.top) top += activatorDimensions.height - contentDimensions.height
     if (props.offsetY) top += props.top ? -activatorDimensions.height : activatorDimensions.height
     if (props.nudgeTop) top -= parseInt(props.nudgeTop)
@@ -57,7 +57,7 @@ export default function menuable(props, context) {
     const minWidth = Math.max(activatorDimensions.width, contentDimensions.width);
     let left = 0;
 
-    if (props.auto) return props.clientX
+    if (props.absolute) return props.clientX
     left += props.left ? activatorLeft - (minWidth - activatorDimensions.width) : activatorLeft;
     if (props.offsetX) {
       //todo calc maxWidth using prop

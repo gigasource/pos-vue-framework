@@ -54,7 +54,8 @@
         positionX: [Number, String],
         positionY: [Number, String],
         allowOverflow: Boolean,
-        offsetOverflow: Boolean
+        offsetOverflow: Boolean,
+        absolute: Boolean,
       },
       // toggling
       ...{
@@ -123,7 +124,7 @@
         if (!activator) {
           return
         }
-        if(props.auto) {
+        if(props.absolute) {
           state.clientX = event.clientX
           state.clientY = event.clientY
         }
