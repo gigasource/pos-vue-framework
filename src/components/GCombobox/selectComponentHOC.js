@@ -242,16 +242,11 @@ const componentsFactory = (component, componentName) => {
 
       }
       const textFieldScopedSlots = {
-        ...context.slots['append-inner']
-          ? {
+        ...context.slots['append-inner'] && {
           'append-inner': ({ iconColor }) =>
             [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
               context.slots['append-inner'] && context.slots['append-inner']()]
-          }
-          : {
-            'append-inner': ({ iconColor }) =>
-              <GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>
-          },
+        },
         ...context.slots['append-outer'] && { 'append-outer': () => context.slots['append-outer']() },
         'input-slot': () =>
           <template style={{ display: 'flex' }}>
