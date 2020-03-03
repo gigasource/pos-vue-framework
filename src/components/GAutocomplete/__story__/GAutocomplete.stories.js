@@ -1,8 +1,5 @@
-import { boolean, object, text, withKnobs } from '@storybook/addon-knobs';
-// testing
-import Vue from 'vue/dist/vue.common.js'
-import GAutocomplete from '../GAutocomplete';
-import GSelect from '../../GSelect/GSelect';
+import {boolean, object, text, withKnobs} from '@storybook/addon-knobs';
+import {action} from '@storybook/addon-actions'
 
 //
 export default {
@@ -46,7 +43,7 @@ export const GAutocompleteSingleSelect = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: 'abc',
+      selected: null,
       filters: [
         {
           value: 0,
@@ -206,8 +203,8 @@ export const GAutocompleteSingleSelectPrimitive = () => ({
     hint: {default: text('hint', 'Hint')},
     persistent: {default: boolean('persistent', false)},
     counter: {type: [String, Number], default: Number('counter', 25)},
-    itemText: {default: text('itemText', 'text')},
-    itemValue: {default: text('itemValue', 'value')},
+    itemText: {default: text('itemText', '')},
+    itemValue: {default: text('itemValue', '')},
     chips: {default: boolean('chips', false)},
     smallChips: {default: boolean('smallChips', false)},
     deletableChips: {default: boolean('deletable-chips', false)},
@@ -227,7 +224,7 @@ export const GAutocompleteSingleSelectPrimitive = () => ({
         'Ali Connors',
         'Ranee Carlson',
       ],
-      selected: 'abc',
+      selected: 'Cindy Baker',
       filters: [
         {
           value: 0,
@@ -468,6 +465,10 @@ export const GAutocompleteMultiSelectAllowDuplicate = () => ({
 <div>{{'filter:  '+activeFilter}} </div>
 </div>`,
 })
+// testing
+import Vue from 'vue/dist/vue.common.js'
+import GAutocomplete from "../GAutocomplete";
+import GSelect from "../../GSelect/GSelect";
 
 describe('test', function () {
   it('should', function () {
