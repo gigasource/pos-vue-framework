@@ -131,3 +131,33 @@ export const gMenuHover = () => ({
     </div>
   `
 })
+
+export const gMenuAbsolute = () => ({
+  components: { GMenu, GBtn },
+  data: () => ({
+    showMenu: false
+    }),
+  props: {
+    openDelay: {
+      type: Number,
+      default: number('open delay (ms)', 500)
+    },
+    closeDelay: {
+      type: Number,
+      default: number('close delay (ms)', 500)
+    },
+    absolute: {
+      type: Boolean,
+      default: boolean('absolute', true)
+    }
+  },
+  template: `
+    <div data-app style="min-height: 80vh">
+      <g-menu v-model="showMenu"
+              :absolute="absolute" :open-delay="openDelay" :close-delay="closeDelay" style="display: inline-flex" lazy>
+        <template v-slot:activator="{on}"><g-btn v-on="on">Activator</g-btn></template>
+        <div style="background: white">Content</div>
+      </g-menu>
+    </div>
+  `
+})

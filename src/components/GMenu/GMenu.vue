@@ -54,7 +54,8 @@
         positionX: [Number, String],
         positionY: [Number, String],
         allowOverflow: Boolean,
-        offsetOverflow: Boolean
+        offsetOverflow: Boolean,
+        absolute: Boolean,
       },
       // toggling
       ...{
@@ -108,6 +109,8 @@
         top: 0,
         hasJustFocused: false,
         isFirstRender: true,
+        clientX: 0,
+        clientY: 0,
       });
 
       onMounted(function () {
@@ -120,6 +123,10 @@
         const activator = event.target || event.currentTarget;
         if (!activator) {
           return
+        }
+        if(props.absolute) {
+          state.clientX = event.clientX
+          state.clientY = event.clientY
         }
         isActive.value = !isActive.value;
       }
@@ -134,6 +141,8 @@
             ...props,
             activator: activatorEl,
             hasJustFocused: state.hasJustFocused,
+            clientX: state.clientX,
+            clientY: state.clientY
           },
           on: {
             input: (e) => {

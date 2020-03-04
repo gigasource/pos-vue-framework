@@ -54,7 +54,10 @@
         positionX: [Number, String],
         positionY: [Number, String],
         allowOverflow: Boolean,
-        offsetOverflow: Boolean
+        offsetOverflow: Boolean,
+        absolute: Boolean,
+        clientX: [Number, String],
+        clientY: [Number, String],
       },
       // toggling
       ...{
@@ -113,7 +116,7 @@
       const isActive = getVModel(props, context);
       const {attachToRoot, detach} = detachable(props, context);
       const {
-        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow
+        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState: state
       } = menuable(props, context);
       const {getMaxZIndex} = stackable(props, context)
 
