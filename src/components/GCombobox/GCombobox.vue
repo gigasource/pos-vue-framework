@@ -5,7 +5,7 @@
   export default Combobox;
 </script>
 <style scoped lang="scss">
-	.combobox ::v-deep {
+	.g-combobox ::v-deep {
 		span {
 			margin: 3px
 		}
@@ -35,7 +35,7 @@
 		}
 	}
 
-	.combobox__active {
+	.g-combobox__active {
 		::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
 			transition: transform 0.4s;
 			transform: rotateZ(180deg);

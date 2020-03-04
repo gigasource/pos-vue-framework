@@ -66,6 +66,10 @@ const componentsFactory = (component, componentName) => {
       },
       multiple: Boolean,
       allowDuplicates: Boolean,
+      mandatory: {
+        type: Boolean,
+        default: true
+      },
       //menu props
       menuProps: {
         type: Object,
@@ -242,16 +246,21 @@ const componentsFactory = (component, componentName) => {
 
       }
       const textFieldScopedSlots = {
-        ...context.slots['append-inner'] && {
-          'append-inner': ({ iconColor }) =>
-            [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
-              context.slots['append-inner'] && context.slots['append-inner']()]
-        },
+        ...context.slots['append-inner']
+          ? {
+            'append-inner': ({ iconColor }) =>
+              [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+                context.slots['append-inner'] && context.slots['append-inner']()]
+          }
+          : {
+            'append-inner': ({ iconColor }) =>
+              <GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>
+          },
         ...context.slots['append-outer'] && { 'append-outer': () => context.slots['append-outer']() },
         'input-slot': () =>
-          <template style={{ display: 'flex' }}>
+          <div class="input-slot" style={{ display: 'flex' }}>
             {genSelectionSlot()}
-          </template>,
+          </div>,
       }
 
       const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
@@ -334,7 +343,7 @@ const componentsFactory = (component, componentName) => {
       }
 
       function genComponent() {
-        return <div class={[props.component, { [`${props.component}__active`]: state.showOptions }]}>
+        return <div class={[`g-${props.component}`, { [`g-${props.component}__active`]: state.showOptions }]}>
           {genMenu(state)}
         </div>
       }

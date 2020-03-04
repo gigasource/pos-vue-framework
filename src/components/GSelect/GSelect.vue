@@ -5,7 +5,7 @@
   export default Select;
 </script>
 <style scoped lang="scss">
-	.select::v-deep {
+	.g-select::v-deep {
 		span {
 			margin: 3px
 		}
@@ -26,7 +26,7 @@
 		}
 	}
 
-	.select__active::v-deep {
+	.g-select__active::v-deep {
 		.g-tf-append__inner .g-icon.g-icon__arrow:last-child {
 			transition: transform 0.4s;
 			transform: rotateZ(180deg);

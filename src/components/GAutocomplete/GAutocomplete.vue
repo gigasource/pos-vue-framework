@@ -5,7 +5,7 @@
   export default Autocomplete;
 </script>
 <style scoped lang="scss">
-	.autocomplete ::v-deep {
+	.g-autocomplete ::v-deep {
 		span {
 			margin: 3px
 		}
@@ -33,7 +33,7 @@
 		}
 	}
 
-	.autocomplete__active {
+	.g-autocomplete__active {
 		::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
 			transition: transform 0.4s;
 			transform: rotateZ(180deg);
