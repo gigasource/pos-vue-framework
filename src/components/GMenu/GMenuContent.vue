@@ -116,7 +116,7 @@
       const isActive = getVModel(props, context);
       const {attachToRoot, detach} = detachable(props, context);
       const {
-        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow
+        updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState: state
       } = menuable(props, context);
       const {getMaxZIndex} = stackable(props, context)
 
