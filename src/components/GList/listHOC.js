@@ -117,7 +117,7 @@ const listFactory = (name) => {
         }
       }
 
-      function genSubheader() {
+      function genSubheader(item) {
         return context.slots['subheader']
           ? context.slots['subheader']()
           : <div class="g-list-header">{props.multiSection ? item.subheader : props.subheader}</div>
@@ -217,7 +217,9 @@ const listFactory = (name) => {
         return props.items.map((item, index) => {
           if (item.type === 'subheader') return genSubheader(item)
           else if (item.type === 'divider') return genDivider()
-          else return context.slots['list-item'] ? context.slots['list-item']() : genItem(item, index)
+          else return context.slots['list-item']
+              ? context.slots['list-item']()
+              : selectable ? genItemSelectable(item, index) : genItemDisplayOnly(item, index)
         })
 
       }
@@ -264,10 +266,10 @@ const listFactory = (name) => {
       }));
 
       function genList() {
-        const genListWithItem = (props.multiSection) ? genMultiSectionList() : genSingleSectionList()
+        const genListWithItem = (props.multiSection) ? genMultiSectionList : genSingleSectionList
         return <div class={['g-list', 'check', classes.value]} style={styles.value} ref="list" vOn:click={(e) => context.emit('click', e)}>
           {context.slots['prepend-item'] && context.slots['prepend-item']()}
-          {context.slots['default'] ? context.slots['default']() : genListWithItem}
+          {context.slots['default'] ? context.slots['default']() : genListWithItem()}
           {context.slots['append-item'] && context.slots['append-item']()}
         </div>
       }

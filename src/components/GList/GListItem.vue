@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" :style="styles" tabindex="0" v-if='isItemAdded' v-on="listItemEvents(value, index)">
+  <div :class="classes" :style="styles" tabindex="0" v-on="listItemEvents(item, index)">
     <slot></slot>
   </div>
 </template>
@@ -14,7 +14,7 @@
       disabled: Boolean,
       twoLine: Boolean,
       threeLine: Boolean,
-      value: [String, Number, Object, Function],
+      item: [String, Number, Object, Function],
       inList: {
         type: Boolean,
         default: true
@@ -24,12 +24,12 @@
       const selectable = props.inList ? inject('selectable') : null
       //handle listItem in selectable list case
       const add = selectable && props.inList ? inject('add') : null
-      const { isItemAdded, index } = selectable && props.inList ? add(props.value) : { isItemAdded: true, index: 0 }
+      const { isItemAdded, index } = selectable && props.inList ? add(props.item) : { isItemAdded: true, index: 0 }
       const isActiveItem = selectable && props.inList ? inject('isActiveItem') : null
       const inListEvents = selectable && props.inList ? inject('getListEvents') : null
 
       const singleItemEvents = () => ({
-        click: () => context.emit('singleItemClick', props.value),
+        click: () => context.emit('singleItemClick', props.item),
       })
 
       const listItemEvents = selectable && props.inList ? inListEvents : singleItemEvents
@@ -45,7 +45,7 @@
           'g-list-item__disabled': props.disabled,
           'g-list-item__two-line': props.twoLine,
           'g-list-item__three-line': props.threeLine,
-          'g-list-item__active': selectable && props.inList ? isActiveItem(props.value) : false,
+          'g-list-item__active': selectable && props.inList ? isActiveItem(props.item) : false,
         }
       })
 

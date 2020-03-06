@@ -324,7 +324,7 @@ export const gListNav = () => ({
   },
   template:
     `
-      <g-list :items="items" dense="dense" nav="nav" prepend-type="prependType" :itemText="itemText">
+      <g-list :items="items" :dense="dense" :nav="nav" :prepend-type="prependType" :itemText="itemText">
       </g-list>
       `,
 })
@@ -429,7 +429,7 @@ export const gListAppendWithSlot = () => ({
   },
   template:
     `
-      <g-list :items="items"  subheader="subheader" :itemText="itemText"  >
+      <g-list :items="items"  subheader="subheader">
         <template v-slot:append="{item}">
         <g-icon color="indigo">mdi-mail</g-icon>
         </template>
@@ -592,16 +592,16 @@ export const gListItemSlotRenderArray = () => ({
   template:
     `
       <div>
-      selectedItem: {{testValue}}
-      <g-list :items="items" selectable v-model="testValue" itemText="text">
-              <template v-slot:list-item="{item, isSelected, onSelect}">
-                <g-list-item :item="item" :isSelected="isSelected" @singleItemClick="onSelect(item)" >
-                  <g-list-item-content>
-                      <g-list-item-text >{{item.text}}</g-list-item-text>
-                  </g-list-item-content>
-                </g-list-item>
-              </template>
-            </g-list>
+        selectedItem: {{testValue}}
+        <g-list :items="items" selectable v-model="testValue" itemText="text">
+          <template v-slot:list-item="{item, isSelected, on}">
+            <g-list-item :item="item" :isSelected="isSelected" v-on="on">
+              <g-list-item-content>
+                <g-list-item-text>{{item.text}}</g-list-item-text>
+              </g-list-item-content>
+            </g-list-item>
+          </template>
+        </g-list>
       </div>
       
 `,
@@ -712,27 +712,27 @@ export const gListAsMenuContent = () => ({
       <div>
         selectedItem: {{testValue}}
         <g-container>
-        <g-row>Multi-section</g-row>
-        <g-row>
-        <g-list v-model="testValue" itemText="text" :items="list1" prependType="icon"  selectable :inMenu="inMenu" multiSection/>
-        </g-row>
-        <g-row>Single section</g-row>
-        <g-row>
-        <g-list v-model="testValue" itemText="text" :items="list2" prependType="icon"  selectable :inMenu="inMenu">
-        <template v-slot:subheader>
-        <div class="g-list-header" style="background-color: #9fa8da">
-        <h6>Notifications</h6>
-        <g-btn  small style="background-color: #00AEFF; margin-left: 100px">5 new</g-btn>
-        </div>
-        <g-divider/>
-       </template>
-       <template v-slot:prepend="{item}">
-       <g-list-item-icon>
-       <g-icon small :color="item.color">{{item.prepend}}</g-icon>
-       </g-list-item-icon>
-       </template>
-        </g-list>
-        </g-row>
+          <g-row>Multi-section</g-row>
+          <g-row>
+            <g-list v-model="testValue" itemText="text" :items="list1" prependType="icon" selectable :inMenu="inMenu" multiSection/>
+          </g-row>
+          <g-row>Single section</g-row>
+          <g-row>
+            <g-list v-model="testValue" itemText="text" :items="list2" prependType="icon" selectable :inMenu="inMenu">
+              <template v-slot:subheader>
+                <div class="g-list-header" style="background-color: #9fa8da">
+                  <h6>Notifications</h6>
+                  <g-btn small style="background-color: #00AEFF; margin-left: 100px">5 new</g-btn>
+                </div>
+                <g-divider/>
+              </template>
+              <template v-slot:prepend="{item}">
+                <g-list-item-icon>
+                  <g-icon small :color="item.color">{{item.prepend}}</g-icon>
+                </g-list-item-icon>
+              </template>
+            </g-list>
+          </g-row>
         </g-container>
       </div>`,
 })
@@ -759,23 +759,20 @@ export const gListFreeRender = () => ({
       <div>
       {{testValue}}
         <template>
-        <g-list-display selectable v-model="testValue" itemText="" itemValue="" 
-        :multiple="multiple"
-        :allowDuplicates="allowDuplicates"
-        :selectable="selectable">
-        <g-list-item :value="items[0].text">
-        <g-list-item-content>Item 1</g-list-item-content>
-        </g-list-item>
-        <g-list-item :value="items[0].text">
-        <g-list-item-content>Item 1 Duplicate</g-list-item-content>
-        </g-list-item>
-        <g-list-item :value="items[1].text">
-        <g-list-item-content>Item 2</g-list-item-content>
-        </g-list-item>
-        <g-list-item :value="items[2].text">
-        <g-list-item-content>Item 3</g-list-item-content>
-        </g-list-item>
-        </g-list-display>
+          <g-list-display>
+            <g-list-item >
+              <g-list-item-content>Item 1</g-list-item-content>
+            </g-list-item>
+            <g-list-item >
+              <g-list-item-content>Item 1 Duplicate</g-list-item-content>
+            </g-list-item>
+            <g-list-item>
+              <g-list-item-content>Item 2</g-list-item-content>
+            </g-list-item>
+            <g-list-item >
+              <g-list-item-content>Item 3</g-list-item-content>
+            </g-list-item>
+          </g-list-display>
         </template>
       </div>`,
 })
