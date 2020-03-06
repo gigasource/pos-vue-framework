@@ -26,6 +26,28 @@ export default {
   title: 'GList',
   decorators: [withKnobs],
 };
+
+export const defaultSlot = () => ({
+  components: { GListDisplay, GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  data() {
+    return {
+      items: [
+        { text: 'Jason Oner', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Ranee Carlson', prepend: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
+        { text: 'Cindy Baker', prepend: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
+        { text: 'Ali Connors', prepend: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
+      ]
+    }
+  },
+  template: `
+    <g-list-display>
+      <g-list-item v-for="item in items">
+        <g-list-item-text>{{item.text}}</g-list-item-text>
+      </g-list-item>
+    </g-list-display>
+  `
+})
+
 export const gListPlayGround = () => ({
   components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {

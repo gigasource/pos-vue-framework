@@ -50,14 +50,17 @@
         return props.to || props.href || props.link
       });
 
-      scopedData['class'] = classes.value;
-
       function renderItem() {
         let nodeData = {
-          ...scopedData,
+          class: classes.value,
           attrs: {
             ...scopedData.attrs,
             'aria-current': data.isActive && isLink.value ? 'page' : undefined,
+          },
+          on: {
+            click: e => context.emit('click', e),
+            mouseout: e => context.emit('mouseout', e),
+            mouseover: e => context.emit('mouseover', e)
           }
         };
 

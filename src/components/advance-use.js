@@ -17,11 +17,13 @@ export {
 }
 
 import GGridGenerator from './GGridGenerator/components/GGridGenerator';
+import GGridGeneratorInput from './GGridGenerator/GGridGeneratorInput';
 import GEditViewInput from './GGridGenerator/components/EditViewInput';
 import GIncDecNumberInput from './GGridGenerator/components/IncDecNumberInput';
 
 export {
   GGridGenerator,
+  GGridGeneratorInput,
   GEditViewInput,
   GIncDecNumberInput
 }
