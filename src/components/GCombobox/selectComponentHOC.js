@@ -5,7 +5,7 @@ import { getInputEventHandlers, getListEventHandlers } from './eventHandlersFact
 import GTextField from '../GInput/GTextField';
 import GChip from '../GChip/GChip';
 import GIcon from '../GIcon/GIcon';
-import GListDisplay from '../GList/GListDisplay';
+import GList from '../GList/GList';
 
 const componentsFactory = (component, componentName) => {
   return {
@@ -169,7 +169,7 @@ const componentsFactory = (component, componentName) => {
         addActiveClass()
 
         const { onListArrowDown, onListArrowUp } = getListEventHandlers(renderList.value, context)
-        return <GListDisplay
+        return <GList
           {...{
             props: {
               items: renderList.value,

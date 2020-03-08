@@ -63,7 +63,6 @@ import GSpacer from './GLayout/GSpacer';
 
 import GList from './GList/GList';
 import GListItem from './GList/GListItem';
-import GListDisplay from './GList/GListDisplay';
 
 import List from './GList/List';
 import {
@@ -258,7 +257,6 @@ export {
   GListItemText,
   GListItemSubText,
   GListHeader,
-  GListDisplay,
   GMenu,
   GMenuContent,
   GOverlay,
