@@ -1,6 +1,5 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 import GList from '../GList';
-import GListDisplay from '../GListDisplay';
 import GListItem from '../GListItem';
 import GDivider from '../../GLayout/GDivider.vue';
 import {
@@ -28,7 +27,7 @@ export default {
 };
 
 export const defaultSlot = () => ({
-  components: { GListDisplay, GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
+  components: { GDivider, GListItem, GList, GListItemIcon, GListItemAvatar, GListItemAction, GListItemImage, GListItemImageBig, GListItemContent, GListItemText, GListItemSubText, GListHeader },
   data() {
     return {
       items: [
@@ -40,11 +39,11 @@ export const defaultSlot = () => ({
     }
   },
   template: `
-    <g-list-display>
-      <g-list-item v-for="item in items">
+    <g-list>
+      <g-list-item :item="item" v-for="item in items">
         <g-list-item-text>{{item.text}}</g-list-item-text>
       </g-list-item>
-    </g-list-display>
+    </g-list>
   `
 })
 
@@ -737,7 +736,7 @@ export const gListAsMenuContent = () => ({
       </div>`,
 })
 export const gListFreeRender = () => ({
-  components: { GList, GListDisplay, GIcon, GListItemIcon, GContainer, GDivider, GRow, GBtn, GListItem, GListItemContent },
+  components: { GList, GIcon, GListItemIcon, GContainer, GDivider, GRow, GBtn, GListItem, GListItemContent },
   data() {
     return {
       testValue: null,
@@ -759,7 +758,7 @@ export const gListFreeRender = () => ({
       <div>
       {{testValue}}
         <template>
-          <g-list-display>
+          <g-list>
             <g-list-item >
               <g-list-item-content>Item 1</g-list-item-content>
             </g-list-item>
@@ -772,7 +771,7 @@ export const gListFreeRender = () => ({
             <g-list-item >
               <g-list-item-content>Item 3</g-list-item-content>
             </g-list-item>
-          </g-list-display>
+          </g-list>
         </template>
       </div>`,
 })
