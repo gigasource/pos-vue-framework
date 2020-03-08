@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" :style="styles" tabindex="0" v-on="listItemEvents(item, index)">
+  <div :class="classes" :style="styles" v-if="isItemAdded" tabindex="0" v-on="listItemEvents(item, index)">
     <slot></slot>
   </div>
 </template>
