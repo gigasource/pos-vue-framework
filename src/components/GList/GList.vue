@@ -81,7 +81,7 @@
         normalizedValue: internalValue,
         toggleItem,
         isActiveItem,
-      } = props.selectable ? makeListSelectable(props, context) : {}
+      } = props.selectable ? makeListSelectable(props, context, internalItems) : {}
 
       const getText = computed(() => createItemFn(props.itemText))
 

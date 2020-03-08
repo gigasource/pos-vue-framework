@@ -20,13 +20,14 @@ const log = (val) => {
   if (process.env.NODE_ENV === 'test') console.log(val)
 }
 
-export function makeListSelectable(props, context) {
+export function makeListSelectable(props, context, internalItems) {
+  const listItems = internalItems ? internalItems.value : props.items
   const getText = computed(() => createItemFn(props.itemText))
   const getValue = computed(() => createItemFn(props.itemValue))
   const inCombobox = (props.component && props.component === 'combobox') || props.inCombobox
   const listType = computed(() => {
-    if (props.items.length > 0) {
-      const isObjectType = props.items.some(item => typeof item === 'object')
+    if (listItems.length > 0) {
+      const isObjectType = listItems.some(item => typeof item === 'object')
       if (isObjectType && props.returnObject) return 'objectReturnObject'
       else if (isObjectType) return 'objectWithValueOrText'
       return 'primitive'
@@ -39,8 +40,8 @@ export function makeListSelectable(props, context) {
   })
 
   const normalizedList = computed(() => {
-      if (_.isArray(props.items)) {
-        return (listType.value === 'primitive') ? _.uniq(props.items) : _.uniqWith(props.items.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
+      if (_.isArray(listItems)) {
+        return (listType.value === 'primitive') ? _.uniq(listItems) : _.uniqWith(listItems.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
       }
       return []
     }
@@ -51,17 +52,17 @@ export function makeListSelectable(props, context) {
 
   const normalize = (value, isFromInput) => {
     const _normalize = props.normalize || function (value) {
-      if (listType.value === 'primitive') return props.items.find(item => item === value)
-      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return props.items.find(item =>
+      if (listType.value === 'primitive') return listItems.find(item => item === value)
+      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return listItems.find(item =>
         _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
       else {
-        return props.items.find(item => getValue.value(item) === value) || props.items.find(item => getText.value(item) === value)
+        return listItems.find(item => getValue.value(item) === value) || listItems.find(item => getText.value(item) === value)
       }
     }
 
-    if (!inCombobox) return _normalize(value, props.items, isFromInput)
+    if (!inCombobox) return _normalize(value, listItems, isFromInput)
     else {
-      let _normalizedVal = _normalize(value, props.items, isFromInput)
+      let _normalizedVal = _normalize(value, listItems, isFromInput)
       if (_normalizedVal) return _normalizedVal
       return value
     }
