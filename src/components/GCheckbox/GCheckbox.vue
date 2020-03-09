@@ -119,6 +119,7 @@
             internalValue.value = [...internalValue.value, trueValue.value]
           } else if (!isActive.value && index > -1) { //uncheck
             internalValue.value.splice(index, 1);
+            context.emit('change', internalValue.value)
           }
         } else {
           if (isActive.value) { //checked
