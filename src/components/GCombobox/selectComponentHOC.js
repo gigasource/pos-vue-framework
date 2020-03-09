@@ -231,9 +231,9 @@ const componentsFactory = (component, componentName) => {
             else if (props.multiple) {
               if (index === selectionTexts.value.length - 1) {
                 if (props.component === 'select') return <div
-                  style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+                  style={{ 'color': state.lastItemColor, 'padding': '0 5px 4px 0' }}>{item}</div>
                 return <div
-                  style={{ 'color': state.lastItemColor, 'padding-right': '5px' }}>{item}</div>
+                  style={{ 'color': state.lastItemColor, 'padding': '0 5px 4px 0' }}>{item}</div>
               }
               return <div style={{ 'padding': '0 5px 4px 0' }}>{item + ', '} </div>
             }
