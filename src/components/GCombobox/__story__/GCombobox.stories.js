@@ -163,11 +163,11 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
         {text: 'Cindy Baker', value: 3},
         {text: 'Ali Connors', value: 4},
       ],
-      selected: []
+      selected: [2,2,2,2,3,4]
     }
   },
   template: `
-  <div data-app>
+  <div data-app style="width: 50%">
   <div>{{selected}}</div>
    <g-combobox :items="items" 
               :item-text="itemText" 
@@ -179,7 +179,8 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
              :deletableChips="deletableChips"
              multiple 
              allowDuplicates
-             clearable></g-combobox>
+             clearable>    <template #append-outer><div>append-outer</div></template>
+   </g-combobox>
 </div>`,
 })
 export const GComboboxNoDataSlot = () => ({
