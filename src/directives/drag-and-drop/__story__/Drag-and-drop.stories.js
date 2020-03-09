@@ -111,7 +111,34 @@ export const components = () => ({
 })
 
 export const file = () => ({
-
+  directives: {
+    Draggable,
+    Droppable
+  },
+  methods: {
+    dragover(e) {
+      e.preventDefault()
+      e.dataTransfer.items.length && (this.dropData = 'Files dragged over!')
+    },
+    drop(e) {
+      e.preventDefault()
+      if (e.dataTransfer.files && e.dataTransfer.files.length) {
+        this.dropData = `Files: [${Array.from(e.dataTransfer.files).map(f => f.name).join(', ')}]`
+      }
+    }
+  },
+  data() {
+     return {
+       dropData: ''
+     }
+  },
+  template: `
+    <div>
+      <div style="width: 800px; height: 400px; background-color: #37474f; color: white" v-droppable="{dragover, drop}">
+        Drop zone
+        <div>{{dropData}}</div>
+      </div>
+    </div>`
 })
 
 const simpleList = Vue.extend({
