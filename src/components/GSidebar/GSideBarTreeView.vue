@@ -393,7 +393,7 @@
       }
 
       &__active {
-        background: linear-gradient(45deg, #8e24aa, #ff6e40) !important;
+        background: linear-gradient(45deg, #8e24aa, #ff6e40);
         box-shadow: 3px 3px 20px 0 rgba(255, 110, 64, .5);
         color: white;
 
