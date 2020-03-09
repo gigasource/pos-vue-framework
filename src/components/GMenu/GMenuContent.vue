@@ -82,7 +82,6 @@
         minHeight: [Number, String],
         contentFillWidth: {
           type: Boolean,
-          default: true
         }
       },
       // delay
@@ -182,10 +181,15 @@
         return convertToUnit(calcYOverFlow(computedTop.value)) || '0'
       })
       const calculatedMaxWidth = computed(() => {
+        if (props.contentFillWidth) {
+          return convertToUnit(dimensions.activator.width)
+        }
         return convertToUnit(props.maxWidth) || '0'
       })
       const calculatedMinWidth = computed(() => {
-        if (props.contentFillWidth) return convertToUnit(Math.max(dimensions.activator.width, dimensions.content.width))
+        if (props.contentFillWidth) {
+          return convertToUnit(dimensions.activator.width)
+        }
         if (props.minWidth) return convertToUnit(props.minWidth) || '0'
 
         const minWidth = Math.min(dimensions.content.width, state.pageWidth);

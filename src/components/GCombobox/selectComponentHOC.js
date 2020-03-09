@@ -80,6 +80,7 @@ const componentsFactory = (component, componentName) => {
           offsetY: true,
           offsetOverflow: true,
           top: false,
+          contentFillWidth: true,
         })
       },
       eager: Boolean,
