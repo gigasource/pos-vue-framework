@@ -83,8 +83,10 @@
 			function genDialogContent() {
         const dialogContentData = {
           props: {
-            ...props
-					},
+            ...Object.assign({}, props, {
+              value: isActive.value
+            })
+          },
 					on: {
             input: (value) => {
               isActive.value = value
