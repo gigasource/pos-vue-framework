@@ -258,7 +258,7 @@ const componentsFactory = (component, componentName) => {
           },
         ...context.slots['append-outer'] && { 'append-outer': () => context.slots['append-outer']() },
         'input-slot': () =>
-          <div class="input-slot" style={{ display: 'flex' }}>
+          <div class="input-slot" style={{ display: 'contents' }}>
             {genSelectionSlot()}
           </div>,
       }
@@ -289,6 +289,7 @@ const componentsFactory = (component, componentName) => {
                   keydown: onInputKeyDown,
                   input: onInputChange,
                 },
+                style: {'flex-wrap': 'wrap'},
                 scopedSlots: textFieldScopedSlots
               }}
             />
