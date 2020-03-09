@@ -22,6 +22,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
   }
 
   function onInputChange(text) {
+    context.emit('update:searchText', text)
     if (props.component === 'select') return
     lazySearch.value = text
   }
