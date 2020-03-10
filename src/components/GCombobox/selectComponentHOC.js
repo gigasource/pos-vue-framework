@@ -285,11 +285,12 @@ const componentsFactory = (component, componentName) => {
                   'click:clearIcon': clearSelection,
                   click: [toggleContent, inputClick],
                   focus: onInputClick,
-                  blur: () => {
-                    onInputBlur()
-                  },
+                  blur: onInputBlur,
                   delete: onInputDelete,
-                  enter: inputAddSelection,
+                  enter: e => {
+                    inputAddSelection()
+                    !props.multiple && toggleContent(e)
+                  },
                   keydown: onInputKeyDown,
                   input: onInputChange,
                 },

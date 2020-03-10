@@ -1,8 +1,7 @@
 <script>
-  import getVModel from '../../mixins/getVModel';
-  import { onBeforeUnmount, reactive, ref, onUnmounted, computed, onMounted, watch } from '@vue/composition-api';
+  import {getInternalValue} from '../../mixins/getVModel';
+  import { onBeforeUnmount, onMounted, reactive, ref, watch } from '@vue/composition-api';
   import ClickOutside from '../../directives/click-outside/click-outside';
-  import detachable from '../../mixins/detachable';
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
   import { Fragment } from 'vue-fragment'
@@ -78,9 +77,7 @@
           default: 'auto'
         },
         minHeight: [Number, String],
-        contentFillWidth: {
-          type: Boolean
-        }
+        contentFillWidth: Boolean
       },
       // delay
       ...{
@@ -94,12 +91,12 @@
         }
       },
       //styling content
-      ... {
+      ...{
         contentClass: String,
       }
     },
     setup(props, context) {
-      const isActive = getVModel(props, context);
+      const isActive = getInternalValue(props, context);
       const { runDelay } = delayable(props)
       let activatorEl = ref(null);
       let activatorVNode
@@ -137,7 +134,9 @@
       const genContent = () => {
         const contentOptions = {
           props: {
-            ...props,
+            ...Object.assign({}, props, {
+              value: isActive.value
+            }),
             activator: activatorEl,
             hasJustFocused: state.hasJustFocused,
             clientX: state.clientX,
