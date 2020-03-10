@@ -6,10 +6,6 @@
 </script>
 <style scoped lang="scss">
 	.g-combobox ::v-deep {
-		span {
-			margin: 3px
-		}
-
 		.g-tf-append__inner .g-icon:last-child {
 			transition: transform 0.4s;
 		}
@@ -18,9 +14,7 @@
 			display: flex;
 			flex-wrap: wrap;
 		}
-		.g-tf-affix{
-			padding: 0 6px 4px 6px;
-		}
+
 		.g-tf-input {
 			flex-wrap: wrap;
 			display: flex;
