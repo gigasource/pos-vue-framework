@@ -6,9 +6,11 @@
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
   import GImg from '../GImg/GImg';
+  import GListItem from './GListItem';
 
   export default {
     name: 'GList',
+    components: { GListItem },
     props: {
       name: {
         type: String,
@@ -191,10 +193,9 @@
       }
 
       function genItemSelectable(item, index) {
-        return <div class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
-                    tabIndex="0"
+        return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
+                    tabIndex="0" item={item}
                     {...{ on: getListEvents(item, index) }}
-                    ref="listItemRef"
         >
           {
             [(context.slots['prepend'] && context.slots['prepend']({ isSelected: isActiveItem(item), item: item })) || genItemPrepend(item),
@@ -202,14 +203,13 @@
               (context.slots['append'] && context.slots['append']({ isSelected: isActiveItem(item), item: item })) || genItemAppend(item),
             ]
           }
-        </div>
+        </GListItem>
       }
 
       function genItemDisplayOnly(item, index) {
-        return <div class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__disabled': item.disabled, [props.activeClass]: item.active }]}
-                    tabIndex="0"
+        return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__disabled': item.disabled, [props.activeClass]: item.active }]}
+                    tabIndex="0" item={item}
                     {...{ on: getListEvents(item, index) }}
-                    ref="listItemRef"
         >
           {
             [(context.slots['prepend'] && context.slots['prepend']({ item: item })) || genItemPrepend(item),
@@ -217,7 +217,7 @@
               (context.slots['append'] && context.slots['append']({ item: item })) || genItemAppend(item),
             ]
           }
-        </div>
+        </GListItem>
       }
 
       function genMultiSectionList() {

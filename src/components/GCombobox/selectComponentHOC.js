@@ -155,7 +155,7 @@ const componentsFactory = (component, componentName) => {
       const addActiveClass = () => {
         renderList.value.map((item, index) => {
           let listRef = context.refs['menu'].$refs['list']
-          let domItem = listRef && listRef.$el.getElementsByClassName('g-list-item')[index]
+          let domItem = listRef && listRef.$el.getElementsByClassName('g-list-item')[context.slots['prepend-item'] ? index + 1 : index]
           isActiveItem(item)
             ? context.root.$nextTick(() => domItem && domItem.classList.add('g-list-item__active'))
             : context.root.$nextTick(() => domItem && domItem.classList.remove('g-list-item__active'))
@@ -166,6 +166,7 @@ const componentsFactory = (component, componentName) => {
         const onClickItem = (e) => {
           state.showOptions = props.multiple
           toggleItem(e)
+          lazySearch.value = ''
         }
         addActiveClass()
 
@@ -205,8 +206,7 @@ const componentsFactory = (component, componentName) => {
         onInputDelete,
         onInputChange,
         inputAddSelection,
-
-      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput, unNormalize)
+      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput, unNormalize, renderList)
 
       const searchFocused = ref(false)
       const genSearchField = () => {
@@ -217,6 +217,7 @@ const componentsFactory = (component, componentName) => {
                            ref="searchText"
                            autofocus={searchFocused.value}
                            vOn:keydown={onInputKeyDown}
+                           vOn:enter={inputAddSelection}
                            style="margin-bottom: 0; background-color: transparent"
         />
       }
@@ -286,7 +287,6 @@ const componentsFactory = (component, componentName) => {
                   focus: onInputClick,
                   blur: () => {
                     onInputBlur()
-                    inputAddSelection()
                   },
                   delete: onInputDelete,
                   enter: inputAddSelection,
@@ -317,12 +317,12 @@ const componentsFactory = (component, componentName) => {
       }
 
       const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
+        if (!renderList.value.length && !context.slots['no-data']) return <div></div>
+
         return [
           props.component === 'select' && props.searchable ? genSearchField() : null,
-          // context.slots['prepend-item'] && context.slots['prepend-item'](),
           genNoDataSlot(),
           genList(state),
-          // context.slots['append-item'] && context.slots['append-item']()
         ]
       }
       function genMenu(state) {

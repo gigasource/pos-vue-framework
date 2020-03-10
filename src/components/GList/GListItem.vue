@@ -29,7 +29,10 @@
       const inListEvents = selectable && props.inList ? inject('getListEvents') : null
 
       const singleItemEvents = () => ({
-        click: () => context.emit('singleItemClick', props.item),
+        click: () => {
+          context.emit('click', props.item);
+          context.emit('singleItemClick', props.item) // legacy, to be removed later
+        },
       })
 
       const listItemEvents = selectable && props.inList ? inListEvents : singleItemEvents
