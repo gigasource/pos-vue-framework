@@ -315,6 +315,8 @@ const componentsFactory = (component, componentName) => {
       }
 
       const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
+        if (!renderList.value.length && !context.slots['no-data']) return <div></div>
+
         return [
           props.component === 'select' && props.searchable ? genSearchField() : null,
           genNoDataSlot(),
@@ -332,7 +334,7 @@ const componentsFactory = (component, componentName) => {
           },
           scopedSlots: {
             activator: ({ toggleContent }) => genTextField(toggleContent),
-            ...renderList.value.length > 0 && {default: () => genMenuContent(state)}
+            default: () => genMenuContent(state)
           },
           on: {
             input: (e) => state.showOptions = state.isFocused ? true : e,
