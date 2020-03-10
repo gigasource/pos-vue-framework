@@ -101,6 +101,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
     if (activeListItemIndex.value >= 0) {
       if (props.multiple) selectedItem.value.push(renderList.value[activeListItemIndex.value])
       let _value = props.multiple ? selectedItem.value.map(unNormalize) : renderList.value[activeListItemIndex.value]
+      lazySearch.value = ''
       return context.emit('input', _value)
     }
 
