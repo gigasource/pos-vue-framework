@@ -342,7 +342,7 @@
         color: rgba(0, 0, 0, .87);
         margin-right: 8px;
 
-        &:not(.g-treeview-subheader):hover {
+        &:not(.g-treeview-subheader):not(.g-treeview__active):hover {
           background: rgba(0, 0, 0, 0.035);
         }
 
