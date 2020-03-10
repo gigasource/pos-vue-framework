@@ -308,6 +308,7 @@ const componentsFactory = (component, componentName) => {
         offsetY: true,
         offsetOverflow: true,
         top: false,
+        contentFillWidth: true
       }
       function genNoDataSlot() {
         if (!renderList.value.length) return <div>
