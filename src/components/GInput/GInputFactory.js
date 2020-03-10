@@ -193,7 +193,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
   function onKeyDown(event) {
     if (event.key === 'Enter') {
-      return context.emit('enter', internalValue.value);
+      return context.emit('enter', event);
     }
     if (event.key === 'Delete' || event.key === 'Backspace') {
       return context.emit('delete')
