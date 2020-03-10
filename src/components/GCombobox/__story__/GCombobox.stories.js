@@ -199,7 +199,7 @@ export const GComboboxNoDataSlot = () => ({
   <div data-app>
   <g-combobox itemText="text" returnObject :items="items" label="Label" v-model="selected" searchable multiple chips clearable>
     <template v-slot:no-data>
-      <g-list-item>
+      <g-list-item :in-list="false">
         <g-list-item-content>
           <g-list-item-text>
               No data match, Enter to add value to selections
@@ -313,13 +313,26 @@ export const GComboboxNormalizeProps = () => ({
   </g-combobox>
 </div>`,
 })
-export const test2 = () => ({
-  components: {},
-  setup() {
-    return () => (
-        <g></g>
-    )
-  }
+
+
+export const manyItems = () => ({
+  components: {GCombobox},
+  props: {
+    clearable: {default: boolean('clearable', true)},
+    smallChips: {default: boolean('smallChips', true)},
+    deletableChips: {default: boolean('deletable-chips', true)},
+  },
+  data() {
+    return {
+      items: ["AddItemButtons","AdminFilterQuery","AppContent","AppDataHolder","AppDrawer","AppFormDialog","AppLayout","AppPagination","SettingButton","ComponentSelect","DatePicker","InlineImage","ProcessData","RatingSelect","RefMultiSelectStatic","RefSelectStatic","SlideSelect","TimePicker","computedField","PosArticleFunctionButton","PosArticleLayoutOverlay","PosArticleNumpad","PosArticleProductCategoryMenu","PosArticleProductInfo","PosArticleScrollWindow","PosColorSelector","PosFunctionSortComponent","PosFunctionToolbar","PosDashboardSidebar","PosDashboardToolbar","PosEndOfDayDatePicker","PosEndOfDayDetails","PosEndOfDayMain","PosEndOfDayPrintDialog","PosEndOfDayPrintPendingZReport","PosEndOfDayPrintZReport","PosEndOfDayReprintZReport","PosEndOfDayToolbar","PosFnButtonView","PosPaymentLayoutConfig","GButtonMerger","GGridItemSelector","dialogFnButtonProductLookup","PosLoginTextfield","dialogLoginSupport","PosMonthReport","PosMonthReportSetting","PosMonthSelect","PosOrderScreenAction","PosOrderScreenButtonGroup","PosOrderScreenInfoLeft","PosOrderScreenInfoRight","PosOrderScreenNumberKeyboard","PosOrderScreenProductCategoryMenu","PosOrderScreenReport","PosOrderScreenScrollWindow","PosOrderScreenTable","PosOrderScreenToolbar","TableExpansionRow","dialogProductLookup","dialogProductSearchResult","dialogSavedList","OrderHistoryDetail","OrderHistoryTable","dialogDateTimePicker","PosPaymentScreenBalance","PosPaymentScreenInfo","PosPaymentScreenKeyboard","PosPaymentScreenPaymentMethods","PosPaymentScreenReport","PosPaymentScreenTable","PosPaymentScreenToolbar","PosStore","MonthReport","OrderReport","StaffReport","XReport","ZReport","PosSettingsScreenContent","PosSettingsScreenSidebar","dialogNewCategory","dialogNewPayment","dialogNewProduct","dialogNewTaxCategory","dialogNewUser","dialogSelectAvatar","dialogUserDetail","PosSettingsScreenToolbar","viewArticle","viewArticleToolbar","viewCategory","viewCategoryToolbar","viewCompany","viewGeneral","viewHardware","viewPayment","viewPaymentToolbar","viewTax","viewTaxToolbar","viewUser","viewUserToolbar","PosStaffReportDialog","PosFileInputImage","PosRangeSlider","PosSelect","PosTextField","PosTimePicker","PosDatetimePicker","PosKeyboardFull","PosNumpad","PosSwitch","PosTablePagination","PivotTable2","FormBuilderRender","ComponentTreeRender","ComponentTreeRenderIframe","ComponentRenderSwitch","OrderStaffReport","OrderSalesByStaff","VBtn","VIcon","VDialog","VCard","VCardTitle","VCardText","VCardActions","VSpacer","VLayout","VDataTable","VTag","VDataIterator","VFlex","VDivider","VList","VListTile","VListTileContent","VContainer","VCalendar","VSheet","GFor","apexchart","VMenu","VListTileTitle","GSwitch","GComp","VSubheader","VTextField","DatetimePicker","GLayout","GCard","VueJsonPretty","VSelect","GridSelect","ReportMaker","GBtn2","GIcon","GImg","GAvatar","GBadge","GDialog","GToolbar","GSpacer","GDivider","GGridLayout","dialogNumberFilter","dialogTextFilter","dialogRangeFilter","PosLoginKeyboard","dialogConfirmDelete","dialogChangeValue","GSnackbar","GBtn","MyBtn","MyDialog","FileManager","MyProduct","TestInput","MyCard"],
+      selected: []
+    }
+  },
+  template: `
+    <g-combobox multiple clearable :items="items" v-model="selected" :clearable="clearable" 
+                :smallChips="smallChips" :deletableChips="deletableChips">
+    </g-combobox>
+  `
 })
 
 describe('test', function () {
