@@ -165,6 +165,7 @@ const componentsFactory = (component, componentName) => {
         const onClickItem = (e) => {
           state.showOptions = props.multiple
           toggleItem(e)
+          lazySearch.value = ''
         }
         addActiveClass()
 
