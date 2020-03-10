@@ -1,12 +1,13 @@
 import _ from 'lodash'
 
 function draggableInserted(el, binding) {
-  el.draggable = true
   const allowedDragEffects = ['none', 'copy', 'move', 'link', 'copyMove', 'copyLink', 'linkMove', 'all']
   const dragEffects = binding.modifiers && allowedDragEffects.includes(binding.modifiers) ? binding.modifiers :'all'
   const handlers = binding.value // event handlers
   let data = binding.arg || [] // transferred data as object {type, content} or array of such objects
   if (typeof data === 'object') data = [data]
+
+  el.setAttribute('draggable', true)
 
   // events: dragstart, dragend
   if (handlers) {
@@ -16,6 +17,11 @@ function draggableInserted(el, binding) {
         e.dataTransfer.effectAllowed = dragEffects
         handler(e)
       })
+    })
+  } else {
+    el.addEventListener('dragstart', e => {
+      data.forEach(item => e.dataTransfer.setData(item.type, item.content))
+      e.dataTransfer.effectAllowed = dragEffects
     })
   }
   el._eventListeners = handlers

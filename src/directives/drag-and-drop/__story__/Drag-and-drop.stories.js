@@ -15,6 +15,10 @@ export const defaultDnd = () => ({
   data() {
     return {
       dropData: '',
+      dragData: {
+        type: 'text/plain',
+        content: 'This is drop content'
+      }
     }
   },
   directives: {
@@ -22,9 +26,6 @@ export const defaultDnd = () => ({
     Droppable
   },
   methods: {
-    dragstart(e) {
-      e.dataTransfer.setData('text/plain', 'This is drop content!')
-    },
     dragover(e) {
       this.dropData = 'drag-over!'
       e.target.style.outline = '5px solid red'
@@ -36,7 +37,7 @@ export const defaultDnd = () => ({
   },
   template: `
     <fragment>
-      <div style="width: 600px; height: 300px; margin-bottom: 50px; background-color: aqua; color: black" v-draggable="{dragstart}">
+      <div style="width: 600px; height: 300px; margin-bottom: 50px; background-color: aqua; color: black" v-draggable:[dragData]>
         Draggable
       </div>
       <div style="width: 800px; height: 400px; background-color: #37474f; color: white" v-droppable="{dragover, drop}">
@@ -117,14 +118,12 @@ export const file = () => ({
   },
   methods: {
     dragover(e) {
-      e.preventDefault()
-      e.dataTransfer.items.length && (this.dropData = 'Files dragged over!')
+      e.dataTransfer.items.length && (this.dropData = 'Something dragged over!')
     },
     drop(e) {
-      e.preventDefault()
       if (e.dataTransfer.files && e.dataTransfer.files.length) {
         this.dropData = `Files: [${Array.from(e.dataTransfer.files).map(f => f.name).join(', ')}]`
-      }
+      } else this.dropData = `No files dropped!`
     }
   },
   data() {
