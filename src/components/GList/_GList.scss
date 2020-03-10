@@ -265,6 +265,8 @@
 
     .g-list-item-text {
       font-size: 14px;
+      text-overflow: ellipsis;
+      overflow: hidden;
 
       &__sub {
         font-size: 10px;
