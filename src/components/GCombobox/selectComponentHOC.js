@@ -274,7 +274,7 @@ const componentsFactory = (component, componentName) => {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                     'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
-                  ...props.multiple ? {value: tfValue.value} : {value: lazySearch.value},
+                  value: tfValue.value,
                   prependValue: prependText.value
                 },
                 on: {

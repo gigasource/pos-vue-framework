@@ -1,11 +1,12 @@
 <script>
-  import {getInternalValue} from '../../mixins/getVModel'
-  import {getZIndex, convertToUnit} from '../../utils/helpers'
+  import { getInternalValue } from '../../mixins/getVModel'
+  import { convertToUnit, getZIndex } from '../../utils/helpers'
   import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
-  import {computed, watch, onMounted, onBeforeUnmount} from '@vue/composition-api'
+  import { computed, onBeforeUnmount, onMounted, ref, watch } from '@vue/composition-api'
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
+  import dependent from '../../mixins/dependent';
 
   export default {
     name: 'GDialogContent',
@@ -44,6 +45,18 @@
 
       //content class for styling
       contentClass: String,
+
+      // dependent mixin
+      ...{
+        closeDependents: {
+          type: Boolean,
+          default: true,
+        },
+        isDependent: {
+          type: Boolean,
+          default: true,
+        },
+      },
     },
     setup(props, context) {
       const isActive = getInternalValue(props, context)
@@ -59,15 +72,16 @@
       // Show/hide overlay
       // TODO: convert to overlayable mixin
       const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen)
-
+      const getOpenDependentElements = ref(null)
       function initComponent() {
         attachToRoot(context.refs.overlay.$el)
         attachToRoot(context.refs.wrapper)
         detach(context.refs.container)
       }
 
-      onMounted(() => {
+      onMounted(function () {
         initComponent()
+        getOpenDependentElements.value = dependent(this)
       })
 
       // Close conditional for click outside directive
@@ -295,7 +309,7 @@
               },
               arg: {
                 closeConditional,
-                include: () => []
+                include: () => [...getOpenDependentElements.value()]
               }
             }
           ]
