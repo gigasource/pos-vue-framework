@@ -1,59 +1,62 @@
-import _ from 'lodash'
+import { DnDStore, getListeners, getNamespace, removeEventHandlers } from './DnDCommon';
 
-function draggableInserted(el, binding) {
+let handlers = {}
+
+function inserted(el, binding, vnode) {
   const allowedDragEffects = ['none', 'copy', 'move', 'link', 'copyMove', 'copyLink', 'linkMove', 'all']
-  const dragEffects = binding.modifiers && allowedDragEffects.includes(binding.modifiers) ? binding.modifiers :'all'
-  const handlers = binding.value // event handlers
-  let data = binding.arg || [] // transferred data as object {type, content} or array of such objects
-  if (typeof data === 'object') data = [data]
+  const dragEffect = binding.modifiers && allowedDragEffects.includes(binding.modifiers) ? binding.modifiers :'all'
+  const dragData = binding.value // event handlers
+  const vNodeListeners = getListeners(vnode)
 
   el.setAttribute('draggable', true)
 
-  // events: dragstart, dragend
-  if (handlers) {
-    _.forOwn(handlers, (handler, event) => {
-      el.addEventListener(event, e => {
-        data.forEach(item => e.dataTransfer.setData(item.type, item.content))
-        e.dataTransfer.effectAllowed = dragEffects
-        handler(e)
-      })
-    })
-  } else {
-    el.addEventListener('dragstart', e => {
-      data.forEach(item => e.dataTransfer.setData(item.type, item.content))
-      e.dataTransfer.effectAllowed = dragEffects
-    })
-  }
-  el._eventListeners = handlers
-
-  //todo: drag custom image
-}
-
-function droppableInserted(el, binding) {
-  // require handlers: ondrop, ondragover
-  const handlers = binding.value
-
-  //events: dragenter, dragover, dragleave, drop
-  if (handlers) {
-    _.forOwn(handlers, (handler, event) => {
-      el.addEventListener(event, e => {
-        // todo set drop effects, accept data types
-        handler(e)
-        e.preventDefault()
-        e.dataTransfer.clearData()
-      })
-    })
+  if (binding.modifiers && binding.modifiers.move) {
+    el.style.cursor = 'move';
   }
 
+  const transferKey = +new Date() + ''
+
+  handlers = {
+    dragstart : e => {
+      DnDStore.dragInProgressKey = transferKey
+
+      DnDStore.transferredData[transferKey] = {
+        dragData,
+        onDropCallback: null,
+        namespace: getNamespace(binding)
+      }
+
+      e.dataTransfer.setData('text/plain', transferKey)
+      e.dataTransfer.effectAllowed = dragEffect
+      e.dataTransfer.dropEffect = dragEffect
+      //todo set drag image
+
+      if (vNodeListeners['drag-start']) vNodeListeners['drag-start'](dragData, e)
+    },
+    dragend: (e) => {
+      // cancelled drop, todo put in userspace?
+      if (e.dataTransfer.dropEffect === 'none') return
+
+      DnDStore.dragInProgressKey = ''
+
+      if (DnDStore.transferredData[transferKey]) {
+        const callback = DnDStore.transferredData[transferKey].onDropCallback
+        if (callback && typeof callback === 'function') callback()
+        delete DnDStore.transferredData[transferKey]
+      }
+
+      if (vNodeListeners['drag-end']) vNodeListeners['drag-end'](dragData, e)
+    }
+  }
+
+  el.addEventListener('dragstart', handlers.dragstart)
+  el.addEventListener('dragend', handlers.dragend)
   el._eventListeners = handlers
 }
 
 function unbind(el) {
-  if (!el._eventListeners) return
-  _.forOwn(el._eventListeners, (handler, event) => {
-    el.removeEventListener(event, handler)
-  })
+  removeEventHandlers(el)
 }
 
-export const Draggable = {inserted: draggableInserted, unbind}
-export const Droppable = {inserted: droppableInserted, unbind}
+const Draggable = {inserted, unbind}
+export default Draggable
