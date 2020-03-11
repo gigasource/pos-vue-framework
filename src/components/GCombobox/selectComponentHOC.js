@@ -166,11 +166,10 @@ const componentsFactory = (component, componentName) => {
         const onClickItem = (e) => {
           state.showOptions = props.multiple
           toggleItem(e)
-          lazySearch.value = ''
+          lazySearch.value = props.multiple || props.chips ? '' : `${getText.value(e)}`
         }
         addActiveClass()
 
-        const { onListArrowDown, onListArrowUp } = getListEventHandlers(renderList.value, context)
         return <GList
           {...{
             props: {
@@ -180,9 +179,6 @@ const componentsFactory = (component, componentName) => {
             },
             on: {
               'click:item': e => onClickItem(e),
-              'keydown:down': e => onListArrowDown(e),
-              'keydown:up': e => onListArrowUp(e),
-              'keydown:enter': e => onClickItem(e)
             },
             scopedSlots: {
               'prepend-item': () => context.slots['prepend-item'] && context.slots['prepend-item'](),
@@ -206,7 +202,7 @@ const componentsFactory = (component, componentName) => {
         onInputDelete,
         onInputChange,
         inputAddSelection,
-      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput, unNormalize, renderList)
+      } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput, unNormalize, renderList, getText)
 
       const searchFocused = ref(false)
       const genSearchField = () => {
@@ -233,11 +229,11 @@ const componentsFactory = (component, componentName) => {
             else if (props.multiple) {
               if (index === selectionTexts.value.length - 1) {
                 if (props.component === 'select') return <div
-                  style={{ 'color': state.lastItemColor, 'padding': '0 5px 4px 0' }}>{item}</div>
+                  style={{ 'color': state.lastItemColor, 'padding': '4px 5px 4px 0' }}>{item}</div>
                 return <div
-                  style={{ 'color': state.lastItemColor, 'padding': '0 5px 4px 0' }}>{item}</div>
+                  style={{ 'color': state.lastItemColor, 'padding': '4px 5px 4px 0' }}>{item}</div>
               }
-              return <div style={{ 'padding': '0 5px 4px 0' }}>{item + ', '} </div>
+              return <div style={{ 'padding': '4px 5px 4px 0' }}>{item + ', '} </div>
             }
             //single in select
             else if (props.component === 'select') return selectionTexts.value.join('')
@@ -278,7 +274,7 @@ const componentsFactory = (component, componentName) => {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                     'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
-                  value: tfValue.value,
+                  ...props.multiple ? {value: tfValue.value} : {value: lazySearch.value},
                   prependValue: prependText.value
                 },
                 on: {
@@ -289,10 +285,13 @@ const componentsFactory = (component, componentName) => {
                   delete: onInputDelete,
                   enter: e => {
                     inputAddSelection()
-                    !props.multiple && toggleContent(e)
+                    !props.multiple && (state.showOptions = false)
                   },
                   keydown: onInputKeyDown,
-                  input: onInputChange,
+                  input: e => {
+                    onInputChange(e)
+                    state.showOptions = true
+                  },
                 },
                 style: {'flex-wrap': 'wrap'},
                 scopedSlots: textFieldScopedSlots
