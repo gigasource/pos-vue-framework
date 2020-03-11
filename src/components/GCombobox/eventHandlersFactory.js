@@ -1,7 +1,8 @@
 import { keyCodes } from '../../utils/helpers';
 import { ref, watch } from '@vue/composition-api'
 
-export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput, unNormalize, renderList) {
+export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput,
+                                      unNormalize, renderList, getText) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
   const activeListItemIndex = ref(-1)
 
@@ -42,9 +43,11 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
     }
   }, { lazy: true })
 
-  // reset index when suggestion list changes
   watch(renderList, newValues => {
-    if (!newValues.length) activeListItemIndex.value = -1
+    // reset index if picking single items
+    if (!newValues.length || !props.multiple) {
+      activeListItemIndex.value = -1
+    }// else make sure index does not exceed list length
     else if (activeListItemIndex.value >= newValues.length) activeListItemIndex.value = newValues.length - 1
   })
 
@@ -52,9 +55,10 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
     if (props.component !== 'select') resetSelectionsDisplay(state)
 
     if (e.keyCode === keyCodes.down) {
-      if (activeListItemIndex.value < renderList.value.length - 1) activeListItemIndex.value = activeListItemIndex.value + 1
+      if (!state.showOptions) state.showOptions = true
+      if (activeListItemIndex.value < renderList.value.length - 1) activeListItemIndex.value += 1
     } else if (e.keyCode === keyCodes.up) {
-      if (activeListItemIndex.value > 0) activeListItemIndex.value = activeListItemIndex.value - 1
+      if (activeListItemIndex.value > 0) activeListItemIndex.value -= 1
     }
   }
 
@@ -91,7 +95,9 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
         if (props.multiple) {
           selectedItem.value.pop()
           context.emit('input', selectedItem.value.map(unNormalize))
-        } else {context.emit('input', null)}
+        } else {
+          context.emit('input', null)
+        }
         return state.pressDeleteTimes
       }
     }
@@ -99,21 +105,28 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
 
   const inputAddSelection = () => {
     if (activeListItemIndex.value >= 0) {
-      if (props.multiple) selectedItem.value.push(renderList.value[activeListItemIndex.value])
-      let _value = props.multiple ? selectedItem.value.map(unNormalize) : renderList.value[activeListItemIndex.value]
-      lazySearch.value = ''
+      const rawSelected = renderList.value[activeListItemIndex.value];
+      if (props.multiple) selectedItem.value.push(rawSelected)
+      const _value = props.multiple ? selectedItem.value.map(unNormalize) : rawSelected
+      lazySearch.value = (props.multiple || props.chips) ? '' : `${getText.value(rawSelected)}`
       return context.emit('input', _value)
     }
 
-    if (props.component !== 'combobox') return
-    if (lazySearch.value.trim().length > 0) {
+    if (props.component === 'combobox' && lazySearch.value.trim().length > 0) {
       addValueFromInput((parseInt(lazySearch.value) || lazySearch.value))
-      lazySearch.value = ''
+      if (props.multiple || props.chips) lazySearch.value = ''
     }
   }
 
   return {
-    onChipCloseClick, clearSelection, onInputKeyDown, onInputClick, onInputBlur, onInputDelete, inputAddSelection, onInputChange
+    onChipCloseClick,
+    clearSelection,
+    onInputKeyDown,
+    onInputClick,
+    onInputBlur,
+    onInputDelete,
+    inputAddSelection,
+    onInputChange
   }
 
 }
@@ -122,24 +135,5 @@ export function resetSelectionsDisplay(state) {
   state.pressDeleteTimes = 0
   state.lastItemColor = '#1d1d1d'
 }
-
-export function getListEventHandlers(list, context) {
-
-  function onListArrowDown(index) {
-    index < ((list && list.length) - 1) ? index += 1 : index = 0
-    context.refs.menu.$refs.list.$el.getElementsByClassName('g-list-item')[index].focus()
-  }
-
-  function onListArrowUp(index) {
-    index > 0 ? index -= 1 : index = (list && (list.length - 1))
-    context.refs.menu.$refs.list.$el.getElementsByClassName('g-list-item')[index].focus()
-  }
-
-  return {
-    onListArrowDown,
-    onListArrowUp
-  }
-}
-
 
 

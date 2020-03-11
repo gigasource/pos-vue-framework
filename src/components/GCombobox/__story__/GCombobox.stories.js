@@ -318,9 +318,10 @@ export const GComboboxNormalizeProps = () => ({
 export const manyItems = () => ({
   components: {GCombobox},
   props: {
-    clearable: {default: boolean('clearable', true)},
-    smallChips: {default: boolean('smallChips', true)},
-    deletableChips: {default: boolean('deletable-chips', true)},
+    clearable: {default: boolean('clearable', false)},
+    smallChips: {default: boolean('smallChips', false)},
+    deletableChips: {default: boolean('deletable-chips', false)},
+    multiple: {default: boolean('multiple', false)},
   },
   data() {
     return {
@@ -329,9 +330,12 @@ export const manyItems = () => ({
     }
   },
   template: `
-    <g-combobox multiple clearable :items="items" v-model="selected" :clearable="clearable" 
-                :smallChips="smallChips" :deletableChips="deletableChips">
-    </g-combobox>
+    <div>
+      <div>value: {{selected}}</div>
+      <g-combobox clearable :items="items" v-model="selected" :clearable="clearable"
+                  :smallChips="smallChips" :deletableChips="deletableChips">
+      </g-combobox>
+    </div>
   `
 })
 
