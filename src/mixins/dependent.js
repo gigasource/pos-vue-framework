@@ -14,7 +14,7 @@ export default function dependent(vm) {
     const results = []
     for (let index = 0; index < children.length; index++) {
       const child = children[index]
-      if (child.isActive && child.isDependent) {
+      if (child.isDependent) {
         results.push(child)
       } else {
         results.push(...searchChildren(child.$children))

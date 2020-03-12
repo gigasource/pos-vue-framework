@@ -84,7 +84,6 @@
       const renderTimePickerInput = () => {
         return <g-menu
             value={state.showMenu} vOn:input={v => state.showMenu = v}
-            closeOnClick
             contentFillWidth={false}
             minWidth={300} nudgeBottom={10}
             scopedSlots={{
