@@ -4,6 +4,23 @@ import Droppable from '../droppable';
 import { Fragment } from 'vue-fragment';
 import Vue from 'vue'
 
+const simpleList = Vue.extend({
+  props: {
+    items: Array
+  },
+  template: `
+    <div style="height: 200px; width: 200px; outline: 1px solid black">
+      <slot>
+        <template v-for="item in items">
+          <slot name="item" :item="item">
+            <li>{{item.text}}</li>
+          </slot>
+        </template>
+      </slot>
+    </div>
+  `
+})
+
 export default {
   title: 'Drag and drop',
   decorators: [withKnobs]
@@ -82,13 +99,13 @@ export const components = () => ({
     },
     dragover(item, e) {
     },
-    dragend(items) {
+    dragend(items, e) {
       return (dropItem, e) => {
         console.log(dropItem)
         items.splice(items.indexOf(dropItem), 1)
       }
     },
-    drop(items) {
+    drop(items, e) {
       return (dropItem, e) => {
         console.log(dropItem)
         items.push(dropItem)
@@ -189,19 +206,51 @@ export const file = () => ({
     </div>`
 })
 
-const simpleList = Vue.extend({
-  props: {
-    items: Array
+export const allEvents = () => ({
+  data() {
+    return {
+      dropData: '',
+      dragData: '',
+      data: 'This is dropped content!'
+    }
+  },
+  directives: {
+    Draggable,
+    Droppable
+  },
+  methods: {
+    drag(data, e) {
+      this.dragData = '@drag-start'
+    },
+    dragging(data, e) {
+      this.dragData = '@dragging'
+    },
+    dragend(data, e) {
+      this.dragData = '@drag-end'
+    },
+    dragover(data, e) {
+      this.dropData = '@drag-over'
+      e.target.style.outline = '5px solid red'
+    },
+    drop(data, e) {
+      this.dropData = data
+      e.target.style.outline = 'none'
+    },
+    dragLeave(data, e) {
+      this.dropData = '@drag-leave'
+    }
   },
   template: `
-    <div style="height: 200px; width: 200px; outline: 1px solid black">
-      <slot>
-        <template v-for="item in items">
-          <slot name="item" :item="item">
-            <li>{{item.text}}</li>
-          </slot>
-        </template>
-      </slot>
-    </div>
-  `
+    <div>
+      <div style="width: 600px; height: 300px; margin-bottom: 50px; background-color: aqua; color: black" v-draggable.move="data" 
+           @drag-start="drag" @dragging="dragging" @drag-end="dragend">
+        Draggable
+        <div>{{dragData}}</div>
+      </div>
+      <div style="width: 800px; height: 400px; background-color: #37474f; color: white" v-droppable 
+           @drag-drop="drop" @drag-over="dragover" @drag-leave="dragLeave">
+        Drop zone
+        <div>{{dropData}}</div>
+      </div>
+    </div>`
 })

@@ -4,7 +4,7 @@ let handlers = {}
 
 function inserted(el, binding, vnode) {
   const allowedDragEffects = ['none', 'copy', 'move', 'link', 'copyMove', 'copyLink', 'linkMove', 'all']
-  const dragEffect = binding.modifiers && allowedDragEffects.includes(binding.modifiers) ? binding.modifiers :'all'
+  const dragEffect = binding.modifiers && allowedDragEffects.includes(binding.modifiers) ? binding.modifiers : 'all'
   const dragData = binding.value // event handlers
   const vNodeListeners = getListeners(vnode)
 
@@ -17,7 +17,7 @@ function inserted(el, binding, vnode) {
   const transferKey = +new Date() + ''
 
   handlers = {
-    dragstart : e => {
+    dragstart: e => {
       DnDStore.dragInProgressKey = transferKey
 
       DnDStore.transferredData[transferKey] = {
@@ -32,6 +32,11 @@ function inserted(el, binding, vnode) {
       //todo set drag image
 
       if (vNodeListeners['drag-start']) vNodeListeners['drag-start'](dragData, e)
+    },
+    drag: e => {
+      const { dragData } = DnDStore.transferredData[transferKey]
+
+      if (vNodeListeners['dragging']) vNodeListeners['dragging'](dragData, e)
     },
     dragend: (e) => {
       // cancelled drop, todo put in userspace?
@@ -50,6 +55,7 @@ function inserted(el, binding, vnode) {
   }
 
   el.addEventListener('dragstart', handlers.dragstart)
+  el.addEventListener('drag', handlers.drag)
   el.addEventListener('dragend', handlers.dragend)
   el._eventListeners = handlers
 }
@@ -58,5 +64,5 @@ function unbind(el) {
   removeEventHandlers(el)
 }
 
-const Draggable = {inserted, unbind}
+const Draggable = { inserted, unbind }
 export default Draggable
