@@ -206,6 +206,10 @@ export {
   pad,
 }
 
+import GSections from "./GExpansion/GSections";
+import GSectionsItem from "./GExpansion/GSectionsItem";
+import GSectionsHeader from "./GExpansion/GSectionsHeader";
+
 export {
   GAutocomplete,
   GAvatar,
@@ -341,4 +345,7 @@ export {
   GProgressCircular,
   GSlider,
   GRating,
+  GSections,
+  GSectionsItem,
+  GSectionsHeader,
 }
