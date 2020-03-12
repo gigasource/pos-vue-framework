@@ -87,8 +87,8 @@ export default function treeFactory({
         let length
         if (Array.isArray(this.parent.node_)) {
           length = this.parent.node_.length
-        } else if (Array.isArray(_itemChildren.value(this.parent.node_))) {
-          length = _itemChildren.value(this.parent.node_).length
+        } else if (this.parent.node[childrenProp]) {
+          length = this.parent.node[childrenProp].length
         } else {
           return false
         }
