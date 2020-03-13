@@ -99,59 +99,29 @@ export const components = () => ({
     },
     dragover(item, e) {
     },
-    dragend(items, e) {
-      return (dropItem, e) => {
-        console.log(dropItem)
-        items.splice(items.indexOf(dropItem), 1)
-      }
+    dragend(item, e, items) {
+      items.splice(items.indexOf(item), 1)
     },
-    drop(items, e) {
-      return (dropItem, e) => {
-        console.log(dropItem)
-        items.push(dropItem)
-      }
+    drop(item, e, items) {
+      items.push(item)
     },
-    dragend1(item, e) {
-      this.items1.splice(this.items1.indexOf(item), 1)
-    },
-    drop1(item, e) {
-      this.items1.push(item)
-    },
-    dragend2(item, e) {
-      this.items2.splice(this.items2.indexOf(item), 1)
-    },
-    drop2(item, e) {
-      this.items2.push(item)
-    },
-    dragend3(item, e) {
-      this.items3.splice(this.items3.indexOf(item), 1)
-    },
-    drop3(item, e) {
-      this.items3.push(item)
-    },
-    dragend4(item, e) {
-      this.items4.splice(this.items4.indexOf(item), 1)
-    },
-    drop4(item, e) {
-      this.items4.push(item)
-    },
-
   },
   template: `
     <div style="height: 500px">
       <div style="text-align: center; font-size: larger">Namespace 1</div>
       <div style="display: flex">
-        <simple-list :items="items1" v-droppable:namepsace1 @drag-drop="drop1" style="margin-right: 50px">
+        <simple-list :items="items1" v-droppable:namepsace1 @drag-drop="drop(...arguments, items1)" style="margin-right: 50px">
+          <template v-if="!items1.length">Drop items here!</template>
           <template #item="{item}">
-            <div v-draggable:namepsace1.move="item" @drag-end="dragend1" :key="item.text"
+            <div v-draggable:namepsace1.move="item" @drag-end="dragend(...arguments, items1)" :key="item.text"
                  style="border: 1px solid black; margin: 2px; padding: 2px">{{item.text}}
             </div>
           </template>
         </simple-list>
-        <simple-list :items="items2" v-droppable:namepsace1 @drag-drop="drop2">
+        <simple-list :items="items2" v-droppable:namepsace1 @drag-drop="drop(...arguments, items2)">
           <template v-if="!items2.length">Drop items here!</template>
           <template #item="{item}">
-            <div v-draggable:namepsace1.move="item" @drag-end="dragend2" :key="item.text"
+            <div v-draggable:namepsace1.move="item" @drag-end="dragend(...arguments, items2)" :key="item.text"
                  style="border: 1px solid black; margin: 2px; padding: 2px">{{item.text}}</div>
           </template>
         </simple-list>
@@ -159,17 +129,18 @@ export const components = () => ({
 
       <div style="text-align: center; font-size: larger">Namespace 2</div>
       <div style="display: flex">
-        <simple-list :items="items3" v-droppable:namepsace2 @drag-drop="drop3" style="margin-right: 50px">
+        <simple-list :items="items3" v-droppable:namepsace2 @drag-drop="drop(...arguments, items3)" style="margin-right: 50px">
+          <template v-if="!items3.length">Drop items here!</template>
           <template #item="{item}">
-            <div v-draggable:namepsace2.move="item" @drag-end="dragend3" :key="item.text"
+            <div v-draggable:namepsace2.move="item" @drag-end="dragend(...arguments, items3)" :key="item.text"
                  style="border: 1px solid black; margin: 2px; padding: 2px">{{item.text}}
             </div>
           </template>
         </simple-list>
-        <simple-list :items="items4" v-droppable:namepsace2 @drag-drop="drop4">
+        <simple-list :items="items4" v-droppable:namepsace2 @drag-drop="drop(...arguments, items4)">
           <template v-if="!items4.length">Drop items here!</template>
           <template #item="{item}">
-            <div v-draggable:namepsace2.move="item" @drag-end="dragend4" :key="item.text"
+            <div v-draggable:namepsace2.move="item" @drag-end="dragend(...arguments, items4)" :key="item.text"
                  style="border: 1px solid black; margin: 2px; padding: 2px">{{item.text}}</div>
           </template>
         </simple-list>

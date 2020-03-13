@@ -1,4 +1,5 @@
-import { DnDStore, getListeners, getNamespace, removeEventHandlers } from './DnDCommon';
+import { DnDStore, getListeners, getNamespace, removeEventHandlers, traverseDir } from './DnDCommon';
+
 let handlers = {}
 
 function inserted(el, binding, vnode) {
@@ -13,11 +14,26 @@ function inserted(el, binding, vnode) {
     return !namespace || !dropNamespace || namespace === dropNamespace
   }
 
-  const getHandler = (e, vNodeEvent, isDropEvent = false) => {
+  const getHandler = async (e, vNodeEvent, isDropEvent = false) => {
     e.preventDefault()
 
+    let fileList = []
+    if (isFileDrop && isDropEvent) {
+      const dropItems = e.dataTransfer.items
+      const entries = []
+      for (let i = 0; i < dropItems.length; i++) {
+        entries.push(dropItems[i].webkitGetAsEntry())
+      }
+      for (const entry of entries) {
+        await traverseDir(entry, fileList)
+      }
+      console.log(fileList)
+    } else {
+      fileList = (e.dataTransfer.files.length && e.dataTransfer.files) || e.dataTransfer.items
+    }
+
     const dragData = isFileDrop
-      ? (e.dataTransfer.files.length && e.dataTransfer.files) || e.dataTransfer.items // default to dataTransfer items
+      ? fileList
       : DnDStore.transferredData[DnDStore.dragInProgressKey].dragData
 
     if (isDropEvent && !isFileDrop) {
@@ -39,9 +55,9 @@ function inserted(el, binding, vnode) {
       }
     },
     dragleave: e => getHandler(e, 'drag-leave'),
-    drop: e => {
+    drop: async e => {
       e.stopPropagation()
-      getHandler(e, 'drag-drop', true)
+      await getHandler(e, 'drag-drop', true)
     }
   }
 
@@ -56,5 +72,5 @@ function unbind(el) {
   removeEventHandlers(el)
 }
 
-const Droppable = {inserted, unbind};
+const Droppable = { inserted, unbind };
 export default Droppable
