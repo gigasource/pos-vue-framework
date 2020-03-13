@@ -198,7 +198,7 @@
             ? 'g-treeview-item waves-effect'
             : null,
             props.rounded ? 'g-treeview-item__rounded' : null,
-            (!childrenVNodes || node.clickable) && treeStates[path].selected
+            (!childrenVNodes || node.clickable) && (treeStates[path].selected || path === props.value)
               ? 'g-treeview__active'
               : null],
           on: {
