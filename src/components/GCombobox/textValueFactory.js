@@ -77,6 +77,6 @@ function textValueMultiple(props, context, selectionTexts, addValueFromInput) {
 
 export default function textValueFactory(props, context, selectionTexts, addValueFromInput) {
   return props.multiple
-    ? textValueMultiple(props, context, selectionTexts, addValueFromInput)
-    : textValueSingle(props, context, selectionTexts, addValueFromInput)
+    ? textValueMultiple(...arguments)
+    : textValueSingle(...arguments)
 }
