@@ -51,7 +51,6 @@ function convertToFile(entry) {
 }
 
 export async function traverseDir(entry, list) {
-  console.log(entry.fullPath)
   const { fullPath, isDirectory, name } = entry
   const file = { fullPath, isDirectory, name }
   if (entry.isFile) {

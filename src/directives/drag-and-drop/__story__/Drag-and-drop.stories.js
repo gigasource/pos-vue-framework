@@ -159,20 +159,29 @@ export const file = () => ({
     },
     drop(files, e) {
       if (files && files.length) {
-        this.dropData = `Files: [${Array.from(files).map(f => f.name).join(', ')}]`
+        console.log(files)
+        this.files = files
+        this.dropData = `${files.length} files:`
       } else this.dropData = `No files dropped!`
     }
   },
   data() {
      return {
-       dropData: ''
+       dropData: '',
+       files: []
      }
   },
   template: `
     <div>
-      <div style="width: 800px; height: 400px; background-color: #37474f; color: white" v-droppable.file @drag-drop="drop" @drag-over="dragover">
+      <div style="width: 800px; height: 100vh; background-color: #37474f; color: white" 
+           v-droppable.file @drag-drop="drop" @drag-over="dragover">
         Drop zone
         <div>{{dropData}}</div>
+        <ul>
+          <li v-for="file in files" :style="[file.isDirectory && {'font-weight': 'bold', color: 'cyan'}]">
+            {{file.fullPath}}
+          </li>
+        </ul>
       </div>
     </div>`
 })

@@ -27,7 +27,6 @@ function inserted(el, binding, vnode) {
       for (const entry of entries) {
         await traverseDir(entry, fileList)
       }
-      console.log(fileList)
     } else {
       fileList = (e.dataTransfer.files.length && e.dataTransfer.files) || e.dataTransfer.items
     }
