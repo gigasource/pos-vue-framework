@@ -1,11 +1,12 @@
 import GMenu from '../GMenu/GMenu';
 import { getSelectionText, makeListSelectable } from '../GList/listSelectFactory';
 import { computed, reactive, ref } from '@vue/composition-api';
-import { getInputEventHandlers, getListEventHandlers } from './eventHandlersFactory';
+import { getInputEventHandlers } from './eventHandlersFactory';
 import GTextField from '../GInput/GTextField';
 import GChip from '../GChip/GChip';
 import GIcon from '../GIcon/GIcon';
 import GList from '../GList/GList';
+import textValueFactory from './textValueFactory';
 
 const componentsFactory = (component, componentName) => {
   return {
@@ -121,14 +122,7 @@ const componentsFactory = (component, componentName) => {
         unNormalize
       } = makeListSelectable(props, context)
 
-      const lazySearch = ref('')
       const selectionTexts = getSelectionText(props, selectedValue, listType, getText, getValue)
-
-      const tfValue = computed(() => {
-        if (props.component === 'select') return selectionTexts.value.join(', ')
-        return (props.component !== 'select' && !(props.multiple || props.chips || props.smallChips || props.deletableChips)) ? selectionTexts.value.join('') : lazySearch.value
-
-      })
 
       //for textField validation and state calculation in case textField doesn't have value itself
       const prependText = computed(() => {
@@ -143,6 +137,11 @@ const componentsFactory = (component, componentName) => {
         showOptions: false
       })
 
+      const {
+        tfValue,
+        updateValue,
+        searchText: lazySearch
+      } = textValueFactory(props, context, selectionTexts, addValueFromInput)
 
       //gen List
       const listSearchText = computed(() => {
@@ -198,10 +197,8 @@ const componentsFactory = (component, componentName) => {
         clearSelection,
         onInputKeyDown,
         onInputClick,
-        onInputBlur,
         onInputDelete,
-        onInputChange,
-        inputAddSelection,
+        activeListItemIndex
       } = getInputEventHandlers(props, context, state, selectedValue, lazySearch, listSearchText, addValueFromInput, unNormalize, renderList, getText)
 
       const searchFocused = ref(false)
@@ -213,7 +210,12 @@ const componentsFactory = (component, componentName) => {
                            ref="searchText"
                            autofocus={searchFocused.value}
                            vOn:keydown={onInputKeyDown}
-                           vOn:enter={inputAddSelection}
+                           vOn:enter={e => {
+                             if (activeListItemIndex.value >= 0) {
+                               const selectedItem = renderList.value[activeListItemIndex.value]
+                               if (selectedItem) toggleItem(selectedItem)
+                             }
+                           }}
                            style="margin-bottom: 0; background-color: transparent"
         />
       }
@@ -221,9 +223,9 @@ const componentsFactory = (component, componentName) => {
       const genSelectionSlot = () => {
         return selectionTexts.value.map((item, index) => {
             //chips
-            if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) return <GChip small={props.smallChips}
-                                                                                                                close={props.deletableChips}
-                                                                                                                vOn:close={() => onChipCloseClick(index)}>{item}
+            if (props.chips || props.allowDuplicates) return <GChip small={props.smallChips}
+                                                                    close={props.deletableChips}
+                                                                    vOn:close={() => onChipCloseClick(index)}>{item}
             </GChip>
             //multiple in 3 component no chips
             else if (props.multiple) {
@@ -261,6 +263,17 @@ const componentsFactory = (component, componentName) => {
           </div>,
       }
 
+      const onInputEnter = e => {
+        if (activeListItemIndex.value >= 0) {
+          const selectedItem = renderList.value[activeListItemIndex.value]
+          if (selectedItem) {
+            toggleItem(selectedItem)
+            tfValue.value = (props.multiple || props.chips)
+              ? '' : `${getText.value(selectedItem)}`
+          }
+        } else updateValue()
+      }
+
       const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
         function (toggleContent) {
           function inputClick() {
@@ -281,19 +294,19 @@ const componentsFactory = (component, componentName) => {
                   'click:clearIcon': clearSelection,
                   click: [toggleContent, inputClick],
                   focus: onInputClick,
-                  blur: onInputBlur,
+                  blur: updateValue,
                   delete: onInputDelete,
                   enter: e => {
-                    inputAddSelection()
+                    onInputEnter(e)
                     !props.multiple && (state.showOptions = false)
                   },
                   keydown: onInputKeyDown,
                   input: e => {
-                    onInputChange(e)
+                    tfValue.value = e
                     state.showOptions = true
                   },
                 },
-                style: {'flex-wrap': 'wrap'},
+                style: { 'flex-wrap': 'wrap' },
                 scopedSlots: textFieldScopedSlots
               }}
             />

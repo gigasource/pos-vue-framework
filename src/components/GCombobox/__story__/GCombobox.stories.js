@@ -37,8 +37,11 @@ export const GComboboxSingleSelectNoChips = () => ({
         {text: 'Cindy Baker', value: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
         {text: 'Ali Connors', value: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'},
       ],
-      selected: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
+      selected: null
     }
+  },
+  created() {
+    this.selected = this.items[1]
   },
   template: `
   <div data-app>
