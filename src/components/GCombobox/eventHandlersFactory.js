@@ -126,7 +126,8 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
     onInputBlur,
     onInputDelete,
     inputAddSelection,
-    onInputChange
+    onInputChange,
+    activeListItemIndex
   }
 
 }

@@ -1,6 +1,7 @@
 import { computed } from '@vue/composition-api'
 import groupable from '../../mixins/groupable';
 import _ from 'lodash'
+import {getInternalValue} from "../../utils/helpers";
 
 export function genHeaderFactory(itemHeader) {
   return computed(() => typeof itemHeader === 'function' ? itemHeader : item => item[itemHeader])
@@ -11,17 +12,7 @@ export function genContentFactory(itemContent) {
 }
 
 export const getExpansionModel = function (props, context) {
-  const model = computed({
-    get: () => {
-      if (!_.isNil(props.value)) {
-        return props.value;
-      }
-      return props.multiple ? [] : null;
-    },
-    set: (value) => {
-      context.emit('input', value);
-    }
-  });
+  const model = getInternalValue(props, context);
 
   const { toggleItem, isActiveItem } = groupable(props, model);
 
