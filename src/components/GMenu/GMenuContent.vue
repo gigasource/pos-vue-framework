@@ -192,7 +192,8 @@
         }
         if (props.minWidth) return convertToUnit(props.minWidth) || '0'
 
-        const minWidth = Math.min(dimensions.content.width, state.pageWidth);
+        let minWidth = Math.max(dimensions.content.width, dimensions.activator.width)
+        minWidth = Math.min(minWidth, state.pageWidth);
         const _calculatedMaxWidth = isNaN(calculatedMaxWidth.value) ? minWidth : parseInt(calculatedMaxWidth.value)
         return convertToUnit(Math.min(_calculatedMaxWidth, minWidth)) || 0;
       })
