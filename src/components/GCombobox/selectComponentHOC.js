@@ -274,6 +274,13 @@ const componentsFactory = (component, componentName) => {
         } else updateValue()
       }
 
+      const onBlur = e => {
+        const listRef = context.refs.menu.$refs.list
+
+        if (listRef && listRef.$el.contains(e.relatedTarget)) return
+        updateValue()
+      }
+
       const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
         function (toggleContent) {
           function inputClick() {
@@ -294,7 +301,7 @@ const componentsFactory = (component, componentName) => {
                   'click:clearIcon': clearSelection,
                   click: [toggleContent, inputClick],
                   focus: onInputClick,
-                  blur: updateValue,
+                  blur: onBlur,
                   delete: onInputDelete,
                   enter: e => {
                     onInputEnter(e)
