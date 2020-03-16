@@ -281,12 +281,13 @@ const componentsFactory = (component, componentName) => {
         updateValue()
       }
 
-      const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
-        function (toggleContent) {
-          function inputClick() {
-            searchFocused.value = true
-          }
+      const inputClick = () => {
+        searchFocused.value = true
+      }
 
+      const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
+        function (toggleContent, props, state, { tfValue, prependText }, eventHandlers, textFieldScopedSlots) {
+          const { clearSelection, onInputClick, onInputFocus, onBlur, onInputDelete, onInputEnter, onInputKeyDown } = eventHandlers
           return (
             <GTextField
               {...{
@@ -299,8 +300,8 @@ const componentsFactory = (component, componentName) => {
                 },
                 on: {
                   'click:clearIcon': clearSelection,
-                  click: [toggleContent, inputClick],
-                  focus: onInputClick,
+                  click: [toggleContent, onInputClick],
+                  focus: onInputFocus,
                   blur: onBlur,
                   delete: onInputDelete,
                   enter: e => {
@@ -356,7 +357,17 @@ const componentsFactory = (component, componentName) => {
             eager: props.eager,
           },
           scopedSlots: {
-            activator: ({ toggleContent }) => genTextField(toggleContent),
+            activator: ({ toggleContent }) =>
+              genTextField(toggleContent, props, state, { tfValue, prependText },
+                {
+                  clearSelection,
+                  onInputClick: inputClick,
+                  onInputFocus: onInputClick,
+                  onBlur,
+                  onInputDelete,
+                  onInputEnter,
+                  onInputKeyDown
+                }, textFieldScopedSlots),
             default: () => genMenuContent(state)
           },
           on: {
