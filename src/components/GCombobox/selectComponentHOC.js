@@ -223,10 +223,10 @@ const componentsFactory = (component, componentName) => {
       const genSelectionSlot = () => {
         return selectionTexts.value.map((item, index) => {
             //chips
-            if (props.chips || props.allowDuplicates) return <GChip small={props.smallChips}
-                                                                    close={props.deletableChips}
-                                                                    vOn:close={() => onChipCloseClick(index)}>{item}
-            </GChip>
+          if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) return <GChip small={props.smallChips}
+                                                                                                              close={props.deletableChips}
+                                                                                                              vOn:close={() => onChipCloseClick(index)}>{item}
+          </GChip>
             //multiple in 3 component no chips
             else if (props.multiple) {
               if (index === selectionTexts.value.length - 1) {
@@ -339,7 +339,7 @@ const componentsFactory = (component, componentName) => {
       }
 
       const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
-        if (!renderList.value.length && !context.slots['no-data']) return <div></div>
+        if (!renderList.value.length && !context.slots['no-data'] && !props.searchable) return <div></div>
 
         return [
           props.component === 'select' && props.searchable ? genSearchField() : null,
