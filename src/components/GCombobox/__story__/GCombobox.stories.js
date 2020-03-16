@@ -170,7 +170,7 @@ export const GComboboxMultiSelectAllowDuplicates = () => ({
     }
   },
   template: `
-  <div data-app style="width: 50%">
+  <div data-app>
   <div>{{selected}}</div>
    <g-combobox :items="items" 
               :item-text="itemText" 
