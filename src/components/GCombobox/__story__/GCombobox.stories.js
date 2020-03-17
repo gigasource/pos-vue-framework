@@ -51,7 +51,7 @@ export const GComboboxSingleSelectNoChips = () => ({
   returnObject
   itemText="text"
   itemValue="value"        
-             v-model="selected" >  
+             v-model="selected" :outlined="outlined">  
 </g-combobox>
 </div>`,
 })
