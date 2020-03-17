@@ -653,26 +653,11 @@ export const TextFieldBoostrap = () => ({
 								 :required="required"
 								 :clearable="clearable"
 								 :rules="[rules.max]">
-      <template #prepend-content>
+      <template v-slot:prepend-outer>
         Prepend
       </template>
-      <template v-slot:prepend="{onClick}">
-        <div class="bs-tf-input-prepend" @click="onClick">
-          <span class="bs-tf-input-text">
-            Prepend 2
-          </span>
-        </div>
-      </template>
-    
-      <template #append-content>
+      <template v-slot:append-outer>
         Append
-      </template>
-      <template v-slot:append="{onClick}">
-        <div class="bs-tf-input-prepend" @click="onClick">
-          <span class="bs-tf-input-text">
-            Append 2
-          </span>
-        </div>
       </template>
     </g-text-field-bs>`
 

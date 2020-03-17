@@ -3,6 +3,7 @@ import { getSelectionText, makeListSelectable } from '../GList/listSelectFactory
 import { computed, reactive, ref } from '@vue/composition-api';
 import { getInputEventHandlers } from './eventHandlersFactory';
 import GTextField from '../GInput/GTextField';
+import GTextFieldBs from '../GInput/GTextFieldBs';
 import GChip from '../GChip/GChip';
 import GIcon from '../GIcon/GIcon';
 import GList from '../GList/GList';
@@ -56,8 +57,9 @@ const componentsFactory = (component, componentName) => {
         type: {
           type: String,
           default: 'text'
-        }
-
+        },
+        textFieldComponent: String,
+        textFieldClass: [Array, String]
       },
 
       //list props
@@ -216,7 +218,8 @@ const componentsFactory = (component, componentName) => {
                                if (selectedItem) toggleItem(selectedItem)
                              }
                            }}
-                           style="margin-bottom: 0; background-color: transparent"
+                           class={`g-${props.component}__search`}
+                           style="margin: 8px 8px 0; background-color: transparent; width: auto"
         />
       }
 
@@ -285,11 +288,14 @@ const componentsFactory = (component, componentName) => {
         searchFocused.value = true
       }
 
+
       const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
         function (toggleContent, props, state, { tfValue, prependText }, eventHandlers, textFieldScopedSlots) {
           const { clearSelection, onInputClick, onInputFocus, onBlur, onInputDelete, onInputEnter, onInputKeyDown } = eventHandlers
+          const textfield = props.textFieldComponent ? props.textFieldComponent : 'GTextField'
+          const classes = props.textFieldClass ? props.textFieldClass : []
           return (
-            <GTextField
+            <textfield
               {...{
                 props: {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
@@ -315,6 +321,7 @@ const componentsFactory = (component, componentName) => {
                   },
                 },
                 style: { 'flex-wrap': 'wrap' },
+                class: classes,
                 scopedSlots: textFieldScopedSlots
               }}
             />
@@ -348,7 +355,7 @@ const componentsFactory = (component, componentName) => {
         ]
       }
       function genMenu(state) {
-        const nudgeBottom = computed(() => !!props.hint ? '22px' : '2px')
+        const nudgeBottom = computed(() => props.textFieldComponent && props.textFieldComponent !== 'GTextField' ? '2px' : (!!props.hint ? '22px' : '2px'))
         return <GMenu {...{
           props: {
             ...Object.assign(defaultMenuProps, props.menuProps),
