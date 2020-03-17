@@ -20,7 +20,7 @@
           :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused},
                     $scopedSlots['prepend-outer'] && 'bs-tf-input-has-prepend', $scopedSlots['append-outer'] && 'bs-tf-input-has-append']">
         <slot name="prepend-inner" :on-click="onClickPrependInner">
-          <g-icon class="ml-2" :size="iconSize" :color="color" v-if="prependIcon" :svg="checkSVGIcon(prependIcon)">{{prependIcon}}</g-icon>
+          <g-icon class="ml-2" :size="iconSize" :color="iconColor" v-if="prependIcon" :svg="checkSVGIcon(prependIcon)">{{prependIcon}}</g-icon>
         </slot>
         <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input">
           <slot name="input-slot"/>
@@ -36,7 +36,7 @@
         </component>
         <div class="bs-tf-append-inner" v-if="$scopedSlots['append-inner'] || (isDirty && clearable)">
           <slot name="clearable-slot">
-            <g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick">{{clearIcon}}</g-icon>
+            <g-icon v-if="isDirty && clearable" :color="iconColor" @click.stop="onClearIconClick">{{clearIcon}}</g-icon>
           </slot>
           <slot name="append-inner" :on-click="onClickAppendInner"></slot>
         </div>
@@ -79,6 +79,7 @@
         label: String,
         placeholder: String,
         borderColor: String,
+        iconColor: String,
         //input states
         disabled: Boolean,
         readonly: Boolean,
