@@ -454,7 +454,7 @@ export const gListNormalPrependAvatar = () => ({
   },
   template:
     `
-      <g-list :items="items" rounded dense prepend-type="avatar" itemText="text">
+      <g-list :items="items" rounded dense prepend-type="avatar" itemText="text" multi-section>
       </g-list>
       `,
 })
@@ -478,7 +478,7 @@ export const gListNormalPrependIcon = () => ({
   },
   template:
     `
-      <g-list :items="items" itemText="text" rounded dense prepend-type="icon">
+      <g-list :items="items" itemText="text" rounded dense prepend-type="icon" multi-section>
       </g-list>
       `,
 })
