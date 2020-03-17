@@ -10,32 +10,34 @@
 			transition: transform 0.4s;
 		}
 
-		.input {
-			display: flex;
-			flex-wrap: wrap;
-      flex: 1;
-		}
-
-		.g-tf-input {
-			flex-wrap: wrap;
-			display: flex;
-		}
-
-		input {
-			cursor: text;
-      min-width: 48px;
-      flex: 1;
-		}
-
     .bs-tf-inner-input-group {
-      padding-left: 12px;
       flex-wrap: wrap;
+    }
 
-      .bs-tf-input {
-        padding-left: 0;
-        padding-right: 0;
-        flex: 1 1 0;
+    .g-tf__filled:not(.g-tf__outlined) {
+      padding-left: 12px;
+      padding-bottom: 8px;
+
+      .input {
+        align-items: flex-end;
       }
+
+      .g-tf-label.g-tf-label__active {
+        transform: translateY(-16px) scale(0.75);
+      }
+
+      &:before, &:after {
+        margin-left: -12px;
+      }
+
+      .g-tf-append__inner {
+        align-self: center;
+        transform: translateY(4px);
+      }
+    }
+
+    .g-tf__solo {
+      padding-left: 12px;
     }
 	}
 
