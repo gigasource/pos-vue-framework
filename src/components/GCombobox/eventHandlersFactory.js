@@ -14,6 +14,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
 
   function clearSelection() {
     context.emit('input', props.multiple ? [] : '')
+    lazySearch.value = ''
   }
 
   // change focused element when index changes
