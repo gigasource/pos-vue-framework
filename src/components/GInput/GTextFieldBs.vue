@@ -237,6 +237,7 @@
     border: 1px solid #ced4da;
     border-radius: 4px;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    padding-left: 12px;
 
     &__active {
         outline: 0;
@@ -285,7 +286,7 @@
 
   .bs-tf-input {
     flex: 1 1 auto;
-    padding: 6px 12px;
+    padding: 6px 0;
     line-height: 24px;
     font-size: 16px;
     background-clip: padding-box;

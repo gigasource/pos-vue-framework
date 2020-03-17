@@ -53,7 +53,10 @@ input[type=text] {
   }
 
   .input {
-    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
 }
 
@@ -97,12 +100,15 @@ input[type=text] {
 
   &-input {
     width: 100%;
+    flex: 1;
     padding: 4px 0;
     line-height: 24px;
     font-size: 16px;
     outline: none;
     background-color: transparent;
     color: rgba(0, 0, 0, 0.87);
+    min-width: 0;
+    cursor: text;
   }
 
   &-affix {
