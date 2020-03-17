@@ -115,7 +115,7 @@ export function makeListSelectable(props, context, internalItems) {
       } else {
         if (normalizedValue.value.length === 1 && props.mandatory) emitValue(normalizedValue.value.map(unNormalize()))
         else {
-          _normalizedVal.splice(normalizedValue.value.indexOf(item))
+          _normalizedVal.splice(normalizedValue.value.indexOf(item), 1)
           emitValue(_normalizedVal.map(unNormalize))
         }
       }

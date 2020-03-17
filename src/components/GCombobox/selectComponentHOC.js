@@ -223,10 +223,10 @@ const componentsFactory = (component, componentName) => {
       const genSelectionSlot = () => {
         return selectionTexts.value.map((item, index) => {
             //chips
-            if (props.chips || props.allowDuplicates) return <GChip small={props.smallChips}
-                                                                    close={props.deletableChips}
-                                                                    vOn:close={() => onChipCloseClick(index)}>{item}
-            </GChip>
+          if (props.chips || props.smallChips || props.deletableChips || props.allowDuplicates) return <GChip small={props.smallChips}
+                                                                                                              close={props.deletableChips}
+                                                                                                              vOn:close={() => onChipCloseClick(index)}>{item}
+          </GChip>
             //multiple in 3 component no chips
             else if (props.multiple) {
               if (index === selectionTexts.value.length - 1) {
@@ -274,12 +274,20 @@ const componentsFactory = (component, componentName) => {
         } else updateValue()
       }
 
-      const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
-        function (toggleContent) {
-          function inputClick() {
-            searchFocused.value = true
-          }
+      const onBlur = e => {
+        const listRef = context.refs.menu.$refs.list
 
+        if (listRef && listRef.$el.contains(e.relatedTarget)) return
+        updateValue()
+      }
+
+      const inputClick = () => {
+        searchFocused.value = true
+      }
+
+      const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
+        function (toggleContent, props, state, { tfValue, prependText }, eventHandlers, textFieldScopedSlots) {
+          const { clearSelection, onInputClick, onInputFocus, onBlur, onInputDelete, onInputEnter, onInputKeyDown } = eventHandlers
           return (
             <GTextField
               {...{
@@ -292,9 +300,9 @@ const componentsFactory = (component, componentName) => {
                 },
                 on: {
                   'click:clearIcon': clearSelection,
-                  click: [toggleContent, inputClick],
-                  focus: onInputClick,
-                  blur: updateValue,
+                  click: [toggleContent, onInputClick],
+                  focus: onInputFocus,
+                  blur: onBlur,
                   delete: onInputDelete,
                   enter: e => {
                     onInputEnter(e)
@@ -331,7 +339,7 @@ const componentsFactory = (component, componentName) => {
       }
 
       const genMenuContent = (typeof props.genContent === 'function' && props.genContent) || function (state) {
-        if (!renderList.value.length && !context.slots['no-data']) return <div></div>
+        if (!renderList.value.length && !context.slots['no-data'] && !props.searchable) return <div></div>
 
         return [
           props.component === 'select' && props.searchable ? genSearchField() : null,
@@ -349,7 +357,17 @@ const componentsFactory = (component, componentName) => {
             eager: props.eager,
           },
           scopedSlots: {
-            activator: ({ toggleContent }) => genTextField(toggleContent),
+            activator: ({ toggleContent }) =>
+              genTextField(toggleContent, props, state, { tfValue, prependText },
+                {
+                  clearSelection,
+                  onInputClick: inputClick,
+                  onInputFocus: onInputClick,
+                  onBlur,
+                  onInputDelete,
+                  onInputEnter,
+                  onInputKeyDown
+                }, textFieldScopedSlots),
             default: () => genMenuContent(state)
           },
           on: {
