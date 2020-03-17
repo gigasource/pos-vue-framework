@@ -37,7 +37,9 @@ export function getCssColor(color) {
   if (!color || isCssColor(color)) {
     return color
   }
-  return colors[color.trim().split(' ').join('-')]
+  const materialColor =  colors[color.trim().split(' ').join('-')]
+  if(materialColor) return materialColor
+  return color
 }
 
 /**
@@ -181,4 +183,52 @@ export function parseHex(hex) {
   }
 
   return `#${hex}`.toUpperCase().substr(0, 9)
+}
+
+export function getHslColor(color) {
+  let fakeDiv = document.createElement("div");
+  fakeDiv.style.color = color;
+  document.body.appendChild(fakeDiv);
+
+  let cs = window.getComputedStyle(fakeDiv),
+      pv = cs.getPropertyValue("color");
+
+  document.body.removeChild(fakeDiv);
+  let rgb = [], a = 1
+  if(_.startsWith(pv, 'rgba')) {
+    rgb = pv.substr(5).split(")")[0].split(",")
+    a = rgb[3]
+  } else
+    rgb = pv.substr(4).split(")")[0].split(",")
+
+  let r = rgb[0] / 255,
+      g = rgb[1] / 255,
+      b = rgb[2] / 255,
+      cmin = Math.min(r,g,b),
+      cmax = Math.max(r,g,b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+
+  if (delta === 0)
+    h = 0;
+  else if (cmax === r)
+    h = ((g - b) / delta) % 6;
+  else if (cmax === g)
+    h = (b - r) / delta + 2;
+  else
+    h = (r - g) / delta + 4;
+
+  h = Math.round(h * 60);
+
+  if (h < 0)
+    h += 360;
+
+  l = (cmax + cmin) / 2;
+  s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+  s = +(s * 100).toFixed(1);
+  l = +(l * 100).toFixed(1);
+
+  return {h, s, l, a}
 }

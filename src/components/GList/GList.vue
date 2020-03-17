@@ -153,7 +153,7 @@
                 <GImg src={item.prepend}/>
               </GAvatar>
             case 'image':
-              return <g-img src={item.prepend}/>
+              return <GImg src={item.prepend}/>
             default:
               return item.prepend
           }
@@ -284,17 +284,10 @@
       if (props.selectable) {
         provide('getListEvents', getListEvents)
         const add = (item) => {
-          if (renderList.value.includes(item)) {
-            return {
-              isItemAdded: false,
-              index: -1
-            }
-          } else {
-            internalItems.value.push(item)
-            return {
-              isItemAdded: true,
-              index: renderList.value.findIndex(el => el === item)
-            }
+          if (renderList.value.includes(item)) internalItems.value.push(item)
+          return {
+            isItemAdded: true,
+            index: renderList.value.indexOf(item)
           }
         }
         provide('add', add)

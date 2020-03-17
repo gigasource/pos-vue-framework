@@ -47,15 +47,15 @@ export const GSelectSingle = () => ({
   template: `
 <div data-app>
 {{selected}}
-	<g-select
-	:label="label"
-			width="100%"
-			:items="items"
-			v-model="selected"
-			:itemText="itemText"
-			:itemValue="itemValue"
-			:returnObject="returnObject"
-	>
+	<g-select :label="label"
+            width="100%"
+            :items="items"
+            v-model="selected"
+            :itemText="itemText"
+            :itemValue="itemValue"
+            :returnObject="returnObject"
+            :clearable="clearable"
+  >
 	</g-select>
 </div>
 `,
