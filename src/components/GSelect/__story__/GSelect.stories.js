@@ -424,6 +424,27 @@ export const GSelectArrayOfNumber = () => ({
 	</g-select>
 </div>`
 })
+
+export const GSelectBorderHover = () => ({
+  components: {GSelect},
+  props: {
+    dense: { default: boolean('Dense', true)}
+  },
+  data() {
+    return {
+      items: ['Normal','Bold', 'Light','100','200','300','400','500','600','700','800','900'],
+      select1: null,
+      select2: 'Normal',
+    }
+  },
+  template: `<div data-app><p>Hover the select to show its border.</p>
+    With label
+    <g-select :items="items" v-model="select1" label="Font weight" :arrow="false" :dense="dense" text-field-class="g-tf__border-hover"/>
+    Without label
+    <g-select :items="items" prefix="D" v-model="select2" :arrow="false" :dense="dense" text-field-class="g-tf__border-hover"/>
+  </div>`
+})
+
 export const test2 = () => ({
   components: {},
   setup() {

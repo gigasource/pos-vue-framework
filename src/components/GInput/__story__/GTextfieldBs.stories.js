@@ -96,3 +96,25 @@ export const pos = () => ({
       <g-text-field-bs class="bs-tf__pos" :label="label"/>
 </div>`
 })
+
+
+export const differentSize = () => ({
+  components: {GTextFieldBs},
+  template: `<div>
+    <g-text-field-bs label="Small" small/>
+    <g-text-field-bs label="Normal"/>
+    <g-text-field-bs label="Large" large/>
+</div>`
+})
+
+export const borderHover = () => ({
+  components: {GTextFieldBs},
+  props: {
+    label: { default: text('Label', 'Label')},
+    disabled: { default: boolean('Disabled', false)}
+  },
+  template: `<div>
+      With class 'bs-tf__border-hover'. Hover input below to show it border
+      <g-text-field-bs class="bs-tf__border-hover" :label="label" :disabled="disabled"/>
+</div>`
+})
