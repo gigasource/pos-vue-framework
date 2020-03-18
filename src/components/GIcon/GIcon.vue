@@ -52,8 +52,8 @@
       function genSvgIcon(svgName, iconClass, iconStyle) {
         iconClass['g-icon__svg'] = true
         iconClass[svgName] = true
-        iconStyle['width'] = getSize(props)
-        iconStyle['height'] = getSize(props)
+        iconStyle['width'] = iconStyle['font-size']
+        iconStyle['height'] = iconStyle['font-size']
 
         return <div class={iconClass}
                     style={iconStyle}
@@ -71,14 +71,23 @@
           'g-icon__link': !!context.listeners.click,
         }
 
-        const iconStyle = {
-          ...iconColor.value.style,
-          'font-size': getSize(props),
+        let iconName = '', iconSize
+        if(typeof icon === 'string' && icon.includes('@')) {
+          const info = icon.split('@')
+          iconName = info[0]
+          iconSize = info[1]
+        } else {
+          iconName = icon
         }
 
-        if (props.svg) return genSvgIcon(icon, iconClass, iconStyle)
-        if (isFontAwesome5(icon)) return genFontAwesomeIcon(icon, iconClass, iconStyle)
-        return genMaterialIcon(icon, iconClass, iconStyle)
+        const iconStyle = {
+          ...iconColor.value.style,
+          'font-size': iconSize ? convertToUnit(iconSize) : getSize(props),
+        }
+
+        if (props.svg || isCustomSVGIcon(iconName)) return genSvgIcon(iconName, iconClass, iconStyle)
+        if (isFontAwesome5(iconName)) return genFontAwesomeIcon(iconName, iconClass, iconStyle)
+        return genMaterialIcon(iconName, iconClass, iconStyle)
       }
 
       return {
@@ -94,6 +103,10 @@
 
   function isFontAwesome5(icon) {
     return ['fas', 'far', 'fal', 'fab'].some(val => icon.includes(val))
+  }
+
+  function isCustomSVGIcon(icon) {
+    return _.startsWith(icon, 'icon-')
   }
 
   function getSize(props) {
