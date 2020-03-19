@@ -715,6 +715,32 @@ export const AllInputTypes = () => ({
         </g-row>
       </template>`
 });
+
+export const textFieldBorderHover = () => ({
+  components: {GTextField, GIcon},
+  props: {
+    dense: { default: boolean('Dense', true)}
+  },
+  data() {
+    return {
+      value: '100px',
+      value2: '',
+      value3: '90deg'
+    }
+  },
+  template: `<div> Hover the inputs to show their border
+      <p>Having prefix</p>
+      <g-text-field prefix="W" :dense="dense" class="g-tf__border-hover" v-model="value"/>
+      <p>Having prepend icon</p>
+      <g-text-field prependInnerIcon="edit" :dense="dense" class="g-tf__border-hover" v-model="value"/>
+      <p>Having label</p>
+      <g-text-field label="Width" :dense="dense" class="g-tf__border-hover" v-model="value2" />
+      <p>Disabled</p>
+      <g-text-field :dense="dense" class="g-tf__border-hover" disabled/>
+      <g-text-field dense class="g-tf__border-hover" v-model="value3" prependInnerIcon="icon-pns-rotation@16"/>
+</div>`
+})
+
 // testing
 import Vue from 'vue/dist/vue.common.js'
 import GTextField from '../GTextField';

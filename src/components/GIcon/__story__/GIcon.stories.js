@@ -1,4 +1,4 @@
-import {boolean, text, withKnobs} from '@storybook/addon-knobs';
+import {boolean, text, withKnobs, number} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
 import GIcon from '../GIcon';
 import GBtn from "../../GBtn/GBtn";
@@ -65,6 +65,17 @@ export const iconInButton = () => ({
   template: `<div><g-btn>Buy-this-<b>{{color}}</b>-car<g-icon :right="right" :left="left" :color="color" :dense="dense" :disabled="disabled" >fas fa-car</g-icon></g-btn></div>`,
 })
 
-
-// import Vue from 'vue/dist/vue.common.js'
-
+export const iconSize = () => ({
+  components: {GIcon},
+  props: {
+    icon: { default: text('Icon', 'home')},
+    size: { default: number('Size', 18)},
+    icon2: { default: text('Icon 2', 'home@18')}
+  },
+  template: `<div>
+      <p>Using prop size</p> 
+      <g-icon :size="size">{{icon}}</g-icon>
+      <p>Using notation: iconName@iconSize to setup size for icon</p>
+      <g-icon>{{icon2}}</g-icon>
+</div>`
+})

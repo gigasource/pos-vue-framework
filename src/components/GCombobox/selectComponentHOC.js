@@ -53,6 +53,15 @@ const componentsFactory = (component, componentName) => {
           default: 'clear'
         },
         clearIconColor: String,
+        arrow: {
+          type: Boolean,
+          default: true
+        },
+        arrowIcon: {
+          type: String,
+          default: 'arrow_drop_down'
+        },
+        arrowIconColor: String,
         rules: Array,
         type: {
           type: String,
@@ -177,6 +186,7 @@ const componentsFactory = (component, componentName) => {
               items: renderList.value,
               itemText: props.itemText,
               inMenu: true,
+              dense: props.dense,
             },
             on: {
               'click:item': e => onClickItem(e),
@@ -249,16 +259,18 @@ const componentsFactory = (component, componentName) => {
 
       }
       const textFieldScopedSlots = {
-        ...context.slots['append-inner']
-          ? {
-            'append-inner': ({ iconColor }) =>
-              [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
-                context.slots['append-inner'] && context.slots['append-inner']()]
-          }
-          : {
-            'append-inner': ({ iconColor }) =>
-              <GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>
-          },
+        ...props.arrow ?
+            context.slots['append-inner']
+              ? {
+                'append-inner': ({ iconColor }) =>
+                  [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+                    context.slots['append-inner'] && context.slots['append-inner']()]
+              }
+              : {
+                'append-inner': ({ iconColor }) =>
+                  <GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>
+              }
+            : context.slots['append-inner'] && { 'append-inner': () => context.slots['append-inner']() },
         ...context.slots['append-outer'] && { 'append-outer': () => context.slots['append-outer']() },
         'input-slot': () =>
           <div class="input-slot" style={{ display: 'contents' }}>
@@ -298,7 +310,7 @@ const componentsFactory = (component, componentName) => {
             <textfield
               {...{
                 props: {
-                  ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped',
+                  ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped', 'dense',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                     'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
                   value: tfValue.value,

@@ -11,6 +11,8 @@ import '../src/style/main.scss'
 import '../src/plugin/waves'
 import '@fortawesome/fontawesome-free/css/all.css'
 
+import GigaComponents from "../index";
+
 addParameters({
   options: {
     theme: themes.light,
@@ -23,6 +25,8 @@ addParameters({
 Vue.use(VueRouter);
 Vue.use(PortalVue);
 Vue.use(VueCompositionAPI);
+
+Vue.use(GigaComponents);
 
 import {
   storiesOf, specs, describe, it,

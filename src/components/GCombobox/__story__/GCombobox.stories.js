@@ -342,6 +342,26 @@ export const manyItems = () => ({
   `
 })
 
+export const GComboboxBorderHover = () => ({
+  components: {GCombobox},
+  props: {
+    dense: { default: boolean('Dense', true)}
+  },
+  data() {
+    return {
+      items: ['Normal','Bold', 'Light','100','200','300','400','500','600','700','800','900'],
+      cbb1: null,
+      cbb2: 'Normal'
+    }
+  },
+  template: `<div data-app><p>Hover the combobox to show its border.</p>
+    With label
+    <g-combobox :items="items" v-model="cbb1" :arrow="false" label="Font weight" :dense="dense" text-field-class="g-tf__border-hover"/>
+    Without label
+    <g-combobox :items="items" v-model="cbb2" :arrow="false" :dense="dense" text-field-class="g-tf__border-hover"/>
+  </div>`
+})
+
 describe('test', function () {
   it('should', function () {
     const vm = new Vue(test1()).$mount();

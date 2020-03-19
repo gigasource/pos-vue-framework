@@ -469,6 +469,26 @@ export const GAutocompleteMultiSelectAllowDuplicate = () => ({
 </div>`,
 })
 
+export const GAutocompleteBorderHover = () => ({
+  components: {GAutocomplete},
+  props: {
+    dense: { default: boolean('Dense', true)}
+  },
+  data() {
+    return {
+      items: ['Normal','Bold', 'Light','100','200','300','400','500','600','700','800','900'],
+      select1: 'Normal',
+      select2: null,
+    }
+  },
+  template: `<div data-app><p>Hover the autocomplete to show its border.</p>
+    With label
+    <g-autocomplete :items="items" v-model="select2" label="Font weight" :arrow="false" :dense="dense" text-field-class="g-tf__border-hover"/>
+    Without label
+    <g-autocomplete :items="items" v-model="select1" :arrow="false" :dense="dense" text-field-class="g-tf__border-hover"/>
+  </div>`
+})
+
 describe('test', function () {
   it('should', function () {
     const vm = new Vue(test1()).$mount();

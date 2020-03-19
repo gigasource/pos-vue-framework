@@ -413,5 +413,58 @@
       }
     }
   }
+
+  .bs-tf__border-hover {
+    .bs-tf-inner-input-group {
+      border-color: transparent;
+
+      &:focus-within {
+        border-color: rgb(24, 103, 192);
+      }
+
+      &:hover {
+        border-color: #bdbdbd;
+
+        &:focus-within {
+          border-color: rgb(24, 103, 192);
+        }
+      }
+
+      &__active {
+        border-color: rgb(24, 103, 192) !important;
+        box-shadow: none;
+      }
+    }
+
+    &.bs-tf-wrapper--disabled {
+      .bs-tf-inner-input-group {
+        border-color: #bdbdbd;
+      }
+    }
+  }
+
+  .bs-tf__small {
+    .bs-tf-input {
+      font-size: 14px;
+      line-height: 20px;
+      padding: 4px 0;
+    }
+
+    .bs-tf-label {
+      font-size: 14px;
+    }
+  }
+
+  .bs-tf__large {
+    .bs-tf-input {
+      font-size: 18px;
+      line-height: 32px;
+      padding: 8px 0;
+    }
+
+    .bs-tf-label {
+      font-size: 18px;
+    }
+  }
 </style>
 
