@@ -56,7 +56,8 @@
       nodeExpansionHistory: {
         type: Array,
         default: () => [],
-      }
+      },
+      genNode: Function
     },
     setup(props, context) {
       let prevSelectedPath = null
@@ -145,7 +146,7 @@
         return <ul class={[props.noPadding && 'no-padding']}>{childrenVNodes}</ul>
       }
 
-      const genNode = function ({node, text, childrenVNodes, path, isLast}) {
+      const _genNode = function ({node, text, childrenVNodes, path, isLast}) {
         if (treeStates[path] && props.nodeExpansionHistory.includes(path)) {
           treeStates[path].collapse = false
         }
@@ -277,6 +278,10 @@
           ))
           || fallbackContent
       }
+
+      let genNode = !props.genNode ? _genNode : function (arg) {
+        return props.genNode(arg, _genNode, context);
+      };
 
       const itemTextFn = (typeof props.itemText === 'function' && props.itemText) || ((node, isRoot) => {
         if (node && node.type === 'subheader') {
