@@ -52,6 +52,7 @@ import GItemGroup from './GItemGroup/GItemGroup';
 import GItem from './GItemGroup/GItem';
 
 import GKeyboard from './GKeyboard/GKeyboard';
+import GKeyboardAuto from './GKeyboard/GKeyboardAuto';
 import GNumberKeyboard from './GKeyboard/GNumberKeyboard';
 
 import GCol from './GLayout/GCol';
@@ -242,6 +243,7 @@ export {
   GItemGroup,
   GItem,
   GKeyboard,
+  GKeyboardAuto,
   GNumberKeyboard,
   GCol,
   GContainer,
