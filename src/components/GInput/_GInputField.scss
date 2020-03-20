@@ -781,12 +781,15 @@ input[type=text] {
 }
 
 .g-tf__dense {
-  .g-tf-affix {
+  .g-tf-affix,
+  .g-tf-input {
     line-height: 20px;
   }
 
-  .g-tf-input {
-    line-height: 20px;
+  .g-tf-affix,
+  .g-tf-input,
+  .input-slot {
+    font-size: 0.875rem;
   }
 
   .g-tf-label {
@@ -985,5 +988,62 @@ input[type=text] {
     background-color: rgba(0, 0, 0, 0.06);
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+  }
+}
+
+//border on hover textfield
+.g-tf__border-hover {
+  &.g-tf, .g-tf {
+    padding: 2px 2px 2px 8px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+
+    &:focus-within {
+      border: 1px solid rgb(24, 103, 192);
+    }
+
+    &:hover {
+      border: 1px solid #BDBDBD;
+
+      &:focus-within {
+        border: 1px solid rgb(24, 103, 192);
+      }
+    }
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    .g-tf-label {
+      transform: translateX(8px);
+
+      &__active {
+        transform: translateY(-20px) scale(0.75);
+      }
+    }
+  }
+
+  .input,
+  .g-tf-input {
+      padding-left: 0;
+  }
+
+  &.g-tf__dense {
+    .g-tf-affix,
+    .g-tf-input {
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    .g-tf-label {
+      font-size: 0.875rem;
+    }
+  }
+
+  &.g-tf-wrapper__disabled {
+    &.g-tf, .g-tf {
+      border-color: #BDBDBD;
+    }
   }
 }

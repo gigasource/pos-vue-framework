@@ -35,7 +35,7 @@ export default function dependent(vm) {
     const openDependents = getOpenDependents()
 
     for (let index = 0; index < openDependents.length; index++) {
-      result.push(...getClickableDependentElements(openDependents[index]))
+      if (getClickableDependentElements) result.push(...getClickableDependentElements(openDependents[index]))
     }
 
     return result

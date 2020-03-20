@@ -410,3 +410,27 @@
 .border {
   border: 2px dashed orange;
 }
+
+.g-list__dense.g-list__inMenu {
+  .g-list-item {
+    min-height: 28px;
+    padding: 0;
+
+    .g-list-item-content {
+      padding-left: 4px;
+      margin-left: 0;
+    }
+  }
+
+  .g-list-item-icon {
+    margin: 0 0 0 10px;
+
+    ~ .g-list-item-content {
+      padding-left: 0;
+    }
+  }
+
+  .g-list-item-text {
+    padding: 3px 0 0 6px;
+  }
+}
