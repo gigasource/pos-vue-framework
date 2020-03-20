@@ -42,7 +42,7 @@
   }
 
   export default {
-    name: 'GKeyboard',
+    name: 'GKeyboardAuto',
     components: {GIcon},
     props: {
       value: String,
