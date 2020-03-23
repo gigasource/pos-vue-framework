@@ -45,7 +45,7 @@ export default function dependent(vm) {
     const result = [vm.$el]
     if (vm.$refs.content) result.push(vm.$refs.content)
     if (vm.overlay) result.push(vm.overlay.$el)
-    result.push(...vm.getOpenDependentElements())
+    if (vm.getOpenDependentElements) result.push(...vm.getOpenDependentElements())
 
     return result
   }
