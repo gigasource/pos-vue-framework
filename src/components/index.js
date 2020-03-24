@@ -9,6 +9,7 @@ import GBreadcrumbsItem from './GBreadcrumbs/GBreadcrumbsItem';
 import { GBreadcrumbsDivider } from './GBreadcrumbs/GBreadcrumbsFunctionalComponent';
 
 import GBtn from './GBtn/GBtn';
+import GBtnBs from "./GBtn/GBtnBs";
 
 import GCard from './GCard/GCard';
 import GCardTitle from './GCard/GCardTitle';
@@ -219,6 +220,7 @@ export {
   GBreadcrumbsItem,
   GBreadcrumbsDivider,
   GBtn,
+  GBtnBs,
   GCard,
   GCardTitle,
   GCardActions, GCardText, GCardSubtitle,
