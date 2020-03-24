@@ -54,8 +54,8 @@ export async function traverseDir(entry, list) {
   const { fullPath, isDirectory, name } = entry
   const file = { fullPath, isDirectory, name }
   if (entry.isFile) {
-    const { lastModified, lastModifiedDate, size, type } = await convertToFile(entry)
-    Object.assign(file, { lastModified, lastModifiedDate, size, type })
+    const fileData = await convertToFile(entry)
+    Object.assign(file, {file: fileData})
   }
   list.push(file)
   if (entry.isDirectory) {

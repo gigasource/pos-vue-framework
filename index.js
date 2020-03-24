@@ -13,3 +13,4 @@ if (typeof window !== 'undefined' && window.Vue) window.Vue.use(GigaComponents);
 
 export default GigaComponents;
 export * from './src/components';
+export * from './src/directives';
