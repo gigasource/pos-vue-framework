@@ -632,37 +632,6 @@ export const TextFieldValidate = () => ({
                            :rules="[rules.required, rules.counter, rules.max]">
               </g-text-field>`,
 });
-export const TextFieldBoostrap = () => ({
-  components: {GTextFieldBs},
-  directives: {mask},
-  props: {
-    required: {default: boolean('required', false)},
-    clearable: {default: boolean('clearable', true)}
-  },
-  data() {
-    return {
-      rules: {
-        max: value => value.length < 3 || 'Exceeded'
-      },
-    }
-  },
-  template:
-    `<g-text-field-bs label="test"
-								 placeholder="demo placeholder"
-								 hint="test hint"
-								 :required="required"
-								 :clearable="clearable"
-								 :rules="[rules.max]">
-      <template v-slot:prepend-outer>
-        Prepend
-      </template>
-      <template v-slot:append-outer>
-        Append
-      </template>
-    </g-text-field-bs>`
-
-
-});
 
 export const AllInputTypes = () => ({
   components: {GTextField, GRow, GCol},

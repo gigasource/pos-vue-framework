@@ -2,7 +2,7 @@
   <div class="bs-tf-wrapper" :class="wrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
     <label class="bs-tf-label">
       <slot name="label">
-        <g-icon :size="iconSize" v-if="labelIcon" :svg="checkSVGIcon(labelIcon)" class="mr-1">{{labelIcon}}</g-icon>
+        <g-icon :size="iconSize" v-if="labelIcon" class="mr-1">{{labelIcon}}</g-icon>
         <template v-if="required">
           {{label}}
           <span style="color: red">*</span>
@@ -10,17 +10,20 @@
         <template v-else>{{label}}</template>
       </slot>
     </label>
-    <component :is="$scopedSlots['prepend-outer'] || $scopedSlots['append-outer'] ? 'div' : 'pass-through'" class="bs-tf-input-group">
-      <div class="bs-tf-input-prepend" @click="onClickPrependOuter" v-if="$scopedSlots['prepend-outer']">
-				<span class="bs-tf-input-text">
-					<slot name="prepend-outer"></slot>
-				</span>
+    <div class="bs-tf-input-group" :style="inputGroupStyles">
+      <div class="bs-tf-input-prepend" @click="onClickPrependOuter"
+           v-if="$scopedSlots['prepend-outer'] || prefix || prependIcon">
+        <slot name="prepend-outer">
+            <span class="bs-tf-input-text">
+              <g-icon v-if="prependIcon" :color="iconColor">{{prependIcon}}</g-icon>
+              <template v-if="prefix">{{prefix}}</template>
+				    </span>
+        </slot>
       </div>
-      <div  :style="innerGroupStyles"
-          :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused},
-                    $scopedSlots['prepend-outer'] && 'bs-tf-input-has-prepend', $scopedSlots['append-outer'] && 'bs-tf-input-has-append']">
+      <div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused},
+                    ($scopedSlots['prepend-outer'] || prefix || prependIcon) && 'bs-tf-input-has-prepend', ($scopedSlots['append-outer'] || suffix || appendIcon) && 'bs-tf-input-has-append']">
         <slot name="prepend-inner" :on-click="onClickPrependInner">
-          <g-icon class="ml-2" :size="iconSize" :color="iconColor" v-if="prependIcon" :svg="checkSVGIcon(prependIcon)">{{prependIcon}}</g-icon>
+          <g-icon class="mr-2" :color="iconColor" v-if="prependInnerIcon">{{prependInnerIcon}}</g-icon>
         </slot>
         <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input">
           <slot name="input-slot"/>
@@ -34,25 +37,34 @@
                  @blur="onBlur"
                  @keydown="onKeyDown">
         </component>
-        <div class="bs-tf-append-inner" v-if="$scopedSlots['append-inner'] || (isDirty && clearable)">
+        <div class="bs-tf-append-inner"
+             v-if="$scopedSlots['append-inner'] || (isDirty && clearable) || appendInnerIcon">
           <slot name="clearable-slot">
             <g-icon v-if="isDirty && clearable" :color="iconColor" @click.stop="onClearIconClick">{{clearIcon}}</g-icon>
           </slot>
-          <slot name="append-inner" :on-click="onClickAppendInner"></slot>
+          <slot name="append-inner" :on-click="onClickAppendInner">
+            <g-icon v-if="appendInnerIcon" :color="iconColor">{{appendInnerIcon}}</g-icon>
+          </slot>
         </div>
         <template v-if="type === 'password'">
-          <g-icon class="mr-2" :size="iconSize" v-if="state.internalType === 'password'" @click="toggleType">visibility</g-icon>
-          <g-icon class="mr-2" :size="iconSize" v-if="state.internalType === 'text'" @click="toggleType">visibility_off</g-icon>
+          <g-icon class="mr-2" :size="iconSize" v-if="state.internalType === 'password'" @click="toggleType">
+            visibility
+          </g-icon>
+          <g-icon class="mr-2" :size="iconSize" v-if="state.internalType === 'text'" @click="toggleType">
+            visibility_off
+          </g-icon>
         </template>
       </div>
-
-      <div class="bs-tf-input-append" @click="onClickAppendOuter" v-if="$scopedSlots['append-outer']">
-        <span class="bs-tf-input-text">
-					<slot name="append-outer"></slot>
-				</span>
+      <div class="bs-tf-input-append" @click="onClickAppendOuter"
+           v-if="$scopedSlots['append-outer'] || suffix || appendIcon">
+        <slot name="append-outer">
+          <span class="bs-tf-input-text">
+            <template v-if="suffix">{{suffix}}</template>
+            <g-icon v-if="appendIcon" :color="iconColor">{{appendIcon}}</g-icon>
+				  </span>
+        </slot>
       </div>
-
-    </component>
+    </div>
     <div class="bs-tf-error-message" v-if="!isValidInput">{{errorMessages}}</div>
     <div class="bs-tf-message" v-else-if="hint">{{hint}}</div>
   </div>
@@ -96,10 +108,15 @@
       },
       labelIcon: String,
       prependIcon: String,
+      prependInnerIcon: String,
+      appendIcon: String,
+      appendInnerIcon: String,
       iconSize: {
         type: [String, Number],
         default: 16
       },
+      prefix: String,
+      suffix: String,
       //rules and validation props
       required: Boolean,
       rules: Array,
@@ -127,7 +144,7 @@
       const isFocused = ref(false);
       const {isDirty} = getLabel(context, props, tfValue, isValidInput, isFocused, 'g-tf-label__active')
 
-      const { onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner, } = getSlotEventListeners(context);
+      const {onClickPrependOuter, onClickPrependInner, onClickAppendOuter, onClickAppendInner,} = getSlotEventListeners(context);
 
       //event handler function
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput);
@@ -148,23 +165,19 @@
         'bs-tf__filled--blur': props.filledBlur,
       }));
 
-      const checkSVGIcon = icon => {
-        return icon && _.startsWith(icon, 'icon-')
-      }
-
       const state = reactive({
         internalType: props.type
       })
 
       const toggleType = () => {
-        if(state.internalType === 'password') {
+        if (state.internalType === 'password') {
           state.internalType = 'text'
         } else if (state.internalType === 'text') {
           state.internalType = 'password'
         }
       }
 
-      const innerGroupStyles = computed(() => {
+      const inputGroupStyles = computed(() => {
         const color = getCssColor(props.borderColor)
         return {
           ...color && {'border-color': color}
@@ -192,10 +205,9 @@
         onClickAppendInner,
         onClearIconClick,
         wrapperClasses,
-        checkSVGIcon,
         state,
         toggleType,
-        innerGroupStyles
+        inputGroupStyles
       }
     }
   }
@@ -232,24 +244,41 @@
     align-items: center;
   }
 
+  .bs-tf-input-group {
+    border-color: #ced4da;
+  }
+
   .bs-tf-inner-input-group {
     flex: 1;
-    border: 1px solid #ced4da;
+    border-width: 1px;
+    border-style: solid;
+    border-color: inherit;
     border-radius: 4px;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     padding-left: 12px;
+    padding-right: 12px;
 
     &__active {
-        outline: 0;
-        border-color: #80bdff !important;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      outline: 0;
+      border-color: #80bdff !important;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      z-index: 2;
     }
   }
 
   .bs-tf-input-prepend,
-  .bs-tf-input-prepend > *:first-child {
+  .bs-tf-input-append {
+    border-color: inherit;
+  }
+
+  .bs-tf-input-prepend {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
+  }
+
+  .bs-tf-input-prepend > *:first-child {
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
   }
 
   .bs-tf-input-prepend > * {
@@ -260,10 +289,14 @@
     border-left: none !important;
   }
 
-  .bs-tf-input-append,
-  .bs-tf-input-append > *:last-child {
+  .bs-tf-input-append {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
+  }
+
+  .bs-tf-input-append > *:last-child {
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
   }
 
   .bs-tf-append-inner {
@@ -281,7 +314,9 @@
     background-color: #e9ecef;
     white-space: nowrap;
     text-align: center;
-    border: 1px solid #ced4da;
+    border-width: 1px;
+    border-style: solid;
+    border-color: inherit;
   }
 
   .bs-tf-input {
@@ -327,15 +362,36 @@
   }
 
   .bs-tf__solo {
-    .bs-tf-inner-input-group {
+    .bs-tf-inner-input-group,
+    .bs-tf-input-text {
       border: none;
-      box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.19);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.19);
     }
   }
 
   .bs-tf__rounded {
     .bs-tf-inner-input-group {
       border-radius: 9999px;
+
+      &.bs-tf-input-has-prepend {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      &.bs-tf-input-has-append {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+
+    .bs-tf-input-prepend {
+      border-top-left-radius: 9999px;
+      border-bottom-left-radius: 9999px;
+    }
+
+    .bs-tf-input-append {
+      border-top-right-radius: 9999px;
+      border-bottom-right-radius: 9999px;
     }
   }
 
@@ -359,7 +415,7 @@
     }
 
     .bs-tf-input {
-      padding-left: 20px;
+      padding-left: 8px;
     }
 
     & ~ & {

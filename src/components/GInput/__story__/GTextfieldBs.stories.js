@@ -11,15 +11,54 @@ export const basic = () => ({
   props: {
     label: { default: text('Label', 'Email')},
   },
-  template: `<g-text-field-bs :label="label"/>`
+  template: `<div>
+    Basic:
+    <g-text-field-bs :label="label"/>
+    With prepend text:
+    <g-text-field-bs prefix="Email"/>
+    With prepend icon:
+    <g-text-field-bs prepend-icon="email"/>
+    With prepend inner icon:
+    <g-text-field-bs prepend-inner-icon="email"/>
+    With append text:
+    <g-text-field-bs :label="label" suffix="@gmail.com"/>
+    With append icon:
+    <g-text-field-bs :label="label" append-icon="edit"/>
+    With append inner icon:
+    <g-text-field-bs :label="label" append-inner-icon="edit"/>
+    With label icon:
+    <g-text-field-bs :label="label" label-icon="email"/>
+</div>`
 })
 
-export const prependIcon = () => ({
+export const playground = () => ({
   components: {GTextFieldBs},
   props: {
-    prependIcon: { default: text('Prepend Icon', 'search')},
+    label: { default: text('Label', 'Label')},
+    labelIcon: { default: text('Label Icon', '')},
+    iconSize: { default: number('Label Icon Size', 16)},
+    required: { default: boolean('Required', false)},
+    placeholder: { default: text('Placeholder', '')},
+    prefix: { default: text('Prefix', '')},
+    prependIcon: { default: text('Prepend Icon', '')},
+    prependInnerIcon: { default: text('Prepend inner Icon', '')},
+    suffix: { default: text('Suffix', '')},
+    appendIcon: { default: text('Append Icon', '')},
+    appendInnerIcon: { default: text('Append inner Icon', '')},
+    disabled: { default: boolean('Disabled', false)},
+    readonly: { default: boolean('Readonly', false)},
+    clearable: { default: boolean('Clearable', false)},
+    small: { default: boolean('Small', false)},
+    large: { default: boolean('Large', false)},
+    borderColor: { default: text('Border Color', '')},
+    hint: { default: text('Hint', '')}
   },
-  template: `<g-text-field-bs :prepend-icon="prependIcon"/>`
+  template: `<g-text-field-bs :label="label" :label-icon="labelIcon" :icon-size="iconSize" 
+                 :required="required" :placeholder="placeholder"
+                 :prefix="prefix" :prepend-icon="prependIcon" :prepend-inner-icon="prependInnerIcon"
+                 :suffix="suffix" :append-icon="appendIcon" :append-inner-icon="appendInnerIcon"
+                 :disabled="disabled" :readonly="readonly" :clearable="clearable"
+                 :small="small" :large="large" :border-color="borderColor" :hint="hint"/>`
 })
 
 export const solo = () => ({
@@ -40,14 +79,14 @@ export const roundedAndColor = () => ({
   components: {GTextFieldBs},
   props: {
     placeholder: { default: text('Placeholder', 'Search...')},
-    prependIcon: { default: text('Prepend Icon', 'search')},
+    prependIcon: { default: text('Prepend Inner Icon', 'search')},
     color: { default: text('Border Color', '#1976D2')}
   },
   template: `<div>
       With prop rounded 
-      <g-text-field-bs rounded :border-color="color" :placeholder="placeholder" :prepend-icon="prependIcon"/>
+      <g-text-field-bs rounded :border-color="color" :placeholder="placeholder" :prepend-inner-icon="prependIcon"/>
       OR with class 'bs-tf__rounded'
-      <g-text-field-bs class="bs-tf__rounded" :border-color="color" :placeholder="placeholder" :prepend-icon="prependIcon"/>
+      <g-text-field-bs class="bs-tf__rounded" :border-color="color" :placeholder="placeholder" :prepend-inner-icon="prependIcon"/>
 </div>`
 })
 
