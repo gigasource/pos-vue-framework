@@ -37,7 +37,8 @@
       showArrows: {
         type: Boolean,
         default: true
-      }
+      },
+      addable: Boolean
     },
     setup(props, context) {
       const model = getVModel(props, context);
@@ -193,13 +194,20 @@
             'click:prev': calculateSliderStyle,
             'click:next': calculateSliderStyle
           },
-          slot: 'tabs'
+          slot: 'tabs',
+          ... !props.vertical && {
+            style: {
+              width: props.addable ? 'calc(100% - 32px)' : '100%'
+            }
+          }
         }
         return <g-slide-group {...slideGroupData} vOn:input={e => model.value = e} value={model.value} dense>
           {genTabs()}
           {activeTab.value && genTabSlider()}
         </g-slide-group>
       }
+
+      const genAddButton = () => props.addable && <g-icon color={sliderStyles['background-color']} vOn:click={e => context.emit('add')}>add_circle</g-icon>
 
       return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
@@ -208,6 +216,7 @@
                style={barStyles.value}
                v-resize={calculateSliderStyle}>
             {genTabsBar()}
+            {genAddButton()}
           </div>
         </div>
         {context.slots.default && (

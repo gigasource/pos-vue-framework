@@ -314,3 +314,45 @@ export const verticalTabs = () => ({
       </g-tab-items>
     </g-tabs>`
 });
+
+export const addable  = () => ({
+  components: { GTabs, GTab, GTabItems, GTabItem },
+  data() {
+    return {
+      items: [
+        { title: 'Tab 1', icon: 'home' },
+        { title: 'Tab 2', icon: 'group' },
+        { title: 'Tab 3', icon: 'notifications' },
+        { title: 'Tab 4', icon: 'block', disabled: true }
+      ],
+      model: null,
+    }
+  },
+  created() {
+    this.model = this.items[0]
+  },
+  methods: {
+    addItem() {
+      const titles = this.items.map(item => item.title)
+      let title = 'New Tab', i = 0
+      while (titles.includes(title)) {
+        i++
+        title = `New Tab (${i})`
+      }
+      this.items.push({title})
+    }
+  },
+  template: `
+    <g-tabs v-model="model" 
+          :items="items"
+          color="blue darken 2"
+          text-color="white"
+          addable
+          @add="addItem">
+      <g-tab-items :items="items" v-model="model">
+        <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
+          {{item.title}}
+        </g-tab-item>
+      </g-tab-items>
+    </g-tabs>`
+})

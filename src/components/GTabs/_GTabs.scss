@@ -60,6 +60,11 @@
     ::v-deep .g-slide-group__content {
       flex-direction: column;
     }
+
+    ::v-deep .g-slide-group__prev,
+    ::v-deep .g-slide-group__next {
+      display: none;
+    }
   }
 
   &__right {
