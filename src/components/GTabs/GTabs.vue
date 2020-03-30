@@ -38,7 +38,8 @@
         type: Boolean,
         default: true
       },
-      addable: Boolean
+      addable: Boolean,
+      deletable: Boolean,
     },
     setup(props, context) {
       const model = getVModel(props, context);
@@ -195,11 +196,15 @@
             'click:next': calculateSliderStyle
           },
           slot: 'tabs',
-          ... !props.vertical && {
-            style: {
-              width: props.addable ? 'calc(100% - 32px)' : '100%'
-            }
+          style: {
+            ... !props.vertical && (props.addable || props.deletable) && {
+                width: 'calc(100% - 32px)'
+            },
+            ... !props.vertical && props.addable && props.deletable && {
+                width: 'calc(100% - 56px)'
+            },
           }
+
         }
         return <g-slide-group {...slideGroupData} vOn:input={e => model.value = e} value={model.value} dense>
           {genTabs()}
@@ -207,7 +212,9 @@
         </g-slide-group>
       }
 
-      const genAddButton = () => props.addable && <g-icon color={sliderStyles['background-color']} vOn:click={e => context.emit('add')}>add_circle</g-icon>
+      const genAddButton = () => props.addable && <g-icon class="mr-2" color={sliderStyles['background-color']} vOn:click={e => context.emit('add')}>add_circle</g-icon>
+
+      const genDeleteButton = () => props.deletable && <g-icon color={sliderStyles['background-color']} vOn:click={e => context.emit('delete')}>delete</g-icon>
 
       return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
@@ -217,6 +224,7 @@
                v-resize={calculateSliderStyle}>
             {genTabsBar()}
             {genAddButton()}
+            {genDeleteButton()}
           </div>
         </div>
         {context.slots.default && (

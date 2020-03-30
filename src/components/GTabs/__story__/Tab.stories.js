@@ -315,8 +315,12 @@ export const verticalTabs = () => ({
     </g-tabs>`
 });
 
-export const addable  = () => ({
+export const configTabItem  = () => ({
   components: { GTabs, GTab, GTabItems, GTabItem },
+  props: {
+    addable: { default: boolean('Addable', true)},
+    deletable: { default: boolean('Deletable', true)},
+  },
   data() {
     return {
       items: [
@@ -340,6 +344,17 @@ export const addable  = () => ({
         title = `New Tab (${i})`
       }
       this.items.push({title})
+    },
+    deleteItem() {
+      let index = this.items.findIndex(i => i.title === this.model.title)
+      this.items.splice(index, 1)
+      if(index > 0 && index === this.items.length) {
+        index--
+      }
+      if(this.items[index].disabled === true) {
+        index === 0 ? index++ : index--
+      }
+      this.model = this.items[index]
     }
   },
   template: `
@@ -347,8 +362,10 @@ export const addable  = () => ({
           :items="items"
           color="blue darken 2"
           text-color="white"
-          addable
-          @add="addItem">
+          :addable="addable"
+          @add="addItem"
+          :deletable="deletable"
+          @delete="deleteItem">
       <g-tab-items :items="items" v-model="model">
         <g-tab-item v-for="(item, i) in items" :key="i" :item="item">
           {{item.title}}
@@ -356,3 +373,4 @@ export const addable  = () => ({
       </g-tab-items>
     </g-tabs>`
 })
+
