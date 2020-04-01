@@ -101,6 +101,8 @@
           this.isShift = item.action(this.isShift);
         } else if(item.type === 'enter') {
           this.$emit('submit', this.value);
+				} else if(item.type === 'edit') {
+					this.$emit('edit', item.position);
 				} else {
           this.computedValue = item.content ? item.action(this.computedValue, item.content[this.index]) : item.action(this.computedValue);
 				}
