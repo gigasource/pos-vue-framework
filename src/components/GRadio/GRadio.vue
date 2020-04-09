@@ -48,7 +48,7 @@
 
 			//active state
 			const isActive = computed({
-				get: () => (model.value === props.value),
+				get: () => (_.isEqual(model.value, props.value)),
 				set: (val) => {
 					if (val === true) {//checked
 						if (model.value === inputValue.value) {//if the radio not in group
