@@ -44,22 +44,22 @@
         name = defaultName;
       }
 
-      const trueValue = props.value ? props.value : true;
+			// const trueValue = props.value ? props.value : true;
 
-      //active state
-      const isActive = computed({
-        get: () => trueValue && (model.value === trueValue || model.value === true || model.value === 'true'),
-        set: (val) => {
-          if (val === true) {//checked
-            if (model.value === inputValue.value) {//if the radio not in group
-              inputValue.value = trueValue;
-            } else {
-              // context.parent.$emit('change', trueValue);
-							model.value = trueValue;
-            }
-          }
-        }
-      });
+			//active state
+			const isActive = computed({
+				get: () => (model.value === props.value),
+				set: (val) => {
+					if (val === true) {//checked
+						if (model.value === inputValue.value) {//if the radio not in group
+							inputValue.value = props.value;
+						} else {
+							// context.parent.$emit('change', trueValue);
+							model.value = props.value;
+						}
+					}
+				}
+			});
       //define props color
       const { getColorType, convertColorClass } = colorHandler();
       const type = computed(() => getColorType(props.color));
