@@ -34,6 +34,8 @@ import GDialog from './GDialog/GDialog';
 
 import GDndDialog from './GDndDialog/GDndDialog';
 
+import GEditViewInput from './GEditViewInput/GEditViewInput';
+
 import GExpansion from './GExpansion/GExpansion';
 
 import GFileInput from './GFileInput/GFileInput';
@@ -234,6 +236,7 @@ export {
   GDateRangePicker,
   GDialog,
   GDndDialog,
+  GEditViewInput,
   GExpansion,
   GFileInput,
   GGridLayout,

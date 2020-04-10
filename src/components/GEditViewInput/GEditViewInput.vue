@@ -45,14 +45,12 @@
     },
     watch: {
       value(val) {
-        console.log('watch', val)
         this.internalValue = val
       }
     },
     updated() {
       // check if EVI just switch from view -> edit mode then select all input content
       if (this.mode === 'edit' && this.previousMode === 'view') {
-        console.log('updated -> focus -> select')
         this.$refs.input.focus()
         this.$refs.input.select()
       }
@@ -66,24 +64,16 @@
         if (this.previousMode !== this.mode)
           this.previousMode = this.mode
         this.internalValue = e.target.value
-        console.log('set internal value', e.target.value)
       },
       applyChange() {
         this.mode = 'view'
         this.$emit('input', this.internalValue, changeApplied => {
-          if (!changeApplied) {
-            console.log('set internal value', this.value)
+          if (!changeApplied)
             this.internalValue = this.value
-            console.log('Change is not applied')
-          } else {
-            console.log('Change is applied')
-          }
         })
       },
       resetValue() {
         this.mode = 'view'
-        console.log('reset')
-        console.log('set internal value', this.value)
         this.internalValue = this.value
         this.$emit('input', this.value)
       }
