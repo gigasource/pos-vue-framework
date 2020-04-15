@@ -88,6 +88,9 @@
 						isBooted.value = !props.destroyOnClose
           }
         }
+
+        if (!newVal) context.emit('close')
+        context.emit('input', newVal)
       })
 
       onMounted(() => {
@@ -188,6 +191,7 @@
       const isDrag = ref(false)
 
       function dragStart(e) {
+        context.emit('dragStart')
         if (isMaximize.value) {
           return;
         }
@@ -223,6 +227,7 @@
       }
 
       function dragEnd(e) {
+        context.emit('dragEnd')
         if (isDrag.value) {
           isDrag.value = false;
           cursor.value = '';
@@ -250,6 +255,7 @@
       const resizeRegionSize = 8;
 
       function resizeStart(e) {
+        context.emit('resizeStart')
         if (resizeMode.value !== '') {
           dialogStartPosition.top = dialogPosition.top;
           dialogStartPosition.left = dialogPosition.left;
@@ -360,6 +366,7 @@
       }
 
       function resizeEnd(e) {
+        context.emit('resizeEnd')
         if (isResize.value) {
           isResize.value = false;
           resizeMode.value = '';
