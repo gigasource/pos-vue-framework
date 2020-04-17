@@ -28,6 +28,7 @@
         <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input">
           <slot name="input-slot"/>
           <input class="bs-tf-input"
+                 style="user-select: text !important; -webkit-user-select: text !important;"
                  :type="state.internalType"
                  ref="input"
                  :placeholder="placeholder"
