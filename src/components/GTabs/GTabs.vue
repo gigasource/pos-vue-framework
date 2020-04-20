@@ -130,6 +130,7 @@
       watch(() => model.value, () => {
         const parent = itemsRef.value.querySelector('.g-slide-group__content');
         activeTab.value = find(parent.children, i => i.classList.contains('g-tab__active'));
+        if(!activeTab.value) return
         if (props.vertical) {
           if (activeTab.value.offsetTop < +sliderStyles.top.replace('px', '')) {
             sliderStyles['transition'] = 'top 0.5s, bottom 1s';
