@@ -9,6 +9,7 @@ import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
 //import './style.css';
 import '../src/plugin/waves'
+import '../src/plugin/darken'
 import '@fortawesome/fontawesome-free/css/all.css'
 
 import GigaComponents from "../index";

@@ -1,3 +1,6 @@
+import './src/plugin/waves'
+import './src/plugin/darken'
+
 const GComponents = require('./src/components');
 
 const GigaComponents = {
