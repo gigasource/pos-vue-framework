@@ -194,7 +194,7 @@
         const { width, height, left, top } = e.target.getBoundingClientRect()
         const itemsLength = state.activeTimePicker === ActiveTimePicker.hour ? 12 : 60;
         let targetPos
-        if (e instanceof TouchEvent) {
+        if (window.TouchEvent && e instanceof TouchEvent) {
           if (e.touches.length === 0) {
             return
           }
@@ -245,11 +245,11 @@
         }
 
         // last update for mouse up, doesn't update when touchend because touchend doesn't contain position
-        if (!(e instanceof TouchEvent)) {
+        if (!(window.TouchEvent && e instanceof TouchEvent)) {
           updateTime(e)
         }
         // touchend doesn't contain touch position => prevent time picker switch to another view (minutes, seconds) when touchmove is not call
-        if (e instanceof TouchEvent && !touchMoved) {
+        if (window.TouchEvent && e instanceof TouchEvent && !touchMoved) {
           return
         }
 
