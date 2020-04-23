@@ -3,15 +3,17 @@
     <input v-if="mode === 'edit'"
            :key="mode"
            :value="internalValue"
-           :style="style"
            :class="inputClasses"
+           :readonly="readonly"
            ref="input"
            @input="oninput"
            @keydown.enter="applyChange"/>
     <div ref="span" v-if="mode !== 'edit'" class="g-edit-view-input__span">{{ internalValue }}</div>
-    <g-icon v-if="!readonly && mode !== 'edit'" @click="switchToEditMode">edit</g-icon>
-    <g-icon v-if="!readonly && mode === 'edit'" @click="applyChange">fas fa-check</g-icon>
-    <g-icon v-if="!readonly && mode === 'edit'" @click="resetValue">mdi-close</g-icon>
+    <slot name="action" v-bind="{mode, switchToEditMode, applyChange, resetValue}">
+      <g-icon v-if="!readonly && mode !== 'edit'" @click="switchToEditMode" size="18" class="ml-1">mdi-pencil-outline</g-icon>
+      <g-icon v-if="!readonly && mode === 'edit'" @click="applyChange" class="ml-1">mdi-check</g-icon>
+      <g-icon v-if="!readonly && mode === 'edit'" @click="resetValue" class="ml-1">mdi-close</g-icon>
+    </slot>
   </div>
 </template>
 <script>
@@ -28,10 +30,6 @@
         // when VDOM updated, we will check if EVI just switch from view -> edit mode, then we will focus to input and highlight it's content
         previousMode: 'view',
         mode: 'view',
-        style: {
-          'user-select': 'text !important',
-          '-webkit-user-select': 'text !important',
-        },
         internalValue: this.value || ''
       }
     },
@@ -95,6 +93,7 @@
       font-size: inherit;
       font-family: inherit;
       width: 100%;
+      user-select: text !important;
 
       &--edit {
         border-bottom: 2px solid #536DFE;
@@ -109,6 +108,10 @@
       display: -webkit-box;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+
+    .g-icon {
+      cursor: pointer;
     }
   }
 
