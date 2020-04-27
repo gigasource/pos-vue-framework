@@ -38,12 +38,15 @@ export const basic = () => ({
     readonly: {
       default: boolean('Readonly', false)
     },
+    small: {
+      default: boolean('Small', false)
+    }
   },
-  template: `<div>
+  template: `<div style="font-weight: 600">
   Value: {{rb}}
   <g-radio-group name="basic" v-model="rb" :row="row">
-    <g-radio :color="color1" :label="label1" :value="rb1" :disabled="disabled" :readonly="readonly"/>
-    <g-radio :color="color2" :label="label2" :value="rb2" :disabled="disabled" :readonly="readonly"/>
+    <g-radio :color="color1" :label="label1" :value="rb1" :disabled="disabled" :readonly="readonly" :small="small"/>
+    <g-radio :color="color2" :label="label2" :value="rb2" :disabled="disabled" :readonly="readonly" :small="small"/>
   </g-radio-group>
 </div>`
 });

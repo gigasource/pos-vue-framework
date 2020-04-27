@@ -26,6 +26,7 @@
       color: String,
       disabled: Boolean,
       readonly: Boolean,
+			small: Boolean,
       //native value
       value: null,
       //input value for not in group
@@ -70,6 +71,7 @@
         'g-radio__disabled': props.disabled,
         [colorClass.value]: !!type.value && type.value === 'class',
         'g-radio__active': isActive.value,
+				'g-radio__small': props.small
       }));
 
       const styles = computed(() => {

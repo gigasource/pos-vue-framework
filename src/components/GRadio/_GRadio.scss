@@ -83,19 +83,38 @@
     transform: scale(0);
   }
 
-  & input:hover ~ &-hover:before {
+  &:hover &-hover:before {
     transform: scale(1.2);
   }
 
   &__disabled {
     pointer-events: none;
-
-    & > .g-radio-checkmark {
-      opacity: 0.42;
-    }
+    opacity: 0.42;
   }
 
   &__readonly {
     pointer-events: none;
+  }
+
+  &__small {
+    padding-left: 16px;
+
+    .g-radio-label {
+      font-size: 15px;
+      margin-left: 2px;
+    }
+
+    .g-radio-checkmark {
+      &:before, &:after {
+        font-size: 12px;
+        top: 2px;
+      }
+    }
+
+    .g-radio-hover:before {
+      font-size: 24px;
+      top: 1px;
+      left: -6px;
+    }
   }
 }
