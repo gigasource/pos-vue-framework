@@ -101,7 +101,7 @@
                         }
                       }}
                       vOn:click={e => openTimePickerDialog(e, on.click)}
-                      vOn:input={e => e.trim() && (state.value = e)}
+                      vOn:input={e => e.trim() && updateInput(e)}
                   />
             }}>
           <g-time-picker
