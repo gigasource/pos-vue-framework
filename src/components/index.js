@@ -149,6 +149,8 @@ import GDatePickerUtil from './GDatePicker/logic/GDatePickerUtil';
 import { pad } from './GDatePicker/logic/utils';
 import DateTableUtil from './GDatePicker/logic/DateTableUtil'
 import TableUtil from './GDatePicker/logic/TableUtil';
+import {smoothScrolling} from "../plugin/smoothScrolling";
+
 import {
   GCarouselTransition,
   GCarouselReverseTransition,
@@ -208,6 +210,7 @@ export {
   TableUtil,
   DateTableUtil,
   pad,
+  smoothScrolling,
 }
 
 import GSections from "./GExpansion/GSections";
