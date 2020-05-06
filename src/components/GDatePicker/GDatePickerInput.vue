@@ -18,6 +18,10 @@
     components: { GMenu, GDatePicker, GTextField, GBtn },
     props: {
       label: String,
+      icon: {
+        type: String,
+        default: 'far fa-calendar'
+      },
 
       // A predicate function which validate date value and return true if input date is valid, otherwise false
       allowedDates: [Function, null],
@@ -170,7 +174,7 @@
           activator: gMenuScope =>
               <g-text-field
                   label={props.label}
-                  prependIcon="far fa-calendar"
+                  prependIcon={props.icon}
                   value={cptTextFieldValue.value}
                   vOn:click={e => {
                     gMenuScope.toggleContent(e)
