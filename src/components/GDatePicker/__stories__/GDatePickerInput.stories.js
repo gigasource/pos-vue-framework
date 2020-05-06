@@ -28,6 +28,7 @@ export const SingleValueDatePicker = () => ({
     disabled: { default: boolean('disabled', false) },
     readonly: { default: boolean('readonly', false)},
     scrollable: { default: boolean('scrollable', false)},
+    icon: {default: text('Icon', 'far fa-calendar')}
   },
   setup(props) {
     return () =>
@@ -49,6 +50,7 @@ export const SingleValueDatePicker = () => ({
         disabled={props.disabled}
         readonly={props.readonly}
         scrollable={props.scrollable}
+        icon={props.icon}
       />
   }
 })
