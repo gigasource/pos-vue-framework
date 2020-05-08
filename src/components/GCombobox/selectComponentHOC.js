@@ -13,6 +13,7 @@ const componentsFactory = (component, componentName) => {
   return {
     name: `${componentName}`,
     props: {
+      required: Boolean,
       component: {
         type: String,
         default: component
@@ -219,6 +220,7 @@ const componentsFactory = (component, componentName) => {
                            vOn:input={e => lazySearch.value = e}
                            value={listSearchText.value}
                            clearable
+                           required={props.required}
                            ref="searchText"
                            autofocus={searchFocused.value}
                            vOn:keydown={onInputKeyDown}
@@ -314,7 +316,8 @@ const componentsFactory = (component, componentName) => {
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
                     'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
                   value: tfValue.value,
-                  prependValue: prependText.value
+                  prependValue: prependText.value,
+                  required: props.required,
                 },
                 on: {
                   'click:clearIcon': clearSelection,
