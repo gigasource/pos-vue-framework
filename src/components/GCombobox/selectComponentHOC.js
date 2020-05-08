@@ -220,7 +220,6 @@ const componentsFactory = (component, componentName) => {
                            vOn:input={e => lazySearch.value = e}
                            value={listSearchText.value}
                            clearable
-                           required={props.required}
                            ref="searchText"
                            autofocus={searchFocused.value}
                            vOn:keydown={onInputKeyDown}
@@ -314,10 +313,9 @@ const componentsFactory = (component, componentName) => {
                 props: {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped', 'dense',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
+                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor', 'required']),
                   value: tfValue.value,
                   prependValue: prependText.value,
-                  required: props.required,
                 },
                 on: {
                   'click:clearIcon': clearSelection,
