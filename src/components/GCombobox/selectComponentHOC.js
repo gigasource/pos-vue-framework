@@ -13,6 +13,7 @@ const componentsFactory = (component, componentName) => {
   return {
     name: `${componentName}`,
     props: {
+      required: Boolean,
       component: {
         type: String,
         default: component
@@ -312,9 +313,9 @@ const componentsFactory = (component, componentName) => {
                 props: {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped', 'dense',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor']),
+                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor', 'required']),
                   value: tfValue.value,
-                  prependValue: prependText.value
+                  prependValue: prependText.value,
                 },
                 on: {
                   'click:clearIcon': clearSelection,
