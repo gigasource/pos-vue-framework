@@ -6,10 +6,10 @@
 					<slot name="title"></slot>
 				</span>
 				<div class="g-dnddialog-action" ref="action">
-					<g-btn v-if="!(isMinimize || isMaximize)" x-small flat tile width="16" height="16" min-width="16" @click="toggleMinimize">
+					<g-btn v-if="!(isMinimize || isMaximize) && showMinimize" x-small flat tile width="16" height="16" min-width="16" @click="toggleMinimize">
 						<g-icon size="16" svg>icon-minimize</g-icon>
 					</g-btn>
-					<g-btn x-small flat tile width="16" height="16" min-width="16" @click="toggleMaximize">
+					<g-btn v-if="showMaximize" x-small flat tile width="16" height="16" min-width="16" @click="toggleMaximize">
 						<g-icon size="16" svg>{{ maximizeIcon }}</g-icon>
 					</g-btn>
 					<g-btn x-small flat tile width="16" height="16" min-width="16" @click="toggleDialog">
@@ -43,6 +43,14 @@
       // Render Options
       lazy: Boolean,
       destroyOnClose: Boolean,
+      showMinimize: {
+        type: Boolean,
+        default: true
+      },
+      showMaximize: {
+        type: Boolean,
+        default: true
+      },
 
       // Start styles
       minWidth: {
