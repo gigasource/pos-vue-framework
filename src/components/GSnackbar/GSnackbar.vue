@@ -53,9 +53,11 @@
             isActive.value = false
             console.warn(`Timeout prop '${props.timeout}' is not a valid number!`)
           } else {
-            activeTimeout = setTimeout(() => {
-              isActive.value = false
-            }, +props.timeout)
+            if (props.timeout > 0) {
+              activeTimeout = setTimeout(() => {
+                isActive.value = false
+              }, +props.timeout)
+            }
           }
         }
       });
