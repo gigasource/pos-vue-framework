@@ -40,7 +40,7 @@ function inserted(el, binding, vnode) {
     },
     dragend: (e) => {
       // cancelled drop, todo put in userspace?
-      if (e.dataTransfer.dropEffect === 'none') return
+      // if (e.dataTransfer.dropEffect === 'none') return
 
       DnDStore.dragInProgressKey = ''
 
