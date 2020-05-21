@@ -1,9 +1,9 @@
 <template>
   <div class="bs-tf-wrapper" :class="wrapperClasses" @click="onClick" @mouseup="onMouseUp" @mousedown="onMouseDown">
-    <label class="bs-tf-label">
+    <label v-if="label || labelIcon" class="bs-tf-label">
       <slot name="label">
         <g-icon :size="iconSize" v-if="labelIcon" class="mr-1">{{labelIcon}}</g-icon>
-        <template v-if="required">
+        <template v-if="required && label">
           {{label}}
           <span style="color: red">*</span>
         </template>
@@ -66,7 +66,7 @@
         </slot>
       </div>
     </div>
-    <div class="bs-tf-error-message" v-if="!isValidInput">{{errorMessages}}</div>
+    <div class="bs-tf-error-message" v-if="!isValidInput && errorMessage">{{errorMessages}}</div>
     <div class="bs-tf-message" v-else-if="hint">{{hint}}</div>
   </div>
 </template>
@@ -328,6 +328,7 @@
     background-clip: padding-box;
     color: #495057;
     border-radius: inherit;
+    width: 100%;
 
     &::placeholder {
       font-size: 16px;
@@ -355,6 +356,7 @@
 
   .input-error {
     border-color: red !important;
+    box-shadow: 0 0 0 3px rgba(255, 68, 82, 0.25) !important;
   }
 
   .bs-tf-error-message {
