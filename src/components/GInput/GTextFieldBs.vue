@@ -66,7 +66,7 @@
         </slot>
       </div>
     </div>
-    <div class="bs-tf-error-message" v-if="!isValidInput && errorMessage">{{errorMessages}}</div>
+    <div class="bs-tf-error-message" v-if="!isValidInput && errorMessages">{{errorMessages}}</div>
     <div class="bs-tf-message" v-else-if="hint">{{hint}}</div>
   </div>
 </template>
