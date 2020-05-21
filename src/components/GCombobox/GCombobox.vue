@@ -17,6 +17,7 @@
       .input {
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
         flex: 1;
       }
 
