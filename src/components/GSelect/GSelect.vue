@@ -16,6 +16,14 @@
       flex: 0 1 0;
       width: 0;
     }
+
+    .bs-tf-wrapper {
+      .input {
+        display: flex;
+        flex-wrap: wrap;
+        flex: 1;
+      }
+    }
 	}
 
 	.g-select__active::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {

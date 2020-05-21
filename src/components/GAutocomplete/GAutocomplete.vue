@@ -11,4 +11,18 @@
 			transition: transform 0.4s;
 			transform: rotateZ(180deg);
 	}
+
+  .g-autocomplete ::v-deep {
+    .bs-tf-wrapper {
+      .input {
+        display: flex;
+        flex-wrap: wrap;
+        flex: 1;
+      }
+
+      input {
+        flex: 1;
+      }
+    }
+  }
 </style>
