@@ -65,7 +65,7 @@
       const treeStates = reactive({})
 
       // common functions
-      const toggleNodeExpansion = _.throttle((e, path) => {
+      const toggleNodeExpansion = _.throttle((e, path, node) => {
         e.stopPropagation()
         if (!treeStates[path]) return
 
@@ -84,7 +84,7 @@
         }
 
         prevOpenPath = path
-        context.emit('node-expansion-toggled', path, !treeStates[path].collapse)
+        context.emit('node-expansion-toggled', path, !treeStates[path].collapse, node)
       }, 200, {trailing: false})
 
       const setNodeState = function (path, state) {
@@ -216,7 +216,7 @@
                 && context.root.$router.currentRoute.path !== node.href
                 && context.root.$router.push(node.href);
               } else {
-                toggleNodeExpansion(e, path)
+                toggleNodeExpansion(e, path, node)
               }
             },
             mouseenter: (e) => {
@@ -236,7 +236,7 @@
               context.emit('mouseout', e, path)
             },
             dblclick(e) {
-              toggleNodeExpansion(e, path)
+              toggleNodeExpansion(e, path, node)
             }
           },
         }
@@ -254,7 +254,7 @@
             {node && node.type !== 'divider' && node.type !== 'subheader' &&
             context.slots['prepend-icon'] && context.slots['prepend-icon']({node, path})}
             <span class='g-treeview-action' vShow={childrenVNodes}>
-              <g-icon vOn:click={e => toggleNodeExpansion(e, path)}>
+              <g-icon vOn:click={e => toggleNodeExpansion(e, path, node)}>
                 {treeStates[path].collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
               </g-icon>
             </span>
