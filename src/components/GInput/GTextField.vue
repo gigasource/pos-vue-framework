@@ -50,7 +50,7 @@
           </slot>
 
           <slot name="append-inner" :iconColor="iconColor">
-            <g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
+            <g-icon v-if="appendInnerIcon" :color=iconColor>{{appendInnerIcon}}</g-icon>
           </slot>
         </div>
         <slot name="input-message" :isValid="isValidInput" :errorMess="errorMessages">
