@@ -28,6 +28,7 @@ export const GComboboxSingleSelectNoChips = () => ({
     counter: {type: [String, Number], default: Number('counter', 25)},
     itemText: {default: text('itemText', 'text')},
     itemValue: {default: text('itemValue', 'value')},
+    arrow: {default: boolean('arrow', false)}
   },
   data() {
     return {
@@ -51,7 +52,7 @@ export const GComboboxSingleSelectNoChips = () => ({
   returnObject
   itemText="text"
   itemValue="value"        
-             v-model="selected" :outlined="outlined">  
+             v-model="selected" :outlined="outlined" :arrow="arrow">  
 </g-combobox>
 </div>`,
 })

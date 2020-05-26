@@ -117,7 +117,7 @@
         <g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
       </slot>
       <slot name="append-inner" :iconColor="iconColor">
-        <g-icon :color=iconColor>{{appendInnerIcon}}</g-icon>
+        <g-icon v-if="appendInnerIcon" :color=iconColor>{{appendInnerIcon}}</g-icon>
       </slot>
     </div>
 

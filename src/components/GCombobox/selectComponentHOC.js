@@ -259,25 +259,27 @@ const componentsFactory = (component, componentName) => {
 
 
       }
-      const textFieldScopedSlots = {
-        ...props.arrow ?
-            context.slots['append-inner']
-              ? {
-                'append-inner': ({ iconColor }) =>
-                  [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
-                    context.slots['append-inner'] && context.slots['append-inner']()]
-              }
-              : {
-                'append-inner': ({ iconColor }) =>
-                  <GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>
-              }
-            : context.slots['append-inner'] && { 'append-inner': () => context.slots['append-inner']() },
-        ...context.slots['append-outer'] && { 'append-outer': () => context.slots['append-outer']() },
-        'input-slot': () =>
-          <div class="input-slot" style={{ display: 'contents' }}>
-            {genSelectionSlot()}
-          </div>,
-      }
+      const textFieldScopedSlots = computed(() => {
+        return {
+          ...props.arrow ?
+              context.slots['append-inner']
+                  ? {
+                    'append-inner': ({ iconColor }) =>
+                        [<GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+                          context.slots['append-inner'] && context.slots['append-inner']()]
+                  }
+                  : {
+                    'append-inner': ({ iconColor }) =>
+                        <GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>
+                  }
+              : context.slots['append-inner'] && { 'append-inner': () => context.slots['append-inner']() },
+          ...context.slots['append-outer'] && { 'append-outer': () => context.slots['append-outer']() },
+          'input-slot': () =>
+              <div class="input-slot" style={{ display: 'contents' }}>
+                {genSelectionSlot()}
+              </div>,
+        }
+      })
 
       const onInputEnter = e => {
         if (activeListItemIndex.value >= 0) {
@@ -321,7 +323,10 @@ const componentsFactory = (component, componentName) => {
                   'click:clearIcon': clearSelection,
                   click: [toggleContent, onInputClick],
                   focus: onInputFocus,
-                  blur: onBlur,
+                  blur: e => {
+                    onBlur(e)
+                    state.showOptions = false
+                  },
                   delete: onInputDelete,
                   enter: e => {
                     onInputEnter(e)
@@ -335,7 +340,7 @@ const componentsFactory = (component, componentName) => {
                 },
                 style: { 'flex-wrap': 'wrap' },
                 class: classes,
-                scopedSlots: textFieldScopedSlots
+                scopedSlots: textFieldScopedSlots.value
               }}
             />
           )

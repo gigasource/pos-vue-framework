@@ -14,6 +14,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
 
   function clearSelection() {
     context.emit('input', props.multiple ? [] : '')
+    context.emit('clear')
     lazySearch.value = ''
   }
 
