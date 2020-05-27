@@ -25,10 +25,13 @@
         flex: 1;
       }
     }
+
+    .g-icon__arrow {
+      transition: transform 0.4s;
+    }
 	}
 
-	.g-select__active::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
-			transition: transform 0.4s;
+	.g-select__active ::v-deep .g-icon.g-icon__arrow:last-child {
 			transform: rotateZ(180deg);
 	}
 </style>

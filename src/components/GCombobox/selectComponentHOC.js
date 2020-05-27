@@ -297,6 +297,7 @@ const componentsFactory = (component, componentName) => {
 
         if (listRef && listRef.$el.contains(e.relatedTarget)) return
         updateValue()
+        state.isFocused = false
       }
 
       const inputClick = () => {
@@ -369,6 +370,7 @@ const componentsFactory = (component, componentName) => {
           genList(state),
         ]
       }
+
       function genMenu(state) {
         const nudgeBottom = computed(() => props.textFieldComponent && props.textFieldComponent !== 'GTextField' ? '2px' : (!!props.hint ? '22px' : '2px'))
         return <GMenu {...{

@@ -7,8 +7,7 @@
 <style scoped lang="scss">
   @import "./selectComponent";
 
-	.g-combobox__active ::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
-			transition: transform 0.4s;
+	.g-combobox__active ::v-deep .g-icon.g-icon__arrow:last-child {
 			transform: rotateZ(180deg);
 	}
 
@@ -24,6 +23,10 @@
       input {
         flex: 1;
       }
+    }
+
+    .g-icon__arrow {
+      transition: transform 0.4s;
     }
   }
 </style>
