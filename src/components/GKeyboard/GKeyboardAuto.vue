@@ -164,7 +164,7 @@
         }
       },
       onMouseDown() {
-        if (document.activeElement.tagName === 'INPUT' && this.preEle !== document.activeElement) {
+        if ((document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && this.preEle !== document.activeElement) {
           this.preEle = document.activeElement;
           this.caret = new Caret(document.activeElement);
         }
