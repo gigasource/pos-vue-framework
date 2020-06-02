@@ -148,7 +148,7 @@ input[type=text] {
   &-hint {
     display: flex;
     position: absolute;
-    bottom: -22px;
+    bottom: -16px;
     opacity: 0;
     left: 0;
     font-size: 12px;
@@ -164,7 +164,7 @@ input[type=text] {
   &-error,
   &-counter {
     position: absolute;
-    bottom: -22px;
+    bottom: -16px;
     font-size: 12px;
     font-weight: 400;
     line-height: 1.34;
