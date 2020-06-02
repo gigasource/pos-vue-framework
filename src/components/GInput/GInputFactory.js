@@ -119,7 +119,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 
   const errorMessages = ref('')
   const isValid = ref(false)
-  watch(internalValue, () => {
+  watch(() => [internalValue, props.rules], () => {
     validate(internalValue.value)
     if (!props.validateOnBlur) {
       isValidInput.value = isValid.value
