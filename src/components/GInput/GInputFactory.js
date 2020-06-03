@@ -100,7 +100,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
       return isValid
     }
     if (props.rules || props.required) {
-      let rules = props.rules || []
+      let rules = props.rules ? _.cloneDeep(props.rules) : []
       props.required ? rules.push(function (value) {
         return !!value || ' '
       }) : rules
