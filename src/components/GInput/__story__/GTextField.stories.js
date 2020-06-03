@@ -46,6 +46,7 @@ export const TextFieldPlayGroundFull = () => ({
     appendIcon: {default: text('append Icon', 'check')},
     prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
     appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
+    error: {default: text('error', '')}
   },
   template: `<g-text-field :label="label"
                            :clearable="clearable"
@@ -67,6 +68,7 @@ export const TextFieldPlayGroundFull = () => ({
                            :append-icon="appendIcon"
                            :prepend-inner-icon="prependInnerIcon"
                            :append-inner-icon="appendInnerIcon"
+                           :error="error"
                            v-model="text1"
                            :rules="[rules.required, rules.counter]">
                           <template v-slot:prepend-outer>

@@ -185,7 +185,7 @@
         persistent: Boolean,
         counter: [Number, Boolean, String],
         validateOnBlur: Boolean,
-        error: Boolean,
+        error: String,
 
       },
 

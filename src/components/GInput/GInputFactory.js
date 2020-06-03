@@ -94,6 +94,11 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 
   function validate(value) {
     const errorBucket = []
+    if(props.error) {
+      isValid.value = false
+      errorMessages.value = props.error
+      return isValid
+    }
     if (props.rules || props.required) {
       let rules = props.rules || []
       props.required ? rules.push(function (value) {
@@ -119,7 +124,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
 
   const errorMessages = ref('')
   const isValid = ref(false)
-  watch(() => [internalValue.value, props.rules], () => {
+  watch(() => [internalValue.value, props.rules, props.error], () => {
     validate(internalValue.value)
     if (!props.validateOnBlur) {
       isValidInput.value = isValid.value
