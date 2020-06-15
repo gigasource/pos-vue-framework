@@ -177,7 +177,7 @@ const componentsFactory = (component, componentName) => {
         const onClickItem = (e) => {
           state.showOptions = props.multiple
           toggleItem(e)
-          lazySearch.value = props.multiple || props.chips ? '' : `${getText.value(e)}`
+          lazySearch.value = props.multiple || props.chips || props.deletableChips || props.smallChips ? '' : `${getText.value(e)}`
         }
         addActiveClass()
 
@@ -286,7 +286,7 @@ const componentsFactory = (component, componentName) => {
           const selectedItem = renderList.value[activeListItemIndex.value]
           if (selectedItem) {
             toggleItem(selectedItem)
-            tfValue.value = (props.multiple || props.chips)
+            tfValue.value = (props.multiple || props.chips || props.deletableChips || props.smallChips)
               ? '' : `${getText.value(selectedItem)}`
           }
         } else updateValue()
