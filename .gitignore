@@ -23,5 +23,3 @@ yarn-error.log*
 /coverage/
 /public/main.css.map
 /public/main.css
-
-package-lock.json
