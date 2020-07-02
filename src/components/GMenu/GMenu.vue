@@ -186,10 +186,10 @@
         const _activatorVNode = context.slots.activator && context.slots.activator({ toggleContent, on });
         activatorVNode = _activatorVNode
 
-        return <fragment>
+        return <div>
           {_activatorVNode}
           {props.eager ? genContent() : (!state.isFirstRender && genContent())}
-        </fragment>;
+        </div>;
       }
 
       return {
