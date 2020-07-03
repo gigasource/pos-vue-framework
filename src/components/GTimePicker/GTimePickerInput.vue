@@ -6,7 +6,7 @@
   import GTextField from '../GInput/GTextField'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
-  import { reactive, watch } from '@vue/composition-api';
+  import {reactive, watch} from '@vue/composition-api';
   import _ from 'lodash'
 
   GMenu.components['GTextField'] = GTextField
@@ -63,8 +63,7 @@
       })
 
       watch(() => props.value, newVal => {
-        const stringValue = newVal ? String(newVal).trim() : '';
-        if (stringValue) state.value = stringValue
+        state.value = newVal ? String(newVal).trim() : ''
       })
 
       const updateInput = (value) => {
