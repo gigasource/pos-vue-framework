@@ -1,5 +1,5 @@
 <script>
-  import { createElement as h, computed, onMounted, ref, reactive, inject, onBeforeUnmount } from '@vue/composition-api';
+  import { computed, onMounted, ref, reactive, inject, onBeforeUnmount } from '@vue/composition-api';
   import { convertToUnit } from '../../utils/helpers';
 
   export default {
@@ -126,7 +126,7 @@
         onEnter
       }
     },
-    render() {
+    render(h) {
       return h('transition', {
         props: {
           name: this.computedTransition,
