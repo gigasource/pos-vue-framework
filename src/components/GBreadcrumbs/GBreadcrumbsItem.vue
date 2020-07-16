@@ -1,6 +1,6 @@
 <script>
   import routable from '../../mixins/routable';
-  import { createElement as h, computed, onMounted, watch } from '@vue/composition-api';
+  import { computed, onMounted } from '@vue/composition-api';
 
   export default {
     name: 'GBreadcrumbsItem',
@@ -51,7 +51,7 @@
       });
 
       function renderItem() {
-        let nodeData = {
+        return (<tag {...{
           class: classes.value,
           attrs: {
             ...scopedData.attrs,
@@ -61,10 +61,8 @@
             click: e => context.emit('click', e),
             mouseout: e => context.emit('mouseout', e),
             mouseover: e => context.emit('mouseover', e)
-          }
-        };
-
-        return h(tag, { ...nodeData }, context.slots.default());
+          },
+        }}>{context.slots.default()}</tag>);
       }
 
       function genBreadcrumbsItem() {

@@ -22,9 +22,11 @@ export default (props, context, { genPickerTitle, genPickerBody }) => {
     const body = genPickerBody()
     body && children.push(body)
 
-    children.push(h('template', { slot: 'actions' }, [genPickerActionsSlot()]))
+    children.push(
+       <template {...{slot: 'actions'}}>{genPickerActionsSlot()}</template>
+    )
 
-    return h(GPicker, {
+    return (<GPicker {...{
       staticClass,
       props: {
         color: props.headerColor || props.color,
@@ -35,7 +37,7 @@ export default (props, context, { genPickerTitle, genPickerBody }) => {
         width: props.width,
         noTitle: props.noTitle,
       },
-    }, children)
+    }}>{ children }</GPicker>)
   }
 
   return {
