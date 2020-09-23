@@ -36,8 +36,8 @@
       this.caret.insert(append);
     },
     enter() {
-      if (!this.caret) return;
-      this.$emit('submit', this.caret.element.value);
+      if (!this.caret) this.$emit('submit');
+      else this.$emit('submit', this.caret.element.value);
     }
   }
 
