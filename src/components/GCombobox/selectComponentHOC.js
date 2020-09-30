@@ -119,6 +119,7 @@ const componentsFactory = (component, componentName) => {
       genContent: Function,
       genActivator: Function,
       normalize: Function,
+      keepMenuOnBlur: Boolean
     },
     setup: function (props, context) {
       const {
@@ -301,6 +302,7 @@ const componentsFactory = (component, componentName) => {
 
       const inputClick = () => {
         searchFocused.value = true
+        context.emit('input-click')
       }
 
 
@@ -377,6 +379,7 @@ const componentsFactory = (component, componentName) => {
             nudgeBottom: nudgeBottom.value,
             value: state.showOptions,
             eager: props.eager,
+            closeOnClick: !props.keepMenuOnBlur
           },
           scopedSlots: {
             activator: ({ toggleContent }) =>
