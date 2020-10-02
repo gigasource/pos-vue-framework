@@ -137,6 +137,10 @@
       },
       small: Boolean,
       large: Boolean,
+      keepCaretOnBlur: {
+        type: Boolean,
+        default: true
+      }
     },
     setup: function (props, context) {
       const {internalValue} = getInternalValue(props, context);

@@ -212,7 +212,10 @@
         default: 'text',
       },
       autofocus: Boolean,
-
+      keepCaretOnBlur: {
+        type: Boolean,
+        default: true
+      }
     },
     setup(props, context) {
       const tfType = computed(() => {
