@@ -176,14 +176,12 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onBlur(event) {
+    if(props.virtualEvent) return
     context.emit('blur', event);
     if (props.validateOnBlur) {
       isValidInput.value = validate(internalValue.value).value
     }
     isFocused.value = false
-    if(props.keepCaretOnBlur) {
-      document.caretElement = context.refs.input
-    }
   }
 
   function onClearIconClick(event) {

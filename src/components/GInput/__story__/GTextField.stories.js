@@ -69,8 +69,7 @@ export const TextFieldPlayGroundFull = () => ({
                            :prepend-inner-icon="prependInnerIcon"
                            :append-inner-icon="appendInnerIcon"
                            :error="error"
-                           v-model="text1"
-                           :rules="[rules.required, rules.counter]">
+                           v-model="text1">
                           <template v-slot:prepend-outer>
                           </template>
                           <template v-slot:append-inner>

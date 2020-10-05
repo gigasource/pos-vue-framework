@@ -138,7 +138,7 @@
 </template>
 
 <script>
-  import {computed, ref} from '@vue/composition-api';
+  import {computed, ref, onMounted} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {Fragment} from 'vue-fragment';
@@ -212,10 +212,7 @@
         default: 'text',
       },
       autofocus: Boolean,
-      keepCaretOnBlur: {
-        type: Boolean,
-        default: true
-      }
+      virtualEvent: Boolean
     },
     setup(props, context) {
       const tfType = computed(() => {
@@ -234,6 +231,7 @@
           'g-tf__shaped': props.shaped,
           'g-tf__flat': props.flat,
           'g-tf__dense': props.dense,
+          'g-tf__focused': isFocused.value
         }
       })
       const tfWrapperStyles = computed(() => tfType.value === 'no-wrapper' ? {'margin': '16px 0 24px 0'} : null)
@@ -295,6 +293,25 @@
         }
       })
 
+      onMounted(() => {
+        context.root.$nextTick(() => {
+          if(props.virtualEvent) {
+            document.addEventListener('click', (e) => {
+              if(!context.refs) return
+              if(e.target === context.refs.input || (e.target.classList.contains('key') && document.caretElement === context.refs.input)) {
+                isFocused.value = true
+                document.caretElement = context.refs.input
+              } else {
+                context.emit('blur');
+                if (props.validateOnBlur) {
+                  isValidInput.value = validate(internalValue.value).value
+                }
+                isFocused.value = false
+              }
+            })
+          }
+        })
+      })
       return {
         attrs,
         //calculated styles and classes
