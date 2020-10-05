@@ -160,6 +160,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     if (props.disabled) return;
     if (!isFocused.value) context.refs.input && context.refs.input.focus();
     isFocused.value = true;
+    document.caretElement = context.refs.input
     context.emit('click', event);
   }
 
@@ -175,6 +176,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onBlur(event) {
+    if(props.virtualEvent) return
     context.emit('blur', event);
     if (props.validateOnBlur) {
       isValidInput.value = validate(internalValue.value).value

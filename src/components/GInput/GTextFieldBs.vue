@@ -72,7 +72,7 @@
 </template>
 
 <script>
-  import {ref, computed, reactive} from '@vue/composition-api';
+  import {ref, computed, reactive, onMounted} from '@vue/composition-api';
   import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {getCssColor} from "../../utils/colors";
@@ -137,6 +137,7 @@
       },
       small: Boolean,
       large: Boolean,
+      virtualEvent: Boolean,
     },
     setup: function (props, context) {
       const {internalValue} = getInternalValue(props, context);
@@ -183,6 +184,26 @@
         return {
           ...color && {'border-color': color}
         }
+      })
+
+      onMounted(() => {
+        context.root.$nextTick(() => {
+          if(props.virtualEvent) {
+            document.addEventListener('click', (e) => {
+              if(!context.refs) return
+              if(e.target === context.refs.input || (e.target.classList.contains('key') && document.caretElement === context.refs.input)) {
+                isFocused.value = true
+                document.caretElement = context.refs.input
+              } else {
+                context.emit('blur', e);
+                if (props.validateOnBlur) {
+                  isValidInput.value = validate(internalValue.value).value
+                }
+                isFocused.value = false
+              }
+            })
+          }
+        })
       })
 
       return {

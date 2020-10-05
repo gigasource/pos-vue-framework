@@ -85,7 +85,8 @@ input[type=text] {
     transition: 0.4s ease-out;
   }
 
-  &:focus-within::after {
+  &__focused .g-tf::after,
+  &__focused.g-tf::after {
     height: 2px;
     transform: scale(1);
   }
@@ -311,7 +312,7 @@ input[type=text] {
     top: 20px;
   }
 
-  .g-tf-input:focus + .g-tf-label,
+  &.g-tf__focused .g-tf-input + .g-tf-label,
   .g-tf-input:placeholder-shown + .g-tf-label .g-tf-label__disabled, .g-tf-label__readOnly {
     transform: translateY(-12px) scale(0.75);
     color: rgba(0, 0, 0, 0.54);
@@ -401,15 +402,15 @@ input[type=text] {
     display: none;
   }
 
-  &.g-tf-wrapper:focus-within fieldset {
+  &.g-tf-wrapper.g-tf__focused fieldset {
     border: 2px solid #1867c0;
   }
 
-  &.g-tf-wrapper__error:focus-within fieldset {
+  &.g-tf-wrapper__error.g-tf__focused fieldset {
     border-color: red;
   }
 
-  &:focus-within legend {
+  &.g-tf__focused legend {
     width: auto;
     margin-left: 5px;
   }
@@ -418,7 +419,7 @@ input[type=text] {
     padding: 12px 0 12px 6px;
   }
 
-  .g-tf-input:focus {
+  &.g-tf__focused .g-tf-input {
     padding-top: 11px;
     padding-bottom: 11px;
   }
@@ -457,7 +458,7 @@ input[type=text] {
     left: -40px;
   }
 
-  &:focus-within .g-tf-prepend__inner.g-tf-icon__active ~ .g-tf-label {
+  &.g-tf__focused .g-tf-prepend__inner.g-tf-icon__active ~ .g-tf-label {
     left: 0;
   }
 
@@ -478,7 +479,7 @@ input[type=text] {
 
 .g-tf__outlined.g-tf__filled {
 
-  .g-tf-input:focus {
+  &.g-tf__focused .g-tf-input {
     padding-top: 11px;
     padding-bottom: 11px;
   }
@@ -849,7 +850,7 @@ input[type=text] {
       padding: 10px 6px;
     }
 
-    .g-tf-input:focus {
+    &.g-tf__focused .g-tf-input {
       padding-top: 9px;
       padding-left: 9px;
     }

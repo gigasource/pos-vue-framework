@@ -15,10 +15,22 @@ export const basic = () => ({
       internalValue: ''
     }
   },
+  methods: {
+    blur(e) {
+      console.log('blur', e.target)
+    },
+    click(e) {
+      e.preventDefault()
+      console.log('click', e.target)
+    }
+  },
   template: `
     <div>
-      <g-text-field/>
+      <g-text-field read-only/>
       <g-text-field v-model="internalValue"/>
+      <div @click="click">
+        <input readonly @blur="blur"/>
+      </div>
       <span>{{internalValue}}</span>
       <g-keyboard-auto/>
     </div>`
