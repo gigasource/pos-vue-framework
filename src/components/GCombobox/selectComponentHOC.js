@@ -119,7 +119,8 @@ const componentsFactory = (component, componentName) => {
       genContent: Function,
       genActivator: Function,
       normalize: Function,
-      keepMenuOnBlur: Boolean
+      keepMenuOnBlur: Boolean,
+      menuClass: String
     },
     setup: function (props, context) {
       const {
@@ -379,7 +380,8 @@ const componentsFactory = (component, componentName) => {
             nudgeBottom: nudgeBottom.value,
             value: state.showOptions,
             eager: props.eager,
-            closeOnClick: !props.keepMenuOnBlur
+            closeOnClick: !props.keepMenuOnBlur,
+            ...props.menuClass && { contentClass: props.menuClass }
           },
           scopedSlots: {
             activator: ({ toggleContent }) =>
