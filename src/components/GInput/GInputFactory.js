@@ -162,8 +162,8 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     isFocused.value = true;
     document.caretElement = new Caret(context.refs.input)
     const caret = context.refs.caret
-    document.caretElement.set(caret.children.length + 1)
     if(caret) {
+      document.caretElement.set(caret.children.length + 1)
       for(const child of caret.children) {
         child.classList.remove('animated-caret')
       }

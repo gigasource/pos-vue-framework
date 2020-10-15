@@ -20,7 +20,7 @@
 				    </span>
         </slot>
       </div>
-      <div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused},
+      <div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}, 'r',
                     ($scopedSlots['prepend-outer'] || prefix || prependIcon) && 'bs-tf-input-has-prepend', ($scopedSlots['append-outer'] || suffix || appendIcon) && 'bs-tf-input-has-append']">
         <slot name="prepend-inner" :on-click="onClickPrependInner">
           <g-icon class="mr-2" :color="iconColor" v-if="prependInnerIcon">{{prependInnerIcon}}</g-icon>
@@ -31,12 +31,21 @@
                  style="user-select: text !important; -webkit-user-select: text !important;"
                  :type="state.internalType"
                  ref="input"
+                 :readonly="readonly || virtualEvent"
                  :placeholder="placeholder"
                  v-model="internalValue"
                  @change="onChange"
                  @focus="onFocus"
                  @blur="onBlur"
                  @keydown="onKeyDown">
+          <ul v-if="virtualEvent" ref="caret" class="bs-tf-input bs-tf-input--fake-caret">
+            <li style="height: calc(100% - 4px)"></li
+            ><li v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">
+            <span v-if="letter !== ' '">{{ letter }}</span>
+            <span v-else>&nbsp;</span>
+          </li
+          >
+          </ul>
         </component>
         <div class="bs-tf-append-inner"
              v-if="$scopedSlots['append-inner'] || (isDirty && clearable) || appendInnerIcon">
@@ -191,20 +200,55 @@
           if(props.virtualEvent) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
-              if(e.target === context.refs.input || (e.target.classList.contains('key') && document.caretElement === context.refs.input)) {
+              if(e.target === context.refs.input || e.target === context.refs.caret ||
+                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === context.refs.input)) {
                 isFocused.value = true
-                document.caretElement = context.refs.input
+                const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
+                document.caretElement = new Caret(context.refs.input)
+                if(start) document.caretElement.set(start)
+                if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
+                  const caret = context.refs.caret
+                  if(caret) {
+                    for(const child of caret.children) {
+                      child.classList.remove('animated-caret')
+                    }
+                    caret.children[start].classList.add('animated-caret')
+                  }
+                }
               } else {
                 context.emit('blur', e);
                 if (props.validateOnBlur) {
                   isValidInput.value = validate(internalValue.value).value
                 }
                 isFocused.value = false
+                const caret = context.refs.caret
+                if(caret) {
+                  for(const child of caret.children) {
+                    child.classList.remove('animated-caret')
+                  }
+                }
               }
             })
           }
         })
       })
+
+      const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
+      const selectLetter = (event, index) => {
+        const target = event.target
+        let parent = target.parentElement
+        if(parent.tagName === 'LI') parent = parent.parentElement
+        for(const child of parent.children) {
+          child.classList.remove('animated-caret')
+        }
+        if(target.tagName === 'SPAN')
+          target.parentElement.previousSibling.classList.add('animated-caret')
+        else
+          target.previousSibling.classList.add('animated-caret')
+        isFocused.value = true
+        document.caretElement = new Caret(context.refs.input)
+        document.caretElement.set(index)
+      }
 
       return {
         internalValue,
@@ -229,7 +273,9 @@
         wrapperClasses,
         state,
         toggleType,
-        inputGroupStyles
+        inputGroupStyles,
+        tfLetters,
+        selectLetter
       }
     }
   }
@@ -355,6 +401,26 @@
       font-size: 16px;
       letter-spacing: normal;
     }
+
+    &--fake-caret {
+      list-style: none;
+      position: absolute;
+      top: 0;
+      left: 12px;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+      cursor: text;
+
+      li {
+        display: inline-block;
+        color: transparent;
+      }
+    }
+  }
+
+  .g-icon ~ .bs-tf-input--fake-caret {
+    left: 40px;
   }
 
   .bs-tf-input-has-prepend {
@@ -373,6 +439,11 @@
     font-weight: 400;
     margin-top: 2px;
     color: #6c757d;
+  }
+
+  .input {
+    flex: 1;
+    position: relative;
   }
 
   .input-error {
@@ -545,6 +616,15 @@
     .bs-tf-label {
       font-size: 18px;
     }
+  }
+
+  .animated-caret {
+    animation: caret 1s steps(2) infinite;
+  }
+
+  @keyframes caret {
+    from { border-right: 1px solid transparent }
+    to { border-right: 1px solid black }
   }
 </style>
 

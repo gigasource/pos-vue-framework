@@ -35,7 +35,7 @@
                    v-bind="attrs"
             >
             <ul v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
-              <li style="height: 18px"></li
+              <li style="height: calc(100% - 4px)"></li
               ><li v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">
               <span v-if="letter !== ' '">{{ letter }}</span>
               <span v-else>&nbsp;</span>
@@ -111,12 +111,12 @@
              v-bind="attrs"
       >
       <ul v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
-        <li style="height: 18px"></li
+        <li style="height: calc(100% - 4px)"></li
         ><li v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">
-          <span v-if="letter !== ' '">{{ letter }}</span>
-          <span v-else>&nbsp;</span>
-        </li
-        >
+        <span v-if="letter !== ' '">{{ letter }}</span>
+        <span v-else>&nbsp;</span>
+      </li
+      >
       </ul>
     </component>
     <slot name="label">

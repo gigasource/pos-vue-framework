@@ -239,6 +239,10 @@ input[type=text] {
 .g-tf-prepend__inner {
   margin-right: auto;
   padding-right: 4px;
+
+  & ~ .g-tf-input--fake-caret {
+    left: 28px;
+  }
 }
 
 .g-tf-append__inner {
