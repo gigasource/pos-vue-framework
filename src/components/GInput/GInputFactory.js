@@ -160,7 +160,15 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     if (props.disabled) return;
     if (!isFocused.value) context.refs.input && context.refs.input.focus();
     isFocused.value = true;
-    document.caretElement = context.refs.input
+    document.caretElement = new Caret(context.refs.input)
+    const caret = context.refs.caret
+    document.caretElement.set(caret.children.length + 1)
+    if(caret) {
+      for(const child of caret.children) {
+        child.classList.remove('animated-caret')
+      }
+      caret.lastElementChild && (caret.lastElementChild.classList.add('animated-caret'))
+    }
     context.emit('click', event);
   }
 

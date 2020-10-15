@@ -26,7 +26,7 @@
                    :label="label"
                    v-model="internalValue"
                    :placeholder="placeholder"
-                   :readonly="readOnly"
+                   :readonly="readOnly || virtualEvent"
                    ref="input"
                    @change="onChange"
                    @focus="onFocus"
@@ -34,6 +34,14 @@
                    @keydown="onKeyDown"
                    v-bind="attrs"
             >
+            <ul v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
+              <li style="height: 18px"></li
+              ><li v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">
+              <span v-if="letter !== ' '">{{ letter }}</span>
+              <span v-else>&nbsp;</span>
+            </li
+            >
+            </ul>
           </div>
           <slot name="label">
             <label v-if="label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
@@ -72,7 +80,7 @@
     </div>
 
   </div>
-  <div v-else :class="['g-tf-wrapper',tfWrapperClasses, tfErrWrapperClass]" :style="tfWrapperStyles" @click="onClick"
+  <div v-else :class="['g-tf-wrapper',tfWrapperClasses, tfErrWrapperClass, 'r']" :style="tfWrapperStyles" @click="onClick"
        @mouseup="onMouseUp"
        @mousedown="onMouseDown">
     <div v-if="$scopedSlots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner"
@@ -94,7 +102,7 @@
              :label="label"
              v-model="internalValue"
              :placeholder="placeholder"
-             :readonly="readOnly"
+             :readonly="readOnly || virtualEvent"
              ref="input"
              @change="onChange"
              @focus="onFocus"
@@ -102,6 +110,14 @@
              @keydown="onKeyDown"
              v-bind="attrs"
       >
+      <ul v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
+        <li style="height: 18px"></li
+        ><li v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">
+          <span v-if="letter !== ' '">{{ letter }}</span>
+          <span v-else>&nbsp;</span>
+        </li
+        >
+      </ul>
     </component>
     <slot name="label">
       <label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
@@ -142,6 +158,7 @@
   import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {Fragment} from 'vue-fragment';
+  import '../GKeyboard/jsCaret.js';
 
   export default {
     name: 'GTextField',
@@ -298,20 +315,52 @@
           if(props.virtualEvent) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
-              if(e.target === context.refs.input || (e.target.classList.contains('key') && document.caretElement === context.refs.input)) {
+              if(e.target === context.refs.input || e.target === context.refs.caret ||
+                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === context.refs.input)) {
                 isFocused.value = true
-                document.caretElement = context.refs.input
+                const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
+                document.caretElement = new Caret(context.refs.input)
+                if(start) document.caretElement.set(start)
+                if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
+                  const caret = context.refs.caret
+                  for(const child of caret.children) {
+                    child.classList.remove('animated-caret')
+                  }
+                  caret.children[start].classList.add('animated-caret')
+                }
               } else {
-                context.emit('blur');
+                context.emit('blur', e);
                 if (props.validateOnBlur) {
                   isValidInput.value = validate(internalValue.value).value
                 }
                 isFocused.value = false
+                const caret = context.refs.caret
+                for(const child of caret.children) {
+                  child.classList.remove('animated-caret')
+                }
               }
             })
           }
         })
       })
+
+      const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
+      const selectLetter = (event, index) => {
+        const target = event.target
+        let parent = target.parentElement
+        if(parent.tagName === 'LI') parent = parent.parentElement
+        for(const child of parent.children) {
+          child.classList.remove('animated-caret')
+        }
+        if(target.tagName === 'SPAN')
+          target.parentElement.previousSibling.classList.add('animated-caret')
+        else
+          target.previousSibling.classList.add('animated-caret')
+        isFocused.value = true
+        document.caretElement = new Caret(context.refs.input)
+        document.caretElement.set(index)
+      }
+
       return {
         attrs,
         //calculated styles and classes
@@ -328,6 +377,7 @@
         //value
         internalValue,
         rawInternalValue,
+        tfLetters,
         //calculated state
         isLabelActive,
         isFocused,
@@ -349,6 +399,7 @@
         onClickAppendOuter,
         onClickAppendInner,
         onClearIconClick,
+        selectLetter,
         //ref
         prefixRef,
         prependRef,
@@ -362,4 +413,13 @@
 
 <style lang="scss">
   @import "_GInputField.scss";
+
+  .animated-caret {
+    animation: caret 1s steps(2) infinite;
+  }
+
+  @keyframes caret {
+    from { border-right: 1px solid transparent }
+    to { border-right: 1px solid black }
+  }
 </style>

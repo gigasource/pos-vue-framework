@@ -1,21 +1,22 @@
 <template>
-    <div class="keyboard__template" :style="template">
-        <div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key"
-             :style="item.style" @click="click(item)" @mousedown="onMouseDown">
-            <!-- TODO: responsive height for img -->
-            <img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
-            <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
-            <template v-if="item.content">
-                <span v-if="item.content.length > 0 && item.content.length > index" v-html="item.content[index]"></span>
-                <span v-else v-html="item.content[0]"></span>
-            </template>
-        </div>
+  <div class="keyboard__template" :style="template">
+    <div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key"
+         :style="item.style" @click="click(item)" @mousedown="onMouseDown">
+      <!-- TODO: responsive height for img -->
+      <img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
+      <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
+      <template v-if="item.content">
+        <span v-if="item.content.length > 0 && item.content.length > index" v-html="item.content[index]"></span>
+        <span v-else v-html="item.content[0]"></span>
+      </template>
     </div>
+  </div>
 </template>
 
 <script>
   import GIcon from '../GIcon/GIcon';
   import './jsCaret'; // this must be import only once
+  const queue = require('queue')
   /*
       action: null -> insert
       action: String , ex: action: 'delete', action: 'shift'
@@ -25,8 +26,8 @@
     delete() {
       if (!this.caret) return;
       this.caret.get().start !== this.caret.get().end ?
-        this.caret.set(this.caret.get().start, this.caret.get().end).insert('') :
-        this.caret.get().end > 0 ? this.caret.set(this.caret.get().end - 1, this.caret.get().end).insert('') : null;
+          this.caret.set(this.caret.get().start, this.caret.get().end).insert('') :
+          this.caret.get().end > 0 ? this.caret.set(this.caret.get().end - 1, this.caret.get().end).insert('') : null;
     },
     shift() {
       this.isShift = !this.isShift;
@@ -53,9 +54,9 @@
       template: {
         type: String,
         default: 'grid-template-areas: "q q w w e e r r t t y y u u i i o o p p del del" ' +
-          '". a a s s d d f f g g h h j j k k l l enter enter enter" ' +
-          '"shift1 shift1 z z x x c c v v b b n n m m ep ep qm qm shift2 shift2" ' +
-          '"num1 num1 splash splash space space space space space space space space space space space space com com dot dot num2 num2"'
+            '". a a s s d d f f g g h h j j k k l l enter enter enter" ' +
+            '"shift1 shift1 z z x x c c v v b b n n m m ep ep qm qm shift2 shift2" ' +
+            '"num1 num1 splash splash space space space space space space space space space space space space com com dot dot num2 num2"'
       },
       items: {
         type: Array,
@@ -129,8 +130,12 @@
       return {
         isShift: false,
         preEle: null,
-        caret: null
+        caret: null,
+        queue: null
       }
+    },
+    created() {
+      this.queue = queue()
     },
     computed: {
       index() {
@@ -143,18 +148,19 @@
       },
       click(item) {
         if (typeof item.action === 'string') {
-          actionMap[item.action].bind(this)();
+          this.queue.push(actionMap[item.action].bind(this)());
         } else if (item.content && item.content.length) {
           if (item.action) {
             if (this.caret) {
-              item.action(this.caret, item.content);
+              this.queue.push(item.action(this.caret, item.content));
             }
           } else {
-            actionMap.insert.bind(this)(item.content[item.content.length > 1 ? this.index : 0]);
+            const value = item.content[item.content.length > 1 ? this.index : 0]
+            this.queue.push(actionMap.insert.bind(this)(value));
           }
         } else {
           if (this.caret && item.action) {
-            item.action(this.caret);
+            this.queue.push(item.action(this.caret));
           }
         }
         //set caret to the next position
@@ -164,9 +170,9 @@
         }
       },
       onMouseDown() {
-        if (document.caretElement && (document.caretElement.tagName === 'INPUT' || document.caretElement.tagName === 'TEXTAREA') && this.preEle !== document.caretElement) {
-          this.preEle = document.caretElement;
-          this.caret = new Caret(document.caretElement);
+        if (document.caretElement && this.preEle !== document.caretElement.element) {
+          this.preEle = document.caretElement.element
+          this.caret = document.caretElement
         }
         if ((document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && this.preEle !== document.activeElement) {
           this.preEle = document.activeElement;
@@ -178,5 +184,5 @@
 </script>
 
 <style scoped lang="scss">
-    @import "GKeyboard";
+  @import "GKeyboard";
 </style>
