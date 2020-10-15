@@ -323,10 +323,12 @@
                 if(start) document.caretElement.set(start)
                 if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
                   const caret = context.refs.caret
-                  for(const child of caret.children) {
-                    child.classList.remove('animated-caret')
+                  if(caret) {
+                    for(const child of caret.children) {
+                      child.classList.remove('animated-caret')
+                    }
+                    caret.children[start].classList.add('animated-caret')
                   }
-                  caret.children[start].classList.add('animated-caret')
                 }
               } else {
                 context.emit('blur', e);
@@ -335,8 +337,10 @@
                 }
                 isFocused.value = false
                 const caret = context.refs.caret
-                for(const child of caret.children) {
-                  child.classList.remove('animated-caret')
+                if(caret) {
+                  for(const child of caret.children) {
+                    child.classList.remove('animated-caret')
+                  }
                 }
               }
             })
