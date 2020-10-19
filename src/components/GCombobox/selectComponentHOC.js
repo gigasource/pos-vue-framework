@@ -77,6 +77,7 @@ const componentsFactory = (component, componentName) => {
         type: Boolean,
         default: false
       },
+      skipSearch: Boolean,
       multiple: Boolean,
       allowDuplicates: Boolean,
       mandatory: {
@@ -163,6 +164,7 @@ const componentsFactory = (component, componentName) => {
         return lazySearch.value
       })
       const renderList = computed(() => {
+        if(props.skipSearch) return selectableValues.value
         return searchFn(listSearchText.value, selectableValues.value)
       })
       const addActiveClass = () => {
