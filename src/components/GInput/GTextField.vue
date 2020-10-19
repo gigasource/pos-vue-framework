@@ -34,14 +34,13 @@
                    @keydown="onKeyDown"
                    v-bind="attrs"
             >
-            <ul v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
-              <li style="height: calc(100% - 4px)"></li
-              ><li v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">
-              <span v-if="letter !== ' '">{{ letter }}</span>
-              <span v-else>&nbsp;</span>
-            </li
-            >
-            </ul>
+            <div v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
+              <span></span>
+              <template v-for="(letter, i) in tfLetters">
+                <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
+                <span v-else @click.stop.prevent="e => selectLetter(e, i)">&nbsp;</span>
+              </template>
+            </div>
           </div>
           <slot name="label">
             <label v-if="label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
@@ -110,14 +109,13 @@
              @keydown="onKeyDown"
              v-bind="attrs"
       >
-      <ul v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
-        <li style="height: calc(100% - 4px)"></li
-        ><li v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">
-        <span v-if="letter !== ' '">{{ letter }}</span>
-        <span v-else>&nbsp;</span>
-      </li
-      >
-      </ul>
+      <div v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
+        <span></span>
+        <template v-for="(letter, i) in tfLetters">
+          <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
+          <span v-else @click.stop.prevent="e => selectLetter(e, i)">&nbsp;</span>
+        </template>
+      </div>
     </component>
     <slot name="label">
       <label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
@@ -155,7 +153,14 @@
 
 <script>
   import {computed, ref, onMounted} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
+  import {
+    getEvents,
+    getInternalValue,
+    getLabel,
+    getSlotEventListeners,
+    getValidate,
+    getVirtualCaret
+  } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {Fragment} from 'vue-fragment';
   import '../GKeyboard/jsCaret.js';
@@ -327,7 +332,7 @@
                     for(const child of caret.children) {
                       child.classList.remove('animated-caret')
                     }
-                    caret.children[start].classList.add('animated-caret')
+                    caret.children[start] && caret.children[start].classList.add('animated-caret')
                   }
                 }
               } else {
@@ -348,22 +353,7 @@
         })
       })
 
-      const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
-      const selectLetter = (event, index) => {
-        const target = event.target
-        let parent = target.parentElement
-        if(parent.tagName === 'LI') parent = parent.parentElement
-        for(const child of parent.children) {
-          child.classList.remove('animated-caret')
-        }
-        if(target.tagName === 'SPAN')
-          target.parentElement.previousSibling.classList.add('animated-caret')
-        else
-          target.previousSibling.classList.add('animated-caret')
-        isFocused.value = true
-        document.caretElement = new Caret(context.refs.input)
-        document.caretElement.set(index)
-      }
+      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused)
 
       return {
         attrs,

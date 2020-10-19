@@ -253,3 +253,21 @@ export function getInternalValue(props, context) {
 
   return { internalValue, rawInternalValue };
 }
+
+export function getVirtualCaret(props, context, internalValue, isFocused) {
+  const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
+  const selectLetter = (event, index) => {
+    const target = event.target
+    let parent = target.parentElement
+    for(const child of parent.children) {
+      child.classList.remove('animated-caret')
+    }
+    if(target.previousSibling)
+      target.previousSibling.classList.add('animated-caret')
+    isFocused.value = true
+    document.caretElement = new Caret(context.refs.input)
+    document.caretElement.set(index)
+  }
+
+  return { tfLetters, selectLetter}
+}
