@@ -25,7 +25,7 @@
         <slot name="prepend-inner" :on-click="onClickPrependInner">
           <g-icon class="mr-2" :color="iconColor" v-if="prependInnerIcon">{{prependInnerIcon}}</g-icon>
         </slot>
-        <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input">
+        <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input r">
           <slot name="input-slot"/>
           <input class="bs-tf-input"
                  style="user-select: text !important; -webkit-user-select: text !important;"
