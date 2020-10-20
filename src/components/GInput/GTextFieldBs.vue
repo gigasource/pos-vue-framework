@@ -620,6 +620,8 @@
     bottom: 0;
     margin: 0;
     cursor: text;
+    background-color: transparent !important;
+    overflow: scroll;
 
     span {
       color: transparent;
