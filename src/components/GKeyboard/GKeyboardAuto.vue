@@ -178,6 +178,12 @@
           this.preEle = document.activeElement;
           this.caret = new Caret(document.activeElement);
         }
+        if(this.caret) {
+          const scrollLeft = this.caret.element.scrollLeft
+          setTimeout(() => {
+            this.caret.element.scrollLeft = scrollLeft
+          }, 1)
+        }
       }
     }
   }

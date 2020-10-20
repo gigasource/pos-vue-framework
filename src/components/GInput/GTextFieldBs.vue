@@ -206,11 +206,13 @@
           if(props.virtualEvent) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
-              if(e.target === context.refs.input || e.target === context.refs.caret ||
-                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === context.refs.input)) {
+              const input = context.refs.input
+              if(e.target === input || e.target === context.refs.caret ||
+                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
                 const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
-                document.caretElement = new Caret(context.refs.input)
+                if(e.target === input || e.target === context.refs.caret) {}
+                document.caretElement = new Caret(input)
                 if(start) document.caretElement.set(start)
                 if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
                   const caret = context.refs.caret
@@ -218,7 +220,16 @@
                     for(const child of caret.children) {
                       child.classList.remove('animated-caret')
                     }
-                    caret.children[start].classList.add('animated-caret')
+                    const caretChild = caret.children[start]
+                    if(caretChild) {
+                      caretChild.classList.add('animated-caret')
+                      //scroll if overflow
+                      const { width } = caret.getBoundingClientRect()
+                      if(caretChild.offsetLeft + caretChild.offsetWidth - caret.scrollLeft >= width) { //caret size
+                        input.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                        caret.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                      }
+                    }
                   }
                 }
               } else {
@@ -235,6 +246,15 @@
                 }
               }
             })
+            const caret = context.refs.caret
+            if(caret) {
+              caret.addEventListener('scroll', (e) => {
+                const input = context.refs.input
+                if(caret.scrollLeft !== input.scrollLeft) { //caret size
+                  input.scrollLeft = caret.scrollLeft
+                }
+              })
+            }
           }
         })
       })
@@ -392,25 +412,6 @@
       font-size: 16px;
       letter-spacing: normal;
     }
-
-    &--fake-caret {
-      list-style: none;
-      position: absolute;
-      top: 0;
-      left: 12px;
-      right: 0;
-      bottom: 0;
-      margin: 0;
-      cursor: text;
-
-      span {
-        color: transparent;
-      }
-    }
-  }
-
-  .g-icon ~ .bs-tf-input--fake-caret {
-    left: 40px;
   }
 
   .bs-tf-input-has-prepend {
@@ -606,6 +607,27 @@
     .bs-tf-label {
       font-size: 18px;
     }
+  }
+</style>
+
+<style lang="scss">
+  .bs-tf-input--fake-caret {
+    list-style: none;
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    cursor: text;
+
+    span {
+      color: transparent;
+    }
+  }
+
+  .g-icon ~ .bs-tf-input--fake-caret {
+    left: 40px;
   }
 </style>
 

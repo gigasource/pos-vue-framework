@@ -262,11 +262,17 @@ export function getVirtualCaret(props, context, internalValue, isFocused) {
     for(const child of parent.children) {
       child.classList.remove('animated-caret')
     }
-    if(target.previousSibling)
-      target.previousSibling.classList.add('animated-caret')
-    isFocused.value = true
+    const {width, x} = target.getBoundingClientRect()
+    const offset = event.clientX - x
     document.caretElement = new Caret(context.refs.input)
-    document.caretElement.set(index)
+    if(offset > width/2) {
+      target.classList.add('animated-caret')
+      document.caretElement.set(index + 1)
+    } else {
+      target.previousSibling.classList.add('animated-caret')
+      document.caretElement.set(index)
+    }
+    isFocused.value = true
   }
 
   return { tfLetters, selectLetter}

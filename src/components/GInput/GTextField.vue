@@ -320,11 +320,13 @@
           if(props.virtualEvent) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
-              if(e.target === context.refs.input || e.target === context.refs.caret ||
-                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === context.refs.input)) {
+              const input = context.refs.input
+              if(e.target === input || e.target === context.refs.caret ||
+                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
                 const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
-                document.caretElement = new Caret(context.refs.input)
+                if(e.target === input || e.target === context.refs.caret) {}
+                document.caretElement = new Caret(input)
                 if(start) document.caretElement.set(start)
                 if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
                   const caret = context.refs.caret
@@ -332,7 +334,16 @@
                     for(const child of caret.children) {
                       child.classList.remove('animated-caret')
                     }
-                    caret.children[start] && caret.children[start].classList.add('animated-caret')
+                    const caretChild = caret.children[start]
+                    if(caretChild) {
+                      caretChild.classList.add('animated-caret')
+                      //scroll if overflow
+                      const { width } = caret.getBoundingClientRect()
+                      if(caretChild.offsetLeft + caretChild.offsetWidth - caret.scrollLeft >= width) { //caret size
+                        input.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                        caret.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                      }
+                    }
                   }
                 }
               } else {
@@ -349,6 +360,15 @@
                 }
               }
             })
+            const caret = context.refs.caret
+            if(caret) {
+              caret.addEventListener('scroll', (e) => {
+                const input = context.refs.input
+                if(caret.scrollLeft !== input.scrollLeft) { //caret size
+                  input.scrollLeft = caret.scrollLeft
+                }
+              })
+            }
           }
         })
       })
@@ -410,10 +430,17 @@
 
   .animated-caret {
     animation: caret 1s steps(2) infinite;
+    -webkit-animation: caret 1s steps(2) infinite;
+    border-right: 1px solid black;
   }
 
   @keyframes caret {
-    from { border-right: 1px solid transparent }
-    to { border-right: 1px solid black }
+    0% { border-right: 1px solid transparent }
+    100% { border-right: 1px solid black }
+  }
+
+  @-webkit-keyframes caret {
+    0% { border-right: 1px solid transparent }
+    100% { border-right: 1px solid black }
   }
 </style>

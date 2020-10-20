@@ -120,6 +120,13 @@ input[type=text] {
       bottom: 0;
       margin: 0;
       cursor: text;
+      overflow: auto;
+      scrollbar-width: none; // firefox
+      -ms-overflow-style: none; //edge
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       span {
         color: transparent;
