@@ -78,6 +78,7 @@ const componentsFactory = (component, componentName) => {
         type: Boolean,
         default: false
       },
+      skipSearch: Boolean,
       multiple: Boolean,
       allowDuplicates: Boolean,
       mandatory: {
@@ -121,6 +122,7 @@ const componentsFactory = (component, componentName) => {
       genActivator: Function,
       normalize: Function,
       keepMenuOnBlur: Boolean,
+      menuClass: String,
       virtualEvent: Boolean
     },
     setup: function (props, context) {
@@ -164,6 +166,7 @@ const componentsFactory = (component, componentName) => {
         return lazySearch.value
       })
       const renderList = computed(() => {
+        if(props.skipSearch) return selectableValues.value
         return searchFn(listSearchText.value, selectableValues.value)
       })
       const addActiveClass = () => {
@@ -381,7 +384,8 @@ const componentsFactory = (component, componentName) => {
             nudgeBottom: nudgeBottom.value,
             value: state.showOptions,
             eager: props.eager,
-            closeOnClick: !props.keepMenuOnBlur
+            closeOnClick: !props.keepMenuOnBlur,
+            ...props.menuClass && { contentClass: props.menuClass }
           },
           scopedSlots: {
             activator: ({ toggleContent }) =>
