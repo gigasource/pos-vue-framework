@@ -113,6 +113,7 @@ input[type=text] {
     cursor: text;
 
     &--fake-caret {
+      display: flex;
       position: absolute;
       top: 0;
       left: 0;

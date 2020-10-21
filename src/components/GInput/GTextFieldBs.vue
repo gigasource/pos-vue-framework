@@ -42,7 +42,7 @@
             <span></span>
             <template v-for="(letter, i) in tfLetters">
               <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
-              <span v-else @click.stop.prevent="e => selectLetter(e, i)">&nbsp;</span>
+              <span v-else @click.stop.prevent="e => selectLetter(e, i)">i</span> <!-- use i letter because width ~ space -->
             </template>
           </div>
         </component>
@@ -612,16 +612,23 @@
 
 <style lang="scss">
   .bs-tf-input--fake-caret {
-    list-style: none;
+    display: flex;
     position: absolute;
     top: 0;
     left: 12px;
-    right: 0;
+    right: 12px;
     bottom: 0;
     margin: 0;
     cursor: text;
     background-color: transparent !important;
-    overflow: scroll;
+    width: auto !important;
+    overflow: auto;
+    scrollbar-width: none; // firefox
+    -ms-overflow-style: none; //edge
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     span {
       color: transparent;

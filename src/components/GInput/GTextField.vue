@@ -38,7 +38,7 @@
               <span></span>
               <template v-for="(letter, i) in tfLetters">
                 <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
-                <span v-else @click.stop.prevent="e => selectLetter(e, i)">&nbsp;</span>
+                <span v-else @click.stop.prevent="e => selectLetter(e, i)">i</span> <!-- use i letter because width ~ space -->
               </template>
             </div>
           </div>
@@ -113,7 +113,7 @@
         <span></span>
         <template v-for="(letter, i) in tfLetters">
           <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
-          <span v-else @click.stop.prevent="e => selectLetter(e, i)">&nbsp;</span>
+          <span v-else @click.stop.prevent="e => selectLetter(e, i)">i</span> <!-- use i letter because width ~ space -->
         </template>
       </div>
     </component>
