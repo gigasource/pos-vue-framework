@@ -8,6 +8,7 @@
   import Resize from '../../directives/resize/resize';
   import stackable from '../../mixins/stackable';
   import dependent from '../../mixins/dependent';
+  import { ResizeObserver as ResizeObserverPolyfill } from '@juggle/resize-observer';
 
   export default {
     name: 'GMenuContent',
@@ -119,6 +120,7 @@
       } = menuable(props, context);
       const {getMaxZIndex} = stackable(props, context)
 
+      const ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill
 
       function getResizeObserver() {
         let activatorResizeObserver = undefined

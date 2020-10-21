@@ -11,6 +11,7 @@
   import {colors} from '../../utils/colors';
   import GSlideGroup from '../GSlideGroup/GSlideGroup';
   import Resize from '../../directives/resize/resize';
+  import { ResizeObserver as Polyfill } from '@juggle/resize-observer';
 
   export default {
     name: 'GTabs',
@@ -43,7 +44,11 @@
     },
     setup(props, context) {
       const model = getVModel(props, context);
-      const sliderResizeObserver = new ResizeObserver(calculateSliderStyle)
+
+      const ResizeObserver = window.ResizeObserver || Polyfill
+      let sliderResizeObserver
+      if(ResizeObserver)
+        sliderResizeObserver = new ResizeObserver(calculateSliderStyle)
       const activeTab = ref(null)
 
       if (!model.value) {
@@ -92,11 +97,11 @@
 
       onMounted(() => {
         itemsRef.value = context.refs.itemsRef
-        sliderResizeObserver.observe(itemsRef.value)
+        sliderResizeObserver && sliderResizeObserver.observe(itemsRef.value)
       })
 
       onUnmounted(() => {
-        sliderResizeObserver.disconnect()
+        sliderResizeObserver && sliderResizeObserver.disconnect()
       })
 
       function calculateSliderStyle() {
