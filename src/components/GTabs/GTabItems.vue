@@ -40,5 +40,6 @@
 		contain: layout;
 		flex: 1 1 auto;
 		overflow: hidden;
+    position: relative;
 	}
 </style>
