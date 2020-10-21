@@ -612,7 +612,7 @@
 
 <style lang="scss">
   .bs-tf-input--fake-caret {
-    display: flex;
+    display: flex !important;
     position: absolute;
     top: 0;
     left: 12px;
