@@ -22,7 +22,8 @@ const componentsFactory = (component, componentName) => {
       width: [String, Number],
       //text field's props
       ...{
-
+        disabled: Boolean,
+        readOnly: Boolean,
         //textfield style
         ...{
           filled: Boolean,
@@ -121,7 +122,8 @@ const componentsFactory = (component, componentName) => {
       genActivator: Function,
       normalize: Function,
       keepMenuOnBlur: Boolean,
-      menuClass: String
+      menuClass: String,
+      virtualEvent: Boolean
     },
     setup: function (props, context) {
       const {
@@ -320,7 +322,7 @@ const componentsFactory = (component, componentName) => {
                 props: {
                   ..._.pick(props, ['disabled', 'readOnly', 'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped', 'dense',
                     'clearable', 'hint', 'persistent', 'counter', 'placeholder', 'label', 'prefix', 'suffix',
-                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'disabled', 'readOnly', 'clearIconColor', 'required']),
+                    'rules', 'type', 'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon', 'clearIconColor', 'required', 'virtualEvent']),
                   value: tfValue.value,
                   prependValue: prependText.value,
                 },

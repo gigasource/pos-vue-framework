@@ -160,7 +160,15 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
     if (props.disabled) return;
     if (!isFocused.value) context.refs.input && context.refs.input.focus();
     isFocused.value = true;
-    document.caretElement = context.refs.input
+    document.caretElement = new Caret(context.refs.input)
+    const caret = context.refs.caret
+    if(caret) {
+      document.caretElement.set(caret.children.length + 1)
+      for(const child of caret.children) {
+        child.classList.remove('animated-caret')
+      }
+      caret.lastElementChild && (caret.lastElementChild.classList.add('animated-caret'))
+    }
     context.emit('click', event);
   }
 
@@ -244,4 +252,28 @@ export function getInternalValue(props, context) {
   });
 
   return { internalValue, rawInternalValue };
+}
+
+export function getVirtualCaret(props, context, internalValue, isFocused) {
+  const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
+  const selectLetter = (event, index) => {
+    const target = event.target
+    let parent = target.parentElement
+    for(const child of parent.children) {
+      child.classList.remove('animated-caret')
+    }
+    const {width, x} = target.getBoundingClientRect()
+    const offset = event.clientX - x
+    document.caretElement = new Caret(context.refs.input)
+    if(offset > width/2) {
+      target.classList.add('animated-caret')
+      document.caretElement.set(index + 1)
+    } else {
+      target.previousSibling.classList.add('animated-caret')
+      document.caretElement.set(index)
+    }
+    isFocused.value = true
+  }
+
+  return { tfLetters, selectLetter}
 }

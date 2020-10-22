@@ -12,7 +12,8 @@ export const basic = () => ({
   components: { GKeyboardAuto, GTextField },
   data() {
     return {
-      internalValue: ''
+      internalValue: '',
+      items: ['ggg', 'fff', 'dddd']
     }
   },
   methods: {
@@ -26,14 +27,18 @@ export const basic = () => ({
   },
   template: `
     <div>
-      <g-text-field read-only/>
-      <g-text-field v-model="internalValue"/>
+<!--      <g-autocomplete clearable virtual-event :items="items"/>-->
+      <g-text-field/>
+      <g-text-field virtual-event/>
+<!--      <g-text-field v-model="internalValue" outlined virtual-event prepend-inner-icon="home"/>-->
+      <g-text-field-bs virtual-event/>
       <div @click="click">
         <input readonly @blur="blur"/>
       </div>
       <span>{{internalValue}}</span>
       <g-keyboard-auto/>
-    </div>`
+    </div>
+`
 })
 
 export const numberKeyboard = () => ({

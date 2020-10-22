@@ -21,6 +21,7 @@
     "copy-to-clipboard": "^3.2.0",
     "material-design-icons-iconfont": "^5.0.1",
     "moment": "^2.24.0",
+    "queue": "^6.0.1",
     "resolve-url-loader": "^3.1.0",
     "vue-svg-loader": "^0.15.0",
     "vue-template-compiler": "^2.6.10",

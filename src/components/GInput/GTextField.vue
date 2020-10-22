@@ -26,7 +26,7 @@
                    :label="label"
                    v-model="internalValue"
                    :placeholder="placeholder"
-                   :readonly="readOnly"
+                   :readonly="readOnly || virtualEvent"
                    ref="input"
                    @change="onChange"
                    @focus="onFocus"
@@ -34,6 +34,13 @@
                    @keydown="onKeyDown"
                    v-bind="attrs"
             >
+            <div v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
+              <span></span>
+              <template v-for="(letter, i) in tfLetters">
+                <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
+                <span v-else @click.stop.prevent="e => selectLetter(e, i)">i</span> <!-- use i letter because width ~ space -->
+              </template>
+            </div>
           </div>
           <slot name="label">
             <label v-if="label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
@@ -72,7 +79,7 @@
     </div>
 
   </div>
-  <div v-else :class="['g-tf-wrapper',tfWrapperClasses, tfErrWrapperClass]" :style="tfWrapperStyles" @click="onClick"
+  <div v-else :class="['g-tf-wrapper',tfWrapperClasses, tfErrWrapperClass, 'r']" :style="tfWrapperStyles" @click="onClick"
        @mouseup="onMouseUp"
        @mousedown="onMouseDown">
     <div v-if="$scopedSlots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner"
@@ -94,7 +101,7 @@
              :label="label"
              v-model="internalValue"
              :placeholder="placeholder"
-             :readonly="readOnly"
+             :readonly="readOnly || virtualEvent"
              ref="input"
              @change="onChange"
              @focus="onFocus"
@@ -102,6 +109,13 @@
              @keydown="onKeyDown"
              v-bind="attrs"
       >
+      <div v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
+        <span></span>
+        <template v-for="(letter, i) in tfLetters">
+          <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
+          <span v-else @click.stop.prevent="e => selectLetter(e, i)">i</span> <!-- use i letter because width ~ space -->
+        </template>
+      </div>
     </component>
     <slot name="label">
       <label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
@@ -139,9 +153,17 @@
 
 <script>
   import {computed, ref, onMounted} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
+  import {
+    getEvents,
+    getInternalValue,
+    getLabel,
+    getSlotEventListeners,
+    getValidate,
+    getVirtualCaret
+  } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {Fragment} from 'vue-fragment';
+  import '../GKeyboard/jsCaret.js';
 
   export default {
     name: 'GTextField',
@@ -298,20 +320,61 @@
           if(props.virtualEvent) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
-              if(e.target === context.refs.input || (e.target.classList.contains('key') && document.caretElement === context.refs.input)) {
+              const input = context.refs.input
+              if(e.target === input || e.target === context.refs.caret ||
+                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
-                document.caretElement = context.refs.input
+                const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
+                if(e.target === input || e.target === context.refs.caret) {}
+                document.caretElement = new Caret(input)
+                if(start) document.caretElement.set(start)
+                if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
+                  const caret = context.refs.caret
+                  if(caret) {
+                    for(const child of caret.children) {
+                      child.classList.remove('animated-caret')
+                    }
+                    const caretChild = caret.children[start]
+                    if(caretChild) {
+                      caretChild.classList.add('animated-caret')
+                      //scroll if overflow
+                      const { width } = caret.getBoundingClientRect()
+                      if(caretChild.offsetLeft + caretChild.offsetWidth - caret.scrollLeft >= width) { //caret size
+                        input.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                        caret.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                      }
+                    }
+                  }
+                }
               } else {
-                context.emit('blur');
+                context.emit('blur', e);
                 if (props.validateOnBlur) {
                   isValidInput.value = validate(internalValue.value).value
                 }
                 isFocused.value = false
+                const caret = context.refs.caret
+                if(caret) {
+                  for(const child of caret.children) {
+                    child.classList.remove('animated-caret')
+                  }
+                }
               }
             })
+            const caret = context.refs.caret
+            if(caret) {
+              caret.addEventListener('scroll', (e) => {
+                const input = context.refs.input
+                if(caret.scrollLeft !== input.scrollLeft) { //caret size
+                  input.scrollLeft = caret.scrollLeft
+                }
+              })
+            }
           }
         })
       })
+
+      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused)
+
       return {
         attrs,
         //calculated styles and classes
@@ -328,6 +391,7 @@
         //value
         internalValue,
         rawInternalValue,
+        tfLetters,
         //calculated state
         isLabelActive,
         isFocused,
@@ -349,6 +413,7 @@
         onClickAppendOuter,
         onClickAppendInner,
         onClearIconClick,
+        selectLetter,
         //ref
         prefixRef,
         prependRef,
@@ -362,4 +427,20 @@
 
 <style lang="scss">
   @import "_GInputField.scss";
+
+  .animated-caret {
+    animation: caret 1s steps(2) infinite;
+    -webkit-animation: caret 1s steps(2) infinite;
+    border-right: 1px solid black;
+  }
+
+  @keyframes caret {
+    0% { border-right: 1px solid transparent }
+    100% { border-right: 1px solid black }
+  }
+
+  @-webkit-keyframes caret {
+    0% { border-right: 1px solid transparent }
+    100% { border-right: 1px solid black }
+  }
 </style>

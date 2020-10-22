@@ -20,23 +20,31 @@
 				    </span>
         </slot>
       </div>
-      <div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused},
+      <div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}, 'r',
                     ($scopedSlots['prepend-outer'] || prefix || prependIcon) && 'bs-tf-input-has-prepend', ($scopedSlots['append-outer'] || suffix || appendIcon) && 'bs-tf-input-has-append']">
         <slot name="prepend-inner" :on-click="onClickPrependInner">
           <g-icon class="mr-2" :color="iconColor" v-if="prependInnerIcon">{{prependInnerIcon}}</g-icon>
         </slot>
-        <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input">
+        <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input r">
           <slot name="input-slot"/>
           <input class="bs-tf-input"
                  style="user-select: text !important; -webkit-user-select: text !important;"
                  :type="state.internalType"
                  ref="input"
+                 :readonly="readonly || virtualEvent"
                  :placeholder="placeholder"
                  v-model="internalValue"
                  @change="onChange"
                  @focus="onFocus"
                  @blur="onBlur"
                  @keydown="onKeyDown">
+          <div v-if="virtualEvent" ref="caret" class="bs-tf-input bs-tf-input--fake-caret">
+            <span></span>
+            <template v-for="(letter, i) in tfLetters">
+              <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
+              <span v-else @click.stop.prevent="e => selectLetter(e, i)">i</span> <!-- use i letter because width ~ space -->
+            </template>
+          </div>
         </component>
         <div class="bs-tf-append-inner"
              v-if="$scopedSlots['append-inner'] || (isDirty && clearable) || appendInnerIcon">
@@ -73,7 +81,14 @@
 
 <script>
   import {ref, computed, reactive, onMounted} from '@vue/composition-api';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
+  import {
+    getEvents,
+    getInternalValue,
+    getLabel,
+    getSlotEventListeners,
+    getValidate,
+    getVirtualCaret
+  } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {getCssColor} from "../../utils/colors";
 
@@ -191,20 +206,60 @@
           if(props.virtualEvent) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
-              if(e.target === context.refs.input || (e.target.classList.contains('key') && document.caretElement === context.refs.input)) {
+              const input = context.refs.input
+              if(e.target === input || e.target === context.refs.caret ||
+                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
-                document.caretElement = context.refs.input
+                const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
+                if(e.target === input || e.target === context.refs.caret) {}
+                document.caretElement = new Caret(input)
+                if(start) document.caretElement.set(start)
+                if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
+                  const caret = context.refs.caret
+                  if(caret) {
+                    for(const child of caret.children) {
+                      child.classList.remove('animated-caret')
+                    }
+                    const caretChild = caret.children[start]
+                    if(caretChild) {
+                      caretChild.classList.add('animated-caret')
+                      //scroll if overflow
+                      const { width } = caret.getBoundingClientRect()
+                      if(caretChild.offsetLeft + caretChild.offsetWidth - caret.scrollLeft >= width) { //caret size
+                        input.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                        caret.scrollLeft = caretChild.offsetLeft + caretChild.offsetWidth - width
+                      }
+                    }
+                  }
+                }
               } else {
                 context.emit('blur', e);
                 if (props.validateOnBlur) {
                   isValidInput.value = validate(internalValue.value).value
                 }
                 isFocused.value = false
+                const caret = context.refs.caret
+                if(caret) {
+                  for(const child of caret.children) {
+                    child.classList.remove('animated-caret')
+                  }
+                }
               }
             })
+            const caret = context.refs.caret
+            if(caret) {
+              caret.addEventListener('scroll', (e) => {
+                const input = context.refs.input
+                if(caret.scrollLeft !== input.scrollLeft) { //caret size
+                  input.scrollLeft = caret.scrollLeft
+                }
+              })
+            }
           }
         })
       })
+
+      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused)
 
       return {
         internalValue,
@@ -229,7 +284,9 @@
         wrapperClasses,
         state,
         toggleType,
-        inputGroupStyles
+        inputGroupStyles,
+        tfLetters,
+        selectLetter
       }
     }
   }
@@ -373,6 +430,11 @@
     font-weight: 400;
     margin-top: 2px;
     color: #6c757d;
+  }
+
+  .input {
+    flex: 1;
+    position: relative;
   }
 
   .input-error {
@@ -545,6 +607,36 @@
     .bs-tf-label {
       font-size: 18px;
     }
+  }
+</style>
+
+<style lang="scss">
+  .bs-tf-input--fake-caret {
+    display: flex !important;
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    margin: 0;
+    cursor: text;
+    background-color: transparent !important;
+    width: auto !important;
+    overflow: auto;
+    scrollbar-width: none; // firefox
+    -ms-overflow-style: none; //edge
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    span {
+      color: transparent;
+    }
+  }
+
+  .g-icon ~ .bs-tf-input--fake-caret {
+    left: 40px;
   }
 </style>
 
