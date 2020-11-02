@@ -317,12 +317,12 @@
 
       onMounted(() => {
         context.root.$nextTick(() => {
-          if(props.virtualEvent) {
+          if(props.virtualEvent && !props.readOnly) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
               const input = context.refs.input
               if(e.target === input || e.target === context.refs.caret ||
-                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
+                  ((e.target.classList.contains('key') || (e.target.parentElement && e.target.parentElement.classList.contains('key'))) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
                 const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
                 if(e.target === input || e.target === context.refs.caret) {}

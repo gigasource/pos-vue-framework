@@ -174,7 +174,7 @@
           this.preEle = document.caretElement.element
           this.caret = document.caretElement
         }
-        if ((document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && this.preEle !== document.activeElement) {
+        if ((document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && this.preEle !== document.activeElement && !document.activeElement.readOnly) {
           this.preEle = document.activeElement;
           this.caret = new Caret(document.activeElement);
         }

@@ -157,7 +157,7 @@ export function getSlotBsEventListeners(context) {
 
 export function getEvents(props, context, internalValue, isFocused, isValidInput, validate) {
   function onClick(event) {
-    if (props.disabled) return;
+    if (props.disabled || props.readonly || props.readOnly) return;
     if (!isFocused.value) context.refs.input && context.refs.input.focus();
     isFocused.value = true;
     document.caretElement = new Caret(context.refs.input)

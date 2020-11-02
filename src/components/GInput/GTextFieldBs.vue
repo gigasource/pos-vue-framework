@@ -203,7 +203,7 @@
 
       onMounted(() => {
         context.root.$nextTick(() => {
-          if(props.virtualEvent) {
+          if(props.virtualEvent && !props.readonly) {
             document.addEventListener('click', (e) => {
               if(!context.refs) return
               const input = context.refs.input
