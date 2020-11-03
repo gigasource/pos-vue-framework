@@ -157,6 +157,7 @@
           } else {
             const value = item.content[item.content.length > 1 ? this.index : 0]
             this.queue.push(actionMap.insert.bind(this)(value));
+            if(this.isShift) this.isShift = false
           }
         } else {
           if (this.caret && item.action) {
