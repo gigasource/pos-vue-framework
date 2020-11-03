@@ -1,7 +1,7 @@
 <template>
   <div class="keyboard__template" :style="template">
     <div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key"
-         :style="item.style" @click="click(item)" @mousedown="onMouseDown">
+         :style="item.style" @click="click(item)" @mousedown="onMouseDown(item)" @mouseup="onMouseUp(item)">
       <!-- TODO: responsive height for img -->
       <img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
       <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
@@ -131,7 +131,8 @@
         isShift: false,
         preEle: null,
         caret: null,
-        queue: null
+        queue: null,
+        deleteHoldTime: null
       }
     },
     created() {
@@ -170,7 +171,7 @@
           this.caret.element.dispatchEvent(new Event('input'));
         }
       },
-      onMouseDown() {
+      onMouseDown(item) {
         if (document.caretElement && this.preEle !== document.caretElement.element) {
           this.preEle = document.caretElement.element
           this.caret = document.caretElement
@@ -184,6 +185,20 @@
           setTimeout(() => {
             this.caret.element.scrollLeft = scrollLeft
           }, 1)
+        }
+        if(item.action === 'delete') { //remove whole caret value after holding delete btn 300ms
+          this.deleteHoldTime = new Date()
+          setTimeout(() => {
+            if(this.deleteHoldTime) {
+              this.caret.set(0, this.caret.get().end).insert('');
+              this.caret.element.dispatchEvent(new Event('input'));
+            }
+          }, 300)
+        }
+      },
+      onMouseUp(item) {
+        if(item.action === 'delete') {
+          this.deleteHoldTime = null
         }
       }
     }
