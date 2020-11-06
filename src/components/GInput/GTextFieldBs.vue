@@ -251,8 +251,20 @@
               caret.addEventListener('scroll', (e) => {
                 const input = context.refs.input
                 if(caret.scrollLeft !== input.scrollLeft) { //caret size
-                  input.scrollLeft = caret.scrollLeft
+                  setTimeout(() => {
+                    input.scrollLeft = caret.scrollLeft
+                  }, 0)
                 }
+              })
+              let touchOffsetX = 0
+              caret.addEventListener('touchstart', (e) => {
+                touchOffsetX = e.touches[0].clientX
+              })
+
+              caret.addEventListener('touchmove', (e) => {
+                const diff = e.touches[0].clientX - touchOffsetX
+                touchOffsetX = e.touches[0].clientX
+                caret.scrollLeft -= diff
               })
             }
           }
