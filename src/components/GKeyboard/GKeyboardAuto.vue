@@ -1,7 +1,11 @@
 <template>
   <div class="keyboard__template" :style="template">
     <div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key"
-         :style="item.style" @click="click(item)" @mousedown="onMouseDown(item)" @mouseup="onMouseUp(item)">
+         :style="item.style" @click="click(item)"
+         @mousedown="onMouseDown(item)"
+         @touchstart="onMouseDown(item)"
+         @mouseup="onMouseUp(item)"
+         @touchend="onMouseUp(item)">
       <!-- TODO: responsive height for img -->
       <img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
       <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
