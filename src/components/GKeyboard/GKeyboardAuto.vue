@@ -2,8 +2,8 @@
   <div class="keyboard__template" :style="template">
     <div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key"
          :style="item.style" @click="click(item)"
-         @mousedown="onMouseDown(item)"
-         @touchstart="onMouseDown(item)"
+         @mousedown="e => onMouseDown(item, e)"
+         @touchstart="e => onMouseDown(item, e)"
          @mouseup="onMouseUp(item)"
          @touchend="onMouseUp(item)">
       <!-- TODO: responsive height for img -->
@@ -154,6 +154,7 @@
       click(item) {
         if (typeof item.action === 'string') {
           this.queue.push(actionMap[item.action].bind(this)());
+          if(item.action === 'enter') return
         } else if (item.content && item.content.length) {
           if (item.action) {
             if (this.caret) {
@@ -175,23 +176,20 @@
           this.caret.element.dispatchEvent(new Event('input'));
         }
       },
-      onMouseDown(item) {
+      onMouseDown(item, e) {
         if (document.caretElement && this.preEle !== document.caretElement.element) {
           this.preEle = document.caretElement.element
           this.caret = document.caretElement
         }
+
         if ((document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && this.preEle !== document.activeElement && !document.activeElement.readOnly) {
           this.preEle = document.activeElement;
           this.caret = new Caret(document.activeElement);
         }
-        if(this.caret) {
-          const scrollLeft = this.caret.element.scrollLeft
-          setTimeout(() => {
-            this.caret.element.scrollLeft = scrollLeft
-          }, 1)
-        }
+
         if(item.action === 'delete') { //remove whole caret value after holding delete btn 300ms
           this.deleteHoldTime = new Date()
+          e.preventDefault()
           setTimeout(() => {
             if(this.deleteHoldTime) {
               this.caret.set(0, this.caret.get().end).insert('');
