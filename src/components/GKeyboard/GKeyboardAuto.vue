@@ -189,7 +189,6 @@
 
         if(item.action === 'delete') { //remove whole caret value after holding delete btn 300ms
           this.deleteHoldTime = new Date()
-          e.preventDefault()
           setTimeout(() => {
             if(this.deleteHoldTime) {
               this.caret.set(0, this.caret.get().end).insert('');
