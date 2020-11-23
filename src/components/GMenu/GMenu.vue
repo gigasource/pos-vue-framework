@@ -1,6 +1,6 @@
 <script>
   import {getInternalValue} from '../../mixins/getVModel';
-  import { onBeforeUnmount, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';

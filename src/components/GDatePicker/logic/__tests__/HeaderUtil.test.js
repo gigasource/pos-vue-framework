@@ -1,6 +1,6 @@
 // Created at 2019-10-22 09:58 by Thinh Vu
 import { createLocalVue } from '@vue/test-utils'
-import plugin from '@vue/composition-api'
+import plugin from 'vue'
 import {
   _computedHeaderContent,
   _computedHeaderFormatFn,

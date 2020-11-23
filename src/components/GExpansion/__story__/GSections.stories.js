@@ -6,7 +6,7 @@ import GTextField from '../../GInput/GTextField';
 import GSwitch from '../../GSwitch/GSwitch';
 import GBtn from '../../GBtn/GBtn';
 import GIcon from '../../GIcon/GIcon';
-import { ref, computed, watch } from '@vue/composition-api';
+import { ref, computed, watch } from 'vue';
 
 export default {
   title: 'GSections',

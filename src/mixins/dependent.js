@@ -1,4 +1,4 @@
-import { watch } from '@vue/composition-api';
+import { watch } from 'vue';
 
 export default function dependent(vm) {
   watch(() => vm.isActive, (val) => {

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { ref } from '@vue/composition-api';
+import { ref } from 'vue';
 import GridModel from './GridModel';
 import AreaModel from './AreaModel';
 

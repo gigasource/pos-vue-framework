@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import { computed, onBeforeUpdate, onUpdated, reactive, ref, watch } from '@vue/composition-api';
+  import { computed, onBeforeUpdate, onUpdated, reactive, ref, watch } from 'vue';
   import groupable from '../../mixins/groupable';
   import Resize from '../../directives/resize/resize';
   import Touch from '../../directives/touch/touch';

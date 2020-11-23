@@ -1,4 +1,4 @@
-import plugin from '@vue/composition-api';
+import plugin from 'vue';
 import GBtn from '../GBtn';
 import { createLocalVue, mount } from '@vue/test-utils';
 

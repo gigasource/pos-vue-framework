@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import {computed} from '@vue/composition-api';
+  import {computed} from 'vue';
   import GOverlay from '../GOverlay/GOverlay';
   import colorHandler, {convertToUnit} from '../../utils/helpers';
 

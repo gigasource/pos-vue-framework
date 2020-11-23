@@ -1,6 +1,6 @@
 // Created at 2019-10-24 15:27 by Thinh Vu
 import { createLocalVue } from '@vue/test-utils'
-import plugin, { computed } from '@vue/composition-api'
+import plugin, { computed } from 'vue'
 import { getFormattedHours, getAdjustTimeMethods } from '../GTimePickerUtil';
 
 describe('/GTimePickerUtil', () => {

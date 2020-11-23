@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { computed, ref, watch } from '@vue/composition-api';
+import { computed, ref, watch } from 'vue';
 
 function createItemFn(prop) {
   return typeof prop === 'function'

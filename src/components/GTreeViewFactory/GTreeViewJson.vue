@@ -1,5 +1,5 @@
 <script>
-  import {computed} from '@vue/composition-api';
+  import {computed} from 'vue';
   import {getPropsNameAZPrimitiveFirst} from './util'
   import GTreeFactory from './GTreeFactory';
   import GIcon from '../GIcon/GIcon';

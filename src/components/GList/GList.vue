@@ -1,6 +1,6 @@
 <script>
   import { createItemFn, makeListSelectable } from './listSelectFactory';
-  import { ref, computed, provide } from '@vue/composition-api';
+  import { ref, computed, provide } from 'vue';
   import { keyCodes } from '../../utils/helpers';
   import GDivider from '../GLayout/GDivider';
   import GIcon from '../GIcon/GIcon';

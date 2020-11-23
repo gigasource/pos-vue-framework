@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import {computed, ref, watch} from '@vue/composition-api';
+  import {computed, ref, watch} from 'vue';
   import colorHandler from '../../utils/helpers';
   import {isEqual, xorWith, cloneDeep} from 'lodash';
 

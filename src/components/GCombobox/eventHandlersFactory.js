@@ -1,5 +1,5 @@
 import { keyCodes } from '../../utils/helpers';
-import { ref, watch } from '@vue/composition-api'
+import { ref, watch } from 'vue'
 
 export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput,
                                       unNormalize, renderList, getText) {

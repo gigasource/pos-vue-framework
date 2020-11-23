@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { computed } from '@vue/composition-api'
+  import { computed } from 'vue'
   import GPicker from '../GPicker/GPicker'
   import GTimePickerUtil, { getFormattedHours, ActiveTimePicker, ActivePeriodPicker } from './logic/GTimePickerUtil'
   import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_59PositionStyle } from './logic/GTimePickerUIHelper';

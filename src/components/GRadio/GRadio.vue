@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import { computed, inject } from '@vue/composition-api';
+  import { computed, inject } from 'vue';
   import colorHandler from '../../utils/helpers';
 
   export default {

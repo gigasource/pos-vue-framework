@@ -3,7 +3,7 @@
   import { convertToUnit, getZIndex } from '../../utils/helpers'
   import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
-  import { computed, onBeforeUnmount, onMounted, ref, watch } from '@vue/composition-api'
+  import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
   import dependent from '../../mixins/dependent';

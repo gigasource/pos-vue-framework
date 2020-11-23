@@ -1,7 +1,7 @@
 <script>
   import { GExpandTransition } from '../transition/transition';
   import { genHeaderFactory, genContentFactory, getExpansionModel } from './GExpansionFactory';
-  import { computed } from '@vue/composition-api';
+  import { computed } from 'vue';
   import GIcon from '../GIcon/GIcon';
 
   export default {

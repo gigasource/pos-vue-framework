@@ -1,4 +1,4 @@
-import { storiesOf as storiesOfReal } from '@storybook/vue'
+import { storiesOf as storiesOfReal } from '@andoshin11/storybook-vue3'
 
 import {
   specs as specsReal,

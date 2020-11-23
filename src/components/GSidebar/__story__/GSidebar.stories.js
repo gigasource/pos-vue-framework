@@ -3,7 +3,7 @@ import GSidebar from '../GSidebar';
 import GList from '../../GList/GList';
 import GIcon from '../../GIcon/GIcon';
 import GSideBarTreeView from '../GSideBarTreeView'
-import { reactive, ref } from '@vue/composition-api'
+import { reactive, ref } from 'vue'
 
 export default {
   title: 'GSidebar',

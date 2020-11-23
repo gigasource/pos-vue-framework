@@ -1,4 +1,4 @@
-import plugin from '@vue/composition-api'
+import plugin from 'vue'
 import { _computedYearRange } from '../YearsUtil';
 import { createLocalVue } from '@vue/test-utils'
 

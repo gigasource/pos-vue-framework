@@ -1,5 +1,5 @@
 import GPicker from '../components/GPicker/GPicker'
-import { createElement as h } from '@vue/composition-api'
+import { h } from 'vue'
 
 export default (props, context, { genPickerTitle, genPickerBody }) => {
   function genPickerActionsSlot() {

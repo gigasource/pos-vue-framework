@@ -1,5 +1,5 @@
 <script>
-  import {ref, computed, watch, onMounted, onUpdated} from '@vue/composition-api';
+  import {ref, computed, watch, onMounted, onUpdated} from 'vue';
   import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate,} from '../GInput/GInputFactory';
   import GIcon from '../GIcon/GIcon';
 

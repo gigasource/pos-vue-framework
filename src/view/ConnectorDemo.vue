@@ -80,7 +80,7 @@
 	</div>
 </template>
 <script>
-  import { ref, reactive, computed, onMounted } from '@vue/composition-api'
+  import { ref, reactive, computed, onMounted } from 'vue'
   import GConnector from '../components/GConnector/GConnector';
   import GDiagram from '../components/GConnector/GDiagram';
   export default {

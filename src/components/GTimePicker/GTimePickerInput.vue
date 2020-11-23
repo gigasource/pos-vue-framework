@@ -6,7 +6,7 @@
   import GTextField from '../GInput/GTextField'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
-  import {reactive, watch} from '@vue/composition-api';
+  import {reactive, watch} from 'vue';
   import _ from 'lodash'
 
   GMenu.components['GTextField'] = GTextField

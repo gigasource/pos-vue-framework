@@ -1,7 +1,7 @@
 import {createElement, setInputValue} from "../../../tests/setup";
 
 const Vue = require("vue/dist/vue.common.js");
-import plugin, {computed, ref, watch, onMounted, onBeforeUnmount} from "@vue/composition-api";
+import plugin, {computed, ref, watch, onMounted, onBeforeUnmount} from "vue";
 import GSlideshowFactory from "../GSlideshowFactory";
 import moment from "moment";
 import _ from 'lodash';

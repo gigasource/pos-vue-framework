@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import { pad } from './utils';
 import { createRange } from '../../../utils/helpers';
 import { setBackgroundColor } from '../../../mixins/colorable'

@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions'
 import GColorPicker from '../GColorPicker'
 import GColorPickerInput from '../GColorPickerInput'
 import GColorPickerInputModel from '../GColorPickerInputModel'
-import { reactive } from '@vue/composition-api';
+import { reactive } from 'vue';
 //
 export default {
   title: 'GColorPicker',

@@ -1,6 +1,6 @@
 // https://en.wikipedia.org/wiki/12-hour_clock
 //
-import { computed, reactive, watch } from '@vue/composition-api'
+import { computed, reactive, watch } from 'vue'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import * as _ from 'lodash';

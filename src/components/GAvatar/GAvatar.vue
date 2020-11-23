@@ -1,5 +1,5 @@
 <script>
-  import { computed, onMounted, reactive, ref, watch } from '@vue/composition-api';
+  import { computed, onMounted, reactive, ref, watch } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 

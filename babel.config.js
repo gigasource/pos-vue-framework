@@ -1,7 +1,6 @@
 module.exports = {
   presets: [
-    'vca-jsx',
-    '@vue/app',
+    '@vue/cli-plugin-babel/preset'
   ],
   env: {
     test: {

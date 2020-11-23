@@ -1,4 +1,4 @@
-import { computed, ref, watch } from '@vue/composition-api';
+import { computed, ref, watch } from 'vue';
 
 export function getVModel(props, context) {
   return computed({

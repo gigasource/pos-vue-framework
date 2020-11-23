@@ -1,6 +1,6 @@
 // Created at 2019-10-24 16:39 by Thinh Vu
 import { createLocalVue } from '@vue/test-utils'
-import plugin from '@vue/composition-api'
+import plugin from 'vue'
 import { _calcNumberPositionStyle, computedHandStyle, getSelectedIndex } from '../GTimePickerUIHelper'
 
 describe('/GTimePickerUIHelper', () => {

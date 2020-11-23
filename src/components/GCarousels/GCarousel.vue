@@ -1,5 +1,5 @@
 <script>
-  import { computed, onMounted, watch, reactive, provide } from '@vue/composition-api';
+  import { computed, onMounted, watch, reactive, provide } from 'vue';
   import { convertToUnit, getInternalValue } from '../../utils/helpers';
   import GWindow from '../GWindow/GWindow';
   import GBtn from '../GBtn/GBtn';

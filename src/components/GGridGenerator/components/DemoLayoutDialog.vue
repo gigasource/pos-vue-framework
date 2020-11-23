@@ -1,7 +1,7 @@
 <script>
   import sampleImages from '../logic/sampleImageBase64'
   import _ from 'lodash'
-  import { watch, reactive, computed } from '@vue/composition-api';
+  import { watch, reactive, computed } from 'vue';
   import GDialog from '../../GDialog/GDialog'
   import GBtn from '../../GBtn/GBtn'
   import GAutoComplete from '../../GAutocomplete/GAutocomplete'

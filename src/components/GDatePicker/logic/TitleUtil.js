@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import dayjs from 'dayjs';
 
 const _computedMultipleDateFormatFn = (props, cptIsMultiSelect, cptSingleDateFormatFn) => {

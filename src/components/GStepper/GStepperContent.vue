@@ -1,5 +1,5 @@
 <script>
-  import { computed, inject } from '@vue/composition-api'
+  import { computed, inject } from 'vue'
   import { GExpandTransition } from '../transition/transition';
 
   export default {

@@ -1,6 +1,6 @@
 import { text, withKnobs } from '@storybook/addon-knobs';
 import GDateRangePicker from '../GDateRangePicker'
-import { reactive } from '@vue/composition-api';
+import { reactive } from 'vue';
 //
 export default {
   title: 'GDateRangePicker',

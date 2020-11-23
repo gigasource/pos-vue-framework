@@ -1,6 +1,6 @@
 <script>
   import routable from '../../mixins/routable';
-  import { computed, onMounted } from '@vue/composition-api';
+  import { computed, onMounted } from 'vue';
 
   export default {
     name: 'GBreadcrumbsItem',

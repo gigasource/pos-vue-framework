@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import { range0_11, range12_23, range0_59 } from './GTimePickerUtil';
 import { ActiveTimePicker } from './GTimePickerUtil';
 

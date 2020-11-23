@@ -1,4 +1,4 @@
-import { computed, reactive } from '@vue/composition-api';
+import { computed, reactive } from 'vue';
 
 // calculate top/left and activator/content dimensions
 // requires template refs: activator, content

@@ -1,4 +1,4 @@
-import { ref, reactive, computed, onMounted} from '@vue/composition-api';
+import { ref, reactive, computed, onMounted} from 'vue';
 import { Point, Circle } from './CoordinateSystem';
 import { getElementPosition } from '../../utils/helpers';
 

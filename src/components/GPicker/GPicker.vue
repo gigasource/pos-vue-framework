@@ -14,7 +14,7 @@
 
 <script>
   import { setBackgroundColor } from '../../mixins/colorable'
-  import { computed, reactive } from '@vue/composition-api';
+  import { computed, reactive } from 'vue';
   import { convertToUnit } from '../../utils/helpers'
 
   export default {

@@ -17,7 +17,7 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
   import { setBackgroundColor } from '../../mixins/colorable';
-  import { computed, watch } from '@vue/composition-api';
+  import { computed, watch } from 'vue';
   import _ from 'lodash';
 
   export default {

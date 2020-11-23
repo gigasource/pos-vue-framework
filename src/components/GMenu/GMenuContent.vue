@@ -1,5 +1,5 @@
 <script>
-  import {computed, onBeforeUnmount, onMounted, ref, watch} from '@vue/composition-api';
+  import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
   import {convertToUnit} from '../../utils/helpers';

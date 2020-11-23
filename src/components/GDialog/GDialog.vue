@@ -1,7 +1,7 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
   import detachable from '../../mixins/detachable';
-  import { computed, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { computed, reactive, watch, onMounted, onBeforeUnmount } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
 	import GDialogContent from './GDialogContent';
 

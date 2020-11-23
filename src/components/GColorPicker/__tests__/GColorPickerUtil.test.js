@@ -1,6 +1,6 @@
 // Created at 2019-10-31 17:20 by Thinh Vu
 import { createLocalVue } from '@vue/test-utils'
-import plugin from '@vue/composition-api'
+import plugin from 'vue'
 import { fromHSVA } from '../GColorPickerUtil';
 import { HSVAtoRGBA } from '../../../utils/colors';
 

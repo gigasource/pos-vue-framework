@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 import _ from 'lodash';
 
 export function createItemFn(prop) {

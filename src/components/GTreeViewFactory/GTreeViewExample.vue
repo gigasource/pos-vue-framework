@@ -1,5 +1,5 @@
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed } from 'vue';
   import GTreeFactory, { genTextFactory } from './GTreeFactory';
 
   export default {

@@ -1,7 +1,7 @@
 <script>
   import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
-  import {ref, computed, watch} from '@vue/composition-api';
+  import {ref, computed, watch} from 'vue';
   import {getEvents, getLabel, getValidate} from '../GInput/GInputFactory';
 
   export default {

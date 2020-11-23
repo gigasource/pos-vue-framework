@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import {computed, reactive} from '@vue/composition-api';
+  import {computed, reactive} from 'vue';
   import {getCssColor} from "../../utils/colors";
 
 	export default {

@@ -1,6 +1,6 @@
 import GMenu from '../GMenu/GMenu';
 import { getSelectionText, makeListSelectable } from '../GList/listSelectFactory';
-import { computed, reactive, ref } from '@vue/composition-api';
+import { computed, reactive, ref } from 'vue';
 import { getInputEventHandlers } from './eventHandlersFactory';
 import GTextField from '../GInput/GTextField';
 import GTextFieldBs from '../GInput/GTextFieldBs';

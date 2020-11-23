@@ -1,6 +1,6 @@
 <script>
 	import getInternalValue from '../../mixins/getVModel';
-  import { ref, inject, onMounted } from '@vue/composition-api';
+  import { ref, inject, onMounted } from 'vue';
   import GConnectorFactory from './GConnectorFactory';
   import { Fragment } from 'vue-fragment'
 

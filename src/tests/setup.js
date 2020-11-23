@@ -16,6 +16,3 @@ export function setInputValue(input, value) {
   input.dispatchEvent(event);
 }
 import Vue from 'vue/dist/vue.common.js'
-import VueCompositionApi from '@vue/composition-api'
-// init plugin first
-Vue.use(VueCompositionApi)

@@ -1,6 +1,6 @@
 import { fromHSVA } from '../GColorPickerUtil';
 import { RGBAtoCSS, RGBtoCSS } from '../../../utils/colors';
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 
 export default function getRenderAdjustPreview(state, updateColor) {
   const cptAlphaAdjustSlider = computed(() => ({

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import {computed} from '@vue/composition-api'
+  import {computed} from 'vue'
   import {convertToUnit} from '../../utils/helpers';
   import {linearGradient, getHslColor, getCssColor} from '../../utils/colors';
   import Ripple from '../../directives/ripple/ripple';

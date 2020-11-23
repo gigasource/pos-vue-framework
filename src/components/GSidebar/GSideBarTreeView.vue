@@ -1,5 +1,5 @@
 <script>
-  import {computed, reactive, watch} from '@vue/composition-api';
+  import {computed, reactive, watch} from 'vue';
   import GTreeFactory from '../GTreeViewFactory/GTreeFactory';
   import {GExpandTransition} from '../transition/transition';
   import GSpacer from "../GLayout/GSpacer";

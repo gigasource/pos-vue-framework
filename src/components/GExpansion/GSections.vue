@@ -1,7 +1,7 @@
 <script>
 	import _ from 'lodash'
   import { getExpansionModel } from './GExpansionFactory';
-  import { provide } from '@vue/composition-api';
+  import { provide } from 'vue';
   import GSectionsHeader from './GSectionsHeader';
   import GSectionsItem from './GSectionsItem';
 

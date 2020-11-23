@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import groupable from '../../mixins/groupable';
 import _ from 'lodash'
 import {getInternalValue} from "../../utils/helpers";

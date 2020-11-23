@@ -1,4 +1,4 @@
-import {computed, ref, watch, onMounted} from '@vue/composition-api';
+import {computed, ref, watch, onMounted} from 'vue';
 
 export const transitionList = {
   none: 'None',

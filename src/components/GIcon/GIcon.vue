@@ -1,5 +1,5 @@
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
   import { setTextColor } from '../../mixins/colorable';
 

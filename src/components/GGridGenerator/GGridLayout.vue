@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { fromJSON } from './logic/modelParser'
-  import { onMounted, onUpdated, reactive, watch} from '@vue/composition-api'
+  import { onMounted, onUpdated, reactive, watch} from 'vue'
   import GridModel from './logic/GridModel';
   import GDialog from '../GDialog/GDialog'
   import GBtn from '../GBtn/GBtn'

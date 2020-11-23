@@ -1,4 +1,4 @@
-import { computed, reactive, watch } from '@vue/composition-api'
+import { computed, reactive, watch } from 'vue'
 import { computedTitleModel } from './TitleUtil'
 import { computedHeaderModel } from './HeaderUtil'
 import { computedYearModel } from './YearsUtil'

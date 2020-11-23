@@ -1,6 +1,6 @@
 import { boolean, object, text, withKnobs } from '@storybook/addon-knobs';
 // testing
-import Vue from 'vue/dist/vue.common.js'
+import Vue from 'vue'
 import GAutocomplete from '../GAutocomplete';
 import GSelect from '../../GSelect/GSelect';
 
@@ -491,7 +491,7 @@ export const GAutocompleteBorderHover = () => ({
 
 describe('test', function () {
   it('should', function () {
-    const vm = new Vue(test1()).$mount();
+    const vm = Vue.createApp(test1()).mount();
     // your expect here
   })
 })

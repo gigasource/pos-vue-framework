@@ -1,5 +1,5 @@
 <script>
-  import { computed, reactive, ref } from '@vue/composition-api';
+  import { computed, reactive, ref } from 'vue';
   import getVModel from '../../mixins/getVModel';
   import { setTextColor } from '../../mixins/colorable';
   import { createRange } from '../../utils/helpers';

@@ -27,7 +27,7 @@
   import { convertToUnit, getTransitionDuration } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import getVModel from '../../mixins/getVModel';
-  import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from 'vue';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
 

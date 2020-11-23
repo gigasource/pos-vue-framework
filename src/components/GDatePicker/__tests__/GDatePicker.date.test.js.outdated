@@ -1,5 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-import plugin from '@vue/composition-api'
+import plugin from 'vue'
 import GDatePicker from '../GDatePicker';
 
 describe('GDatePicker.date.js', () => {

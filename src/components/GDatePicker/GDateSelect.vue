@@ -2,7 +2,7 @@
   import _ from 'lodash'
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  import { reactive, computed, watch } from '@vue/composition-api';
+  import { reactive, computed, watch } from 'vue';
   import dayjs from 'dayjs';
   import GIcon from '../GIcon/GIcon';
 

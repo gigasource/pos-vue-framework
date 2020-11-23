@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { reactive, computed } from '@vue/composition-api';
+  import { reactive, computed } from 'vue';
   import GTextField from '../GInput/GTextField'
   import GIcon from '../GIcon/GIcon';
   import { enterPressed } from '../../utils/keyboardHelper';

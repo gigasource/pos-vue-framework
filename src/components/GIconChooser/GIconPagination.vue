@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { reactive, computed, watch } from '@vue/composition-api';
+  import { reactive, computed, watch } from 'vue';
   import GBtn from '../GBtn/GBtn'
   import GIcon from '../GIcon/GIcon';
 

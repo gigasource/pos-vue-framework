@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 import Vue from 'vue/dist/vue.common.js';
 import { getSelectionText, makeListSelectable } from '../listSelectFactory';
 import _ from 'lodash'

@@ -1,6 +1,6 @@
 import { withKnobs } from '@storybook/addon-knobs';
 import GTreeViewExample from '../GTreeViewExample';
-import { ref } from '@vue/composition-api';
+import { ref } from 'vue';
 
 //
 export default {

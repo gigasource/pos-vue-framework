@@ -1,5 +1,5 @@
 <script>
-  import { computed, onMounted, reactive, ref, watch, provide } from '@vue/composition-api';
+  import { computed, onMounted, reactive, ref, watch, provide } from 'vue';
   import groupable from '../../mixins/groupable';
   import getVModel from '../../mixins/getVModel';
   import GStepperContents from './GStepperContent';

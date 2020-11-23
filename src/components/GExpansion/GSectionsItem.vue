@@ -1,5 +1,5 @@
 <script>
-  import { inject } from '@vue/composition-api';
+  import { inject } from 'vue';
   import { GExpandTransition } from '../transition/transition';
   import GIcon from '../GIcon/GIcon';
 

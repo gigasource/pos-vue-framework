@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash';
-  import { computed, ref } from '@vue/composition-api';
+  import { computed, ref } from 'vue';
   import GRow from '../GLayout/GRow';
   import GCol from '../GLayout/GCol';
   import GCard from '../GCard/GCard';

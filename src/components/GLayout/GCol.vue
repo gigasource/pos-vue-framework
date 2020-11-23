@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import { computed, reactive, watch } from '@vue/composition-api'
+  import { computed, reactive, watch } from 'vue'
 
   export default {
     name: 'GCol',

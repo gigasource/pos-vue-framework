@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import { computed, provide } from '@vue/composition-api';
+  import { computed, provide } from 'vue';
 
   export default {
     name: 'GRadioGroup',

@@ -1,4 +1,4 @@
-import plugin from '@vue/composition-api';
+import plugin from 'vue';
 import GChip from '../GChip';
 import { createLocalVue, mount } from '@vue/test-utils';
 

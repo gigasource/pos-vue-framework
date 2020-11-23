@@ -1,6 +1,6 @@
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import { computed, provide, reactive, watch } from '@vue/composition-api';
+  import { computed, provide, reactive, watch } from 'vue';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
 

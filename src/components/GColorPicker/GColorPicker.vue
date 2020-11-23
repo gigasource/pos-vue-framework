@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import {reactive} from '@vue/composition-api'
+  import {reactive} from 'vue'
   // slider used in colorPicker/adjustPreview
   import GSlider from '../GSlider/GSlider'
   import GTooltip from '../../components/GTooltip/GTooltip'

@@ -1,6 +1,6 @@
 <script>
 	import { convertToUnit } from '../../utils/helpers';
-  import { ref, computed, provide, onMounted, onBeforeUnmount } from '@vue/composition-api';
+  import { ref, computed, provide, onMounted, onBeforeUnmount } from 'vue';
   import GDiagramFactory from './GDiagramFactory';
   import Vue from 'vue';
 

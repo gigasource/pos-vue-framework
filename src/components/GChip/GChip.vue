@@ -3,7 +3,7 @@
   import Ripple from '../../directives/ripple/ripple';
   import GBtn from '../GBtn/GBtn';
   import GChipUtils from './logic/GChipUtils';
-  import { onMounted, ref } from '@vue/composition-api';
+  import { onMounted, ref } from 'vue';
 
   export default {
     name: 'GChip',

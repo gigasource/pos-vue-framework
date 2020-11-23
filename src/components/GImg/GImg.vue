@@ -8,7 +8,7 @@
 
 <script>
   import {convertToUnit} from '../../utils/helpers';
-  import {computed, reactive, ref, watch} from '@vue/composition-api';
+  import {computed, reactive, ref, watch} from 'vue';
   import Intersect from "../../directives/intersect/intersect";
 
   export default {

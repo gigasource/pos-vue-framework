@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import { convertToGradient, convertToUnit } from '../../../utils/helpers';
 import { setBackgroundColor, setTextColor } from '../../../mixins/colorable';
 import { linearGradient } from '../../../utils/colors';

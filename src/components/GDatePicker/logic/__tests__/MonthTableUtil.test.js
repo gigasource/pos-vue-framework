@@ -1,6 +1,6 @@
 // CREATED AT 2019-10-16 14:11
 import { createLocalVue } from '@vue/test-utils'
-import plugin from '@vue/composition-api'
+import plugin from 'vue'
 import { _computedMonthRows, } from '../MonthTableUtil'
 
 describe('GDatePicker/logic/MonthTableUtil.js', () => {

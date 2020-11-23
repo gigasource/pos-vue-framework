@@ -1,4 +1,4 @@
-import {reactive, set, computed, ref, isRef} from '@vue/composition-api'
+import {reactive, set, computed, ref, isRef} from 'vue'
 import traverse from 'traverse'
 
 export function genTextFactory(itemText) {

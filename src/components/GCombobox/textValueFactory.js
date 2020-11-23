@@ -1,4 +1,4 @@
-import { computed, ref, watch } from '@vue/composition-api';
+import { computed, ref, watch } from 'vue';
 import _ from 'lodash'
 
 function textValueSingle(props, context, selectionTexts, addValueFromInput) {

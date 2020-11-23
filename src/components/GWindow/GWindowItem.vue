@@ -1,5 +1,5 @@
 <script>
-  import { computed, onMounted, ref, reactive, inject, onBeforeUnmount } from '@vue/composition-api';
+  import { computed, onMounted, ref, reactive, inject, onBeforeUnmount } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
 
   export default {

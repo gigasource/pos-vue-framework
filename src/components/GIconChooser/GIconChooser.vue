@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { getIconSources } from './logic/Utils'
-  import { reactive, computed } from '@vue/composition-api'
+  import { reactive, computed } from 'vue'
   import GIcon from '../GIcon/GIcon';
   import GPagination from './GIconPagination'
   import GIconSearch from './GIconSearch'

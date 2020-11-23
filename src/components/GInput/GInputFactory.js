@@ -87,7 +87,7 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef, prependRef }
 }
 
-import { computed, reactive, ref, watch } from '@vue/composition-api';
+import { computed, reactive, ref, watch } from 'vue';
 
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation

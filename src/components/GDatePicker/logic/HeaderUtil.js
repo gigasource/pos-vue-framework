@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import { sanitizeDateString, pad } from './utils'
 import dayjs from 'dayjs';
 

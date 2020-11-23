@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import {computed, onMounted, reactive, ref} from '@vue/composition-api'
+  import {computed, onMounted, reactive, ref} from 'vue'
   import delayable from '../../mixins/delayable';
   import detachable from '../../mixins/detachable';
   import GTooltipContent from './GTooltipContent';

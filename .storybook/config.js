@@ -1,9 +1,8 @@
-import { configure, addParameters } from '@storybook/vue';
+import { configure, addParameters } from '@andoshin11/storybook-vue3';
 import { themes } from '@storybook/theming';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import PortalVue from 'portal-vue';
-import VueCompositionAPI from '@vue/composition-api';
 //import 'github-markdown-css';
 import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
@@ -25,7 +24,6 @@ addParameters({
 
 Vue.use(VueRouter);
 Vue.use(PortalVue);
-Vue.use(VueCompositionAPI);
 
 Vue.use(GigaComponents);
 

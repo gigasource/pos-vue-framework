@@ -1,6 +1,6 @@
 import {createElement} from '../../../tests/setup'
 const Vue = require('vue/dist/vue.common.js')
-import plugin from '@vue/composition-api'
+import plugin from 'vue'
 Vue.use(plugin)
 
 // Import your components after all of above import

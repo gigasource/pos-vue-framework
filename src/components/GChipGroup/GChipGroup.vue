@@ -1,8 +1,8 @@
 <template>
 	<div :class="classes">
 		<div class="g-chip-group__content">
-			<template v-for="(item, index) in items">
-				<g-chip :value="item" :key="index" :active="isActiveItem(item)" @click="toggleItem" :close="item.close"
+			<template v-for="(item, index) in items" :key="index">
+				<g-chip :value="item" :active="isActiveItem(item)" @click="toggleItem" :close="item.close"
 								@click:close="toggleClose" :disabled="item.disabled" :filter="item.filter" :color="item.color" :text-color="item.textColor">
 					<slot name="item" :value="item" :index="index" :click="toggleItem" :active="isActiveItem(item)" :close="item.close" :click:close="toggleClose" :disabled="item.disabled">
 						{{item.text}}
@@ -15,7 +15,7 @@
 
 <script>
   import _ from 'lodash'
-  import { computed, onMounted } from '@vue/composition-api';
+  import { computed, onMounted } from 'vue';
   import groupable from '../../mixins/groupable';
   import GChip from '../GChip/GChip';
   import GLayout from '../GLayout/GLayout';

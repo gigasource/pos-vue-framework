@@ -5,7 +5,7 @@
   import GTabItem from './GTabItem';
   import GIcon from '../GIcon/GIcon';
   import getVModel from '../../mixins/getVModel';
-  import {computed, onMounted, onUnmounted, provide, reactive, ref, watch} from '@vue/composition-api'
+  import {computed, onMounted, onUnmounted, provide, reactive, ref, watch} from 'vue'
   import {find} from 'lodash'
   import colorHandler, {convertToUnit} from '../../utils/helpers';
   import {colors} from '../../utils/colors';

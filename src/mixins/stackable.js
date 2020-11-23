@@ -1,5 +1,5 @@
 import { getZIndex } from '../utils/helpers';
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 
 export default function stackable(props, context) {
   const stackMinZIndex = ref(400);

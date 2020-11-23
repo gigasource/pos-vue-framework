@@ -80,7 +80,7 @@
 </template>
 
 <script>
-  import {ref, computed, reactive, onMounted} from '@vue/composition-api';
+  import {ref, computed, reactive, onMounted} from 'vue';
   import {
     getEvents,
     getInternalValue,

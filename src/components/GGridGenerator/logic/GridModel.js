@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { joinRefArrayValue } from './utils'
 import { createRange } from '../../../utils/helpers'
 import AreaModel from './AreaModel'

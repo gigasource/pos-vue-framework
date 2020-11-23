@@ -1,7 +1,7 @@
 <script>
   import getVModel from '../../mixins/getVModel';
   import GLayout from '../GLayout/GLayout';
-  import { provide } from '@vue/composition-api'
+  import { provide } from 'vue'
 
   export default {
     name: 'GStepperContents',

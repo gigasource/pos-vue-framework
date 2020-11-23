@@ -1,5 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import VueCompositionApi from '@vue/composition-api';
+import VueCompositionApi from 'vue';
 import GToolbar from '../GToolbar';
 
 const localVue = createLocalVue()

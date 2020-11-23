@@ -1,4 +1,4 @@
-import { ref, reactive, computed, onMounted, onBeforeUnmount} from '@vue/composition-api';
+import { ref, reactive, computed, onMounted, onBeforeUnmount} from 'vue';
 import { getElementPosition } from '../../utils/helpers';
 
 function getConnectorId(el, ids) {

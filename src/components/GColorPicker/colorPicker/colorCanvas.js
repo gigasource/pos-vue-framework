@@ -1,4 +1,4 @@
-import { onMounted, reactive, watch, computed } from '@vue/composition-api';
+import { onMounted, reactive, watch, computed } from 'vue';
 import { fromHSVA } from '../GColorPickerUtil';
 import { clamp } from 'lodash/number';
 import { tabIndexes } from '../commonUI';

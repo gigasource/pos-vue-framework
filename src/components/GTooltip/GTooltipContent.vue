@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import {computed, onMounted, onBeforeUnmount} from '@vue/composition-api'
+  import {computed, onMounted, onBeforeUnmount} from 'vue'
   import {setBackgroundColor} from '../../mixins/colorable';
   import {calcTop, calcLeft} from './TopLeftCalculate';
   import {convertToUnit} from '../../utils/helpers';

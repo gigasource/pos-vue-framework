@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import { computed, ref, watch } from '@vue/composition-api';
+import { defineComponent } from 'vue'
+import { computed, ref, watch } from 'vue';
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -115,7 +115,7 @@ export default function colorHandler() {
 };
 
 export function createSimpleFunctional(c, el = 'div', name) {
-  return Vue.extend({
+  return defineComponent({
     name: name || c.replace(/__/g, '-'),
     functional: true,
     render(h, { data, children }) {

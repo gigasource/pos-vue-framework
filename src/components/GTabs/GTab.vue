@@ -1,5 +1,5 @@
 <script>
-  import { computed, inject } from '@vue/composition-api'
+  import { computed, inject } from 'vue'
   import { isEqual } from 'lodash'
   import { colors } from '../../utils/colors';
   import { isCssColor } from '../../mixins/colorable';

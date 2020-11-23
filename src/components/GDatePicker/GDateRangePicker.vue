@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import dayjs from 'dayjs';
-  import { reactive, computed, ref, watch } from '@vue/composition-api';
+  import { reactive, computed, ref, watch } from 'vue';
   import GDatePickerUtil from './logic/GDatePickerUtil';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import GDateSelect from './GDateSelect';

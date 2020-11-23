@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 import { pad } from './utils';
 import { isSelected, isAllowed, applyNewSelectedValue } from './TableUtil'
 import dayjs from 'dayjs'

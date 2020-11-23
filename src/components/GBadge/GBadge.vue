@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import { computed } from '@vue/composition-api'
+  import { computed } from 'vue'
   import { isCssColor } from '../../mixins/colorable';
   import { convertToUnit } from '../../utils/helpers';
 

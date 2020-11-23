@@ -2,7 +2,7 @@ import { text, withKnobs, boolean, number, color , select, radios, array, date, 
 import { action } from '@storybook/addon-actions'
 
 import GDatePicker from '../GDatePicker'
-import { reactive } from '@vue/composition-api';
+import { reactive } from 'vue';
 
 //
 export default {

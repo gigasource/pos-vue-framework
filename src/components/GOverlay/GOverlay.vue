@@ -9,7 +9,7 @@
 
 <script>
   import getVModel from '../../mixins/getVModel';
-  import { computed } from '@vue/composition-api';
+  import { computed } from 'vue';
 
   export default {
     name: "GOverlay",

@@ -1,5 +1,5 @@
 import { withKnobs, boolean, number, text } from '@storybook/addon-knobs';
-import { ref, computed, onMounted } from '@vue/composition-api';
+import { ref, computed, onMounted } from 'vue';
 import GProgressBar from '../GProgressBar';
 
 export default {

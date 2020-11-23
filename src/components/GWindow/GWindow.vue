@@ -1,6 +1,6 @@
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import { computed, inject, onMounted, provide, reactive, watch } from '@vue/composition-api';
+  import { computed, inject, onMounted, provide, reactive, watch } from 'vue';
   import { getInternalValue } from '../../mixins/getVModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';

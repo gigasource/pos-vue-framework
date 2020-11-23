@@ -1,7 +1,7 @@
 <script>
   import GIcon from '../../GIcon/GIcon';
   import { enterPressed } from '../../../utils/keyboardHelper';
-  import { reactive, computed } from '@vue/composition-api';
+  import { reactive, computed } from 'vue';
 
   export default {
     name: 'GEditViewInput',

@@ -1,5 +1,5 @@
 <script>
-  import { inject, onBeforeUnmount, onMounted, reactive } from '@vue/composition-api';
+  import { inject, onBeforeUnmount, onMounted, reactive } from 'vue';
   import Intersect from '../../directives/intersect/intersect';
 
   export default {

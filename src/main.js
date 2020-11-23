@@ -20,4 +20,13 @@ Vue.use(PortalVue);*/
 
 
 //import {GAvatar} from './components/index';
+import { createApp } from 'vue';
+import App from '@/App';
+import router from '@/plugin/router';
+require('./style/main.scss')
+require('./plugin/waves');
 require('./components/index')
+
+const app = createApp(App)
+app.use(router)
+app.mount('#app')

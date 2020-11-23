@@ -1,6 +1,6 @@
 <script type="text/jsx">
   import _ from 'lodash'
-  import { ref, computed } from '@vue/composition-api'
+  import { ref, computed } from 'vue'
   import GDatePickerUtil from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'

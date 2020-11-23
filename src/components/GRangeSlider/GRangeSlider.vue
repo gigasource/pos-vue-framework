@@ -1,5 +1,5 @@
 <script>
-  import {computed, reactive, watch} from '@vue/composition-api';
+  import {computed, reactive, watch} from 'vue';
   import {helperFunctions} from "../GSlider/GSliderFactory";
   import {convertToUnit} from "../../utils/helpers";
   import {getCssColor} from '../../utils/colors';

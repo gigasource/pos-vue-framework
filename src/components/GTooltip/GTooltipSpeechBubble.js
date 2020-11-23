@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api'
+import { computed } from 'vue'
 
 export const TOOLTIP_CONTENT_SPEECH_BUBBLE_STATIC_CLASS = 'g-tooltip__content__speech-bubble'
 

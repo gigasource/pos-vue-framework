@@ -1,5 +1,5 @@
 <script>
-  import { computed } from '@vue/composition-api';
+  import { computed } from 'vue';
   import GIcon from '../GIcon/GIcon';
   import { isCssColor } from '../../mixins/colorable';
   import { colors } from '../../utils/colors';

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import { computed } from '@vue/composition-api';
+	import { computed } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
   import { isCssColor } from '../../mixins/colorable';
   import { linearGradient } from '../../utils/colors';
