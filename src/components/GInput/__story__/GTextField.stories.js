@@ -1,6 +1,12 @@
-import {boolean, number, text, withKnobs} from '@storybook/addon-knobs';
-import {action} from '@storybook/addon-actions'
-import {mask} from 'vue-the-mask'
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
+import { mask } from 'vue-the-mask'
+// testing
+import Vue from 'vue'
+import GTextField from '../GTextField';
+import GIcon from '../../GIcon/GIcon';
+import GContainer from '../../GLayout/GContainer';
+import GCol from '../../GLayout/GCol';
+import GRow from '../../GLayout/GRow';
 
 
 //
@@ -711,16 +717,6 @@ export const textFieldBorderHover = () => ({
 </div>`
 })
 
-// testing
-import Vue from 'vue/dist/vue.common.js'
-import GTextField from '../GTextField';
-import GIcon from '../../GIcon/GIcon';
-import GContainer from '../../GLayout/GContainer';
-import GCol from '../../GLayout/GCol';
-import GRow from '../../GLayout/GRow';
-import GTextFieldBs from '../GTextFieldBs';
-import GList from '../../GList/GList';
-import { DefaultChip } from '../../GChip/__story__/GChip.stories';
 export const TextField = (props, text1) => ({
   components: {GTextField, GIcon},
   data() {
@@ -787,7 +783,7 @@ describe('render lite input test:', function () {
       prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
       appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
     }
-    const vm = new Vue(TextField(props, '')).$mount();
+    const vm = Vue.createApp(TextField(props, '')).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
   it('should render lite textfield with wrapper', function () {
@@ -811,12 +807,12 @@ describe('render lite input test:', function () {
       prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
       appendIcon: {default: text('append Inner Icon', 'mdi-ninja')},
     }
-    const vm = new Vue(TextField(props, '')).$mount();
+    const vm = Vue.createApp(TextField(props, '')).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 
   it('should render full textfield', function () {
-    const vm = new Vue(TextFieldShapedAndRounded()).$mount();
+    const vm = Vue.createApp(TextFieldShapedAndRounded()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
   it('should render lite textfield without wrapper and validate wrong value', function () {
@@ -828,7 +824,7 @@ describe('render lite input test:', function () {
       prependInnerIcon: {default: text('prepend Inner Icon', '')},
       appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
     }
-    const vm = new Vue(TextField(props, '1')).$mount();
+    const vm = Vue.createApp(TextField(props, '1')).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
   it('should render lite textfield and not render label', function () {
@@ -841,12 +837,12 @@ describe('render lite input test:', function () {
       prependInnerIcon: {default: text('prepend Inner Icon', 'mdi-glasses')},
       appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
     }
-    const vm = new Vue(TextField(props, '1')).$mount();
+    const vm = Vue.createApp(TextField(props, '1')).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 
   it('should render full textfield outer slot', function () {
-    const vm = new Vue({
+    const vm = Vue.createApp({
       components: {GTextField, GIcon},
       props: {
         appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
@@ -860,11 +856,11 @@ describe('render lite input test:', function () {
                           <template v-slot:append-outer>
                           </template>
               </g-text-field>`,
-    }).$mount();
+    }).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
   it('should render lite textfield without wrapper inner slot', function () {
-    const vm = new Vue({
+    const vm = Vue.createApp({
       components: {GTextField, GIcon},
       props: {
         appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
@@ -874,11 +870,11 @@ describe('render lite input test:', function () {
                           <g-icon>{{appendInnerIcon}}</g-icon>
                           </template>
               </g-text-field>`,
-    }).$mount();
+    }).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
   it('should render lite textfield with wrapper append outer slot', function () {
-    const vm = new Vue({
+    const vm = Vue.createApp({
       components: {GTextField, GIcon},
       props: {
         appendInnerIcon: {default: text('append Inner Icon', 'mdi-ninja')},
@@ -888,7 +884,7 @@ describe('render lite input test:', function () {
                           <g-icon>{{appendInnerIcon}}</g-icon>
                           </template>
               </g-text-field>`,
-    }).$mount();
+    }).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 

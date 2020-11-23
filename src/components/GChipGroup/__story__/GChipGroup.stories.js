@@ -59,18 +59,18 @@ export const MultipleSelectGroup = () => ({
 </g-chip-group>`
 });
 
-import Vue from 'vue/dist/vue.common.js'
+import Vue from 'vue'
 
 describe('Render test', function () {
   it('should render default chip group', function () {
-    const vm = new Vue(ChipGroup()).$mount();
+    const vm = Vue.createApp(ChipGroup()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('Render test', function () {
   it('should render multiple chip group', function () {
-    const vm = new Vue(MultipleSelectGroup()).$mount();
+    const vm = Vue.createApp(MultipleSelectGroup()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })

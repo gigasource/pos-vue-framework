@@ -1,6 +1,6 @@
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs';
 // testing
-import Vue from 'vue/dist/vue.common.js'
+import Vue from 'vue'
 import GListItem from '../../GList/GListItem';
 import { GListItemContent, GListItemText } from '../../GList/GListFunctionalComponent';
 import GSelect from '../GSelect';
@@ -456,7 +456,7 @@ export const test2 = () => ({
 
 describe('test', function () {
   it('should', function () {
-    const vm = new Vue(test1()).$mount();
+    const vm = Vue.createApp(test1()).mount();
 // your expect here
   })
 })

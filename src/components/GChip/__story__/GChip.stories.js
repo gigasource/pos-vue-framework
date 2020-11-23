@@ -136,18 +136,18 @@ export const AvatarChip = () => ({
 });
 
 
-import Vue from 'vue/dist/vue.common.js'
+import Vue from 'vue'
 
 describe('Render test', function () {
   it('should render default x-large chip', function () {
-    const vm = new Vue(DefaultChip()).$mount();
+    const vm = Vue.createApp(DefaultChip()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('Render test', function () {
   it('should render outlined chip', function () {
-    const vm = new Vue(OutlinedChip()).$mount();
+    const vm = Vue.createApp(OutlinedChip()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
@@ -155,7 +155,7 @@ describe('Render test', function () {
 
 describe('Render test', function () {
   it('should test1', function () {
-    const vm = new Vue(LabelChip()).$mount();
+    const vm = Vue.createApp(LabelChip()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })

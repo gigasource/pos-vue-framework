@@ -13,7 +13,7 @@ import {
   GListItemSubText,
   GListItemText
 } from '../GListFunctionalComponent'
-import Vue from 'vue/dist/vue.common.js'
+import Vue from 'vue'
 import GContainer from '../../GLayout/GContainer';
 import GRow from '../../GLayout/GRow';
 import GCol from '../../GLayout/GCol';
@@ -884,7 +884,7 @@ export const gListNumberItems = () => ({
 
 describe('GList', function () {
   it('should render rounded dense', function () {
-    const vm = new Vue(gListInset()).$mount();
+    const vm = Vue.createApp(gListInset()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })

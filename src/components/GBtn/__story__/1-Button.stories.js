@@ -243,53 +243,53 @@ export const test2 = () => ({
   },
 })
 
-import Vue from 'vue/dist/vue.common.js'
+import Vue from 'vue'
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnDefault()).$mount();
+    const vm = Vue.createApp(GBtnDefault()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnDepressed()).$mount();
+    const vm = Vue.createApp(GBtnDepressed()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnFab()).$mount();
+    const vm = Vue.createApp(GBtnFab()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnGradient()).$mount();
+    const vm = Vue.createApp(GBtnGradient()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnIcon()).$mount();
+    const vm = Vue.createApp(GBtnIcon()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnOutlined()).$mount();
+    const vm = Vue.createApp(GBtnOutlined()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnRounded()).$mount();
+    const vm = Vue.createApp(GBtnRounded()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
@@ -297,7 +297,7 @@ describe('test', function () {
 
 describe('test', function () {
   it('should test1', function () {
-    const vm = new Vue(GBtnText()).$mount();
+    const vm = Vue.createApp(GBtnText()).mount();
     expect(vm.$el.outerHTML).toMatchSnapshot()
   });
 })
