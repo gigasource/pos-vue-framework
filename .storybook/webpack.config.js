@@ -8,7 +8,10 @@ module.exports = async ({ config, mode }) => {
   // `mode` has a value of 'DEVELOPMENT' or 'PRODUCTION'
   // You can change the configuration based on that.
   // 'PRODUCTION' is used when building the static version of storybook.
-
+  config.node = {
+    fs: 'empty',
+    module: 'empty'
+  }
   config.module.rules.push({
     test: /\.stories\.js?$/,
     loaders: [require.resolve('@storybook/source-loader')],
