@@ -119,7 +119,9 @@ export function createSimpleFunctional(c, el = 'div', name) {
   return defineComponent({
     name: name || c.replace(/__/g, '-'),
     render() {
-      return h(el, { ...this.$attrs }, this.$slots.default());
+      return getScopeIdRender()(() =>
+        h(el, { class: [c] }, this.$slots.default())
+      )();
     },
   })
 }

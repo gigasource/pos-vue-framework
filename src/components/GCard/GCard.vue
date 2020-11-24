@@ -1,5 +1,6 @@
 <script>
   import GCardUtils from './logic/GCardUtils';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GCard',
@@ -39,21 +40,21 @@
         outlined: Boolean,
         raised: Boolean,
       }
-    }, setup(props, context) {
+    },
+    emits: ['click'],
+    setup(props, context) {
       const { classes, styles } = GCardUtils(props, context);
 
       function genCard() {
         const nodeData = {
           class: classes.value,
           style: styles.value,
-          on: {
-            click: (event) => {
-              context.emit('click', event)
-            }
+          onClick: (event) => {
+            context.emit('click', event)
           }
         }
         return <div {...nodeData}>
-          {context.slots.default && context.slots.default()}
+          {!!context.slots.default && context.slots.default()}
         </div>
       }
 
@@ -62,7 +63,7 @@
       }
     },
     render() {
-      return this.genCard();
+      return getScopeIdRender()(this.genCard)();
     }
   }
 </script>
