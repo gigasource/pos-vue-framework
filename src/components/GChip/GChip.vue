@@ -4,6 +4,7 @@
   import GBtn from '../GBtn/GBtn';
   import GChipUtils from './logic/GChipUtils';
   import { onMounted, ref } from 'vue';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GChip',
@@ -41,13 +42,14 @@
     directives: {
       Ripple
     },
+    emits: ['click'],
     setup(props, context) {
       const { getSizeClass, classes, styles } = GChipUtils(props, context);
       const hasAvatarIcon = ref(false);
 
       function hasAvatarOrIcon() {
         let nodes = context.slots.default();
-        return nodes[0] && nodes[0].componentInstance && (nodes[0].componentInstance.$options.name === 'GAvatar' || nodes[0].componentInstance.$options.name === 'GIcon');
+        return nodes[0] && nodes[0].type && (nodes[0].type.name === 'GAvatar' || nodes[0].type.name === 'GIcon');
       }
 
       onMounted(() => {
@@ -74,7 +76,7 @@
 
       function genAppend() {
         if (props.close) {
-          return <g-icon vOn:click={(e) => {
+          return <g-icon onClick={(e) => {
             e.stopPropagation();
             context.emit('close', props.value);
           }} class={'g-icon__right'} size="18px">{props.closeIcon}</g-icon>
@@ -91,11 +93,11 @@
 
       function genChip() {
         if (props.ripple) {
-          return <span v-ripple draggable={props.draggable} style={styles.value} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+          return <span v-ripple draggable={props.draggable} style={styles.value} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
             {genContent()}
           </span>
         }
-        return <span draggable={props.draggable} style={styles.value} vOn:click={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+        return <span draggable={props.draggable} style={styles.value} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
           {genContent()}
         </span>
       }
@@ -105,7 +107,7 @@
       }
     },
     render() {
-      return this.genChip();
+      return getScopeIdRender()(this.genChip)();
     }
   }
 </script>

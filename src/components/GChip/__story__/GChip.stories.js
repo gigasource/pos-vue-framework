@@ -25,7 +25,9 @@ export const DefaultChip = () => ({
     backgroundColor: {type: String, default: text('backgroundColor', '') },
     textColor: {type: String, default: text('textColor', '') },
   },
-  template: `<g-chip x-large :disabled="disabled" :x-small="xSmall" :small="small" :text-color="textColor" :background-color="backgroundColor" :filter-icon="filterIcon" :large="large" :closeIcon="closeIcon" :x-large="xLarge" :close="close">{{text}}</g-chip>`,
+  template: `<g-chip :disabled="disabled" :x-small="xSmall" :small="small" :text-color="textColor" 
+                     :background-color="backgroundColor" :filter-icon="filterIcon" :large="large" 
+                     :closeIcon="closeIcon" :x-large="xLarge" :close="close">{{text}}</g-chip>`,
 });
 
 export const OutlinedChip = () => ({
