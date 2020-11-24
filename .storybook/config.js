@@ -1,6 +1,5 @@
 import { configure, addParameters } from '@andoshin11/storybook-vue3';
 import { themes } from '@storybook/theming';
-import Vue from 'vue';
 import VueRouter from 'vue-router';
 // import PortalVue from 'portal-vue';
 //import 'github-markdown-css';
@@ -22,10 +21,10 @@ addParameters({
   },
 });
 
-global.app.use(VueRouter);
+global.root.use(VueRouter);
 // global.root.use(PortalVue);
 
-global.app.use(GigaComponents);
+global.root.use(GigaComponents);
 
 import {
   storiesOf, specs, describe, it,

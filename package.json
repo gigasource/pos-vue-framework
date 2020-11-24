@@ -28,7 +28,7 @@
     "vue-the-mask": "^0.11.1"
   },
   "devDependencies": {
-    "@andoshin11/storybook-vue3": "github:andoshin11/storybook-vue3",
+    "@andoshin11/storybook-vue3": "github:gigasource/storybook-vue3",
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
     "@jest/transform": "latest",
@@ -41,6 +41,7 @@
     "@storybook/core": "6.1.0-alpha.9",
     "@storybook/theming": "^6.0.26",
     "@svgr/webpack": "^4.3.3",
+    "@vue/babel-plugin-jsx": "^1.0.0-rc.3",
     "@vue/babel-plugin-transform-vue-jsx": "github:anhoev/babel-plugin-transform-vue-jsx",
     "@vue/babel-preset-jsx": "^1.1.0",
     "@vue/cli-plugin-babel": "~4.5.0",
