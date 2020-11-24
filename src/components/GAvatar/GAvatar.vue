@@ -1,5 +1,11 @@
+<template>
+  <div :class="classes" :style="styles">
+    <slot></slot>
+  </div>
+</template>
+
 <script>
-  import { computed, onMounted, reactive, ref, watch } from 'vue';
+  import { computed } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
 
@@ -49,6 +55,8 @@
         return props.textColor && setTextColor(props.textColor, {})
       });
 
+      // lost scopeId in render fn, use template instead
+      // https://github.com/vuejs/vue-next/issues/2246
       function genAvatar() {
         return <div class={classes.value} style={styles.value}>
           {context.slots.default && context.slots.default()}
@@ -56,11 +64,8 @@
       }
 
       return {
-        genAvatar
+        classes, styles
       }
-    },
-    render() {
-      return this.genAvatar()
     }
   }
 </script>
@@ -78,8 +83,8 @@
 
     img,
     svg,
-    ::v-deep.g-icon,
-    ::v-deep.g-image,
+    ::v-deep(.g-image),
+    ::v-deep(.g-icon),
     .g-responsive__content {
       border-radius: 50% !important;
       display: inline-flex;
@@ -96,5 +101,4 @@
       border-radius: 0;
     }
   }
-
 </style>

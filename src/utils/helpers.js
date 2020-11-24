@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue'
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, getCurrentInstance, withScopeId, h } from 'vue';
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -115,12 +115,11 @@ export default function colorHandler() {
 };
 
 export function createSimpleFunctional(c, el = 'div', name) {
+  // negligible performance gain using functional components over stateful components in Vue 3
   return defineComponent({
     name: name || c.replace(/__/g, '-'),
-    functional: true,
-    render(h, { data, children }) {
-      data.staticClass = (`${c} ${data.staticClass || ''}`).trim();
-      return h(el, data, children);
+    render() {
+      return h(el, { ...this.$attrs }, this.$slots.default());
     },
   })
 }
@@ -208,4 +207,9 @@ export function chunk (str, size = 1) {
     index += size
   }
   return chunked
+}
+
+export function getScopeIdRender() {
+  const { type } = getCurrentInstance();
+  return withScopeId(type.__scopeId)
 }

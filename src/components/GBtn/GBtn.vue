@@ -1,6 +1,7 @@
 <script>
   import Ripple from '../../directives/ripple/ripple';
   import GBtnUtil from './logic/GBtnUtil';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GBtn', directives: {
@@ -60,32 +61,31 @@
     },
     setup(props, context) {
       const { classes, styles } = GBtnUtil(props, context);
-
       return { classes, styles }
     },
-    render(h) {
+    emits: ['click', 'mouseenter', 'mouseleave', 'mouseup', 'mousedown'],
+    render() {
       const genBtn = () => {
         const nodeData = {
           class: this.classes,
           style: this.styles,
           directives: this.ripple ? [{ name: 'ripple', value: undefined }] : [],
-          on: {
-            click: (e) => this.$emit('click', e),
-            mouseenter: (e) => this.$emit('mouseenter', e),
-            mouseleave: (e) => this.$emit('mouseleave', e),
-            mouseup: (e) => this.$emit('mouseup', e),
-            mousedown: (e) => this.$emit('mousedown', e),
-          }
+          onClick: (e) => this.$emit('click', e),
+          onMouseEnter: (e) => this.$emit('mouseenter', e),
+          onMouseLeave: (e) => this.$emit('mouseleave', e),
+          onMouseUp: (e) => this.$emit('mouseup', e),
+          onMouseDown: (e) => this.$emit('mousedown', e),
         };
 
         return <div {...nodeData}>
           <span class="g-btn__content">
-            {this.$slots.default}
+            {!!this.$slots.default && this.$slots.default()}
           </span>
         </div>
       };
 
-      return genBtn();
+      const scopeIdRender = getScopeIdRender()
+      return scopeIdRender(genBtn)();
     }
 
   }
