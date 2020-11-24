@@ -28,9 +28,10 @@
       mandatory: Boolean,
       multiple: Boolean,
       maxSelection: [Number, String],
-      value: null,
+      modelValue: null,
       items: Array
     },
+    emits: ['update:modelValue', 'click:close', 'click'],
     setup(props, context) {
 
       const classes = computed(() => {
@@ -42,16 +43,16 @@
 
       const model = computed({
         get: () => {
-          if (props.value) {
-            if (props.multiple && !Array.isArray(props.value)) {
-              props.value = [props.value];
+          if (props.modelValue) {
+            if (props.multiple && !Array.isArray(props.modelValue)) {
+              props.modelValue = [props.modelValue];
             }
-            return props.value;
+            return props.modelValue;
           }
           return props.multiple ? [] : null;
         },
         set: (value) => {
-          context.emit('input', value);
+          context.emit('update:modelValue', value);
         }
       });
 
