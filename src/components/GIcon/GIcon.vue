@@ -20,6 +20,7 @@
       xLarge: Boolean,
       svg: Boolean,
     },
+    emits: ['click'],
     setup: function (props, context) {
       const onClick = (event) => {
         context.emit('click', event);
@@ -31,7 +32,7 @@
         iconClass[icon] = true
         return <i class={iconClass}
                   style={iconStyle}
-                  vOn:click={onClick}/>
+                  onClick={onClick}/>
       }
 
       function genMaterialIcon(icon, iconClass, iconStyle) {
@@ -46,7 +47,7 @@
         iconClass[iconType] = true
         return <i class={iconClass}
                   style={iconStyle}
-                  vOn:click={onClick}>{!isMdiIcon ? icon : ''}</i>
+                  onClick={onClick}>{!isMdiIcon ? icon : ''}</i>
       }
 
       function genSvgIcon(svgName, iconClass, iconStyle) {
@@ -57,7 +58,7 @@
 
         return <div class={iconClass}
                     style={iconStyle}
-                    vOn:click={onClick}/>
+                    onClick={onClick}/>
       }
 
       function genIcon(icon) {
