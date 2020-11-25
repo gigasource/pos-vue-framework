@@ -1,10 +1,11 @@
 <script>
   import {getInternalValue} from '../../mixins/getVModel';
-  import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+  import { onBeforeUnmount, onMounted, reactive, ref, toRef, toRefs, watch } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
   import { Fragment } from 'vue-fragment'
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GMenu',
@@ -15,7 +16,7 @@
     props: {
       // basic
       ...{
-        value: Boolean,
+        modelValue: Boolean,
         eager: Boolean,
         activator: null,
       },
@@ -98,7 +99,7 @@
     setup(props, context) {
       const isActive = getInternalValue(props, context);
       const { runDelay } = delayable(props)
-      let activatorEl = ref(null);
+      const activatorEl = ref(null);
       let activatorVNode
 
       const state = reactive({
@@ -110,7 +111,7 @@
       });
 
       onMounted(function () {
-        activatorEl.value = activatorVNode && activatorVNode[0] && activatorVNode[0].elm
+        activatorEl.value = activatorVNode && activatorVNode[0] && activatorVNode[0].el
       })
 
       onBeforeUnmount(() => isActive.value = false)
@@ -133,20 +134,19 @@
 
       const genContent = () => {
         const contentOptions = {
-          props: {
+          ...{
+            // props
             ...Object.assign({}, props, {
-              value: isActive.value
+              modelValue: isActive.value
             }),
             activator: activatorEl,
             hasJustFocused: state.hasJustFocused,
             clientX: state.clientX,
             clientY: state.clientY
           },
-          on: {
-            input: (e) => {
+          'onUpdate:modelValue': (e) => {
               isActive.value = e
               state.hasJustFocused = e
-            }
           },
           ref: 'content'
         }
@@ -200,7 +200,7 @@
       }
     },
     render() {
-      return this.genWrapper.bind(this)()
+      return getScopeIdRender()(this.genWrapper.bind(this))()
     }
   }
 </script>

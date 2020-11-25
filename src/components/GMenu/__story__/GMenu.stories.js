@@ -12,7 +12,7 @@ export const gMenuLookAndFeel = () => ({
   data: () => ({
     activatorHeight: 40,
     activatorWidth: 120,
-    showMenu: true
+    showMenu: false
   }),
   props: {
     top: {
@@ -43,11 +43,11 @@ export const gMenuLookAndFeel = () => ({
   },
   mounted() {
     setTimeout(() => {
-      this.activatorHeight = 100;
-      this.activatorWidth = 300
+      // this.activatorHeight = 100;
+      // this.activatorWidth = 300
       setTimeout(() => {
-        this.activatorHeight = 150;
-        this.activatorWidth = 450
+        // this.activatorHeight = 150;
+        // this.activatorWidth = 450
       }, 2000)
     }, 2000)
   },

@@ -1,8 +1,8 @@
 <script>
-  import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+  import { computed, onBeforeUnmount, onMounted, ref, watch, getCurrentInstance } from 'vue';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
-  import {convertToUnit} from '../../utils/helpers';
+  import { convertToUnit, getScopeIdRender } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
@@ -20,7 +20,7 @@
       activator: null, //ref HTMLElement
       // basic
       ...{
-        value: Boolean,
+        modelValue: Boolean,
       },
       // positioning
       ...{
@@ -108,27 +108,28 @@
         },
       },
       //styling content
-      ... {
+      ...{
         contentClass: String
       }
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
-      const {attachToRoot, detach} = detachable(props, context);
+      const { attachToRoot, detach } = detachable(props, context);
       const {
         updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState: state
       } = menuable(props, context);
-      const {getMaxZIndex} = stackable(props, context)
-
+      const { getMaxZIndex } = stackable(props, context)
+      const contentRef = ref(null)
       const ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill
+      const instance = getCurrentInstance()
 
       function getResizeObserver() {
         let activatorResizeObserver = undefined
 
         const init = () => {
           activatorResizeObserver = new ResizeObserver(() => {
-            context.root.$nextTick(() => {
-              updateDimensions(props.activator.value)
+            instance.root.ctx.$nextTick(() => {
+              updateDimensions(props.activator.value, contentRef)
             })
           })
           props.activator.value && activatorResizeObserver.observe(props.activator.value)
@@ -149,30 +150,33 @@
       const resizeObserver = getResizeObserver(props)
 
       // init resize observer when activator is mounted to parent
-      watch(props.activator, () => {
+      watch(() => props.activator, (val) => {
+        console.log(val)
         if (!resizeObserver.observer) resizeObserver.init()
       })
 
       // update dimensions when toggled on
-      watch(() => props.value, newVal => {
+      watch(() => props.modelValue, newVal => {
         if (newVal) {
-          context.root.$nextTick(() => {
-            updateDimensions(props.activator.value)
+          instance.root.ctx.$nextTick(() => {
+            updateDimensions(props.activator.value, contentRef)
           })
         }
-      }, {lazy: true})
+      }, { lazy: true })
 
       let rootEl
-      const getOpenDependentElements = ref(null)
+      // const getOpenDependentElements = ref(null)
 
       onMounted(function () {
-        rootEl = attachToRoot()
-        getOpenDependentElements.value = dependent(this)
+        rootEl = attachToRoot(contentRef.value)
+        updateDimensions(props.activator.value, contentRef)
+        // fixme dependent mixin
+        // getOpenDependentElements.value = dependent(instance.ctx)
       })
 
       onBeforeUnmount(() => {
         resizeObserver.destroy();
-        if (rootEl) rootEl.removeChild(context.refs.content) // menu content is mounted to root element
+        if (rootEl) rootEl.removeChild(contentRef.value) // menu content is mounted to root element
       })
 
       const calculatedLeft = computed(() => {
@@ -214,12 +218,12 @@
 
       const contentListeners = {
         ...props.closeOnContentClick && {
-          click() {
+          onClick() {
             if (isActive.value) isActive.value = false
           }
         },
         ...props.openOnHover && {
-          mouseleave() {
+          onMouseLeave() {
             if (isActive.value) isActive.value = false
           }
         }
@@ -229,7 +233,7 @@
         //callback to close menu when clicked outside
         const closeConditional = (e) => {
           const target = e.target;
-          return isActive.value && context.refs.content && !context.refs.content.contains(target)
+          return isActive.value && contentRef.value && !contentRef.value.contains(target)
         }
         const clickOutsideDirective = {
           name: 'click-outside',
@@ -239,22 +243,26 @@
           arg: {
             closeConditional: closeConditional,
             include: () => {
-              return [context.parent.$el, ...getOpenDependentElements.value()];
+              // return [context.parent.$el, ...getOpenDependentElements.value()];
+              return [context.parent.$el];
             }
           },
         }
         //equates to v-show="value" in template
         const vShowDirective = {
-          name: 'show',
-          value: props.value
+          'show': props.modelValue
         }
         const resizeDirective = {
-          name: 'resize',
-          value: () => updateDimensions(props.activator.value)
+          'resize': () => updateDimensions(props.activator.value, contentRef)
         }
 
-        const directives = [vShowDirective, resizeDirective]
-        if (!props.openOnHover && props.closeOnClick) directives.push(clickOutsideDirective)
+        const directives = {
+          'show': props.modelValue,
+          'resize': () => updateDimensions(props.activator.value, contentRef)
+        }
+        if (!props.openOnHover && props.closeOnClick) {
+          directives['click-outside'] = [clickOutsideDirective.value, clickOutsideDirective.arg]
+        }
         return directives;
       }
 
@@ -265,19 +273,21 @@
 
       const genMenuContent = () => <div style={contentStyles.value}
                                         class={contentClasses.value}
-                                        ref="content"
-                                        {...{directives: genDirectives(), on: contentListeners}}>
+                                        ref={contentRef}
+                                        v-show={props.modelValue}
+                                        // {...{ directives: genDirectives(), ...contentListeners }}>
+                                        {...{ ...contentListeners }}>
         {context.slots.default && context.slots.default()}
       </div>;
 
       return {
         isActive,
-        getOpenDependentElements,
+        // getOpenDependentElements,
         genMenuContent
       }
     },
     render() {
-      return this.genMenuContent()
+      return getScopeIdRender()(this.genMenuContent)()
     }
   }
 </script>

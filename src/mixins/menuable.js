@@ -4,6 +4,7 @@ import { computed, reactive } from 'vue';
 // requires template refs: activator, content
 // todo: rename
 export default function menuable(props, context) {
+  let contentRef
   const menuableState = reactive({
     pageYOffset: 0,
     pageWidth: 0
@@ -104,7 +105,8 @@ export default function menuable(props, context) {
     return top
   }
 
-  function updateDimensions(activator = context.refs.activator) {
+  function updateDimensions(activator = context.refs.activator, content) {
+    if (content) contentRef = content
     menuableState.pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
     menuableState.pageWidth = document.documentElement.clientWidth
     //measure activator
@@ -117,13 +119,16 @@ export default function menuable(props, context) {
     }
     //measure content
     sneakPeek(() => {
-      dimensions.content = measure(context.refs.content);
+      if (!contentRef && !contentRef.value) return
+      dimensions.content = measure(contentRef.value);
     })
   }
 
   function sneakPeek(cb) {
+    console.log('sneakPeek')
     requestAnimationFrame(() => {
-      const contentElement = context.refs.content;
+      if (!contentRef && !contentRef.value) return
+      const contentElement = contentRef.value;
       if (!contentElement || contentElement.style.display !== 'none') {
         let left = contentElement.style.left
         contentElement.style.left = '0'
