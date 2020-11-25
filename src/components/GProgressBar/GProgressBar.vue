@@ -2,7 +2,7 @@
   import { computed } from 'vue';
 	import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import { getInternalValue } from '../../mixins/getVModel';
-  import { convertToUnit } from '../../utils/helpers';
+  import {convertToUnit, getScopeIdRender} from '../../utils/helpers';
 
   export default {
     name: 'GProgressBar',
@@ -36,7 +36,7 @@
       rounded: Boolean,
       stream: Boolean,
       striped: Boolean,
-      value: {
+      modelValue: {
         type: [Number, String],
         default: 0,
       },
@@ -166,7 +166,8 @@
 			}
 		},
 		render() {
-      return this.genProgressBar()
+      const scopeIdRender = getScopeIdRender()
+      return getScopeIdRender(this.genProgressBar)()
 		}
   }
 </script>
