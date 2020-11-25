@@ -2,7 +2,7 @@ import { DnDStore, getListeners, getNamespace, removeEventHandlers } from './DnD
 
 let handlers = {}
 
-function inserted(el, binding, vnode) {
+function mounted(el, binding, vnode) {
   const allowedDragEffects = ['none', 'copy', 'move', 'link', 'copyMove', 'copyLink', 'linkMove', 'all']
   const dragEffect = binding.modifiers && allowedDragEffects.includes(binding.modifiers) ? binding.modifiers : 'all'
   const dragData = binding.value // event handlers
@@ -60,9 +60,9 @@ function inserted(el, binding, vnode) {
   el._eventListeners = handlers
 }
 
-function unbind(el) {
+function unmounted(el) {
   removeEventHandlers(el)
 }
 
-const Draggable = { inserted, unbind }
+const Draggable = { mounted, unmounted }
 export default Draggable

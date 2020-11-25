@@ -54,7 +54,7 @@ function zoom(e, el, vnode) {
 }
 
 const Zoom = {
-  inserted (el, binding, vnode) {
+  mounted (el, binding, vnode) {
     vnode.context[zoomState] = 1;
 
     const onWheel = (e) => zoom(e, el, vnode)
@@ -63,7 +63,7 @@ const Zoom = {
     el._zoomHandler = onWheel
   },
 
-  unbind (el) {
+  unmounted (el) {
     if (!el._zoomHandler) return
 
     el.removeEventListener('wheel', el._zoomHandler)
