@@ -1,31 +1,34 @@
 <script>
-  import { computed } from 'vue';
+  import { computed, getCurrentInstance } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
   import { setTextColor } from '../../mixins/colorable';
 
   export default {
     name: 'GIcon',
+    emits: ['click'],
+    // inheritAttrs: false,
     props: {
-      value: String,
-      dense: Boolean,
-      disabled: Boolean,
-      left: Boolean,
-      right: Boolean,
-      color: [String],
+      // size props
       size: [Number, String],
       xSmall: Boolean,
       small: Boolean,
       medium: Boolean,
       large: Boolean,
       xLarge: Boolean,
+
+      // appearance props
+      dense: Boolean,
+      left: Boolean,
+      right: Boolean,
+      color: [String],
+      disabled: Boolean,
+
+      // data props
+      value: String,
       svg: Boolean,
     },
-    emits: ['click'],
     setup: function (props, context) {
-      const onClick = (event) => {
-        context.emit('click', event);
-      }
-
+      const onClick = (event) => context.emit('click', event)
       const iconColor = computed(() => setTextColor(props.color))
 
       function genFontAwesomeIcon(icon, iconClass, iconStyle) {
@@ -62,6 +65,10 @@
       }
 
       function genIcon(icon) {
+        const hasClickListener = !!getCurrentInstance().vnode.props.onClick;
+
+        let iconName = '';
+        let iconSize;
         const iconClass = {
           ...iconColor.value.class,
           'g-icon': true,
@@ -69,11 +76,10 @@
           'g-icon__disabled': props.disabled,
           'g-icon__left': props.left,
           'g-icon__right': props.right,
-          'g-icon__link': !!context.listeners.click,
+          'g-icon__link': hasClickListener,
         }
 
-        let iconName = '', iconSize
-        if(typeof icon === 'string' && icon.includes('@')) {
+        if (typeof icon === 'string' && icon.includes('@')) {
           const info = icon.split('@')
           iconName = info[0]
           iconSize = info[1]
@@ -97,7 +103,10 @@
     },
 
     render() {
-      const icon = this.$slots.default ? this.$slots.default[0].text.trim() : ''
+      const defaultSlot = this.$slots.default()
+      const defaultSlotChildren = defaultSlot && defaultSlot[0].children
+
+      const icon = typeof defaultSlotChildren === 'string' ? defaultSlotChildren.trim() : ''
       return this.genIcon(icon)
     }
   }
