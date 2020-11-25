@@ -65,7 +65,7 @@
       }
 
       function genIcon(icon) {
-        const hasClickListener = !!getCurrentInstance().vnode.props.onClick;
+        const hasClickListener = !!(getCurrentInstance().vnode.props && getCurrentInstance().vnode.props.onClick);
 
         let iconName = '';
         let iconSize;
