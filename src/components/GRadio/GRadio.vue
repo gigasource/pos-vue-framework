@@ -12,32 +12,31 @@
 </template>
 
 <script>
-  import { computed, inject } from 'vue';
-  import colorHandler from '../../utils/helpers';
+import { computed, inject } from 'vue';
+import colorHandler from '../../utils/helpers';
 
-  export default {
-    name: 'GRadio',
-    model: {
-      prop: 'inputValue',
-      event: 'change'
-    },
-    props: {
-      label: String,
-      color: String,
-      disabled: Boolean,
-      readonly: Boolean,
-			small: Boolean,
-      //native value
-      value: null,
-      //input value for not in group
-      inputValue: null
-    },
-    setup(props, context) {
-      const inputValue = computed({
-        get: () => props.inputValue,
-        set: val => context.emit('change', val)
-      });
-      const model = inject('model', inputValue);
+export default {
+  name: 'GRadio',
+  props: {
+    label: String,
+    color: String,
+    disabled: Boolean,
+    readonly: Boolean,
+    small: Boolean,
+    //native value
+    value: null,
+    //input value for not in group
+    modelValue: null
+  },
+  setup(props, context) {
+    const inputValue = computed({
+      get: () => props.modelValue,
+      set: val => context.emit('update:modelValue', val)
+    });
+
+
+    const model = inject('model', inputValue);
+
       const defaultName = 'radio-name';
       let name = inject('name', defaultName);
       if (!name) {
@@ -52,13 +51,12 @@
 				get: () => (model.value === props.value),
 				set: (val) => {
 					if (val === true) {//checked
-						if (model.value === inputValue.value) {//if the radio not in group
-							inputValue.value = props.value;
-						} else {
-							// context.parent.$emit('change', trueValue);
-							model.value = props.value;
-						}
-					}
+            if (model === inputValue) {//if the radio not in group
+              inputValue.value = props.value;
+            } else {
+              model.value = props.value;
+            }
+          }
 				}
 			});
       //define props color

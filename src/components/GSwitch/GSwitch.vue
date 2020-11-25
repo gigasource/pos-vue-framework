@@ -14,60 +14,46 @@
 </template>
 
 <script>
-  import { computed, ref, watch } from 'vue';
-  import colorHandler from '../../utils/helpers';
-  import { isEqual } from 'lodash';
+import { computed, ref } from 'vue';
+import colorHandler from '../../utils/helpers';
+import { isEqual } from 'lodash';
 
-  export default {
-    name: 'GSwitch',
-    model: {
-      prop: 'inputValue',
-      event: 'change'
-    },
-    props: {
-      label: String,
-      color: String,
-      required: Boolean,
-      disabled: Boolean,
-      readonly: Boolean,
-      inset: Boolean,
-      flat: Boolean,
-      //custom v-model
-      inputValue: null,
-      //native value
-      value: null
-    },
-    setup(props, context) {
-      const internalValue = computed({
-        get: () => props.inputValue,
-        set: val => {
-          context.emit('change', val)
-        }
-      });
-      const isSelectedArray = Array.isArray(internalValue.value);
-      //value return when switch active
-      const trueValue = props.value ? props.value : true;
-      let isActive = ref(false);
-      watch(() => internalValue.value, (newVal) => {
-        if (newVal && isSelectedArray) {
-          isActive.value = newVal.some(v => v === trueValue);
-        } else if (newVal === true || newVal === 'true' || (newVal === trueValue)) {
-          isActive.value = true;
-        } else {
-          isActive.value = false;
-				}
-      });
+export default {
+  name: 'GSwitch',
+  props: {
+    label: String,
+    color: String,
+    required: Boolean,
+    disabled: Boolean,
+    readonly: Boolean,
+    inset: Boolean,
+    flat: Boolean,
+    //custom v-model
+    modelValue: null,
+    //native value
+    value: null
+  },
+  setup(props, context) {
+    const internalValue = computed({
+      get: () => props.modelValue,
+      set: val => {
+        context.emit('update:modelValue', val)
+      }
+    });
+    const isSelectedArray = computed(() => Array.isArray(internalValue.value));
+    //value return when switch active
+    const trueValue = ref(props.value ? props.value : true);
+    let isActive = ref((isSelectedArray.value && internalValue.value.includes(trueValue.value)) || false);
+    //define props color
+    const { getColorType, convertColorClass } = colorHandler();
+    const type = computed(() => getColorType(props.color));
+    const colorClass = computed(() => convertColorClass(props.color, 'background'));
 
-      //define props color
-      const { getColorType, convertColorClass } = colorHandler();
-      const type = computed(() => getColorType(props.color));
-      const colorClass = computed(() => convertColorClass(props.color, 'background'));
-
-      const classes = computed(() => ({
-        [colorClass.value]: !!type.value && type.value === 'class',
-        'g-switch__active': isActive.value,
-        'g-switch__flat': props.flat,
-        'g-switch__inset': props.inset
+    const classes = computed(() => ({
+      [colorClass.value]: !!type.value && type.value === 'class',
+      'g-switch__active': isActive.value,
+      'g-switch__flat': props.flat,
+      'g-switch__inset': props.inset
       }));
 
       const styles = computed(() => {
@@ -86,16 +72,16 @@
       function toggle() {
         isActive.value = !isActive.value;
         //check whether the switch is in multiple input or
-        if (isSelectedArray) {
-          const index = internalValue.value.findIndex(v => isEqual(v,trueValue));
+        if (isSelectedArray.value) {
+          const index = internalValue.value.findIndex(v => isEqual(v, trueValue.value));
           if (isActive.value && index === -1) {//on && not found
-            internalValue.value.push(trueValue);
+            internalValue.value.push(trueValue.value);
           } else if (!isActive.value && index > -1) {//off & found
             internalValue.value.splice(index, 1);
           }
         } else {
           if (isActive.value) {//on
-            internalValue.value = trueValue;
+            internalValue.value = trueValue.value;
           } else {//off
             internalValue.value = null;
           }
