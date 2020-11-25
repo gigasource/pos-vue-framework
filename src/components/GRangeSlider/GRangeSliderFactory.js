@@ -1,14 +1,13 @@
 import {getEventHandler, parseKeyDown, parseMouseMove} from '../GSlider/GSliderFactory';
 
-export function getRangeSliderEventHandler(props, context, state, internalValue, minValue, maxValue) {
-
+export function getRangeSliderEventHandler(props, context, state, internalValue, minValue, maxValue, trackRef, thumbRefs) {
   function getIndexOfClosestValue(arr, v) {
     if (Math.abs(arr[0] - v) < Math.abs(arr[1] - v)) return 0
     return 1
   }
 
   function onMouseMove(e) {
-    const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue)
+    const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue, trackRef)
 
     if (isInsideTrack && state.activeThumb === null) {
       state.activeThumb = getIndexOfClosestValue(internalValue.value, value)
@@ -34,12 +33,11 @@ export function getRangeSliderEventHandler(props, context, state, internalValue,
         return
       }
 
-      const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue)
+      const {value, isInsideTrack} = parseMouseMove(e, props, context, minValue, maxValue, trackRef)
 
       if (isInsideTrack) {
         state.activeThumb = getIndexOfClosestValue(internalValue.value, value)
-        const refName = `thumb_${state.activeThumb}`
-        const thumbRef = context.refs[refName]
+        const thumbRef = thumbRefs.value[state.activeThumb]
         thumbRef.focus()
       }
 
@@ -60,7 +58,7 @@ export function getRangeSliderEventHandler(props, context, state, internalValue,
 
   const {
     onThumbMouseDown, onKeyUp
-  } = getEventHandler(props, context, state, internalValue, minValue, maxValue, onMouseMove)
+  } = getEventHandler(props, context, state, internalValue, minValue, maxValue, onMouseMove, trackRef)
 
   return {
     onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp
