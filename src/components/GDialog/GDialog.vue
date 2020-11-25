@@ -4,6 +4,7 @@
   import { computed, reactive, watch, onMounted, onBeforeUnmount } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
 	import GDialogContent from './GDialogContent';
+  import {getScopeIdRender} from "../../utils/helpers";
 
   export default {
     name: 'GDialog',
@@ -127,7 +128,8 @@
       }
     },
     render() {
-      return this.genDialog.bind(this)()
+      const scopeIdRender = getScopeIdRender()
+      return scopeIdRender(this.genDialog.bind(this))()
     }
   }
 </script>
