@@ -70,8 +70,8 @@ export function makeListSelectable(props, context, internalItems) {
 
   const normalizedValue = computed(() => {
     let res
-    if (!props.multiple) res = (props.value || props.value === 0) ? normalize(props.value) : undefined
-    else res = props.value ? props.value.map(item => normalize(item)) : []
+    if (!props.multiple) res = (props.modelValue || props.modelValue === 0) ? normalize(props.modelValue) : undefined
+    else res = props.modelValue ? props.modelValue.map(item => normalize(item)) : []
     context.emit('update:selectedValue', res);
     log('update:selectedValue', res)
     log('update:selectedValue')
@@ -159,7 +159,7 @@ export function makeListSelectable(props, context, internalItems) {
 
   //check if item is selected
   const isActiveItem = (item) => {
-    let _normalizedValue = props.multiple ? props.value||[] : [props.value]
+    let _normalizedValue = props.multiple ? props.modelValue||[] : [props.modelValue]
     return listType.value !== 'primitive' ? _normalizedValue.some(element => _.isEqual(element, item))
       || _normalizedValue.some(element => _.isEqual(element, getValue.value(item)))
       || _normalizedValue.some(element => _.isEqual(element, getText.value(item)))
@@ -169,8 +169,8 @@ export function makeListSelectable(props, context, internalItems) {
 
   function emitValue(val) {
     log('emit value: ', JSON.stringify(val));
-    log('input')
-    context.emit('input', val);
+    log('update:modelValue');
+    context.emit('update:modelValue', val);
 
   }
 
