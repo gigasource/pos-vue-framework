@@ -36,7 +36,7 @@ function getValidInitialValue(props, cptIsMultiSelect) {
   const defaultValue = (props.type === 'date'
       ? `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
       : `${now.getFullYear()}-${now.getMonth() + 1}`)
-  return (cptIsMultiSelect.value
+  return (cptIsMultiSelect.value && Array.isArray(props.value)
       ? (props.value || []).map(value => value)
       : (props.value || defaultValue))
 }
@@ -63,7 +63,7 @@ export default (props, context) => {
     //   YYYY: when show year picker, YYYY value will be used to highlight current year
     //   YYYY: when show month picker, with YYYY is the year of month picker
     //   YYYY-MM: show date picker, with YYYY-MM is the month of date picker
-    viewportDate: dayjs().format( props.type === 'date' ? 'DD/MM/YYYY': 'MM/YYYY'),
+    viewportDate: dayjs().format( props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM'),
 
     // store selected value(s)
     // string if single mode is used
@@ -82,7 +82,7 @@ export default (props, context) => {
     // update viewport
     state.viewportDate = (cptIsMultiSelect.value
         ? props.value.length === 0
-          ? dayjs().format(props.type === 'date' ? 'DD/MM/YYYY' : 'MM/YYYY')
+          ? dayjs().format(props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM')
           : props.focusOnFirstItem
             ? props.value[0]
             : props.value[props.value.length - 1]
