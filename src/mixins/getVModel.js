@@ -2,19 +2,19 @@ import { computed, ref, watch } from 'vue';
 
 export function getVModel(props, context) {
   return computed({
-    get: () => props.value,
+    get: () => props.modelValue,
     set: value => {
-      context.emit('input', value)
+      context.emit('update:modelValue', value)
     }
   })
 }
 
-export function getInternalValue(props, context, event = 'input') {
-  const rawInternalValue = ref(props.value);
+export function getInternalValue(props, context, event = 'update:modelValue') {
+  const rawInternalValue = ref(props.modelValue);
 
-  watch(() => props.value, () => {
-    if (rawInternalValue.value !== props.value) {
-      rawInternalValue.value = props.value
+  watch(() => props.modelValue, () => {
+    if (rawInternalValue.value !== props.modelValue) {
+      rawInternalValue.value = props.modelValue
     }
   }, { lazy: true });
 

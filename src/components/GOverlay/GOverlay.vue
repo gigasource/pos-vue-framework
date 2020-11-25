@@ -15,7 +15,7 @@
     name: "GOverlay",
     props: {
       absolute: Boolean,
-      value: {
+			modelValue: {
         type: Boolean,
         default: false
       },
@@ -32,6 +32,7 @@
         default: 5,
       }
     },
+		emits: ['update:modelValue'],
 		setup(props, context) {
 			const isActive = getVModel(props, context);
 

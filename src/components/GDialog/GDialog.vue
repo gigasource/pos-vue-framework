@@ -12,7 +12,7 @@
       ClickOutside
     },
     props: {
-      value: {
+      modelValue: {
         type: Boolean,
         default: false
       },
@@ -46,6 +46,7 @@
       //content class for styling
       contentClass: String,
     },
+    emits: ['update:modelValue'],
     setup(props, context) {
       const isActive = getInternalValue(props, context);
       const { attachToParent, detach } = detachable(props, context)
@@ -87,10 +88,8 @@
               value: isActive.value
             })
           },
-					on: {
-            input: (value) => {
+          'onUpdate:modelValue': (value) => {
               isActive.value = value
-						}
 					}
 				}
 
