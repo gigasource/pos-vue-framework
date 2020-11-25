@@ -15,7 +15,7 @@
       ClickOutside
     },
     props: {
-      value: {
+      modelValue: {
         type: Boolean,
         default: false
       },
@@ -58,6 +58,7 @@
         },
       },
     },
+    emits: ['update:modelValue', 'keydown'],
     setup(props, context) {
       const isActive = getInternalValue(props, context)
       const {attachToRoot, detach} = detachable(props, context)
@@ -283,9 +284,7 @@
           attrs: {
             tabindex: wrapperTabIndex.value
           },
-          on: {
-            keydown: onKeydown
-          }
+          onKeydown,
         }
 
         const contentData = {
@@ -333,11 +332,12 @@
             zIndex: overlayZIndex.value,
             color: props.overlayColor,
             opacity: props.overlayOpacity
-          }
+          },
+          "onUpdate:modelValue": e => isActive.value = e,
+          modelValue: isActive.value,
         }
 
-        return <g-overlay vOn:input={e => isActive.value = e} value={isActive.value} {...overlayData}
-                          vShow={renderOverlay.value}/>
+        return <g-overlay {...overlayData} vShow={renderOverlay.value}/>
       }
 
       function genDialog() {
