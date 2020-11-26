@@ -1,5 +1,7 @@
 import { watch } from 'vue';
 
+// fixme: $children removed in vue 3
+// TODO solutions: provide/inject, instance.parent
 export default function dependent(vm) {
   watch(() => vm.isActive, (val) => {
     if (val) return

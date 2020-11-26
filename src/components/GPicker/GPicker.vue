@@ -38,13 +38,13 @@
       disabled: Boolean
     },
     setup(props, context) {
-      const computedTitleColor = computed(() => {
+      const titleColor = computed(() => {
         const defaultTitleColor = (props.color || 'primary')
         return props.color || defaultTitleColor
       })
 
       const titleData = computed(() => {
-        let data = setBackgroundColor(computedTitleColor.value, {
+        let data = setBackgroundColor(titleColor.value, {
           staticClass: 'g-picker__title',
           class: {
             'g-picker__title--landscape': props.landscape,
@@ -86,6 +86,7 @@
     }
   }
 </script>
+
 <style scoped lang="scss">
   @import "../../style/variables";
 
@@ -144,8 +145,8 @@
         }
       }
     }
-
-
+  
+  
     &__body {
       height: auto;
       overflow: hidden;
