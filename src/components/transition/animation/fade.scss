@@ -1,7 +1,7 @@
 .fade-transition {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0 !important;
   }
 }
@@ -9,11 +9,11 @@
 .fadeDown {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0 !important;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateY(-100%);
   }
 
@@ -25,11 +25,11 @@
 .fadeUp {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0 !important;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateY(100%);
   }
 
@@ -41,11 +41,11 @@
 .fadeRight {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0 !important;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateX(100%);
   }
 
@@ -57,11 +57,11 @@
 .fadeLeft {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0 !important;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateX(-100%);
   }
 

@@ -57,12 +57,16 @@
         type: Boolean,
         default: true
       },
+      modelValue: null
     },
+    emits: ['update:modelValue'],
     directives: {
       Resize,
       Touch
     },
     setup(props, context) {
+      const wrapper = ref(null);
+      const content = ref(null);
       const data = reactive({
         widths: {
           content: 0,
@@ -100,11 +104,11 @@
       });
 
       onBeforeUpdate(() => {
-        internalItemsLength.value = (context.refs.content.children || []).length
+        internalItemsLength.value = (content.value.__vnode.children || []).length
       });
 
       onUpdated(() => {
-        if (internalItemsLength.value === (context.refs.content.children || []).length) {
+        if (internalItemsLength.value === (content.value.__vnode.children || []).length) {
           return
         }
         setWidths();
@@ -132,15 +136,15 @@
       // the widths of the content and wrapper
       // and need to be recalculated
       watch(scrollOffset, (val) => {
-        context.refs.content.style.transform = `translateX(${-val}px)`
+        content.style.transform = `translateX(${-val}px)`
       }, { lazy: true });
 
 
       function scrollTo(location) {
         scrollOffset.value = calculateNewOffset(location, {
           // Force reflow
-          content: context.refs.content ? context.refs.content.clientWidth : 0,
-          wrapper: context.refs.wrapper ? context.refs.wrapper.clientWidth : 0,
+          content: content ? content.clientWidth : 0,
+          wrapper: wrapper ? wrapper.clientWidth : 0,
         }, scrollOffset.value);
       }
 
@@ -161,7 +165,6 @@
       }
 
       function onTouchStart(e) {
-        const {content} = context.refs;
         startX.value = scrollOffset.value + e.touchstartX;
 
         content.style.setProperty('transition', 'none')
@@ -169,7 +172,6 @@
       }
 
       function handleScrollOffset() {
-        const { content, wrapper } = context.refs
         const maxScrollOffset = content.clientWidth - wrapper.clientWidth
 
         if (scrollOffset.value < 0 || !isOverflowing.value) {
@@ -229,8 +231,6 @@
 
       function setWidths() {
         window.requestAnimationFrame(() => {
-          const { content, wrapper } = context.refs;
-
           data.widths = {
             content: content ? content.clientWidth : 0,
             wrapper: wrapper ? wrapper.clientWidth : 0,
@@ -244,16 +244,16 @@
       //v-model
       const internalValue = computed({
         get: () => {
-          if (props.value) {
-            if (props.multiple && !Array.isArray(props.value)) {
-              return [props.value];
+          if (props.modelValue) {
+            if (props.multiple && !Array.isArray(props.modelValue)) {
+              return [props.modelValue];
             }
-            return props.value;
+            return props.modelValue;
           }
           return props.multiple ? [] : null;
         },
         set: (value) => {
-          context.emit('input', value);
+          context.emit('update:modelValue', value);
         }
       });
 
@@ -270,7 +270,7 @@
 
       const selectedItems = computed(() => {
         const clonedValue = _.clone(internalValue.value);
-        const childrenArray = [...context.refs.content.children];
+        const childrenArray = [...content.value.__vnode.children];
 
         let clonedInternalValue = !Array.isArray(clonedValue) ? [].concat(clonedValue) : clonedValue;
         let selectedValues = [];
@@ -294,7 +294,9 @@
         touchDirectiveValues,
         onAffixClick,
         toggleItem,
-        isActiveItem
+        isActiveItem,
+        content,
+        wrapper
       }
     }
   }

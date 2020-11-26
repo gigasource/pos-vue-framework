@@ -1,12 +1,12 @@
 .rotate {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     transform-origin: center;
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: rotateZ(-200deg);
   }
 
@@ -18,12 +18,12 @@
 .rotateDownLeft {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     transform-origin: left;
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: rotateZ(-45deg);
   }
 
@@ -35,12 +35,12 @@
 .rotateDownRight {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     transform-origin: right;
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: rotateZ(45deg);
   }
 
@@ -52,12 +52,12 @@
 .rotateUpLeft {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     transform-origin: left;
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: rotateZ(45deg);
   }
 
@@ -69,12 +69,12 @@
 .rotateUpRight {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     transform-origin: right;
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: rotateZ(45deg);
   }
 
