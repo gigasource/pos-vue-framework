@@ -20,7 +20,7 @@
         type: [Number, String],
         default: 4,
       },
-      value: {
+      modelValue: {
         type: [Number, String],
         default: 0,
       },
@@ -29,6 +29,7 @@
         default: '#000'
       }
     },
+    emits: ['click'],
     setup(props, context) {
       const radius = 20;
       const circumference = computed(() => 2 * Math.PI * radius);
@@ -100,9 +101,8 @@
           },
           class: classes.value,
           style: styles.value,
-          on: {
-            click: () => context.emit('click')
-          },
+          onClick: () => context.emit('click')
+          ,
         })
         return <div {...data}>
           {genSvg()}

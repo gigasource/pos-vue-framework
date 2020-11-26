@@ -23,7 +23,7 @@ function directive (e, el, binding) {
 }
 
 const ClickOutside = {
-  inserted (el, binding) {
+  mounted (el, binding) {
     const onClick = (e) => directive(e, el, binding)
 
     const app = window
@@ -31,7 +31,7 @@ const ClickOutside = {
     el._clickOutside = onClick
   },
 
-  unbind (el) {
+  unmounted (el) {
     if (!el._clickOutside) return
 
     const app = document.body

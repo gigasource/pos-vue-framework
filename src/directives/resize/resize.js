@@ -1,5 +1,5 @@
 const Resize = {
-  inserted(el, binding) {
+  mounted(el, binding) {
     const callback = binding.value;
     const options = binding.options || { passive: true };
 
@@ -13,7 +13,7 @@ const Resize = {
       callback()
     }
   },
-  unbind(el) {
+  unmounted(el) {
     if (!el._onResize) {
       return
     }

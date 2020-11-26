@@ -63,6 +63,7 @@
       minWidth: [String, Number],
       maxWidth: [String, Number],
     },
+    emits: ['click', 'mouseleave', 'mouseenter', 'mouseup', 'mousedown'],
     setup(props, context) {
       const classes = computed(() => ({
         'g-btn-bs': true,

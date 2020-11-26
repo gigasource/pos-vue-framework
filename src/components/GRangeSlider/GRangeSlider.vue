@@ -1,7 +1,7 @@
 <script>
-  import {computed, reactive, watch} from 'vue';
+  import {computed, reactive, watch, ref} from 'vue';
   import {helperFunctions} from "../GSlider/GSliderFactory";
-  import {convertToUnit} from "../../utils/helpers";
+  import { convertToUnit, getScopeIdRender } from '../../utils/helpers';
   import {getCssColor} from '../../utils/colors';
   import {isEqual} from "lodash";
   import {getRangeSliderEventHandler} from './GRangeSliderFactory';
@@ -9,7 +9,7 @@
   export default {
     name: "GRangeSlider",
     props: {
-      value: {
+      modelValue: {
         type: Array,
         default: () => ([0, 0]),
       },
@@ -65,10 +65,13 @@
       const maxValue = computed(() => parseFloat(props.max))
       const step = computed(() => props.step > 0 ? parseFloat(props.step) : 0)
       const {roundValue} = helperFunctions(props, minValue, maxValue)
+      const trackRef = ref(null)
+      const thumbRefs = ref([])
+      const inputRefs = ref([])
 
       const state = reactive({
         app: null,
-        lazyValue: props.value,
+        lazyValue: props.modelValue,
         activeThumb: 0,
         oldValue: 0,
         keyPressed: 0,
@@ -92,28 +95,28 @@
           }
 
           state.lazyValue = value
-          if (!isEqual(value, props.value)) context.emit('input', value)
+          if (!isEqual(value, props.modelValue)) context.emit('update:modelValue', value)
         }
       })
 
       watch(() => minValue.value, () => {
-        minValue.value > internalValue.value[0] && context.emit('input', [minValue.value, internalValue.value[1]])
-        minValue.value > internalValue.value[1] && context.emit('input', [internalValue.value[0], minValue.value])
+        minValue.value > internalValue.value[0] && context.emit('update:modelValue', [minValue.value, internalValue.value[1]])
+        minValue.value > internalValue.value[1] && context.emit('update:modelValue', [internalValue.value[0], minValue.value])
       })
       watch(() => maxValue.value, () => {
-        maxValue.value < internalValue.value[0] && context.emit('input', [maxValue.value, internalValue.value[1]])
-        maxValue.value < internalValue.value[1] && context.emit('input', [internalValue.value[0], maxValue.value])
+        maxValue.value < internalValue.value[0] && context.emit('update:modelValue', [maxValue.value, internalValue.value[1]])
+        maxValue.value < internalValue.value[1] && context.emit('update:modelValue', [internalValue.value[0], maxValue.value])
       })
-      watch(() => props.value, (val) => internalValue.value = val)
+      watch(() => props.modelValue, (val) => internalValue.value = val)
 
       const inputWidth = computed(() => internalValue.value.map((v) => (roundValue(v) - minValue.value) / (maxValue.value - minValue.value) * 100))
       const trackTransition = computed(() => state.keyPressed >= 2 ? 'none' : '')
       //event handler
-      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getRangeSliderEventHandler(props, context, state, internalValue, minValue, maxValue)
+      const {onThumbMouseDown, onSliderClick, onKeyDown, onKeyUp} = getRangeSliderEventHandler(props, context, state, internalValue, minValue, maxValue, trackRef, thumbRefs)
 
       //genInput
       function genInput(index) {
-        return <input ref={`input_${index}`} type="range" value={internalValue.value[index]} readOnly
+        return <input ref={el => el && (inputRefs.value[index] = el)} type="range" value={internalValue.value[index]} readOnly
                       disabled={props.disabled}/>
       }
 
@@ -161,7 +164,7 @@
       })
 
       function genTrack() {
-        return <div class="g-slider-track-container" ref="track" style={trackStyle.value}>
+        return <div class="g-slider-track-container" ref={trackRef} style={trackStyle.value}>
           <div class="g-slider-track-background" style={trackBgrStyle.value}/>
           <div class="g-slider-track-fill" style={trackFillStyle.value}/>
         </div>
@@ -291,15 +294,15 @@
           context.emit('blur', e)
         }
         const content = genThumbLabelContent(internalValue.value[index])
-        return <div class={thumbContainerClasses.value} ref={`thumb_${index}`}
+        return <div class={thumbContainerClasses.value} ref={el => el && (thumbRefs.value[index] = el)}
                     style={thumbContainerStyle.value}
                     tabIndex={props.disabled || props.readonly ? -1 : context.attrs.tabindex ? context.attrs.tabindex : 0}
-                    vOn:focus={onFocus}
-                    vOn:blur={onBlur}
-                    vOn:keyup={onKeyUp}
-                    vOn:keydown={onKeyDown}
-                    vOn:mousedown={onDrag}
-                    vOn:touchstart={onDrag}>
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    onKeyUp={onKeyUp}
+                    onKeyDown={onKeyDown}
+                    onMouseDown={onDrag}
+                    onTouchStart={onDrag}>
           {genThumb()}
           {showThumbLabel.value && genThumbLabel(content)}
         </div>
@@ -319,7 +322,7 @@
       })
 
       function genRange() {
-        return <div class={sliderClasses.value} vOn:click={onSliderClick}>
+        return <div class={sliderClasses.value} onClick={onSliderClick}>
           {genInput(0)}
           {genInput(1)}
           {genTrack()}
@@ -332,7 +335,7 @@
       return {genRange}
     },
     render() {
-      return this.genRange()
+      return getScopeIdRender()(this.genRange)()
     }
   }
 

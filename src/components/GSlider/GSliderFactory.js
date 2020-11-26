@@ -1,9 +1,9 @@
 import {addOnceEventListener, keyCodes, passiveSupported} from '../../utils/helpers';
 import {isEqual} from 'lodash';
 
-export function getEventHandler(props, context, state, internalValue, minValue, maxValue, onMouseMove) {
+export function getEventHandler(props, context, state, internalValue, minValue, maxValue, onMouseMove, trackRef) {
   function _onMouseMove(e) {
-    const {value} = parseMouseMove(e, props, context, minValue, maxValue)
+    const {value} = parseMouseMove(e, props, context, minValue, maxValue, trackRef)
     internalValue.value = value
   }
 
@@ -78,7 +78,8 @@ export function getEventHandler(props, context, state, internalValue, minValue, 
 }
 
 //shared function
-export const parseMouseMove = function (e, props, context, minValue, maxValue) {
+export const parseMouseMove = function (e, props, context, minValue, maxValue, trackRef) {
+  if (!trackRef.value) return
   const start = props.vertical ? 'top' : 'left'
   const length = props.vertical ? 'height' : 'width'
   const click = props.vertical ? 'clientY' : 'clientX'
@@ -86,7 +87,7 @@ export const parseMouseMove = function (e, props, context, minValue, maxValue) {
   const {
     [start]: trackStart,
     [length]: trackLength,
-  } = context.refs.track.getBoundingClientRect()
+  } = trackRef.value.getBoundingClientRect()
   const clickOffset = 'touches' in e ? e.touches[0][click] : e[click]
   let clickPos = Math.min(Math.max((clickOffset - trackStart) / trackLength, 0), 1) || 0
   if (props.vertical) clickPos = 1 - clickPos
@@ -147,14 +148,14 @@ export function helperFunctions(props, minValue, maxValue) {
   }
 
   function setLazyValue() {
-    let lazyValue = typeof props.value === 'string' ? parseFloat(props.value) : props.value;
+    let lazyValue = typeof props.modelValue === 'string' ? parseFloat(props.modelValue) : props.modelValue;
 
     if (lazyValue > maxValue.value) {
       lazyValue = maxValue.value;
     } else if (lazyValue < minValue.value) {
       lazyValue = minValue.value;
     }
-    return lazyValue
+    return lazyValue || 0
   }
 
   return {roundValue, setLazyValue}

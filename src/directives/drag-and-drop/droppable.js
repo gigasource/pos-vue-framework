@@ -2,7 +2,7 @@ import { DnDStore, getListeners, getNamespace, removeEventHandlers, traverseDir 
 
 let handlers = {}
 
-function inserted(el, binding, vnode) {
+function mounted(el, binding, vnode) {
   const vNodeListeners = getListeners(vnode)
 
   const isFileDrop = binding.modifiers.file
@@ -67,9 +67,9 @@ function inserted(el, binding, vnode) {
   el._eventListeners = handlers
 }
 
-function unbind(el) {
+function unmounted(el) {
   removeEventHandlers(el)
 }
 
-const Droppable = { inserted, unbind };
+const Droppable = { mounted, unmounted };
 export default Droppable

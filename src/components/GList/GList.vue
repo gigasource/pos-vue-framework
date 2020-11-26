@@ -1,7 +1,7 @@
 <script>
   import { createItemFn, makeListSelectable } from './listSelectFactory';
   import { ref, computed, provide } from 'vue';
-  import { keyCodes } from '../../utils/helpers';
+  import {getScopeIdRender, keyCodes} from '../../utils/helpers';
   import GDivider from '../GLayout/GDivider';
   import GIcon from '../GIcon/GIcon';
   import GAvatar from '../GAvatar/GAvatar';
@@ -44,7 +44,7 @@
       },
       subtextWrap: Boolean,
       selectable: Boolean,
-      value: {
+      modelValue: {
         type: [String, Object, Number, Array, Function],
         default: null
       },
@@ -66,6 +66,7 @@
       svg: Boolean,
       appendIcon: String,
     },
+    emits: ['update:modelValue', 'click:item', 'click', 'keydown:down', 'keydown:up', 'keydown:enter', 'update:selectedValue'],
     setup: function (props, context) {
       const lazyItems = ref([])
 
@@ -109,8 +110,8 @@
 
       const getListEvents = (item, index) => {
         return {
-          click: () => props.selectable ? onSelect(item) : context.emit('click:item', item),
-          keydown: (e) => {
+          onClick: () => props.selectable ? onSelect(item) : context.emit('click:item', item),
+          onKeydown: (e) => {
             switch (e.keyCode) {
               case keyCodes.down:
                 props.selectable ? onArrowDown(index) : context.emit('keydown:down', index)
@@ -189,13 +190,13 @@
         if (props.appendIcon && item.append) return <div class="g-list-item-action">
           <GIcon svg={svg}>{item.append}</GIcon>
         </div>
-        if (item.prepend) return <template>{item.append}</template>
+        if (item.append) return <template>{item.append}</template>
       }
 
       function genItemSelectable(item, index) {
         return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
                     tabIndex="0" item={item}
-                    {...{ on: getListEvents(item, index) }}
+                    {...getListEvents(item, index) }
         >
           {
             [(context.slots['prepend'] && context.slots['prepend']({ isSelected: isActiveItem(item), item: item })) || genItemPrepend(item),
@@ -209,7 +210,7 @@
       function genItemDisplayOnly(item, index) {
         return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__disabled': item.disabled, [props.activeClass]: item.active }]}
                     tabIndex="0" item={item}
-                    {...{ on: getListEvents(item, index) }}
+                    {...getListEvents(item, index) }
         >
           {
             [(context.slots['prepend'] && context.slots['prepend']({ item: item })) || genItemPrepend(item),
@@ -274,7 +275,7 @@
 
       function genList() {
         const genListWithItem = (props.multiSection) ? genMultiSectionList : genSingleSectionList
-        return <div class={['g-list', 'check', classes.value]} style={styles.value} ref="list" vOn:click={(e) => context.emit('click', e)}>
+        return <div class={['g-list', 'check', classes.value]} style={styles.value} ref="list" onClick={(e) => context.emit('click', e)}>
           {context.slots['prepend-item'] && context.slots['prepend-item']()}
           {context.slots['default'] ? context.slots['default']() : genListWithItem()}
           {context.slots['append-item'] && context.slots['append-item']()}
@@ -308,7 +309,8 @@
         : { genList, internalItems }
     },
     render() {
-      return this.genList()
+      const scopeIdRender = getScopeIdRender()
+      return scopeIdRender(this.genList)()
     }
   }
 </script>
