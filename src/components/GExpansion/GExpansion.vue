@@ -3,6 +3,7 @@
   import { genHeaderFactory, genContentFactory, getExpansionModel } from './GExpansionFactory';
   import { computed } from 'vue';
   import GIcon from '../GIcon/GIcon';
+  import { getScopeIdRender } from "../../utils/helpers";
 
   export default {
     name: 'GExpansion',
@@ -37,7 +38,7 @@
       const genHeader = function (item) {
         return <div
           class={['g-expansion-header', { 'g-expansion-header__active': isActiveItem(item) }]}
-          vOn:click={() => toggleItem(item)}>
+          onClick={() => toggleItem(item)}>
           <div class="g-expansion-header-prepend">
             <g-icon small>fas fa-caret-right</g-icon>
           </div>
@@ -81,7 +82,8 @@
       }
     },
     render() {
-      return this.genExpansionGroup()
+      const renderWithScopeId = getScopeIdRender();
+      return renderWithScopeId(this.genExpansionGroup)();
     }
   }
 </script>
