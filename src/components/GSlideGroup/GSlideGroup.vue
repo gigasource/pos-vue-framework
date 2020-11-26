@@ -104,11 +104,11 @@
       });
 
       onBeforeUpdate(() => {
-        internalItemsLength.value = (content.children || []).length
+        internalItemsLength.value = (content.value.__vnode.children || []).length
       });
 
       onUpdated(() => {
-        if (internalItemsLength.value === (content.children || []).length) {
+        if (internalItemsLength.value === (content.value.__vnode.children || []).length) {
           return
         }
         setWidths();
