@@ -199,7 +199,6 @@
       // 1> wheel event
       let throttleWheel = _.throttle(e => (e.deltaX < 0 ? goPrev : goNext)(), 1000, { leading: true, trailing: false })
       const onWheelHandler = (e) => {
-        e.stopPropagation()
         e.preventDefault()
         if (!props.scrollable) {
           return
@@ -291,7 +290,7 @@
 
       function dateTableRenderFn() {
         return (
-            <div class='g-date-picker-table g-date-picker-table--date' onWheel={onWheelHandler}>
+            <div class='g-date-picker-table g-date-picker-table--date' onWheel_stop={onWheelHandler}>
                 <table key={state.viewportDate}>
                   <thead>
                   <tr>{dateTableModel.value.dayNames.map(dayName => <th>{dayName}</th>)}</tr>
