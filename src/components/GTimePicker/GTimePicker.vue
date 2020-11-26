@@ -5,6 +5,7 @@
   import GTimePickerUtil, { getFormattedHours, ActiveTimePicker, ActivePeriodPicker } from './logic/GTimePickerUtil'
   import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_59PositionStyle } from './logic/GTimePickerUIHelper';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   const MINIMUM_WIDTH = 300
   const DEFAULT_COLOR = 'rgb(98, 0, 237)'
@@ -69,6 +70,7 @@
       // allowedMinutes: [Function, Array],
       // allowedSeconds: [Function, Array],
     },
+    events: ['timeselected'],
     setup(props, context) {
       const {
         state,
@@ -131,23 +133,23 @@
       const renderTitle = () => (
           <div class={{ 'g-time-picker__title': true, 'g-time-picker__title--landscape': props.landscape }}>
             <div class={{ 'g-time-picker__title__time': true, 'g-time-picker__title__time--landscape': props.landscape }}>
-              <span {...cptTitleHourClassStyle.value} vOn:click_stop={showHoursPicker}>
+              <span {...cptTitleHourClassStyle.value} onClick_stop={showHoursPicker}>
                 {_.padStart(String(getFormattedHours(state.selectedTime.hours, props)), 2, '0')}
               </span>
               <span {...cptSeparatorClassStyle.value}>:</span>
-              <span {...cptTitleMinuteClassStyle.value} vOn:click_stop={showMinutesPicker}>
+              <span {...cptTitleMinuteClassStyle.value} onClick_stop={showMinutesPicker}>
                 {_.padStart(state.selectedTime.minutes, 2, '0')}
               </span>
               {props.useSeconds && [
                 <span {...cptSeparatorClassStyle.value}>:</span>,
-                <span {...cptTitleSecondClassStyle.value} vOn:click_stop={showSecondsPicker}>
+                <span {...cptTitleSecondClassStyle.value} onClick_stop={showSecondsPicker}>
                   {_.padStart(state.selectedTime.seconds, 2, '0')}
                 </span>
               ]}
             </div>
             {state.showPeriod && <div class="g-time-picker__title__period">
-              <div {...cptAMClassStyle.value} vOn:click_stop={showAMPicker}>AM</div>
-              <div {...cptPMClassStyle.value} vOn:click_stop={showPMPicker}>PM</div>
+              <div {...cptAMClassStyle.value} onClick_stop={showAMPicker}>AM</div>
+              <div {...cptPMClassStyle.value} onClick_stop={showPMPicker}>PM</div>
             </div>}
           </div>
       )
@@ -292,13 +294,13 @@
             <div class={cptClockWrapperClassStyle.value.class} style={cptClockWrapperClassStyle.value.style}>
               <div class={cptClockClassStyle.value.class}
                    style={cptClockClassStyle.value.style}
-                   vOn:wheel={onWheel}
-                   vOn:mousemove={onMouseMove}
-                   vOn:touchmove={onMouseMove}
-                   vOn:mouseup={onMouseUp}
-                   vOn:touchend={onMouseUp}
-                   vOn:touchstart={onMouseDown}
-                   vOn:mousedown={onMouseDown}>
+                   onWheel={onWheel}
+                   onMousemove={onMouseMove}
+                   onTouchmove={onMouseMove}
+                   onMouseup={onMouseUp}
+                   onTouchend={onMouseUp}
+                   onTouchstart={onMouseDown}
+                   onMousedown={onMouseDown}>
                 <div class="g-time-picker__clock__inner">
                   <div class={['g-time-picker__clock__inner__hand', cptHandColorStyle.value.class]}
                        style={[cptHandPositionAndRotateStyle.value, cptHandColorStyle.value.style]}></div>
@@ -355,17 +357,17 @@
         showSecondsPicker,
         showAMPicker,
         showPMPicker,
-        GTimePickerRenderFn
+        renderWithScope: getScopeIdRender()(GTimePickerRenderFn)
       }
     },
     render() {
-      return this.GTimePickerRenderFn()
+      return this.renderWithScope()
     }
   }
 </script>
 <style scoped lang="scss">
   .g-time-picker {
-    &__title {
+    ::v-deep &__title {
       $inactiveOpacity: 0.6;
       $activeOpacity: 1;
 
@@ -421,15 +423,14 @@
         }
       }
     }
-
-    &__clock-wrapper {
+  
+    ::v-deep &__clock-wrapper {
       width: 100%;
       height: 100%;
       padding: 15px;
     }
-
-
-    &__clock {
+  
+    ::v-deep &__clock {
       $clockSize: 270px;
       $clockPadding: 25px;
       $clockInnerSize: $clockSize - 2 * $clockPadding;
