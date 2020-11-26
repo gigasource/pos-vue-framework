@@ -178,7 +178,7 @@
         return <div class="g-date-select">
           <label>{props.label}</label>
           <div>
-            <span class="dropdown" onClick={() => showMonth()}>
+            <span class="dropdown" onClick_stop={() => showMonth()}>
               <select ref="month" onChange={e => {
                 state.month = Number(e.target.value)
                 emitNewDate()
