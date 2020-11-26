@@ -5,7 +5,6 @@
 
   export default {
     name: 'GIcon',
-    emits: ['click'],
     // inheritAttrs: false,
     props: {
       // size props
@@ -28,14 +27,13 @@
       svg: Boolean,
     },
     setup: function (props, context) {
-      const onClick = (event) => context.emit('click', event)
+      // const onClick = (event) => context.emit('click', event)
       const iconColor = computed(() => setTextColor(props.color))
 
       function genFontAwesomeIcon(icon, iconClass, iconStyle) {
         iconClass[icon] = true
         return <i class={iconClass}
-                  style={iconStyle}
-                  onClick={onClick}/>
+                  style={iconStyle}/>
       }
 
       function genMaterialIcon(icon, iconClass, iconStyle) {
