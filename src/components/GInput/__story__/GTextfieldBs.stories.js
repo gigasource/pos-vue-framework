@@ -11,23 +11,24 @@ export const basic = () => ({
   props: {
     label: { default: text('Label', 'Email')},
   },
+  // template: `<g-text-field-bs :label="label" clearable/>`
   template: `<div>
     Basic:
-    <g-text-field-bs :label="label"/>
+    <g-text-field-bs :label="label" clearable/>
     With prepend text:
-    <g-text-field-bs prefix="Email"/>
+    <g-text-field-bs prefix="Email" clearable/>
     With prepend icon:
-    <g-text-field-bs prepend-icon="email"/>
+    <g-text-field-bs prepend-icon="email" clearable/>
     With prepend inner icon:
-    <g-text-field-bs prepend-inner-icon="email"/>
+    <g-text-field-bs prepend-inner-icon="email" clearable/>
     With append text:
-    <g-text-field-bs :label="label" suffix="@gmail.com"/>
+    <g-text-field-bs :label="label" suffix="@gmail.com" clearable/>
     With append icon:
-    <g-text-field-bs :label="label" append-icon="edit"/>
+    <g-text-field-bs :label="label" append-icon="edit" clearable/>
     With append inner icon:
-    <g-text-field-bs :label="label" append-inner-icon="edit"/>
+    <g-text-field-bs :label="label" append-inner-icon="edit" clearable/>
     With label icon:
-    <g-text-field-bs :label="label" label-icon="email"/>
+    <g-text-field-bs :label="label" label-icon="email" clearable/>
 </div>`
 })
 

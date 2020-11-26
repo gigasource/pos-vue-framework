@@ -1,7 +1,7 @@
 <template>
   <div v-if="tfType === 'full'" :class="[tfWrapperClasses, tfErrWrapperClass]" @click="onClick" @mouseup="onMouseUp"
        @mousedown="onMouseDown">
-    <div v-if="$scopedSlots['prepend-outer'] || prependIcon" class="g-tf-prepend__outer">
+    <div v-if="$slots['prepend-outer'] && $slots['prepend-outer']() || prependIcon" class="g-tf-prepend__outer">
       <slot name="prepend-outer">
         <g-icon :color=iconColor @click="onClickPrependOuter">{{prependIcon}}</g-icon>
       </slot>
@@ -9,7 +9,7 @@
     <fieldset>
       <legend :style="legendStyles">{{label}}</legend>
       <div class='g-tf' :class="tfErrClasses">
-        <div v-if="$scopedSlots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner" ref="prependRef">
+        <div v-if="$slots['prepend-inner'] && $slots['prepend-inner']() || prependInnerIcon" class="g-tf-prepend__inner" ref="prependRef">
           <slot name="prepend-inner">
             <g-icon :color=iconColor @click="onClickPrependInner">{{prependInnerIcon}}</g-icon>
           </slot>
@@ -50,7 +50,7 @@
           </slot>
         </div>
         <div v-if="suffix" class="g-tf-affix">{{suffix}}</div>
-        <div v-if="$scopedSlots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner"
+        <div v-if="$slots['append-inner'] && $slots['append-inner']() || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner"
              @click="onClickAppendInner">
           <slot name="clearable-slot" :iconColor="iconColor">
             <g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
@@ -62,7 +62,7 @@
         </div>
         <slot name="input-message" :isValid="isValidInput" :errorMess="errorMessages">
           <div class="g-tf-error" v-if="!isValidInput && errorMessages">{{errorMessages}}</div>
-          <div class="g-tf-hint" v-else-if="isValidInput && hint || $scopedSlots['hint']" :class="hintClasses">
+          <div class="g-tf-hint" v-else-if="isValidInput && hint || $slots['hint'] && $slots['hint']()" :class="hintClasses">
             <slot name="hint">{{hint}}</slot>
           </div>
           <div v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
@@ -72,7 +72,7 @@
       </div>
     </fieldset>
 
-    <div v-if="appendIcon|| $scopedSlots['append-outer']" class="g-tf-append__outer" @click="onClickAppendOuter">
+    <div v-if="appendIcon|| $slots['append-outer'] && $slots['append-outer']()" class="g-tf-append__outer" @click="onClickAppendOuter">
       <slot name="append-outer">
         <g-icon :color=iconColor>{{appendIcon}}</g-icon>
       </slot>
@@ -82,7 +82,7 @@
   <div v-else :class="['g-tf-wrapper',tfWrapperClasses, tfErrWrapperClass, 'r']" :style="tfWrapperStyles" @click="onClick"
        @mouseup="onMouseUp"
        @mousedown="onMouseDown">
-    <div v-if="$scopedSlots['prepend-inner'] || prependInnerIcon" class="g-tf-prepend__inner"
+    <div v-if="$slots['prepend-inner'] && $slots['prepend-inner']() || prependInnerIcon" class="g-tf-prepend__inner"
          @click="onClickPrependInner" ref="prependRef">
       <slot name="prepend-inner" :iconColor="iconColor">
         <g-icon :color=iconColor>{{prependInnerIcon}}</g-icon>
@@ -90,7 +90,7 @@
     </div>
     <span v-if="prefix" class="g-tf-affix" :style="affixStyles" ref="prefixRef">{{prefix}} </span>
 
-    <component :is="$scopedSlots['append-inner'] || appendInnerIcon || clearable ? 'div' : 'pass-through'"
+    <component :is="$slots['append-inner'] && $slots['append-inner']() || appendInnerIcon || clearable ? 'div' : 'pass-through'"
                class="input">
       <slot name="input-slot"/>
       <input autocomplete="off"
@@ -125,7 +125,7 @@
     </slot>
     <span v-if="suffix" class="g-tf-affix" :style="affixStyles">{{suffix}} </span>
 
-    <div v-if="$scopedSlots['append-inner'] || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner"
+    <div v-if="$slots['append-inner'] && $slots['append-inner']() || appendInnerIcon || (isDirty && clearable)" class="g-tf-append__inner"
          @click="onClickAppendInner">
       <slot name="clearable-slot" :iconColor="iconColor">
         <g-icon v-if="isDirty && clearable" @click.stop="onClearIconClick" :color=iconColor>{{clearIcon}}</g-icon>
@@ -141,7 +141,7 @@
 					{{errorMessages}}
 				</slot>
 			</span>
-      <span class="g-tf-hint" v-else-if="isValidInput && hint || $scopedSlots['hint']" :class="hintClasses">
+      <span class="g-tf-hint" v-else-if="isValidInput && hint || $slots['hint'] && $slots['hint']()" :class="hintClasses">
 				<slot name="hint">{{hint}}</slot>
 			</span>
       <span v-if="counter" :class="{'g-tf-counter': true, 'g-tf-counter__error': !isValidInput}">
@@ -152,29 +152,36 @@
 </template>
 
 <script>
-  import {computed, ref, onMounted} from 'vue';
+  import {computed, ref, onMounted, nextTick, h} from 'vue';
   import {
     getEvents,
     getInternalValue,
     getLabel,
     getSlotEventListeners,
     getValidate,
-    getVirtualCaret
+    getVirtualCaret,
+    inputEvents
   } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {Fragment} from 'vue-fragment';
   import '../GKeyboard/jsCaret.js';
-
+  import _ from 'lodash'
+  
+  // TODO: Process pass through
+  const PassThrough = {
+    functional: true,
+    render(context) {
+      debugger
+      return context.children;
+    }
+  }
+  
   export default {
     name: 'GTextField',
     components: {
-      GIcon, Fragment, PassThrough: {
-        functional: true,
-        render(h, context) {
-          return context.children;
-        }
-      }
+      GIcon, Fragment, PassThrough
     },
+    emits: _.union(inputEvents, [ 'blur' ]),
     props: {
       ...{//display props
         label: String,
@@ -228,7 +235,7 @@
         type: String,
         default: '',
       },
-      value: [String, Number, Array, Object],
+      modelValue: [String, Number, Array, Object],
       type: {
         type: String,
         default: 'text',
@@ -237,10 +244,16 @@
       virtualEvent: Boolean
     },
     setup(props, context) {
+      const inputRef = ref(null)
+      const caretRef = ref(null)
+      
       const tfType = computed(() => {
-        if (context.slots['prepend-outer'] || props.prependIcon || props.outlined || props.appendIcon || context.slots['append-outer']) return 'full'
+        if (context.slots['prepend-outer'] || context.slots['append-outer']
+            || props.prependIcon || props.outlined || props.appendIcon )
+          return 'full'
         return 'lite'
       })
+      
       const tfWrapperClasses = computed(() => {
         return {
           'g-tf-wrapper': tfType.value === 'full',
@@ -282,7 +295,8 @@
       const {
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
+      
       //set legend width for label in outlined textfield
       const legendStyles = computed(() => {
         if (!props.solo && props.label && (isFocused.value || internalValue.value || props.placeholder || isLabelActive.value)) {
@@ -294,6 +308,7 @@
           }
         }
       });
+      
       const iconColor = computed(() => {
         if (isFocused.value) {
           if (!isValidInput.value) return 'red'
@@ -316,20 +331,19 @@
       })
 
       onMounted(() => {
-        context.root.$nextTick(() => {
+        nextTick(() => {
           if(props.virtualEvent && !props.readOnly) {
             document.addEventListener('click', (e) => {
-              if(!context.refs) return
-              const input = context.refs.input
-              if(e.target === input || e.target === context.refs.caret ||
+              const input = inputRef.value
+              if(e.target === input || e.target === caretRef.value ||
                   ((e.target.classList.contains('key') || (e.target.parentElement && e.target.parentElement.classList.contains('key'))) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
                 const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
-                if(e.target === input || e.target === context.refs.caret) {}
+                if(e.target === input || e.target === caretRef.value) {}
                 document.caretElement = new Caret(input)
                 if(start) document.caretElement.set(start)
                 if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
-                  const caret = context.refs.caret
+                  const caret = caretRef.value
                   if(caret) {
                     for(const child of caret.children) {
                       child.classList.remove('animated-caret')
@@ -352,7 +366,7 @@
                   isValidInput.value = validate(internalValue.value).value
                 }
                 isFocused.value = false
-                const caret = context.refs.caret
+                const caret = caretRef.value
                 if(caret) {
                   for(const child of caret.children) {
                     child.classList.remove('animated-caret')
@@ -360,10 +374,10 @@
                 }
               }
             })
-            const caret = context.refs.caret
+            const caret = caretRef.value
             if(caret) {
               caret.addEventListener('scroll', (e) => {
-                const input = context.refs.input
+                const input = inputRef.value
                 if(caret.scrollLeft !== input.scrollLeft) { //caret size
                   setTimeout(() => {
                     input.scrollLeft = caret.scrollLeft
@@ -385,9 +399,11 @@
         })
       })
 
-      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused)
+      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused, { inputRef })
 
       return {
+        inputRef,
+        caretRef,
         attrs,
         //calculated styles and classes
         tfType,

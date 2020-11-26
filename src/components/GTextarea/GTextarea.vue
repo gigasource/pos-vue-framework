@@ -61,18 +61,21 @@
 
 <script>
   import {ref, computed, watch, onMounted} from 'vue';
+  import _ from 'lodash'
   import {
     getEvents,
     getInternalValue,
     getLabel,
     getSlotEventListeners,
     getValidate,
+    inputEvents
   } from '../GInput/GInputFactory';
   import GIcon from "../GIcon/GIcon";
 
   export default {
     name: 'GTextarea',
     components: {GIcon},
+    emits: _.union(inputEvents, []),
     props: {
       ...{//display props
         label: String,
@@ -115,7 +118,7 @@
       flat: Boolean,
 
       // basic props
-      value: [String, Number],
+      modelValue: [String, Number],
 
       //textarea
       autoGrow: Boolean,
