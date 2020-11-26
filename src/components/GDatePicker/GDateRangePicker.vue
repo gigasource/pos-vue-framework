@@ -207,10 +207,7 @@
             class={['g-table-item', dateItem.class]}
             style={dateItem.style}
             disabled={!dateItem.isAllowed}
-            onClick={e => {
-              e.stopPropagation()
-              onDateItemClicked(dateItem)
-            }}>
+            onClick_stop={() => onDateItemClicked(dateItem)}>
           <div class="g-table-item__content">{dateItem.formattedValue}</div>
         </button>,
           <div class={['g-table-item__background', dateItem.background.class, dateItem.isRangeStart && dateItem.isRangeEnd && 'g-table-item__background--single']}

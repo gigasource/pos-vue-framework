@@ -130,10 +130,7 @@
         return (
             <div class={cptDatePickerTitleClass.value}>
               <div class='g-picker__title__btn g-date-picker-title__year'
-                   onClick={e => {
-                     e.stopPropagation();
-                     titleModel.value.on.yearClicked(titleModel.value.year);
-                   }}>
+                   onClick_stop={() => titleModel.value.on.yearClicked(titleModel.value.year)}>
                 {titleModel.value.year}
               </div>
               <div class='g-picker__title__btn g-date-picker-title__date'>
@@ -150,10 +147,7 @@
               <li
                   key={year}
                   class={{ 'active': parseInt(yearModel.value.selectedYear) === year }}
-                  onClick={e => {
-                    e.stopPropagation();
-                    yearModel.value.on.yearClicked(year)
-                  }}>
+                  onClick_stop={() => yearModel.value.on.yearClicked(year)}>
                 {year}
               </li>
           ))
@@ -183,10 +177,7 @@
                   <div key={headerModel.value.content}>
                     <button
                         type="button"
-                        onClick={e => {
-                          e.stopPropagation()
-                          headerModel.value.on.headerClicked()
-                        }}>
+                        onClick_stop={() => headerModel.value.on.headerClicked()}>
                       {headerModel.value.content}
                     </button>
                   </div>
@@ -194,17 +185,11 @@
               <button
                   class="g-date-picker-header__prev-button"
                   disabled={!headerModel.value.canGoPrev}
-                  onClick={e => {
-                    e.stopPropagation();
-                    goPrev();
-                  }}></button>
+                  onClick_stop={() => goPrev()}></button>
               <button
                   class="g-date-picker-header__next-button"
                   disabled={!headerModel.value.canGoNext}
-                  onClick={e => {
-                    e.stopPropagation();
-                    goNext();
-                  }}></button>
+                  onClick_stop={() => goNext()}></button>
             </div>
         )
       }
@@ -279,14 +264,8 @@
             class={['g-table-item', dateItem.class]}
             style={dateItem.style}
             disabled={!dateItem.isAllowed}
-            onClick={e => {
-              e.stopPropagation()
-              dateTableModel.value.on.onDateClicked(dateItem)
-            }}
-            onDblclick={e => {
-              e.stopPropagation()
-              dateTableModel.value.on.onDateDoubleClicked(dateItem)
-            }}>
+            onClick_stop={() => dateTableModel.value.on.onDateClicked(dateItem)}
+            onDblclick_stop={() => dateTableModel.value.on.onDateDoubleClicked(dateItem)}>
           <div class="g-table-item__content">{dateItem.formattedValue}</div>
           <div class="g-date-picker-table__events">
             {
@@ -362,14 +341,8 @@
                                 class={['g-table-item', monthItem.class]}
                                 style={monthItem.style}
                                 disabled={!monthItem.isAllowed}
-                                onClick={e => {
-                                  e.stopPropagation()
-                                  monthTableModel.value.on.monthClicked(monthItem)
-                                }}
-                                onDblclick={e => {
-                                  e.stopPropagation()
-                                  monthTableModel.value.on.monthDoubleClicked(monthItem)
-                                }}
+                                onClick_stop={() => monthTableModel.value.on.monthClicked(monthItem)}
+                                onDblclick_stop={() => monthTableModel.value.on.monthDoubleClicked(monthItem)}
                             >
                               <div class="g-table-item__content">
                                 {monthItem.formattedValue}

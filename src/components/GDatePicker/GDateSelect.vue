@@ -178,10 +178,7 @@
         return <div class="g-date-select">
           <label>{props.label}</label>
           <div>
-            <span class="dropdown" onClick={e => {
-              e.stopPropagation();
-              showMonth()
-            }}>
+            <span class="dropdown" onClick={() => showMonth()}>
               <select ref="month" onChange={e => {
                 state.month = Number(e.target.value)
                 emitNewDate()
@@ -191,10 +188,7 @@
               <g-icon class="dropdown__icon" small>fas fa-chevron-down</g-icon>
             </span>
 
-            <span class="dropdown" onClick={e => {
-              e.stopPropagation();
-              showDay();
-            }}>
+            <span class="dropdown" onClick_stop={() => showDay()}>
               <select ref="day" onChange={e => {
                 state.day = Number(e.target.value)
                 emitNewDate()
@@ -204,10 +198,7 @@
               <g-icon class="dropdown__icon" small>fas fa-chevron-down</g-icon>
             </span>
 
-            <span class="dropdown" onClick={e => {
-              e.stopPropagation();
-              showYear();
-            }}>
+            <span class="dropdown" onClick_stop={() => showYear()}>
               <select ref="year" onChange={e => {
                 state.year = Number(e.target.value)
                 emitNewDate()
