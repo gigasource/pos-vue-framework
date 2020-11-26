@@ -25,7 +25,7 @@
       color: { type: String, default: DEFAULT_COLOR },
       rangeColor: { type: String, default: DEFAULT_RANGE_COLOR },
     },
-    events: ['input'],
+    emits: ['input'],
     setup(props, context) {
       const now = new Date()
       const TICKS_PER_DAY = 864e5

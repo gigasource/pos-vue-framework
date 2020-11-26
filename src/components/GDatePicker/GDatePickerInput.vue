@@ -113,7 +113,7 @@
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
     },
-    events: ['input', 'value'],
+    emits: ['input', 'value'],
     setup(props, context) {
       let dateFormat = props.type === 'date' ? 'YYYY-MM-dd' : 'YYYY-MM'
       let initialDateValue
