@@ -70,7 +70,7 @@
       // allowedMinutes: [Function, Array],
       // allowedSeconds: [Function, Array],
     },
-    events: ['timeselected'],
+    emits: ['timeselected'],
     setup(props, context) {
       const {
         state,
