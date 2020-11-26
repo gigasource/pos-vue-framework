@@ -1,4 +1,4 @@
-function inserted(el, binding) {
+function mounted(el, binding) {
   const modifiers = binding.modifiers || {}
   const value = binding.value
   const options = binding.arg || {}
@@ -20,11 +20,11 @@ function inserted(el, binding) {
   observer.observe(el)
 }
 
-function unbind(el) {
+function unmounted(el) {
   if (!el._observe) return
   el._observe.observer.unobserve(el)
   delete el._observe
 }
 
-const Intersect = {inserted, unbind}
+const Intersect = {mounted, unmounted}
 export default Intersect

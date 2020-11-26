@@ -68,7 +68,7 @@ function createHandlers(value) {
   }
 }
 
-function inserted(el, binding, vnode) {
+function mounted(el, binding, vnode) {
   const value = binding.value;
   const target = value.parent ? el.parentElement : el;
   const options = value.options || { passive: true };
@@ -87,7 +87,7 @@ function inserted(el, binding, vnode) {
   })
 }
 
-function unbind(el, binding, vnode) {
+function unmounted(el, binding, vnode) {
   const target = binding.value.parent ? el.parentElement : el;
   if (!target || !target._touchHandlers) {
     return;
@@ -101,8 +101,8 @@ function unbind(el, binding, vnode) {
 }
 
 export const Touch = {
-  inserted,
-  unbind,
+  mounted,
+  unmounted,
 };
 
 export default Touch

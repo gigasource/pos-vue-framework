@@ -1,4 +1,4 @@
-import { withKnobs, text, color, boolean } from '@storybook/addon-knobs';
+import { boolean, color, text, withKnobs } from '@storybook/addon-knobs';
 import GLayout from '../../GLayout/GLayout';
 import GCheckbox from '../GCheckbox';
 
@@ -9,6 +9,12 @@ export default {
 
 export const basic = () => ({
   components: { GCheckbox },
+  data() {
+    return {
+      model: true
+    }
+  }
+  ,
   props: {
     color: {
       default: text('Color', '#1271ff')
@@ -23,11 +29,15 @@ export const basic = () => ({
       default: boolean('Readonly', false)
     }
   },
-  template: `<g-checkbox :color="color" 
-                      :label="label"
-                      :disabled="disabled"
-                      :readonly="readonly"
-                      />`
+  template: `
+    <div> Value: {{ model }}
+    <g-checkbox :color="color"
+                :label="label"
+                :disabled="disabled"
+                :readonly="readonly"
+                v-model="model"
+    />
+    </div>`
 });
 
 export const indeterminate = () => ({
@@ -47,7 +57,7 @@ export const checkboxAll = () => ({
   components: { GLayout, GCheckbox },
   data() {
     return {
-      model: null,
+      model: [],
       val: ['1', '2'],
     }
   },
