@@ -4,12 +4,12 @@
   import GDatePickerUtil from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
-
+  import { getScopeIdRender } from '../../utils/helpers'
+  
   const MINIMUM_WIDTH = 300
   const DEFAULT_COLOR = 'rgb(98, 0, 237)'
   const DEFAULT_RANGE_COLOR = '#ece0fd'
-
-
+  
   export default {
     name: 'GDatePicker',
     components: { GPicker },
@@ -110,6 +110,7 @@
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
     },
+    events: [],
     setup(props, context) {
       const {
         titleModel,
@@ -129,7 +130,7 @@
         return (
             <div class={cptDatePickerTitleClass.value}>
               <div class='g-picker__title__btn g-date-picker-title__year'
-                   v-on:click_stop={e => titleModel.value.on.yearClicked(titleModel.value.year)}>
+                   onClick_stop={() => titleModel.value.on.yearClicked(titleModel.value.year)}>
                 {titleModel.value.year}
               </div>
               <div class='g-picker__title__btn g-date-picker-title__date'>
@@ -146,7 +147,7 @@
               <li
                   key={year}
                   class={{ 'active': parseInt(yearModel.value.selectedYear) === year }}
-                  v-on:click_stop={() => yearModel.value.on.yearClicked(year)}>
+                  onClick_stop={() => yearModel.value.on.yearClicked(year)}>
                 {year}
               </li>
           ))
@@ -176,9 +177,7 @@
                   <div key={headerModel.value.content}>
                     <button
                         type="button"
-                        v-on:click_stop={() => {
-                          headerModel.value.on.headerClicked()
-                        }}>
+                        onClick_stop={() => headerModel.value.on.headerClicked()}>
                       {headerModel.value.content}
                     </button>
                   </div>
@@ -186,11 +185,11 @@
               <button
                   class="g-date-picker-header__prev-button"
                   disabled={!headerModel.value.canGoPrev}
-                  v-on:click_stop={() => goPrev()}></button>
+                  onClick_stop={() => goPrev()}></button>
               <button
                   class="g-date-picker-header__next-button"
                   disabled={!headerModel.value.canGoNext}
-                  v-on:click_stop={() => goNext()}></button>
+                  onClick_stop={() => goNext()}></button>
             </div>
         )
       }
@@ -264,8 +263,8 @@
             class={['g-table-item', dateItem.class]}
             style={dateItem.style}
             disabled={!dateItem.isAllowed}
-            v-on:click_stop={() => dateTableModel.value.on.onDateClicked(dateItem)}
-            v-on:dblclick_stop={() => dateTableModel.value.on.onDateDoubleClicked(dateItem)}>
+            onClick_stop={() => dateTableModel.value.on.onDateClicked(dateItem)}
+            onDblclick_stop={() => dateTableModel.value.on.onDateDoubleClicked(dateItem)}>
           <div class="g-table-item__content">{dateItem.formattedValue}</div>
           <div class="g-date-picker-table__events">
             {
@@ -291,7 +290,7 @@
 
       function dateTableRenderFn() {
         return (
-            <div class='g-date-picker-table g-date-picker-table--date' v-on:wheel_stop={onWheelHandler}>
+            <div class='g-date-picker-table g-date-picker-table--date' onWheel_stop={onWheelHandler}>
                 <table key={state.viewportDate}>
                   <thead>
                   <tr>{dateTableModel.value.dayNames.map(dayName => <th>{dayName}</th>)}</tr>
@@ -327,7 +326,7 @@
       }
 
       function monthTableRenderFn() {
-        return (<div class='g-date-picker-table g-date-picker-table--month' v-on:wheel={onWheelHandler}>
+        return (<div class='g-date-picker-table g-date-picker-table--month' onWheel={onWheelHandler}>
             <table key={state.viewportDate}>
               <tbody>
               {
@@ -341,8 +340,8 @@
                                 class={['g-table-item', monthItem.class]}
                                 style={monthItem.style}
                                 disabled={!monthItem.isAllowed}
-                                v-on:click_stop={() => monthTableModel.value.on.monthClicked(monthItem)}
-                                v-on:dblclick_stop={() => monthTableModel.value.on.monthDoubleClicked(monthItem)}
+                                onClick_stop={() => monthTableModel.value.on.monthClicked(monthItem)}
+                                onDblclick_stop={() => monthTableModel.value.on.monthDoubleClicked(monthItem)}
                             >
                               <div class="g-table-item__content">
                                 {monthItem.formattedValue}
@@ -364,7 +363,7 @@
       const datePickerBodyRenderFn = () => state.activePicker === 'year' ? yearListRenderFn() : [headerRenderFn(), dateMonthTableRenderFn()]
 
       // datepicker render function
-      return function datePickerRenderFn() {
+      function datePickerRenderFn() {
         return (
             <g-picker
                 color={props.headerColor || props.color || DEFAULT_COLOR}
@@ -385,6 +384,20 @@
             </g-picker>
         )
       }
+      
+      
+      return {
+        titleModel,
+        yearModel,
+        headerModel,
+        dateTableModel,
+        monthTableModel,
+        state,
+        renderWithScope: getScopeIdRender()(datePickerRenderFn)
+      }
+    },
+    render() {
+      return this.renderWithScope()
     }
   }
 
@@ -394,14 +407,15 @@
 <style scoped lang="scss">
   @import "../../style/variables";
   @import "../../style/colors";
-
-  button { outline: none; }
-  table { border-collapse: collapse; }
+  
+  
+  ::v-deep button { outline: none; }
+  ::v-deep table { border-collapse: collapse; }
 
   $textDisabled: #9e9e9e;
 
   /*TITLE*/
-  .g-date-picker-title {
+  ::v-deep .g-date-picker-title {
     display: flex;
     flex-direction: column;
     line-height: 1;
@@ -430,7 +444,7 @@
   }
 
   /*YEAR PICKER*/
-  .g-date-picker-years {
+  ::v-deep .g-date-picker-years {
     font-size: 16px;
     font-weight: 400;
     height: 298px;
@@ -461,7 +475,7 @@
   }
 
   /*HEADER*/
-  .g-date-picker-header {
+  ::v-deep .g-date-picker-header {
     padding: 4px 8px;
     display: flex;
     align-items: center;
@@ -524,7 +538,7 @@
   }
 
   /*TABLE*/
-  .g-date-picker-table {
+  ::v-deep .g-date-picker-table {
     position: relative;
     padding: 0 12px;
     height: 254px;
@@ -629,7 +643,7 @@
     }
   }
 
-  .g-date-picker-table--date {
+  ::v-deep .g-date-picker-table--date {
     th {
       padding: 8px 0;
       font-weight: 600;
@@ -660,7 +674,7 @@
     }
   }
 
-  .g-date-picker-table--month {
+  ::v-deep .g-date-picker-table--month {
     td {
       width: 33.333333%;
       height: 56px;

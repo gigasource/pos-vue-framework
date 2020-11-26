@@ -111,7 +111,7 @@ export const _computedHeaderContent = state => {
  * @private
  */
 export const _computedHeaderFormatFn = (props, state) => {
-  const formatFn = (date => dayjs(date).format(state.activePicker === 'date' ? 'MMMM YYYY' : 'YYYY'))
+  const formatFn = date => dayjs(date).format(state.activePicker === 'date' ? 'MMMM YYYY' : 'YYYY')
   return computed(() => props.headerDateFormat || formatFn)
 }
 
