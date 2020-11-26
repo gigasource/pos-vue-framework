@@ -2,7 +2,7 @@
   import { computed, reactive, ref } from 'vue';
   import getVModel from '../../mixins/getVModel';
   import { setTextColor } from '../../mixins/colorable';
-  import { createRange } from '../../utils/helpers';
+  import { createRange, getScopeIdRender } from '../../utils/helpers';
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -43,7 +43,7 @@
         default: 5,
       },
       readonly: Boolean,
-      value: {
+      modelValue: {
         type: Number,
         default: 0,
       },
@@ -54,6 +54,7 @@
       xLarge: Boolean,
       xSmall: Boolean,
     },
+    emits: ['update:modelValue'],
     setup(props, context) {
       const hoverIndex = ref(-1)
       const internalValue = getVModel(props, context)
@@ -93,7 +94,7 @@
 
         if (props.halfIncrements) {
           itemProps.isHalfHovered = !itemProps.isHovered && (hoverIndex.value - i) % 1 > 0
-          console.log( (internalValue.value - i) % 1)
+          // console.log( (internalValue.value - i) % 1)
           itemProps.isHalfFilled = !itemProps.isFilled && (internalValue.value - i) % 1 > 0
         }
 
@@ -145,23 +146,23 @@
         if (context.slots.item) return context.slots.item(itemProps)
 
         const listeners = {
-          click: itemProps.click,
+          onClick: itemProps.click,
         }
 
         if (props.hover) {
-          listeners.mouseenter = (e) => onMouseEnter(e, i)
-          listeners.mouseleave = onMouseLeave
+          listeners.onMouseEnter = (e) => onMouseEnter(e, i)
+          listeners.onMouseLeave = onMouseLeave
 
           if (props.halfIncrements) {
-            listeners.mousemove = (e) => onMouseEnter(e, i)
+            listeners.onMouseEnter = (e) => onMouseEnter(e, i)
           }
         }
 
         let data = {
           ...setTextColor(getColor(itemProps)),
           ...{
-            props: iconProps.value,
-            on: listeners
+            ...iconProps.value,
+            ...listeners
           }
         };
         return <g-icon {...data}>
@@ -189,7 +190,8 @@
       }
     },
     render() {
-      return this.genWrapper()
+      const scopeIdRender = getScopeIdRender();
+      return scopeIdRender(this.genWrapper)();
     }
   }
 </script>
@@ -198,7 +200,7 @@
   .g-rating {
     max-width: 100%;
     white-space: nowrap;
-
+    cursor: pointer;
     .g-icon {
       padding: 0.5rem;
       border-radius: 50%;

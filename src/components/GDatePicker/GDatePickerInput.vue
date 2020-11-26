@@ -1,4 +1,4 @@
-<script>
+<script type="text/jsx">
   import { computed, reactive, watch } from 'vue'
   import GMenu from '../GMenu/GMenu'
   import GDatePicker from '../GDatePicker/GDatePicker'
@@ -7,6 +7,7 @@
   import dayjs from 'dayjs';
   import _ from 'lodash'
   import GBtn from '../GBtn/GBtn'
+  import { getScopeIdRender } from '../../utils/helpers'
 
   // register components
   GTextField.components['GChip'] = GChip
@@ -112,6 +113,7 @@
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
     },
+    emits: ['input', 'value'],
     setup(props, context) {
       let dateFormat = props.type === 'date' ? 'YYYY-MM-dd' : 'YYYY-MM'
       let initialDateValue
@@ -151,7 +153,7 @@
             <GChip
                 small={props.smallChips}
                 close={props.deletableChips}
-                vOn:close={() => onChipCloseClick(index)}>
+                onClose={() => onChipCloseClick(index)}>
               {item}
             </GChip>)
       }
@@ -176,7 +178,7 @@
                   label={props.label}
                   prependIcon={props.icon}
                   value={cptTextFieldValue.value}
-                  vOn:click={e => {
+                  onClick={e => {
                     gMenuScope.toggleContent(e)
                     state.tempValue = copyValue(state.value)
                   }}
@@ -184,14 +186,14 @@
         }
       }
 
-      return () => {
+      function renderGDatePickerInput() {
         return <div>
           <g-menu
               contentFillWidth={false}
               minWidth={300}
               nudgeBottom={10}
               value={state.showMenu}
-              vOn:input={v => state.showMenu = v}
+              onInput={v => state.showMenu = v}
               scopedSlots={gMenuActivatorSlots()}>
             <g-date-picker
                 vShow={state.showMenu}
@@ -208,12 +210,12 @@
                   }
                 }}>
               <div class="actions-btn">
-                <g-btn flat vOn:click={e => {
+                <g-btn flat onClick={e => {
                   state.showMenu = false
                 }}>Cancel
                 </g-btn>
                 &nbsp;
-                <g-btn flat vOn:click={e => {
+                <g-btn flat onClick={e => {
                   state.value = copyValue(state.tempValue);
                   context.emit('input', cptTextFieldValue.value)
                   context.emit('value', copyValue(state.value))
@@ -225,9 +227,12 @@
           </g-menu>
         </div>
       }
+      
+      return getScopeIdRender()(renderGDatePickerInput)
     }
   }
 </script>
+
 <style scoped lang="scss">
   .actions-btn {
     display: flex;

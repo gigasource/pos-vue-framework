@@ -30,29 +30,27 @@ export const SingleValueDatePicker = () => ({
     scrollable: { default: boolean('scrollable', false)},
     icon: {default: text('Icon', 'far fa-calendar')}
   },
-  setup(props) {
-    return () =>
-      <g-date-picker-input
-          label={'Due date'}
-        max={props.max}
-        min={props.min}
-        value={props.value}
-        color={props.color}
-        header-color={props.headerColor}
-        full-width={props.fullWidth}
-        width={props.width}
-        no-title={props.noTitle}
-        landscape={props.landscape}
-        first-day-of-week={props.firstDayOfWeek}
-        show-week={props.showWeek}
-        show-current={props.showCurrent}
-        type='date'
-        disabled={props.disabled}
-        readonly={props.readonly}
-        scrollable={props.scrollable}
-        icon={props.icon}
-      />
-  }
+  template:
+  `<g-date-picker-input
+      label='Due date'
+      :max="max"
+      :min="min"
+      :value="value"
+      :color="color"
+      :header-color="headerColor"
+      :full-width="fullWidth"
+      :width="width"
+      :no-title="noTitle"
+      :landscape="landscape"
+      :first-day-of-week="firstDayOfWeek"
+      :show-week="showWeek"
+      :show-current="showCurrent"
+      type='date'
+      :disabled="disabled"
+      :readonly="readonly"
+      :scrollable="scrollable"
+      :icon="icon"
+   />`
 })
 
 export const MultipleValueDatePicker = () => ({
@@ -74,29 +72,27 @@ export const MultipleValueDatePicker = () => ({
     readonly: { default: boolean('readonly', false)},
     scrollable: { default: boolean('scrollable', false)},
   },
-  setup(props) {
-    return () =>
-        <g-date-picker-input
-            label={'Due date'}
-            max={props.max}
-            min={props.min}
-            value={props.value}
-            color={props.color}
-            header-color={props.headerColor}
-            full-width={props.fullWidth}
-            width={props.width}
-            no-title={props.noTitle}
-            landscape={props.landscape}
-            first-day-of-week={props.firstDayOfWeek}
-            show-week={props.showWeek}
-            show-current={props.showCurrent}
-            type='date'
-            disabled={props.disabled}
-            readonly={props.readonly}
-            scrollable={props.scrollable}
-            multiple
-        />
-  }
+  template:
+  `<g-date-picker-input
+      label='Due date'
+      :max="max"
+      :min="min"
+      :value="value"
+      :color="color"
+      :header-color="headerColor"
+      :full-width="fullWidth"
+      :width="width"
+      :no-title="noTitle"
+      :landscape="landscape"
+      :first-day-of-week="firstDayOfWeek"
+      :show-week="showWeek"
+      :show-current="showCurrent"
+      type='date'
+      :disabled="disabled"
+      :readonly="readonly"
+      :scrollable="scrollable"
+      multiple
+  />`
 })
 
 
@@ -120,30 +116,28 @@ export const RangeValueDatePicker = () => ({
     readonly: { default: boolean('readonly', false)},
     scrollable: { default: boolean('scrollable', false)},
   },
-  setup(props) {
-    return () =>
-        <g-date-picker-input
-            label={'Due date'}
-            max={props.max}
-            min={props.min}
-            value={props.value}
-            color={props.color}
-            range-color={props.rangeColor}
-            header-color={props.headerColor}
-            full-width={props.fullWidth}
-            width={props.width}
-            no-title={props.noTitle}
-            landscape={props.landscape}
-            first-day-of-week={props.firstDayOfWeek}
-            show-week={props.showWeek}
-            show-current={props.showCurrent}
-            type='date'
-            disabled={props.disabled}
-            readonly={props.readonly}
-            scrollable={props.scrollable}
-            range
-        />
-  }
+  template:
+  `<g-date-picker-input
+      label='Due date'
+      :max="max"
+      :min="min"
+      :value="value"
+      :color="color"
+      :range-color="rangeColor"
+      :header-color="headerColor"
+      :full-width="fullWidth"
+      :width="width"
+      :no-title="noTitle"
+      :landscape="landscape"
+      :first-day-of-week="firstDayOfWeek"
+      :show-week="showWeek"
+      :show-current="showCurrent"
+      type='date'
+      :disabled="disabled"
+      :readonly="readonly"
+      :scrollable="scrollable"
+      range
+  />`
 })
 
 export const SingleValueMonthPicker = () => ({
@@ -163,31 +157,27 @@ export const SingleValueMonthPicker = () => ({
     readonly: { default: boolean('readonly', false)},
     scrollable: { default: boolean('scrollable', false)},
   },
-  setup(props) {
-    return () =>
-        <div>
-          <g-date-picker-input
-              label={'Due date'}
-              value={props.value}
-              color={props.color}
-              header-color={props.headerColor}
-              full-width={props.fullWidth}
-              width={props.width}
-              no-title={props.noTitle}
-              landscape={props.landscape}
-              first-day-of-week={props.firstDayOfWeek}
-              show-week={props.showWeek}
-              show-current={props.showCurrent}
-              type='month'
-              disabled={props.disabled}
-              readonly={props.readonly}
-              scrollable={props.scrollable}
-          />
-          <p>For some reason, min, max doesn't work well in storybook</p>
-        </div>
-
-
-  }
+  template:
+  `<div>
+    <g-date-picker-input
+        label='Due date'
+        :value="value"
+        :color="color"
+        :header-color="headerColor"
+        :full-width="fullWidth"
+        :width="width"
+        :no-title="noTitle"
+        :landscape="landscape"
+        :first-day-of-week="firstDayOfWeek"
+        :show-week="showWeek"
+        :show-current="showCurrent"
+        type='month'
+        :disabled="disabled"
+        :readonly="readonly"
+        :scrollable="scrollable"
+    />
+    <p>For some reason, min, max doesn't work well in storybook</p>
+  </div>`,
 })
 
 export const MultipleValueMonthPicker = () => ({
@@ -207,28 +197,26 @@ export const MultipleValueMonthPicker = () => ({
     readonly: { default: boolean('readonly', false)},
     scrollable: { default: boolean('scrollable', false)},
   },
-  setup(props) {
-    return () =>
-        <div>
+  template:
+        `<div>
           <g-date-picker-input
-              label={'Due date'}
-              value={props.value}
-              color={props.color}
-              header-color={props.headerColor}
-              full-width={props.fullWidth}
-              width={props.width}
-              no-title={props.noTitle}
-              landscape={props.landscape}
-              first-day-of-week={props.firstDayOfWeek}
-              show-week={props.showWeek}
-              show-current={props.showCurrent}
+              label='Due date'
+              :value="value"
+              :color="color"
+              :header-color="headerColor"
+              :full-width="fullWidth"
+              :width="width"
+              :no-title="noTitle"
+              :landscape="landscape"
+              :first-day-of-week="firstDayOfWeek"
+              :show-week="showWeek"
+              :show-current="showCurrent"
               type='month'
-              disabled={props.disabled}
-              readonly={props.readonly}
-              scrollable={props.scrollable}
+              :disabled="disabled"
+              :readonly="readonly"
+              :scrollable="scrollable"
               multiple
-          />
+              />
           <p>For some reason, min, max doesn't work well in storybook</p>
-        </div>
-  }
+        </div>`
 })

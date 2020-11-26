@@ -1,3 +1,6 @@
+import { h, Transition, TransitionGroup } from 'vue';
+
+
 function mergeTransitions (transitions, array) {
   if (Array.isArray(transitions))
     return transitions.concat(array);
@@ -7,91 +10,77 @@ function mergeTransitions (transitions, array) {
 }
 
 export function createSimpleTransition (name, origin = 'top center 0', mode) {
-  return {
-    name,
-    functional: true,
-    props: {
-      group: {
-        type: Boolean,
-        default: false,
-      },
-      hideOnLeave: {
-        type: Boolean,
-        default: false,
-      },
-      leaveAbsolute: {
-        type: Boolean,
-        default: false,
-      },
-      mode: {
-        type: String,
-        default: mode,
-      },
-      origin: {
-        type: String,
-        default: origin,
-      },
-    },
-
-    render (h, context) {
-      const tag = `transition${context.props.group ? '-group' : ''}`;
-      context.data = context.data || {};
-      context.data.props = {
-        name,
-        mode: context.props.mode,
-      };
-      context.data.on = context.data.on || {};
-      if (!Object.isExtensible(context.data.on)) {
-        context.data.on = { ...context.data.on };
-      }
+  const transition = (props, context) => {
+      const tag = props.group ? TransitionGroup : Transition;
+      context.attrs.name = name;
+      context.attrs.mode = props.mode;
 
       const ourBeforeEnter = [];
       const ourLeave = [];
       const absolute = el => (el.style.position = 'absolute');
 
       ourBeforeEnter.push((el) => {
-        el.style.transformOrigin = context.props.origin
-        el.style.webkitTransformOrigin = context.props.origin
+        el.style.transformOrigin = props.origin
+        el.style.webkitTransformOrigin = props.origin
       });
 
-      if (context.props.leaveAbsolute)
+      if (props.leaveAbsolute)
         ourLeave.push(absolute);
-      if (context.props.hideOnLeave)
+      if (props.hideOnLeave)
         ourLeave.push(el => (el.style.display = 'none'));
 
-      const { beforeEnter, leave } = context.data.on;
+      const { onBeforeEnter, onLeave } = context.attrs;
 
-      context.data.on.beforeEnter = () => mergeTransitions(beforeEnter, ourBeforeEnter);
-      context.data.on.leave = mergeTransitions(leave, ourLeave);
+      context.attrs.onBeforeEnter = () => mergeTransitions(onBeforeEnter, ourBeforeEnter);
+      context.attrs.onLeave = () => mergeTransitions(onLeave, ourLeave);
 
-      return h(tag, context.data, context.children);
+      return h(tag, context.attrs, context.slots);
+  }
+
+  transition.props =  {
+    group: {
+      type: Boolean,
+      default: false,
+    },
+    hideOnLeave: {
+      type: Boolean,
+      default: false,
+    },
+    leaveAbsolute: {
+      type: Boolean,
+      default: false,
+    },
+    mode: {
+      type: String,
+      default: mode,
+    },
+    origin: {
+      type: String,
+      default: origin,
     },
   }
+
+  return transition
 }
 
 export function createJavaScriptTransition (name, functions, mode = 'in-out') {
-  return {
-    name,
-    functional: true,
-    props: {
-      mode: {
-        type: String,
-        default: mode,
-      },
-    },
+  const transition = (props, context) => {
+    const data = {
+      name,
+      mode: props.mode,
+      ...functions,
+    };
 
-    render (h, context) {
-      const data = {
-        props: {
-          ...context.props,
-          name,
-        },
-        on: functions,
-      };
+    return h(Transition, data, context.slots);
+  }
 
-      return h('transition', data, context.children);
+  transition.props = {
+    mode: {
+      type: String,
+      default: mode,
     },
   }
+  return transition
 }
 
 import { upperFirst } from '../../utils/helpers';
@@ -101,7 +90,7 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
   const offsetProperty = `offset${upperFirst(sizeProperty)}`;
 
   return {
-    beforeEnter (el) {
+    onBeforeEnter (el) {
       el._parent = el.parentNode;
       el._initialStyle = {
         transition: el.style.transition,
@@ -111,7 +100,7 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
       };
     },
 
-    enter (el) {
+    onEnter (el) {
       const initialStyle = el._initialStyle;
       const offset = `${el[offsetProperty]}px`;
 
@@ -134,10 +123,10 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
       });
     },
 
-    afterEnter: resetStyles,
-    enterCancelled: resetStyles,
+    onAfterEnter: resetStyles,
+    onEnterCancelled: resetStyles,
 
-    leave (el) {
+    onLeave (el) {
       el._initialStyle = {
         transition: '',
         visibility: '',
@@ -152,8 +141,8 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
       requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
     },
 
-    afterLeave,
-    leaveCancelled: afterLeave,
+    onAfterLeave: afterLeave,
+    onLeaveCancelled: afterLeave,
   }
 
   function afterLeave (el) {

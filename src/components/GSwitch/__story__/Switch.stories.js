@@ -1,7 +1,6 @@
-import { withKnobs, text, color, boolean } from '@storybook/addon-knobs';
+import { boolean, color, text, withKnobs } from '@storybook/addon-knobs';
 
 import GSwitch from '../GSwitch';
-import GLayout from '../../GLayout/GLayout';
 
 export default {
   title: 'Switch',
@@ -35,13 +34,16 @@ export const basic = () => ({
       default: boolean('Readonly', false)
     }
   },
-  template: `<g-switch v-model="model" 
-                    :color="color" 
-                    :label="label" 
-                    :flat="flat" 
-                    :inset="inset"
-                    :disabled="disabled"
-                    :readonly="readonly"/>`
+  template: `
+    <div> Value: {{ model }}
+    <g-switch v-model="model"
+              :color="color"
+              :label="label"
+              :flat="flat"
+              :inset="inset"
+              :disabled="disabled"
+              :readonly="readonly"/>
+    </div>`
 });
 
 export const multiple = () => ({

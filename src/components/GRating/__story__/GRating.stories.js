@@ -26,7 +26,7 @@ export const rating = () => ({
     readonly: { type: Boolean, default: boolean('readonly', false)},
     size: { type: Number, default: number('size', 24), },
   },
-  template: `<g-rating v-model="value" half-increments
+  template: `<g-rating v-model="value"
                        :background-color="backgroundColor"
                        :color="color"
                        :clearable="clearable"

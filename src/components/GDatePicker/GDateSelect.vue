@@ -1,5 +1,6 @@
-<script>
+<script type="text/jsx">
   import _ from 'lodash'
+  import { getScopeIdRender } from '../../utils/helpers'
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   import { reactive, computed, watch } from 'vue';
@@ -17,6 +18,7 @@
       disabled: false,
       readonly: false,
     },
+    emits: ['input'],
     setup(props, context) {
       const state = reactive({
         year: 0,
@@ -172,12 +174,12 @@
       const showYear = () => context.refs.year.click()
 
 
-      return () => {
+      function renderGDateSelect() {
         return <div class="g-date-select">
           <label>{props.label}</label>
           <div>
-            <span class="dropdown" vOn:click_stop={e => showMonth()}>
-              <select ref="month" vOn:change={e => {
+            <span class="dropdown" onClick_stop={() => showMonth()}>
+              <select ref="month" onChange={e => {
                 state.month = Number(e.target.value)
                 emitNewDate()
               }}>
@@ -186,8 +188,8 @@
               <g-icon class="dropdown__icon" small>fas fa-chevron-down</g-icon>
             </span>
 
-            <span class="dropdown" vOn:click_stop={e => showDay()}>
-              <select ref="day" vOn:change={e => {
+            <span class="dropdown" onClick_stop={() => showDay()}>
+              <select ref="day" onChange={e => {
                 state.day = Number(e.target.value)
                 emitNewDate()
               }}>
@@ -196,8 +198,8 @@
               <g-icon class="dropdown__icon" small>fas fa-chevron-down</g-icon>
             </span>
 
-            <span class="dropdown" vOn:click_stop={e => showYear()}>
-              <select ref="year" vOn:change={e => {
+            <span class="dropdown" onClick_stop={() => showYear()}>
+              <select ref="year" onChange={e => {
                 state.year = Number(e.target.value)
                 emitNewDate()
               }}>
@@ -209,9 +211,12 @@
           </div>
         </div>
       }
+      
+      return getScopeIdRender()(renderGDateSelect)
     }
   }
 </script>
+
 <style scoped lang="scss">
   .g-date-select {
     & label {

@@ -1,4 +1,4 @@
-import { withKnobs, text, color, boolean } from '@storybook/addon-knobs';
+import { boolean, color, text, withKnobs } from '@storybook/addon-knobs';
 import GRadio from '../GRadio';
 import GRadioGroup from '../GRadioGroup';
 
@@ -65,9 +65,12 @@ export const solo = () => ({
       default: color('Color', '#1271ff')
     },
     label: {
-      default: text('Label', 'Radio' )
+      default: text('Label', 'Radio')
     }
   },
-  template: `<g-radio :color="color" :label="label" v-model="model" :value="val"/>`
+  template: `
+    <div> Value: {{ model }}
+    <g-radio :color="color" :label="label" v-model="model" :value="val"/>
+    </div>`
 });
 

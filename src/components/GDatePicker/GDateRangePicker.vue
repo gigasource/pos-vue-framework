@@ -1,4 +1,4 @@
-<script>
+<script type="text/jsx">
   import _ from 'lodash'
   import dayjs from 'dayjs';
   import { reactive, computed, ref, watch } from 'vue';
@@ -7,6 +7,7 @@
   import GDateSelect from './GDateSelect';
   import GBtn from '../GBtn/GBtn'
   import GDivider from '../GLayout/GDivider';
+  import { getScopeIdRender } from '../../utils/helpers';
 
 
   const DEFAULT_COLOR = '#2979FF'
@@ -24,6 +25,7 @@
       color: { type: String, default: DEFAULT_COLOR },
       rangeColor: { type: String, default: DEFAULT_RANGE_COLOR },
     },
+    emits: ['input'],
     setup(props, context) {
       const now = new Date()
       const TICKS_PER_DAY = 864e5
@@ -205,7 +207,7 @@
             class={['g-table-item', dateItem.class]}
             style={dateItem.style}
             disabled={!dateItem.isAllowed}
-            v-on:click_stop={() => onDateItemClicked(dateItem)}>
+            onClick_stop={() => onDateItemClicked(dateItem)}>
           <div class="g-table-item__content">{dateItem.formattedValue}</div>
         </button>,
           <div class={['g-table-item__background', dateItem.background.class, dateItem.isRangeStart && dateItem.isRangeEnd && 'g-table-item__background--single']}
@@ -235,14 +237,14 @@
             </div>)
       }
 
-      return () => {
+      function renderGDateRangePicker () {
         return <div class="g-date-range-picker">
           <div class="action-btns">
-            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.custom === state.currentMode && 'btn__active'} vOn:click={e => selectCustom()}>Custom</g-btn>
-            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.today === state.currentMode && 'btn__active'} vOn:click={e => selectToday()}>Today</g-btn>
-            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.yesterday === state.currentMode && 'btn__active'} vOn:click={e => selectYesterday()}>Yesterday</g-btn>
-            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.thisWeek === state.currentMode && 'btn__active'} vOn:click={e => selectThisWeek()}>This week</g-btn>
-            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.thisMonth === state.currentMode && 'btn__active'} vOn:click={e => selectThisMonth()}>This month</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.custom === state.currentMode && 'btn__active'} onClick={e => selectCustom()}>Custom</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.today === state.currentMode && 'btn__active'} onClick={e => selectToday()}>Today</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.yesterday === state.currentMode && 'btn__active'} onClick={e => selectYesterday()}>Yesterday</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.thisWeek === state.currentMode && 'btn__active'} onClick={e => selectThisWeek()}>This week</g-btn>
+            <g-btn outlined height="40" text-color="#2979ff" class={selectMode.thisMonth === state.currentMode && 'btn__active'} onClick={e => selectThisMonth()}>This month</g-btn>
           </div>
           <g-divider/>
           <div class="row-flex pa-3">
@@ -251,13 +253,13 @@
                 label="Start Date"
                 value={rangeStartPickerProps.value[0]}
                 max={rangeStartPickerProps.value[1]}
-                vOn:input={setStartDateValue}/>
+                onInput={setStartDateValue}/>
             <g-date-select
                 style="flex: 1"
                 label="End Date"
                 value={rangeStartPickerProps.value[1]}
                 min={rangeStartPickerProps.value[0]}
-                vOn:input={setEndDateValue}/>
+                onInput={setEndDateValue}/>
           </div>
           <div class="row-flex px-3">
             <div style="border-radius: 5px 0 0 5px; border: 1px solid #DFE4E8;">
@@ -271,9 +273,12 @@
           </div>
         </div>
       }
+      
+      return getScopeIdRender()(renderGDateRangePicker)
     }
   }
 </script>
+
 <style scoped lang="scss">
   @import "../../style/variables";
   @import "../../style/colors";
