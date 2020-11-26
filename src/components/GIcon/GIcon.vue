@@ -47,8 +47,7 @@
 
         iconClass[iconType] = true
         return <i class={iconClass}
-                  style={iconStyle}
-                  onClick={onClick}>{!isMdiIcon ? icon : ''}</i>
+                  style={iconStyle}>{!isMdiIcon ? icon : ''}</i>
       }
 
       function genSvgIcon(svgName, iconClass, iconStyle) {
@@ -58,12 +57,11 @@
         iconStyle['height'] = iconStyle['font-size']
 
         return <div class={iconClass}
-                    style={iconStyle}
-                    onClick={onClick}/>
+                    style={iconStyle}/>
       }
 
       function genIcon(icon) {
-        const hasClickListener = !!(getCurrentInstance().vnode.props && getCurrentInstance().vnode.props.onClick);
+        // const hasClickListener = !!(getCurrentInstance().vnode.props && getCurrentInstance().vnode.props.onClick);
 
         let iconName = '';
         let iconSize;
@@ -74,7 +72,7 @@
           'g-icon__disabled': props.disabled,
           'g-icon__left': props.left,
           'g-icon__right': props.right,
-          'g-icon__link': hasClickListener,
+          // 'g-icon__link': hasClickListener,
         }
 
         if (typeof icon === 'string' && icon.includes('@')) {
