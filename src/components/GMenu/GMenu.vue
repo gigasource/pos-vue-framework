@@ -1,6 +1,6 @@
 <script>
   import {getInternalValue} from '../../mixins/getVModel';
-  import { onBeforeUnmount, onMounted, reactive, ref, toRef, toRefs, watch } from 'vue';
+  import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
@@ -99,6 +99,7 @@
     setup(props, context) {
       const isActive = getInternalValue(props, context);
       const { runDelay } = delayable(props)
+      const content = ref(null)
       const activatorEl = ref(null);
       let activatorVNode
 
@@ -148,7 +149,7 @@
               isActive.value = e
               state.hasJustFocused = e
           },
-          ref: 'content'
+          ref: content
         }
         return <g-menu-content {...contentOptions}>
           {context.slots.default()}
@@ -168,8 +169,7 @@
           },
           mouseleave(event) {
             runDelay('close', () => {
-              const content = context.refs.content
-              if (content && content.$el.contains(event.relatedTarget)) {
+              if (content && content.value.$el.contains(event.relatedTarget)) {
                 return
               }
               isActive.value = false

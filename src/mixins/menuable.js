@@ -125,7 +125,6 @@ export default function menuable(props, context) {
   }
 
   function sneakPeek(cb) {
-    console.log('sneakPeek')
     requestAnimationFrame(() => {
       if (!contentRef && !contentRef.value) return
       const contentElement = contentRef.value;
