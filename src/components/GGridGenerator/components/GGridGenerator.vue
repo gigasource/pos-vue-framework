@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { reactive, ref, computed, onUpdated } from 'vue'
-  import { saveFile, openFile } from '../../../utils/helpers'
+  import { saveFile, openFile, getScopeIdRender } from '../../../utils/helpers'
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
   import {
@@ -945,11 +945,11 @@
 
       return {
         state,
-        renderGridGenerator
+        renderWithScope: getScopeIdRender()(renderGridGenerator)
       }
     },
     render() {
-      return this.renderGridGenerator()
+      return this.renderWithScope()
     }
   }
 

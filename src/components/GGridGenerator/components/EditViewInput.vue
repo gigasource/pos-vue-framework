@@ -100,11 +100,11 @@
       return {
         wrapper,
         input,
-        renderFn
+        renderWithScope: getScopeIdRender()(renderFn)
       }
     },
     render() {
-      return this.renderFn()
+      return this.renderWithScope()
     }
   }
 </script>
