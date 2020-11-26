@@ -110,7 +110,7 @@
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
     },
-    events: [],
+    emits: [],
     setup(props, context) {
       const {
         titleModel,
