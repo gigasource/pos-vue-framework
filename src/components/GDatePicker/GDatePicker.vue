@@ -421,12 +421,11 @@
         dateTableModel,
         monthTableModel,
         state,
-        datePickerRenderFn,
-        renderWithScope: getScopeIdRender()
+        renderWithScope: getScopeIdRender()(datePickerRenderFn)
       }
     },
     render() {
-      return this.renderWithScope(this.datePickerRenderFn)()
+      return this.renderWithScope()
     }
   }
 
