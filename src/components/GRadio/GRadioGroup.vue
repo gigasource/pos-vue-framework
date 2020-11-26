@@ -1,12 +1,12 @@
 <template>
-	<div>
-		<slot name="label">
-			<label v-if="label" class="g-radio-group-label">{{label}}</label>
-		</slot>
-		<div class="radio-group" :class="classes">
-			<slot></slot>
-		</div>
-	</div>
+  <div>
+    <slot name="label">
+      <label v-if="label" class="g-radio-group-label">{{ label }}</label>
+    </slot>
+    <div :class="classes" class="radio-group">
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -37,17 +37,17 @@ export default {
 
     const classes = computed(() => ({
       readonly: props.readonly,
-        disabled: props.disabled,
-        'g-radio-group__horizontal': props.row,
-      }));
+      disabled: props.disabled,
+      'g-radio-group__horizontal': props.row,
+    }));
 
-      return {
-        classes
-      }
+    return {
+      classes
     }
+  }
   }
 </script>
 
 <style scoped lang="scss">
-	@import "GRadio";
+@import "GRadio";
 </style>

@@ -1,16 +1,16 @@
 <template>
-	<div class="g-switch-wrapper">
-		<label class="g-switch-container" :class="containerClasses" @click.prevent="toggle">
-			<input type="checkbox">
-			<span class="g-switch" :class="classes" :style="styles">
-				<span class="g-switch-track"></span>
-				<span class="g-switch-thumb"></span>
-			</span>
-			<slot name="label">
-				<span class="g-switch-label">{{label}}</span>
-			</slot>
-		</label>
-	</div>
+  <div class="g-switch-wrapper">
+    <label :class="containerClasses" class="g-switch-container" @click.prevent="toggle">
+      <input type="checkbox">
+      <span :class="classes" :style="styles" class="g-switch">
+        <span class="g-switch-track"></span>
+        <span class="g-switch-thumb"></span>
+      </span>
+      <slot name="label">
+        <span class="g-switch-label">{{ label }}</span>
+      </slot>
+    </label>
+  </div>
 </template>
 
 <script>
@@ -54,15 +54,15 @@ export default {
       'g-switch__active': isActive.value,
       'g-switch__flat': props.flat,
       'g-switch__inset': props.inset
-      }));
+    }));
 
-      const styles = computed(() => {
-        const styles = {};
-        if (type.value === 'style') {
-          Object.assign(styles, { 'background-color': props.color });
-        }
-        return styles;
-      });
+    const styles = computed(() => {
+      const styles = {};
+      if (type.value === 'style') {
+        Object.assign(styles, { 'background-color': props.color });
+      }
+      return styles;
+    });
 
       const containerClasses = computed(() => ({
         readonly: props.readonly,
@@ -100,5 +100,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
- @import "GSwitch";
+@import "GSwitch";
 </style>

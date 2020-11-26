@@ -1,14 +1,14 @@
 <template>
-	<div class="g-radio-wrapper">
-		<div class="g-radio" :class="classes" :style="styles" @click="activate">
-			<input type="radio" ref="radio" :name="name">
-			<span class="g-radio-checkmark"></span>
-			<div class="g-radio-hover"></div>
-			<slot name="label">
-				<label class="g-radio-label">{{label}}</label>
-			</slot>
-		</div>
-	</div>
+  <div class="g-radio-wrapper">
+    <div :class="classes" :style="styles" class="g-radio" @click="activate">
+      <input ref="radio" :name="name" type="radio">
+      <span class="g-radio-checkmark"></span>
+      <div class="g-radio-hover"></div>
+      <slot name="label">
+        <label class="g-radio-label">{{ label }}</label>
+      </slot>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -37,30 +37,30 @@ export default {
 
     const model = inject('model', inputValue);
 
-      const defaultName = 'radio-name';
-      let name = inject('name', defaultName);
-      if (!name) {
-        //default for undefined name
-        name = defaultName;
-      }
+    const defaultName = 'radio-name';
+    let name = inject('name', defaultName);
+    if (!name) {
+      //default for undefined name
+      name = defaultName;
+    }
 
-			// const trueValue = props.value ? props.value : true;
+    // const trueValue = props.value ? props.value : true;
 
-			//active state
-			const isActive = computed({
-				get: () => (model.value === props.value),
-				set: (val) => {
-					if (val === true) {//checked
-            if (model === inputValue) {//if the radio not in group
-              inputValue.value = props.value;
-            } else {
-              model.value = props.value;
-            }
+    //active state
+    const isActive = computed({
+      get: () => (model.value === props.value),
+      set: (val) => {
+        if (val === true) {//checked
+          if (model === inputValue) {//if the radio not in group
+            inputValue.value = props.value;
+          } else {
+            model.value = props.value;
           }
-				}
-			});
-      //define props color
-      const { getColorType, convertColorClass } = colorHandler();
+        }
+      }
+    });
+    //define props color
+    const { getColorType, convertColorClass } = colorHandler();
       const type = computed(() => getColorType(props.color));
       const colorClass = computed(() => convertColorClass(props.color));
 
@@ -69,7 +69,7 @@ export default {
         'g-radio__disabled': props.disabled,
         [colorClass.value]: !!type.value && type.value === 'class',
         'g-radio__active': isActive.value,
-				'g-radio__small': props.small
+        'g-radio__small': props.small
       }));
 
       const styles = computed(() => {
@@ -97,5 +97,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
- @import "GRadio";
+@import "GRadio";
 </style>
