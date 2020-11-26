@@ -5,7 +5,7 @@
       <span class="g-checkbox-checkmark"></span>
       <div class="g-checkbox-hover"></div>
       <slot name="label">
-        <label class="g-checkbox-label">{{label}}</label>
+        <label class="g-checkbox-label">{{ label }}</label>
       </slot>
     </div>
   </div>
@@ -44,15 +44,15 @@ export default {
       }
     });
     const isSelectedArray = computed(() => Array.isArray(internalValue.value));
-    if (!internalValue.value) {
-      internalValue.value = []
-    }
     //value return when checkbox checked
     const trueValue = computed(() => props.value ? (props.value) : true);
     let isActive = props.multiple ? ref(xorWith(internalValue.value, props.value, isEqual).length === 0) :
-        ref((isSelectedArray.value && internalValue.value.includes(trueValue.value)) || false);
+        (isSelectedArray.value ? ref(internalValue.value.includes(trueValue.value)) :
+            ref(internalValue.value === true));
     //determinate state
-    let isDeterminate = ref(true);
+    let isDeterminate = props.multiple ? ref(!internalValue.value || internalValue.value.length === 0
+        || xorWith(internalValue.value, props.value, isEqual).length === 0)
+        : ref(true);
     if (props.indeterminate) {
       isDeterminate.value = false;
     }
@@ -61,24 +61,24 @@ export default {
       //modelValue & value is both array
       if (props.multiple) {
         if (!internalValue.value) {
-            // none selected
-            isDeterminate.value = true;
-            isActive.value = false;
-          } else if (internalValue.value.length === 0) {
-            isDeterminate.value = true;
+          // none selected
+          isDeterminate.value = true;
+          isActive.value = false;
+        } else if (internalValue.value.length === 0) {
+          isDeterminate.value = true;
           if (isActive.value === props.modelValue) { //default to uncheck
             isActive.value = false
           }
-            //check when props.value change
-            if(props.value.length > 0 || (oldVal && oldVal.length > 0)) {
-              isActive.value = false
-            }
-          } else if (xorWith(internalValue.value, props.value, isEqual).length === 0) {
-            // equal arrays (all selected)
-            isDeterminate.value = true;
-            isActive.value = true;
-          } else {
-            // partially selected
+          //check when props.value change
+          if (props.value.length > 0 || (oldVal && oldVal.length > 0)) {
+            isActive.value = false
+          }
+        } else if (xorWith(internalValue.value, props.value, isEqual).length === 0) {
+          // equal arrays (all selected)
+          isDeterminate.value = true;
+          isActive.value = true;
+        } else {
+          // partially selected
           isDeterminate.value = false;
           isActive.value = false;
         }
@@ -91,8 +91,8 @@ export default {
       }
     }, { deep: true });
       //define props color is a class or a css style
-      const {getColorType, convertColorClass} = colorHandler();
-      const type = computed(() => getColorType(props.color));
+    const { getColorType, convertColorClass } = colorHandler();
+    const type = computed(() => getColorType(props.color));
       const colorClass = computed(() => convertColorClass(props.color));
 
       const checkboxClass = computed(() => ({
@@ -107,7 +107,7 @@ export default {
       const checkboxStyle = computed(() => {
         const style = {};
         if (type.value === 'style') {
-          Object.assign(style, {'color': props.color});
+          Object.assign(style, { 'color': props.color });
         }
         return style;
       });
@@ -127,7 +127,8 @@ export default {
         } else {
           if (isActive.value) { //checked
             if (props.multiple) internalValue.value = cloneDeep(trueValue.value)
-            else if (internalValue.value) internalValue.value = [...internalValue.value, trueValue.value]
+            else if (isSelectedArray.value) internalValue.value.push(trueValue.value)
+            else internalValue.value = cloneDeep(trueValue.value)
           } else {
             if (props.multiple) {
               internalValue.value = [];
@@ -138,18 +139,17 @@ export default {
         }
       }
 
-
     return {
-        checkboxClass,
-        checkboxStyle,
-        isActive,
-        toggle,
-        trueValue
-      }
+      checkboxClass,
+      checkboxStyle,
+      isActive,
+      toggle,
+      trueValue
+    }
     },
   }
 </script>
 
 <style scoped lang="scss">
-  @import "GCheckbox";
+@import "GCheckbox";
 </style>
