@@ -80,7 +80,7 @@ function mounted(el, binding, vnode) {
 
   const handlers = createHandlers(binding.value);
   target._touchHandlers = Object(target._touchHandlers);
-  target._touchHandlers[vnode.context._uid] = handlers;
+  target._touchHandlers[el.__vueParentComponent.uid] = handlers;
 
   Object.keys(handlers).forEach(eventName => {
     target.addEventListener(eventName, handlers[eventName], options)
@@ -93,11 +93,11 @@ function unmounted(el, binding, vnode) {
     return;
   }
 
-  const handlers = target._touchHandlers[vnode.context._uid];
+  const handlers = target._touchHandlers[el.__vueParentComponent.uid];
   Object.keys(handlers).forEach(eventName => {
     target.removeEventListener(eventName, handlers[eventName])
   });
-  delete target._touchHandlers[vnode.context._uid];
+  delete target._touchHandlers[el.__vueParentComponent.uid];
 }
 
 export const Touch = {
