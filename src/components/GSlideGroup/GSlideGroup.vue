@@ -155,7 +155,6 @@
 
       //prev/next arrow click handler
       function onAffixClick(location) {
-        debugger
         context.emit(`click:${location}`);
         scrollTo(location);
       }
