@@ -1,18 +1,25 @@
 <template>
   <div>
-    <g-btn flat outlined @click="showDialog">{{ displayText }}</g-btn>
-    <g-dialog :value="show" fullscreen>
-      <div class="editor-dialog">
-        <component
-            :is="GGridGenerator"
-            :layout="layout"
-            @json="updateModel"
-            @close="hideDialog"/>
-      </div>
-    </g-dialog>
+<!--    <g-btn @click="() => showDialog()">{{ displayText }}</g-btn>-->
+<!--    <g-dialog :value="show" fullscreen>-->
+<!--      <div class="editor-dialog">-->
+<!--        <component-->
+<!--            :is="GGridGenerator"-->
+<!--            :layout="layout"-->
+<!--            @json="updateModel"-->
+<!--            @close="hideDialog"/>-->
+<!--      </div>-->
+<!--    </g-dialog>-->
+  
+    <g-grid-generator
+        :layout="layout"
+        @json="updateModel"
+        @close="hideDialog">
+    </g-grid-generator>
   </div>
 </template>
 <script>
+  import GGridGenerator from './components/GGridGenerator';
   const GDialog = () => import('../GDialog/GDialog')
   const GBtn = () => import('../GBtn/GBtn')
   // Don't add lazy load component to components prop
@@ -20,7 +27,7 @@
 
   export default {
     name: 'GGridGeneratorInput',
-    components: { GDialog, GBtn },
+    components: { GGridGenerator, GDialog, GBtn },
     props: {
       model: Object,
       field: Object,

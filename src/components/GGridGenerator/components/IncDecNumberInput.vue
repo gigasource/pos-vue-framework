@@ -2,6 +2,7 @@
   import _ from 'lodash'
   import GIcon from '../../GIcon/GIcon';
   import { enterPressed } from '../../../utils/keyboardHelper';
+  import { getScopeIdRender } from '../../../utils/helpers';
 
   export default {
     name: 'GIncDecNumberInput',
@@ -20,6 +21,7 @@
         default: Number.MIN_SAFE_INTEGER
       }
     },
+    events: ['input'],
     setup(props, context) {
 
       function increase() {
@@ -36,23 +38,25 @@
         context.emit('input', val)
       }
 
-      return function() {
+      function renderFn() {
         return (
             <div class='g-inc-dec-number'>
-              <span class={{ disabled: props.value === props.min }} vOn:click={decrease}>
+              <span class={{ disabled: props.value === props.min }} onClick={decrease}>
                 <g-icon small>remove</g-icon>
               </span>
               <input type="text" value={props.value}
-                  vOn:keypress= {e => {
+                  onKeypress= {e => {
                     if (enterPressed(e))
                       context.emit('input', _.clamp(parseInt(e.target.value), props.min, props.max))
                   }}/>
-              <span class={{ disabled:props.value === props.max }} vOn:click={increase}>
+              <span class={{ disabled:props.value === props.max }} onClick={increase}>
                 <g-icon small>add</g-icon>
               </span>
             </div>
         )
       }
+      
+      return getScopeIdRender()(renderFn)
     }
   }
 </script>

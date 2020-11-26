@@ -1,7 +1,8 @@
 <script>
   import GIcon from '../../GIcon/GIcon';
   import { enterPressed } from '../../../utils/keyboardHelper';
-  import { reactive, computed } from 'vue';
+  import { reactive, computed, ref } from 'vue';
+  import { getScopeIdRender } from '../../../utils/helpers';
 
   export default {
     name: 'GEditViewInput',
@@ -21,6 +22,7 @@
         default: false
       }
     },
+    events: ['input, click'],
     setup(props, context) {
       const state = reactive({
         showSwitch: false,
@@ -32,14 +34,17 @@
       }))
 
       const refIdComponentWrapper = 'wrapper'
+      const wrapper = ref(null)
+      
       const refIdInput = 'input'
+      const input = ref(null)
 
       function onComponentClicked(e) {
-        if (e.target === context.refs[refIdComponentWrapper])
+        if (e.target === wrapper.value)
           context.emit('click')
       }
       function onSwitchStateClicked() {
-        context.refs[refIdInput].focus()
+        input.value.focus()
         state.showEditMode = true
       }
       function showSwitch() {
@@ -48,13 +53,13 @@
       function hideSwitch() {
         state.showSwitch = false
         state.showEditMode = false
-        context.refs[refIdInput].blur()
+        input.value.blur()
       }
 
       function vOnKeyUp(e) {
         if (enterPressed(e)) {
           context.emit('input', e.target.value)
-          context.refs[refIdInput].blur()
+          input.value.blur()
           state.showSwitch = false
         } else if (props.reactive) {
           context.emit('input', e.target.value)
@@ -67,18 +72,18 @@
         }
       })
 
-      return function () {
+      function renderFn() {
         return <div
             ref={refIdComponentWrapper}
             class="g-edit-view-input"
             style={cptEditViewInputWidth.value}
-            vOn:click={onComponentClicked}
-            vOn:mouseenter={showSwitch}
-            vOn:mouseleave={hideSwitch}>
+            onClick={onComponentClicked}
+            onMouseenter={showSwitch}
+            onMouseleave={hideSwitch}>
           <div style="width: 16px; line-height: 16px">
             <span
                 vShow={state.showSwitch}
-                vOn:click={onSwitchStateClicked}>
+                onClick={onSwitchStateClicked}>
               <g-icon small>edit</g-icon>
             </span>
           </div>
@@ -87,10 +92,19 @@
               ref={refIdInput}
               style={cptViewStyle.value}
               value={props.value}
-              vOn:keyup={vOnKeyUp}
+              onKeyup={vOnKeyUp}
           />
         </div>
       }
+      
+      return {
+        wrapper,
+        input,
+        renderFn
+      }
+    },
+    render() {
+      return this.renderFn()
     }
   }
 </script>
