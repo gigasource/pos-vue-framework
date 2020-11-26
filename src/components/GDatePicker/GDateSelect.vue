@@ -18,7 +18,7 @@
       disabled: false,
       readonly: false,
     },
-    events: ['input'],
+    emits: ['input'],
     setup(props, context) {
       const state = reactive({
         year: 0,
