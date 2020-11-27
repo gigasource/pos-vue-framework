@@ -135,7 +135,7 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
       isValidInput.value = true
     }
 
-  }, !props.modelValue ? { lazy: true } : null)
+  }, !props.modelValue ? { lazy: true } : {})
 
   return { errorMessages, validate };
 }
