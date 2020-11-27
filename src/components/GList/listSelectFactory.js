@@ -54,26 +54,31 @@ export function makeListSelectable(props, context, internalItems) {
 
   const normalize = (value, isFromInput) => {
     const _normalize = props.normalize || function (value) {
-      if (listType.value === 'primitive') return listItems.value.find(item => item === value)
-      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return listItems.value.find(item =>
-        _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
+      if (listType.value === 'primitive')
+        return listItems.value.find(item => item === value)
+      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object')
+        return listItems.value.find(item => _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
       else {
         return listItems.value.find(item => getValue.value(item) === value) || listItems.value.find(item => getText.value(item) === value)
       }
     }
 
-    if (!inCombobox) return _normalize(value, listItems.value, isFromInput)
+    if (!inCombobox)
+      return _normalize(value, listItems.value, isFromInput)
     else {
       let _normalizedVal = _normalize(value, listItems.value, isFromInput)
-      if (_normalizedVal) return _normalizedVal
+      if (_normalizedVal)
+        return _normalizedVal
       return value
     }
   }
 
   const normalizedValue = computed(() => {
     let res
-    if (!props.multiple) res = (props.modelValue || props.modelValue === 0) ? normalize(props.modelValue) : undefined
-    else res = props.modelValue ? props.modelValue.map(item => normalize(item)) : []
+    if (!props.multiple)
+      res = (props.modelValue || props.modelValue === 0) ? normalize(props.modelValue) : undefined
+    else
+      res = props.modelValue ? props.modelValue.map(item => normalize(item)) : []
     context.emit('update:selectedValue', res);
     log('update:selectedValue', res)
     log('update:selectedValue')
