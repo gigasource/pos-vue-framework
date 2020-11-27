@@ -203,7 +203,7 @@
           <label vShow={!(props.chips || props.smallChips)} class={['g-tf-label', labelClasses.value]}
                  style={labelStyles.value} for="input">{props.label}</label>
           {genFileInput()}
-          <input id="input" ref="input"
+          <input id="input" ref="inputRef"
                  class="g-tf-input"
                  type={props.type}
                  multiple={props.multiple}
