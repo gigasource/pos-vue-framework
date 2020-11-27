@@ -1,5 +1,6 @@
 <script>
-  import { computed, inject } from 'vue'
+  import { computed, inject, Transition } from 'vue'
+  import {getScopeIdRender} from '../../utils/helpers';
 
   export default {
     name: 'GTabItem',
@@ -11,19 +12,26 @@
       const show = computed(() => (model.value === props.item));
       const _transition = inject('transition');
 
-      return () =>
-        <transition name={_transition.value}>
-          <div vShow={show.value} class="g-tab-item">
+      const genTabItem = () =>
+        <Transition name={_transition.value}>
+          <div v-show={show.value} class="g-tab-item">
             {context.slots.default && context.slots.default()}
           </div>
-        </transition>
+        </Transition>
+      return {
+        genTabItem
+      }
+    },
+    render() {
+      const scopeIdRender = getScopeIdRender();
+      return scopeIdRender(this.genTabItem)();
     }
   }
 </script>
 
 <style scoped lang="scss">
   .g-tab-transition {
-    &-enter {
+    &-enter-from {
       transform: translateX(100%);
       width: 100%;
     }
@@ -37,7 +45,7 @@
       transition-duration: 0.3s;
     }
 
-    &-leave {
+    &-leave-from {
       width: 100%;
     }
 
@@ -54,7 +62,7 @@
   }
 
   .g-tab-transition-reverse {
-    &-enter {
+    &-enter-from {
       transform: translateX(-100%);
       width: 100%;
     }
@@ -69,7 +77,7 @@
       position: absolute;
     }
 
-    &-leave {
+    &-leave-from {
       width: 100%;
     }
 

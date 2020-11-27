@@ -1,6 +1,6 @@
 <script>
   import { computed, getCurrentInstance } from 'vue';
-  import { convertToUnit } from '../../utils/helpers';
+  import {convertToUnit, getScopeIdRender} from '../../utils/helpers';
   import { setTextColor } from '../../mixins/colorable';
 
   export default {
@@ -103,7 +103,8 @@
       const defaultSlotChildren = defaultSlot && defaultSlot[0].children
 
       const icon = typeof defaultSlotChildren === 'string' ? defaultSlotChildren.trim() : ''
-      return this.genIcon(icon)
+      const scopeIdRender = getScopeIdRender();
+      return scopeIdRender(this.genIcon)(icon);
     }
   }
 
