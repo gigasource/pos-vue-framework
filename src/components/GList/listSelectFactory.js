@@ -1,6 +1,8 @@
 import { computed } from 'vue';
 import _ from 'lodash';
 
+export const emitEvents = [ 'update:modelValue', 'update:selectedValue' ]
+
 export function createItemFn(prop) {
   return typeof prop === 'function'
     ? prop
