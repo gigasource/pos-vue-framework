@@ -2,7 +2,8 @@
   import { GBreadcrumbsDivider } from './GBreadcrumbsFunctionalComponent';
   import GBreadcrumbsItem from './GBreadcrumbsItem';
   import GBreadcrumbItemUtil from './logic/GBreadrcumbsItemUtil';
-
+  import { getScopeIdRender } from "../../utils/helpers";
+  import { toRef } from 'vue';
 
   export default {
     name: 'GBreadcrumbs',
@@ -27,23 +28,23 @@
       }
 
       function genItems() {
-        const items = [];
         const keys = [];
 
-        for (const item of props.items) {
-          keys.push(item.text);
+        return props.items.map((e, index) => {
+          const item = toRef(props.items, `${index}`);
+          keys.push(item.value.text);
+
           if (!!context.slots.item) {
-            items.push(context.slots.item({ item }))
+            return context.slots.item({ item: item.value });
           } else {
             const nodeData = {
               key: keys.join('.'),
-              props: item,
+              ...item.value,
             };
 
-            items.push(<g-breadcrumbs-item {...nodeData}>{item.text}</g-breadcrumbs-item>)
+            return (<g-breadcrumbs-item {...nodeData}>{item.value.text}</g-breadcrumbs-item>);
           }
-        }
-        return items
+        })
       }
 
 
@@ -59,8 +60,11 @@
       return {
         genBreadcrumbs
       }
-    }, render(createElement, context) {
-      return this.genBreadcrumbs()
+    },
+
+    render() {
+      const renderWithScopeId = getScopeIdRender();
+      return renderWithScopeId(this.genBreadcrumbs)()
     }
   }
 </script>
@@ -104,7 +108,6 @@
     &__disabled {
       pointer-events: none;
       color: rgba(0, 0, 0, 0.38);
-
     }
   }
 

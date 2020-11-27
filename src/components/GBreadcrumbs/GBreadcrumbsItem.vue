@@ -1,6 +1,8 @@
 <script>
   import routable from '../../mixins/routable';
   import { computed, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { getScopeIdRender } from "../../utils/helpers";
 
   export default {
     name: 'GBreadcrumbsItem',
@@ -25,11 +27,10 @@
       target: String,
     },
     setup(props, context) {
-
       const { tag, scopedData, data } = routable(props, context);
 
       onMounted(function () {
-        data.route = this.$route;
+        data.route = useRoute();
       });
 
       const classes = computed(() => {
@@ -53,15 +54,11 @@
       function renderItem() {
         return (<tag {...{
           class: classes.value,
-          attrs: {
-            ...scopedData.attrs,
-            'aria-current': data.isActive && isLink.value ? 'page' : undefined,
-          },
-          on: {
-            click: e => context.emit('click', e),
-            mouseout: e => context.emit('mouseout', e),
-            mouseover: e => context.emit('mouseover', e)
-          },
+          ...scopedData.attrs,
+          'aria-current': data.isActive && isLink.value ? 'page' : undefined,
+          onClick: e => context.emit('click', e),
+          onMouseout: e => context.emit('mouseout', e),
+          onMouseover: e => context.emit('mouseover', e)
         }}>{context.slots.default()}</tag>);
       }
 
@@ -74,7 +71,8 @@
       }
     },
     render() {
-      return this.genBreadcrumbsItem();
+      const renderWithScopeId = getScopeIdRender();
+      return renderWithScopeId(this.genBreadcrumbsItem)();
     }
   }
 </script>
@@ -90,7 +88,6 @@
     &__disabled {
       pointer-events: none;
       color: rgba(0, 0, 0, 0.38);
-
     }
   }
 </style>
