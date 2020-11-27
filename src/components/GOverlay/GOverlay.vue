@@ -1,7 +1,7 @@
 <template>
 	<div class="overlay" :class="overlayClass" :style="overlayStyle">
 		<div class="overlay-scrim" :style="scrimStyle"></div>
-		<div v-if="value" class="overlay-content">
+		<div v-if="modelValue" class="overlay-content">
 			<slot></slot>
 		</div>
 	</div>

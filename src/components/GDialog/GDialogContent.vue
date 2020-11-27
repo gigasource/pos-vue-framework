@@ -1,16 +1,16 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel'
-  import { convertToUnit, getZIndex } from '../../utils/helpers'
+  import { convertToUnit, getScopeIdRender, getZIndex } from '../../utils/helpers'
   import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
-  import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+  import { computed, onBeforeUnmount, onMounted, ref, watch, nextTick, Transition } from 'vue'
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
   import dependent from '../../mixins/dependent';
 
   export default {
     name: 'GDialogContent',
-    components: {GOverlay},
+    components: {GOverlay, Transition},
     directives: {
       ClickOutside
     },
@@ -60,13 +60,18 @@
     },
     emits: ['update:modelValue', 'keydown'],
     setup(props, context) {
+      // template refs
+      const overlay = ref(null)
+      const wrapper = ref(null)
+      const container = ref(null)
+      const content = ref(null)
       const isActive = getInternalValue(props, context)
-      const {attachToRoot, detach} = detachable(props, context)
+      const {attachToRoot, detach} = detachable(props, context, { content })
       const {getMaxZIndex} = stackable(props, context)
 
       // Stacking
       const wrapperZIndex = computed(() => {
-        return !isActive.value ? 6 : getMaxZIndex(context.refs.wrapper) + 2
+        return (!wrapper.value || !isActive.value) ? 6 : getMaxZIndex(wrapper.value) + 2
       });
       const overlayZIndex = computed(() => wrapperZIndex.value - 1)
 
@@ -75,14 +80,16 @@
       const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen)
       const getOpenDependentElements = ref(null)
       function initComponent() {
-        attachToRoot(context.refs.overlay.$el)
-        attachToRoot(context.refs.wrapper)
-        detach(context.refs.container)
+        attachToRoot(overlay.value.$el)
+        attachToRoot(wrapper.value)
+        detach(container.value)
       }
 
       onMounted(function () {
-        initComponent()
-        getOpenDependentElements.value = dependent(this)
+        nextTick(() => {
+          initComponent()
+          // getOpenDependentElements.value = dependent(this)
+        })
       })
 
       // Close conditional for click outside directive
@@ -90,8 +97,8 @@
         if (!isActive.value) {
           return false;
         }
-        if (!context.refs.content) return;
-        const clickedInsideContent = context.refs.content.contains(e.target);
+        if (!content.value) return;
+        const clickedInsideContent =content.value.contains(e.target);
         if (clickedInsideContent) {
           return false;
         }
@@ -100,7 +107,7 @@
         }
 
         // If z-index of current element is lower than the current active z-index then do not close when click outside
-        return getZIndex(context.refs.wrapper) >= getMaxZIndex(context.refs.wrapper);
+        return getZIndex(wrapper.value) >= getMaxZIndex(wrapper.value);
       };
 
       // Set the wrapper div tabindex to 0 when active, to make wrapper div focusable
@@ -169,7 +176,7 @@
         let delta = e.deltaY
 
         if (e.type === 'keydown' && path[0] === document.body) {
-          const dialog = context.refs.wrapper
+          const dialog = wrapper.value
           // getSelection returns null in firefox in some edge cases, can be ignored
           const selected = window.getSelection().anchorNode
           if (dialog && hasScrollbar(dialog) && isInside(selected, dialog)) {
@@ -183,7 +190,7 @@
 
           if (el === document) return true
           if (el === document.documentElement) return true
-          if (el === context.refs.content) return true
+          if (el === content.value) return true
 
           if (hasScrollbar(el)) {
             return shouldScroll(el, delta)
@@ -194,7 +201,7 @@
       }
 
       const onWheel = function (e) {
-        if ((context.refs.overlay && e.target === context.refs.overlay.$el.firstChild) || checkPath(e)) e.preventDefault()
+        if ((overlay.value && e.target === overlay.value.$el.firstChild) || checkPath(e)) e.preventDefault()
       }
 
       const checkPathTouch = function (e) {
@@ -205,7 +212,7 @@
 
           if (el === document) return true
           if (el === document.documentElement) return true
-          if (el === context.refs.content) return true
+          if (el === content.value) return true
 
           if (hasScrollbar(el)) {
             if (!onEdge(el)) return false
@@ -233,7 +240,7 @@
           shouldScrollTouchMove = checkPathTouch(e)
           touchFlag = false
         }
-        if (((context.refs.overlay && e.target === context.refs.overlay.$el.firstChild) || shouldScrollTouchMove) && e.cancelable) {
+        if (((overlay.value && e.target === overlay.value.$el.firstChild) || shouldScrollTouchMove) && e.cancelable) {
           e.preventDefault()
         }
       }
@@ -253,8 +260,8 @@
       const unwatch = watch(isActive, newVal => {
         if (newVal) {
           disableOutsideScroll()
-          context.root.$nextTick(() => {
-            context.refs.wrapper && context.refs.wrapper.focus()
+          nextTick(() => {
+            wrapper.value && wrapper.value.focus()
           })
         } else {
           enableOutsideScroll()
@@ -265,97 +272,91 @@
       onBeforeUnmount(() => {
         unwatch()
         enableOutsideScroll()
-        context.refs.wrapper && detach(context.refs.wrapper);
-        context.refs.overlay && detach(context.refs.overlay.$el);
+        wrapper.value && detach(wrapper.value);
+        overlay.value && detach(overlay.value.$el);
       });
 
-      // Render functions
-      function genContent() {
-        const wrapperData = {
-          ref: 'wrapper',
-          staticClass: 'g-dialog-wrapper',
-          class: {
-            'g-dialog-wrapper__active': isActive.value,
-            'g-dialog-wrapper__bottom': props.bottom,
-          },
-          style: {
-            zIndex: wrapperZIndex.value
-          },
-          attrs: {
-            tabindex: wrapperTabIndex.value
-          },
-          onKeydown,
+      // content data
+      const transitionName = computed(() => props.bottom ? 'dialog-bottom-transition' : 'dialog-transition')
+      const wrapperData = computed(() => ({
+        class: {
+          'g-dialog-wrapper__active': isActive.value,
+          'g-dialog-wrapper__bottom': props.bottom,
+          'g-dialog-wrapper': true
+        },
+        style: {
+          zIndex: wrapperZIndex.value
+        },
+        tabindex: wrapperTabIndex.value,
+        onKeydown,
+      }))
+
+      const contentData = computed(() => ({
+        class: {
+          'g-dialog-content__active': isActive.value,
+          'g-dialog-content__scrollable': props.scrollable,
+          'g-dialog-content__fullscreen': props.fullscreen,
+          [props.contentClass]: !!props.contentClass,
+          'g-dialog-content': true
+        },
+        style: {
+          maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
+          width: props.width === 'auto' || props.fullscreen ? undefined : convertToUnit(props.width),
         }
+      }))
 
-        const contentData = {
-          ref: 'content',
-          staticClass: 'g-dialog-content',
-          class: {
-            'g-dialog-content__active': isActive.value,
-            'g-dialog-content__scrollable': props.scrollable,
-            'g-dialog-content__fullscreen': props.fullscreen,
-            [props.contentClass]: !!props.contentClass,
-          },
-          style: {
-            maxWidth: props.maxWidth === 'none' || props.fullscreen ? undefined : convertToUnit(props.maxWidth),
-            width: props.width === 'auto' || props.fullscreen ? undefined : convertToUnit(props.width),
-          },
-          directives: [
-            {
-              name: 'clickOutside',
-              value: () => {
-                isActive.value = false
-              },
-              arg: {
-                closeConditional,
-                include: () => [...getOpenDependentElements.value()]
-              }
-            }
-          ]
-        }
-
-        const transitionName = computed(() => props.bottom ? 'dialog-bottom-transition' : 'dialog-transition')
-
-        return <div {...wrapperData}>
-          <transition name={transitionName.value}>
-            <div {...contentData} vShow={isActive.value}>
-              {context.slots.default ? context.slots.default() : undefined}
-            </div>
-          </transition>
-        </div>
-      }
-
-      function genOverlay() {
-        const overlayData = {
-          ref: 'overlay',
-          props: {
-            zIndex: overlayZIndex.value,
-            color: props.overlayColor,
-            opacity: props.overlayOpacity
-          },
-          "onUpdate:modelValue": e => isActive.value = e,
+      // overlay data
+      const overlayData = computed(() => ({
+        ...{ // props
+          zIndex: overlayZIndex.value,
+          color: props.overlayColor,
+          opacity: props.overlayOpacity,
           modelValue: isActive.value,
+        },
+        "onUpdate:modelValue": e => isActive.value = e,
+      }))
+
+      const clickOutsideDirective = {
+        value: () => isActive.value = false,
+        arg: {
+          closeConditional,
+          // fixme dependent mixin
+          // include: () => [...getOpenDependentElements.value()]
+          include: () => []
         }
-
-        return <g-overlay {...overlayData} vShow={renderOverlay.value}/>
-      }
-
-      function genDialog() {
-        return <div ref="container">
-          {genContent()}
-          {genOverlay()}
-        </div>
       }
 
       return {
-        genDialog
+        container,
+        content,
+        wrapper,
+        overlay,
+        clickOutsideDirective,
+        transitionName,
+        wrapperData,
+        contentData,
+        overlayData,
+        renderOverlay,
+        isActive
       }
     },
-    render() {
-      return this.genDialog()
-    }
   }
 </script>
+
+<template>
+  <div ref="container">
+    <div ref="wrapper" v-bind="wrapperData">
+      <Transition :name="transitionName">
+        <div ref="content" v-bind="contentData" v-show="isActive"
+             v-click-outside:[clickOutsideDirective.arg]="clickOutsideDirective.value">
+          <slot/>
+        </div>
+      </Transition>
+    </div>
+    <g-overlay ref="overlay" v-show="renderOverlay" v-bind="overlayData"/>
+  </div>
+</template>
+
 <style scoped lang="scss">
   .g-dialog {
 

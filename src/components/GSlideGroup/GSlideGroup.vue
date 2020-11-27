@@ -104,11 +104,11 @@
       });
 
       onBeforeUpdate(() => {
-        internalItemsLength.value = (content.value.__vnode.children || []).length
+        internalItemsLength.value = (content.value.children || []).length
       });
 
       onUpdated(() => {
-        if (internalItemsLength.value === (content.value.__vnode.children || []).length) {
+        if (internalItemsLength.value === (content.value.children || []).length) {
           return
         }
         setWidths();
@@ -136,15 +136,15 @@
       // the widths of the content and wrapper
       // and need to be recalculated
       watch(scrollOffset, (val) => {
-        content.style.transform = `translateX(${-val}px)`
+        content.value.style.transform = `translateX(${-val}px)`
       }, { lazy: true });
 
 
       function scrollTo(location) {
         scrollOffset.value = calculateNewOffset(location, {
           // Force reflow
-          content: content ? content.clientWidth : 0,
-          wrapper: wrapper ? wrapper.clientWidth : 0,
+          content: content ? content.value.clientWidth : 0,
+          wrapper: wrapper ? wrapper.value.clientWidth : 0,
         }, scrollOffset.value);
       }
 
@@ -167,12 +167,12 @@
       function onTouchStart(e) {
         startX.value = scrollOffset.value + e.touchstartX;
 
-        content.style.setProperty('transition', 'none')
-        content.style.setProperty('willChange', 'transform')
+        content.value.style.setProperty('transition', 'none')
+        content.value.style.setProperty('willChange', 'transform')
       }
 
       function handleScrollOffset() {
-        const maxScrollOffset = content.clientWidth - wrapper.clientWidth
+        const maxScrollOffset = content.value.clientWidth - wrapper.value.clientWidth
 
         if (scrollOffset.value < 0 || !isOverflowing.value) {
           scrollOffset.value = 0;
@@ -232,8 +232,8 @@
       function setWidths() {
         window.requestAnimationFrame(() => {
           data.widths = {
-            content: content ? content.clientWidth : 0,
-            wrapper: wrapper ? wrapper.clientWidth : 0,
+            content: content ? content.value.clientWidth : 0,
+            wrapper: wrapper ? wrapper.value.clientWidth : 0,
           };
 
           isOverflowing.value = data.widths.wrapper < data.widths.content;
@@ -270,7 +270,7 @@
 
       const selectedItems = computed(() => {
         const clonedValue = _.clone(internalValue.value);
-        const childrenArray = [...content.value.__vnode.children];
+        const childrenArray = [...content.value.children];
 
         let clonedInternalValue = !Array.isArray(clonedValue) ? [].concat(clonedValue) : clonedValue;
         let selectedValues = [];
