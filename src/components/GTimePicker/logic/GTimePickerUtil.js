@@ -144,7 +144,7 @@ export default function (props, context) {
     // indicate whether AM or PM is active
     activePeriodPicker: undefined,
     // storing selected time elements
-    selectedTime: undefined,
+    selectedTime: { hours: 0, minutes: 0, seconds: 0 },
     // indicate whether period (AM/PM) should be show
     showPeriod: !props.use24Hours,
   })

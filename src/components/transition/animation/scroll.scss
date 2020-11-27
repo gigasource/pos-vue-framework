@@ -1,11 +1,11 @@
 .scroll-y-transition {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateY(-15px);
   }
 
@@ -17,11 +17,11 @@
 .scroll-y-reverse-transition {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateY(15px);
   }
 
@@ -33,11 +33,11 @@
 .scroll-x-transition {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateX(-15px);
   }
 
@@ -49,11 +49,11 @@
 .scroll-x-reverse-transition {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateX(15px);
   }
 

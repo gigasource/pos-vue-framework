@@ -1,5 +1,6 @@
 import { text, withKnobs, boolean, number, array } from '@storybook/addon-knobs';
 import GSelect from '../../GSelect/GSelect'
+import { GBounceDownAnimation, GExpandTransition } from "../transition";
 
 export default {
   title: 'Effect',
@@ -74,4 +75,20 @@ export const animation = () => ({
       <p class="animated infinite" :class="animation">{{animation}}</p>
     </div>
 </div>`
+})
+
+export const textComponent = () => ({
+  components: {GExpandTransition, GBounceDownAnimation},
+  props: {},
+  data() {
+    return {
+      show: false
+    }
+  },
+  template: `<div>
+    <button @click="show = !show">Toggle</button>
+    <g-bounce-down-animation>
+      <p v-show="show" style="border: 1px solid red">Test Animation</p>
+    </g-bounce-down-animation>
+  </div>`
 })

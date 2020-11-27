@@ -1,11 +1,11 @@
 .roll {
   @include transition-default();
 
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0;
   }
 
-  &-enter {
+  &-enter-from {
     transform: translateX(-100%) rotateZ(-135deg);
   }
 
