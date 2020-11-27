@@ -8,7 +8,7 @@
       <slot></slot>
     </g-tooltip-content>
     <div class="g-tooltip__activator" ref="activator">
-      <slot name="activator" v-bind:on="activatorListeners"></slot>
+      <slot name="activator" :on="activatorListeners"></slot>
     </div>
   </span>
 </template>
@@ -140,12 +140,16 @@
       })
 
       const { runDelay } = delayable(props, state)
-      const { attachToParent } = detachable(props, context, { content: renderContent, activator, el });
+      const { attachToParent } = detachable(props, context, { activator, el });
 
       //// ACTIVATOR
       // This variable will be used by Tooltip content to calculate position
       const activatorListeners = computed(() => {
         let listeners = {}
+
+        listeners.mouseenter = () => {}
+        listeners.mouseleave = () => {}
+        listeners.click = () => {}
 
         if (props.openOnHover) {
           listeners.mouseenter = () => {

@@ -169,10 +169,10 @@ export const playground = () => ({
                :color="color"
                :speechBubble="speechBubble">
       <template #activator="{on}">
-        <button @click="on.click || (() => {})"
-                @mouseenter="on.mouseenter || (() => {})"
-                @mouseleave="on.mouseleave || (() => {})"
-                @blur="on.blur || (() => {})">
+        <button @click="on.click"
+                @mouseenter="on.mouseenter"
+                @mouseleave="on.mouseleave"
+                @blur="on.blur">
           Hello there
         </button>
       </template>
