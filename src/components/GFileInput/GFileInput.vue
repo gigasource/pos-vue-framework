@@ -252,7 +252,6 @@
                 <g-icon onClick={onClearIconClick} style="cursor: pointer">mdi-close</g-icon>
               </div>
           )}
-          X
           <g-icon svg={props.svgIcon}>{props.appendIcon}</g-icon>
         </div>
       } // todo remake icon div after g-icon is fixed
