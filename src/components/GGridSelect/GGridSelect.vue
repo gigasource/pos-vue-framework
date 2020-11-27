@@ -6,7 +6,7 @@
   import GCard from '../GCard/GCard';
   import { GCardActions } from '../GCard/GCardFunctionalComponent';
   import GSpacer from '../GLayout/GSpacer';
-  import {getInternalValue} from '../../mixins/getVModel';
+  import { getInternalValue } from '../../mixins/getVModel';
 
   export default {
     name: 'GGridSelect',
@@ -28,7 +28,7 @@
         default: 'value'
       },
       returnObject: Boolean,
-      value: {
+      modelValue: {
         type: [Array, Object, String, Number]
       },
       selectFirst: Boolean,
