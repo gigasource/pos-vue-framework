@@ -1,4 +1,4 @@
-import {reactive, set, computed, ref, isRef} from 'vue'
+import {reactive, computed, ref, isRef} from 'vue'
 import traverse from 'traverse'
 
 export function genTextFactory(itemText) {
@@ -47,10 +47,10 @@ export default function treeFactory({
   const preGenNode = function ({node, path, childrenVNodes, isLast, isRoot, actualLevel}) {
     // initialize collapsed/expand
     if (!treeStates[path]) {
-      set(treeStates, path, {
+      treeStates[path] = {
         collapse: expandLevel <= actualLevel,
         selected: false,
-      })
+      }
     }
 
     const text = genText.value(node, isRoot);
@@ -80,6 +80,7 @@ export default function treeFactory({
     }
 
     const treeVNodeWithoutRoot = traverse(data.value).map(function (node) {
+
       if (nodeShouldBeBlocked(this) || typeof node !== 'object') return
 
       const isLastNode = () => {

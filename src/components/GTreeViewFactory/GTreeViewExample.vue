@@ -27,7 +27,7 @@
           <span
               class='g-tree-view__collapse-expand'
               vShow={childrenVNodes}
-              vOn:click={() => state.collapse = !state.collapse}>
+              onClick={() => state.collapse = !state.collapse}>
             <span>
               {state.collapse ? '+' : '-'}
             </span>
