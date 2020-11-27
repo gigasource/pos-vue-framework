@@ -130,6 +130,7 @@
         ]
       },
     },
+    emits: ['submit'],
     data() {
       return {
         isShift: false,
