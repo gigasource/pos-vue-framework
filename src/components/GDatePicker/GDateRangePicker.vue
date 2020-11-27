@@ -1,7 +1,7 @@
 <script type="text/jsx">
   import _ from 'lodash'
   import dayjs from 'dayjs';
-  import { reactive, computed, ref, watch } from 'vue';
+  import { reactive, computed, ref, watch, withModifiers } from 'vue';
   import GDatePickerUtil from './logic/GDatePickerUtil';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import GDateSelect from './GDateSelect';
@@ -25,7 +25,7 @@
       color: { type: String, default: DEFAULT_COLOR },
       rangeColor: { type: String, default: DEFAULT_RANGE_COLOR },
     },
-    events: ['input'],
+    emits: ['input'],
     setup(props, context) {
       const now = new Date()
       const TICKS_PER_DAY = 864e5
@@ -207,7 +207,7 @@
             class={['g-table-item', dateItem.class]}
             style={dateItem.style}
             disabled={!dateItem.isAllowed}
-            onClick_stop={() => onDateItemClicked(dateItem)}>
+            onClick={withModifiers(() => onDateItemClicked(dateItem), ['stop'])}>
           <div class="g-table-item__content">{dateItem.formattedValue}</div>
         </button>,
           <div class={['g-table-item__background', dateItem.background.class, dateItem.isRangeStart && dateItem.isRangeEnd && 'g-table-item__background--single']}

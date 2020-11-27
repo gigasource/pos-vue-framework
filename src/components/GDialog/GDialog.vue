@@ -1,7 +1,7 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
   import detachable from '../../mixins/detachable';
-  import { computed, reactive, watch, onMounted, onBeforeUnmount } from 'vue';
+  import { computed, reactive, watch, onMounted, onBeforeUnmount, ref, nextTick, getCurrentInstance } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
 	import GDialogContent from './GDialogContent';
   import {getScopeIdRender} from "../../utils/helpers";
@@ -49,8 +49,10 @@
     },
     emits: ['update:modelValue'],
     setup(props, context) {
+      const activator = ref(null)
+      const el = ref(null)
       const isActive = getInternalValue(props, context);
-      const { attachToParent, detach } = detachable(props, context)
+      const { attachToParent, detach } = detachable(props, context, { activator, el })
 
       // Lazy/Eager
       // TODO: convert to bootable mixin
@@ -60,7 +62,9 @@
       const renderContent = computed(() => isBooted.value || props.eager);
 
       onMounted(() => {
-        attachToParent(context.refs.activator)
+        nextTick(() => {
+          activator.value && attachToParent(activator.value)
+        })
       });
 
       const unwatch = watch(isActive, newVal => {
@@ -78,35 +82,33 @@
       // Clean-up when destroy
       onBeforeUnmount(() => {
         unwatch()
-        context.refs.activator && detach(context.refs.activator)
+        activator.value && detach(activator.value)
       })
 
       // Render functions
 			function genDialogContent() {
         const dialogContentData = {
-          props: {
+          ...{ // props
             ...Object.assign({}, props, {
               value: isActive.value
             })
           },
-          'onUpdate:modelValue': (value) => {
-              isActive.value = value
-					}
-				}
+          'onUpdate:modelValue': (value) => isActive.value = value
+        }
 
 				return <g-dialog-content {...dialogContentData}>
-          {context.slots.default ? context.slots.default() : undefined}
+          {context.slots.default && context.slots.default()}
 				</g-dialog-content>
 			}
 
       function genActivator() {
-        return <div ref="activator" class="g-dialog-activator">
-          {context.slots.activator ? context.slots.activator({ toggleDialog }) : undefined}
+        return <div ref={activator} class="g-dialog-activator">
+          {context.slots.activator && context.slots.activator({ toggleDialog })}
         </div>
       }
 
       function genDialog() {
-        return <div ref="el" class="g-dialog">
+        return <div ref={el} class="g-dialog">
           {genActivator()}
 					{renderContent.value && genDialogContent()}
         </div>
@@ -124,7 +126,7 @@
         open,
         close,
         isActive,
-        genDialog
+        genDialog,
       }
     },
     render() {

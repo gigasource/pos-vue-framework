@@ -1,6 +1,6 @@
 import { configure, addParameters } from '@andoshin11/storybook-vue3';
 import { themes } from '@storybook/theming';
-import VueRouter from 'vue-router';
+import VueRouter, {createRouter, createWebHistory} from 'vue-router';
 // import PortalVue from 'portal-vue';
 //import 'github-markdown-css';
 import '../src/style/main.scss'
@@ -12,6 +12,11 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 import GigaComponents from "../index";
 
+const vueRouter = createRouter({
+  history: createWebHistory(),
+  routes: [],
+});
+
 addParameters({
   options: {
     theme: themes.light,
@@ -21,7 +26,7 @@ addParameters({
   },
 });
 
-global.root.use(VueRouter);
+global.root.use(vueRouter);
 // global.root.use(PortalVue);
 
 global.root.use(GigaComponents);

@@ -66,62 +66,51 @@ export const Index = () => ({
       default: text('clockHandColor', null)
     }
   },
-  setup(props) {
-    return () => (
-        <div style="display: flex;">
-          <div>
-            <h4>12 Hours</h4>
-            <g-time-picker
-                disabled={props.disabled}
-                readonly={props.readonly}
-                scrollable={props.scrollable}
-                useSeconds={props.useSeconds}
-                value={props.value}
-                color={props.color}
-                header-color={props.headerColor}
-                width={props.width}
-                landscape={props.landscape}
-
-                titleBgColor={props.titleBgColor}
-                titleTextColor={props.titleTextColor}
-                clockWrapperColor={props.clockWrapperColor}
-                clockFaceColor={props.clockFaceColor}
-                clockNumberColor={props.clockNumberColor}
-                clockSelectedNumberColor={props.clockSelectedNumberColor}
-                clockHandColor={props.clockHandColor}
-                vOn:input={action('input')}
-            >
-            </g-time-picker>
-          </div>
-          <div>
-            <h4>24 Hours</h4>
-            <g-time-picker
-                disabled={props.disabled}
-                readonly={props.readonly}
-                scrollable={props.scrollable}
-                useSeconds={props.useSeconds}
-                value={props.value}
-                use24Hours
-                color={props.color}
-                header-color={props.headerColor}
-                width={props.width}
-                landscape={props.landscape}
-
-                titleBgColor={props.titleBgColor}
-                titleTextColor={props.titleTextColor}
-                clockWrapperColor={props.clockWrapperColor}
-                clockFaceColor={props.clockFaceColor}
-                clockNumberColor={props.clockNumberColor}
-                clockSelectedNumberColor={props.clockSelectedNumberColor}
-                clockHandColor={props.clockHandColor}
-                vOn:update_period={action('period')}
-                vOn:input={action('input')}
-            >
-            </g-time-picker>
-          </div>
-        </div>
-    )
-  }
+  template: `
+    <div style="display: flex;">
+      <div>
+        <h4>12 Hours</h4>
+        <g-time-picker
+            :disabled="disabled"
+            :readonly="readonly"
+            :scrollable="scrollable"
+            :useSeconds="useSeconds"
+            :value="value"
+            :width="width"
+            :landscape="landscape"
+            :titleBgColor="titleBgColor"
+            :titleTextColor="titleTextColor"
+            :clockWrapperColor="clockWrapperColor"
+            :clockFaceColor="clockFaceColor"
+            :clockNumberColor="clockNumberColor"
+            :clockSelectedNumberColor="clockSelectedNumberColor"
+            :clockHandColor="clockHandColor"
+        >
+        </g-time-picker>
+      </div>
+      <div>
+        <h4>24 Hours</h4>
+        <g-time-picker
+            :disabled="disabled"
+            :readonly="readonly"
+            :scrollable="scrollable"
+            :useSeconds="useSeconds"
+            :value="value"
+            use24Hours
+            :width="width"
+            :landscape="landscape"
+            :titleBgColor="titleBgColor"
+            :titleTextColor="titleTextColor"
+            :clockWrapperColor="clockWrapperColor"
+            :clockFaceColor="clockFaceColor"
+            :clockNumberColor="clockNumberColor"
+            :clockSelectedNumberColor="clockSelectedNumberColor"
+            :clockHandColor="clockHandColor"
+        >
+        </g-time-picker>
+      </div>
+    </div>
+  `,
 })
 
 export const gTimePickerInput = () => ({
