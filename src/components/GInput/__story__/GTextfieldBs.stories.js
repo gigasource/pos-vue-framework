@@ -11,6 +11,7 @@ export const basic = () => ({
   props: {
     label: { default: text('Label', 'Email')},
   },
+  // template: `<g-text-field-bs :label="label"/>`
   template: `<div>
     Basic:
     <g-text-field-bs :label="label"/>

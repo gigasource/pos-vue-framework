@@ -12,7 +12,7 @@
     </label>
     <div class="bs-tf-input-group" :style="inputGroupStyles">
       <div class="bs-tf-input-prepend" @click="onClickPrependOuter"
-           v-if="$scopedSlots['prepend-outer'] || prefix || prependIcon">
+           v-if="$slots['prepend-outer'] && $slots['prepend-outer']() || prefix || prependIcon">
         <slot name="prepend-outer">
             <span class="bs-tf-input-text">
               <g-icon v-if="prependIcon" :color="iconColor">{{prependIcon}}</g-icon>
@@ -21,16 +21,16 @@
         </slot>
       </div>
       <div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}, 'r',
-                    ($scopedSlots['prepend-outer'] || prefix || prependIcon) && 'bs-tf-input-has-prepend', ($scopedSlots['append-outer'] || suffix || appendIcon) && 'bs-tf-input-has-append']">
+                    ($slots['prepend-outer'] && $slots['prepend-outer']() || prefix || prependIcon) && 'bs-tf-input-has-prepend', ($slots['append-outer'] && $slots['append-outer']() || suffix || appendIcon) && 'bs-tf-input-has-append']">
         <slot name="prepend-inner" :on-click="onClickPrependInner">
           <g-icon class="mr-2" :color="iconColor" v-if="prependInnerIcon">{{prependInnerIcon}}</g-icon>
         </slot>
-        <component :is="$scopedSlots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input r">
+        <component :is="$slots['append-inner'] && $slots['append-inner']() || clearable ? 'div' : 'pass-through'" class="input r">
           <slot name="input-slot"/>
           <input class="bs-tf-input"
                  style="user-select: text !important; -webkit-user-select: text !important;"
                  :type="state.internalType"
-                 ref="input"
+                 ref="inputRef"
                  :readonly="readonly || virtualEvent"
                  :placeholder="placeholder"
                  v-model="internalValue"
@@ -38,7 +38,7 @@
                  @focus="onFocus"
                  @blur="onBlur"
                  @keydown="onKeyDown">
-          <div v-if="virtualEvent" ref="caret" class="bs-tf-input bs-tf-input--fake-caret">
+          <div v-if="virtualEvent" ref="caretRef" class="bs-tf-input bs-tf-input--fake-caret">
             <span></span>
             <template v-for="(letter, i) in tfLetters">
               <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
@@ -47,7 +47,7 @@
           </div>
         </component>
         <div class="bs-tf-append-inner"
-             v-if="$scopedSlots['append-inner'] || (isDirty && clearable) || appendInnerIcon">
+             v-if="$slots['append-inner'] && $slots['append-inner']() || (isDirty && clearable) || appendInnerIcon">
           <slot name="clearable-slot">
             <g-icon v-if="isDirty && clearable" :color="iconColor" @click.stop="onClearIconClick">{{clearIcon}}</g-icon>
           </slot>
@@ -65,7 +65,7 @@
         </template>
       </div>
       <div class="bs-tf-input-append" @click="onClickAppendOuter"
-           v-if="$scopedSlots['append-outer'] || suffix || appendIcon">
+           v-if="$slots['append-outer'] && $slots['append-outer']() || suffix || appendIcon">
         <slot name="append-outer">
           <span class="bs-tf-input-text">
             <template v-if="suffix">{{suffix}}</template>
@@ -80,14 +80,16 @@
 </template>
 
 <script>
-  import {ref, computed, reactive, onMounted} from 'vue';
+  import _ from 'lodash'
+  import { ref, computed, reactive, onMounted, nextTick, getCurrentInstance } from 'vue';
   import {
     getEvents,
     getInternalValue,
     getLabel,
     getSlotEventListeners,
     getValidate,
-    getVirtualCaret
+    getVirtualCaret,
+    inputEvents
   } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {getCssColor} from "../../utils/colors";
@@ -96,12 +98,14 @@
     name: 'GTextFieldBs',
     components: {
       GIcon, PassThrough: {
-        functional: true,
-        render(h, context) {
-          return context.children
+        render() {
+          const instance = getCurrentInstance();
+          const children = instance.vnode.children;
+          return children && typeof(children.default) === 'function' && children.default()
         }
       }
     },
+    emits: _.union(inputEvents, [ 'blur' ]),
     props: {
       ...{//display props
         label: String,
@@ -145,7 +149,7 @@
         default: '',
       },
       // basic props
-      value: [String, Number],
+      modelValue: [String, Number],
       type: {
         type: String,
         default: 'text',
@@ -155,6 +159,9 @@
       virtualEvent: Boolean,
     },
     setup: function (props, context) {
+      const inputRef = ref(null)
+      const caretRef = ref(null)
+      
       const {internalValue} = getInternalValue(props, context);
       const tfValue = computed(() => props.prependValue + internalValue.value)
       const isValidInput = ref(true)
@@ -169,7 +176,7 @@
       const {
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
 
       const wrapperClasses = computed(() => ({
         'bs-tf__small': props.small,
@@ -202,20 +209,19 @@
       })
 
       onMounted(() => {
-        context.root.$nextTick(() => {
+        nextTick(() => {
           if(props.virtualEvent && !props.readonly) {
             document.addEventListener('click', (e) => {
-              if(!context.refs) return
-              const input = context.refs.input
-              if(e.target === input || e.target === context.refs.caret ||
+              const input = inputRef.value
+              if(e.target === input || e.target === caretRef.value ||
                   ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
                 const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
-                if(e.target === input || e.target === context.refs.caret) {}
+                if(e.target === input || e.target === caretRef.value) {}
                 document.caretElement = new Caret(input)
                 if(start) document.caretElement.set(start)
                 if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
-                  const caret = context.refs.caret
+                  const caret = caretRef.value
                   if(caret) {
                     for(const child of caret.children) {
                       child.classList.remove('animated-caret')
@@ -238,7 +244,7 @@
                   isValidInput.value = validate(internalValue.value).value
                 }
                 isFocused.value = false
-                const caret = context.refs.caret
+                const caret = caretRef.value
                 if(caret) {
                   for(const child of caret.children) {
                     child.classList.remove('animated-caret')
@@ -246,10 +252,10 @@
                 }
               }
             })
-            const caret = context.refs.caret
+            const caret = caretRef.value
             if(caret) {
               caret.addEventListener('scroll', (e) => {
-                const input = context.refs.input
+                const input = inputRef.value
                 if(caret.scrollLeft !== input.scrollLeft) { //caret size
                   setTimeout(() => {
                     input.scrollLeft = caret.scrollLeft
@@ -271,9 +277,11 @@
         })
       })
 
-      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused)
+      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused, { inputRef })
 
       return {
+        inputRef,
+        caretRef,
         internalValue,
         isValidInput,
         isFocused,
