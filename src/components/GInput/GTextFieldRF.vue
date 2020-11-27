@@ -1,4 +1,5 @@
 <script>
+  import { withModifiers } from 'vue';
   import GIcon from '../GIcon/GIcon';
   import { getEvents, getLabel, getSlotEventListeners, getValidate, inputEvents } from './GInputFactory';
   import {getInternalValue} from '../../mixins/getVModel';
@@ -100,7 +101,7 @@
       }
       const genClearIcon = () => {
         if (props.clearable && isDirty.value) {
-          return <div onClick_stop={onClearIconClick}>
+          return <div onClick={withModifiers(onClearIconClick, ['stop'])}>
             <g-icon>{props.clearIcon}</g-icon>
           </div>
         }

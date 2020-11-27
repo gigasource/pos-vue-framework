@@ -107,7 +107,8 @@
         const files = [...e.target.files || []]
         internalValue.value = props.multiple ? files : files[0]
       }
-      const onClearIconClick = function () {
+      const onClearIconClick = function (e) {
+        e.stopPropagation()
         internalValue.value = props.multiple ? [] : null
         inputRef.value.value = ''
         context.emit('clear')
@@ -248,9 +249,10 @@
         return <div class="g-tf-append__inner">
           {(isDirty.value && props.clearable) && (
               <div>
-                <g-icon onClick_stop={onClearIconClick} style="cursor: pointer">mdi-close</g-icon>
+                <g-icon onClick={onClearIconClick} style="cursor: pointer">mdi-close</g-icon>
               </div>
           )}
+          X
           <g-icon svg={props.svgIcon}>{props.appendIcon}</g-icon>
         </div>
       } // todo remake icon div after g-icon is fixed
@@ -320,7 +322,7 @@
 
       function onClickWrapper(e) {
         onClick(e)
-        inputRef.value.click()
+        // inputRef.value.click()
       }
 
       function genFileInputComponent() {
