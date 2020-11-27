@@ -1,7 +1,9 @@
 // requires template refs: activator, content, el
+import { toRefs } from 'vue';
 
-export default function detachable(props, context) {
-  function attachToRoot(node = context.refs.content) {
+export default function detachable(props, context, refs) {
+  const { activator, content, el } = refs
+  function attachToRoot(node = content && content.value) {
     const target = document.querySelector('[data-app]') || document.body
     if (!target) {
       console.warn('Unable to locate root element');
@@ -15,12 +17,12 @@ export default function detachable(props, context) {
   function attachToParent(node) {
     let attachNodes = [];
 
-    if (!node && context.refs.activator) {
-      attachNodes = [...context.refs.activator.childNodes]
+    if (!node && activator && activator.value) {
+      attachNodes = [...activator.value.childNodes]
 
       // If element contain activator, remove the activator div
-      if (context.refs.activator.parentNode === context.refs.el) {
-        context.refs.el.removeChild(context.refs.activator);
+      if (activator.value.parentNode === el.value) {
+        el.value.removeChild(activator.value);
       }
     } else {
       attachNodes = [node];
@@ -28,21 +30,21 @@ export default function detachable(props, context) {
 
     // Attach nodes to element's parent
     for (let node of attachNodes) {
-      if (!context.refs.el || !context.refs.el.parentNode) {
+      if (!el.value || !el.value.parentNode) {
         return;
       }
 
-      const target = context.refs.el === context.refs.el.parentNode.firstChild ? context.refs.el : context.refs.el.nextSibling;
-      context.refs.el.parentNode.insertBefore(node, target);
+      const target = el.value === el.value.parentNode.firstChild ? el.value : el.value.nextSibling;
+      el.value.parentNode.insertBefore(node, target);
     }
   }
 
-  function detach(node, activator = context.refs.activator) {
+  function detach(node, activatorNode = activator && activator.value) {
     if (node) {
       node.parentNode && node.parentNode.removeChild(node);
     } else {
-      context.refs.content && context.refs.content.parentNode && context.refs.content.parentNode.removeChild(context.refs.content);
-      activator && activator.parentNode.removeChild(context.refs.activator);
+      content.value && content.value.parentNode && content.value.parentNode.removeChild(content.value);
+      activatorNode && activatorNode.parentNode.removeChild(activator.value);
     }
   }
 
