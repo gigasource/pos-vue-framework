@@ -152,7 +152,7 @@
 </template>
 
 <script>
-  import {computed, ref, onMounted, nextTick, h} from 'vue';
+  import {computed, ref, onMounted, nextTick, h, getCurrentInstance} from 'vue';
   import {
     getEvents,
     getInternalValue,
@@ -169,11 +169,11 @@
   
   // TODO: Process pass through
   const PassThrough = {
-    functional: true,
-    render(context) {
-      debugger
-      return context.children;
-    }
+    render() {
+    const instance = getCurrentInstance();
+    const children = instance.vnode.children;
+    return children && typeof(children.default) === 'function' && children.default()
+  }
   }
   
   export default {

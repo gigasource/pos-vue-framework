@@ -81,7 +81,7 @@
 
 <script>
   import _ from 'lodash'
-  import {ref, computed, reactive, onMounted, nextTick } from 'vue';
+  import { ref, computed, reactive, onMounted, nextTick, getCurrentInstance } from 'vue';
   import {
     getEvents,
     getInternalValue,
@@ -98,9 +98,10 @@
     name: 'GTextFieldBs',
     components: {
       GIcon, PassThrough: {
-        functional: true,
-        render(h, context) {
-          return context.children
+        render() {
+          const instance = getCurrentInstance();
+          const children = instance.vnode.children;
+          return children && typeof(children.default) === 'function' && children.default()
         }
       }
     },
