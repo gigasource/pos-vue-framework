@@ -1,13 +1,15 @@
 <script>
   import getVModel from '../../mixins/getVModel';
   import { provide, ref, watch, inject, computed } from 'vue'
+  import {getScopeIdRender} from '../../utils/helpers';
 
   export default {
     name: 'GTabItems',
     props: {
       items: Array,
-      value: null
+      modelValue: null
     },
+    emits: ['update:modelValue'],
     setup(props, context) {
       const model = inject('model', getVModel(props, context))
       const computedItems = computed(() => props.items)
@@ -27,10 +29,17 @@
         }
       }, { flush: 'pre' })
 
-      return () =>
+      const genTabItems = () =>
         <div class="g-tab-items">
           {context.slots.default && context.slots.default()}
         </div>
+      return {
+        genTabItems
+      }
+    },
+    render() {
+      const scopeIdRender = getScopeIdRender();
+      return scopeIdRender(this.genTabItems)();
     }
   }
 </script>

@@ -80,7 +80,7 @@
     "traverse": "^0.6.6",
     "vue": "3.0.2",
     "vue-fragment": "^1.5.1",
-    "vue-jest": "^3.0.5",
+    "vue-jest": "^5.0.0-alpha.0",
     "vue-loader": "16.0.0-rc.2",
     "vue-router": "^4.0.0-rc.5"
   },

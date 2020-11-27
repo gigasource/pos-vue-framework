@@ -8,20 +8,20 @@
       <slot></slot>
     </g-tooltip-content>
     <div class="g-tooltip__activator" ref="activator">
-      <slot name="activator" v-bind:on="activatorListeners"></slot>
+      <slot name="activator" :on="activatorListeners"></slot>
     </div>
   </span>
 </template>
 
 <script>
-  import {computed, onMounted, reactive, ref} from 'vue'
+  import { computed, onMounted, reactive, ref, nextTick } from 'vue'
   import delayable from '../../mixins/delayable';
   import detachable from '../../mixins/detachable';
   import GTooltipContent from './GTooltipContent';
 
   export default {
     name: 'GTooltip',
-    components: {GTooltipContent},
+    components: { GTooltipContent },
     props: {
       /*position w window*/
       ...{
@@ -127,6 +127,8 @@
       },
     },
     setup(props, context) {
+      const el = ref(null)
+      const activator = ref(null)
       const renderContent = ref(false)
       // tooltip state
       const state = reactive({
@@ -136,14 +138,18 @@
         // Boolean value indicate that whether tooltip content will be rendered or not
         lazy: false
       })
-      const {runDelay} = delayable(props, state)
-      const {attachToParent} = detachable(props, context)
+
+      const { runDelay } = delayable(props, state)
+      const { attachToParent } = detachable(props, context, { activator, el });
 
       //// ACTIVATOR
       // This variable will be used by Tooltip content to calculate position
-      const activator = ref(null)
       const activatorListeners = computed(() => {
         let listeners = {}
+
+        listeners.mouseenter = () => {}
+        listeners.mouseleave = () => {}
+        listeners.click = () => {}
 
         if (props.openOnHover) {
           listeners.mouseenter = () => {
@@ -176,10 +182,8 @@
       })
 
       onMounted(() => {
-        context.root.$nextTick(() => {
-          attachToParent(context.refs.activator)
-          // store activator reference so that this value can be used by tool tip content
-          activator.value = context.refs.activator
+        nextTick(() => {
+          activator.value && attachToParent(activator.value)
         })
       })
 
@@ -190,6 +194,7 @@
         activator,
         activatorListeners,
         renderContent,
+        el,
       }
     }
   }

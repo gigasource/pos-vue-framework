@@ -144,41 +144,43 @@ export const playground = () => ({
       }
     },
   },
-  setup(props) {
-    console.log(props.speechBubble)
-    return () => (
-        <div app style='position: relative; padding: 300px;'>
-          <g-tooltip
-              {
-                ...{
-                  props: {
-                    ..._.pick(props, [
-                      'absolute', 'absoluteX', 'absoluteY',
-                      'bottom', 'left', 'right', 'top',
-                      'nudgeBottom', 'nudgeLeft', 'nudgeRight', 'nudgeTop', 'nudgeWidth',
-                      'allowOverflow', 'offsetOverflow', 'maxWidth', 'minWidth', 'openOnHover', 'closeDelay', 'openDelay',
-                      'transition', 'color', 'speechBubble'
-                    ])
-                  }}
-              }
-              scopedSlots={{
-                activator: (activatorListeners) => {
-                  return <button
-                      vOn:click={activatorListeners.on.click || (() => {
-                      })}
-                      vOn:mouseenter={activatorListeners.on.mouseenter || (() => {
-                      })}
-                      vOn:mouseleave={activatorListeners.on.mouseleave || (() => {
-                      })}
-                      vOn:blur={activatorListeners.on.blur || (() => {
-                      })}>
-                    Hello there
-                  </button>
-                }
-              }}>
-            Tooltip content
-          </g-tooltip>
-        </div>
-    )
-  }
+  template: `
+    <div app style='position: relative; padding: 300px;'>
+    <g-tooltip :absolute="absolute"
+               :absoluteX="absoluteX"
+               :absoluteY="absoluteY"
+               :bottom="bottom"
+               :left="left"
+               :right="right"
+               :top="top"
+               :nudgeBottom="nudgeBottom"
+               :nudgeLeft="nudgeLeft"
+               :nudgeRight="nudgeRight"
+               :nudgeTop="nudgeTop"
+               :nudgeWidth="nudgeWidth"
+               :allowOverflow="allowOverflow"
+               :offsetOverflow="offsetOverflow"
+               :maxWidth="maxWidth"
+               :minWidth="minWidth"
+               :openOnHover="openOnHover"
+               :closeDelay="closeDelay"
+               :openDelay="openDelay"
+               :transition="transition"
+               :color="color"
+               :speechBubble="speechBubble">
+      <template #activator="{on}">
+        <button @click="on.click"
+                @mouseenter="on.mouseenter"
+                @mouseleave="on.mouseleave"
+                @blur="on.blur">
+          Hello there
+        </button>
+      </template>
+
+      <template #default>
+        Tooltip content
+      </template>
+    </g-tooltip>
+    </div>
+  `
 })
