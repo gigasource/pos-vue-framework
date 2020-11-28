@@ -1,16 +1,17 @@
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
-  import { computed, inject, onMounted, provide, reactive, watch } from 'vue';
+  import { h, withDirectives, resolveDirective, computed, inject, onMounted, provide, reactive, watch } from 'vue';
   import { getInternalValue } from '../../mixins/getVModel';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
   import Touch from '../../directives/touch/touch';
+  import {getScopeIdRender} from "../../utils/helpers";
 
   export default {
     name: 'GWindow',
     components: { GIcon, GBtn, GWindowItem },
     props: {
-      value: null,
+      modelValue: null,
       hideDelimiters: { type: Boolean, default: true },
       verticalDelimiters: { type: String, default: undefined },
       delimiterIcon: {
@@ -42,6 +43,7 @@
       touchless: Boolean,
     },
     directives: { Touch },
+    emits: ['update:modelValue'],
     setup(props, context) {
       const data = reactive({
         changedByDelimiters: undefined,
@@ -55,11 +57,11 @@
       const internalValue = getInternalValue(props, context);
 
       function register(item) {
-        item.data.value = data.items.push(item) - 1;
+        item && (item.data.value = data.items.push(item) - 1);
       }
 
       function unregister(item) {
-        const index = data.items.findIndex(g => g._uid === item._uid);
+        const index = data.items.findIndex(g => g.uid === item.uid);
 
         if (index > -1) {
           data.items.splice(index, 1);
@@ -78,6 +80,7 @@
       });
 
       const classes = computed(() => ({
+        'g-window': true,
         'g-window__show-arrows-on-hover': props.showArrowsOnHover,
         'g-window__vertical-delimiters': isVertical.value,
         ['elevation-' + props.elevation]: true,
@@ -161,7 +164,7 @@
 
       function genIcon(direction, icon, fn) {
         return <div class={`g-window__${direction}`}>
-          <g-btn icon vOn:click={() => {
+          <g-btn icon onClick={() => {
             data.changedByDelimiters = true;
             fn();
           }}>
@@ -187,7 +190,7 @@
 
       function genDelimiters() {
         const nodeData = {
-          staticClass: 'g-window-controls',
+          class: 'g-window-controls',
           style: {
             left: props.verticalDelimiters === 'left' && isVertical.value ? 0 : 'auto',
             right: props.verticalDelimiters === 'right' ? 0 : 'auto',
@@ -210,7 +213,7 @@
         return data.items.map((item, index) => <g-btn icon small
                                                       active={isActiveIndex(index)}
                                                       textColor="#FFFFFF8A"
-                                                      vOn:click={() => onDelimiterClick(index)}
+                                                      onClick={() => onDelimiterClick(index)}
           >
             <g-icon small>{props.delimiterIcon}</g-icon>
           </g-btn>
@@ -219,9 +222,9 @@
 
       function genContainer() {
         const containerData = {
-          staticClass: 'g-window__container',
           class: {
             'g-window__container__is-active': isActive.value,
+            'g-window__container': true,
           },
           style: {
             height: data.transitionHeight,
@@ -235,22 +238,29 @@
 
       function genWindow() {
         const windowData = {
-          staticClass: 'g-window',
           class: classes.value,
-          directives: []
+          ref: 'window'
         };
 
-        !props.touchless && windowData.directives.push({
-          name: 'touch',
-          value: props.touch || {
+
+        if(!props.touchless) {
+          return withDirectives(h('div', windowData, {
+            default: () => [
+              genContainer(),
+              !props.hideDelimiters && genDelimiters()
+            ]
+          }), [[Touch, props.touch || {
             left: next,
             right: prev,
             end: e => e.stopPropagation(),
-            start: e => e.stopPropagation(),
-          }
-        })
+            start: e => e.stopPropagation()
+          }]])
+        }
 
-        return <div ref="window" {...windowData}>{genContainer()} {!props.hideDelimiters && genDelimiters()}</div>
+        return <div {...windowData}>
+          {genContainer()}
+          {!props.hideDelimiters && genDelimiters()}
+        </div>
       }
 
       return {
@@ -265,7 +275,8 @@
       }
     },
     render() {
-      return this.genWindow();
+      const genScopeId = getScopeIdRender()
+      return genScopeId(this.genWindow)();
     }
   }
 </script>
@@ -364,7 +375,7 @@
         transition: .3s cubic-bezier(.25, .8, .50, 1);;
       }
 
-      &-leave,
+      &-leave-from,
       &-leave-to {
         position: absolute !important;
         top: 0;
@@ -373,7 +384,7 @@
     }
 
     &-x-transition {
-      &-enter {
+      &-enter-from {
         transform: translateX(100%);
       }
 
@@ -383,7 +394,7 @@
     }
 
     &-x-reverse-transition {
-      &-enter {
+      &-enter-from {
         transform: translateX(-100%);
       }
 
@@ -393,7 +404,7 @@
     }
 
     &-y-transition {
-      &-enter {
+      &-enter-from {
         transform: translateY(100%)
       }
 
@@ -403,7 +414,7 @@
     }
 
     &-y-reverse-transition {
-      &-enter {
+      &-enter-from {
         transform: translateY(-100%)
       }
 
