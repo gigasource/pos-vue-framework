@@ -43,7 +43,11 @@ export function makeListSelectable(props, context, internalItems) {
 
   const normalizedList = computed(() => {
       if (_.isArray(listItems.value)) {
-        return (listType.value === 'primitive') ? _.uniq(listItems.value) : _.uniqWith(listItems.value.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
+        return (
+            listType.value === 'primitive'
+              ? _.uniq(listItems.value)
+              : _.uniqWith(listItems.value.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
+        )
       }
       return []
     }
@@ -51,18 +55,17 @@ export function makeListSelectable(props, context, internalItems) {
 
 
   //todo: normalized value: map value to an item in list if it existed
+  const defaultNormalize = value => {
+    if (listType.value === 'primitive')
+      return listItems.value.find(item => item === value)
+    else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object')
+      return listItems.value.find(item => _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
+    else
+      return listItems.value.find(item => getValue.value(item) === value) || listItems.value.find(item => getText.value(item) === value)
+  }
 
   const normalize = (value, isFromInput) => {
-    const _normalize = props.normalize || function (value) {
-      if (listType.value === 'primitive')
-        return listItems.value.find(item => item === value)
-      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object')
-        return listItems.value.find(item => _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
-      else {
-        return listItems.value.find(item => getValue.value(item) === value) || listItems.value.find(item => getText.value(item) === value)
-      }
-    }
-
+    const _normalize = props.normalize || defaultNormalize
     if (!inCombobox)
       return _normalize(value, listItems.value, isFromInput)
     else {

@@ -1,4 +1,4 @@
-import { computed, createApp, h, ref, reactive } from 'vue';
+import { computed, createApp, h, ref, reactive, getCurrentInstance, watch } from 'vue';
 import { getSelectionText, makeListSelectable } from '../listSelectFactory';
 import _ from 'lodash'
 
@@ -16,7 +16,7 @@ const parentVmFactory = attrs => {
   const el = document.createElement('div')
   el.id = 'app'
   document.body.appendChild(el)
-  const modelValue = attrs.multiple ? ref([]) : ref(null)
+
   return createApp({
     components: {
       child: {
@@ -43,16 +43,16 @@ const parentVmFactory = attrs => {
           isPrimitiveArray: Boolean,
           modelValue: {
             type: null,
-            default: function() {
-              return modelValue;
+            default: () => {
+              return attrs.multiple ? [] : null
             }
           }
         },
+        emits: ['update:modelValue', 'update:selectedValue', 'update:externalNormalizedValue'],
         render() {
-          return <div>{this.modelValue}</div>;
+          return <div></div>;
         },
         setup(props, context) {
-          const child = ref(null)
           const {
             getText,
             getValue,
@@ -67,7 +67,7 @@ const parentVmFactory = attrs => {
           const selectionTexts = getSelectionText(props, normalizedValue, listType, getText, getValue)
           const selectionString = computed(() => selectionTexts.value.join(', '))
           return {
-            child,
+            myProps: props,
             getText,
             getValue,
             listType,
@@ -85,8 +85,8 @@ const parentVmFactory = attrs => {
     },
     data() {
       return {
-        externalValueNormalize: null,
-        selection: null,
+        'externalValueNormalize': null,
+        'selection': null,
         ...attrs,
       };
     },
@@ -108,6 +108,7 @@ const parentVmFactory = attrs => {
                 this.selection = val;
               }}
               onUpdate:modelValue={val => {
+                console.log('update:modelValue', val)
                 this.modelValue = val
               }}
           />
@@ -123,8 +124,8 @@ const parentVmFactory = attrs => {
 describe('test', function () {
   it('single, primitive', async function () {
     const parentVm = parentVmFactory({
-      itemText: 'modelValue',
-      itemValue: 'modelValue',
+      itemText: 'value',
+      itemValue: 'value',
       modelValue: 1,
       items: [0, 1, 2, 3, 3, 6, 6]
     });
@@ -144,8 +145,8 @@ describe('test', function () {
   it('single, primitive, mandatory', async function () {
     const parentVm = parentVmFactory({
       mandatory: true,
-      itemText: 'modelValue',
-      itemValue: 'modelValue',
+      itemText: 'value',
+      itemValue: 'value',
       modelValue: 1,
       items: [1, 2, 3, 3, 6, 6]
     });
@@ -161,8 +162,8 @@ describe('test', function () {
   it('multiple, primitive', async function () {
     const parentVm = parentVmFactory({
       multiple: true,
-      itemText: 'modelValue',
-      itemValue: 'modelValue',
+      itemText: 'value',
+      itemValue: 'value',
       modelValue: [2],
       items: [1, 2, 3, 3, 6, 6]
     });
@@ -182,8 +183,8 @@ describe('test', function () {
     const parentVm = parentVmFactory({
       allowDuplicates: true,
       multiple: true,
-      itemText: 'modelValue',
-      itemValue: 'modelValue',
+      itemText: 'value',
+      itemValue: 'value',
       modelValue: [2],
       items: [0, 1, 2, 3, 3, 6, 6]
     });
@@ -204,8 +205,8 @@ describe('test', function () {
     const parentVm = parentVmFactory({
       mandatory: true,
       multiple: true,
-      itemText: 'modelValue',
-      itemValue: 'modelValue',
+      itemText: 'value',
+      itemValue: 'value',
       modelValue: [1],
       items: [1, 2, 3, 3, 6, 6]
     });
@@ -240,7 +241,7 @@ describe('test', function () {
   });
   it('single returnObject init value is value ', async function () {
     const parentVm = parentVmFactory({
-      itemText: 'modelValue',
+      itemText: 'value',
       itemValue: 'a',
       returnObject: true,
       modelValue: 1,
@@ -527,8 +528,8 @@ describe('test', function () {
   //todo: combobox test:
   it('single, primitive, combobox', async function () {
     const parentVm = parentVmFactory({
-      itemText: 'modelValue',
-      itemValue: 'modelValue',
+      itemText: 'value',
+      itemValue: 'value',
       modelValue: 1,
       items: [1, 2, 3, 3, 6, 6],
       component: 'combobox'
