@@ -114,7 +114,7 @@
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
-      const { attachToRoot } = detachable(props, context);
+      const { attachToRoot } = detachable(props, context, { activator: props.activator });
       const {
         updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState: state
       } = menuable(props, context);

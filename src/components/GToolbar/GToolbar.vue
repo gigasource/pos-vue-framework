@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import { computed } from 'vue';
+	import { computed, nextTick, ref } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
   import { isCssColor } from '../../mixins/colorable';
   import { linearGradient } from '../../utils/colors';
@@ -56,7 +56,9 @@
       height: String,
 			filled: Boolean,
     },
-    setup(props, context) {
+    setup(props) {
+      const extension = ref(null)
+
       const classes = computed(() => ({
         'g-toolbar': true,
         ['elevation-' + (props.flat ? '0' : props.elevation)]: true,
@@ -83,9 +85,8 @@
       });
 
 			const computedExtensionHeight = computed(() => {
-				context.root.$nextTick(() => {
-					const extension = context.refs.extension
-					if (extension) {
+				nextTick(() => {
+					if (extension.value) {
 						if (!isNaN(parseInt(props.extensionHeight))) return props.extensionHeight
 						return extension.offsetHeight
 					}
@@ -136,7 +137,8 @@
         totalHeightStyles,
         extensionStyles,
         backgroundStyles,
-				computedExtensionHeight
+				computedExtensionHeight,
+        extension
       }
     }
   }

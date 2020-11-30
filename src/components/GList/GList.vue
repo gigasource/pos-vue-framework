@@ -69,6 +69,7 @@
     emits: ['update:modelValue', 'click:item', 'click', 'keydown:down', 'keydown:up', 'keydown:enter', 'update:selectedValue'],
     setup: function (props, context) {
       const lazyItems = ref([])
+      const list = ref(null)
 
       const internalItems = computed({
         get() {
@@ -90,13 +91,13 @@
 
       function onArrowDown(index) {
         index < ((renderList.value && renderList.value.length) - 1) ? index += 1 : index = 0
-        context.refs.list.getElementsByClassName('g-list-item')[index].focus()
+        list.value.getElementsByClassName('g-list-item')[index].focus()
         context.emit('keydown:down')
       }
 
       function onArrowUp(index) {
         index > 0 ? index -= 1 : index = (renderList.value && (renderList.value.length - 1))
-        context.refs.list.getElementsByClassName('g-list-item')[index].focus()
+        list.value.getElementsByClassName('g-list-item')[index].focus()
         context.emit('keydown:up')
       }
 
@@ -275,7 +276,7 @@
 
       function genList() {
         const genListWithItem = (props.multiSection) ? genMultiSectionList : genSingleSectionList
-        return <div class={['g-list', 'check', classes.value]} style={styles.value} ref="list" onClick={(e) => context.emit('click', e)}>
+        return <div class={['g-list', 'check', classes.value]} style={styles.value} ref={list} onClick={(e) => context.emit('click', e)}>
           {context.slots['prepend-item'] && context.slots['prepend-item']()}
           {context.slots['default'] ? context.slots['default']() : genListWithItem()}
           {context.slots['append-item'] && context.slots['append-item']()}

@@ -88,7 +88,7 @@
           if (value[0] > value[1] || value[1] < value[0]) {
             if (state.activeThumb !== null) {
               const toFocus = state.activeThumb === 1 ? 0 : 1
-              const el = context.refs[`thumb_${toFocus}`]
+              const el = thumbRefs.value[toFocus]
               el.focus()
             }
             value = [value[1], value[0]]
