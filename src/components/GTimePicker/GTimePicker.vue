@@ -21,7 +21,7 @@
       useSeconds: Boolean,
 
       // values
-      value: String,
+      modelValue: String,
 
       // convention
       use24Hours: Boolean,
@@ -70,7 +70,7 @@
       // allowedMinutes: [Function, Array],
       // allowedSeconds: [Function, Array],
     },
-    emits: ['timeselected'],
+    emits: ['timeselected', 'update:modelValue'],
     setup(props, context) {
       const {
         state,
@@ -330,22 +330,18 @@
       }
 
       function GTimePickerRenderFn() {
+        const gPickerSlots = {
+          title: renderTitle,
+          default: () => <div key={state.activePicker}>{renderClock()}</div>,
+          actions: () => context.slots.default && context.slots.default()
+        }
         return (
             <g-picker
                 disabled={props.disabled}
                 landscape={props.landscape}
                 width={props.width && props.width >= MINIMUM_WIDTH ? props.width : MINIMUM_WIDTH}
-                color={props.titleBgColor || DEFAULT_COLOR}>
-              <template slot="title">
-                {renderTitle()}
-              </template>
-              <div key={state.activePicker}>
-                {renderClock()}
-              </div>
-              <template slot="actions">
-                <slot/>
-              </template>
-            </g-picker>
+                color={props.titleBgColor || DEFAULT_COLOR}
+                v-slots={gPickerSlots}/>
         )
       }
 

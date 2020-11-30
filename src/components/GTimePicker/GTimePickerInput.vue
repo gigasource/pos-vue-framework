@@ -43,7 +43,7 @@
       // time picker props
       ...{
         use24Hours: Boolean,
-        value: String,
+        modelValue: String,
         useSeconds: Boolean,
         scrollable: Boolean,
         landscape: Boolean,
@@ -56,20 +56,20 @@
         clockHandColor: String
       }
     },
-    emits: ['input'],
+    emits: ['update:modelValue'],
     setup(props, context) {
       const state = reactive({
         showMenu: false,
-        value: props.value || '',
+        value: props.modelValue || '',
       })
 
-      watch(() => props.value, newVal => {
+      watch(() => props.modelValue, newVal => {
         state.value = newVal ? String(newVal).trim() : ''
       })
 
       const updateInput = (value) => {
         state.value = value
-        context.emit('input', value)
+        context.emit('update:modelValue', value)
       }
       
       const time_picker = ref(null)
@@ -84,43 +84,38 @@
       const closeTimePickerDialog = () => state.showMenu = false
       const renderTimePickerInput = () => {
         return <g-menu
-            value={state.showMenu}
-            onInput={v => state.showMenu = v}
+            v-model={state.showMenu}
             contentFillWidth={false}
             minWidth={300}
             nudgeBottom={10}
-            scopedSlots={{
+            v-slots={{
               activator: ({on}) =>
                   <g-text-field
                       {...{
-                        props: {
-                          ..._.pick(props, [
-                            'disabled', 'readonly', 'required', 'clearable',
-                            'label', 'prependIcon', 'prependInnerIcon', 'appendIcon', 'appendInnerIcon',
-                            'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
-                          ]),
-                          value: state.value,
-                          ...props.showIcon && { prependIcon: 'access_time' },
-                        }
+                        ..._.pick(props, [
+                          'disabled', 'readonly', 'required', 'clearable',
+                          'label', 'prependIcon', 'prependInnerIcon', 'appendIcon', 'appendInnerIcon',
+                          'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
+                        ]),
+                        ...props.showIcon && { prependIcon: 'access_time' },
                       }}
+                      modelValue={state.value}
+                      onUpdate:modelValue={e => e.trim() && updateInput(e)}
                       onClick={e => openTimePickerDialog(e, on.click)}
-                      onInput={e => e.trim() && updateInput(e)}
                   />
             }}>
           <g-time-picker
               ref={refIdTimePicker}
               {...{
-                props: {
-                  ..._.pick(props, [
-                    'disabled', 'readonly',
-                    'use24Hours', 'useSeconds',
-                    'landscape', 'scrollable',
-                    'clockHandColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'titleTextColor', 'titleBgColor', 'clockWrapperColor',
-                  ]),
-                  value: state.value
-                }
+                ..._.pick(props, [
+                  'disabled', 'readonly',
+                  'use24Hours', 'useSeconds',
+                  'landscape', 'scrollable',
+                  'clockHandColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'titleTextColor', 'titleBgColor', 'clockWrapperColor',
+                ])
               }}
-              onInput={updateInput}
+              modelValue={state.value}
+              onUpdate:modelValue={updateInput}
               onTimeselected={closeTimePickerDialog}
           />
         </g-menu>

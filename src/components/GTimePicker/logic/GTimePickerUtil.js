@@ -132,44 +132,54 @@ export function getAdjustTimeMethods({state, setHours, setMinutes, setSeconds, u
 export const _12HourTimeRegex = /^(?<hours>1[0-2]|0?[0-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))? ?(?<meridiems>[AaPp][Mm])$/i
 export const _24HourTimeRegex = /^(?<hours>2[0-3]|[0-1]?[0-9]):(?<minutes>[0-5][0-9])(:(?<seconds>[0-5][0-9]))?$/i
 
-export default function (props, context) {
+const getTimeInfo = (props, newVal) => {
   let timeFormatStr = props.use24Hours ? 'HH:mm' : 'hh:mm'
   if (props.useSeconds) timeFormatStr += ":ss"
   if (!props.use24Hours) timeFormatStr += ' A'
+
+  let timeRegex = props.use24Hours ? _24HourTimeRegex : _12HourTimeRegex
+  let timeRegexResult
+  const newValue = !newVal ? '' : String(newVal).trim()
+  if (newValue) timeRegexResult = timeRegex.exec(newVal)
+  if (!timeRegexResult) {
+    if (newValue) console.warn('Invalid time value ', newVal, timeRegex)
+    timeRegexResult = timeRegex.exec(dayjs().format(timeFormatStr))
+  }
+  let timeObj = timeRegexResult.groups
+  let { hours, minutes, seconds } = timeObj
+  let activePeriod
+  if (!props.use24Hours) {
+    let { meridiems } =  timeObj
+    if (meridiems[0].toLowerCase() === 'a')
+      activePeriod = ActivePeriodPicker.AM
+    else
+      activePeriod = ActivePeriodPicker.PM
+  }
+  return {
+    selectedTime: { hours: Number(hours), minutes: Number(minutes), seconds: Number(seconds || '0') },
+    activePeriodPicker: activePeriod
+  }
+}
+
+export default function (props, context) {
+  const timeInfoInit = getTimeInfo(props, props.modelValue)
 
   const state = reactive({
     // indicate whether hour, minutes, second view will be shown
     // if you want to show all components (hour, minute, second), just ignore this value
     activeTimePicker: ActiveTimePicker.hour,
     // indicate whether AM or PM is active
-    activePeriodPicker: undefined,
+    activePeriodPicker: timeInfoInit.activePeriodPicker,
     // storing selected time elements
-    selectedTime: { hours: 0, minutes: 0, seconds: 0 },
+    selectedTime: timeInfoInit.selectedTime,
     // indicate whether period (AM/PM) should be show
     showPeriod: !props.use24Hours,
   })
 
-  watch(() => props.value, (newVal) => {
-    let timeRegex = props.use24Hours ? _24HourTimeRegex : _12HourTimeRegex
-    let timeRegexResult
-    const newValue = !newVal ? '' : String(newVal).trim()
-    if (newValue) timeRegexResult = timeRegex.exec(newVal)
-    if (!timeRegexResult) {
-      if (newValue) console.warn('Invalid time value ', newVal, timeRegex)
-      timeRegexResult = timeRegex.exec(dayjs().format(timeFormatStr))
-    }
-    let timeObj = timeRegexResult.groups
-    let { hours, minutes, seconds } = timeObj
-    let activePeriod
-    if (!props.use24Hours) {
-      let { meridiems } =  timeObj
-      if (meridiems[0].toLowerCase() === 'a')
-        activePeriod = ActivePeriodPicker.AM
-      else
-        activePeriod = ActivePeriodPicker.PM
-    }
-    state.selectedTime = { hours: Number(hours), minutes: Number(minutes), seconds: Number(seconds || '0') }
-    state.activePeriodPicker = activePeriod
+  watch(() => props.modelValue, (newVal) => {
+    const { selectedTime, activePeriodPicker }  = getTimeInfo(props, newVal);
+    state.selectedTime = selectedTime
+    state.activePeriodPicker = activePeriodPicker
   })
 
   function emitInput() {
@@ -177,7 +187,7 @@ export default function (props, context) {
     let minutes = pad(state.selectedTime.minutes)
     let seconds = props.useSeconds ? `:${pad(state.selectedTime.seconds || 0)}` : ''
     let meridiems = props.use24Hours ? '' : state.activePeriodPicker === ActivePeriodPicker.AM ? ' AM' : ' PM'
-    context.emit('input', `${hours}:${minutes}${seconds}${meridiems}`)
+    context.emit('update:modelValue', `${hours}:${minutes}${seconds}${meridiems}`)
   }
 
   const { showHoursPicker, showMinutesPicker, showSecondsPicker } = getShowTimePickerMethods(state)
