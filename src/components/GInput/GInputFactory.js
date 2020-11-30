@@ -1,3 +1,6 @@
+import { nextTick } from 'vue'
+
+// impact: next tick
 export function getLabel(context, props, internalValue, isValidInput, isFocused,
                          [labelActiveClass] = 'g-tf-label__active') {
   const tfType = computed(() => {
@@ -29,14 +32,14 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   const prependRef = ref(null)
   const prependWidth = ref(0)
   watch([() => prependRef.value, () => props.filled], () => {
-    context.root.$nextTick(() => {
+    nextTick(() => {
       prependWidth.value = prependRef.value && prependRef.value.offsetWidth
     })
   })
 
 
   watch(() => props.prefix, () => {
-    context.root.$nextTick(() => {
+    nextTick(() => {
       prefixWidth.value = prefixRef.value && prefixRef.value.offsetWidth
     })
   })
@@ -132,11 +135,12 @@ export function getValidate(props, isFocused, internalValue, isValidInput, custo
       isValidInput.value = true
     }
 
-  }, !props.value ? { lazy: true } : {})
+  }, !props.modelValue ? { lazy: true } : {})
 
   return { errorMessages, validate };
 }
 
+// impact: emit event name -- double check if event name contain : is allowed
 export function getSlotEventListeners(context) {
   //slot events
   return {
@@ -155,13 +159,14 @@ export function getSlotBsEventListeners(context) {
   }
 }
 
-export function getEvents(props, context, internalValue, isFocused, isValidInput, validate) {
+// todo: impact context.refs <-> domRefs
+export function getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef }) {
   function onClick(event) {
     if (props.disabled || props.readonly || props.readOnly) return;
-    if (!isFocused.value) context.refs.input && context.refs.input.focus();
+    if (!isFocused.value) inputRef.value && inputRef.value.focus();
     isFocused.value = true;
-    document.caretElement = new Caret(context.refs.input)
-    const caret = context.refs.caret
+    document.caretElement = new Caret(inputRef.value)
+    const caret = caretRef.value
     if(caret) {
       document.caretElement.set(caret.children.length + 1)
       for(const child of caret.children) {
@@ -173,9 +178,9 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onFocus(event) {
-    if (!context.refs.input) return;
-    if (document.activeElement !== context.refs.input) {
-      context.refs.input.focus();
+    if (!inputRef.value) return;
+    if (document.activeElement !== inputRef.value) {
+      inputRef.value.focus();
     }
     if (!isFocused.value) {
       context.emit('focus', event);
@@ -227,7 +232,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   function onMouseDown(event) {
     state.hasMouseDown = true
     context.emit('mousedown', event)
-    if (event.target !== context.refs.input) {
+    if (event.target !== inputRef.value) {
       event.preventDefault();
       event.stopPropagation();
     }
@@ -238,26 +243,26 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref((props.value || props.value === 0) ? props.value : '');
+  const rawInternalValue = ref((props.modelValue || props.modelValue === 0) ? props.modelValue : '');
 
-  watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
+  watch(() => props.modelValue, () => rawInternalValue.value = props.modelValue, { lazy: true });
 
   const internalValue = computed({
-
     get: () => rawInternalValue.value,
     set: (value) => {
       rawInternalValue.value = value;
-      context.emit('input', rawInternalValue.value)
+      context.emit('update:modelValue', rawInternalValue.value)
     }
   });
 
   return { internalValue, rawInternalValue };
 }
 
-export function getVirtualCaret(props, context, internalValue, isFocused) {
+// todo: impact: context.refs <-> domRefs
+export function getVirtualCaret(props, context, internalValue, isFocused, { inputRef }) {
   const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
   const selectLetter = (event, index) => {
-    context.refs.input.click()
+    inputRef.value.click()
     const target = event.target
     let parent = target.parentElement
     for(const child of parent.children) {
@@ -265,7 +270,7 @@ export function getVirtualCaret(props, context, internalValue, isFocused) {
     }
     const {width, x} = target.getBoundingClientRect()
     const offset = event.clientX - x
-    document.caretElement = new Caret(context.refs.input)
+    document.caretElement = new Caret(inputRef.value)
     if(offset > width/2) {
       target.classList.add('animated-caret')
       document.caretElement.set(index + 1)
@@ -277,3 +282,21 @@ export function getVirtualCaret(props, context, internalValue, isFocused) {
 
   return { tfLetters, selectLetter}
 }
+
+export const inputEvents = [
+  'blur',
+  'change',
+  'click',
+  'click:clearIcon',
+  'click:append-inner',
+  'click:append-outer',
+  'click:prepend-inner',
+  'click:prepend-outer',
+  'delete',
+  'enter',
+  'focus',
+  'keydown',
+  'mouseup',
+  'mousedown',
+  'update:modelValue'
+]

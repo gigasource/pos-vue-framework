@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { computed } from 'vue'
+  import { computed, withModifiers } from 'vue'
   import GPicker from '../GPicker/GPicker'
   import GTimePickerUtil, { getFormattedHours, ActiveTimePicker, ActivePeriodPicker } from './logic/GTimePickerUtil'
   import { computedHandStyle, getSelectedIndex, range0_23PositionStyle, range0_59PositionStyle } from './logic/GTimePickerUIHelper';
@@ -133,23 +133,23 @@
       const renderTitle = () => (
           <div class={{ 'g-time-picker__title': true, 'g-time-picker__title--landscape': props.landscape }}>
             <div class={{ 'g-time-picker__title__time': true, 'g-time-picker__title__time--landscape': props.landscape }}>
-              <span {...cptTitleHourClassStyle.value} onClick_stop={showHoursPicker}>
+              <span {...cptTitleHourClassStyle.value} onClick={withModifiers(showHoursPicker, ['stop'])}>
                 {_.padStart(String(getFormattedHours(state.selectedTime.hours, props)), 2, '0')}
               </span>
               <span {...cptSeparatorClassStyle.value}>:</span>
-              <span {...cptTitleMinuteClassStyle.value} onClick_stop={showMinutesPicker}>
+              <span {...cptTitleMinuteClassStyle.value} onClick={withModifiers(showMinutesPicker, ['stop'])}>
                 {_.padStart(state.selectedTime.minutes, 2, '0')}
               </span>
               {props.useSeconds && [
                 <span {...cptSeparatorClassStyle.value}>:</span>,
-                <span {...cptTitleSecondClassStyle.value} onClick_stop={showSecondsPicker}>
+                <span {...cptTitleSecondClassStyle.value} onClick={withModifiers(showSecondsPicker, ['stop'])}>
                   {_.padStart(state.selectedTime.seconds, 2, '0')}
                 </span>
               ]}
             </div>
             {state.showPeriod && <div class="g-time-picker__title__period">
-              <div {...cptAMClassStyle.value} onClick_stop={showAMPicker}>AM</div>
-              <div {...cptPMClassStyle.value} onClick_stop={showPMPicker}>PM</div>
+              <div {...cptAMClassStyle.value} onClick={withModifiers(showAMPicker, ['stop'])}>AM</div>
+              <div {...cptPMClassStyle.value} onClick={withModifiers(showPMPicker, ['stop'])}>PM</div>
             </div>}
           </div>
       )
