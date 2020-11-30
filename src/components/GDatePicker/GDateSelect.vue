@@ -1,5 +1,6 @@
 <script type="text/jsx">
   import _ from 'lodash'
+  import { withModifiers } from 'vue'
   import { getScopeIdRender } from '../../utils/helpers'
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -178,7 +179,7 @@
         return <div class="g-date-select">
           <label>{props.label}</label>
           <div>
-            <span class="dropdown" onClick_stop={() => showMonth()}>
+            <span class="dropdown" onClick={withModifiers(() => showMonth(), ['stop'])}>
               <select ref="month" onChange={e => {
                 state.month = Number(e.target.value)
                 emitNewDate()
@@ -188,7 +189,7 @@
               <g-icon class="dropdown__icon" small>fas fa-chevron-down</g-icon>
             </span>
 
-            <span class="dropdown" onClick_stop={() => showDay()}>
+            <span class="dropdown" onClick={withModifiers(() => showDay(), ['stop'])}>
               <select ref="day" onChange={e => {
                 state.day = Number(e.target.value)
                 emitNewDate()
@@ -198,7 +199,7 @@
               <g-icon class="dropdown__icon" small>fas fa-chevron-down</g-icon>
             </span>
 
-            <span class="dropdown" onClick_stop={() => showYear()}>
+            <span class="dropdown" onClick={withModifiers(() => showYear(), ['stop'])}>
               <select ref="year" onChange={e => {
                 state.year = Number(e.target.value)
                 emitNewDate()

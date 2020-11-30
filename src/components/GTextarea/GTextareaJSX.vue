@@ -1,8 +1,7 @@
 <script>
   import {ref, computed, watch, onMounted, onUpdated} from 'vue';
-  import {getEvents, getInternalValue, getLabel, getSlotEventListeners, getValidate,} from '../GInput/GInputFactory';
   import GIcon from '../GIcon/GIcon';
-
+  
   export default {
     name: "GTextareaJSX",
     components:  {GIcon},
@@ -69,12 +68,8 @@
         validator: (v) => !isNaN(parseInt(v, 10)),
       },
     },
-
+    emits: [],
     setup(props,context) {
-
-
-
-
       //gen textarea component
       const wrapperClasses = computed(() => {
         const isDisabled = {
@@ -109,9 +104,9 @@
 
       function genTextareaComponent() {
         return <div class={wrapperClasses.value}
-                    vOn:click={onClick}
-                    vOn:mouseup={onMouseUp}
-                    vOn:mousedown={onMouseDown}>
+                    onClick={onClick}
+                    onMouseup={onMouseUp}
+                    onMousedown={onMouseDown}>
           {genPrependOuter()}
           {genTextareaWrapper()}
           {genAppendOuter()}

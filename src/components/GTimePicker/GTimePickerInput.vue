@@ -6,7 +6,7 @@
   import GTextField from '../GInput/GTextField'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
-  import {reactive, watch} from 'vue';
+  import {reactive, watch, nextTick, ref} from 'vue';
   import _ from 'lodash'
 
   GMenu.components['GTextField'] = GTextField
@@ -56,6 +56,7 @@
         clockHandColor: String
       }
     },
+    emits: ['input'],
     setup(props, context) {
       const state = reactive({
         showMenu: false,
@@ -70,21 +71,24 @@
         state.value = value
         context.emit('input', value)
       }
-
+      
+      const time_picker = ref(null)
+      const refIdTimePicker = 'time_picker'
       const openTimePickerDialog = (e, clickHandler) => {
         clickHandler(e)
-        context.root.$nextTick(() => {
-          context.refs[refIdTimePicker] && context.refs[refIdTimePicker].showHoursPicker()
+        nextTick(() => {
+          time_picker.value && time_picker.value.showHoursPicker()
         })
       }
+      
       const closeTimePickerDialog = () => state.showMenu = false
-
-      const refIdTimePicker = 'time_picker'
       const renderTimePickerInput = () => {
         return <g-menu
-            value={state.showMenu} vOn:input={v => state.showMenu = v}
+            value={state.showMenu}
+            onInput={v => state.showMenu = v}
             contentFillWidth={false}
-            minWidth={300} nudgeBottom={10}
+            minWidth={300}
+            nudgeBottom={10}
             scopedSlots={{
               activator: ({on}) =>
                   <g-text-field
@@ -99,8 +103,8 @@
                           ...props.showIcon && { prependIcon: 'access_time' },
                         }
                       }}
-                      vOn:click={e => openTimePickerDialog(e, on.click)}
-                      vOn:input={e => e.trim() && updateInput(e)}
+                      onClick={e => openTimePickerDialog(e, on.click)}
+                      onInput={e => e.trim() && updateInput(e)}
                   />
             }}>
           <g-time-picker
@@ -116,21 +120,21 @@
                   value: state.value
                 }
               }}
-              vOn:input={updateInput}
-              vOn:timeselected={closeTimePickerDialog}
+              onInput={updateInput}
+              onTimeselected={closeTimePickerDialog}
           />
         </g-menu>
       }
 
       return {
+        time_picker,
         state,
         renderTimePickerInput
       }
     },
+    
     render() {
       return this.renderTimePickerInput()
     }
   }
 </script>
-<style scoped>
-</style>

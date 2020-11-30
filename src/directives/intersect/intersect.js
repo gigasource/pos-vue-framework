@@ -12,7 +12,7 @@ function mounted(el, binding) {
     const isIntersecting = Boolean(entries.find(entry => entry.isIntersecting))
     if (isIntersecting) callback(entries, observer, isIntersecting)
 
-    if (el._observe.init && modifiers.once) unbind(el)
+    if (el._observe.init && modifiers.once) unmounted(el)
     else (el._observe.init = true)
   }, options)
 

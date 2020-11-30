@@ -27,7 +27,7 @@
   import { convertToUnit, getTransitionDuration } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import getVModel from '../../mixins/getVModel';
-  import { computed, ref, reactive, watch, onMounted, onBeforeUnmount } from 'vue';
+  import { computed, ref, reactive, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
 
@@ -35,7 +35,7 @@
     name: 'GDndDialog',
     components: { GIcon, GBtn },
     props: {
-      value: {
+      modelValue: {
         type: Boolean,
         default: false
       },
@@ -65,8 +65,14 @@
       height: [Number, String]
     },
     setup(props, context) {
+      const wrapper = ref(null)
+      const header = ref(null)
+      const title = ref(null)
+      const action = ref(null)
+      const content = ref(null)
+
       const isActive = getVModel(props, context)
-      const { attachToRoot, detach } = detachable(props, context);
+      const { attachToRoot, detach } = detachable(props, context, { content });
 
       // Render Options Handling
       const isRender = ref(!props.lazy)
@@ -74,8 +80,8 @@
 
 			function renderAndAttachDialog() {
         isRender.value = true
-        context.root.$nextTick(() => {
-          attachToRoot(context.refs.wrapper)
+        nextTick(() => {
+          attachToRoot(wrapper.value)
         })
 			}
 
@@ -84,9 +90,9 @@
           if (newVal) {
             renderAndAttachDialog()
           } else {
-            context.refs.wrapper && setTimeout(() => {
+            wrapper.value && setTimeout(() => {
               isRender.value = newVal;
-            }, getTransitionDuration(context.refs.wrapper))
+            }, getTransitionDuration(wrapper.value))
           }
         }
 
@@ -102,12 +108,12 @@
       })
 
       onMounted(() => {
-				!props.lazy && attachToRoot(context.refs.wrapper);
+				!props.lazy && attachToRoot(wrapper.value);
       })
 
       onBeforeUnmount(() => {
         if (isRender.value) {
-          context.refs.wrapper && detach(context.refs.wrapper);
+          wrapper.value && detach(wrapper.value);
         }
       })
 
@@ -205,7 +211,7 @@
         }
 
         const target = e.target;
-        if ((target === context.refs.header || target === context.refs.title) && resizeMode.value === '') {
+        if ((target === header.value || target === title.value) && resizeMode.value === '') {
           dialogStartPosition.top = dialogPosition.top;
           dialogStartPosition.left = dialogPosition.left;
           mouseStartPosition.pageX = e.pageX;
@@ -361,7 +367,7 @@
               document.body.style.cursor = 'nwse-resize';
               break;
             default:
-              if (e.target === context.refs.header || e.target === context.refs.title) {
+              if (e.target === header.value || e.target === title.value) {
                 cursor.value = 'move';
                 document.body.style.cursor = 'move';
 							} else {
@@ -404,6 +410,12 @@
         wrapperStyles,
         dragStart,
 				maximizeIcon,
+
+        wrapper,
+        header,
+        title,
+        action,
+        content,
       }
     }
   }

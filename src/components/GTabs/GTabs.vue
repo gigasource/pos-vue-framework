@@ -5,9 +5,9 @@
   import GTabItem from './GTabItem';
   import GIcon from '../GIcon/GIcon';
   import getVModel from '../../mixins/getVModel';
-  import {computed, onMounted, onUnmounted, provide, reactive, ref, watch} from 'vue'
+  import {computed, onMounted, onUnmounted, provide, reactive, ref, watch, nextTick} from 'vue'
   import {find} from 'lodash'
-  import colorHandler, {convertToUnit} from '../../utils/helpers';
+  import colorHandler, {convertToUnit, getScopeIdRender} from '../../utils/helpers';
   import {colors} from '../../utils/colors';
   import GSlideGroup from '../GSlideGroup/GSlideGroup';
   import Resize from '../../directives/resize/resize';
@@ -19,7 +19,7 @@
     components: {GSlideGroup, GIcon, GTabItem, GLayout, GTab, GTabItems},
     props: {
       items: Array,
-      value: null,
+      modelValue: null,
       color: String,
       textColor: String,
       activeTextColor: String,
@@ -42,6 +42,7 @@
       addable: Boolean,
       deletable: Boolean,
     },
+    emits: ['update:modelValue', 'add', 'delete'],
     setup(props, context) {
       const model = getVModel(props, context);
 
@@ -87,6 +88,7 @@
       const sliderStyles = reactive({
         'width': '90px',
         'height': '2px',
+        'position': 'absolute',
         'top': '46px',
         'right': 'auto',
         'left': '0',
@@ -96,7 +98,6 @@
       });
 
       onMounted(() => {
-        itemsRef.value = context.refs.itemsRef
         sliderResizeObserver && sliderResizeObserver.observe(itemsRef.value)
       })
 
@@ -133,31 +134,33 @@
 
       // tab transition
       watch(() => model.value, () => {
-        const parent = itemsRef.value.querySelector('.g-slide-group__content');
-        activeTab.value = find(parent.children, i => i.classList.contains('g-tab__active'));
-        if(!activeTab.value) return
-        if (props.vertical) {
-          if (activeTab.value.offsetTop < +sliderStyles.top.replace('px', '')) {
-            sliderStyles['transition'] = 'top 0.5s, bottom 1s';
-          } else {
-            sliderStyles['transition'] = 'bottom 0.5s, top 1s';
-          }
+        nextTick(() => {
+          const parent = itemsRef.value.querySelector('.g-slide-group__content');
+          activeTab.value = find(parent.children, i => i.classList.contains('g-tab__active'));
+          if(!activeTab.value) return
+          if (props.vertical) {
+            if (activeTab.value.offsetTop < +sliderStyles.top.replace('px', '')) {
+              sliderStyles['transition'] = 'top 0.5s, bottom 1s';
+            } else {
+              sliderStyles['transition'] = 'bottom 0.5s, top 1s';
+            }
 
-          //todo vertical arrows
-          sliderStyles.bottom = convertToUnit(parent.offsetHeight - activeTab.value.offsetHeight - activeTab.value.offsetTop);
-          sliderStyles.top = convertToUnit(activeTab.value.offsetTop);
-          sliderStyles.height = 'auto';
-        } else {
-          if (activeTab.value.offsetLeft < +sliderStyles.left.replace('px', '')) {
-            sliderStyles['transition'] = 'left 0.5s, right 1s';
+            //todo vertical arrows
+            sliderStyles.bottom = convertToUnit(parent.offsetHeight - activeTab.value.offsetHeight - activeTab.value.offsetTop);
+            sliderStyles.top = convertToUnit(activeTab.value.offsetTop);
+            sliderStyles.height = 'auto';
           } else {
-            sliderStyles['transition'] = 'left 1s, right 0.5s';
-          }
+            if (activeTab.value.offsetLeft < +sliderStyles.left.replace('px', '')) {
+              sliderStyles['transition'] = 'left 0.5s, right 1s';
+            } else {
+              sliderStyles['transition'] = 'left 1s, right 0.5s';
+            }
 
-          sliderStyles.width = 'auto';
-          sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.value.offsetWidth - activeTab.value.offsetLeft)
-          sliderStyles.left = convertToUnit(activeTab.value.offsetLeft)
-        }
+            sliderStyles.width = 'auto';
+            sliderStyles.right = convertToUnit(parent.offsetWidth - activeTab.value.offsetWidth - activeTab.value.offsetLeft)
+            sliderStyles.left = convertToUnit(activeTab.value.offsetLeft)
+          }
+        })
       }, {lazy: true});
 
       const fullTitle = computed(() => {
@@ -212,19 +215,19 @@
           }
 
         }
-        return <g-slide-group {...slideGroupData} vOn:input={e => model.value = e} value={model.value} dense>
+        return <g-slide-group {...slideGroupData} on={{input: e => model.value = e}} value={model.value} dense>
           {genTabs()}
           {activeTab.value && genTabSlider()}
         </g-slide-group>
       }
 
-      const genAddButton = () => props.addable && <g-icon class="mr-2" color={sliderStyles['background-color']} vOn:click={e => context.emit('add')}>add_circle</g-icon>
+      const genAddButton = () => props.addable && <g-icon class="mr-2" color={sliderStyles['background-color']} onClick={e => {context.emit('add')}}>add_circle</g-icon>
 
-      const genDeleteButton = () => props.deletable && <g-icon color={sliderStyles['background-color']} vOn:click={e => context.emit('delete')}>delete</g-icon>
+      const genDeleteButton = () => props.deletable && <g-icon color={sliderStyles['background-color']} onClick={e => context.emit('delete')}>delete</g-icon>
 
-      return () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
+      const genTabsGroup = () => <div class={['g-tabs-wrapper', props.vertical ? 'row-flex' : 'col-flex']}>
         <div class={tabsClasses.value} style={tabsStyles.value}>
-          <div ref="itemsRef"
+          <div ref={itemsRef}
                class={{...barClasses.value, 'g-tabs-bar': true}}
                style={barStyles.value}
                v-resize={calculateSliderStyle}>
@@ -239,6 +242,14 @@
             </g-tab-items>
         )}
       </div>
+
+      return {
+        genTabsGroup
+      }
+    },
+    render() {
+      const scopeIdRender = getScopeIdRender();
+      return scopeIdRender(this.genTabsGroup)();
     }
   }
 </script>

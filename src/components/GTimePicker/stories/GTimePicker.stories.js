@@ -141,18 +141,54 @@ export const gTimePickerInput = () => ({
     shaped: { default: boolean('shaped', false) },
     required: { default: boolean('required', false)},
   },
-  setup(props) {
-    return () => <div>
-      <g-time-picker-input {...{
-        props: _.pick(props, ['disabled', 'readonly', 'scrollable', 'useSeconds', 'value', 'landscape', 'titleBgColor',
-          'titleTextColor', 'clockWrapperColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'clockHandColor',
-          'label', 'filled', 'solo', 'outlined', 'flat', 'dense', 'rounded', 'shaped', ''])
-      }}/>
-      <g-time-picker-input use24Hours {...{
-        props: _.pick(props, ['disabled', 'readonly', 'scrollable', 'useSeconds', 'value', 'landscape', 'titleBgColor',
-          'titleTextColor', 'clockWrapperColor', 'clockFaceColor', 'clockNumberColor', 'clockSelectedNumberColor', 'clockHandColor',
-          'label', 'filled', 'solo', 'outlined', 'flat', 'dense', 'rounded', 'shaped', ''])
-      }}/>
-    </div>
-  }
+  template: `
+    <g-time-picker-input
+        :disabled="disabled"
+        :readonly="readonly"
+        :scrollable="scrollable"
+        :useSeconds="useSeconds"
+        :value="value"
+        :landscape="landscape"
+        :titleBgColor="titleBgColor"
+        :titleTextColor="titleTextColor"
+        :clockWrapperColor="clockWrapperColor"
+        :clockFaceColor="clockFaceColor"
+        :clockNumberColor="clockNumberColor"
+        :clockSelectedNumberColor="clockSelectedNumberColor"
+        :clockHandColor="clockHandColor"
+        :label="label"
+        :filled="filled"
+        :solo="solo"
+        :outlined="outlined"
+        :flat="flat"
+        :dense="dense"
+        :rounded="rounded"
+        :shaped="shaped"
+    />
+      
+    <g-time-picker-input
+        use24Hours
+        :disabled="disabled"
+        :readonly="readonly"
+        :scrollable="scrollable"
+        :useSeconds="useSeconds"
+        :value="value"
+        :landscape="landscape"
+        :titleBgColor="titleBgColor"
+        :titleTextColor="titleTextColor"
+        :clockWrapperColor="clockWrapperColor"
+        :clockFaceColor="clockFaceColor"
+        :clockNumberColor="clockNumberColor"
+        :clockSelectedNumberColor="clockSelectedNumberColor"
+        :clockHandColor="clockHandColor"
+        :label="label"
+        :filled="filled"
+        :solo="solo"
+        :outlined="outlined"
+        :flat="flat"
+        :dense="dense"
+        :rounded="rounded"
+        :shaped="shaped"
+    />
+  `
 })

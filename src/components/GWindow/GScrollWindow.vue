@@ -3,12 +3,14 @@
   import { computed, provide, reactive, watch } from 'vue';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
+  import {getScopeIdRender} from "../../utils/helpers";
+  import {getInternalValue} from "../../mixins/getVModel";
 
   export default {
     name: 'GScrollWindow',
     components: { GIcon, GBtn, GWindowItem },
     props: {
-      value: null,
+      modelValue: null,
       hideDelimiters: { type: Boolean, default: true },
       verticalDelimiters: { type: String, default: undefined },
       delimiterIcon: {
@@ -37,7 +39,7 @@
         default: 2
       },
     },
-    setup(props) {
+    setup(props, context) {
       const data = reactive({
         transitionHeight: undefined, // Intermediate height during transition.
         transitionCount: 0, // Number of windows in transition state.
@@ -51,7 +53,7 @@
       }
 
       function unregister(item) {
-        const index = data.items.findIndex(g => g._uid === item._uid);
+        const index = data.items.findIndex(g => g.uid === item.uid);
 
         if (index > -1) {
           data.items.splice(index, 1);
@@ -62,20 +64,23 @@
       provide('unregister', unregister);
 
       const classes = computed(() => ({
+        'g-window': true,
         'g-window__vertical-delimiters': isVertical.value,
         ['elevation-' + props.elevation]: true,
         [props.activeClass]: props.active
       }));
 
+      const internalValue = getInternalValue(props, context);
+
       const isVertical = computed(() => props.verticalDelimiters != null);
 
       const isActive = computed(() => data.transitionCount > 0);
 
-      watch(() => props.value, (val, oldVal) => {
+      watch(() => props.modelValue, (val, oldVal) => {
         if (val !== oldVal) {
 
-          const currentItem = data.items[props.value];
-          const currentElement = currentItem.$el;
+          const currentItem = data.items[props.modelValue];
+          const currentElement = currentItem.vnode.el;
 
           const temp = currentItem.intersectCb
           currentItem.intersectCb = () => null
@@ -87,7 +92,7 @@
 
       function genDelimiters() {
         const nodeData = {
-          staticClass: 'g-window-controls',
+          class: 'g-window-controls',
           style: {
             left: props.verticalDelimiters === 'left' && isVertical.value ? 0 : 'auto',
             right: props.verticalDelimiters === 'right' ? 0 : 'auto',
@@ -110,7 +115,7 @@
         return data.items.map((item, index) => <g-btn icon small
                                                       active={isActiveIndex(index)}
                                                       textColor="#FFFFFF8A"
-                                                      vOn:click={() => onDelimiterClick(index)}
+                                                      onClick={() => onDelimiterClick(index)}
           >
             <g-icon small>{props.delimiterIcon}</g-icon>
           </g-btn>
@@ -119,8 +124,8 @@
 
       function genContainer() {
         const containerData = {
-          staticClass: 'g-window__container',
           class: {
+            'g-window__container': true,
             'g-window__container__is-active': isActive.value,
           },
           id: 'window-container',
@@ -130,18 +135,20 @@
         };
 
         return <div {...containerData}>
-          {this.$slots.default}
+          {context.slots.default()}
         </div>
       }
 
       function genWindow() {
         const windowData = {
-          staticClass: 'g-window',
           class: classes.value,
-          directives: []
+          ref: 'window'
         };
 
-        return <div ref="window" {...windowData}>{genContainer.bind(this)()} {!props.hideDelimiters && genDelimiters()}</div>
+        return <div {...windowData}>
+          {genContainer()}
+          {!props.hideDelimiters && genDelimiters()}
+        </div>
       }
 
       return {
@@ -150,7 +157,8 @@
       }
     },
     render() {
-      return this.genWindow.bind(this)();
+      const genScopeId = getScopeIdRender()
+      return genScopeId(this.genWindow)();
     }
   }
 </script>

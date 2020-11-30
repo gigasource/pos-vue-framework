@@ -1,8 +1,10 @@
 <script>
+  import { withModifiers } from 'vue';
   import GIcon from '../GIcon/GIcon';
-  import {getEvents, getLabel, getSlotEventListeners, getValidate} from './GInputFactory';
+  import { getEvents, getLabel, getSlotEventListeners, getValidate, inputEvents } from './GInputFactory';
   import {getInternalValue} from '../../mixins/getVModel';
-
+  import _ from 'lodash'
+  
   export default {
     name: 'GTextFieldRF',
     components: {GIcon},
@@ -68,21 +70,25 @@
       },
 
       // basic props
-      value: [String, Number],
+      modelValue: [String, Number],
       type: {
         type: String,
         default: 'text',
       },
 
     },
+    emits: _.union(inputEvents, []),
     setup: function (props, context) {
+      const inputRef = ref(null)
+      const caretRef = ref(null)
+      
       const internalValue = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
       const {
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
       const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(props, internalValue, isValidInput, isFocused, 'g-tf--label__active');
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput);
       const genMessage = () => {
@@ -95,7 +101,7 @@
       }
       const genClearIcon = () => {
         if (props.clearable && isDirty.value) {
-          return <div vOn:click_stop={onClearIconClick}>
+          return <div onClick={withModifiers(onClearIconClick, ['stop'])}>
             <g-icon>{props.clearIcon}</g-icon>
           </div>
         }
@@ -115,15 +121,15 @@
                  class="g-tf--input"
                  style={inputErrStyles}
                  label={props.label}
-                 vOn:input={e => internalValue.value = e}
+                 onInput={e => internalValue.value = e}
                  value={internalValue.value}
                  placeholder={props.placeholder}
                  readonly={props.readOnly}
                  ref='input'
-                 vOn:change={onChange}
-                 vOn:focus={onFocus}
-                 vOn:blur={onBlur}
-                 vOn:keydown={onKeyDown}/>
+                 onChange={onChange}
+                 onFocus={onFocus}
+                 onBlur={onBlur}
+                 onKeydown={onKeyDown}/>
           {genLabel()}
         </div>
       }
@@ -143,13 +149,13 @@
       const genInput = () => {
         const tfErrClasses = computed(() => isValidInput.value ? {} : {'g-tf__error': true})
         return <div class={['g-tf', tfErrClasses]}>
-          <div class="g-tf--prepend__inner" vOn:click={onClickPrependInner}>
+          <div class="g-tf--prepend__inner" onClick={onClickPrependInner}>
             {genIconSlot('prepend-inner')}
           </div>
           {genAffix(props, 'prefix')}
           {genInputGroup()}
           {genAffix(props, 'suffix')}
-          <div class="g-tf--append__inner" vOn:click={onClickAppendInner}>
+          <div class="g-tf--append__inner" onClick={onClickAppendInner}>
             {genClearIcon()}
           </div>
           {genIconSlot('append-inner')}
@@ -181,21 +187,23 @@
           }
           return {}
         });
-        return <div class={["g-tf--wrapper", tfWrapperClasses, tfErrWrapperClass]} vOn:click="onClick"
-                    vOn:mouseup="onMouseUp" vOn:mousedown="onMouseDown">
-          <div class="g-tf--prepend__outer" ref="prependRef" vOn:click={onClickPrependOuter}>
+        return <div class={["g-tf--wrapper", tfWrapperClasses, tfErrWrapperClass]} onClick="onClick"
+                    onMouseup="onMouseUp" onMousedown="onMouseDown">
+          <div class="g-tf--prepend__outer" ref="prependRef" onClick={onClickPrependOuter}>
             {genIconSlot('prepend-outer')}
           </div>
           <fieldset>
             <legend style={legendStyles}>{props.label}</legend>
           </fieldset>
           {genInput()}
-          <div class="g-tf--append__outer" vOn:click={onClickAppendOuter} ref="append-outer">
+          <div class="g-tf--append__outer" onClick={onClickAppendOuter} ref="append-outer">
             {genIconSlot("append-outer")}
           </div>
         </div>
       }
       return {
+        inputRef,
+        caretRef,
         genTextField,
         isValidInput,
         isDirty,
