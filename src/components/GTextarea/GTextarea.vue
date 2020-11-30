@@ -16,7 +16,7 @@
         </div>
         <div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
-          <textarea id="tear" ref="input"
+          <textarea id="tear" ref="inputRef"
                     class="g-tf-input"
                     :style="tearStyles"
                     :label="label"
@@ -61,18 +61,21 @@
 
 <script>
   import {ref, computed, watch, onMounted} from 'vue';
+  import _ from 'lodash'
   import {
     getEvents,
     getInternalValue,
     getLabel,
     getSlotEventListeners,
     getValidate,
+    inputEvents
   } from '../GInput/GInputFactory';
   import GIcon from "../GIcon/GIcon";
 
   export default {
     name: 'GTextarea',
     components: {GIcon},
+    emits: _.union(inputEvents, []),
     props: {
       ...{//display props
         label: String,
@@ -115,7 +118,7 @@
       flat: Boolean,
 
       // basic props
-      value: [String, Number],
+      modelValue: [String, Number],
 
       //textarea
       autoGrow: Boolean,
@@ -137,6 +140,9 @@
       },
     },
     setup(props, context) {
+      const inputRef = ref(null)
+      const caretRef = ref(null)
+      
       const tfWrapperClasses = getTfWrapperClasses(props);
 
       const {internalValue} = getInternalValue(props, context);
@@ -168,7 +174,7 @@
       const {
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
       //set legend width for label in outlined textfield
       const legendStyles = computed(() => {
         if (!props.solo && props.label && (isFocused.value || isDirty || !!internalValue.value)) {
@@ -182,7 +188,7 @@
 
       //textarea logic
       function calculateInputHeight() {
-        const input = context.refs.input
+        const input = inputRef.value
         if (!input) return
 
         input.style.height = '0'
@@ -210,6 +216,8 @@
       })
 
       return {
+        inputRef,
+        caretRef,
         //calculated styles and classes
         labelClasses,
         labelStyles,
