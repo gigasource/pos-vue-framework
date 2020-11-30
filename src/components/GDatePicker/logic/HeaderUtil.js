@@ -38,7 +38,7 @@ export const _monthChange = (value, sign) => {
 }
 
 /**
- * Change month or year by {sign} depend on _currentDateMonth props.value is month or year
+ * Change month or year by {sign} depend on _currentDateMonth props.modelValue is month or year
  * @param value an object contains 'value' property is String
  * @param sign -1 or +1
  * @returns {string} new month or year
@@ -64,10 +64,6 @@ export const _calculateChange = (value, sign) => {
 /**
  * Get navigation state
  * @export4test
- * @param props
- * @param state
- * @returns {Ref<any>}
- * @private
  */
 export const _computedNavigateStatus = (props, state) => {
   // return 'YYYY-MM' from props.min if props.min provided
@@ -94,9 +90,6 @@ export const _computedNavigateStatus = (props, state) => {
 /**
  * Get computed header content
  * @export4test
- * @param state
- * @returns {Ref<any>}
- * @private
  */
 export const _computedHeaderContent = state => {
   return computed(() => dayjs(state.viewportDate).format(state.activePicker === 'date' ? 'YYYY-MM' : 'YYYY'));
@@ -105,10 +98,6 @@ export const _computedHeaderContent = state => {
 /**
  * get header format function
  * @export4test
- * @param props
- * @param state
- * @returns {Ref<any>}
- * @private
  */
 export const _computedHeaderFormatFn = (props, state) => {
   const formatFn = date => dayjs(date).format(state.activePicker === 'date' ? 'MMMM YYYY' : 'YYYY')
@@ -117,11 +106,6 @@ export const _computedHeaderFormatFn = (props, state) => {
 
 /**
  * @export4test
- * @private
- * @param props
- * @param state
- * @returns {Ref<any>}
- * @private
  */
 export const _computedContents = (props, state) => {
   const cptHeaderContentFormatFn = _computedHeaderFormatFn(props, state)
@@ -133,13 +117,6 @@ export const _computedContents = (props, state) => {
   }))
 }
 
-/**
- *
- * @param props
- * @param state
- * @returns {Ref<any>}
- * @private
- */
 export const computedHeaderModel = ({ props, state }) => {
   const cptContents = _computedContents(props, state)
   const cptNavigateStatus = _computedNavigateStatus(props, state)

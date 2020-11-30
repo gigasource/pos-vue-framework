@@ -36,7 +36,7 @@
         default: () => null,
       },
       // Default value of date-picker
-      value: [Array, String],
+      modelValue: [Array, String],
 
 
       //// Groups: Color
@@ -113,14 +113,14 @@
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
     },
-    emits: ['input', 'value'],
+    emits: ['update:modelValue', 'value'],
     setup(props, context) {
       let dateFormat = props.type === 'date' ? 'YYYY-MM-dd' : 'YYYY-MM'
       let initialDateValue
       if (!props.multiple && !props.range)
-        initialDateValue = props.value ? props.value : dayjs().format(dateFormat)
+        initialDateValue = props.modelValue ? props.modelValue : dayjs().format(dateFormat)
       else
-        initialDateValue = props.value ? props.value : []
+        initialDateValue = props.modelValue ? props.modelValue : []
 
       const state = reactive({
         value: initialDateValue,
@@ -128,7 +128,7 @@
         showMenu: false,
       })
 
-      watch(() => props.value, newValue => {
+      watch(() => props.modelValue, newValue => {
         if(state.value !== newValue) {
           state.value = copyValue(newValue)
         }
@@ -162,7 +162,7 @@
         return <span style="height: 32px; line-height: 32px; display: block;">{cptTextFieldValue.value}</span>
       }
 
-      function gTextFieldInputScopedSlots() {
+      function gTextFieldInputVSlots() {
         return {
           'input-slot': ({ inputErrStyles }) =>
               <div style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
@@ -175,14 +175,15 @@
         return {
           activator: gMenuScope =>
               <g-text-field
+                  class="g-date-picker__activator"
                   label={props.label}
                   prependIcon={props.icon}
-                  value={cptTextFieldValue.value}
+                  modelValue={cptTextFieldValue.value}
                   onClick={e => {
                     gMenuScope.toggleContent(e)
                     state.tempValue = copyValue(state.value)
                   }}
-                  scopedSlots={gTextFieldInputScopedSlots()}/>
+                  v-slots={gTextFieldInputVSlots()}/>
         }
       }
 
@@ -192,54 +193,47 @@
               contentFillWidth={false}
               minWidth={300}
               nudgeBottom={10}
-              value={state.showMenu}
-              onInput={v => state.showMenu = v}
-              scopedSlots={gMenuActivatorSlots()}>
+              v-model={state.showMenu}
+              v-slots={gMenuActivatorSlots()}>
             <g-date-picker
-                vShow={state.showMenu}
-                {...{
-                  props: {
-                    ..._.pick(props, ['allowedDates', 'max', 'min', 'events', 'color', 'rangeColor', 'eventColor', 'headerColor', 'fullWidth',
-                      'width', 'dayFormat', 'monthFormat', 'weekdayFormat', 'headerDateFormat', 'titleDateFormat', 'noTitle', 'landscape', 'firstDayOfWeek',
-                      'showWeek', 'showCurrent', 'type', 'disabled', 'readonly', 'scrollable', 'range', 'multiple'
-                    ]),
-                    value: state.tempValue
-                  },
-                  on: {
-                    input: v => state.tempValue = v
-                  }
-                }}>
-              <div class="actions-btn">
-                <g-btn flat onClick={e => {
-                  state.showMenu = false
-                }}>Cancel
-                </g-btn>
+                v-show={state.showMenu}
+                {..._.pick(props, ['allowedDates', 'max', 'min', 'events', 'color', 'rangeColor', 'eventColor', 'headerColor', 'fullWidth',
+                  'width', 'dayFormat', 'monthFormat', 'weekdayFormat', 'headerDateFormat', 'titleDateFormat', 'noTitle', 'landscape', 'firstDayOfWeek',
+                  'showWeek', 'showCurrent', 'type', 'disabled', 'readonly', 'scrollable', 'range', 'multiple'
+                ])}
+                v-model={state.tempValue}>
+              <div style="display: flex; flex-direction: row-reverse; padding: 0 10px 15px 10px;">
+                <g-btn flat onClick={e => state.showMenu = false}>Cancel</g-btn>
                 &nbsp;
                 <g-btn flat onClick={e => {
                   state.value = copyValue(state.tempValue);
-                  context.emit('input', cptTextFieldValue.value)
+                  context.emit('update:modelValue', cptTextFieldValue.value)
                   context.emit('value', copyValue(state.value))
                   state.showMenu = false
-                }}>OK
-                </g-btn>
+                }}>OK</g-btn>
               </div>
             </g-date-picker>
           </g-menu>
         </div>
       }
-      
-      return getScopeIdRender()(renderGDatePickerInput)
+      return {
+        state,
+        renderWithScope: getScopeIdRender()(renderGDatePickerInput)
+      }
+    },
+    render() {
+      return this.renderWithScope()
     }
   }
 </script>
 
 <style scoped lang="scss">
-  .actions-btn {
-    display: flex;
-    flex-direction: row-reverse;
-    padding: 0 10px 15px 10px;
+  ::v-deep .g-date-picker__activator {
+    .g-tf-input {
+      visibility: hidden;
+    }
   }
-
+  
   ::v-deep {
     .g-menu--activator {
       span {

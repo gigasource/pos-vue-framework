@@ -8,6 +8,8 @@ import isLeapYear from 'dayjs/plugin/isLeapYear'
 
 dayjs.extend(isLeapYear)
 
+export const emitEvents = [ 'update:modelValue', 'click:date', 'dblclick:date' ]
+
 /**
  * Return number of day in a month
  * @param cptYear
@@ -35,7 +37,7 @@ export const _computedDaysInMonth = (cptYear, cptMonth) => computed(() => {
  * @returns {Ref<any>}
  */
 export const _computedDayNameInWeek = (props) => {
-  const narrowWeekDayFn = (date => dayjs(date).format('dd').substr(0, 1))
+  const narrowWeekDayFn = date => dayjs(date).format('dd').substr(0, 1)
   const weekdayFormatter = computed(() => props.weekdayFormat || narrowWeekDayFn)
 
   const weekDays = computed(() => {
@@ -271,7 +273,7 @@ export const computedDateTableModel = ({ props, context, state, cptIsMultiSelect
       onDateClicked: (dateItem) => {
         if (dateItem.isAllowed && !props.readonly) {
           applyNewSelectedValue(props, state, dateItem.value)
-          context.emit('input', cptIsMultiSelect.value ? state.selectedValues.map(val => val) : state.selectedValues)
+          context.emit('update:modelValue', cptIsMultiSelect.value ? state.selectedValues.map(val => val) : state.selectedValues)
           context.emit('click:date', dateItem.value)
         }
       },
@@ -292,7 +294,8 @@ const DateTableUtil = {
   cptAdjacentMonth,
   getDateItemObj,
   getFirstNDaysOfMonth,
-  getLastNDaysOfMonth
+  getLastNDaysOfMonth,
+  emitEvents
 }
 
 export default DateTableUtil

@@ -7,8 +7,8 @@ import { computed } from 'vue'
  * Get range from props.min to props.max, included boundary
  *
  * In case min and max of props is undefined, year range will be generated base on
- * props.value and currentYearOffset (default 20):
- *   => [ props.value - currentYearOffset, ... , props.value + currentYearOffset]
+ * props.modelValue and currentYearOffset (default 20):
+ *   => [ props.modelValue - currentYearOffset, ... , props.modelValue + currentYearOffset]
  */
 export function _computedYearRange(props, currentYearOffset = 50) {
   return computed(() => {

@@ -15,7 +15,7 @@ export const SingleValueDatePicker = () => ({
   props: {
     max: { default: text('max', '2030-10-19') },
     min: { default: text('min', '2019-10-10') },
-    value: { default: text('value', '2019-10-15') },
+    modelValue: { default: text('value', '2019-10-15') },
     color: { default: text('color', "") },
     headerColor: { default: text('headerColor', "") },
     fullWidth: { default: boolean('fullWidth', false) },
@@ -33,7 +33,7 @@ export const SingleValueDatePicker = () => ({
     <g-date-picker
       :max="max"
       :min="min"
-      :value="value"
+      v-model="modelValue"
       :color="color"
       :header-color="headerColor"
       :full-width="fullWidth"
@@ -55,7 +55,7 @@ export const MultipleValueDatePicker = () => ({
   props: {
     max: { default: text('max', '2030-10-25') },
     min: { default: text('min', '2019-10-10') },
-    value: { default: array('value', ['2019-10-15', '2019-10-19']) },
+    modelValue: { default: array('value', ['2019-10-15', '2019-10-19']) },
     color: { default: text('color', '') },
     headerColor: { default: text('headerColor', '') },
     fullWidth: { default: boolean('fullWidth', false) },
@@ -72,7 +72,7 @@ export const MultipleValueDatePicker = () => ({
   template: `<g-date-picker
         :max="max"
         :min="min"
-        :value="value"
+        v-model="modelValue"
         :color="color"
         :header-color="headerColor"
         :full-width="fullWidth"
@@ -96,7 +96,7 @@ export const RangeValueDatePicker = () => ({
   props: {
     max: { default: text('max', '2030-10-25') },
     min: { default: text('min', '2019-10-10') },
-    value: { default: array('value', ['2019-10-15', '2019-10-19']) },
+    modelValue: { default: array('value', ['2019-10-15', '2019-10-19']) },
     color: { default: text('color', '') },
     rangeColor: { default: text('rangeColor', '') },
     headerColor: { default: text('headerColor', '') },
@@ -114,7 +114,7 @@ export const RangeValueDatePicker = () => ({
   template: `<g-date-picker
       :max="max"
       :min="min"
-      :value="value"
+      v-model="modelValue"
       :color="color"
       :range-color="rangeColor"
       :header-color="headerColor"
@@ -136,7 +136,7 @@ export const RangeValueDatePicker = () => ({
 export const SingleValueMonthPicker = () => ({
   components: { GDatePicker },
   props: {
-    value: { default: text('value', '2019-10') },
+    modelValue: { default: text('value', '2019-10') },
     color: { default: text('color', '') },
     headerColor: { default: text('headerColor', '') },
     fullWidth: { default: boolean('fullWidth', false) },
@@ -152,7 +152,7 @@ export const SingleValueMonthPicker = () => ({
   },
   template: `<div>
     <g-date-picker
-        :value="value"
+        v-model="modelValue"
         :color="color"
         :header-color="headerColor"
         :full-width="fullWidth"
@@ -174,7 +174,7 @@ export const SingleValueMonthPicker = () => ({
 export const MultipleValueMonthPicker = () => ({
   components: { GDatePicker },
   props: {
-    value: { default: array('value', ['2019-10', '2019-12']) },
+    modelValue: { default: array('value', ['2019-10', '2019-12']) },
     color: { default: text('color', '') },
     headerColor: { default: text('headerColor', '') },
     fullWidth: { default: boolean('fullWidth', false) },
@@ -190,7 +190,7 @@ export const MultipleValueMonthPicker = () => ({
   },
   template: `<div>
     <g-date-picker
-        :value="value"
+        v-model="modelValue"
         :color="color"
         :header-color="headerColor"
         :full-width="fullWidth"
