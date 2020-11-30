@@ -1,12 +1,8 @@
-import {createElement, setInputValue} from "../../../tests/setup";
-
-const Vue = require("vue/dist/vue.common.js");
-import plugin, {computed, ref, watch, onMounted, onBeforeUnmount} from "vue";
-import GSlideshowFactory from "../GSlideshowFactory";
-import moment from "moment";
+import { mount } from '@vue/test-utils'
+import { h, onMounted, ref } from 'vue';
+import GSlideshowFactory from '../GSlideshowFactory';
+import moment from 'moment';
 import _ from 'lodash';
-
-Vue.use(plugin);
 
 // Import your components after all of above import
 
@@ -36,167 +32,149 @@ const resetStartTime = _.once(function () {
   startTime = moment();
 })
 
-const parentVmFactory = attrs => {
-  const child = {
-    props: {
-      value: Array,
-      defaultTransition: {
-        type: String,
-        default: "slide"
-      },
-      transitionDuration: {
-        type: Number,
-        default: 15
-      }
-    },
-    setup(props, context) {
-      class Node {
-        constructor(id, display, opts) {
-          this.id = id;
-          this._display = display;
-          Object.assign(this, opts);
-        }
-
-        get display() {
-          return this._display;
-        }
-
-        set display(_display) {
-          this._display = _display;
-          //mutate dom
-        }
-
-        play() {
-          //play video here
-        }
-
-        setMedia(item) {
-          this.item = item;
-          /*context.emit("update:status", _.cloneDeep({
-            count: count.value,
-            //currentItem: currentItem.value,
-            //nextItem: nextItem.value,
-            slideNodes
-          }));*/
-          //
-        }
-
-        getDuration() {
-          return 2;
-        }
-
-        animate(_, opt) {
-          const _animate = {};
-          setTimeout(() => {
-            _animate.onfinish && _animate.onfinish();
-          }, opt.duration);
-          return _animate;
-        }
-      }
-
-      let cb;
-
-      const {
-        count,
-        currentItem,
-        nextItem
-      } = GSlideshowFactory(props, context, Node, (_lastItem) => cb && cb(_lastItem))
-
-      cb = async function (_lastItem) {
-        await context.root.$nextTick() && await context.root.$nextTick();
-        context.emit("update:status", _.cloneDeep({
-          count: count.value,
-          current: _lastItem
-          //currentItem: currentItem.value,
-          //nextItem: nextItem.value,
-        }));
-      }
-    },
-    render() {
-      return <div></div>;
-    }
-  };
-
-  const wrapper = {
-    props: {
-      value: Array,
-      defaultTransition: {
-        type: String,
-        default: "slide"
-      },
-      transitionDuration: {
-        type: Number,
-        default: 15
-      }
-    },
-    components: {child},
-    data() {
-      return {
-        count: 0
-      }
-    },
-    watch: {
-      value() {
-        this.count++;
-      }
-    },
-    render(h, context) {
-      return h('child', {props: this.$props, key: this.count, on: this.$listeners})
-    }
+class Node {
+  constructor(id, display, opts) {
+    this.id = id;
+    this._display = display;
+    Object.assign(this, opts);
+    Object.assign(this, { container: document.createElement('image') })
   }
 
+  get display() {
+    return this._display;
+  }
+
+  set display(_display) {
+    this._display = _display;
+    //mutate dom
+  }
+
+  play() {
+    //play video here
+  }
+
+  setMedia(item) {
+    this.item = item;
+    /*context.emit("update:status", _.cloneDeep({
+      count: count.value,
+      //currentItem: currentItem.value,
+      //nextItem: nextItem.value,
+      slideNodes
+    }));*/
+    //
+  }
+
+  getDuration() {
+    return 50;
+  }
+
+  animate(_, opt) {
+    const _animate = {};
+    setTimeout(() => {
+      _animate.onfinish && _animate.onfinish();
+    }, opt.duration);
+    return _animate;
+  }
+}
+
+const child = {
+  props: {
+    modelValue: Array,
+    defaultTransition: {
+      type: String,
+      default: 'slide'
+    },
+    transitionDuration: {
+      type: Number,
+      default: 15
+    }
+  },
+  setup(props, context) {
+    let cb = function (_lastItem) {
+      context.emit('update:status', {});
+    };
+    const slideContainer = ref(null)
+    GSlideshowFactory(props, slideContainer, Node, (_lastItem) => cb && cb(_lastItem))
+
+    onMounted(() => {
+      resetStartTime()
+      slideContainer.value = document.createElement('div')
+    })
+  },
+  render() {
+    return <div></div>;
+  }
+};
+
+const wrapper = {
+  props: {
+    modelValue: Array,
+    defaultTransition: {
+      type: String,
+      default: 'slide'
+    },
+    transitionDuration: {
+      type: Number,
+      default: 15
+    }
+  },
+  components: { child },
+  data() {
+    return {
+      count: 0
+    }
+  },
+  watch: {
+    value() {
+      this.count++;
+    }
+  },
+  setup(props) {
+    return () => h(child, props)
+  }
+}
+
+const parentVmFactory = attrs => {
   const protocols = [];
-  const vm = new Vue({
-    components: {wrapper},
+  const vm = {
+    components: { wrapper },
     data() {
       return {
-        externalValueNormalize: null,
-        selection: null,
         ...attrs
       };
     },
-    render(h) {
-      //return <child vModel={this.parentValue}/>
-      return (
-          <wrapper
-              {...{
-                props: this.$data,
-                on: {
-                  "update:status": function (status) {
-                    //resetStartTime();
-                    const duration = moment.duration(moment().diff(startTime));
-                    //startTime = moment();
-                    protocols.push({
-                      time: duration.asMilliseconds(),
-                      ...status
-                    });
-                  }
-                }
-              }}
-              ref={"child"}
-              vOn:input={val => (this.value = val)}
-          />
-      );
-      // return <div>test</div>;
-    },
-    mounted() {
-      this.child = this.$refs.child;
+    setup(props) {
+      return () => h(wrapper, {
+        ...props,
+        'onUpdate:status': function (status) {
+          const duration = moment.duration(moment().diff(startTime));
+          startTime = moment();
+          protocols.push({
+            time: duration.asMilliseconds(),
+            ...status
+          });
+        },
+      })
     }
-  }).$mount();
-  return {protocols, vm};
+  }
+  return { protocols, vm };
 };
 
-describe("GSlideShow", function () {
-  it("should render wrapper", function (next) {
-    const {vm, protocols} = parentVmFactory({
-      value: [
-        {src: "src1", type: "image", transition: "None", duration: 50},
-        {src: "src2", type: "image", transition: "None", duration: 50},
-        {src: "src3", type: "image", transition: "None", duration: 50},
-        {src: "src4", type: "image", transition: "None", duration: 50},
-        {src: "src5", type: "image", transition: "None", duration: 50},
-      ]
-    });
+describe('GSlideShow', function () {
+  it('should render wrapper', function (next) {
+    const { vm, protocols } = parentVmFactory();
+
+    const wrapper = mount(vm, {
+      propsData: {
+        modelValue: [
+          { src: 'src1', type: 'image', transition: 'None', duration: 50 },
+          { src: 'src2', type: 'image', transition: 'None', duration: 50 },
+          { src: 'src3', type: 'image', transition: 'None', duration: 50 },
+          { src: 'src4', type: 'image', transition: 'None', duration: 50 },
+          { src: 'src5', type: 'image', transition: 'None', duration: 50 },
+        ]
+      }
+    })
 
     // setTimeout(() => {
     //   vm.value.push({src: "src4", type: "image", transition: "None", duration: 50});
