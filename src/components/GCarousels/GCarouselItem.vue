@@ -1,6 +1,7 @@
 <script>
   import GWindowItem from '../GWindow/GWindowItem';
   import GImg from '../GImg/GImg';
+  import {getScopeIdRender} from "../../utils/helpers";
 
   export default {
     name: 'GCarouselItem',
@@ -20,7 +21,8 @@
       }
     },
     render() {
-      return this.genCarouselItem()
+      const genScopeId = getScopeIdRender()
+      return genScopeId(this.genCarouselItem)()
     }
   }
 </script>

@@ -1,6 +1,7 @@
 <script>
 import { computed, onMounted, watch, reactive, provide } from 'vue';
 import { convertToUnit, getInternalValue } from '../../utils/helpers';
+import { getScopeIdRender } from '../../utils/helpers';
 import GWindow from '../GWindow/GWindow';
 import GBtn from '../GBtn/GBtn';
 import GIcon from '../GIcon/GIcon';
@@ -61,18 +62,13 @@ export default {
       carousel: null,
       window: null
     });
-
     onMounted(function () {
-      data.carousel = this;
       startTimeout();
     });
-
     function registerWindow(window) {
       data.window = window;
     }
-
     provide('registerWindow', registerWindow);
-
     const internalValue = getInternalValue(props, context);
     const cycle = computed(() => {
       return props.cycle;
@@ -92,27 +88,21 @@ export default {
         'g-carousel__hide-delimiter-background': props.hideDelimiterBackground,
       }
     });
-
     const styles = computed(() => ({
       height: convertToUnit(props.height),
       width: convertToUnit(props.width)
     }));
-
     function restartTimeout() {
       data.slideTimeout && clearTimeout(data.slideTimeout);
       data.slideTimeout = undefined;
-
       window.requestAnimationFrame(startTimeout);
     }
-
     function startTimeout() {
       if (!props.cycle) {
         return;
       }
-
       data.slideTimeout = window.setTimeout(data.window.next, +props.interval > 0 ? +props.interval : 6000)
     }
-
     function genCarousel() {
       const nodeData = {
         class: classes.value,
@@ -139,7 +129,8 @@ export default {
       genCarousel
     }
   }, render() {
-    return this.genCarousel();
+    const genScopeId = getScopeIdRender()
+    return genScopeId(this.genCarousel)();
   }
 }
 </script>
