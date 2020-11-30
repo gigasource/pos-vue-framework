@@ -1,6 +1,6 @@
 <script type="text/jsx">
   import _ from 'lodash'
-  import { withModifiers } from 'vue'
+  import { withModifiers, getCurrentInstance } from 'vue'
   import { getScopeIdRender } from '../../utils/helpers'
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -13,23 +13,25 @@
     components: { GIcon },
     props: {
       label: String,
-      value: String,
+      modelValue: String,
       min: String,
       max: String,
       disabled: false,
       readonly: false,
     },
-    emits: ['input'],
+    emits: ['update:modelValue'],
     setup(props, context) {
+      const currentInstance = getCurrentInstance()
+      
       const state = reactive({
         year: 0,
         month: 0,
         day: 0
       })
 
-      watch(() => props.value, () => {
+      watch(() => props.modelValue, () => {
         // month start from 0 in js, but display from 1 in string, so we need to subtract 1 when convert it to integer
-        const [year, month, day] = _.map((props.value ? props.value : dayjs().format('YYYY-MM-dd')).split('-'), v => parseInt(v))
+        const [year, month, day] = _.map((props.modelValue ? props.modelValue : dayjs().format('YYYY-MM-dd')).split('-'), v => parseInt(v))
         state.year = year
         state.month = month - 1
         state.day = day
@@ -166,13 +168,13 @@
         if ((props.min && newDate < props.min) || (props.max && newDate > props.max)) {
           return
         }
-        context.emit('input', newDate)
+        context.emit('update:modelValue', newDate)
       }
       const showMonth = () => {
-        context.refs.month.click()
+        currentInstance.refs.month.click()
       }
-      const showDay = () => context.refs.day.click()
-      const showYear = () => context.refs.year.click()
+      const showDay = () => currentInstance.refs.day.click()
+      const showYear = () => currentInstance.refs.year.click()
 
 
       function renderGDateSelect() {

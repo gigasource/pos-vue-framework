@@ -1,7 +1,7 @@
 <script type="text/jsx">
   import _ from 'lodash'
   import { ref, computed, withModifiers } from 'vue'
-  import GDatePickerUtil from './logic/GDatePickerUtil'
+  import GDatePickerUtil, { emitEvents } from './logic/GDatePickerUtil'
   import GPicker from '../GPicker/GPicker'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
   import { getScopeIdRender } from '../../utils/helpers'
@@ -27,9 +27,8 @@
         default: () => null,
       },
       // Default value of date-picker
-      value: [Array, String],
-
-
+      modelValue: [Array, String],
+      
       //// Groups: Color
       // Color for picker-header and selected date
       // if both color and headerColor present, headerColor will be used for header
@@ -110,7 +109,7 @@
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
     },
-    emits: [],
+    emits: emitEvents,
     setup(props, context) {
       const {
         titleModel,
@@ -134,8 +133,7 @@
                 {titleModel.value.year}
               </div>
               <div class='g-picker__title__btn g-date-picker-title__date'>
-                  <div key={titleModel.value.date}
-                       domPropsInnerHTML={titleModel.value.date}/>
+                <div key={titleModel.value.date} v-html={titleModel.value.date}/>
               </div>
             </div>)
       }
@@ -364,6 +362,13 @@
 
       // datepicker render function
       function datePickerRenderFn() {
+        const gPickerSlots = {
+          title: () => datePickerTitleRenderFn(),
+          default: () => <div key={state.activePicker}>
+            {datePickerBodyRenderFn()}
+          </div>,
+          actions: () => context.slots.default && context.slots.default()
+        }
         return (
             <g-picker
                 color={props.headerColor || props.color || DEFAULT_COLOR}
@@ -371,20 +376,11 @@
                 landscape={props.landscape}
                 width={props.width >= MINIMUM_WIDTH ? props.width : MINIMUM_WIDTH}
                 noTitle={props.noTitle}
-                disabled={props.disabled}>
-              <template slot="title">
-                {datePickerTitleRenderFn()}
-              </template>
-              <div key={state.activePicker}>
-                {datePickerBodyRenderFn()}
-              </div>
-              <template slot="actions">
-                {context.slots.default && context.slots.default()}
-              </template>
+                disabled={props.disabled}
+                v-slots={gPickerSlots}>
             </g-picker>
         )
       }
-      
       
       return {
         titleModel,

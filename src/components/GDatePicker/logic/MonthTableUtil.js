@@ -3,6 +3,8 @@ import { pad } from './utils';
 import { isSelected, isAllowed, applyNewSelectedValue } from './TableUtil'
 import dayjs from 'dayjs'
 
+export const emitEvents = [ 'update:modelValue', 'click:month', 'dblclick:month' ]
+
 const shortMonthFormatFn = monthValue => dayjs(monthValue).format('MMM')
 const monthRows = {
   columns: [null, null, null],
@@ -60,7 +62,7 @@ export const computedMonthTableModel = ({ props, context, state, cptIsMultiSelec
           if (monthItem.isAllowed && !props.readonly) {
             applyNewSelectedValue(props, state, monthItem.value)
             // if props is month, then emit selected value
-            context.emit('input', cptIsMultiSelect.value ? state.selectedValues.map(val => val) : state.selectedValues)
+            context.emit('update:modelValue', cptIsMultiSelect.value ? state.selectedValues.map(val => val) : state.selectedValues)
             context.emit('click:month', monthItem.value)
           }
         }

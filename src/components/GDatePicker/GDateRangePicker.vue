@@ -1,37 +1,36 @@
 <script type="text/jsx">
   import _ from 'lodash'
   import dayjs from 'dayjs';
-  import { reactive, computed, ref, watch, withModifiers } from 'vue';
-  import GDatePickerUtil from './logic/GDatePickerUtil';
+  import { reactive, watch, withModifiers } from 'vue';
+  import GDatePickerUtil, { emitEvents } from './logic/GDatePickerUtil';
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable';
   import GDateSelect from './GDateSelect';
   import GBtn from '../GBtn/GBtn'
   import GDivider from '../GLayout/GDivider';
   import { getScopeIdRender } from '../../utils/helpers';
 
-
   const DEFAULT_COLOR = '#2979FF'
   const DEFAULT_RANGE_COLOR = 'rgba(109, 159, 244, 0.2)'
 
   export default {
-    name: 'GRangePicker',
+    name: 'GRangePicker', // TODO: Consider change component name to GDateRangePicker
     components: { GDivider, GDateSelect, GBtn },
     props: {
       max: String,
       min: String,
       disabled: false,
       readonly: false,
-      value: Array,
+      modelValue: Array,
       color: { type: String, default: DEFAULT_COLOR },
       rangeColor: { type: String, default: DEFAULT_RANGE_COLOR },
     },
-    emits: ['input'],
+    emits: _.union(['update:modelValue'] , emitEvents),
     setup(props, context) {
       const now = new Date()
       const TICKS_PER_DAY = 864e5
       const ISO_DATE_FORMAT = 'YYYY-MM-DD'
-      const start = props.value && props.value.length > 0 ? props.value[0] : null
-      const end = props.value && props.value.length > 1 ? props.value[1] : null
+      const start = props.modelValue && props.modelValue.length > 0 ? props.modelValue[0] : null
+      const end = props.modelValue && props.modelValue.length > 1 ? props.modelValue[1] : null
       const startRange = start || new Date(now.getTime() - TICKS_PER_DAY * 4).toISOString().substr(0, 10)
       const endRange = end || new Date(now.getTime() + TICKS_PER_DAY * 4).toISOString().substr(0, 10)
       //
@@ -44,7 +43,7 @@
         showWeek: false,
         showCurrent: false,
         range: true,
-        value: [startRange, endRange],
+        modelValue: [startRange, endRange],
         max: endRange,
         focusOnFirstItem: true
       })
@@ -58,7 +57,7 @@
         showWeek: false,
         showCurrent: false,
         range: true,
-        value: [startRange, endRange],
+        modelValue: [startRange, endRange],
         min: startRange,
         focusOnFirstItem: false
       })
@@ -86,30 +85,30 @@
       function selectToday() {
         state.currentMode = selectMode.today
         const today = dayjs().format(ISO_DATE_FORMAT)
-        rangeStartPickerProps.value = [today, today]
-        rangeEndPickerProps.value = [today, today]
+        rangeStartPickerProps.modelValue = [today, today]
+        rangeEndPickerProps.modelValue = [today, today]
       }
 
       function selectYesterday() {
         state.currentMode = selectMode.yesterday
         const yesterday = dayjs().subtract(1, 'day').format(ISO_DATE_FORMAT)
-        rangeStartPickerProps.value = [yesterday, yesterday]
-        rangeEndPickerProps.value = [yesterday, yesterday]
+        rangeStartPickerProps.modelValue = [yesterday, yesterday]
+        rangeEndPickerProps.modelValue = [yesterday, yesterday]
       }
 
       function selectThisWeek() {
         state.currentMode = selectMode.thisWeek
         const firstDayOfWeek = dayjs().startOf('week').format(ISO_DATE_FORMAT)
         const endOfWeek = dayjs().endOf('week').format(ISO_DATE_FORMAT)
-        rangeStartPickerProps.value = [firstDayOfWeek, endOfWeek]
-        rangeEndPickerProps.value = [firstDayOfWeek, endOfWeek]
+        rangeStartPickerProps.modelValue = [firstDayOfWeek, endOfWeek]
+        rangeEndPickerProps.modelValue = [firstDayOfWeek, endOfWeek]
       }
 
       function selectThisMonth() {
         state.currentMode = selectMode.thisMonth
         const daysInMonth = dayjs().daysInMonth()
-        rangeStartPickerProps.value = [`${dayjs().format('YYYY-MM')}-01`, `${dayjs().format('YYYY-MM')}-${daysInMonth}`]
-        rangeEndPickerProps.value = [`${dayjs().format('YYYY-MM')}-01`, `${dayjs().format('YYYY-MM')}-${daysInMonth}`]
+        rangeStartPickerProps.modelValue = [`${dayjs().format('YYYY-MM')}-01`, `${dayjs().format('YYYY-MM')}-${daysInMonth}`]
+        rangeEndPickerProps.modelValue = [`${dayjs().format('YYYY-MM')}-01`, `${dayjs().format('YYYY-MM')}-${daysInMonth}`]
       }
 
 
@@ -121,9 +120,9 @@
 
       function setStartDateValue(date) {
         selectCustom()
-        if (date <= rangeStartPickerProps.value[1]) {
-          rangeStartPickerProps.value = [date, rangeStartPickerProps.value[1]]
-          rangeEndPickerProps.value = [date, rangeEndPickerProps.value[1]]
+        if (date <= rangeStartPickerProps.modelValue[1]) {
+          rangeStartPickerProps.modelValue = [date, rangeStartPickerProps.modelValue[1]]
+          rangeEndPickerProps.modelValue = [date, rangeEndPickerProps.modelValue[1]]
           rangeEndPickerProps.min = date
         }
       }
@@ -136,15 +135,15 @@
 
       function setEndDateValue(date) {
         selectCustom()
-        if (date >= rangeStartPickerProps.value[0]) {
-          rangeStartPickerProps.value = [rangeStartPickerProps.value[0], date]
-          rangeEndPickerProps.value = [rangeEndPickerProps.value[0], date]
+        if (date >= rangeStartPickerProps.modelValue[0]) {
+          rangeStartPickerProps.modelValue = [rangeStartPickerProps.modelValue[0], date]
+          rangeEndPickerProps.modelValue = [rangeEndPickerProps.modelValue[0], date]
           rangeStartPickerProps.max = date
         }
       }
 
-      watch(() => rangeStartPickerProps.value, newVal => {
-        context.emit('input', newVal)
+      watch(() => rangeStartPickerProps.modelValue, newVal => {
+        context.emit('update:modelValue', newVal)
 			})
 
       function addDateItemClass(dateRows) {
@@ -251,15 +250,15 @@
             <g-date-select
                 style="flex: 1"
                 label="Start Date"
-                value={rangeStartPickerProps.value[0]}
-                max={rangeStartPickerProps.value[1]}
-                onInput={setStartDateValue}/>
+                modelValue={rangeStartPickerProps.modelValue[0]}
+                max={rangeStartPickerProps.modelValue[1]}
+                onUpdate:modelValue={setStartDateValue}/>
             <g-date-select
                 style="flex: 1"
                 label="End Date"
-                value={rangeStartPickerProps.value[1]}
-                min={rangeStartPickerProps.value[0]}
-                onInput={setEndDateValue}/>
+                modelValue={rangeStartPickerProps.modelValue[1]}
+                min={rangeStartPickerProps.modelValue[0]}
+                onUpdate:modelValue={setEndDateValue}/>
           </div>
           <div class="row-flex px-3">
             <div style="border-radius: 5px 0 0 5px; border: 1px solid #DFE4E8;">

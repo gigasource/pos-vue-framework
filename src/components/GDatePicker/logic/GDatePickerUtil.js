@@ -2,17 +2,12 @@ import { computed, reactive, watch } from 'vue'
 import { computedTitleModel } from './TitleUtil'
 import { computedHeaderModel } from './HeaderUtil'
 import { computedYearModel } from './YearsUtil'
-import { computedDateTableModel } from './DateTableUtil'
-import { computedMonthTableModel } from './MonthTableUtil'
+import { computedDateTableModel, emitEvents as dateTableEvents } from './DateTableUtil'
+import { computedMonthTableModel, emitEvents as monthTableEvents} from './MonthTableUtil'
 import dayjs from 'dayjs';
+import _ from 'lodash'
 
-/**
- * boolean value indicate that whether user can select multiple day in date picker
- * its value is true when multiple or range option are provided
- * @param props
- * @returns {*}
- */
-export const _computedIsMultiple = (props) => computed(() => props.multiple || props.range)
+export const emitEvents = _.union(dateTableEvents, monthTableEvents)
 
 /**
  * Validate if input value is correct or not
@@ -36,9 +31,9 @@ function getValidInitialValue(props, cptIsMultiSelect) {
   const defaultValue = (props.type === 'date'
       ? `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
       : `${now.getFullYear()}-${now.getMonth() + 1}`)
-  return (cptIsMultiSelect.value && Array.isArray(props.value)
-      ? (props.value || []).map(value => value)
-      : (props.value || defaultValue))
+  return (cptIsMultiSelect.value
+      ? (props.modelValue || []).map(value => value)
+      : (props.modelValue || defaultValue))
 }
 
 /**
@@ -48,8 +43,8 @@ function getValidInitialValue(props, cptIsMultiSelect) {
  * @returns {{header: Ref<any>, year: Ref<any>, months: Ref<any>, state: UnwrapRef<{selectedMonth: undefined, activePicker: *, selectedYear: undefined, selectedDay: undefined, tableDate}>, title: Ref<any>, dates: Ref<any>}}
  */
 export default (props, context) => {
-  const cptIsMultiSelect = _computedIsMultiple(props)
-  validateInitialValue(props.value, cptIsMultiSelect)
+  const cptIsMultiSelect = computed(() => props.multiple || props.range)
+  validateInitialValue(props.modelValue, cptIsMultiSelect)
 
   const state = reactive({
     // string value indicate what viewport should be shown
@@ -63,7 +58,7 @@ export default (props, context) => {
     //   YYYY: when show year picker, YYYY value will be used to highlight current year
     //   YYYY: when show month picker, with YYYY is the year of month picker
     //   YYYY-MM: show date picker, with YYYY-MM is the month of date picker
-    viewportDate: dayjs().format( props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM'),
+    viewportDate: dayjs().format(props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM'),
 
     // store selected value(s)
     // string if single mode is used
@@ -72,20 +67,20 @@ export default (props, context) => {
     selectedValues: getValidInitialValue(props, cptIsMultiSelect),
   })
 
-  watch(() => props.value, newVal => {
-    // Update selectedValues state on external change of props.value
+  watch(() => props.modelValue, newVal => {
+    // Update selectedValues state on external change of props.modelValue
     // compare newVal and state.selectedValues to reduce un-necessary update:
-    // user change date -> state.selectedValues change (1) -> emit input -> props.value change -> watch props.value -> update state.selectedValues (2)
+    // user change date -> state.selectedValues change (1) -> emit input -> props.modelValue change -> watch props.modelValue -> update state.selectedValues (2)
     if (newVal != state.selectedValues)
       state.selectedValues = getValidInitialValue(props, cptIsMultiSelect)
 
     // update viewport
     state.viewportDate = (cptIsMultiSelect.value
-        ? props.value.length === 0
+        ? props.modelValue.length === 0
           ? dayjs().format(props.type === 'date' ? 'YYYY-MM-DD': 'YYYY-MM')
           : props.focusOnFirstItem
-            ? props.value[0]
-            : props.value[props.value.length - 1]
+            ? props.modelValue[0]
+            : props.modelValue[props.modelValue.length - 1]
         : getValidInitialValue(props, cptIsMultiSelect)
     )
   })
