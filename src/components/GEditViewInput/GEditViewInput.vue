@@ -20,7 +20,10 @@
   export default {
     name: 'GEditViewInput',
     props: {
-      value: { type: String, default: '' },
+      modelValue: {
+        type: String,
+        default: ''
+      },
       readonly: Boolean,
     },
     data() {
@@ -30,9 +33,10 @@
         // when VDOM updated, we will check if EVI just switch from view -> edit mode, then we will focus to input and highlight it's content
         previousMode: 'view',
         mode: 'view',
-        internalValue: this.value || ''
+        internalValue: this.modelValue || ''
       }
     },
+    emits: ['update:modelValue'],
     computed: {
       inputClasses() {
         return {
@@ -42,7 +46,7 @@
       }
     },
     watch: {
-      value(val) {
+      modelValue(val) {
         this.internalValue = val
       }
     },
@@ -65,15 +69,15 @@
       },
       applyChange() {
         this.mode = 'view'
-        this.$emit('input', this.internalValue, changeApplied => {
+        this.$emit('update:modelValue', this.internalValue, changeApplied => {
           if (!changeApplied)
-            this.internalValue = this.value
+            this.internalValue = this.modelValue
         })
       },
       resetValue() {
         this.mode = 'view'
-        this.internalValue = this.value
-        this.$emit('input', this.value)
+        this.internalValue = this.modelValue
+        this.$emit('update:modelValue', this.modelValue)
       }
     }
   }
