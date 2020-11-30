@@ -16,10 +16,10 @@
 </template>
 
 <script>
-  import {computed, onMounted, onBeforeUnmount} from 'vue'
-  import {setBackgroundColor} from '../../mixins/colorable';
-  import {calcTop, calcLeft} from './TopLeftCalculate';
-  import {convertToUnit} from '../../utils/helpers';
+  import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+  import { setBackgroundColor } from '../../mixins/colorable';
+  import { calcTop, calcLeft } from './TopLeftCalculate';
+  import { convertToUnit } from '../../utils/helpers';
   import menuable from '../../mixins/menuable';
   import tooltipSpeechBubble from './GTooltipSpeechBubble';
   import detachable from '../../mixins/detachable';
@@ -133,9 +133,11 @@
       show: Boolean,
     },
     setup(props, context) {
-      const {attachToRoot, detach} = detachable(props, context)
-      const {updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState} = menuable(props, context)
-      const {showSpeechBubble, speechBubbleClass, speechBubbleStyle} = tooltipSpeechBubble(props, context)
+      const content = ref(null)
+
+      const { attachToRoot, detach } = detachable(props, context, { activator: props.activator, content })
+      const { updateDimensions, dimensions, calcXOverflow, calcYOverFlow, menuableState } = menuable(props, context)
+      const { showSpeechBubble, speechBubbleClass, speechBubbleStyle } = tooltipSpeechBubble(props, context)
 
       //// TOOLTIP CONTENT ////
       let colorOutput = computed(() => setBackgroundColor(props.color, {}))
@@ -160,8 +162,10 @@
       })
 
       onMounted(() => {
-        attachToRoot()
-        context.root.$nextTick(() => updateDimensions(props.activator))
+        nextTick(() => {
+          attachToRoot()
+          updateDimensions(props.activator, content)
+        })
       })
 
       onBeforeUnmount(() => {
@@ -175,7 +179,8 @@
         transitionName,
         showSpeechBubble,
         speechBubbleClass,
-        speechBubbleStyle
+        speechBubbleStyle,
+        content,
       }
     }
   }

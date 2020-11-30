@@ -188,7 +188,7 @@
         const renderFn = () => (
           <li>
             <span class={['g-tree-view__item', {'g-tree-view__item--expandable': childrenVNodes != null}]}
-                  vOn:click={() => childrenVNodes && (state.collapse = !state.collapse)}>
+                  onClick={() => childrenVNodes && (state.collapse = !state.collapse)}>
               {
                 childrenVNodes
                   ? <g-icon small color="red"> {state.collapse ? 'chevron_right' : 'expand_more'}</g-icon>
@@ -248,7 +248,6 @@
       }
 
       const {treeStates, genTree} = GTreeFactory({
-        treeStates: Vue.observable({}),
         genNode,
         genWrapper,
         genRootWrapper,

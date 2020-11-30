@@ -43,7 +43,7 @@ export const playground = () => ({
 
     return () => (
         <div>
-          <button vOn:click={() => data.value = createData()}>Change data</button>
+          <button onClick={() => data.value = createData()}>Change data</button>
           <g-tree-view-example
               item-text={node => node.content}
               item-children='children'
