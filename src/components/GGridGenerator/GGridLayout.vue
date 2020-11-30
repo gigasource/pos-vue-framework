@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { fromJSON } from './logic/modelParser'
-  import { onMounted, onUpdated, reactive, watch} from 'vue'
+  import { onMounted, onUpdated, reactive, ref, watch } from 'vue'
   import GridModel from './logic/GridModel';
   import GDialog from '../GDialog/GDialog'
   import GBtn from '../GBtn/GBtn'
@@ -33,14 +33,17 @@
 
       // a unique uid for scoped stylesheet of grid layout instance
       const uid = 'gl-' + (gridLayoutInstanceCounter++)
+      
       // vue template ref id
       const refIdWrapperElement = 'el'
+      const el = ref(null)
+      
       // css generate
       const cssClassPrefix = uid + '-'
       const getAreaClass = name => `${name} ${cssClassPrefix}${name}`
-      const addAreaClassForPredefinedArea = () => {
+      const addAreaClassForPredefinedArea = function () {
         // assign class for pre-defined area
-        const wrapperEl = context.refs[refIdWrapperElement]
+        const wrapperEl = el.value
         _.each(wrapperEl.querySelectorAll(`[area]`), areaDomNode => {
           const areaName = areaDomNode.getAttribute('area')
           // in case default slot contains multiple element which have the same area value, these areas will be wrapped
@@ -77,17 +80,17 @@
       }
       const __getAreaName = classList => _.find(classList, clsName => clsName.startsWith(cssClassPrefix)).substr(cssClassPrefix.length)
       const __showPreviewAreaName = () => {
-        const wrapperEl = context.refs[refIdWrapperElement]
+        const wrapperEl = el.value
         const areaEls = [...wrapperEl.querySelectorAll(`[class*="${cssClassPrefix}"]`)]
         _.each(areaEls, areaDomNode => {
-          if (areaDomNode.childNodes.length == 0) {
+          if (areaDomNode.childNodes.length === 0) {
             areaDomNode.style += areaDomNode.style + '; position: relative; '
             areaDomNode.appendChild(__createAreaNameElement(__getAreaName(areaDomNode.classList)))
           }
         })
       }
       const __removePreviewArea = () => {
-        const wrapperEl = context.refs[refIdWrapperElement]
+        const wrapperEl = el.value
         const areaEls = [...wrapperEl.querySelectorAll(`[class="${__previewAreaNameClassSignature}"]`)]
         _.each(areaEls, el => el.parentNode.removeChild(el))
       }
@@ -220,13 +223,13 @@
           )
           const passThroughVNodes = props.passThrough ? getPassThroughVNodes() : null
 
-          vNode = <div
-              class={cssClassName}
-              ref={refIdWrapperElement}>
-            {styleVNode}
-            {passThroughVNodes}
-            {_.map(model.subAreas, processLayout)}
-          </div>
+          vNode = (
+              <div class={cssClassName} ref={refIdWrapperElement}>
+                {styleVNode}
+                {passThroughVNodes}
+                {_.map(model.subAreas, processLayout)}
+              </div>
+          )
         } else {
           // an area which was declared in layout but not exist in grid template
           // will be rendered as a empty div
@@ -240,12 +243,20 @@
       onMounted(() => addAreaClassForPredefinedArea())
       onUpdated(() => addAreaClassForPredefinedArea())
 
-      return () => {
+      const renderFn = () => {
         // run every time render function execute because of v-if
         extractNamedSlotVnodeFn()
         extractNamedAreaVNodes()
         return processLayout(state.layout)
       }
+      
+      return {
+        el,
+        renderFn
+      }
+    },
+    render() {
+      return this.renderFn()
     }
   }
 </script>

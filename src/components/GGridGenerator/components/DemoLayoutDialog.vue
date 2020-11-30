@@ -6,6 +6,7 @@
   import GBtn from '../../GBtn/GBtn'
   import GAutoComplete from '../../GAutocomplete/GAutocomplete'
   import GTextField from '../../GInput/GTextField'
+  import { getScopeIdRender } from '../../../utils/helpers';
 
   export function renderGLayoutData(model) {
     let css = ''
@@ -27,6 +28,7 @@
       // input data for g-auto-complete: include all area name
       areaNames: Array
     },
+    events: ['close'],
     setup(props, context) {
       const suggestedTags = [
         { text: 'span', value: 'span' },
@@ -90,7 +92,7 @@
         context.emit('close')
       }
 
-      return () => {
+      const renderFn = () => {
         return <g-dialog value={props.show} width="570px" persistent class="g-layout-data-dialog">
           <div class="g-layout-data-dialog__content">
             <span class="g-layout-data-dialog__content__header">Demo layout</span>
@@ -99,17 +101,17 @@
                   flat label="Area"
                   items={props.areaNames}
                   selected={cptSelected.value}
-                  vOn:input={v => v && (state.area = v.value)}/>
+                  onInput={v => v && (state.area = v.value)}/>
               <g-auto-complete
                   flat label="Tag"
                   items={suggestedTags}
                   selected={cptSelectedTag.value}
-                  vOn:input={v => v && (state.tag = v.value)}
+                  onInput={v => v && (state.tag = v.value)}
               />
-              <g-text-field flat label="Text" value={state.text} vOn:input={v => state.text = v}/>
-              <g-text-field flat label="Border" value={state.border} vOn:input={v => state.border = v}/>
-              <g-text-field flat label="Width" value={state.width} vOn:input={v => state.width = v}/>
-              <g-text-field flat label="Height" value={state.height} vOn:input={v => state.height = v}/>
+              <g-text-field flat label="Text" value={state.text} onInput={v => state.text = v}/>
+              <g-text-field flat label="Border" value={state.border} onInput={v => state.border = v}/>
+              <g-text-field flat label="Width" value={state.width} onInput={v => state.width = v}/>
+              <g-text-field flat label="Height" value={state.height} onInput={v => state.height = v}/>
               <div>
                 <label>Image</label>
                 <div>
@@ -117,20 +119,22 @@
                       <span
                           class={{ "sample-image": true, "sample-image--selected": id === state.selectedImageId }}
                           style={{ backgroundImage: img }}
-                          vOn:click={() => state.selectedImageId = id}>
+                          onClick={() => state.selectedImageId = id}>
                       </span>)}
                 </div>
               </div>
             </div>
             <div class="g-layout-data-dialog__content__action-btn">
-              <g-btn flat outlined vOn:click={() => create()}>{props.value ? 'Update' : 'Create'}</g-btn>
+              <g-btn flat outlined onClick={() => create()}>{props.value ? 'Update' : 'Create'}</g-btn>
               &nbsp;
-              <g-btn flat outlined vOn:click={() => cancel()}>Cancel</g-btn>
+              <g-btn flat outlined onClick={() => cancel()}>Cancel</g-btn>
             </div>
           </div>
         </g-dialog>
       }
-    }
+      
+      return getScopeIdRender()(renderFn)
+    },
   }
 </script>
 <style scoped lang="scss">
