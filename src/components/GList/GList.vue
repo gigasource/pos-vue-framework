@@ -86,7 +86,6 @@
         toggleItem,
         isActiveItem,
       } = props.selectable ? makeListSelectable(props, context, internalItems) : {}
-
       const getText = computed(() => createItemFn(props.itemText))
 
       function onArrowDown(index) {
@@ -146,6 +145,7 @@
         return `g-list-item-${props.prependType}`;
       })
       const genItemPrepend = (item) => {
+        debugger
         const getPrepend = () => {
           switch (props.prependType) {
             case 'icon':
@@ -193,6 +193,15 @@
         </div>
         if (item.append) return <template>{item.append}</template>
       }
+      
+      function getListItemItem(item) {
+        debugger
+        return [
+            (context.slots['prepend'] && context.slots['prepend']({ isSelected: isActiveItem(item), item: item })) || genItemPrepend(item),
+            (context.slots['content'] && context.slots['content']()) || genItemContent(item),
+            (context.slots['append'] && context.slots['append']({ isSelected: isActiveItem(item), item: item })) || genItemAppend(item),
+        ]
+      }
 
       function genItemSelectable(item, index) {
         return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
@@ -214,7 +223,8 @@
                     {...getListEvents(item, index) }
         >
           {
-            [(context.slots['prepend'] && context.slots['prepend']({ item: item })) || genItemPrepend(item),
+            [
+              (context.slots['prepend'] && context.slots['prepend']({ item: item })) || genItemPrepend(item),
               (context.slots['content'] && context.slots['content']()) || genItemContent(item),
               (context.slots['append'] && context.slots['append']({ item: item })) || genItemAppend(item),
             ]
@@ -243,12 +253,13 @@
             (props.divider && index < renderList.value.length - 1) ? genDivider() : null]
         }
         const genListItemDisplayOnly = (item, index) => {
-          return [
-            context.slots['list-item']
+          const listItem = context.slots['list-item']
               ? context.slots['list-item']({ item: item, on: getListEvents(item, index) })
-              : genItemDisplayOnly(item, index),
-
-            (props.divider && index < internalItems.value.length - 1) ? genDivider() : null]
+              : genItemDisplayOnly(item, index)
+          return [
+            listItem,
+            (props.divider && index < internalItems.value.length - 1) ? genDivider() : null
+          ]
         }
         return [
           props.subheader ? genSubheader() : null,
@@ -307,7 +318,7 @@
           internalValue,
           internalItems
         }
-        : { genList, internalItems }
+        : { genList, internalItems, context }
     },
     render() {
       const scopeIdRender = getScopeIdRender()

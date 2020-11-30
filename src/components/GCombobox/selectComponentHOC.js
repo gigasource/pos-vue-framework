@@ -1,5 +1,5 @@
 import GMenu from '../GMenu/GMenu';
-import { getCurrentInstance } from 'vue'
+import { getCurrentInstance, nextTick } from 'vue'
 import { getSelectionText, makeListSelectable, emitEvents as listEmitEvents } from '../GList/listSelectFactory';
 import { computed, reactive, ref } from 'vue';
 import { getInputEventHandlers, emitEvents as eventHandlerEmitEvents } from './eventHandlersFactory';
@@ -178,8 +178,8 @@ const componentsFactory = (component, componentName) => {
           let listRef = currentInstance.refs['menu'].$refs['list']
           let domItem = listRef && listRef.$el.getElementsByClassName('g-list-item')[context.slots['prepend-item'] ? index + 1 : index]
           isActiveItem(item)
-            ? context.root.$nextTick(() => domItem && domItem.classList.add('g-list-item__active'))
-            : context.root.$nextTick(() => domItem && domItem.classList.remove('g-list-item__active'))
+            ? nextTick(() => domItem && domItem.classList.add('g-list-item__active'))
+            : nextTick(() => domItem && domItem.classList.remove('g-list-item__active'))
         })
       }
 
@@ -219,8 +219,8 @@ const componentsFactory = (component, componentName) => {
       const searchFocused = ref(false)
       const genSearchField = () => {
         return <GTextField placeholder="Search"
-                           onInput={e => lazySearch.value = e}
-                           value={listSearchText.value}
+                           onUpdate:modelValue={e => lazySearch.value = e}
+                           modelValue={listSearchText.value}
                            clearable
                            ref="searchText"
                            autofocus={searchFocused.value}
@@ -328,13 +328,13 @@ const componentsFactory = (component, componentName) => {
               'disabled', 'readOnly',
               'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped', 'dense', 'clearable',
               'hint', 'persistent',
-              'counter', 'placeholder', 'label', 'prefix', 'suffix',
+              'counter', 'placeholder', 'label', /*'prefix',*/ 'suffix',
               'rules',
               'type',
               'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon',
               'clearIconColor', 'required', 'virtualEvent'
             ]),
-            value: tfValue.value,
+            modelValue: tfValue.value,
             prependValue: prependText.value,
             // events
             'onClick:clearIcon': clearSelection,
@@ -347,15 +347,16 @@ const componentsFactory = (component, componentName) => {
               !props.multiple && (state.showOptions = false)
             },
             onKeydown: onInputKeyDown,
-            onInput: e => {
+            'onUpdate:modelValue': e => {
               tfValue.value = e
               state.showOptions = true
             },
           }
 
           const textfield = props.textFieldComponent ? props.textFieldComponent : 'GTextField'
+          // TODO: custom text field
           return (
-            <textfield
+            <GTextField
                 {...textFieldProps}
                 v-slots={textFieldScopedSlots.value}
                 style={{ 'flex-wrap': 'wrap' }}
@@ -396,12 +397,12 @@ const componentsFactory = (component, componentName) => {
           // props
           ...Object.assign(defaultMenuProps, props.menuProps),
           nudgeBottom: nudgeBottom.value,
-          value: state.showOptions,
+          modelValue: state.showOptions,
           eager: props.eager,
           closeOnClick: !props.keepMenuOnBlur,
           ...props.menuClass && { contentClass: props.menuClass },
           // events
-          onInput: (e) => state.showOptions = state.isFocused ? true : e
+          'onUpdate:modelValue': (e) => state.showOptions = state.isFocused ? true : e
         }
         const gMenuSlots = {
           activator: ({ toggleContent }) =>
