@@ -1,4 +1,4 @@
-import { onMounted, reactive, watch, computed } from 'vue';
+import { onMounted, reactive, watch, computed, getCurrentInstance } from 'vue';
 import { fromHSVA } from '../GColorPickerUtil';
 import { clamp } from 'lodash/number';
 import { tabIndexes } from '../commonUI';
@@ -6,6 +6,7 @@ import { tabIndexes } from '../commonUI';
 function updateCanvas(canvas, hue) {
   const ctx = canvas.getContext('2d')
   if (!ctx) {
+    console.error('canvas context is missing!')
     return
   }
 
@@ -24,6 +25,7 @@ function updateCanvas(canvas, hue) {
 
 export function getRenderCanvasFn(props, context, state, tabState, updateColor) {
   const canvasRef = 'canvas'
+  const currentInstance = getCurrentInstance()
   const cptCanvasSize = computed(() => ({
     width: props.width || 300,
     height: 150
@@ -36,16 +38,17 @@ export function getRenderCanvasFn(props, context, state, tabState, updateColor) 
 
   watch(() => tabState.selectedTab, () => {
     if (tabState.selectedTab === tabIndexes.colorPicker) {
-      updateCanvas(context.refs[canvasRef], state.color.hue)
+      console.log('switched to canvas')
+      updateCanvas(currentInstance.refs[canvasRef], state.color.hue)
     }
   })
 
   watch(() => state.color.hue, () => {
-    updateCanvas(context.refs[canvasRef], state.color.hue)
-  }, { lazy: true })
+    updateCanvas(currentInstance.refs[canvasRef], state.color.hue)
+  }, { lazy: true }, {})
 
   function emitColor(x, y) {
-    const { width, height, left, top } = context.refs[canvasRef].getBoundingClientRect()
+    const { width, height, left, top } = currentInstance.refs[canvasRef].getBoundingClientRect()
     updateColor(fromHSVA({
       h: state.color.hue,
       s: clamp(x - left, 0, width) / width,
@@ -56,18 +59,22 @@ export function getRenderCanvasFn(props, context, state, tabState, updateColor) 
 
   let mouseDown
   function handleCanvasMouseDown() {
+    console.log('down')
     if (!props.disabled) mouseDown = true
   }
 
   function handleCanvasMouseMove(e) {
+    console.log('move')
     if (mouseDown) emitColor(e.clientX, e.clientY)
   }
 
   function handleCanvasMouseUp() {
+    console.log('up')
     mouseDown = false
   }
 
   function handleMouseLeave() {
+    console.log('leave')
     mouseDown = false
   }
 
@@ -76,12 +83,12 @@ export function getRenderCanvasFn(props, context, state, tabState, updateColor) 
       <canvas
           class='g-color-picker__color-field__ground'
           ref={canvasRef}
-          width={cptCanvasSize.width}
-          height={cptCanvasSize.height}
-          vOn:mousedown={handleCanvasMouseDown}
-          vOn:mousemove={handleCanvasMouseMove}
-          vOn:mouseup={handleCanvasMouseUp}
-          vOn:mouseleave={handleMouseLeave}>
+          width={cptCanvasSize.value.width}
+          height={cptCanvasSize.value.height}
+          onMousedown={handleCanvasMouseDown}
+          onMousemove={handleCanvasMouseMove}
+          onMouseup={handleCanvasMouseUp}
+          onMouseleave={handleMouseLeave}>
       </canvas>
       <div class='g-color-picker__color-field__dot' style={cptDotStyle.value}></div>
     </div>

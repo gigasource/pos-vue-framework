@@ -30,7 +30,7 @@ export default function getRenderColorEditorFn(state, updateColor) {
           <input type='text' maxLength={7}
                  class='g-color-picker__editor__input'
                  value={state.color.hex}
-                 vOn:keyup={updateHex}/>
+                 onKeyup={updateHex}/>
           <small>HEX</small>
         </span>
     )
@@ -51,7 +51,7 @@ export default function getRenderColorEditorFn(state, updateColor) {
                  min={0}
                  max={ getRGBAElementMaxValue(element) }
                  maxLength={ getRGBAElementMaxLength(element) }
-                 vOn:keyup={e => updateRGBA(e, element)}/>
+                 onKeyup={e => updateRGBA(e, element)}/>
           <small>{element.toUpperCase()}</small>
         </span>)
   }

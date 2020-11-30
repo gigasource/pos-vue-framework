@@ -84,13 +84,13 @@ export default function getSwatchesRenderFn(onColorSelected) {
           <div class='g-color-picker__pallet__name'> {colorPalletModel.name} </div>,
           <div class='g-color-picker__pallet'> {
               _.map(colorPalletModel.pallet, pallet => {
-                const scopedSlots = {
+                const slots = {
                   activator: (scope) => <span key={pallet.name} class='g-color-picker__pallet__item'
                       style={{ ...getTransparentImageStyle(pallet), ...palletItemStyleObj, backgroundColor: pallet.value }}
-                      vOn:mouseleave={scope.on.mouseleave}
-                      vOn:mouseenter={scope.on.mouseenter}
-                      vOn:blur={scope.on.blur}
-                      vOn:click={() => onColorSelected(pallet)}></span>
+                      onMouseleave={scope.on.mouseleave}
+                      onMouseenter={scope.on.mouseenter}
+                      onBlur={scope.on.blur}
+                      onClick={() => onColorSelected(pallet)}></span>
                 }
                 return (
                     <g-tooltip
@@ -98,7 +98,7 @@ export default function getSwatchesRenderFn(onColorSelected) {
                         top
                         speech-bubble
                         open-on-hover
-                        scopedSlots={scopedSlots}
+                        v-slots={slots}
                         color={tooltipBackgroundColor}
                         transition='none'
                         lazy

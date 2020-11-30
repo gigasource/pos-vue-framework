@@ -19,9 +19,23 @@ export const colorPicker = () => ({
 
 export const colorPickerInput = () => ({
   components: { GColorPickerInput },
-  setup() {
-    return () => <g-color-picker-input label={'background color'}/>
-  }
+  data() {
+    return {
+      color: '#000000'
+    }
+  },
+  methods: {
+    updateColor(val) {
+      console.log('update color to ', val)
+      this.color = val
+    }
+  },
+  template:
+  `<g-color-picker-input 
+      :model-value="color" 
+      label='background color'
+      @update:modelValue="updateColor"
+  />`,
 })
 
 export const colorPickerInputModel = () => ({
