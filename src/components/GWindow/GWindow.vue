@@ -72,12 +72,7 @@
       provide('unregister', unregister);
       provide('windowData', data);
       provide('internalValue', internalValue);
-      const registerWindow = inject('registerWindow', null);
 
-      onMounted(function () {
-        window.requestAnimationFrame(() => data.isBooted = true);
-        registerWindow && registerWindow(this);
-      });
 
       const classes = computed(() => ({
         'g-window': true,
@@ -106,6 +101,10 @@
         data.isReverse = val < oldVal
       }, { flush: 'pre' });
 
+      onMounted(function() {
+        window.requestAnimationFrame(() => data.isBooted = true);
+      })
+
       const hasActiveItems = computed(() => !!data.items.find(item => !item.disabled));
 
       const computedTransition = computed(() => {
@@ -120,6 +119,7 @@
       });
 
       provide('windowComputedTransition', computedTransition);
+
 
       function getNextIndex(index) {
         const nextIndex = (index + 1) % data.items.length;
@@ -277,6 +277,10 @@
     render() {
       const genScopeId = getScopeIdRender()
       return genScopeId(this.genWindow)();
+    },
+    mounted() {
+      const registerWindow = inject('registerWindow', null);
+      registerWindow && registerWindow(this);
     }
   }
 </script>
