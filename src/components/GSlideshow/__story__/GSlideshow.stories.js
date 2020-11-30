@@ -29,7 +29,7 @@ export const Basic = () => ({
         {
           src: 'https://images.wallpaperscraft.com/image/forest_trees_fog_110485_2560x1440.jpg',
           type: 'image',
-          transition: transitionList.slideRightToLeft,
+          // transition: transitionList.slideRightToLeft,
           duration: 5000
         },
         {
@@ -103,7 +103,7 @@ export const Basic = () => ({
   template: `
     <div style="position: relative; width: 800px; height: 480px">
     <g-btn @click="start">Next</g-btn>
-    <g-slideshow v-model="slideItems"/>
+    <g-slideshow v-model="slideItems" defaultTransition="slideBottomToTop"/>
     </div>
   `,
   mounted() {

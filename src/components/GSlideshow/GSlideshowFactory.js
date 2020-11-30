@@ -1,13 +1,13 @@
 import { computed, watch } from 'vue';
 
-const { cloneDeep } = require('lodash')
+import { cloneDeep } from 'lodash'
 
 const STATES = {
   'FREE': 0,
   'WORKING': 1
 }
 
-const { getTransitionDuration, getTransition } = require('./transition-utils')
+import {getTransitionDuration, getTransition } from './transition-utils'
 
 export function createSlideNode() {
   const slideNode = document.createElement('div')
@@ -136,8 +136,8 @@ export default function GSlideshowFactory(props, slideContainer, NodeClass = Nod
     const transitionDuration = getTransitionDuration(currentItem.transition, props);
     setTimeout(() => {
       nextNode.display = true;
-      let currentTransitionOut = currentNode.animate(...getTransition(currentItem.transition, 'out', props));
-      let currentTransitionIn = nextNode.animate(...getTransition(currentItem.transition, 'in', props));
+      let currentTransitionOut = currentNode.animate(...getTransition(currentItem.transition || props.defaultTransition, 'out', props));
+      let currentTransitionIn = nextNode.animate(...getTransition(currentItem.transition || props.defaultTransition, 'in', props));
       nextNode.play();
       currentTransitionOut.onfinish = () => {
         currentNode.display = false;
