@@ -128,15 +128,15 @@ export function createSimpleFunctional(c, el = 'div', name) {
 
 export function getInternalValue(props, context) {
   // text field internalValue
-  const rawInternalValue = ref(props.value);
+  const rawInternalValue = ref(props.modelValue);
 
-  watch(() => props.value, () => rawInternalValue.value = props.value, { lazy: true });
+  watch(() => props.modelValue, () => rawInternalValue.value = props.modelValue, { lazy: true });
 
   const internalValue = computed({
     get: () => rawInternalValue.value,
     set: (value) => {
       rawInternalValue.value = value;
-      context.emit('input', rawInternalValue.value)
+      context.emit('update:modelValue', rawInternalValue.value)
     }
   });
 

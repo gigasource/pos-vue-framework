@@ -30,52 +30,53 @@ export const GCarouselDefault = () => ({
     delimiterIcon: { type: String, default: text('delimiterIcon', 'mdi-checkbox-blank-circle') },
     hideDelimiterBackground: { type: Boolean, default: boolean('hideDelimiterBackground', false) },
     hideDelimiters: { type: Boolean, default: boolean('hideDelimiters', false) },
-    height: { type: Number, default: number('height', 500, {min: 300, max: 1000}) },
-    elevation: { type: Number, default: number('elevation', 2, {min: 1, max: 24}) },
-    interval: { type: Number, default: number('interval', 1000, {min: 1000, max: 10000000}) },
+    height: { type: Number, default: number('height', 500, { min: 300, max: 1000 }) },
+    elevation: { type: Number, default: number('elevation', 2, { min: 1, max: 24 }) },
+    interval: { type: Number, default: number('interval', 1000, { min: 1000, max: 10000000 }) },
   },
-  template: `<g-carousel v-model="selectedItem" :hide-delimiters="hideDelimiters" :vertical-delimiters="verticalDelimiters" :delimiter-icon="delimiterIcon" :elevation="elevation" :height="height" :reverse="reverse" :show-arrows-on-hover="showArrowsOnHover" :next-icon="nextIcon" :vertical="vertical" :show-arrows="showArrows" :prev-icon="prevIcon"  :cycle="cycle" :interval="interval" :hide-delimiter-background="hideDelimiterBackground"> 
-              <g-carousel-item>
-                <g-card width="100%" height="500px" background-color="green">
-                  <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
-                    <h1 style="color: white">SLIDE 1</h1>
-                  </div>
-                </g-card>
-              </g-carousel-item>
-              <g-carousel-item>
-                <g-card width="100%" height="500px" background-color="blue">
-                  <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
-                    <h1 style="color: white">SLIDE 2</h1>
-                  </div>
-                </g-card>
-              </g-carousel-item>
-              <g-carousel-item>
-                <g-card width="100%" height="500px" background-color="red">
-                  <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
-                    <h1 style="color: white">SLIDE 3</h1>
-                  </div>
-                </g-card>             
-              </g-carousel-item>
-              <g-carousel-item>
-               <g-card width="100%" height="500px" background-color="orange">
-                  <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
-                    <h1 style="color: white">SLIDE 4</h1>
-                  </div>
-                </g-card>           
-              </g-carousel-item>
-                <g-carousel-item>
-                <g-card width="100%" height="500px" background-color="brown">
-                  <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
-                    <h1 style="color: white">SLIDE 5</h1>
-                  </div>
-                </g-card>          
-              </g-carousel-item>
-               <g-carousel-item>
-                <g-card width="100%" height="500px" background-color="purple">
-                  <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
-                    <h1 style="color: white">SLIDE 6</h1>
-                  </div>
-                </g-card>           
-              </g-carousel-item>
-            </g-carousel>`,
+  template: `{{selectedItem}}
+  <g-carousel v-model="selectedItem" :hide-delimiters="hideDelimiters" :vertical-delimiters="verticalDelimiters" :delimiter-icon="delimiterIcon" :elevation="elevation" :height="height" :reverse="reverse" :show-arrows-on-hover="showArrowsOnHover" :next-icon="nextIcon" :vertical="vertical" :show-arrows="showArrows" :prev-icon="prevIcon" :cycle="cycle" :interval="interval" :hide-delimiter-background="hideDelimiterBackground">
+  <g-carousel-item>
+    <g-card width="100%" height="500px" background-color="green">
+      <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
+        <h1 style="color: white">SLIDE 1</h1>
+      </div>
+    </g-card>
+  </g-carousel-item>
+  <g-carousel-item>
+    <g-card width="100%" height="500px" background-color="blue">
+      <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
+        <h1 style="color: white">SLIDE 2</h1>
+      </div>
+    </g-card>
+  </g-carousel-item>
+  <g-carousel-item>
+    <g-card width="100%" height="500px" background-color="red">
+      <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
+        <h1 style="color: white">SLIDE 3</h1>
+      </div>
+    </g-card>
+  </g-carousel-item>
+  <g-carousel-item>
+    <g-card width="100%" height="500px" background-color="orange">
+      <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
+        <h1 style="color: white">SLIDE 4</h1>
+      </div>
+    </g-card>
+  </g-carousel-item>
+  <g-carousel-item>
+    <g-card width="100%" height="500px" background-color="brown">
+      <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
+        <h1 style="color: white">SLIDE 5</h1>
+      </div>
+    </g-card>
+  </g-carousel-item>
+  <g-carousel-item>
+    <g-card width="100%" height="500px" background-color="purple">
+      <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 50px);">
+        <h1 style="color: white">SLIDE 6</h1>
+      </div>
+    </g-card>
+  </g-carousel-item>
+  </g-carousel>`,
 });

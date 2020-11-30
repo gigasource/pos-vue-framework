@@ -253,7 +253,7 @@ export const GWindowInfiniteScrollTest = () => ({
     hideDelimiters: {type: Boolean, default: boolean('hideDelimiters', false)},
 
   },
-  template: `<g-scroll-window :continuous="continuous"
+  template: `{{selectedItem}}<g-scroll-window :continuous="continuous"
                        :hide-delimiters="hideDelimiters"
                        :elevation="elevation" :vertical="vertical"
                        :show-arrows-on-hover="showArrowsOnHover"
