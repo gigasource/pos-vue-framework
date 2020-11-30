@@ -21,7 +21,7 @@
       useSeconds: Boolean,
 
       // values
-      value: String,
+      modelValue: String,
 
       // convention
       use24Hours: Boolean,
@@ -70,7 +70,7 @@
       // allowedMinutes: [Function, Array],
       // allowedSeconds: [Function, Array],
     },
-    emits: ['timeselected'],
+    emits: ['timeselected', 'update:modelValue'],
     setup(props, context) {
       const {
         state,

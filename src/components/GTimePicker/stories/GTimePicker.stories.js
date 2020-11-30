@@ -29,9 +29,9 @@ export const Index = () => ({
       type: Boolean,
       default: boolean('useSeconds', false)
     },
-    value: {
+    modelValue: {
       type: String,
-      default: text('value', '15:18:30')
+      default: text('modelValue', '15:18:30')
     },
     width: { default: number('width', 300) },
     landscape: { default: boolean('landscape', false) },
@@ -75,7 +75,7 @@ export const Index = () => ({
             :readonly="readonly"
             :scrollable="scrollable"
             :useSeconds="useSeconds"
-            :value="value"
+            :modelValue="modelValue"
             :width="width"
             :landscape="landscape"
             :titleBgColor="titleBgColor"
@@ -95,7 +95,7 @@ export const Index = () => ({
             :readonly="readonly"
             :scrollable="scrollable"
             :useSeconds="useSeconds"
-            :value="value"
+            :modelValue="modelValue"
             use24Hours
             :width="width"
             :landscape="landscape"
@@ -121,7 +121,7 @@ export const gTimePickerInput = () => ({
     readonly: { type: Boolean, default: boolean('readonly', false) },
     scrollable: { type: Boolean, default: boolean('scrollable', false), },
     useSeconds: { type: Boolean, default: boolean('useSeconds', false) },
-    value: { type: String, default: text('value', null) },
+    modelValue: { type: String, default: text('modelValue', null) },
     landscape: { default: boolean('landscape', false) },
     titleBgColor: { type: String, default: text('titleBgColor', null) },
     titleTextColor: { type: String, default: text('titleTextColor', null), },
@@ -147,7 +147,7 @@ export const gTimePickerInput = () => ({
         :readonly="readonly"
         :scrollable="scrollable"
         :useSeconds="useSeconds"
-        :value="value"
+        :modelValue="modelValue"
         :landscape="landscape"
         :titleBgColor="titleBgColor"
         :titleTextColor="titleTextColor"
@@ -172,7 +172,7 @@ export const gTimePickerInput = () => ({
         :readonly="readonly"
         :scrollable="scrollable"
         :useSeconds="useSeconds"
-        :value="value"
+        :modelValue="modelValue"
         :landscape="landscape"
         :titleBgColor="titleBgColor"
         :titleTextColor="titleTextColor"
