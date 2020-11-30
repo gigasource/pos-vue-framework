@@ -1,75 +1,63 @@
 <script>
-  import GSlideshowFactory from './GSlideshowFactory';
+import GSlideshowFactory from './GSlideshowFactory';
 
-  export default {
-    name: "GSlideshowContent",
-    props: {
-      value: Array,
-      defaultTransition: {
-        type: String,
-        default: 'None'
-      },
-      transitionDuration: {
-        type: Number,
-        default: 1500,
-      }
+const { ref, onMounted } = require('vue')
+export default {
+  name: 'GSlideshowContent',
+  props: {
+    modelValue: Array,
+    defaultTransition: {
+      type: String,
+      default: 'None'
     },
-    setup (props, context) {
-
-      const {
-        count,
-        currentItem,
-        nextItem
-      } = GSlideshowFactory(props, context)
-
-      const genSlideshow = () => {
-        return <div class="g-slideshow-container" ref="slideContainer"/>
-      }
-
-      return {
-        genSlideshow,
-        count,
-        currentItem,
-        nextItem
-      }
-    },
-    render() {
-      return this.genSlideshow()
+    transitionDuration: {
+      type: Number,
+      default: 1500,
+    }
+  },
+  setup(props) {
+    const slideContainer = ref(null)
+    GSlideshowFactory(props, slideContainer)
+    return {
+      slideContainer
     }
   }
+}
 </script>
-
+<template>
+  <div ref="slideContainer" class="g-slideshow-container"/>
+</template>
 <style scoped lang="scss">
-  .g-slideshow {
-    &-container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: black;
-    }
-
-    &-current {
-      position: absolute;
-      width: 500px;
-      height: 500px;
-    }
-
-    &-next {
-      position: absolute;
-      width: 100%;
-      display: none;
-    }
-  }
-
-  ::v-deep img {
+.g-slideshow {
+  &-container {
+    position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    overflow: hidden;
+    background-color: black;
   }
 
-  ::v-deep video {
-    width: 100%;
-    height: 100%;
+  &-current {
+    position: absolute;
+    width: 500px;
+    height: 500px;
   }
+
+  &-next {
+    position: absolute;
+    width: 100%;
+    display: none;
+  }
+}
+
+::v-deep img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+::v-deep video {
+  width: 100%;
+  height: 100%;
+}
 </style>

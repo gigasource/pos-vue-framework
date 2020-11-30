@@ -1,97 +1,15 @@
-import {computed, ref, watch, onMounted} from 'vue';
+import { computed, watch } from 'vue';
 
-export const transitionList = {
-  none: 'None',
-  fadeIn: 'fadeIn',
-  slideLeftToRight: 'slideLeftToRight',
-  slideRightToLeft: 'slideRightToLeft',
-  slideTopToBottom: 'slideTopToBottom',
-  slideBottomToTop: 'slideBottomToTop'
+const { cloneDeep } = require('lodash')
+
+const STATES = {
+  'FREE': 0,
+  'WORKING': 1
 }
 
-function isValidTransition (inputTransition) {
-  for (let transition in transitionList) {
-    if (inputTransition === transitionList[transition]) return true
-  }
-}
+const { getTransitionDuration, getTransition } = require('./transition-utils')
 
-export function getTransitionDuration(transition, props) {
-  if (isValidTransition(transition) && transition !== transitionList.none) return props.transitionDuration
-  return 0
-}
-
-export function getTransition(name, type, props) {
-  switch (name) {
-    case 'fadeIn':
-      return [
-        [
-          { transform: 'translateZ(0) translate3d(0,0,0)', opacity: type === 'in' ? '0' : '1'},
-          { transform: 'translateZ(0) translate3d(0,0,0)', opacity: type === 'in' ? '1' : '0' }
-        ],
-        {
-          duration: props.transitionDuration,
-          easing: 'linear'
-        }
-      ]
-    case 'slideRightToLeft':
-      return [
-        [
-          {transform: type === 'in' ? 'translateX(100%)' : 'translateX(0)' + ' translateZ(0) translate3d(0,0,0)'},
-          {transform: type === 'in' ? 'translateX(0)' : 'translateX(-100%)' + ' translateZ(0) translate3d(0,0,0)'}
-        ],
-        {
-          duration: props.transitionDuration,
-          easing: 'ease-in-out'
-        }
-      ]
-    case 'slideLeftToRight':
-      return [
-        [
-          {transform: type === 'in' ? 'translateX(-100%)' : 'translateX(0)' + ' translateZ(0) translate3d(0,0,0)'},
-          {transform: type === 'in' ? 'translateX(0)' : 'translateX(100%)' + ' translateZ(0) translate3d(0,0,0)'}
-        ],
-        {
-          duration: props.transitionDuration,
-          easing: 'ease-in-out'
-        }
-      ]
-    case 'slideBottomToTop':
-      return [
-        [
-          {transform: type === 'in' ? 'translateY(100%)' : 'translateY(0)' + ' translateZ(0) translate3d(0,0,0)'},
-          {transform: type === 'in' ? 'translateY(0)' : 'translateY(-100%)' + ' translateZ(0) translate3d(0,0,0)'}
-        ],
-        {
-          duration: props.transitionDuration,
-          easing: 'ease-in-out'
-        }
-      ]
-    case 'slideTopToBottom':
-      return [
-        [
-          {transform: type === 'in' ? 'translateY(-100%)' : 'translateY(0)' + ' translateZ(0) translate3d(0,0,0)'},
-          {transform: type === 'in' ? 'translateY(0)' : 'translateY(100%)' + ' translateZ(0) translate3d(0,0,0)'}
-        ],
-        {
-          duration: props.transitionDuration,
-          easing: 'ease-in-out'
-        }
-      ]
-    default:
-      return [
-        [
-          {transform: 'translateX(0)'},
-          {transform: 'translateX(0)'}
-        ],
-        {
-          duration: 0,
-          easing: 'linear'
-        }
-      ]
-  }
-}
-
-export function createSlideNode () {
+export function createSlideNode() {
   const slideNode = document.createElement('div')
   slideNode.className = 'g-slideshow-current'
   slideNode.style.position = 'absolute'
@@ -116,11 +34,11 @@ export function createSlideNode () {
   }
 }
 
-function timeout (ms) {
+function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-async function delay (duration) {
+async function delay(duration) {
   while (duration > 2147483646) {
     await timeout(2147483646)
     duration -= 2147483646
@@ -148,10 +66,11 @@ class Node {
   }
 
   play() {
-    this._display && this.item.type === 'video' && this.video.play()
+    this._display && this.item && this.item.type === 'video' && this.video.play()
   }
 
   setMedia(item) {
+    if (!item) return
     this.item = item
     switch (item.type) {
       case 'image':
@@ -182,73 +101,98 @@ class Node {
   }
 }
 
-export default function GSlideshowFactory (props, context, NodeClass = Node, updateStatus) {
+export default function GSlideshowFactory(props, slideContainer, NodeClass = Node, updateStatus) {
   const computedModel = computed(() => {
-    if (props.value.length === 1)
+    if (props.modelValue.length === 1)
       return [
-        Object.assign({}, ...props.value),
-        Object.assign({}, ...props.value)
+        Object.assign({}, ...props.modelValue),
+        Object.assign({}, ...props.modelValue)
       ];
-    return props.value;
+    return props.modelValue;
   });
-  const count = ref(0);
-  const currentItem = ref({});
-
-  const nextCount = computed(() =>
-      count.value === maxCount.value ? 0 : count.value + 1
-  );
-  const maxCount = computed(() => computedModel.value.length - 1);
-
-  let nodeFlag = false
-
-  watch(count, newVal => {
-    currentItem.value = computedModel.value[newVal];
-  }, {sync: true});
-
-  const nextItem = computed(() => computedModel.value[nextCount.value]);
-
   const slideNodes = [new NodeClass(0), new NodeClass(1)];
 
-  onMounted(async () => {
-    slideNodes[0].setMedia(currentItem.value);
-    slideNodes[0].display = true
-    slideNodes[0].play()
-    slideNodes[1].setMedia(nextItem.value);
-    slideNodes[1].display = false
-    context.refs.slideContainer && context.refs.slideContainer.appendChild(slideNodes[0].container)
-    context.refs.slideContainer && context.refs.slideContainer.appendChild(slideNodes[1].container)
-    count.value = count.value >= maxCount.value ? 0 : count.value + 1
-    updateStatus && updateStatus(slideNodes.map(i => i.item.src));
+  watch(slideContainer, newVal => {
+    if (newVal && newVal.childElementCount === 0) {
+      newVal.appendChild(slideNodes[0].container)
+      newVal.appendChild(slideNodes[1].container)
+    }
+    manager.initialized = newVal.childElementCount === 2
+    manager.createTask()
   })
 
-  watch(count, () => nodeFlag = !nodeFlag)
+  const init = (currentItem, nextItem, flag) => {
+    slideNodes[flag].setMedia(currentItem);
+    slideNodes[flag].display = true
+    slideNodes[flag].play()
+    slideNodes[1 - flag].setMedia(nextItem);
+    slideNodes[1 - flag].display = false
+  }
 
-  watch(currentItem, async (_currentItem, _lastItem) => {
-    if (_lastItem && _currentItem) {
-      const currentNode = slideNodes[Number(nodeFlag)];
-      const nextNode = slideNodes[Number(!nodeFlag)];
+  // perform transition between currentItem and nextItem, then invoke done callback when transition finish
+  const performTransition = async (currentItem, nextItem, currentNode, nextNode, done) => {
+    nextNode.setMedia(nextItem)
+    let duration = await currentNode.getDuration()
+    const transitionDuration = getTransitionDuration(currentItem.transition, props);
+    setTimeout(() => {
+      nextNode.display = true;
+      let currentTransitionOut = currentNode.animate(...getTransition(currentItem.transition, 'out', props));
+      let currentTransitionIn = nextNode.animate(...getTransition(currentItem.transition, 'in', props));
+      nextNode.play();
+      currentTransitionOut.onfinish = () => {
+        currentNode.display = false;
+        updateStatus && updateStatus({});
+        done()
+      };
+    }, duration - transitionDuration);
+  }
 
-      let duration = await currentNode.getDuration()
-      const transitionDuration = getTransitionDuration(_currentItem.transition, props);
-
-      setTimeout(() => {
-        nextNode.display = true;
-        let currentTransitionOut = currentNode.animate(...getTransition(_currentItem.transition, "out", props));
-        let currentTransitionIn = nextNode.animate(...getTransition(_currentItem.transition, "in", props));
-        nextNode.play();
-        currentTransitionOut.onfinish = () => {
-          currentNode.display = false;
-          currentNode.setMedia(nextItem.value);
-          count.value = count.value >= maxCount.value ? 0 : count.value + 1;
-          updateStatus && updateStatus(slideNodes.map(i => i.item.src));
-        };
-      }, duration - transitionDuration);
+  class Manager {
+    constructor() {
+      this.needReset = true
+      this.state = STATES.FREE
+      this.initialized = false
+      this.flag = 0
+      this.onTaskDone = this.onTaskDone.bind(this)
     }
-  }, {lazy: true, sync: true});
 
-  return {
-    count,
-    currentItem,
-    nextItem
-  };
+    setCollection(collection) {
+      this.collection = collection
+      this.needReset = true
+      if (this.state === STATES.FREE) {
+        this.createTask()
+      }
+    }
+
+    createTask() {
+      if (this.collection.length === 0) { // collection is empty
+        this.state = STATES.FREE
+      } else {
+        if (this.initialized) { // slideContainer is ready
+          const currentItem = this.collection[0]
+          const nextItem = this.collection[1 % this.collection.length]
+          this.state = STATES.WORKING
+          if (this.needReset) { // need to reset when the collection is changed
+            init(currentItem, nextItem, 0)
+            this.flag = 0
+            this.needReset = false
+          }
+          // move the first item in the collection to the last
+          this.collection.shift()
+          this.collection.push(currentItem)
+          performTransition(currentItem, nextItem, slideNodes[this.flag], slideNodes[1 - this.flag], this.onTaskDone)
+        }
+      }
+    }
+
+    onTaskDone() {
+      this.flag = 1 - this.flag
+      this.createTask()
+    }
+  }
+
+  const manager = new Manager()
+  watch(computedModel, newVal => {
+    manager.setCollection(cloneDeep(newVal))
+  }, { deep: true, immediate: true })
 }

@@ -1,6 +1,6 @@
 import { withKnobs } from '@storybook/addon-knobs';
 import GSlideshow from '../GSlideshow';
-import { transitionList } from "../GSlideshowFactory";
+import { transitionList } from '../transition-utils';
 import GBtn from '../../GBtn/GBtn';
 import src1 from '../../../assets/slideshow/food1.jpeg'
 import src2 from '../../../assets/slideshow/food2.jpeg'
@@ -20,88 +20,93 @@ export const Basic = () => ({
   data() {
     return {
       slideItems: [],
-      flag: false
+      cur: 0
     }
   },
   methods: {
     start() {
       const slide = [[
         {
-          src: 'https://free4kwallpapers.com/uploads/wallpaper/fog-in-jungle-wallpaper-2560x1440-wallpaper.jpg',
+          src: 'https://images.wallpaperscraft.com/image/forest_trees_fog_110485_2560x1440.jpg',
           type: 'image',
           transition: transitionList.slideRightToLeft,
-          duration: 0
+          duration: 5000
         },
-        // {
-        //   src: 'https://free4kwallpapers.com/uploads/wallpaper/fog-in-jungle-wallpaper-2560x1440-wallpaper.jpg',
-        //   type: 'image',
-        //   transition: transitionList.slideBottomToTop,
-        //   duration: 5000
-        // },
-        // {
-        //   src: 'https://free4kwallpapers.com/uploads/wallpaper/sunset-summer-4k-wallpaper-2560x1440-wallpaper.jpg',
-        //   type: 'image',
-        //   transition: transitionList.slideBottomToTop,
-        //   duration: 5000
-        // },
-        // {
-        //   src: 'https://free4kwallpapers.com/uploads/originals/2015/09/06/beautiful-nature-images-with-quotes.jpg',
-        //   type: 'image',
-        //   transition: transitionList.slideBottomToTop,
-        //   duration: 5000
-        // },
-      ], [
         {
-          src: src1,
+          src: 'https://images.wallpaperscraft.com/image/forest_trees_fog_175180_2560x1440.jpg',
           type: 'image',
-          transition: 'slideTopToBottom',
-          duration: 10000
+          transition: transitionList.slideLeftToRight,
+          duration: 5000
         },
         {
-          src: src2,
+          src: 'https://images.wallpaperscraft.com/image/forest_trees_fog_168690_2560x1440.jpg',
+          type: 'image',
+          transition: transitionList.slideBottomToTop,
+          duration: 5000
+        },
+        {
+          src: 'https://images.wallpaperscraft.com/image/forest_trees_fog_161605_2560x1440.jpg',
           type: 'image',
           transition: transitionList.slideTopToBottom,
           duration: 5000
         },
-        {
-          src: video,
-          type: 'video',
-          transition: transitionList.none,
-          duration : 0
-        },
-        {
-          src: src3,
-          type: 'image',
-          transition: transitionList.none,
-          duration: 5000
-        },
-        {
-          src: video,
-          type: 'video',
-          transition: transitionList.slideTopToBottom,
-          duration : 0
-        },
-        {
-          src: src4,
-          type: 'image',
-          transition: transitionList.slideTopToBottom,
-          duration: 5000
-        },
-        {
-          src: src5,
-          type: 'image',
-          transition: transitionList.slideTopToBottom,
-          duration: 5000
-        },
-      ]]
-      this.slideItems = slide[this.flag ? 1 : 0]
-      this.flag = !this.flag
+      ],
+        [
+          {
+            src: src1,
+            type: 'image',
+            transition: transitionList.slideLeftToRight,
+            duration: 10000
+          },
+          {
+            src: src2,
+            type: 'image',
+            transition: transitionList.slideTopToBottom,
+            duration: 5000
+          },
+          {
+            src: video,
+            type: 'video',
+            transition: transitionList.none,
+            duration: 0
+          },
+          {
+            src: src3,
+            type: 'image',
+            transition: transitionList.none,
+            duration: 5000
+          },
+          {
+            src: video,
+            type: 'video',
+            transition: transitionList.slideTopToBottom,
+            duration: 0
+          },
+          {
+            src: src4,
+            type: 'image',
+            transition: transitionList.slideTopToBottom,
+            duration: 5000
+          },
+          {
+            src: src5,
+            type: 'image',
+            transition: transitionList.slideTopToBottom,
+            duration: 5000
+          },
+        ], []]
+      this.slideItems = slide[this.cur]
+      this.cur = (this.cur + 1) % slide.length
+
     }
   },
   template: `
-		<div style="position: relative; width: 800px; height: 480px">
-			<g-btn @click="start">Play</g-btn>
-			<g-slideshow v-model="slideItems"/>
-		</div>
-`
+    <div style="position: relative; width: 800px; height: 480px">
+    <g-btn @click="start">Next</g-btn>
+    <g-slideshow v-model="slideItems"/>
+    </div>
+  `,
+  mounted() {
+
+  }
 })
