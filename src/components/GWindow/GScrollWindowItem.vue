@@ -1,57 +1,53 @@
 <script>
-  import { inject, onBeforeUnmount, onMounted, reactive } from 'vue';
+  import { h, withDirectives, getCurrentInstance, inject, onBeforeUnmount, onMounted, reactive } from 'vue';
   import Intersect from '../../directives/intersect/intersect';
+  import {getScopeIdRender} from "../../utils/helpers";
 
   export default {
     name: 'GScrollWindowItem',
     directives: {
       Intersect
     },
+    data() {
+      return {
+        value: null
+      }
+    },
     setup(props, context) {
       const register = inject('register');
       const unregister = inject('unregister');
+      const instance = getCurrentInstance()
 
       onMounted(function () {
-        register(this);
+        register(instance);
       });
 
       onBeforeUnmount(function () {
-        unregister(this)
+        unregister(instance)
       });
 
-      const data = reactive({
-        value: null
-      });
 
       const intersectCb = () => {
-        context.emit('input', data.value)
+        context.emit('update:modelValue', instance.data.value)
       }
 
       function genWindowItem() {
         const nodeData = {
           class: 'g-scroll-window-item',
-          directives: [
-            {
-              name: 'intersect',
-              arg: {
-                root: undefined,
-                threshold: 0.999
-              },
-              value: intersectCb
-            }
-          ]
         };
-        return <div {...nodeData}> {this.$slots.default}</div>
+        return withDirectives(h('div', nodeData, context.slots),
+            [[Intersect, intersectCb, { root: undefined, threshold: 0.999 }]]
+        )
       }
 
       return {
-        data,
         genWindowItem,
         intersectCb
       }
     },
     render() {
-      return this.genWindowItem.bind(this)()
+      const genScopeId = getScopeIdRender()
+      return genScopeId(this.genWindowItem)()
     }
   }
 </script>

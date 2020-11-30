@@ -1,5 +1,5 @@
 <script>
-  import { computed, onMounted, ref, reactive, inject, onBeforeUnmount } from 'vue';
+  import { h, computed, onMounted, ref, reactive, inject, onBeforeUnmount, Transition, getCurrentInstance, nextTick } from 'vue';
   import { convertToUnit } from '../../utils/helpers';
 
   export default {
@@ -15,6 +15,11 @@
         default: undefined,
       }
     },
+    data() {
+      return {
+        value: null
+      }
+    },
     setup(props, context) {
 
       const register = inject('register');
@@ -24,23 +29,25 @@
       const internalReverse = inject('internalReverse');
       const windowComputedTransition = inject('windowComputedTransition');
       const window = ref({});
-      onMounted(function () {
-        register(this);
-        window.value = this.$parent;
+      const instance = getCurrentInstance()
+      onMounted(() => {
+        if(instance) {
+          register(instance);
+          window.value = instance.parent;
+        }
       });
 
       onBeforeUnmount(function () {
-        unregister(this)
+        unregister(instance)
       });
 
       const data = reactive({
         isActive: false,
         inTransition: false,
-        value: null
       });
 
       const show = computed(function () {
-        return internalValue.value === data.value;
+        return internalValue.value === instance.data.value;
       });
 
       const computedTransition = computed(() => {
@@ -80,8 +87,8 @@
 
         if (windowData.transitionCount === 0) {
           // Set initial height for height transition.
-          context.root.$nextTick(() => {
-            windowData.transitionHeight = convertToUnit(window.value.$el.clientHeight);
+          nextTick(() => {
+            windowData.transitionHeight = convertToUnit(window.value.vnode.el.clientHeight);
           })
         }
         windowData.transitionCount++;
@@ -97,7 +104,7 @@
           return
         }
 
-        context.root.$nextTick(() => {
+        nextTick(() => {
           // Do not set height if no transition or cancelled.
           if (!computedTransition.value || !data.inTransition) {
             return;
@@ -113,7 +120,7 @@
           class: 'g-window-item'
         };
 
-        return <div {...nodeData} vShow={show.value}> {context.slots.default && context.slots.default()}</div>
+        return <div {...nodeData} vShow={show.value}>{context.slots.default()}</div>
       }
 
       return {
@@ -126,27 +133,22 @@
         onEnter
       }
     },
-    render(h) {
-      return h('transition', {
-        props: {
-          name: this.computedTransition,
-        },
-        on: {
-          // Handlers for enter windows.
-          beforeEnter: this.onBeforeTransition,
-          afterEnter: this.onAfterTransition,
-          enterCancelled: this.onTransitionCancelled,
-
-          // Handlers for leave windows.
-          beforeLeave: this.onBeforeTransition,
-          afterLeave: this.onAfterTransition,
-          leaveCancelled: this.onTransitionCancelled,
-
-          // Enter handler for height transition.
-          enter: this.onEnter,
-        },
-      }, [this.genWindowItem()])
-
+    render() {
+      return h(Transition, {
+        name: this.computedTransition,
+        // Handlers for enter windows.
+        onBeforeEnter: this.onBeforeTransition,
+        onAfterEnter: this.onAfterTransition,
+        onEnterCancelled: this.onTransitionCancelled,
+        // Handlers for leave windows.
+        onBeforeLeave: this.onBeforeTransition,
+        onAfterLeave: this.onAfterTransition,
+        onLeaveCancelled: this.onTransitionCancelled,
+        // Enter handler for height transition.
+        onEnter: this.onEnter,
+      }, {
+        default: () => this.genWindowItem()
+      })
     }
   }
 </script>

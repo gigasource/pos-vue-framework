@@ -3,6 +3,7 @@
   import { isEqual } from 'lodash'
   import { colors } from '../../utils/colors';
   import { isCssColor } from '../../mixins/colorable';
+  import {getScopeIdRender} from '../../utils/helpers';
 
   export default {
     name: 'GTab',
@@ -50,11 +51,22 @@
         model.value = props.item;
       }
 
-      return () =>
-        <div class={classes.value} vOn:click={toggle} style={styles.value}>
+      const listeners = {
+        onClick: toggle
+      }
+
+      const genTab = () =>
+        <div class={classes.value} {...listeners} style={styles.value}>
           {context.slots.default()}
         </div>
+      return {
+        genTab
+      }
     },
+    render() {
+      const scopeIdRender = getScopeIdRender();
+      return scopeIdRender(this.genTab)();
+    }
   }
 </script>
 

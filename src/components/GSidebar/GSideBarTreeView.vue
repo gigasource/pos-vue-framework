@@ -4,6 +4,7 @@
   import {GExpandTransition} from '../transition/transition';
   import GSpacer from "../GLayout/GSpacer";
   import _ from 'lodash';
+  import {getScopeIdRender} from "../../utils/helpers";
 
   export default {
     name: 'GSideBarTreeView',
@@ -17,7 +18,7 @@
           }
         },
         render() {
-          return this.$scopedSlots.default && this.$scopedSlots.default({state: this.state});
+          return this.$slots.default();
         }
       }
     },
@@ -39,7 +40,7 @@
       },
       data: [Object, Array],
       rounded: Boolean,
-      value: null,
+      modelValue: null,
       elevation: {
         type: [String, Number],
         default: 0
@@ -59,6 +60,7 @@
       },
       genNode: Function
     },
+    emits: ['node-expansion-toggled', 'node-selected', 'update:modelValue', 'mouseenter', 'mouseleave', 'mouseover', 'mouseout'],
     setup(props, context) {
       let prevSelectedPath = null
       let prevOpenPath = null // for items with children but not clickable
@@ -116,21 +118,21 @@
         return path
       }
 
-      watch(() => props.value, () => {
-        if (!props.value || props.value === prevSelectedPath) return
+      watch(() => props.modelValue, () => {
+        if (!props.modelValue || props.modelValue === prevSelectedPath) return
 
         if (prevSelectedPath)
           setNodeState(prevSelectedPath, {
             selected: false
           })
 
-        prevSelectedPath = props.value
-        if (!prevOpenPath) prevOpenPath = props.value
+        prevSelectedPath = props.modelValue
+        if (!prevOpenPath) prevOpenPath = props.modelValue
 
-        setNodeState(props.value, {
+        setNodeState(props.modelValue, {
           selected: true
         })
-        setParentNodesState(props.value, {
+        setParentNodesState(props.modelValue, {
           collapse: false
         })
       })
@@ -151,9 +153,7 @@
           treeStates[path].collapse = false
         }
 
-        return <tree-node-wrapper {...{
-          scopedSlots: {default: () => genNodeContent({node, text, childrenVNodes, path, isLast})}
-        }}/>
+        return <tree-node-wrapper vSlots={{default: () => genNodeContent({node, text, childrenVNodes, path, isLast})}}/>
       }
 
       const genNodeContent = function ({node, text, childrenVNodes, path, isLast}) {
@@ -188,7 +188,7 @@
         const badgeScopedSlots = {
           badge: () => <span>{node.badge}</span>
         }
-        const badge = node.badge && <g-badge inline color={node.badgeColor} scopedSlots={badgeScopedSlots}
+        const badge = node.badge && <g-badge inline={true} color={node.badgeColor} vSlots={badgeScopedSlots}
                                              style={childrenVNodes || context.slots['prepend-icon'] || node.appendIcon ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
 
         const appendIcon = node.appendIcon && <g-icon small class="mx-1">{node.appendIcon}</g-icon>
@@ -202,14 +202,13 @@
             (!childrenVNodes || node.clickable) && (treeStates[path].selected || path === props.value)
               ? 'g-treeview__active'
               : null],
-          on: {
-            click: (e) => {
+            onClick: (e) => {
               e.stopPropagation()
               if (node.type === 'subheader') return
 
               if (node.clickable || !childrenVNodes) {
                 context.emit('node-selected', node, path, treeStates[path])
-                context.emit('input', path)
+                context.emit('update:modelValue', path)
 
                 node.href
                 && context.root.$router
@@ -219,26 +218,26 @@
                 toggleNodeExpansion(e, path, node)
               }
             },
-            mouseenter: (e) => {
+            onMouseenter: (e) => {
               e.stopPropagation()
               context.emit('mouseenter', e, path)
             },
-            mouseleave: (e) => {
+            onMouseleave: (e) => {
               e.stopPropagation()
               context.emit('mouseleave', e, path)
             },
-            mouseover: (e) => {
+            onMouseover: (e) => {
               e.stopPropagation()
               context.emit('mouseover', e, path)
             },
-            mouseout: (e) => {
+            onMouseout: (e) => {
               e.stopPropagation()
               context.emit('mouseout', e, path)
             },
-            dblclick(e) {
+            onDblclick(e) {
               toggleNodeExpansion(e, path, node)
             }
-          },
+          ,
         }
 
         const textColor = {
@@ -254,7 +253,7 @@
             {node && node.type !== 'divider' && node.type !== 'subheader' &&
             context.slots['prepend-icon'] && context.slots['prepend-icon']({node, path})}
             <span class='g-treeview-action' vShow={childrenVNodes}>
-              <g-icon vOn:click={e => toggleNodeExpansion(e, path, node)}>
+              <g-icon onClick={e => toggleNodeExpansion(e, path, node)}>
                 {treeStates[path].collapse ? 'keyboard_arrow_right' : 'keyboard_arrow_down'}
               </g-icon>
             </span>
@@ -307,7 +306,8 @@
       return {treeStates, genTree}
     },
     render() {
-      return this.genTree()
+      const scopeIdRender = getScopeIdRender()
+      return scopeIdRender(this.genTree)()
     },
   }
 </script>

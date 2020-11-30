@@ -167,6 +167,12 @@ export const treeView = () => ({
       data
     })
 
+    let options = {
+      data: data.value,
+      rounded: true,
+      vModel: state.value
+    }
+
     return () =>
       <g-sidebar color={props.color}
                  src={props.src}
@@ -181,11 +187,7 @@ export const treeView = () => ({
             <i class="material-icons" style="font-size: 12px; margin-left: 24px; margin-top: 4px">radio_button_unchecked</i>
           </div>
         </template>
-        <g-side-bar-tree-view
-          data={data.value}
-          rounded
-          vOn:input={e => state.value = e}
-          value={state.value}>
+        <g-side-bar-tree-view {...options}>
         </g-side-bar-tree-view>
       </g-sidebar>
   }
