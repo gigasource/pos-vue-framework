@@ -93,14 +93,14 @@ export default function getGradientRenderFn(onGradientSelected) {
     return (
         <div> {
           _.map(gradientModels, gradient => {
-            const scopedSlot = {
+            const slots = {
               activator: (scope) => <span
                   key={gradient.name}
                   style={{ ...gradientItemStyleObj, ...createLinearGradientBackground(gradient) }}
-                  vOn:mouseleave={scope.on.mouseleave}
-                  vOn:mouseenter={scope.on.mouseenter}
-                  vOn:blur={scope.on.blur}
-                  vOn:click={() => onGradientSelected(gradient)}></span>
+                  onMouseleave={scope.on.mouseleave}
+                  onMouseenter={scope.on.mouseenter}
+                  onBlur={scope.on.blur}
+                  onClick={() => onGradientSelected(gradient)}></span>
             }
 
             return <g-tooltip
@@ -110,7 +110,7 @@ export default function getGradientRenderFn(onGradientSelected) {
                 open-on-hover
                 color={tooltipBackgroundColor}
                 transition='none'
-                scopedSlots={scopedSlot}
+                v-slots={slots}
                 lazy>
               <div style={'display: flex; align-items: center'}>
                 <div>

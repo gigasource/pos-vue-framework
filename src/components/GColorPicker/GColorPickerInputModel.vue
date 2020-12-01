@@ -9,8 +9,8 @@
       :rounded="rounded"
       :flat="flat"
       :dense="dense"
-      :value="model[field.key]"
-      @input="v => model[field.key] = v"/>
+      :model-value="model[field.key]"
+      @update:color="v => model[field.key] = v"/>
 </template>
 <script>
   import GColorPickerInput from './GColorPickerInput';

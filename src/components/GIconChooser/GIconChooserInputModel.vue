@@ -1,18 +1,18 @@
 <template>
   <div class="g-icon-chooser-input-model">
-    <g-text-field placeholder="select icon" prependIcon="search" :label="label" :appendInnerIcon="model[field.key]" :value="model[field.key]" @click="openDialog"/>
-    <g-dnd-dialog :value="showDialog" @input="closeDialog" min-height="710" height="710" min-width="630" width="630" lazy>
+    <g-text-field placeholder="select icon" prependIcon="search" :label="label" :appendInnerIcon="model[field.key]" :model-value="model[field.key]" @click="openDialog"/>
+    <g-dnd-dialog :model-value="showDialog" @update:modelValue="closeDialog" min-height="710" height="710" min-width="630" width="630" lazy>
       <template #title>Icon Picker</template>
-      <component :is="GIconChooser" :value="model[field.key]" @input="newValue => model[field.key] = newValue" ref="iconChooser"/>
+      <component :is="GIconChooser" :model-value="model[field.key]" @update:modelValue="newValue => model[field.key] = newValue" ref="iconChooser"/>
     </g-dnd-dialog>
   </div>
 </template>
 <script>
-  const GTextField = () => import('../GInput/GTextField');
-  const GIconChooserComponent = () => import('./GIconChooser');
-  const GDndDialog = () => import('../GDndDialog/GDndDialog');
-
-  let comp;
+  import { defineAsyncComponent } from 'vue'
+  const GTextField = defineAsyncComponent(() => import('../GInput/GTextField'));
+  const GDndDialog = defineAsyncComponent(() => import('../GDndDialog/GDndDialog'));
+  const GIconChooserComponent = defineAsyncComponent(() => import('./GIconChooser'));
+  
   export default {
     name: 'GIconChooserInputModel',
     components: { GTextField, GDndDialog },
@@ -34,9 +34,9 @@
     methods: {
       openDialog() {
         this.showDialog = true
-        if (this.$refs.iconChooser) {
-          this.$refs.iconChooser.initIconPickerDialogState()
-        }
+        // if (this.$refs.iconChooser) {
+        //   this.$refs.iconChooser.initIconPickerDialogState()
+        // }
       },
       closeDialog() {
         this.showDialog = false

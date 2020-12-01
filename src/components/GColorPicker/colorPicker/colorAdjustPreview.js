@@ -24,9 +24,9 @@ export default function getRenderAdjustPreview(state, updateColor) {
               <g-slider
                   height="5px"
                   trackColor='linear-gradient(to right, #F00 0%, #FF0 16.66%, #0F0 33.33%, #0FF 50%, #00F 66.66%, #F0F 83.33%, #F00 100%)'
-                  value={state.color ? state.color.hue : 0}
+                  modelValue={state.color ? state.color.hue : 0}
                   step={1} min={0} max={360}
-                  vOn:input={val => state.color.hue !== val && updateColor(fromHSVA({ ...state.color.hsva, h: val }))}
+                  onUpdate:modelValue={val => state.color.hue !== val && updateColor(fromHSVA({ ...state.color.hsva, h: val }))}
               ></g-slider>
             </div>
 
@@ -34,9 +34,9 @@ export default function getRenderAdjustPreview(state, updateColor) {
               <g-slider
                   height="5px"
                   trackColor={ `linear-gradient(to right, transparent, ${RGBtoCSS(state.color.rgba)})`}
-                  value={state.color ? state.color.alpha : 0}
+                  modelValue={state.color ? state.color.alpha : 0}
                   step={0.01} min={0} max={1}
-                  vOn:input={val => (state.color.alpha !== val) && updateColor(fromHSVA({ ...state.color.hsva, a: val }))}
+                  onUpdate:modelValue={val => (state.color.alpha !== val) && updateColor(fromHSVA({ ...state.color.hsva, a: val }))}
               ></g-slider>
             </div>
           </div>

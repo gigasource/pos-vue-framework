@@ -1,33 +1,27 @@
 <template>
   <div>
-<!--    <g-btn @click="() => showDialog()">{{ displayText }}</g-btn>-->
-<!--    <g-dialog :value="show" fullscreen>-->
-<!--      <div class="editor-dialog">-->
-<!--        <component-->
-<!--            :is="GGridGenerator"-->
-<!--            :layout="layout"-->
-<!--            @json="updateModel"-->
-<!--            @close="hideDialog"/>-->
-<!--      </div>-->
-<!--    </g-dialog>-->
-  
-    <g-grid-generator
-        :layout="layout"
-        @json="updateModel"
-        @close="hideDialog">
-    </g-grid-generator>
+    <g-btn @click="() => showDialog()">{{ displayText }}</g-btn>
+    <g-dialog v-model="show" fullscreen>
+      <div class="editor-dialog">
+        <component
+            :is="GGridGenerator"
+            :layout="layout"
+            @json="updateModel"
+            @close="hideDialog"/>
+      </div>
+    </g-dialog>
   </div>
 </template>
 <script>
-  import GGridGenerator from './components/GGridGenerator';
-  const GDialog = () => import('../GDialog/GDialog')
-  const GBtn = () => import('../GBtn/GBtn')
+  import { defineAsyncComponent } from 'vue'
+  const GDialog = defineAsyncComponent(() => import('../GDialog/GDialog'))
+  const GBtn = defineAsyncComponent(() => import('../GBtn/GBtn'))
   // Don't add lazy load component to components prop
-  const GGridGeneratorLazyLoad = () => import('./components/GGridGenerator')
+  const GGridGeneratorLazyLoad = defineAsyncComponent(() => import('./components/GGridGenerator'))
 
   export default {
     name: 'GGridGeneratorInput',
-    components: { GGridGenerator, GDialog, GBtn },
+    components: { GDialog, GBtn },
     props: {
       model: Object,
       field: Object,

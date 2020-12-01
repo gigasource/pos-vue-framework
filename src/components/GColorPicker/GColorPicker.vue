@@ -1,6 +1,7 @@
 <script>
   import _ from 'lodash'
   import {reactive} from 'vue'
+  import { getScopeIdRender } from '../../utils/helpers';
   // slider used in colorPicker/adjustPreview
   import GSlider from '../GSlider/GSlider'
   import GTooltip from '../../components/GTooltip/GTooltip'
@@ -12,8 +13,9 @@
   export default {
     name: 'GColorPicker',
     components: {GSlider, GTooltip},
+    emits: ['update:color'],
     setup(props, context) {
-      const colorSelectedHandler = color => context.emit('color', color)
+      const colorSelectedHandler = color => context.emit('update:color', color)
       // color picker require tabState to activate updateCanvas function
       const tabState = reactive({selectedTab: tabIndexes.swatches})
       const renderColorPicker = getColorPickerRenderFn(props, context, tabState, colorSelectedHandler)
@@ -44,7 +46,7 @@
         }]
       }
 
-      return function renderFn() {
+      function renderFn() {
         return (
             <div class='g-color-picker'>
               <div class='g-color-picker__tab-header'>
@@ -55,7 +57,7 @@
                         'g-color-picker__tab-header__item--selected': item.id === tabState.selectedTab
                       }}
                             style={item.id === tabState.selectedTab ? item.bgSelectedStyle : item.bgStyle}
-                            vOn:click={() => tabState.selectedTab = item.id}>
+                            onClick={() => tabState.selectedTab = item.id}>
                       </span>)
                 }
               </div>
@@ -63,7 +65,7 @@
                 {_.map(tabItems.tabs, item =>
                     <div
                         key={item.id}
-                        vShow={item.id === tabState.selectedTab}
+                        v-show={item.id === tabState.selectedTab}
                         class='g-color-picker__tab-body__content'>
                       {item.renderFn()}
                     </div>
@@ -72,6 +74,13 @@
             </div>
         )
       }
+      
+      return {
+        renderWithScope: getScopeIdRender()(renderFn)
+      }
+    },
+    render() {
+      return this.renderWithScope()
     }
   }
 </script>
