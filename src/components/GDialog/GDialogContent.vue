@@ -86,27 +86,18 @@
         detach(container.value)
       }
 
-      let addDependency, removeDependency
+      const addDependency = inject('addDependentInstance', () => null)
+      const removeDependency = inject('removeDependentInstance', () => null)
 
-      const dependents = ref([])
+      const { getOpenDependentElements: getOpenDependentElementsFn, addDependentInstance,
+        removeDependentInstance, dependents } = dependent(instance, isActive, addDependency, removeDependency)
+      getOpenDependentElements.value = getOpenDependentElementsFn
+
       watch(() => dependents.value, val => {
         if (val) {
           console.log('dependents watcher', instance.uid, val.map(i => i.uid))
         }
       })
-
-      function addDependentInstance(vm, children) {
-        removeDependency && removeDependency([instance, ...dependents.value])
-        dependents.value.push(vm, ...children)
-        addDependency && addDependency(instance, dependents.value)
-      }
-
-      function removeDependentInstance(vms) { // cleanup fn, use before unmounting
-        dependents.value = dependents.value.filter(i => {
-          const uids = vms.map(vm => vm.uid);
-          return !uids.includes(i.uid)
-        })
-      }
 
       if (props.closeDependents) {
         provide('addDependentInstance', addDependentInstance)
@@ -114,21 +105,12 @@
       }
 
       if (props.isDependent) {
-        addDependency = inject('addDependentInstance')
-        removeDependency = inject('removeDependentInstance')
         addDependency && addDependency(instance, dependents.value)
       }
-
-      onBeforeUnmount(() => {
-        if (removeDependency) {
-          removeDependency([instance, ...dependents.value]);
-        }
-      })
 
       onMounted(function () {
         nextTick(() => {
           initComponent()
-          getOpenDependentElements.value = dependent(instance, dependents, isActive)
         })
       })
 
@@ -360,9 +342,7 @@
         value: () => isActive.value = false,
         arg: {
           closeConditional,
-          // fixme dependent mixin
           include: () => [...getOpenDependentElements.value()]
-          // include: () => []
         }
       }
 

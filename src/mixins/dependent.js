@@ -1,8 +1,12 @@
-import { watch } from 'vue';
+import { watch, getCurrentInstance, ref, onBeforeUnmount } from 'vue';
+import _ from 'lodash'
 
-// fixme: $children removed in vue 3
-// TODO solutions: provide/inject, instance.parent
-export default function dependent(vm, dependents, isActive) {
+// provide/inject only available in setup()
+// addDependency(), removeDependency() are injected methods
+export default function dependent(vm, isActive, addDependency, removeDependency) {
+  const dependents = ref([])
+  const instance = getCurrentInstance()
+
   watch(isActive, (val) => {
     if (val) return
 
@@ -28,12 +32,30 @@ export default function dependent(vm, dependents, isActive) {
     if (vm.ctx.overlay) result.push(vm.ctx.overlay.$el)
     if (vm.ctx.getOpenDependentElements) {
       const openDependentElements = vm.ctx.getOpenDependentElements();
-      console.log('openDependentElements', openDependentElements)
       result.push(...openDependentElements)
     }
 
     return result
   }
 
-  return getOpenDependentElements
+  function addDependentInstance(vm, children) {
+    const instances = [vm, ...children, ...dependents.value]
+    dependents.value = _.uniqBy(instances, 'uid')
+    addDependency && addDependency(instance, dependents.value)
+  }
+
+  function removeDependentInstance(vms) {
+    dependents.value = dependents.value.filter(i => {
+      const uids = vms.map(vm => vm.uid);
+      return !uids.includes(i.uid)
+    })
+  }
+
+  onBeforeUnmount(() => {
+    if (removeDependency) {
+      removeDependency([instance, ...dependents.value]);
+    }
+  })
+
+  return { getOpenDependentElements, addDependentInstance, removeDependentInstance, dependents }
 }

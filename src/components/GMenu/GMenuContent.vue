@@ -132,7 +132,6 @@
 
         const init = () => {
           activatorResizeObserver = new ResizeObserver(() => {
-            console.log('activatorResizeObserver')
             nextTick(() => updateDimensions(props.activator.value, contentRef))
           })
           props.activator.value && activatorResizeObserver.observe(props.activator.value)
@@ -160,22 +159,16 @@
       }, { immediate: true })
 
       let rootEl
+      const getOpenDependentElements = ref(null)
+      const addDependency = inject('addDependentInstance', () => null)
+      const removeDependency = inject('removeDependentInstance', () => null)
 
-      let addDependency, removeDependency
+      const { getOpenDependentElements: getOpenDependentElementsFn, addDependentInstance,
+        removeDependentInstance, dependents } = dependent(instance, isActive, addDependency, removeDependency)
+      getOpenDependentElements.value = getOpenDependentElementsFn
 
-      const dependents = ref([])
-
-      function addDependentInstance(vm, children) {
-        removeDependency &&removeDependency([instance, ...dependents.value])
-        dependents.value.push(vm, ...children)
-        addDependency && addDependency(instance, dependents.value)
-      }
-
-      function removeDependentInstance(vms) { // cleanup fn, use before unmounting
-        dependents.value = dependents.value.filter(i => {
-          const uids = vms.map(vm => vm.uid);
-          return !uids.includes(i.uid)
-        })
+      if (props.isDependent) {
+        addDependency(instance, dependents.value)
       }
 
       if (props.closeDependents) {
@@ -183,27 +176,11 @@
         provide('removeDependentInstance', removeDependentInstance)
       }
 
-      if (props.isDependent) {
-        addDependency = inject('addDependentInstance', () => null)
-        removeDependency = inject('removeDependentInstance', () => null)
-        addDependency(instance, dependents.value)
-      }
-
-      onBeforeUnmount(() => {
-        if (removeDependency) {
-          removeDependency([instance, ...dependents.value]);
-        }
-      })
-
-      const getOpenDependentElements = ref(null)
       onMounted(function () {
         nextTick(() => {
           rootEl = attachToRoot(contentRef.value)
           updateDimensions(props.activator.value, contentRef)
           if (!resizeObserver.observer) resizeObserver.init()
-
-          // fixme dependent mixin
-          getOpenDependentElements.value = dependent(instance, dependents, isActive)
         })
       })
 
@@ -276,7 +253,6 @@
           closeConditional,
           include: () => {
             return [instance.parent.ctx.$el, ...getOpenDependentElements.value()];
-            // return [instance.parent.ctx.$el];
           }
         },
       }
