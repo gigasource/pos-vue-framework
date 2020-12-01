@@ -16,7 +16,7 @@
         </div>
         <div v-if="prefix" class="g-tf-affix" ref="prefixRef">{{prefix}}</div>
         <div class="inputGroup">
-          <textarea id="tear" ref="inputRef"
+          <textarea id="tear" ref="input"
                     class="g-tf-input"
                     :style="tearStyles"
                     :label="label"
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-  import {ref, computed, watch, onMounted} from 'vue';
+  import {ref, computed, watch, onMounted, getCurrentInstance} from 'vue';
   import _ from 'lodash'
   import {
     getEvents,
@@ -140,9 +140,7 @@
       },
     },
     setup(props, context) {
-      const inputRef = ref(null)
-      const caretRef = ref(null)
-      
+      const currentInstance = getCurrentInstance()
       const tfWrapperClasses = getTfWrapperClasses(props);
 
       const {internalValue} = getInternalValue(props, context);
@@ -174,7 +172,7 @@
       const {
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
       //set legend width for label in outlined textfield
       const legendStyles = computed(() => {
         if (!props.solo && props.label && (isFocused.value || isDirty || !!internalValue.value)) {
@@ -188,7 +186,7 @@
 
       //textarea logic
       function calculateInputHeight() {
-        const input = inputRef.value
+        const input = currentInstance.refs['input']
         if (!input) return
 
         input.style.height = '0'
@@ -216,8 +214,6 @@
       })
 
       return {
-        inputRef,
-        caretRef,
         //calculated styles and classes
         labelClasses,
         labelStyles,

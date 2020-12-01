@@ -1,4 +1,4 @@
-import { nextTick } from 'vue'
+import { nextTick, getCurrentInstance } from 'vue'
 
 // impact: next tick
 export function getLabel(context, props, internalValue, isValidInput, isFocused,
@@ -160,13 +160,15 @@ export function getSlotBsEventListeners(context) {
 }
 
 // todo: impact context.refs <-> domRefs
-export function getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef }) {
+export function getEvents(props, context, internalValue, isFocused, isValidInput, validate) {
+  const currentInstance = getCurrentInstance()
+
   function onClick(event) {
     if (props.disabled || props.readonly || props.readOnly) return;
-    if (!isFocused.value) inputRef.value && inputRef.value.focus();
+    if (!isFocused.value) currentInstance.refs['input'] && currentInstance.refs['input'].focus();
     isFocused.value = true;
-    document.caretElement = new Caret(inputRef.value)
-    const caret = caretRef.value
+    document.caretElement = new Caret(currentInstance.refs['input'])
+    const caret = currentInstance.refs['caret']
     if(caret) {
       document.caretElement.set(caret.children.length + 1)
       for(const child of caret.children) {
@@ -178,9 +180,9 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onFocus(event) {
-    if (!inputRef.value) return;
-    if (document.activeElement !== inputRef.value) {
-      inputRef.value.focus();
+    if (!currentInstance.refs['input']) return;
+    if (document.activeElement !== currentInstance.refs['input']) {
+      currentInstance.refs['input'].focus();
     }
     if (!isFocused.value) {
       context.emit('focus', event);
@@ -232,7 +234,7 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   function onMouseDown(event) {
     state.hasMouseDown = true
     context.emit('mousedown', event)
-    if (event.target !== inputRef.value) {
+    if (event.target !== currentInstance.refs['input']) {
       event.preventDefault();
       event.stopPropagation();
     }
@@ -259,10 +261,11 @@ export function getInternalValue(props, context) {
 }
 
 // todo: impact: context.refs <-> domRefs
-export function getVirtualCaret(props, context, internalValue, isFocused, { inputRef }) {
+export function getVirtualCaret(props, context, internalValue, isFocused) {
+  const currentInstance = getCurrentInstance()
   const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
   const selectLetter = (event, index) => {
-    inputRef.value.click()
+    currentInstance.refs['input'].click()
     const target = event.target
     let parent = target.parentElement
     for(const child of parent.children) {
@@ -270,7 +273,7 @@ export function getVirtualCaret(props, context, internalValue, isFocused, { inpu
     }
     const {width, x} = target.getBoundingClientRect()
     const offset = event.clientX - x
-    document.caretElement = new Caret(inputRef.value)
+    document.caretElement = new Caret(currentInstance.refs['input'])
     if(offset > width/2) {
       target.classList.add('animated-caret')
       document.caretElement.set(index + 1)

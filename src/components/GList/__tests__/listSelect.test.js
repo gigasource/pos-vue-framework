@@ -1,5 +1,4 @@
-import { computed } from 'vue';
-import Vue from 'vue/dist/vue.common.js';
+import { computed, createApp, h, ref, reactive, getCurrentInstance, watch } from 'vue';
 import { getSelectionText, makeListSelectable } from '../listSelectFactory';
 import _ from 'lodash'
 
@@ -11,8 +10,14 @@ const expectTest = (value) => {
   if (!_.isArray(value) && typeof value === 'object') _value = _.omit(value, ['elm', 'isRootInsert', '__ob__'])
   return expect(_value)
 }
-const parentVmFactory = attrs =>
-  new Vue({
+
+const parentVmFactory = attrs => {
+  document.getElementsByTagName('html')[0].innerHTML = ''
+  const el = document.createElement('div')
+  el.id = 'app'
+  document.body.appendChild(el)
+
+  return createApp({
     components: {
       child: {
         props: {
@@ -21,14 +26,13 @@ const parentVmFactory = attrs =>
           allowDuplicates: Boolean,
           multiple: Boolean,
           returnObject: Boolean,
-
           filter: {
             type: Function
           },
           inCombobox: Boolean,
           items: {
             type: Array,
-            default: () => Vue.observable([])
+            default: () => [] // Vue.observable([])
           },
           itemText: {
             default: () => item => item.text
@@ -37,19 +41,16 @@ const parentVmFactory = attrs =>
             default: () => item => item.value
           },
           isPrimitiveArray: Boolean,
-          value: {
+          modelValue: {
             type: null,
-            default() {
-              this.$on('input', val => (this.value = val));
-              if (this.multiple) {
-                return Vue.observable([]);
-              }
-              return Vue.observable(null);
+            default: () => {
+              return attrs.multiple ? [] : null
             }
           }
         },
+        emits: ['update:modelValue', 'update:selectedValue', 'update:externalNormalizedValue'],
         render() {
-          return <div>{this.value}</div>;
+          return <div></div>;
         },
         setup(props, context) {
           const {
@@ -66,6 +67,7 @@ const parentVmFactory = attrs =>
           const selectionTexts = getSelectionText(props, normalizedValue, listType, getText, getValue)
           const selectionString = computed(() => selectionTexts.value.join(', '))
           return {
+            myProps: props,
             getText,
             getValue,
             listType,
@@ -83,47 +85,48 @@ const parentVmFactory = attrs =>
     },
     data() {
       return {
-        externalValueNormalize: null,
-        selection: null,
+        'externalValueNormalize': null,
+        'selection': null,
         ...attrs,
       };
-
     },
 
-    render(h) {
+    render() {
       return (
-        <child
-          {...{
-            props: {
-              ...this.$data,
-              inCombobox: this.$data.component === 'combobox'
-            },
-            on: {
-              'update:externalNormalizedValue': val => {
+          <child
+              {...{
+                ...this.$data,
+                inCombobox: this.$data.component === 'combobox'
+              }}
+              ref='child'
+              onUpdate:externalNormalizedValue={val => {
                 console.log('update:externalNormalisedValue', val);
                 this.externalValueNormalize = val;
-              },
-              'update:selection': val => {
+              }}
+              onUpdate:selection={val => {
                 console.log('update:selection', val);
                 this.selection = val;
-              },
-            }
-          }}
-          ref={'child'}
-          vOn:input={val => (this.value = val)}
-        />
+              }}
+              onUpdate:modelValue={val => {
+                console.log('update:modelValue', val)
+                this.modelValue = val
+              }}
+          />
       );
     },
     mounted() {
       this.child = this.$refs.child;
     }
-  }).$mount();
+  }).mount(el);
+}
+
+
 describe('test', function () {
   it('single, primitive', async function () {
     const parentVm = parentVmFactory({
       itemText: 'value',
       itemValue: 'value',
-      value: 1,
+      modelValue: 1,
       items: [0, 1, 2, 3, 3, 6, 6]
     });
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
@@ -144,7 +147,7 @@ describe('test', function () {
       mandatory: true,
       itemText: 'value',
       itemValue: 'value',
-      value: 1,
+      modelValue: 1,
       items: [1, 2, 3, 3, 6, 6]
     });
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
@@ -161,7 +164,7 @@ describe('test', function () {
       multiple: true,
       itemText: 'value',
       itemValue: 'value',
-      value: [2],
+      modelValue: [2],
       items: [1, 2, 3, 3, 6, 6]
     });
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
@@ -182,7 +185,7 @@ describe('test', function () {
       multiple: true,
       itemText: 'value',
       itemValue: 'value',
-      value: [2],
+      modelValue: [2],
       items: [0, 1, 2, 3, 3, 6, 6]
     });
     //expectTest(parentVm.child.valueNormalize).toBe({value: 2});
@@ -204,7 +207,7 @@ describe('test', function () {
       multiple: true,
       itemText: 'value',
       itemValue: 'value',
-      value: [1],
+      modelValue: [1],
       items: [1, 2, 3, 3, 6, 6]
     });
     expectTest(parentVm.child.normalizedList).toEqual([1, 2, 3, 6])
@@ -221,7 +224,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: '',
       returnObject: true,
-      value: { a: 0 },
+      modelValue: { a: 0 },
       items: [{ a: 0 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 0 })
@@ -241,7 +244,7 @@ describe('test', function () {
       itemText: 'value',
       itemValue: 'a',
       returnObject: true,
-      value: 1,
+      modelValue: 1,
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1 })
@@ -261,7 +264,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'a',
       returnObject: false,
-      value: 1,
+      modelValue: 1,
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1 })
@@ -271,7 +274,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 3 })
 
-    expectTest(parentVm.child.value).toEqual(3)
+    expectTest(parentVm.child.modelValue).toEqual(3)
 
 
   });
@@ -280,7 +283,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: '',
       returnObject: false,
-      value: 1,
+      modelValue: 1,
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1 })
@@ -290,7 +293,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 3 })
     expectTest(parentVm.child.selectionString).toEqual('3')
-    expectTest(parentVm.child.value).toEqual(3)
+    expectTest(parentVm.child.modelValue).toEqual(3)
 
 
   });
@@ -299,18 +302,18 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'b',
       returnObject: false,
-      value: 1,
+      modelValue: 1,
       items: [{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 3, b: 7 }, { a: 3, b: 7 }, { a: 6, b: 8 }, { a: 6, b: 8 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 2, b: 1 })
-    expectTest(parentVm.child.value).toEqual(1)
+    expectTest(parentVm.child.modelValue).toEqual(1)
     expectTest(parentVm.child.selectionString).toEqual('2')
     expectTest(parentVm.child.selectableValues).toEqual([{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 3, b: 7 }, { a: 6, b: 8 },])
     parentVm.child.toggleItem(parentVm.child.selectableValues[2])
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 3, b: 7 })
-    expectTest(parentVm.child.value).toEqual(7)
+    expectTest(parentVm.child.modelValue).toEqual(7)
     expectTest(parentVm.child.selectionString).toEqual('3')
 
 
@@ -322,7 +325,7 @@ describe('test', function () {
       itemText: '',
       itemValue: '',
       returnObject: true,
-      value: [{ a: 1 }],
+      modelValue: [{ a: 1 }],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
@@ -341,7 +344,7 @@ describe('test', function () {
       itemText: '',
       itemValue: '',
       returnObject: true,
-      value: [{ a: 1 }],
+      modelValue: [{ a: 1 }],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
@@ -359,7 +362,7 @@ describe('test', function () {
       itemText: '',
       itemValue: 'a',
       returnObject: true,
-      value: [1, 2],
+      modelValue: [1, 2],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
@@ -379,7 +382,7 @@ describe('test', function () {
       itemText: '',
       itemValue: 'a',
       returnObject: true,
-      value: [1, 2],
+      modelValue: [1, 2],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
@@ -397,11 +400,11 @@ describe('test', function () {
       multiple: true,
       itemText: '',
       itemValue: 'a',
-      value: [{ a: 1 }],
+      modelValue: [{ a: 1 }],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
-    expectTest(parentVm.child.value).toEqual([{ a: 1 }])
+    expectTest(parentVm.child.modelValue).toEqual([{ a: 1 }])
     expectTest(parentVm.child.selectableValues).toEqual([{ a: 2 }, { a: 3 }, { a: 6 }])
     parentVm.child.toggleItem(parentVm.child.selectableValues[0])
     await parentVm.$nextTick();
@@ -416,7 +419,7 @@ describe('test', function () {
       multiple: true,
       itemText: '',
       itemValue: 'a',
-      value: [1, 2],
+      modelValue: [1, 2],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 },])
@@ -425,7 +428,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 3 },])
-    expectTest(parentVm.child.value).toEqual([1, 2, 3])
+    expectTest(parentVm.child.modelValue).toEqual([1, 2, 3])
     expectTest(parentVm.child.selectionString).toEqual('1, 2, 3')
 
   });
@@ -435,7 +438,7 @@ describe('test', function () {
       multiple: true,
       itemText: '',
       itemValue: 'a',
-      value: [1, 2],
+      modelValue: [1, 2],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 },])
@@ -444,7 +447,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 1 }])
-    expectTest(parentVm.child.value).toEqual([1, 2, 1])
+    expectTest(parentVm.child.modelValue).toEqual([1, 2, 1])
     expectTest(parentVm.child.selectionString).toEqual('1, 2, 1')
   });
   it('multiple not returnObject itemText ', async function () {
@@ -452,7 +455,7 @@ describe('test', function () {
       multiple: true,
       itemText: 'a',
       itemValue: '',
-      value: [{ a: 1 }],
+      modelValue: [{ a: 1 }],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }])
@@ -461,7 +464,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }])
-    expectTest(parentVm.child.value).toEqual([1, 2])
+    expectTest(parentVm.child.modelValue).toEqual([1, 2])
     expectTest(parentVm.child.selectionString).toEqual('1, 2')
 
 
@@ -471,7 +474,7 @@ describe('test', function () {
       multiple: true,
       itemText: 'a',
       itemValue: '',
-      value: [1, 2],
+      modelValue: [1, 2],
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 },])
@@ -480,7 +483,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1 }, { a: 2 }, { a: 3 },])
-    expectTest(parentVm.child.value).toEqual([1, 2, 3])
+    expectTest(parentVm.child.modelValue).toEqual([1, 2, 3])
     expectTest(parentVm.child.selectionString).toEqual('1, 2, 3')
 
   });
@@ -490,7 +493,7 @@ describe('test', function () {
       multiple: true,
       itemText: 'a',
       itemValue: '',
-      value: [1, 2],
+      modelValue: [1, 2],
       items: [{ a: 1, b: 1 }, { a: 2, b: 2 }, { a: 3, b: 3 }, { a: 3, b: 3 }, { a: 6, b: 6 }, { a: 6, b: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }, { a: 2, b: 2 }])
@@ -499,7 +502,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }, { a: 2, b: 2 }, { a: 1, b: 1 }])
-    expectTest(parentVm.child.value).toEqual([1, 2, 1])
+    expectTest(parentVm.child.modelValue).toEqual([1, 2, 1])
     expectTest(parentVm.child.selectionString).toEqual('1, 2, 1')
   });
   it('multiple not returnObject itemValue itemText ', async function () {
@@ -507,7 +510,7 @@ describe('test', function () {
       multiple: true,
       itemText: 'b',
       itemValue: 'a',
-      value: [{ a: 1, b: 1 }],
+      modelValue: [{ a: 1, b: 1 }],
       items: [{ a: 1, b: 1 }, { a: 3, b: 2 }, { a: 3, b: 3 }, { a: 3, b: 3 }, { a: 6, b: 6 }, { a: 6, b: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }])
@@ -516,7 +519,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 1 }, { a: 3, b: 2 }])
-    expectTest(parentVm.child.value).toEqual([1, 3])
+    expectTest(parentVm.child.modelValue).toEqual([1, 3])
     expectTest(parentVm.child.selectionString).toEqual('1, 2')
 
 
@@ -527,7 +530,7 @@ describe('test', function () {
     const parentVm = parentVmFactory({
       itemText: 'value',
       itemValue: 'value',
-      value: 1,
+      modelValue: 1,
       items: [1, 2, 3, 3, 6, 6],
       component: 'combobox'
     });
@@ -550,7 +553,7 @@ describe('test', function () {
       itemText: 'b',
       itemValue: 'a',
       returnObject: false,
-      value: 1,
+      modelValue: 1,
       items: [{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 3, b: 4 }, { a: 6, b: 7 }, { a: 6, b: 7 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual({ a: 1, b: 2 })
@@ -562,7 +565,7 @@ describe('test', function () {
     await parentVm.$nextTick();
     expectTest(parentVm.child.normalizedValue).toEqual(5)
     expectTest(parentVm.child.selectionString).toEqual('5')
-    expectTest(parentVm.child.value).toEqual(5)
+    expectTest(parentVm.child.modelValue).toEqual(5)
 
 
   });
@@ -572,7 +575,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'a',
       returnObject: true,
-      value: 9,
+      modelValue: 9,
       items: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3 }, { a: 6 }, { a: 6 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual(9)
@@ -595,7 +598,7 @@ describe('test', function () {
       itemText: 'b',
       itemValue: 'a',
       returnObject: true,
-      value: [1],
+      modelValue: [1],
       items: [{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }, { a: 3, b: 4 }, { a: 6, b: 7 }, { a: 6, b: 7 }]
     });
     expectTest(parentVm.child.normalizedValue).toEqual([{ a: 1, b: 2 }])
@@ -620,7 +623,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'b',
       returnObject: true,
-      value: () => 1,
+      modelValue: () => 1,
       items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }]
     });
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
@@ -646,7 +649,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'b',
       returnObject: true,
-      value: { a: 1, b: () => 1 },
+      modelValue: { a: 1, b: () => 1 },
       items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }]
     });
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
@@ -670,7 +673,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'b',
       returnObject: false,
-      value: () => 4,
+      modelValue: () => 4,
       items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }]
     });
     expectTest(parentVm.child.normalizedValue.b.toString()).toEqual(
@@ -701,7 +704,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'b',
       returnObject: false,
-      value: [() => 4],
+      modelValue: [() => 4],
       items: [{ a: 1, b: () => 1 }, { a: 2, b: () => 2 }, { a: 3, b: () => 3 }]
     });
     expect(parentVm.child.normalizedValue[0].b.toString()).toEqual(
@@ -728,7 +731,7 @@ describe('test', function () {
       itemText: 'a',
       itemValue: 'b',
       returnObject: false,
-      value: null,
+      modelValue: null,
       items: []
     });
     expectTest(parentVm.child.normalizedValue).toEqual(undefined);

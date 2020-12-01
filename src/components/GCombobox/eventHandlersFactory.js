@@ -1,19 +1,26 @@
 import { keyCodes } from '../../utils/helpers';
-import { ref, watch } from 'vue'
+import { ref, watch, getCurrentInstance } from 'vue'
+
+export const emitEvents = [
+  'clear',
+  'update:modelValue',
+  'update:searchText',
+]
 
 export function getInputEventHandlers(props, context, state, selectedItem, lazySearch, searchText, addValueFromInput,
                                       unNormalize, renderList, getText) {
   const isInputDisplay = !props.multiple && !(props.chips || props.smallChips || props.deletableChips)
   const activeListItemIndex = ref(-1)
+  const currentInstance = getCurrentInstance()
 
   function onChipCloseClick(index) {
     if (props.multiple) selectedItem.value.splice(index, 1)
     let _value = props.multiple ? selectedItem.value.map(unNormalize) : null
-    context.emit('input', _value)
+    context.emit('update:modelValue', _value)
   }
 
   function clearSelection() {
-    context.emit('input', props.multiple ? [] : '')
+    context.emit('update:modelValue', props.multiple ? [] : '')
     context.emit('clear')
     lazySearch.value = ''
   }
@@ -21,7 +28,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
   // change focused element when index changes
   watch(activeListItemIndex, (newVal, oldVal) => {
     if (newVal !== oldVal) {
-      const listRef = context.refs.menu.$refs.list
+      const listRef = currentInstance.refs.menu.$refs.list
 
       if (listRef && renderList.value.length) {
         if (newVal >= 0) {
@@ -96,9 +103,9 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
 
         if (props.multiple) {
           selectedItem.value.pop()
-          context.emit('input', selectedItem.value.map(unNormalize))
+          context.emit('update:modelValue', selectedItem.value.map(unNormalize))
         } else {
-          context.emit('input', null)
+          context.emit('update:modelValue', null)
         }
         return state.pressDeleteTimes
       }
@@ -111,7 +118,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
       if (props.multiple) selectedItem.value.push(rawSelected)
       const _value = props.multiple ? selectedItem.value.map(unNormalize) : rawSelected
       lazySearch.value = (props.multiple || props.chips) ? '' : `${getText.value(rawSelected)}`
-      return context.emit('input', _value)
+      return context.emit('update:modelValue', _value)
     }
 
     if (props.component === 'combobox' && lazySearch.value.trim().length > 0) {
