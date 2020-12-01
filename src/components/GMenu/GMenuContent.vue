@@ -164,7 +164,7 @@
       const removeDependency = inject('removeDependentInstance', () => null)
 
       const { getOpenDependentElements: getOpenDependentElementsFn, addDependentInstance,
-        removeDependentInstance, dependents } = dependent(instance, isActive, addDependency, removeDependency)
+        removeDependentInstance, dependents } = dependent(isActive, addDependency, removeDependency)
       getOpenDependentElements.value = getOpenDependentElementsFn
 
       if (props.isDependent) {

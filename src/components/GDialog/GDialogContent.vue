@@ -1,9 +1,11 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel'
-  import { convertToUnit, getScopeIdRender, getZIndex } from '../../utils/helpers'
+  import { convertToUnit, getZIndex } from '../../utils/helpers'
   import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
-  import { computed, onBeforeUnmount, onMounted, ref, watch, nextTick, Transition, getCurrentInstance, provide, inject } from 'vue'
+  import {
+    computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, Transition, watch
+  } from 'vue'
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
   import dependent from '../../mixins/dependent';
@@ -90,14 +92,8 @@
       const removeDependency = inject('removeDependentInstance', () => null)
 
       const { getOpenDependentElements: getOpenDependentElementsFn, addDependentInstance,
-        removeDependentInstance, dependents } = dependent(instance, isActive, addDependency, removeDependency)
+        removeDependentInstance, dependents } = dependent(isActive, addDependency, removeDependency)
       getOpenDependentElements.value = getOpenDependentElementsFn
-
-      watch(() => dependents.value, val => {
-        if (val) {
-          console.log('dependents watcher', instance.uid, val.map(i => i.uid))
-        }
-      })
 
       if (props.closeDependents) {
         provide('addDependentInstance', addDependentInstance)

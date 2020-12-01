@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 // provide/inject only available in setup()
 // addDependency(), removeDependency() are injected methods
-export default function dependent(vm, isActive, addDependency, removeDependency) {
+export default function dependent(isActive, addDependency, removeDependency) {
   const dependents = ref([])
   const instance = getCurrentInstance()
 
