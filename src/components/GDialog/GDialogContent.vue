@@ -3,7 +3,7 @@
   import { convertToUnit, getScopeIdRender, getZIndex } from '../../utils/helpers'
   import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
-  import { computed, onBeforeUnmount, onMounted, ref, watch, nextTick, Transition } from 'vue'
+  import { computed, onBeforeUnmount, onMounted, ref, watch, nextTick, Transition, getCurrentInstance, provide, inject } from 'vue'
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
   import dependent from '../../mixins/dependent';
@@ -65,6 +65,7 @@
       const wrapper = ref(null)
       const container = ref(null)
       const content = ref(null)
+      const instance = getCurrentInstance()
       const isActive = getInternalValue(props, context)
       const {attachToRoot, detach} = detachable(props, context, { content })
       const {getMaxZIndex} = stackable(props, context)
@@ -85,10 +86,49 @@
         detach(container.value)
       }
 
+      let addDependency, removeDependency
+
+      const dependents = ref([])
+      watch(() => dependents.value, val => {
+        if (val) {
+          console.log('dependents watcher', instance.uid, val.map(i => i.uid))
+        }
+      })
+
+      function addDependentInstance(vm, children) {
+        removeDependency && removeDependency([instance, ...dependents.value])
+        dependents.value.push(vm, ...children)
+        addDependency && addDependency(instance, dependents.value)
+      }
+
+      function removeDependentInstance(vms) { // cleanup fn, use before unmounting
+        dependents.value = dependents.value.filter(i => {
+          const uids = vms.map(vm => vm.uid);
+          return !uids.includes(i.uid)
+        })
+      }
+
+      if (props.closeDependents) {
+        provide('addDependentInstance', addDependentInstance)
+        provide('removeDependentInstance', removeDependentInstance)
+      }
+
+      if (props.isDependent) {
+        addDependency = inject('addDependentInstance')
+        removeDependency = inject('removeDependentInstance')
+        addDependency && addDependency(instance, dependents.value)
+      }
+
+      onBeforeUnmount(() => {
+        if (removeDependency) {
+          removeDependency([instance, ...dependents.value]);
+        }
+      })
+
       onMounted(function () {
         nextTick(() => {
           initComponent()
-          // getOpenDependentElements.value = dependent(this)
+          getOpenDependentElements.value = dependent(instance, dependents, isActive)
         })
       })
 
@@ -321,8 +361,8 @@
         arg: {
           closeConditional,
           // fixme dependent mixin
-          // include: () => [...getOpenDependentElements.value()]
-          include: () => []
+          include: () => [...getOpenDependentElements.value()]
+          // include: () => []
         }
       }
 
@@ -337,7 +377,8 @@
         contentData,
         overlayData,
         renderOverlay,
-        isActive
+        isActive,
+        dependents
       }
     },
   }

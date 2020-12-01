@@ -1,8 +1,8 @@
 <script>
-  import { computed, onBeforeUnmount, onMounted, ref, watch, getCurrentInstance, nextTick } from 'vue';
+  import { computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
-  import { convertToUnit, getScopeIdRender } from '../../utils/helpers';
+  import { convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
@@ -123,6 +123,10 @@
       const ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill
       const instance = getCurrentInstance()
 
+      function toggleValue() {
+        isActive.value = false
+      }
+
       function getResizeObserver() {
         let activatorResizeObserver = undefined
 
@@ -156,8 +160,42 @@
       }, { immediate: true })
 
       let rootEl
-      // const getOpenDependentElements = ref(null)
 
+      let addDependency, removeDependency
+
+      const dependents = ref([])
+
+      function addDependentInstance(vm, children) {
+        removeDependency &&removeDependency([instance, ...dependents.value])
+        dependents.value.push(vm, ...children)
+        addDependency && addDependency(instance, dependents.value)
+      }
+
+      function removeDependentInstance(vms) { // cleanup fn, use before unmounting
+        dependents.value = dependents.value.filter(i => {
+          const uids = vms.map(vm => vm.uid);
+          return !uids.includes(i.uid)
+        })
+      }
+
+      if (props.closeDependents) {
+        provide('addDependentInstance', addDependentInstance)
+        provide('removeDependentInstance', removeDependentInstance)
+      }
+
+      if (props.isDependent) {
+        addDependency = inject('addDependentInstance', () => null)
+        removeDependency = inject('removeDependentInstance', () => null)
+        addDependency(instance, dependents.value)
+      }
+
+      onBeforeUnmount(() => {
+        if (removeDependency) {
+          removeDependency([instance, ...dependents.value]);
+        }
+      })
+
+      const getOpenDependentElements = ref(null)
       onMounted(function () {
         nextTick(() => {
           rootEl = attachToRoot(contentRef.value)
@@ -165,7 +203,7 @@
           if (!resizeObserver.observer) resizeObserver.init()
 
           // fixme dependent mixin
-          // getOpenDependentElements.value = dependent(instance.ctx)
+          getOpenDependentElements.value = dependent(instance, dependents, isActive)
         })
       })
 
@@ -237,8 +275,8 @@
         arg: {
           closeConditional,
           include: () => {
-            // return [context.parent.$el, ...getOpenDependentElements.value()];
-            return [instance.parent.ctx.$el];
+            return [instance.parent.ctx.$el, ...getOpenDependentElements.value()];
+            // return [instance.parent.ctx.$el];
           }
         },
       }
@@ -254,19 +292,21 @@
 
       return {
         isActive,
-        contentRef,
+        content: contentRef,
         contentClasses,
         contentStyles,
         contentListeners,
         clickOutsideDirective,
-        resizeDirective
+        resizeDirective,
+        dependents,
+        toggleValue
       }
     },
   }
 </script>
 
 <template>
-  <div :style="contentStyles" :class="contentClasses" ref="contentRef"
+  <div :style="contentStyles" :class="contentClasses" ref="content"
        v-on="contentListeners"
        v-show="modelValue"
        v-click-outside:[clickOutsideDirective.arg]="clickOutsideDirective.value"
