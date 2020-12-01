@@ -24,11 +24,11 @@
       // boolean value indicate whether this dialog should be shown or not
       show: Boolean,
       // input data contain demoLayoutDialog model, used for edit
-      value: Object,
+      modelValue: Object,
       // input data for g-auto-complete: include all area name
       areaNames: Array
     },
-    events: ['close'],
+    events: ['close', 'update', 'create'],
     setup(props, context) {
       const suggestedTags = [
         { text: 'span', value: 'span' },
@@ -54,34 +54,34 @@
         selectedImageId: 0,
       })
 
-      watch(() => props.value, () => {
-        if (props.value) {
-          state.area = props.value.area
-          state.tag = props.value.tag
-          state.text = props.value.text
-          state.border = props.value.border
-          state.width = props.value.width
-          state.height = props.value.height
-          state.selectedImageId = sampleImages.indexOf(props.value.bgImage)
+      watch(() => props.modelValue, () => {
+        if (props.modelValue) {
+          state.area = props.modelValue.area
+          state.tag = props.modelValue.tag
+          state.text = props.modelValue.text
+          state.border = props.modelValue.border
+          state.width = props.modelValue.width
+          state.height = props.modelValue.height
+          state.selectedImageId = sampleImages.indexOf(props.modelValue.bgImage)
         }
       })
 
       const cptSelected = computed(() => {
-        if (!props.value)
+        if (!props.modelValue)
           return null
         else
-          return _.find(props.areaNames, areaName => areaName.value === props.value.area)
+          return _.find(props.areaNames, areaName => areaName.value === props.modelValue.area)
       })
 
       const cptSelectedTag = computed(() => {
-        if (!props.value)
+        if (!props.modelValue)
           return null
         else
-          return _.find(suggestedTags, tag => tag.value === props.value.tag)
+          return _.find(suggestedTags, tag => tag.value === props.modelValue.tag)
       })
 
       function create() {
-        context.emit(props.value ? 'update' : 'create', {
+        context.emit(props.modelValue ? 'update' : 'create', {
           ..._.pick(state, 'area', 'tag', 'text', 'border', 'width', 'height'),
           bgImage: sampleImages[state.selectedImageId],
         })
@@ -101,12 +101,12 @@
                   flat label="Area"
                   items={props.areaNames}
                   selected={cptSelected.value}
-                  onInput={v => v && (state.area = v.value)}/>
+                  onUpdate:modelValue={v => v && (state.area = v.value)}/>
               <g-auto-complete
                   flat label="Tag"
                   items={suggestedTags}
                   selected={cptSelectedTag.value}
-                  onInput={v => v && (state.tag = v.value)}
+                  onUpdate:modelValue={v => v && (state.tag = v.value)}
               />
               <g-text-field flat label="Text" value={state.text} onInput={v => state.text = v}/>
               <g-text-field flat label="Border" value={state.border} onInput={v => state.border = v}/>
@@ -125,7 +125,7 @@
               </div>
             </div>
             <div class="g-layout-data-dialog__content__action-btn">
-              <g-btn flat outlined onClick={() => create()}>{props.value ? 'Update' : 'Create'}</g-btn>
+              <g-btn flat outlined onClick={() => create()}>{props.modelValue ? 'Update' : 'Create'}</g-btn>
               &nbsp;
               <g-btn flat outlined onClick={() => cancel()}>Cancel</g-btn>
             </div>
