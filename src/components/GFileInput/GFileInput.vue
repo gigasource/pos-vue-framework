@@ -202,7 +202,7 @@
           <label vShow={!(props.chips || props.smallChips)} class={['g-tf-label', labelClasses.value]}
                  style={labelStyles.value} for="input">{props.label}</label>
           {genFileInput()}
-          <input id="input" ref="inputRef"
+          <input id="input" ref="input"
                  class="g-tf-input"
                  type={props.type}
                  multiple={props.multiple}
@@ -319,7 +319,9 @@
 
       function onClickWrapper(e) {
         onClick(e)
-        currentInstance.refs['input'].click()
+        // currentInstance.refs['input'].click()
+        // for some reason, it show twice,
+        // does this behavior also happen before migrate??
       }
 
       function genFileInputComponent() {
