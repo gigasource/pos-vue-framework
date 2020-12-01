@@ -1,7 +1,7 @@
 <script>
   import GIcon from "../GIcon/GIcon";
   import GChip from "../GChip/GChip";
-  import {ref, computed, watch} from 'vue';
+  import {ref, computed, watch, getCurrentInstance} from 'vue';
   import {getEvents, getLabel, getValidate, inputEvents} from '../GInput/GInputFactory';
   import _ from 'lodash';
 
@@ -81,9 +81,7 @@
     },
     emits: _.union(inputEvents, [ 'change', 'clear' ]),
     setup(props, context) {
-      const inputRef = ref(null)
-      const caretRef = ref(null)
-      
+      const currentInstance = getCurrentInstance()
       const lazyValue = ref(props.modelValue)
       const internalValue = computed({
         get: () => lazyValue.value,
@@ -102,7 +100,7 @@
       const isValidInput = ref(true)
       const {
         onClick, onFocus, onBlur, onMouseDown, onMouseUp,
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
       const onInput = function (e) {
         const files = [...e.target.files || []]
         internalValue.value = props.multiple ? files : files[0]
@@ -110,14 +108,14 @@
       const onClearIconClick = function (e) {
         e.stopPropagation()
         internalValue.value = props.multiple ? [] : null
-        inputRef.value.value = ''
+        currentInstance.refs['input'].value = ''
         context.emit('clear')
       }
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
 
       //file input logic
       const files = computed(() => {
-        return isDirty.value ? inputRef.value.files : []
+        return isDirty.value ? currentInstance.refs['input'].files : []
       })
 
       function convertFileSize(fileSize) {
@@ -321,7 +319,7 @@
 
       function onClickWrapper(e) {
         onClick(e)
-        // inputRef.value.click()
+        currentInstance.refs['input'].click()
       }
 
       function genFileInputComponent() {
@@ -336,8 +334,6 @@
       }
 
       return {
-        inputRef,
-        caretRef,
         genFileInputComponent
       }
     },

@@ -1,6 +1,8 @@
 import { computed } from 'vue';
 import _ from 'lodash';
 
+export const emitEvents = [ 'update:modelValue', 'update:selectedValue' ]
+
 export function createItemFn(prop) {
   return typeof prop === 'function'
     ? prop
@@ -41,7 +43,11 @@ export function makeListSelectable(props, context, internalItems) {
 
   const normalizedList = computed(() => {
       if (_.isArray(listItems.value)) {
-        return (listType.value === 'primitive') ? _.uniq(listItems.value) : _.uniqWith(listItems.value.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
+        return (
+            listType.value === 'primitive'
+              ? _.uniq(listItems.value)
+              : _.uniqWith(listItems.value.map(item => _.omit(item, ['elm', 'isRootInsert'])), _.isEqual)
+        )
       }
       return []
     }
@@ -49,30 +55,34 @@ export function makeListSelectable(props, context, internalItems) {
 
 
   //todo: normalized value: map value to an item in list if it existed
+  const defaultNormalize = value => {
+    if (listType.value === 'primitive')
+      return listItems.value.find(item => item === value)
+    else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object')
+      return listItems.value.find(item => _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
+    else
+      return listItems.value.find(item => getValue.value(item) === value) || listItems.value.find(item => getText.value(item) === value)
+  }
 
   const normalize = (value, isFromInput) => {
-    const _normalize = props.normalize || function (value) {
-      if (listType.value === 'primitive') return listItems.value.find(item => item === value)
-      else if ((listType.value === 'objectReturnObject' && typeof value === 'object') || typeof value === 'object') return listItems.value.find(item =>
-        _.isEqual(_.omit(item, ['elm', 'isRootInsert']), _.omit(value, ['elm', 'isRootInsert'])))
-      else {
-        return listItems.value.find(item => getValue.value(item) === value) || listItems.value.find(item => getText.value(item) === value)
-      }
-    }
-
-    if (!inCombobox) return _normalize(value, listItems.value, isFromInput)
+    const _normalize = props.normalize || defaultNormalize
+    if (!inCombobox)
+      return _normalize(value, listItems.value, isFromInput)
     else {
       let _normalizedVal = _normalize(value, listItems.value, isFromInput)
-      if (_normalizedVal) return _normalizedVal
+      if (_normalizedVal)
+        return _normalizedVal
       return value
     }
   }
 
   const normalizedValue = computed(() => {
     let res
-    if (!props.multiple) res = (props.modelValue || props.modelValue === 0) ? normalize(props.modelValue) : undefined
-    else res = props.modelValue ? props.modelValue.map(item => normalize(item)) : []
-    context.emit('update:selectedValue', res);
+    if (!props.multiple)
+      res = (props.modelValue || props.modelValue === 0) ? normalize(props.modelValue) : undefined
+    else
+      res = props.modelValue ? props.modelValue.map(item => normalize(item)) : []
+    // context.emit('update:selectedValue', res);
     log('update:selectedValue', res)
     log('update:selectedValue')
     return res

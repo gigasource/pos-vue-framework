@@ -1,6 +1,8 @@
 import { computed, ref, watch } from 'vue';
 import _ from 'lodash'
 
+export const emitEvents = [ 'update:searchText' ]
+
 function textValueSingle(props, context, selectionTexts, addValueFromInput) {
   const searchText = ref('')
 

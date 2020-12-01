@@ -30,7 +30,7 @@
           <input class="bs-tf-input"
                  style="user-select: text !important; -webkit-user-select: text !important;"
                  :type="state.internalType"
-                 ref="inputRef"
+                 ref="input"
                  :readonly="readonly || virtualEvent"
                  :placeholder="placeholder"
                  v-model="internalValue"
@@ -38,7 +38,7 @@
                  @focus="onFocus"
                  @blur="onBlur"
                  @keydown="onKeyDown">
-          <div v-if="virtualEvent" ref="caretRef" class="bs-tf-input bs-tf-input--fake-caret">
+          <div v-if="virtualEvent" ref="caret" class="bs-tf-input bs-tf-input--fake-caret">
             <span></span>
             <template v-for="(letter, i) in tfLetters">
               <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
@@ -159,9 +159,7 @@
       virtualEvent: Boolean,
     },
     setup: function (props, context) {
-      const inputRef = ref(null)
-      const caretRef = ref(null)
-      
+      const currentInstance = getCurrentInstance()
       const {internalValue} = getInternalValue(props, context);
       const tfValue = computed(() => props.prependValue + internalValue.value)
       const isValidInput = ref(true)
@@ -176,7 +174,7 @@
       const {
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
 
       const wrapperClasses = computed(() => ({
         'bs-tf__small': props.small,
@@ -212,16 +210,16 @@
         nextTick(() => {
           if(props.virtualEvent && !props.readonly) {
             document.addEventListener('click', (e) => {
-              const input = inputRef.value
-              if(e.target === input || e.target === caretRef.value ||
+              const input = currentInstance.refs['input']
+              if(e.target === input || e.target === currentInstance.refs['caret'] ||
                   ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
                 const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
-                if(e.target === input || e.target === caretRef.value) {}
+                if(e.target === input || e.target === currentInstance.refs['caret']) {}
                 document.caretElement = new Caret(input)
                 if(start) document.caretElement.set(start)
                 if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
-                  const caret = caretRef.value
+                  const caret = currentInstance.refs['caret']
                   if(caret) {
                     for(const child of caret.children) {
                       child.classList.remove('animated-caret')
@@ -244,7 +242,7 @@
                   isValidInput.value = validate(internalValue.value).value
                 }
                 isFocused.value = false
-                const caret = caretRef.value
+                const caret = currentInstance.refs['caret']
                 if(caret) {
                   for(const child of caret.children) {
                     child.classList.remove('animated-caret')
@@ -252,10 +250,10 @@
                 }
               }
             })
-            const caret = caretRef.value
+            const caret = currentInstance.refs['caret']
             if(caret) {
               caret.addEventListener('scroll', (e) => {
-                const input = inputRef.value
+                const input = currentInstance.refs['input']
                 if(caret.scrollLeft !== input.scrollLeft) { //caret size
                   setTimeout(() => {
                     input.scrollLeft = caret.scrollLeft
@@ -277,11 +275,9 @@
         })
       })
 
-      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused, { inputRef })
+      const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused)
 
       return {
-        inputRef,
-        caretRef,
         internalValue,
         isValidInput,
         isFocused,
