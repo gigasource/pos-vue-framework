@@ -57,19 +57,19 @@ export const basic = () => ({
       default: boolean('Non-linear', false)
     },
     editable: {
-      default: boolean('Editable', false)
+      default: boolean('Editable', true)
     },
     altLabels: {
       default: boolean('Alternate Labels', false)
-    },
+    }
   },
   template: `
-  <g-stepper :altLabels="altLabels" :non-linear="nonLinear" :vertical="vertical" :editable="editable" :steps="stepData"  v-model="activeStep">
+    <g-stepper :altLabels="altLabels" :non-linear="nonLinear" :vertical=true :editable="editable" :steps="stepData" v-model="activeStep">
     <g-stepper-contents v-model="activeStep" :steps="stepData">
       <g-stepper-content v-for="(step, index) in stepData" :key="index" :step="step">
         <g-card width="100%">
-          <g-card-title>{{step.title}}</g-card-title>
-          <g-card-text>{{step.text}}</g-card-text>
+          <g-card-title>{{ step.title }}</g-card-title>
+          <g-card-text>{{ step.text }}</g-card-text>
           <g-card-actions>
             <g-btn depressed @click="onClickContinue">CONTINUE</g-btn>
             <g-btn depressed>CANCEL</g-btn>
@@ -77,7 +77,7 @@ export const basic = () => ({
         </g-card>
       </g-stepper-content>
     </g-stepper-contents>
-  </g-stepper>`
+    </g-stepper>`
 })
 
 export const customDivider = () => ({
@@ -129,18 +129,18 @@ export const customDivider = () => ({
     },
   },
   template: `
-  <g-stepper :altLabels="altLabels" :non-linear="nonLinear" :vertical="vertical" :editable="editable" :steps="stepData"  v-model="activeStep">
+    <g-stepper :altLabels="altLabels" :non-linear="nonLinear" :vertical="vertical" :editable="editable" :steps="stepData" v-model="activeStep">
     <template v-slot:divider>
-      <div style = "align-self: center; flex: 1 1 auto" class="blue">
-        <div style = "display: inline-block; width: calc(100% - 6px);height: 6px; background: currentColor; margin-bottom: 3px; margin-right: -5px;"></div>
+      <div style="align-self: center; flex: 1 1 auto" class="blue">
+        <div style="display: inline-block; width: calc(100% - 6px);height: 6px; background: currentColor; margin-bottom: 3px; margin-right: -5px;"></div>
         <div style="display: inline-block; width: 0; height: 0; border: 6px solid transparent;border-right-width: 0; border-left-color: currentColor;"></div>
       </div>
     </template>
     <g-stepper-contents v-model="activeStep" :steps="stepData">
       <g-stepper-content v-for="(step, index) in stepData" :key="index" :step="step">
         <g-card width="100%">
-          <g-card-title>{{step.title}}</g-card-title>
-          <g-card-text>{{step.text}}</g-card-text>
+          <g-card-title>{{ step.title }}</g-card-title>
+          <g-card-text>{{ step.text }}</g-card-text>
           <g-card-actions>
             <g-btn depressed @click="onClickContinue">CONTINUE</g-btn>
             <g-btn depressed>CANCEL</g-btn>
@@ -148,7 +148,7 @@ export const customDivider = () => ({
         </g-card>
       </g-stepper-content>
     </g-stepper-contents>
-  </g-stepper>`
+    </g-stepper>`
 })
 
 export const customHeader = () => ({
@@ -206,26 +206,26 @@ export const customHeader = () => ({
     },
   },
   template: `
-  <g-stepper :altLabels="altLabels" :non-linear="nonLinear" :vertical="vertical" :editable="editable" :steps="stepData"  v-model="activeStep">
+    <g-stepper :altLabels="altLabels" :non-linear="nonLinear" :vertical="vertical" :editable="editable" :steps="stepData" v-model="activeStep">
     <template v-slot:header="{ isCompleted, isActiveItem, toggle }">
       <g-stepper-header>
-      <template v-for="(step, i) in stepData">
-      <g-stepper-step :key="i" :step="step" :error="i === 2" :index="i" :editable="editable" :complete="isCompleted(i)" :is-active="isActiveItem(step)" @click="toggle"
-             :completeIcon="completeIcon" :editIcon="editIcon" >
-          Step No.{{i+1}}
-        </g-stepper-step>
-        <div style = "align-self: center; flex: 1 1 auto" class="blue" v-if="i < stepData.length - 1">
-          <div style = "display: inline-block; width: calc(100% - 6px);height: 6px; background: currentColor; margin-bottom: 3px; margin-right: -5px;"></div>
-          <div style="display: inline-block; width: 0; height: 0; border: 6px solid transparent;border-right-width: 0; border-left-color: currentColor;"></div>
-        </div>
-      </template>
+        <template v-for="(step, i) in stepData">
+          <g-stepper-step :key="i" :step="step" :error="i === 2" :index="i" :editable="editable" :complete="isCompleted(i)" :is-active="isActiveItem(step)" @click="toggle"
+                          :completeIcon="completeIcon" :editIcon="editIcon">
+            Step No.{{ i + 1 }}
+          </g-stepper-step>
+          <div style="align-self: center; flex: 1 1 auto" class="blue" v-if="i < stepData.length - 1">
+            <div style="display: inline-block; width: calc(100% - 6px);height: 6px; background: currentColor; margin-bottom: 3px; margin-right: -5px;"></div>
+            <div style="display: inline-block; width: 0; height: 0; border: 6px solid transparent;border-right-width: 0; border-left-color: currentColor;"></div>
+          </div>
+        </template>
       </g-stepper-header>
     </template>
     <g-stepper-contents v-model="activeStep" :steps="stepData">
       <g-stepper-content v-for="(step, index) in stepData" :key="index" :step="step">
         <g-card width="100%">
-          <g-card-title>{{step.title}}</g-card-title>
-          <g-card-text>{{step.text}}</g-card-text>
+          <g-card-title>{{ step.title }}</g-card-title>
+          <g-card-text>{{ step.text }}</g-card-text>
           <g-card-actions>
             <g-btn depressed @click="onClickContinue">CONTINUE</g-btn>
             <g-btn depressed>CANCEL</g-btn>
@@ -233,5 +233,5 @@ export const customHeader = () => ({
         </g-card>
       </g-stepper-content>
     </g-stepper-contents>
-  </g-stepper>`
+    </g-stepper>`
 })
