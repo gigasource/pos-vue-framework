@@ -165,16 +165,8 @@
   import GIcon from '../GIcon/GIcon';
   import {Fragment} from 'vue-fragment';
   import '../GKeyboard/jsCaret.js';
+  import PassThrough from './PassThrough';
   import _ from 'lodash'
-  
-  // TODO: Process pass through
-  const PassThrough = {
-    render() {
-      const instance = getCurrentInstance();
-      const children = instance.vnode.children;
-      return children && typeof(children.default) === 'function' && children.default()
-    }
-  }
   
   export default {
     name: 'GTextField',

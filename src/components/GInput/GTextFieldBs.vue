@@ -93,18 +93,11 @@
   } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
   import {getCssColor} from "../../utils/colors";
+  import PassThrough from './PassThrough';
 
   export default {
     name: 'GTextFieldBs',
-    components: {
-      GIcon, PassThrough: {
-        render() {
-          const instance = getCurrentInstance();
-          const children = instance.vnode.children;
-          return children && typeof(children.default) === 'function' && children.default()
-        }
-      }
-    },
+    components: { GIcon, PassThrough },
     emits: _.union(inputEvents, [ 'blur' ]),
     props: {
       ...{//display props
