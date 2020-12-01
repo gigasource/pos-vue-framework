@@ -1,14 +1,14 @@
 <script>
   import GIcon from '../../GIcon/GIcon';
   import { enterPressed } from '../../../utils/keyboardHelper';
-  import { reactive, computed, ref } from 'vue';
+  import { reactive, computed, ref, getCurrentInstance } from 'vue';
   import { getScopeIdRender } from '../../../utils/helpers';
 
   export default {
     name: 'GEditViewInput',
     components: { GIcon },
     props: {
-      value: {
+      modelValue: {
         type: String,
         default: ''
       },
@@ -22,8 +22,9 @@
         default: false
       }
     },
-    events: ['input, click'],
+    events: ['update:modelValue', 'click'],
     setup(props, context) {
+      const currentInstance = getCurrentInstance()
       const state = reactive({
         showSwitch: false,
         showEditMode: false
@@ -34,17 +35,14 @@
       }))
 
       const refIdComponentWrapper = 'wrapper'
-      const wrapper = ref(null)
-      
       const refIdInput = 'input'
-      const input = ref(null)
 
       function onComponentClicked(e) {
-        if (e.target === wrapper.value)
+        if (e.target === currentInstance.refs[refIdComponentWrapper].value)
           context.emit('click')
       }
       function onSwitchStateClicked() {
-        input.value.focus()
+        currentInstance.refs[refIdInput].focus()
         state.showEditMode = true
       }
       function showSwitch() {
@@ -53,16 +51,16 @@
       function hideSwitch() {
         state.showSwitch = false
         state.showEditMode = false
-        input.value.blur()
+        currentInstance.refs[refIdInput].blur()
       }
 
       function vOnKeyUp(e) {
         if (enterPressed(e)) {
-          context.emit('input', e.target.value)
-          input.value.blur()
+          context.emit('update:modelValue', e.target.value)
+          currentInstance.refs[refIdInput].blur()
           state.showSwitch = false
         } else if (props.reactive) {
-          context.emit('input', e.target.value)
+          context.emit('update:modelValue', e.target.value)
         }
       }
 
@@ -82,7 +80,7 @@
             onMouseleave={hideSwitch}>
           <div style="width: 16px; line-height: 16px">
             <span
-                vShow={state.showSwitch}
+                v-show={state.showSwitch}
                 onClick={onSwitchStateClicked}>
               <g-icon small>edit</g-icon>
             </span>
@@ -91,15 +89,14 @@
           <input
               ref={refIdInput}
               style={cptViewStyle.value}
-              value={props.value}
+              value={props.modelValue}
               onKeyup={vOnKeyUp}
           />
         </div>
       }
       
       return {
-        wrapper,
-        input,
+        state,
         renderWithScope: getScopeIdRender()(renderFn)
       }
     },

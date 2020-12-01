@@ -8,7 +8,7 @@
     name: 'GIncDecNumberInput',
     components: { GIcon },
     props: {
-      value: {
+      modelValue: {
         type: Number,
         default: Number.MIN_SAFE_INTEGER
       },
@@ -21,35 +21,35 @@
         default: Number.MIN_SAFE_INTEGER
       }
     },
-    events: ['input'],
+    events: ['update:modelValue'],
     setup(props, context) {
 
       function increase() {
-        let val = props.value + 1
+        let val = props.modelValue + 1
         if (val > props.max)
           val = props.max
-        context.emit('input', val)
+        context.emit('update:modelValue', val)
       }
 
       function decrease() {
-        let val = props.value - 1
+        let val = props.modelValue - 1
         if (val < props.min)
           val = props.min
-        context.emit('input', val)
+        context.emit('update:modelValue', val)
       }
 
       function renderFn() {
         return (
             <div class='g-inc-dec-number'>
-              <span class={{ disabled: props.value === props.min }} onClick={decrease}>
+              <span class={{ disabled: props.modelValue === props.min }} onClick={decrease}>
                 <g-icon small>remove</g-icon>
               </span>
-              <input type="text" value={props.value}
+              <input type="text" value={props.modelValue}
                   onKeypress= {e => {
                     if (enterPressed(e))
-                      context.emit('input', _.clamp(parseInt(e.target.value), props.min, props.max))
+                      context.emit('update:modelValue', _.clamp(parseInt(e.target.value), props.min, props.max))
                   }}/>
-              <span class={{ disabled:props.value === props.max }} onClick={increase}>
+              <span class={{ disabled: props.modelValue === props.max }} onClick={increase}>
                 <g-icon small>add</g-icon>
               </span>
             </div>

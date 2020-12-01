@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash'
-  import { reactive, ref, computed, onUpdated } from 'vue'
+  import { reactive, ref, computed, onUpdated, getCurrentInstance, withModifiers } from 'vue'
   import { saveFile, openFile, getScopeIdRender } from '../../../utils/helpers'
   import { enterPressed, escapePressed, shiftPressed, ctrlPressed, metaPressed } from '../../../utils/keyboardHelper'
   import copy from 'copy-to-clipboard'
@@ -73,6 +73,7 @@
     },
     events: ['json', 'close'],
     setup(props, context) {
+      const currentInstance = getCurrentInstance()
       // initialize layout
       let initLayout = fromJSON(props.layout)
       const state = reactive({
@@ -145,9 +146,8 @@
                 <li class={getGridListItemClass(grid)} key={grid.name}>
                   <g-edit-view-input
                       width="100%"
-                      value={grid.name}
-                      onClick={() => setSelectedGrid(grid)}
-                      onInput={newName => grid.name = newName}/>
+                      v-model={grid.name}
+                      onClick={() => setSelectedGrid(grid)}/>
                 </li>
             )}
           </ul>
@@ -176,7 +176,7 @@
                 <li class={getAreaListItemClass(area)} key={area.name}>
                   <g-edit-view-input
                       width="100%"
-                      value={area.name} onInput={v => area.name = v}
+                      v-model={area.name}
                       onClick={() => setSelectedArea(area)}/>
                   <span style="line-height: 16px" onClick={() => area.toggleVisible()}>
                     <g-icon small>{area.visible ? 'visibility' : 'visibility_off'}</g-icon>
@@ -201,7 +201,7 @@
           <demo-layout-dialog
               show={state.showDemoLayoutDialog}
               areaNames={areaNames}
-              value={state.selectedDemoLayoutDataIndex >= 0 ? state.demoLayoutData[state.selectedDemoLayoutDataIndex] : null}
+              modelValue={state.selectedDemoLayoutDataIndex >= 0 ? state.demoLayoutData[state.selectedDemoLayoutDataIndex] : null}
               onCreate={demo => state.demoLayoutData.push(demo)}
               onUpdate={demo => state.demoLayoutData[state.selectedDemoLayoutDataIndex] = demo}
               onClose={() => state.showDemoLayoutDialog = false}
@@ -405,7 +405,7 @@
       const actionClass = 'area-action'
 
       function areaHit(e) {
-        for (let actionWrapperElement of context.refs.el.getElementsByClassName(actionWrapperClass)) {
+        for (let actionWrapperElement of currentInstance.refs.el.getElementsByClassName(actionWrapperClass)) {
           const area = actionWrapperElement.parentNode
           const { top, left, width, height } = area.getBoundingClientRect()
           const pageTop = top + window.scrollY
@@ -421,7 +421,7 @@
 
       function tryToExecuteActionIfHit(e) {
         let actionExecuted = false
-        _.each(context.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
+        _.each(currentInstance.refs.el.getElementsByClassName(actionWrapperClass), actionWrapperElement => {
           _.each(actionWrapperElement.getElementsByClassName(actionClass), areaActionElement => {
             const { top, left, width, height } = areaActionElement.getBoundingClientRect()
             const pageTop = top + window.scrollY
@@ -576,12 +576,12 @@
       function onOnConfirmDialogKeyDown(e) {
         if (enterPressed(e)) {
           if (shiftPressed(e) || ctrlPressed(e) || metaPressed(e)) {
-            context.refs[refIdBtnCreateSubGrid].click()
+            currentInstance.refs[refIdBtnCreateSubGrid].click()
           } else {
-            context.refs[refIdBtnCreateSubItem].click()
+            currentInstance.refs[refIdBtnCreateSubItem].click()
           }
         } else if (escapePressed(e)) {
-          context.refs[refIdBtnCancel].click()
+          currentInstance.refs[refIdBtnCancel].click()
         }
       }
 
@@ -619,20 +619,48 @@
       }
 
       function renderConfirmDialog(grid) {
-        return <g-dialog value={state.showConfirmDialog} width="600px" persistent>
-          <div class="grid-gen__dialog__confirm" onKeydown={onOnConfirmDialogKeyDown}>
-            <span class="grid-gen__dialog__confirm__header">Create new area</span>
-            <div class="grid-gen__dialog__confirm__content">
+        const dialogConfirmStyle = {
+          display: 'flex',
+          'flex-direction': 'column',
+          height: '600px',
+          'box-shadow': '0 2px 8px 4px #0003',
+          background: '#fff'
+        }
+        const header = {
+          'background-color': '#000',
+          color: '#fff',
+          'font-size': '30px',
+          padding: '10px'
+        }
+        const content = {
+          padding: '20px',
+          flex: 1
+        }
+        const erroMsg = {
+          'font-size': 'small',
+          color: 'red',
+          'padding-left': '10px'
+        }
+        const actionBtns = {
+          padding: '20px',
+          display: 'flex',
+          'flex-direction': 'row-reverse'
+        }
+        
+        return <g-dialog modelValue={state.showConfirmDialog} width="600px" persistent>
+          <div style={dialogConfirmStyle} onKeydown={onOnConfirmDialogKeyDown}>
+            <span style={header}>Create new area</span>
+            <div style={content}>
               <g-text-field
                   label="Area name"
-                  value={_selectingArea.name}
+                  modelValue={_selectingArea.name}
                   onInput={value => {
                     _selectingArea.name = value
                     if (state.confirmDialogErrorMsg !== '') {
                       state.confirmDialogErrorMsg = ''
                     }
                   }}/>
-              <span class="grid-gen__dialog__confirm__error-msg">{state.confirmDialogErrorMsg}</span>
+              <span style={erroMsg}>{state.confirmDialogErrorMsg}</span>
               <div>
                 <small>
                   (*) Item name can contain only a-z, A-Z, -, _ characters<br/>
@@ -643,7 +671,7 @@
                 </small>
               </div>
             </div>
-            <div class="grid-gen__dialog__confirm__action-btn">
+            <div style={actionBtns}>
               <span onClick={() => onSubGridBtnClicked(grid)} ref={refIdBtnCreateSubGrid}>
                 <g-btn flat outlined>Sub grid</g-btn>
               </span>
@@ -666,11 +694,11 @@
           <div class="grid-gen__settings-section">Viewport</div>,
           <div class="grid-gen__settings-prop">
             <label>Width(px): </label>
-            <g-inc-dec-number-input min={600} value={state.fieldWidth} onInput={v => state.fieldWidth = v}/>
+            <g-inc-dec-number-input min={600} v-model={state.fieldWidth}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Height(px): </label>
-            <g-inc-dec-number-input min={400} value={state.fieldHeight} onInput={v => state.fieldHeight = v}/>
+            <g-inc-dec-number-input min={400} v-model={state.fieldHeight}/>
           </div>
         ]
       }
@@ -684,19 +712,19 @@
           <div class="grid-gen__settings-section">Grid Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Columns: </label>
-            <g-inc-dec-number-input min={1} value={grid.columns.length} onInput={v => grid.setColumnNumbers(v)}/>
+            <g-inc-dec-number-input min={1} modelValue={grid.columns.length} onUpdate:modelValue={v => grid.setColumnNumbers(v)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Rows: </label>
-            <g-inc-dec-number-input min={1} value={grid.rows.length} onInput={v => grid.setRowNumbers(v)}/>
+            <g-inc-dec-number-input min={1} modelValue={grid.rows.length} onUpdate:modelValue={v => grid.setRowNumbers(v)}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Column Gap(px): </label>
-            <g-inc-dec-number-input min={0} value={grid.columnGap} onInput={v => grid.columnGap = v}/>
+            <g-inc-dec-number-input min={0} modelValue={grid.columnGap} onUpdate:modelValue={v => grid.columnGap = v}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Row Gap(px): </label>
-            <g-inc-dec-number-input min={0} value={grid.rowGap} onInput={v => grid.rowGap = v}/>
+            <g-inc-dec-number-input min={0} modelValue={grid.rowGap} onUpdate:modelValue={v => grid.rowGap = v}/>
           </div>,
 
           // justify/align items
@@ -758,29 +786,29 @@
           <div class="grid-gen__settings-section">Area Settings</div>,
           <div class="grid-gen__settings-prop">
             <label>Top: </label>
-            <g-inc-dec-number-input min={1} value={gridItem.top} onInput={v => gridItem.top = v}/>
+            <g-inc-dec-number-input min={1} v-model={gridItem.top}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Left: </label>
-            <g-inc-dec-number-input min={1} value={gridItem.left} onInput={v => gridItem.left = v}/>
+            <g-inc-dec-number-input min={1} v-model={gridItem.left}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Width: </label>
-            <g-inc-dec-number-input min={1} value={gridItem.width} onInput={v => gridItem.width = v}/>
+            <g-inc-dec-number-input min={1} v-model={gridItem.width}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Height: </label>
-            <g-inc-dec-number-input min={1} value={gridItem.height} onInput={v => gridItem.height = v}/>
+            <g-inc-dec-number-input min={1} v-model={gridItem.height}/>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Align self:</label>
-            <select onChange_stop={e => gridItem.alignSelf = e.target.value}>
+            <select onChange={ withModifiers(e => gridItem.alignSelf = e.target.value, ['stop'])}>
               {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.alignSelf === value} value={value}>{value}</option>)}
             </select>
           </div>,
           <div class="grid-gen__settings-prop">
             <label>Justify self:</label>
-            <select onChange_stop={e => gridItem.justifySelf = e.target.value}>
+            <select onChange={withModifiers(e => gridItem.justifySelf = e.target.value, ['stop'])}>
               {_.map(_gridItemOptions, value => <option key={value} selected={gridItem.justifySelf === value} value={value}>{value}</option>)}
             </select>
           </div>,
@@ -799,44 +827,44 @@
             <input value={gridItem.margin} onKeyup={e => enterPressed(e) && (gridItem.margin = e.target.value)}/>
           </div>,
           // flex
-          <div vShow={gridItem.wrapInDiv}>
-            <div class="grid-gen__settings-section">Flex</div>
-            <div class="grid-gen__settings-prop">
-              <label>Flex: </label>
-              <input type="checkbox" checked={gridItem.displayFlex} onChange={e => gridItem.displayFlex = e.target.checked}/>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label>Direction: </label>
-              <select onChange_stop={e => gridItem.flexDirection = e.target.value}>
-                {_.map(_flexDirection, direction =>
-                    <option key={direction} selected={gridItem.flexDirection === direction} value={direction}>{direction}</option>)}
-              </select>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label>Wrap: </label>
-              <select onChange_stop={e => gridItem.flexWrap = e.target.value}>
-                {_.map(_flexWraps, v => <option key={v} selected={gridItem.flexWrap === v} value={v}>{v}</option>)}
-              </select>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content">Justify content: </a></label>
-              <select onChange_stop={e => gridItem.flexJustifyContent = e.target.value}>
-                {_.map(_flexJustifyContentOptions, v => <option key={v} selected={gridItem.flexJustifyContent === v} value={v}>{v}</option>)}
-              </select>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/align-items">Align items:</a></label>
-              <select onChange_stop={e => gridItem.flexAlignItems = e.target.value}>
-                {_.map(_flexAlignItemOptions, v => <option key={v} selected={gridItem.flexAlignItems === v} value={v}>{v}</option>)}
-              </select>
-            </div>
-            <div class="grid-gen__settings-prop">
-              <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/align-content">Align content:</a></label>
-              <select onChange_stop={e => gridItem.flexAlignContent = e.target.value}>
-                {_.map(_flexAlignContentOptions, v => <option key={v} selected={gridItem.flexAlignContent === v} value={v}>{v}</option>)}
-              </select>
-            </div>
-          </div>,
+          gridItem.wrapInDiv ? <div>
+              <div className="grid-gen__settings-section">Flex</div>
+              <div className="grid-gen__settings-prop">
+                <label>Flex: </label>
+                <input type="checkbox" checked={gridItem.displayFlex} onChange={e => gridItem.displayFlex = e.target.checked}/>
+              </div>
+              <div className="grid-gen__settings-prop">
+                <label>Direction: </label>
+                <select onChange={withModifiers(e => gridItem.flexDirection = e.target.value, ['stop'])}>
+                  {_.map(_flexDirection, direction =>
+                      <option key={direction} selected={gridItem.flexDirection === direction} value={direction}>{direction}</option>)}
+                </select>
+              </div>
+              <div className="grid-gen__settings-prop">
+                <label>Wrap: </label>
+                <select onChange={withModifiers(e => gridItem.flexWrap = e.target.value, ['stop'])}>
+                  {_.map(_flexWraps, v => <option key={v} selected={gridItem.flexWrap === v} value={v}>{v}</option>)}
+                </select>
+              </div>
+              <div className="grid-gen__settings-prop">
+                <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content">Justify content: </a></label>
+                <select onChange={withModifiers(e => gridItem.flexJustifyContent = e.target.value, ['stop'])}>
+                  {_.map(_flexJustifyContentOptions, v => <option key={v} selected={gridItem.flexJustifyContent === v} value={v}>{v}</option>)}
+                </select>
+              </div>
+              <div className="grid-gen__settings-prop">
+                <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/align-items">Align items:</a></label>
+                <select onChange={withModifiers(e => gridItem.flexAlignItems = e.target.value, ['stop'])}>
+                  {_.map(_flexAlignItemOptions, v => <option key={v} selected={gridItem.flexAlignItems === v} value={v}>{v}</option>)}
+                </select>
+              </div>
+              <div className="grid-gen__settings-prop">
+                <label><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/align-content">Align content:</a></label>
+                <select onChange={withModifiers(e => gridItem.flexAlignContent = e.target.value, ['stop'])}>
+                  {_.map(_flexAlignContentOptions, v => <option key={v} selected={gridItem.flexAlignContent === v} value={v}>{v}</option>)}
+                </select>
+              </div>
+            </div> : null
         ] : null
       }
 
@@ -861,27 +889,27 @@
       function renderGridGenerateSaveCloseButton() {
         return [
           <div class="grid-gen__settings-section">Dialog Actions</div>,
-          <g-btn flat outlined onClick_stop_prevent={e => {
+          <g-btn flat outlined onClick={withModifiers(e => {
             context.emit('json', toJSON(state.layout))
             context.emit('close')
-          }}>Save</g-btn>,
+          }, ['stop', 'prevent'])}>Save</g-btn>,
           <span>&nbsp;</span>,
-          <g-btn flat outlined onClick_stop_prevent={e => {
+          <g-btn flat outlined onClick={withModifiers(e => {
             state.layout = fromJSON(props.layout)
             state.selectedGrid = state.layout
             context.emit('close')
-          }}>Cancel</g-btn>,
+          }, ['stop', 'prevent'])}>Cancel</g-btn>,
         ]
       }
 
       function renderGridGeneratorOutput() {
         return [
           <div class="grid-gen__settings-section">Files</div>,
-          <g-btn flat outlined onClick_stop_prevent={loadLayoutFile}>Import</g-btn>,
+          <g-btn flat outlined onClick={withModifiers(loadLayoutFile, ['stop', 'prevent']) }>Import</g-btn>,
           <span>&nbsp;</span>,
-          <g-btn flat outlined onClick_stop_prevent={saveLayoutFile}>Export</g-btn>,
+          <g-btn flat outlined onClick={withModifiers(saveLayoutFile, ['stop', 'prevent'])}>Export</g-btn>,
           <span>&nbsp;</span>,
-          <g-btn flat outlined onClick_stop_prevent={copyLayoutStrToClipBoard}>Copy</g-btn>,
+          <g-btn flat outlined onClick={withModifiers(copyLayoutStrToClipBoard, ['stop', 'prevent'])}>Copy</g-btn>,
         ]
       }
 
@@ -890,7 +918,7 @@
       function renderGridGenerator() {
         return (
             <div class="grid-gen" ref="el" tabIndex="0"
-                 onContextmenu_prevent={e => false}>
+                 onContextmenu={withModifiers(e => false, ['prevent'])}>
               <div class="grid-gen__list">
                 {renderGridList()}
                 {renderAreaList()}
@@ -914,12 +942,12 @@
                   backgroundColor: '#dee',
                   display: 'flex',
                 }}>
-                  <g-switch value={state.viewMode} onChange={v => state.viewMode = v} label="Preview"/>
-                  <g-switch value={state.demoMode} onChange={v => state.demoMode = v} label="Demo"/>
-                  <g-switch vShow={state.demoMode} value={state.displayPreviewColor} onChange={v => state.displayPreviewColor = v} label="Hint"/>
+                  <g-switch modelValue={state.viewMode} onUpdate:modelValue={v => state.viewMode = v} label="Preview"/>
+                  <g-switch modelValue={state.demoMode} onUpdate:modelValue={v => state.demoMode = v} label="Demo"/>
+                  <g-switch v-show={state.demoMode} modelValue={state.displayPreviewColor} onUpdate:modelValue={v => state.displayPreviewColor = v} label="Hint"/>
                 </div>
                 <div
-                    vShow={state.viewMode || state.demoMode}
+                    v-show={state.viewMode || state.demoMode}
                     style={{
                       position: 'relative',
                       width: `${state.fieldWidth}px`,
@@ -1173,43 +1201,6 @@
     }
 
     &__dialog {
-      &__confirm {
-        display: flex;
-        flex-direction: column;
-        height: 600px;
-        box-shadow: 0 2px 8px 4px #0003;
-        background: #fff;
-
-        &__header {
-          background-color: #000;
-          color: #fff;
-          font-size: 30px;
-          padding: 10px;
-        }
-
-        &__content {
-          padding: 20px;
-          flex: 1;
-        }
-
-        &__item-name {
-          border: 1px solid #888;
-          padding: 5px;
-        }
-
-        &__error-msg {
-          font-size: small;
-          color: red;
-          padding-left: 10px;
-        }
-
-        &__action-btn {
-          padding: 20px;
-          display: flex;
-          flex-direction: row-reverse;
-        }
-      }
-
       &__output {
         width: 600px;
         background: #fff;
