@@ -8,6 +8,7 @@
   import GBtn from '../GBtn/GBtn'
   import GDndDialog from '../GDndDialog/GDndDialog';
   import GTextField from '../GInput/GTextField'
+  import { getScopeIdRender } from '../../utils/helpers';
 
   GPagination.components['GIcon'] = GIcon
   GIconSearch.components['GIcon'] = GIcon
@@ -31,42 +32,29 @@
       label: String,
       value: String,
     },
+    emits: ['update:modelValue', 'value'],
     setup(props, context) {
+      const iconSources = getIconSources()
+      
       const state = reactive({
         // dialog state
         showDialog: false,
         // dialog content
-        currentView: null,
-        selectedIconSource: null,
-        selectedCategory: null,
+        currentView: viewStateEnum.sourceList,
+        selectedIconSource: iconSources[0],
+        selectedCategory: [],
         selectedIcon: null,
-        iconSearchText: null,
-        iconInCategorySearchText: null,
+        iconSearchText: '',
+        iconInCategorySearchText: '',
         flipHorizontal: false,
-        rotate: 0,
+        rotate: rotateEnum._0,
         flipVertical: false,
-        color: null,
+        color: '#000',
         //
-        value: props.value || ''
+        value: props.modelValue || ''
       })
 
-      const iconSources = getIconSources()
-
-      function initIconPickerDialogState() {
-        state.currentView = viewStateEnum.sourceList
-        state.selectedIconSource = iconSources[0]
-        state.selectedCategory = []
-        state.selectedIcon = null
-        state.iconSearchText = ''
-        state.iconInCategorySearchText = ''
-        state.flipHorizontal = false
-        state.flipVertical = false
-        state.rotate = rotateEnum._0
-        state.color = '#000'
-      }
-
-      initIconPickerDialogState()
-
+      const cptNotInSearch = computed(() => state.iconSearchText === '')
       const cptAllIcons = computed(() => {
         let icons = []
         _.each(iconSources, iconSource => _.each(iconSource.categories, category => icons.push(...category.icons)))
@@ -96,7 +84,7 @@
         const color = getIconSrcColor(id)
         return (
             <span class='g-icon-source'
-                  vOn:click={() => {
+                  onClick={() => {
                     state.selectedIconSource = iconSrc
                     state.selectedCategory = null
                     state.selectedIcon = null
@@ -131,7 +119,7 @@
       function renderCategoryName(category) {
         return (category.icons.length == 0 ? null :
             <span class={getCategoryClass(category)}
-                  vOn:click={() => addRemoveCategory(category)}>
+                  onClick={() => addRemoveCategory(category)}>
               {_.startCase(category.name)}
             </span>)
       }
@@ -144,13 +132,13 @@
       })
 
       function renderIconInGrid(icon) {
-        return <span class={getIconClass(icon)} key={icon.value} vOn:click={() => toggleIcon(icon)}>
+        return <span class={getIconClass(icon)} key={icon.value} onClick={() => toggleIcon(icon)}>
           <g-icon>{icon.value}</g-icon>
         </span>
       }
 
       function renderIconInList(icon) {
-        return <div class="icon-wrapper" key={icon.value} vOn:click={() => toggleIcon(icon)}>
+        return <div class="icon-wrapper" key={icon.value} onClick={() => toggleIcon(icon)}>
           {renderIconInGrid(icon)}
           <span class="icon-name">{icon.value}</span>
         </div>
@@ -175,9 +163,9 @@
             <div class="icon-detail__content__custom-panel">
               <span class="icon-detail__content__value">{state.selectedIcon.name}</span>
               <div class="icon-detail__action-btn">
-                <g-btn outlined vOn:click={() => {
+                <g-btn outlined onClick={() => {
                   state.value = state.selectedIcon.value
-                  context.emit('input', state.selectedIcon.value)
+                  context.emit('update:modelValue', state.selectedIcon.value)
                   context.emit('value', createIconModel())
                   state.showDialog = false
                 }}>Add
@@ -196,25 +184,25 @@
                   icons={cptAllIcons.value}
                   renderItems={renderIconInGrid}
                   renderItemsList={renderIconInList}
-                  value={state.iconSearchText}
+                  modelValue={state.iconSearchText}
                   placeHolder="Search all icons..."
-                  vOn:input={v => {
+                  onUpdate:modelValue={v => {
                     if (state.iconSearchText != v) {
                       state.selectedIcon = null
                       state.iconSearchText = v
                     }
                   }}/>
 
-              <div vShow={state.iconSearchText === '' && state.currentView === viewStateEnum.sourceList}
+              <div v-show={cptNotInSearch.value && state.currentView === viewStateEnum.sourceList}
                    class="g-icon-source-list">
                 {_.map(iconSources, renderIconSrc)}
               </div>
 
-              <div vShow={state.iconSearchText === '' && state.currentView === viewStateEnum.sourceDetail}
+              <div v-show={cptNotInSearch.value && state.currentView === viewStateEnum.sourceDetail}
                    class="g-icon-source-detail">
 
                 <span class="g-icon-source-detail__back-btn"
-                      vOn:click={() => {
+                      onClick={() => {
                         state.currentView = viewStateEnum.sourceList
                         state.selectedIcon = null
                       }}>
@@ -230,9 +218,9 @@
                     icons={cptIcons.value}
                     renderItems={renderIconInGrid}
                     renderItemsList={renderIconInList}
-                    value={state.iconInCategorySearchText}
+                    modelValue={state.iconInCategorySearchText}
                     placeHolder={`Search ${state.selectedIconSource.name}...`}
-                    vOn:input={v => {
+                    onUpdate:modelValue={v => {
                       if (state.iconInCategorySearchText != v) {
                         state.iconInCategorySearchText = v
                         state.selectedIcon = null
@@ -241,7 +229,7 @@
                 />
 
                 <g-pagination
-                    vShow={state.iconInCategorySearchText === ''}
+                    v-show={state.iconInCategorySearchText === ''}
                     dataSrc={cptIcons.value}
                     itemsPerPage={30}
                     pageIndexesShowInView={7}
@@ -255,12 +243,12 @@
       }
 
       return {
-        initIconPickerDialogState,
-        renderFn
+        state,
+        renderWithScope: getScopeIdRender()(renderFn)
       }
     },
-    render(createElement, context) {
-      return this.renderFn()
+    render() {
+      return this.renderWithScope()
     }
   }
 </script>

@@ -5,6 +5,7 @@
   import GIcon from '../GIcon/GIcon';
   import { enterPressed } from '../../utils/keyboardHelper';
   import GPagination from './GIconPagination'
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GIconSearch',
@@ -17,32 +18,34 @@
       renderItemsList: Function
     },
     setup(props, context) {
-      return () => {
-        const state = reactive({
-          searchContent: props.value
-        })
-        const cptFilteredResult = computed(() => {
-          if (state.searchContent != '') {
-            return _.filter(props.icons, icon => _.includes(icon.name, _.lowerCase(state.searchContent)))
-          } else {
-            return []
-          }
-        })
+      const state = reactive({
+        searchContent: props.modelValue || ''
+      })
+
+      const cptFilteredResult = computed(() => {
+        if (state.searchContent !== '') {
+          return _.filter(props.icons, icon => _.includes(icon.name, _.lowerCase(state.searchContent)))
+        } else {
+          return []
+        }
+      })
+      
+      const renderFn = () => {
         return <div>
           <div class='g-icon-search'>
             <g-icon color="rgb(179, 179, 179)">search</g-icon>
             <input
-                value={state.searchContent}
+                modelValue={state.searchContent}
                 placeholder={props.placeHolder}
-                vOn:keyup={e => {
+                onKeyup={e => {
                   if (enterPressed(e)) {
                     state.searchContent = e.target.value
-                    context.emit('input', e.target.value)
+                    context.emit('update:modelValue', e.target.value)
                   }
                 }}></input>
           </div>
           <g-pagination
-              vShow={cptFilteredResult.value.length > 0}
+              v-show={cptFilteredResult.value.length > 0}
               dataSrc={cptFilteredResult.value}
               itemsPerPage={30}
               pageIndexesShowInView={7}
@@ -50,6 +53,15 @@
               renderItemsList={props.renderItemsList}/>
         </div>
       }
+      
+      return {
+        state,
+        cptFilteredResult,
+        renderWithScope: getScopeIdRender()(renderFn)
+      }
+    },
+    render() {
+      return this.renderWithScope()
     }
   }
 </script>
