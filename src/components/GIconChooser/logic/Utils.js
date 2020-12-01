@@ -124,6 +124,10 @@ function _getMDDXIconSource() {
   }
 }
 
+let iconSourceCache = null
 export function getIconSources() {
-  return [..._getFontAweSomeIconSource(), _getMDIIconSource(), _getMDDXIconSource()]
+  if (iconSourceCache == null) {
+    iconSourceCache = [..._getFontAweSomeIconSource(), _getMDIIconSource(), _getMDDXIconSource()]
+  }
+  return iconSourceCache
 }

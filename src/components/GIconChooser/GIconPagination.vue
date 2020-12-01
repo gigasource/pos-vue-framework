@@ -3,6 +3,7 @@
   import { reactive, computed, watch } from 'vue';
   import GBtn from '../GBtn/GBtn'
   import GIcon from '../GIcon/GIcon';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export const pagingModeEnum = {
     grid: 0,
@@ -83,16 +84,16 @@
         'g-pagination__view-mode-switch--selected' : viewMode === state.viewMode,
       })
 
-      return () => {
+      const renderFn = () => {
         return (
             <div class="g-pagination">
               <div class="g-pagination__header">
                 <span class="g-pagination__header-title">Displaying {props.dataSrc.length} items</span>
                 <div class="g-pagination__view-mode">
-                  <button class={getViewModeSwitchClass(pagingModeEnum.grid)} vOn:click={e => state.viewMode = pagingModeEnum.grid}>
+                  <button class={getViewModeSwitchClass(pagingModeEnum.grid)} onClick={e => state.viewMode = pagingModeEnum.grid}>
                     <g-icon>mdi-view-module</g-icon>
                   </button>
-                  <button class={getViewModeSwitchClass(pagingModeEnum.list)} vOn:click={e => state.viewMode = pagingModeEnum.list}>
+                  <button class={getViewModeSwitchClass(pagingModeEnum.list)} onClick={e => state.viewMode = pagingModeEnum.list}>
                     <g-icon>mdi-view-list</g-icon>
                   </button>
                 </div>
@@ -111,14 +112,14 @@
                     maxWidth={30}
                     maxHeight={30}
                     disabled={!cptCanGoBegin.value}
-                    vOn:click={() => goBegin()}>|&lt;</g-btn>
+                    onClick={() => goBegin()}>|&lt;</g-btn>
                 <g-btn
                     outlined icon
                     width={30}
                     maxWidth={30}
                     maxHeight={30}
                     disabled={!cptCanGoBack.value}
-                    vOn:click={() => goBack()}>&lt;</g-btn>
+                    onClick={() => goBack()}>&lt;</g-btn>
                 {
                   _.map(cptPageIndexes.value, page => page
                       ?
@@ -129,7 +130,7 @@
                           maxHeight={30}
                           active={page.index === state.selectedIndex}
                           activeClass="paging__nav--active"
-                          vOn:click={() => page.select()}>
+                          onClick={() => page.select()}>
                         {page.index + 1}
                       </g-btn>
                       : <span class="paging__nav__ellipsis"> ... </span>
@@ -140,17 +141,24 @@
                     maxWidth={30}
                     maxHeight={30}
                     disabled={!cptCanGoNext.value}
-                    vOn:click={() => goNext()}>&gt;</g-btn>
+                    onClick={() => goNext()}>&gt;</g-btn>
                 <g-btn
                     outlined icon
                     maxWidth={30}
                     maxHeight={30}
                     disabled={!cptCanGoEnd.value}
-                    vOn:click={() => goEnd()}>&gt;|
+                    onClick={() => goEnd()}>&gt;|
                 </g-btn>
               </div>
             </div>)
       }
+      
+      return {
+        renderWithScope: getScopeIdRender()(renderFn)
+      }
+    },
+    render() {
+      return this.renderWithScope()
     }
   }
 </script>
