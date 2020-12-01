@@ -210,7 +210,7 @@ export const customHeader = () => ({
     <template v-slot:header="{ isCompleted, isActiveItem, toggle }">
       <g-stepper-header>
         <template v-for="(step, i) in stepData">
-          <g-stepper-step :key="i" :step="step" :error="i === 2" :index="i" :editable="editable" :complete="isCompleted(i)" :is-active="isActiveItem(step)" @click="toggle"
+          <g-stepper-step :key="i" :step="step" :error="i === 2" :index="i" :editable="editable" :complete="isCompleted(i)" :is-active="isActiveItem(step)" @click="toggle(step)"
                           :completeIcon="completeIcon" :editIcon="editIcon">
             Step No.{{ i + 1 }}
           </g-stepper-step>

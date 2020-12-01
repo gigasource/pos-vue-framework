@@ -1,12 +1,10 @@
 <script>
 import { computed, inject } from 'vue'
-// import { GExpandTransition } from '../transition/transition';
-import { Transition, h } from 'vue'
+import { Transition } from 'vue'
 import { getScopeIdRender } from '../../utils/helpers'
 
 export default {
   name: 'GStepperContent',
-  // components: { GExpandTransition },
   props: {
     step: null
   },
