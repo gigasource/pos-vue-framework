@@ -145,7 +145,6 @@
         return `g-list-item-${props.prependType}`;
       })
       const genItemPrepend = (item) => {
-        debugger
         const getPrepend = () => {
           switch (props.prependType) {
             case 'icon':
@@ -194,15 +193,6 @@
         if (item.append) return <template>{item.append}</template>
       }
       
-      function getListItemItem(item) {
-        debugger
-        return [
-            (context.slots['prepend'] && context.slots['prepend']({ isSelected: isActiveItem(item), item: item })) || genItemPrepend(item),
-            (context.slots['content'] && context.slots['content']()) || genItemContent(item),
-            (context.slots['append'] && context.slots['append']({ isSelected: isActiveItem(item), item: item })) || genItemAppend(item),
-        ]
-      }
-
       function genItemSelectable(item, index) {
         return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
                     tabIndex="0" item={item}
@@ -318,7 +308,7 @@
           internalValue,
           internalItems
         }
-        : { genList, internalItems, context }
+        : { genList, internalItems }
     },
     render() {
       const scopeIdRender = getScopeIdRender()
