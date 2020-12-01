@@ -200,8 +200,8 @@ const componentsFactory = (component, componentName) => {
         const gListSlots = {
           'prepend-item': () => context.slots['prepend-item'] && context.slots['prepend-item'](),
           'append-item': () => context.slots['append-item'] && context.slots['append-item'](),
-          content: () => context.slots.item ? context.slots.item() : null,
-          prepend: ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
+          'content': context.slots.item ? () => context.slots.item() : null,
+          'prepend': ({ isSelected, item }) => context.slots.itemPrepend && context.slots.itemPrepend({ isSelected, item }),
         }
         return <GList {...gListProps} v-slots={gListSlots} ref="list"/>
       }
