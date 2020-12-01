@@ -1,5 +1,5 @@
 import GMenu from '../GMenu/GMenu';
-import { getCurrentInstance, nextTick } from 'vue'
+import { getCurrentInstance, nextTick, resolveComponent } from 'vue'
 import { getSelectionText, makeListSelectable, emitEvents as listEmitEvents } from '../GList/listSelectFactory';
 import { computed, reactive, ref } from 'vue';
 import { getInputEventHandlers, emitEvents as eventHandlerEmitEvents } from './eventHandlersFactory';
@@ -353,10 +353,9 @@ const componentsFactory = (component, componentName) => {
             },
           }
 
-          const textfield = props.textFieldComponent ? props.textFieldComponent : 'GTextField'
-          // TODO: custom text field
+          const textfield = resolveComponent(props.textFieldComponent ? props.textFieldComponent : 'GTextField')
           return (
-            <GTextField
+            <textfield
                 {...textFieldProps}
                 v-slots={textFieldScopedSlots.value}
                 style={{ 'flex-wrap': 'wrap' }}
