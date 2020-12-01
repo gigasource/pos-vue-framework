@@ -36,5 +36,5 @@ module.exports = {
     '.+\\.(css|styl|less|sass|scss)$': 'jest-transform-css',
   },
   transformIgnorePatterns: ['<rootDir>/node_modules'],
-  snapshotSerializers: ["jest-serializer-html"],
+  snapshotSerializers: ["jest-serializer-html"]
 }
