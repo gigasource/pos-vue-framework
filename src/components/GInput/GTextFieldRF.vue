@@ -79,16 +79,13 @@
     },
     emits: _.union(inputEvents, []),
     setup: function (props, context) {
-      const inputRef = ref(null)
-      const caretRef = ref(null)
-      
       const internalValue = getInternalValue(props, context);
       const isValidInput = ref(true)
       const isFocused = ref(false);
       const {
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
-      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate, { inputRef, caretRef });
+      } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
       const {labelClasses, labelStyles, isDirty, isLabelActive, prefixRef} = getLabel(props, internalValue, isValidInput, isFocused, 'g-tf--label__active');
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput);
       const genMessage = () => {
@@ -202,8 +199,6 @@
         </div>
       }
       return {
-        inputRef,
-        caretRef,
         genTextField,
         isValidInput,
         isDirty,
