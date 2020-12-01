@@ -1,7 +1,7 @@
 <template>
   <g-menu
-      :value="showMenu"
-      @input="closeMenu"
+      :model-value="showMenu"
+      @update:modelValue="closeMenu"
       :min-width="320"
       :max-width="320"
       :content-fill-width="false"
@@ -11,7 +11,7 @@
           <g-text-field
               prepend-icon="fas fa-palette"
               :label="label"
-              :value="value"
+              :model-value="modelValue"
               :disabled="disabled"
               :filled="filled"
               :outlined="outlined"
@@ -21,16 +21,17 @@
               :flat="flat"
               :dense="dense"
               @click="gMenuScope.toggleContent"/>
-            <span :style="{ ...previewStyle, background: value }"></span>
+            <span :style="{ ...previewStyle, background: modelValue }"></span>
         </div>
       </template>
-    <g-color-picker @color="updateColor"/>
+    <g-color-picker @update:color="updateColor"/>
   </g-menu>
 </template>
 <script>
+  import { defineAsyncComponent } from 'vue'
   import GMenu from '../../components/GMenu/GMenu'
   import GTextField from '../GInput/GTextField'
-  const GColorPicker = () => import('./GColorPicker')
+  const GColorPicker = defineAsyncComponent(() => import('./GColorPicker'))
 
   GMenu.components['GTextField'] = GTextField
 
@@ -47,11 +48,12 @@
       rounded: Boolean,
       flat: Boolean,
       dense: Boolean,
-      value: String
+      modelValue: String
     },
+    emits: ['update:modelValue'],
     data() {
       return {
-        internalValue: this.value,
+        internalValue: this.modelValue,
         showMenu: false,
         previewStyle: {
           width: '30px',
@@ -63,8 +65,8 @@
     },
     watch: {
       value() {
-        if (this.internalValue !== this.value)
-          this.internalValue = this.value
+        if (this.internalValue !== this.modelValue)
+          this.internalValue = this.modelValue
       }
     },
     methods: {
@@ -76,7 +78,7 @@
         } else {
           this.internalValue = color
         }
-        this.$emit('input', this.internalValue)
+        this.$emit('update:modelValue', this.internalValue)
       },
       closeMenu(value) {
         this.showMenu = value
