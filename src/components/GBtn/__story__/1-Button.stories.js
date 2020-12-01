@@ -233,16 +233,6 @@ export const GBtnGradient = () => ({
             </g-btn>`,
 })
 
-export const test2 = () => ({
-  components: { GBtn },
-  setup() {
-    return () =>
-      <g-btn outlined raised elevation='0' x-large vOn:click={action('test123')}>
-        {text('Button Text', 'XLARGE BUTTON')}
-      </g-btn>
-  },
-})
-
 import Vue from 'vue'
 
 describe('test', function () {
