@@ -6,14 +6,13 @@
   export default {
     name: 'GStepperContents',
     props: {
-      steps: Array,
-      value: null
+      items: Array,
+      modelValue: null
     },
     components: { GLayout },
     setup(props, context) {
       const model = getVModel(props, context);
       provide('model', model);
-
       function genStepperContents() {
         return <g-layout class="g-stepper-contents">
           {context.slots.default ? context.slots.default() : null}

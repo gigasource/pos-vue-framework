@@ -36,7 +36,6 @@
       index: Number,
     },
     setup(props, context) {
-
       let classes = computed(() => ({
         'g-stepper-step': true,
         'waves-effect': true,
@@ -44,11 +43,6 @@
         'g-stepper-step__error': props.error,
         'g-stepper-step__complete': props.complete,
       }));
-
-      function click(e) {
-        e.stopPropagation();
-        context.emit('click', props.step);
-      }
 
       const iconStyles = computed(() => ({
         'color': !props.error && (isCssColor(props.color) ? props.color : colors[props.color.split(' ').join('-')]),
@@ -71,7 +65,7 @@
       }
 
       function genStepperStep() {
-        return <div class={classes.value} vOn:click={click}>
+        return <div class={classes.value}>
           <div style={iconStyles.value}>{genIcon()}</div>
           {context.slots.default ? context.slots.default() : null}
         </div>
