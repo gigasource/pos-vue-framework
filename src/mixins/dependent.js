@@ -1,40 +1,23 @@
-import { watch } from 'vue';
+import { watch, getCurrentInstance, ref, onBeforeUnmount } from 'vue';
+import _ from 'lodash'
 
-// fixme: $children removed in vue 3
-// TODO solutions: provide/inject, instance.parent
-export default function dependent(vm) {
-  watch(() => vm.isActive, (val) => {
+// provide/inject only available in setup()
+// addDependency(), removeDependency() are injected methods
+export default function dependent(isActive, addDependency, removeDependency) {
+  const dependents = ref([])
+  const instance = getCurrentInstance()
+
+  watch(isActive, (val) => {
     if (val) return
 
-    const openDependents = getOpenDependents()
-    for (let index = 0; index < openDependents.length; index++) {
-      openDependents[index].isActive = false
-    }
+    dependents.value.forEach(instance => {
+      typeof instance.ctx.toggleValue === 'function' && instance.ctx.toggleValue();
+    })
   })
-
-  function searchChildren(children) {
-    const results = []
-    for (let index = 0; index < children.length; index++) {
-      const child = children[index]
-      if (child.isDependent) {
-        results.push(child)
-      } else {
-        results.push(...searchChildren(child.$children))
-      }
-    }
-
-    return results
-  }
-
-  function getOpenDependents() {
-    if (vm.closeDependents) return searchChildren(vm.$children)
-
-    return []
-  }
 
   function getOpenDependentElements() {
     const result = []
-    const openDependents = getOpenDependents()
+    const openDependents = dependents.value
 
     for (let index = 0; index < openDependents.length; index++) {
       if (getClickableDependentElements) result.push(...getClickableDependentElements(openDependents[index]))
@@ -44,13 +27,35 @@ export default function dependent(vm) {
   }
 
   function getClickableDependentElements(vm) {
-    const result = [vm.$el]
-    if (vm.$refs.content) result.push(vm.$refs.content)
-    if (vm.overlay) result.push(vm.overlay.$el)
-    if (vm.getOpenDependentElements) result.push(...vm.getOpenDependentElements())
+    const result = [vm.ctx.$el]
+    if (vm.ctx.content) result.push(vm.ctx.content)
+    if (vm.ctx.overlay) result.push(vm.ctx.overlay.$el)
+    if (vm.ctx.getOpenDependentElements) {
+      const openDependentElements = vm.ctx.getOpenDependentElements();
+      result.push(...openDependentElements)
+    }
 
     return result
   }
 
-  return getOpenDependentElements
+  function addDependentInstance(vm, children) {
+    const instances = [vm, ...children, ...dependents.value]
+    dependents.value = _.uniqBy(instances, 'uid')
+    addDependency && addDependency(instance, dependents.value)
+  }
+
+  function removeDependentInstance(vms) {
+    dependents.value = dependents.value.filter(i => {
+      const uids = vms.map(vm => vm.uid);
+      return !uids.includes(i.uid)
+    })
+  }
+
+  onBeforeUnmount(() => {
+    if (removeDependency) {
+      removeDependency([instance, ...dependents.value]);
+    }
+  })
+
+  return { getOpenDependentElements, addDependentInstance, removeDependentInstance, dependents }
 }

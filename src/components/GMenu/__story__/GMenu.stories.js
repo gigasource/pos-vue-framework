@@ -161,3 +161,48 @@ export const gMenuAbsolute = () => ({
     </div>
   `
 })
+
+export const nestedMenus = () => ({
+  components: { GMenu, GBtn },
+  data: () => ({
+    showDialog: false,
+    showMenu1: false,
+    showMenu2: false,
+    menuKey: 1
+  }),
+  template: `
+    <div data-app style="min-height: 80vh">
+    <g-btn @click.stop="showDialog = true" class="mr-5">Toggle dialog</g-btn>
+    <g-btn @click.stop="menuKey += 1">Reset menu</g-btn>
+    <g-dialog v-model="showDialog">
+      <g-card>
+        <g-card-title>Dialog</g-card-title>
+
+        <g-card-actions>
+          <g-menu v-model="showMenu1" style="display: inline-flex" lazy :key="menuKey">
+            <template v-slot:activator="{on}">
+              <g-btn v-on="on">Outer menu</g-btn>
+            </template>
+            <div style="background: white">
+              Outer menu content
+              <g-menu v-model="showMenu2">
+                <template #activator="{on}">
+                  <g-btn v-on="on">Inner menu</g-btn>
+                </template>
+                <div style="background: #fff">
+                  <div>Inner menu content</div>
+                  <g-btn @click.stop="showDialog = false">Close dialog</g-btn>
+                </div>
+              </g-menu>
+            </div>
+          </g-menu>
+
+          <g-spacer/>
+
+          <g-btn @click.stop="showDialog = false">Close dialog</g-btn>
+        </g-card-actions>
+      </g-card>
+    </g-dialog>
+    </div>
+  `
+})

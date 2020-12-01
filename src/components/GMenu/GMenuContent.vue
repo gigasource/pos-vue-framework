@@ -1,8 +1,8 @@
 <script>
-  import { computed, onBeforeUnmount, onMounted, ref, watch, getCurrentInstance, nextTick } from 'vue';
+  import { computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
-  import { convertToUnit, getScopeIdRender } from '../../utils/helpers';
+  import { convertToUnit } from '../../utils/helpers';
   import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
@@ -123,12 +123,15 @@
       const ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill
       const instance = getCurrentInstance()
 
+      function toggleValue() {
+        isActive.value = false
+      }
+
       function getResizeObserver() {
         let activatorResizeObserver = undefined
 
         const init = () => {
           activatorResizeObserver = new ResizeObserver(() => {
-            console.log('activatorResizeObserver')
             nextTick(() => updateDimensions(props.activator.value, contentRef))
           })
           props.activator.value && activatorResizeObserver.observe(props.activator.value)
@@ -156,16 +159,28 @@
       }, { immediate: true })
 
       let rootEl
-      // const getOpenDependentElements = ref(null)
+      const getOpenDependentElements = ref(null)
+      const addDependency = inject('addDependentInstance', () => null)
+      const removeDependency = inject('removeDependentInstance', () => null)
+
+      const { getOpenDependentElements: getOpenDependentElementsFn, addDependentInstance,
+        removeDependentInstance, dependents } = dependent(isActive, addDependency, removeDependency)
+      getOpenDependentElements.value = getOpenDependentElementsFn
+
+      if (props.isDependent) {
+        addDependency(instance, dependents.value)
+      }
+
+      if (props.closeDependents) {
+        provide('addDependentInstance', addDependentInstance)
+        provide('removeDependentInstance', removeDependentInstance)
+      }
 
       onMounted(function () {
         nextTick(() => {
           rootEl = attachToRoot(contentRef.value)
           updateDimensions(props.activator.value, contentRef)
           if (!resizeObserver.observer) resizeObserver.init()
-
-          // fixme dependent mixin
-          // getOpenDependentElements.value = dependent(instance.ctx)
         })
       })
 
@@ -237,8 +252,7 @@
         arg: {
           closeConditional,
           include: () => {
-            // return [context.parent.$el, ...getOpenDependentElements.value()];
-            return [instance.parent.ctx.$el];
+            return [instance.parent.ctx.$el, ...getOpenDependentElements.value()];
           }
         },
       }
@@ -254,19 +268,21 @@
 
       return {
         isActive,
-        contentRef,
+        content: contentRef,
         contentClasses,
         contentStyles,
         contentListeners,
         clickOutsideDirective,
-        resizeDirective
+        resizeDirective,
+        dependents,
+        toggleValue
       }
     },
   }
 </script>
 
 <template>
-  <div :style="contentStyles" :class="contentClasses" ref="contentRef"
+  <div :style="contentStyles" :class="contentClasses" ref="content"
        v-on="contentListeners"
        v-show="modelValue"
        v-click-outside:[clickOutsideDirective.arg]="clickOutsideDirective.value"

@@ -1,9 +1,11 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel'
-  import { convertToUnit, getScopeIdRender, getZIndex } from '../../utils/helpers'
+  import { convertToUnit, getZIndex } from '../../utils/helpers'
   import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
-  import { computed, onBeforeUnmount, onMounted, ref, watch, nextTick, Transition } from 'vue'
+  import {
+    computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, Transition, watch
+  } from 'vue'
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
   import dependent from '../../mixins/dependent';
@@ -65,6 +67,7 @@
       const wrapper = ref(null)
       const container = ref(null)
       const content = ref(null)
+      const instance = getCurrentInstance()
       const isActive = getInternalValue(props, context)
       const {attachToRoot, detach} = detachable(props, context, { content })
       const {getMaxZIndex} = stackable(props, context)
@@ -85,10 +88,25 @@
         detach(container.value)
       }
 
+      const addDependency = inject('addDependentInstance', () => null)
+      const removeDependency = inject('removeDependentInstance', () => null)
+
+      const { getOpenDependentElements: getOpenDependentElementsFn, addDependentInstance,
+        removeDependentInstance, dependents } = dependent(isActive, addDependency, removeDependency)
+      getOpenDependentElements.value = getOpenDependentElementsFn
+
+      if (props.closeDependents) {
+        provide('addDependentInstance', addDependentInstance)
+        provide('removeDependentInstance', removeDependentInstance)
+      }
+
+      if (props.isDependent) {
+        addDependency && addDependency(instance, dependents.value)
+      }
+
       onMounted(function () {
         nextTick(() => {
           initComponent()
-          // getOpenDependentElements.value = dependent(this)
         })
       })
 
@@ -320,9 +338,7 @@
         value: () => isActive.value = false,
         arg: {
           closeConditional,
-          // fixme dependent mixin
-          // include: () => [...getOpenDependentElements.value()]
-          include: () => []
+          include: () => [...getOpenDependentElements.value()]
         }
       }
 
@@ -337,7 +353,8 @@
         contentData,
         overlayData,
         renderOverlay,
-        isActive
+        isActive,
+        dependents
       }
     },
   }
