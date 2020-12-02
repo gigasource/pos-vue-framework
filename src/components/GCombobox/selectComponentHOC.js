@@ -270,9 +270,9 @@ const componentsFactory = (component, componentName) => {
         // append inner
         const appendInnerSlot = context.slots['append-inner']
         if (props.arrow) {
-          slots['append-inner'] = ({ iconColor }) => {
+          slots['append-inner'] = () => {
             return [
-              <GIcon color={iconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
+              <GIcon color={props.arrowIconColor} class={['g-icon__arrow']}>arrow_drop_down</GIcon>,
               appendInnerSlot && appendInnerSlot()
             ]
           }
