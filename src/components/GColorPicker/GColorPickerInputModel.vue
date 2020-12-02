@@ -10,7 +10,7 @@
       :flat="flat"
       :dense="dense"
       :model-value="model[field.key]"
-      @update:color="v => model[field.key] = v"/>
+      @update:modelValue="v => model[field.key] = v"/>
 </template>
 <script>
   import GColorPickerInput from './GColorPickerInput';
