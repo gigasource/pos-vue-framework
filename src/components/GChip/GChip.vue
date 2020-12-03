@@ -28,7 +28,6 @@
       xLarge: Boolean,
       draggable: Boolean,
       //style
-      color: String,
       ripple: Boolean,
       textColor: String,
       backgroundColor: String,
@@ -48,6 +47,7 @@
       const hasAvatarIcon = ref(false);
 
       function hasAvatarOrIcon() {
+        if (!context.slots.default) return false
         let nodes = context.slots.default();
         return nodes[0] && nodes[0].type && (nodes[0].type.name === 'GAvatar' || nodes[0].type.name === 'GIcon');
       }
