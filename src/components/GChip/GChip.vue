@@ -41,7 +41,7 @@
     directives: {
       Ripple
     },
-    emits: ['click'],
+    emits: ['click', 'close'],
     setup(props, context) {
       const { getSizeClass, classes, styles } = GChipUtils(props, context);
       const hasAvatarIcon = ref(false);
