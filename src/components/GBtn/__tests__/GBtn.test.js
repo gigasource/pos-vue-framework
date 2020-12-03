@@ -1,24 +1,23 @@
 import plugin from 'vue';
 import GBtn from '../GBtn';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
 
 describe('GBtn', () => {
-  const localVue = createLocalVue()
-  localVue.use(plugin)
-
   describe('1) Render - ', () => {
     describe('Style ', () => {
       it('should have a button rendered ', () => {
         let wrapper = mount(GBtn, {
-          localVue
+          slots: {
+            default: `Button`
+          }
         });
-        expect(wrapper.contains('button')).toBe(true);
+        expect(wrapper.findAll('div').length).toBeGreaterThanOrEqual(1);
+        expect(wrapper.text()).toContain('Button')
       });
 
       it('should have a correct markup (outlined, absolute, top)rendered ', () => {
         let wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             outlined: true,
             absolute: true,
@@ -28,12 +27,14 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot();
+        const classList = wrapper.classes()
+        expect(classList).toContain('g-btn__outlined');
+        expect(classList).toContain('g-btn__absolute')
+        expect(classList).toContain('g-btn__top')
       });
 
       it('should have a correct markup (raised, height, width, textColor)rendered ', () => {
         const wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             raised: true,
             height: '40px',
@@ -44,12 +45,15 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot()
+        const classList = wrapper.classes()
+        expect(classList).toContain('g-btn__raised');
+        expect(classList).toContain('text-blue')
+        const style = wrapper.attributes().style
+        expect(style).toBe("width: 100px; height: 40px;")
       });
 
       it('should have a correct markup (fab, flat)rendered', () => {
         const wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             fab: true,
             flat: true
@@ -58,12 +62,13 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot()
+        const classList = wrapper.classes()
+        expect(classList).toContain('g-btn__fab');
+        expect(classList).toContain('g-btn__flat')
       });
 
       it('should have a rounded corner', () => {
         const wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             rounded: true,
             minWidth: '90px',
@@ -74,12 +79,16 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot()
+        const classList = wrapper.classes()
+        expect(classList).toContain('g-btn__rounded');
+        const style = wrapper.attributes().style
+        expect(style).toBe("min-width: 90px; min-height: 50px;")
+        const color = wrapper.attributes().color
+        expect(color).toBe('green')
       });
 
       it('should have a tile corner', () => {
         const wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             tile: true,
             maxWidth: '90px',
@@ -90,12 +99,12 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot()
+        const classList = wrapper.classes()
+        expect(classList).toContain('g-btn__tile');
       });
 
       it('should have blue background, white color', () => {
         const wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             color: 'blue'
           },
@@ -103,14 +112,15 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot()
+        const color = wrapper.attributes().color
+        expect(color).toBe('blue')
+
       });
     });
 
     describe('Positioning', () => {
       it('should have fixed, top, right position ', () => {
         let wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             fixed: true,
             top: true,
@@ -120,12 +130,14 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot();
+        const classList = wrapper.classes()
+        expect(classList).toContain('g-btn__fixed')
+        expect(classList).toContain('g-btn__top')
+        expect(classList).toContain('g-btn__right')
       });
 
       it('should have absolute, bottom, left position ', () => {
         let wrapper = mount(GBtn, {
-          localVue,
           propsData: {
             absolute: true,
             bottom: true,
@@ -135,18 +147,16 @@ describe('GBtn', () => {
             default: `Button`
           }
         });
-        expect(wrapper.html()).toMatchSnapshot();
+        const classList = wrapper.classes()
+        expect(classList).toContain('g-btn__absolute')
+        expect(classList).toContain('g-btn__bottom')
+        expect(classList).toContain('g-btn__left')
       });
     });
 
   });
   describe('2) Behavior - ', () => {
-    const localVue = createLocalVue();
-    localVue.use(plugin);
-    let wrapper = mount(GBtn, {
-      localVue
-    });
-
+    let wrapper = mount(GBtn);
     it('Should emit a click event', () => {
       wrapper.trigger('click');
       expect(wrapper.emitted()).toBeTruthy();
