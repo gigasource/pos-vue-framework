@@ -4,12 +4,11 @@
   import ClickOutside from '../../directives/click-outside/click-outside';
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
-  import { Fragment } from 'vue-fragment'
   import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GMenu',
-    components: { GMenuContent, Fragment },
+    components: { GMenuContent },
     directives: {
       ClickOutside
     },

@@ -1,7 +1,6 @@
 import { withKnobs } from '@storybook/addon-knobs';
 import Draggable from '../draggable';
 import Droppable from '../droppable';
-import { Fragment } from 'vue-fragment';
 import Vue from 'vue'
 
 const simpleList = Vue.extend({
@@ -27,9 +26,6 @@ export default {
 }
 
 export const defaultDnd = () => ({
-  components: {
-    Fragment
-  },
   data() {
     return {
       dropData: '',
@@ -54,15 +50,13 @@ export const defaultDnd = () => ({
     }
   },
   template: `
-    <fragment>
-      <div style="width: 600px; height: 300px; margin-bottom: 50px; background-color: aqua; color: black" v-draggable.move="dragData">
-        Draggable
-      </div>
-      <div style="width: 800px; height: 400px; background-color: #37474f; color: white" v-droppable @drag-drop="drop" @drag-over="dragover" @drag-leave="dragLeave">
-        Drop zone
-        <div>{{dropData}}</div>
-      </div>
-    </fragment>`
+    <div style="width: 600px; height: 300px; margin-bottom: 50px; background-color: aqua; color: black" v-draggable.move="dragData">
+      Draggable
+    </div>
+    <div style="width: 800px; height: 400px; background-color: #37474f; color: white" v-droppable @drag-drop="drop" @drag-over="dragover" @drag-leave="dragLeave">
+      Drop zone
+      <div>{{dropData}}</div>
+    </div>`
 })
 
 export const components = () => ({

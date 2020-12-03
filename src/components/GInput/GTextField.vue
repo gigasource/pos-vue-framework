@@ -163,15 +163,14 @@
     inputEvents
   } from './GInputFactory';
   import GIcon from '../GIcon/GIcon';
-  import {Fragment} from 'vue-fragment';
   import '../GKeyboard/jsCaret.js';
   import PassThrough from './PassThrough';
   import _ from 'lodash'
-  
+
   export default {
     name: 'GTextField',
     components: {
-      GIcon, Fragment, PassThrough
+      GIcon, PassThrough
     },
     emits: _.union(inputEvents, [ 'blur' ]),
     props: {
@@ -243,7 +242,7 @@
           return 'full'
         return 'lite'
       })
-      
+
       const tfWrapperClasses = computed(() => {
         return {
           'g-tf-wrapper': tfType.value === 'full',
@@ -286,7 +285,7 @@
         onClick, onFocus, onBlur, onClearIconClick,
         onMouseDown, onMouseUp, onChange, onKeyDown
       } = getEvents(props, context, internalValue, isFocused, isValidInput, validate);
-      
+
       //set legend width for label in outlined textfield
       const legendStyles = computed(() => {
         if (!props.solo && props.label && (isFocused.value || internalValue.value || props.placeholder || isLabelActive.value)) {
@@ -298,7 +297,7 @@
           }
         }
       });
-      
+
       const iconColor = computed(() => {
         if (isFocused.value) {
           if (!isValidInput.value) return 'red'

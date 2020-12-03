@@ -2,11 +2,9 @@
 	import getInternalValue from '../../mixins/getVModel';
   import { ref, inject, onMounted } from 'vue';
   import GConnectorFactory from './GConnectorFactory';
-  import { Fragment } from 'vue-fragment'
 
   export default {
     name: 'GConnector',
-		components: { Fragment },
     props: {
 			value: [Number, String, Object],
 
