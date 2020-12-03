@@ -2,6 +2,7 @@
   import { computed, getCurrentInstance } from 'vue';
   import {convertToUnit, getScopeIdRender} from '../../utils/helpers';
   import { setTextColor } from '../../mixins/colorable';
+  import { startsWith } from 'lodash'
 
   export default {
     name: 'GIcon',
@@ -112,7 +113,7 @@
   }
 
   function isCustomSVGIcon(icon) {
-    return _.startsWith(icon, 'icon-')
+    return startsWith(icon, 'icon-')
   }
 
   function getSize(props) {
