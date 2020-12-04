@@ -106,7 +106,7 @@ export const Multiple = () => ({
   },
   data() {
     return {
-      activeItem: null,
+      activeItem: [],
       items : [
         {
           name: 'Item1',
@@ -132,7 +132,7 @@ export const Multiple = () => ({
     }
   },
   template: `
-    <div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
+    {{activeItem}}<div style="background-color: #e6e9ec; height: 600px; padding-top: 10px;">
       <g-expansion
       v-model="activeItem" 
       :items="items"
