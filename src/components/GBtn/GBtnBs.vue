@@ -7,12 +7,12 @@
        @mouseenter="onmouseenter"
        @mousedown="onmousedown"
        @mouseup="onmouseup">
-    <g-icon v-if="checkIconAvailable(icon)" :svg="checkSvgIcon(icon)" :size="_iconSize"
+    <g-icon v-if="checkIconAvailable(icon)" :svg="checkSvgIcon(icon)" :size="iconSize_"
             :class="vertical ? 'mb-2' : 'mr-2'">
       {{icon}}
     </g-icon>
     <slot></slot>
-    <g-icon v-if="checkIconAvailable(iconAfter)" :svg="checkSvgIcon(iconAfter)" :size="_iconSize"
+    <g-icon v-if="checkIconAvailable(iconAfter)" :svg="checkSvgIcon(iconAfter)" :size="iconSize_"
             :class="vertical ? 'mt-2' : 'ml-2'">
       {{iconAfter}}
     </g-icon>
@@ -146,7 +146,7 @@
         return false
       }
 
-      const _iconSize = computed(() => {
+      const iconSize_ = computed(() => {
         if (props.iconSize)
           return props.iconSize
         else if (props.small && !props.large) {
@@ -167,7 +167,7 @@
         onmouseup,
         checkIconAvailable,
         checkSvgIcon,
-        _iconSize,
+        iconSize_,
       }
     }
   }

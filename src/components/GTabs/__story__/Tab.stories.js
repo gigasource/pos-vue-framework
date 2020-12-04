@@ -358,6 +358,7 @@ export const configTabItem  = () => ({
     }
   },
   template: `
+      {{model}}
     <g-tabs v-model="model" 
           :items="items"
           color="blue darken 2"
