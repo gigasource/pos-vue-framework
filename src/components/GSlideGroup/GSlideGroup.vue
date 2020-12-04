@@ -59,7 +59,7 @@
       },
       modelValue: null
     },
-    emits: ['update:modelValue'],
+    emits: ['update:modelValue', 'click:next', 'click:prev'],
     directives: {
       Resize,
       Touch
