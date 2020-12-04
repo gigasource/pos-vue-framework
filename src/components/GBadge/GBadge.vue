@@ -1,7 +1,7 @@
 <template>
   <div :class="wrapperClasses">
     <slot></slot>
-    <div :class="classes" :style="styles" ref="badge" v-if="value">
+    <div :class="classes" :style="styles" ref="badge" v-if="modelValue">
       <slot name="badge"></slot>
     </div>
   </div>
@@ -36,12 +36,12 @@
       nudgeRight: [String, Number],
       showOnHover: Boolean,
       inline: Boolean,
-      value: {
+      modelValue: {
         type: Boolean,
         default: true
       },
     },
-    setup(props, context) {
+    setup(props) {
       const wrapperClasses = computed(() => ({
         'g-badge-wrapper': true,
         'g-badge__hover': props.showOnHover,
