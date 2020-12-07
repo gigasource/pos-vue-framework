@@ -156,7 +156,7 @@ export const gradient = () => ({
 });
 
 export const materialize = () => ({
-  components: { GToolbar, GSpacer, GBtn, GTextFieldFunctional, GMenu, GList, GListItem},
+  components: { GToolbar, GSpacer, GBtn, GTextField, GMenu, GList, GListItem},
   data() {
     return {
       items1: [
@@ -186,11 +186,11 @@ export const materialize = () => ({
 
   },
   template: `<div data-app><g-toolbar gradient="purple darken 1, deep orange accent 2">
-      <g-text-field-functional placeholder="Explore materialize" solo class="w-50">
+      <g-text-field placeholder="Explore materialize" solo class="w-50">
         <template v-slot:prepend-inner>
            <i class="material-icons">search</i>
         </template>    
-      </g-text-field-functional>
+      </g-text-field>
       <g-spacer/>
       <g-menu v-model="showMenu1">
         <template v-slot:activator="{toggleContent}">
