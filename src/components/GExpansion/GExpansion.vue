@@ -14,7 +14,7 @@
       items: Array,
       mandatory: Boolean,
       multiple: Boolean,
-      value: null,
+      modelValue: null,
 
       accordion: Boolean,
       popout: Boolean,

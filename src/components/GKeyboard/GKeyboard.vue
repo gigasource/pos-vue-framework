@@ -18,7 +18,8 @@
     name: 'GKeyboard',
     components: { GIcon },
     props: {
-      value: String,
+      modelValue: String,
+      emits: ['update:modelValue', 'submit', 'edit'],
 			ripple: {
 				type: Boolean,
 				default: true
@@ -82,10 +83,10 @@
 		computed: {
       computedValue: {
         get() {
-          return this.value || '';
+          return this.modelValue || '';
 				},
 				set(value) {
-          this.$emit('input', value);
+          this.$emit('update:modelValue', value);
 				}
 			},
 			index() {

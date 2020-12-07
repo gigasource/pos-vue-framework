@@ -83,7 +83,7 @@ export default (props, context) => {
             : props.modelValue[props.modelValue.length - 1]
         : getValidInitialValue(props, cptIsMultiSelect)
     )
-  })
+  }, { immediate: true})
 
   // cause we don't support year picker atm so, context will not be used
   // year and header doesn't depend on props.multiple or props.range so cptIsMultiSelect will not be used

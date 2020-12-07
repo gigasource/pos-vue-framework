@@ -15,9 +15,10 @@
   export default {
     name: 'GNumberKeyboard',
     components: { GKeyboard },
+    emits: ['update:modelValue', 'submit'],
     props: {
       label: String,
-      value: [String, Number],
+      modelValue: [String, Number],
       items: {
         type: null,
         default: () => [
@@ -45,10 +46,10 @@
     computed: {
       computedNumber: {
         get() {
-          return '' + this.value;
+          return '' + this.modelValue;
         },
         set(value) {
-          this.$emit('input', value);
+          this.$emit('update:modelValue', value);
         }
       }
     }

@@ -101,7 +101,8 @@
 
     render() {
       const defaultSlot = this.$slots.default()
-      const defaultSlotChildren = defaultSlot && (defaultSlot.find(node => node.children.trim() !== '') || defaultSlot[0]).children
+      const defaultSlotChildren = defaultSlot &&
+          (defaultSlot.find(node => (typeof node.children === 'string' && node.children.trim() !== '')) || defaultSlot[0]).children
       const icon = typeof defaultSlotChildren === 'string' ? defaultSlotChildren.trim() : 'none'
       const scopeIdRender = getScopeIdRender();
       return scopeIdRender(this.genIcon)(icon);
