@@ -6,7 +6,7 @@ const GComponents = require('./src/components');
 const GigaComponents = {
   install(Vue, args) {
     Object.keys(GComponents).forEach(key => {
-      if (typeof GComponents[key] === 'function' && !GComponents[key].cid) return;
+      // if (typeof GComponents[key] === 'function' && !GComponents[key].cid) return;
       Vue.component(key, GComponents[key])
     });
   }

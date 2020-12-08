@@ -1,6 +1,7 @@
 <script>
   import { getCurrentInstance } from 'vue';
   const PassThrough = {
+    inheritAttrs: false,
     render() {
       const instance = getCurrentInstance();
       const children = instance.vnode.children;
