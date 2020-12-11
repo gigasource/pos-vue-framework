@@ -168,7 +168,7 @@
           },
           mouseleave(event) {
             runDelay('close', () => {
-              if (content && content.value.$el.contains(event.relatedTarget)) {
+              if (content.value && content.value.$el.contains(event.relatedTarget)) {
                 return
               }
               isActive.value = false
