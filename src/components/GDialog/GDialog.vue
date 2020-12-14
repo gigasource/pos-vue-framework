@@ -73,7 +73,7 @@
             isBooted.value = true;
           }
         }
-      })
+      }, { immediate: true })
 
       function toggleDialog() {
         isActive.value = !isActive.value;
