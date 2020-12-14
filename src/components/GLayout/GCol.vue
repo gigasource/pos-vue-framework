@@ -63,7 +63,7 @@
         if (props.xl) {
           breakpoints.xl = props.xl;
         }
-      })
+      }, { immediate: true })
 
       const classes = computed(() => ({
         'g-col': true,
