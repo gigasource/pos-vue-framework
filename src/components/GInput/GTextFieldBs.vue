@@ -12,7 +12,7 @@
     </label>
     <div class="bs-tf-input-group" :style="inputGroupStyles">
       <div class="bs-tf-input-prepend" @click="onClickPrependOuter"
-           v-if="$slots['prepend-outer'] && $slots['prepend-outer']() || prefix || prependIcon">
+           v-if="$slots['prepend-outer'] || prefix || prependIcon">
         <slot name="prepend-outer">
             <span class="bs-tf-input-text">
               <g-icon v-if="prependIcon" :color="iconColor">{{prependIcon}}</g-icon>
@@ -21,11 +21,11 @@
         </slot>
       </div>
       <div :class="[!isValidInput && 'input-error', 'bs-tf-inner-input-group', {'bs-tf-inner-input-group__active': isFocused}, 'r',
-                    ($slots['prepend-outer'] && $slots['prepend-outer']() || prefix || prependIcon) && 'bs-tf-input-has-prepend', ($slots['append-outer'] && $slots['append-outer']() || suffix || appendIcon) && 'bs-tf-input-has-append']">
+                    ($slots['prepend-outer'] || prefix || prependIcon) && 'bs-tf-input-has-prepend', ($slots['append-outer'] || suffix || appendIcon) && 'bs-tf-input-has-append']">
         <slot name="prepend-inner" :on-click="onClickPrependInner">
           <g-icon class="mr-2" :color="iconColor" v-if="prependInnerIcon">{{prependInnerIcon}}</g-icon>
         </slot>
-        <component :is="$slots['append-inner'] && $slots['append-inner']() || clearable ? 'div' : 'pass-through'" class="input r">
+        <component :is="$slots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input r">
           <slot name="input-slot"/>
           <input class="bs-tf-input"
                  style="user-select: text !important; -webkit-user-select: text !important;"
@@ -47,7 +47,7 @@
           </div>
         </component>
         <div class="bs-tf-append-inner"
-             v-if="$slots['append-inner'] && $slots['append-inner']() || (isDirty && clearable) || appendInnerIcon">
+             v-if="$slots['append-inner'] || (isDirty && clearable) || appendInnerIcon">
           <slot name="clearable-slot">
             <g-icon v-if="isDirty && clearable" :color="iconColor" @click.stop="onClearIconClick">{{clearIcon}}</g-icon>
           </slot>
@@ -65,7 +65,7 @@
         </template>
       </div>
       <div class="bs-tf-input-append" @click="onClickAppendOuter"
-           v-if="$slots['append-outer'] && $slots['append-outer']() || suffix || appendIcon">
+           v-if="$slots['append-outer'] || suffix || appendIcon">
         <slot name="append-outer">
           <span class="bs-tf-input-text">
             <template v-if="suffix">{{suffix}}</template>
