@@ -27,9 +27,9 @@
         </slot>
         <component :is="$slots['append-inner'] || clearable ? 'div' : 'pass-through'" class="input r">
           <slot name="input-slot"/>
+          <!-- TODO: :type="state.internalType" for some reason, state was not recognized-->
           <input class="bs-tf-input"
                  style="user-select: text !important; -webkit-user-select: text !important;"
-                 :type="state.internalType"
                  ref="input"
                  :readonly="readonly || virtualEvent"
                  :placeholder="placeholder"
