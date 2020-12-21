@@ -92,8 +92,8 @@
     letter-spacing: .0071428571em;
   }
 
-  .g-card-text,
-  .g-card-title {
+  ::v-slotted(.g-card-text),
+  ::v-slotted(.g-card-title) {
     padding: 16px
   }
 
