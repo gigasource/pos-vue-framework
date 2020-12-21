@@ -20,6 +20,7 @@ import { isEqual } from 'lodash';
 
 export default {
   name: 'GSwitch',
+  emits: ['update:modelValue'],
   props: {
     label: String,
     color: String,

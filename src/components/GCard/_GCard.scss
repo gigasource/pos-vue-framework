@@ -140,7 +140,7 @@
     width: 100%;
   }
 
-  .g-card-actions {
+  ::v-slotted(.g-card-actions) {
     align-items: center;
     display: flex;
     padding: 8px;
