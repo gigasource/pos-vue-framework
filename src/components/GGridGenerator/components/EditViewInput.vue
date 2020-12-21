@@ -7,6 +7,7 @@
   export default {
     name: 'GEditViewInput',
     components: { GIcon },
+    emits: ['update:modelValue'],
     props: {
       modelValue: {
         type: String,
@@ -94,7 +95,7 @@
           />
         </div>
       }
-      
+
       return {
         state,
         renderWithScope: getScopeIdRender()(renderFn)

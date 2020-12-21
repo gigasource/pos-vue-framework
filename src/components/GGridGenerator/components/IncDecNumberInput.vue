@@ -7,6 +7,7 @@
   export default {
     name: 'GIncDecNumberInput',
     components: { GIcon },
+    emits: ['update:modelValue'],
     props: {
       modelValue: {
         type: Number,
@@ -55,7 +56,7 @@
             </div>
         )
       }
-      
+
       return getScopeIdRender()(renderFn)
     }
   }

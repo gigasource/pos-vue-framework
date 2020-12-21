@@ -18,6 +18,7 @@ import { cloneDeep, isEqual, xorWith } from 'lodash';
 
 export default {
   name: 'GCheckbox',
+  emits: ['update:modelValue'],
   model: {
     prop: 'modelValue',
     event: 'change'

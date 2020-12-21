@@ -14,6 +14,7 @@ import { computed, provide } from 'vue';
 
 export default {
   name: 'GRadioGroup',
+  emits: ['update:modelValue'],
   model: {
     prop: 'modelValue',
     event: 'update:modelValue'

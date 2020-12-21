@@ -10,6 +10,7 @@
   export default {
     name: 'GIconSearch',
     components: { GIcon, GTextField, GPagination },
+    emits: ['update:modelValue'],
     props: {
       icons: Array,
       value: String,
@@ -29,7 +30,7 @@
           return []
         }
       })
-      
+
       const renderFn = () => {
         return <div>
           <div class='g-icon-search'>
@@ -53,7 +54,7 @@
               renderItemsList={props.renderItemsList}/>
         </div>
       }
-      
+
       return {
         state,
         cptFilteredResult,

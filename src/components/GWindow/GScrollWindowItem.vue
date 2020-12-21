@@ -5,6 +5,7 @@
 
   export default {
     name: 'GScrollWindowItem',
+    emits: ['update:modelValue'],
     directives: {
       Intersect
     },

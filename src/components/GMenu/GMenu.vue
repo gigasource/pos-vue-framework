@@ -9,6 +9,7 @@
   export default {
     name: 'GMenu',
     components: { GMenuContent },
+    emits: ['update:modelValue'],
     directives: {
       ClickOutside
     },

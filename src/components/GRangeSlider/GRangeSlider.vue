@@ -8,6 +8,7 @@
 
   export default {
     name: "GRangeSlider",
+    emits: ['update:modelValue'],
     props: {
       modelValue: {
         type: Array,

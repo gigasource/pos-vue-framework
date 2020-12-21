@@ -17,6 +17,7 @@ import colorHandler from '../../utils/helpers';
 
 export default {
   name: 'GRadio',
+  emits: ['update:modelValue'],
   props: {
     label: String,
     color: String,
