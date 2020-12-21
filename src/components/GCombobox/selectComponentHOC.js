@@ -9,7 +9,8 @@ import GChip from '../GChip/GChip';
 import GIcon from '../GIcon/GIcon';
 import GList from '../GList/GList';
 import textValueFactory, { emitEvents as textEmitEvents } from './textValueFactory';
-import _ from 'lodash'
+import _ from 'lodash';
+import { getScopeIdRender } from '../../utils/helpers';
 
 const componentsFactory = (component, componentName) => {
   return {
@@ -440,7 +441,8 @@ const componentsFactory = (component, componentName) => {
       }
     },
     render() {
-      return this.genComponent()
+      const genScopeId = getScopeIdRender()
+      return genScopeId(this.genComponent)()
     }
   }
 }
