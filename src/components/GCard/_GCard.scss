@@ -76,6 +76,7 @@
   }
 
   //New refactor
+  :slotted(.g-card-subtitle),
   .g-card-subtitle {
     padding: 16px;
 
@@ -84,6 +85,8 @@
     }
   }
 
+  :slotted(.g-card-subtitle),
+  :slotted(.g-card-text),
   .g-card-subtitle,
   .g-card-text {
     font-size: .875rem;
@@ -92,12 +95,15 @@
     letter-spacing: .0071428571em;
   }
 
-  ::v-slotted(.g-card-text),
-  ::v-slotted(.g-card-title) {
+  :slotted(.g-card-text),
+  :slotted(.g-card-title),
+  .g-card-text,
+  .g-card-title {
     padding: 16px
   }
 
-  ::v-deep .g-card-title {
+  :slotted(.g-card-title),
+  .g-card-title {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
@@ -115,37 +121,39 @@
       margin-top: -16px;
     }
 
-    &__top {
+    .g-card-title__top {
       top: map-get($grid-gutters, 'xs');
     }
 
-    &__left {
+    .g-card-title__left {
       left: map-get($grid-gutters, 'xs');
     }
 
-    &__bottom {
+    .g-card-title__bottom {
       bottom: map-get($grid-gutters, 'xs');
     }
 
-    &__right {
+    .g-card-title__right {
       right: map-get($grid-gutters, 'xs');
     }
 
-    &__absolute {
+    .g-card-title__absolute {
       position: absolute;
     }
   }
 
+  :slotted(.g-card-text),
   .g-card-text {
     width: 100%;
   }
 
-  ::v-slotted(.g-card-actions) {
+  :slotted(.g-card-actions),
+  .g-card-actions {
     align-items: center;
     display: flex;
     padding: 8px;
 
-    ::v-deep .g-btn.g-btn {
+    :deep(.g-btn) {
       padding: 0 8px;
 
       & + .g-btn {
