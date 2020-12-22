@@ -80,6 +80,7 @@
         isShift: false,
       }
     },
+		emits: ['update:modelValue', 'submit', 'edit'],
 		computed: {
       computedValue: {
         get() {
