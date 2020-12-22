@@ -4,7 +4,7 @@
   background-color: #FFFFFF;
   color: rgba(0, 0, 0, 0.87);
 
-  colgroup {
+  :slotted(colgroup) {
     .divider {
       border-right: 1px solid rgba(0, 0, 0, 0.12);
     }
@@ -18,7 +18,7 @@
   }
 
 
-  thead {
+  :slotted(thead) {
     tr {
       &:last-child th {
         border-bottom: 1px solid rgba(0, 0, 0, 0.12)
@@ -31,7 +31,7 @@
   }
 
 
-  tbody {
+  :slotted(tbody) {
     tr {
       &:not(:last-child) td {
         &:not(.g-data-table__mobile-row) {
@@ -58,17 +58,17 @@
     border-spacing: 0;
   }
 
-  td, th {
+  :slotted(td), :slotted(th) {
     padding: 0 16px;
   }
 
-  th {
+  :slotted(th) {
     user-select: none;
     font-size: 12px;
     height: $data-table-regular-header-height;
   }
 
-  td {
+  :slotted(td) {
     font-size: 14px;
     height: $data-table-regular-row-height;
   }
