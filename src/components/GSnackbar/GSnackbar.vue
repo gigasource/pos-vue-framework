@@ -23,7 +23,7 @@
   export default {
     name: 'GSnackbar',
     props: {
-      value: Boolean,
+      modelValue: Boolean,
       timeout: {
         type: [Number, String],
         default: 6000,
