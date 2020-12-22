@@ -36,8 +36,10 @@ function textValueSingle(props, context, selectionTexts, addValueFromInput) {
   })
 
   // change tfValueType based on dependency change
-  watch(searchText, () => tfValueType.value = 'searchText')
-  watch(lastSelectionText, () => tfValueType.value = 'selectionText')
+  watch(() => searchText.value, () => tfValueType.value = 'searchText');
+
+  watch(() => lastSelectionText.value,
+    () => tfValueType.value = 'selectionText', {immediate: true});
 
   const updateValue = () => {
     if (!searchText.value) return
