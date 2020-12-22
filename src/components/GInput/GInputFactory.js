@@ -164,18 +164,23 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   const currentInstance = getCurrentInstance()
 
   function onClick(event) {
-    if (props.disabled || props.readonly || props.readOnly) return;
-    if (!isFocused.value) currentInstance.refs['input'] && currentInstance.refs['input'].focus();
-    isFocused.value = true;
-    document.caretElement = new Caret(currentInstance.refs['input'])
-    const caret = currentInstance.refs['caret']
-    if(caret) {
-      document.caretElement.set(caret.children.length + 1)
-      for(const child of caret.children) {
-        child.classList.remove('animated-caret')
+    if (props.disabled) return;
+
+    if (!props.readonly && !props.readOnly) {
+      if (!isFocused.value) currentInstance.refs['input'] && currentInstance.refs['input'].focus();
+
+      isFocused.value = true;
+      document.caretElement = new Caret(currentInstance.refs['input'])
+      const caret = currentInstance.refs['caret']
+      if (caret) {
+        document.caretElement.set(caret.children.length + 1)
+        for (const child of caret.children) {
+          child.classList.remove('animated-caret')
+        }
+        caret.lastElementChild && (caret.lastElementChild.classList.add('animated-caret'))
       }
-      caret.lastElementChild && (caret.lastElementChild.classList.add('animated-caret'))
     }
+
     context.emit('click', event);
   }
 
