@@ -252,7 +252,7 @@ export function getInternalValue(props, context) {
   // text field internalValue
   const rawInternalValue = ref((props.modelValue || props.modelValue === 0) ? props.modelValue : '');
 
-  watch(() => props.modelValue, () => rawInternalValue.value = props.modelValue, { lazy: true });
+  watch(() => props.modelValue, () => rawInternalValue.value = props.modelValue)
 
   const internalValue = computed({
     get: () => rawInternalValue.value,
