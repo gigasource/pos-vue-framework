@@ -4,6 +4,7 @@
   import {ref, computed, watch, getCurrentInstance} from 'vue';
   import {getEvents, getLabel, getValidate, inputEvents} from '../GInput/GInputFactory';
   import _ from 'lodash';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: "GFileInputJSX",
@@ -81,19 +82,21 @@
     },
     emits: _.union(inputEvents, [ 'change', 'clear' ]),
     setup(props, context) {
+      const input = ref(null)
       const currentInstance = getCurrentInstance()
       const lazyValue = ref(props.modelValue)
       const internalValue = computed({
         get: () => lazyValue.value,
         set: (val) => {
           lazyValue.value = val
-          context.emit('change', lazyValue.value)
+          context.emit('change', val)
+          context.emit('update:modelValue', val)
         }
       })
 
       watch(() => props.modelValue, (v) => {
-        lazyValue.value = v
-      }, {lazy: true})
+        internalValue.value = v
+      })
 
       const isDirty = computed(() => Array.isArray(internalValue.value) ? internalValue.value.length > 0 : !!internalValue.value)
       const isFocused = ref(false)
@@ -108,14 +111,14 @@
       const onClearIconClick = function (e) {
         e.stopPropagation()
         internalValue.value = props.multiple ? [] : null
-        currentInstance.refs['input'].value = ''
+        input.value.value = ''
         context.emit('clear')
       }
       const {errorMessages, validate} = getValidate(props, isFocused, internalValue, isValidInput)
 
       //file input logic
       const files = computed(() => {
-        return isDirty.value ? currentInstance.refs['input'].files : []
+        return isDirty.value ? input.value.files : []
       })
 
       function convertFileSize(fileSize) {
@@ -202,7 +205,7 @@
           <label vShow={!(props.chips || props.smallChips)} class={['g-tf-label', labelClasses.value]}
                  style={labelStyles.value} for="input">{props.label}</label>
           {genFileInput()}
-          <input id="input" ref="input"
+          <input id="input" ref={input}
                  class="g-tf-input"
                  type={props.type}
                  multiple={props.multiple}
@@ -306,22 +309,20 @@
       })
 
       function genPrependOuter() {
-        return <div class="g-tf-prepend__outer" ref="prependRef">
+        return props.prependIcon && <div class="g-tf-prepend__outer" ref="prependRef">
           <g-icon>{props.prependIcon}</g-icon>
         </div>
       }
 
       function genAppendOuter() {
-        return <div class="g-tf-append__outer" ref="append-outer">
+        return props.appendOuterIcon && <div class="g-tf-append__outer" ref="append-outer">
           <g-icon>{props.appendOuterIcon}</g-icon>
         </div>
       }
 
       function onClickWrapper(e) {
-        onClick(e)
-        // currentInstance.refs['input'].click()
-        // for some reason, it show twice,
-        // does this behavior also happen before migrate??
+        // onClick(e)
+        input.value && input.value.click()
       }
 
       function genFileInputComponent() {
@@ -341,7 +342,7 @@
     },
 
     render() {
-      return this.genFileInputComponent()
+      return getScopeIdRender()(this.genFileInputComponent)()
     }
   }
 </script>

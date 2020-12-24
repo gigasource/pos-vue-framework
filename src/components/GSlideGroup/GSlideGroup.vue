@@ -104,7 +104,7 @@
       });
 
       onBeforeUpdate(() => {
-        internalItemsLength.value = (content.value.children || []).length
+        internalItemsLength.value = (content.value && content.value.children ? content.value.children : []).length
       });
 
       onUpdated(() => {
