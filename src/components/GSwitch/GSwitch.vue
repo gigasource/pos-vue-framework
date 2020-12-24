@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import colorHandler from '../../utils/helpers';
 import { isEqual } from 'lodash';
 
@@ -41,10 +41,19 @@ export default {
         context.emit('update:modelValue', val)
       }
     });
-    const isSelectedArray = computed(() => Array.isArray(internalValue.value));
+    const isSelectedArray = Array.isArray(internalValue.value)
     //value return when switch active
     const trueValue = ref(props.value ? props.value : true);
-    let isActive = ref((isSelectedArray.value && internalValue.value.includes(trueValue.value)) || false);
+    const isActive = ref(false)
+    watch(() => internalValue.value, (newVal) => {
+      if (newVal && isSelectedArray) {
+        isActive.value = newVal.some(v => v === trueValue.value);
+      } else if (newVal === true || newVal === 'true' || (newVal === trueValue.value)) {
+        isActive.value = true;
+      } else {
+        isActive.value = false;
+      }
+    }, { immediate: true })
     //define props color
     const { getColorType, convertColorClass } = colorHandler();
     const type = computed(() => getColorType(props.color));
@@ -93,7 +102,9 @@ export default {
         classes,
         styles,
         containerClasses,
+        internalValue,
         isActive,
+        isSelectedArray,
         toggle
       }
     }
