@@ -7,20 +7,20 @@ $data-table-dense-header-height: 32px !default;
 .g-table {
   background-color: #FFFFFF;
 
-  colgroup {
+  :slotted(colgroup) {
     .divider {
       border-right: 1px solid rgba(0, 0, 0, 0.12);
     }
   }
 
   &.g-table__fixed-header {
-    thead th {
+    :slotted(thead th) {
       box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
     }
   }
 
 
-  thead {
+  ::slotted(thead) {
     tr {
       &:last-child th {
         border-bottom-color: rgba(0, 0, 0, 0.12)
@@ -48,23 +48,23 @@ $data-table-dense-header-height: 32px !default;
     border-spacing: 0;
   }
 
-  td, th {
+  :slotted(td), :slotted(th) {
     padding: 0 16px;
   }
 
-  th {
+  :slotted(th) {
     user-select: none;
     font-size: 14px;
     height: $data-table-regular-header-height;
   }
 
-  td {
+  :slotted(td) {
     font-size: 14px;
     height: $data-table-regular-row-height;
   }
 
   .g-table-row__active {
-    td {
+    :slotted(td) {
       border-bottom: 1px solid #1271ff;
       border-top: 1px solid #1271ff;
 
@@ -94,7 +94,7 @@ $data-table-dense-header-height: 32px !default;
     overflow-y: auto;
   }
 
-  thead {
+  :slotted(thead) {
     th {
       border-bottom: 0 !important;
       position: sticky;
@@ -119,7 +119,7 @@ $data-table-dense-header-height: 32px !default;
 }
 
 .g-table__hover {
-  tbody {
+  :slotted(tbody) {
     tr {
       &:hover {
         background: rgba(176, 190, 197, 0.1);
@@ -134,7 +134,7 @@ $data-table-dense-header-height: 32px !default;
       border-collapse: collapse;
     }
 
-    th, td {
+    :slotted(th), :slotted(td) {
       border: 0.5px solid #dee2e6;
     }
 
@@ -147,17 +147,17 @@ $data-table-dense-header-height: 32px !default;
 
 // Modifiers
 .g-table__dense {
-  td {
+  :slotted(td) {
     height: $data-table-dense-row-height
   }
 
-  th {
+  :slotted(th) {
     height: $data-table-dense-header-height
   }
 }
 
 .g-table__fixed.g-table__dense {
-  thead {
+  :slotted(thead) {
     tr:nth-child(2) {
       th {
         top: $data-table-dense-header-height
@@ -172,7 +172,7 @@ $data-table-dense-header-height: 32px !default;
     border-bottom: none;
   }
 
-  th, td {
+  :slotted(th), :slotted(td) {
     border-bottom: 1px solid #dee2e6;
   }
 
@@ -182,7 +182,7 @@ $data-table-dense-header-height: 32px !default;
 }
 
 .g-table__selectable {
-  td, th {
+  :slotted(th), :slotted(td) {
     cursor: pointer;
   }
 }
