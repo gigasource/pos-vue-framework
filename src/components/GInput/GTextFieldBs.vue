@@ -33,6 +33,7 @@
                  ref="input"
                  :readonly="readonly || virtualEvent"
                  :placeholder="placeholder"
+                 :type="type"
                  v-model="internalValue"
                  @change="onChange"
                  @focus="onFocus"
