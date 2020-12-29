@@ -26,22 +26,23 @@
       	type: Boolean,
 				default: true
 			},
-      value: null,
+      modelValue: null,
       items: Array
     },
+    emits: ['update:modelValue'],
     setup(props, context) {
       const model = computed({
         get: () => {
-          if (props.value !== undefined) {
-            if (props.multiple && !Array.isArray(props.value)) {
-              props.value = [props.value];
+          if (props.modelValue !== undefined) {
+            if (props.multiple && !Array.isArray(props.modelValue)) {
+              props.modelValue = [props.modelValue];
             }
-            return props.value;
+            return props.modelValue;
           }
           return props.multiple ? [] : null;
         },
         set: (value) => {
-          context.emit('input', value);
+          context.emit('update:modelValue', value);
         }
       });
 
