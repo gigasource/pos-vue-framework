@@ -1,14 +1,13 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel';
-  import detachable from '../../mixins/detachable';
-  import { computed, reactive, watch, onMounted, onBeforeUnmount, ref, nextTick, getCurrentInstance } from 'vue';
+  import { computed, reactive, watch, onMounted, onBeforeUnmount, ref, Teleport } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
 	import GDialogContent from './GDialogContent';
   import {getScopeIdRender} from "../../utils/helpers";
 
   export default {
     name: 'GDialog',
-    components: { GDialogContent  },
+    components: { GDialogContent, Teleport },
     directives: {
       ClickOutside
     },
@@ -52,7 +51,6 @@
       const activator = ref(null)
       const el = ref(null)
       const isActive = getInternalValue(props, context);
-      const { attachToParent, detach } = detachable(props, context, { activator, el })
 
       // Lazy/Eager
       // TODO: convert to bootable mixin
@@ -60,12 +58,6 @@
         value: false
       });
       const renderContent = computed(() => isBooted.value || props.eager);
-
-      onMounted(() => {
-        nextTick(() => {
-          activator.value && attachToParent(activator.value)
-        })
-      });
 
       const unwatch = watch(isActive, newVal => {
         if (newVal) {
@@ -82,7 +74,6 @@
       // Clean-up when destroy
       onBeforeUnmount(() => {
         unwatch()
-        activator.value && detach(activator.value)
       })
 
       // Render functions
@@ -110,7 +101,9 @@
       function genDialog() {
         return <div ref={el} class="g-dialog">
           {genActivator()}
-					{renderContent.value && genDialogContent()}
+          <teleport to="div[data-app]">
+            {renderContent.value && genDialogContent()}
+          </teleport>
         </div>
       }
 

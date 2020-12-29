@@ -1,6 +1,6 @@
 <script>
   import {getInternalValue} from '../../mixins/getVModel';
-  import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+  import { onBeforeUnmount, onMounted, reactive, ref, watch, Teleport } from 'vue';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
@@ -8,7 +8,7 @@
 
   export default {
     name: 'GMenu',
-    components: { GMenuContent },
+    components: { GMenuContent, Teleport },
     emits: ['update:modelValue'],
     directives: {
       ClickOutside
@@ -137,11 +137,9 @@
         const contentOptions = {
           ...{
             // props
-            ...Object.assign({}, props, {
-              modelValue: isActive.value
-            }),
+            ..._.omit(props, ['eager']),
+            modelValue: isActive.value,
             activator: activatorEl,
-            hasJustFocused: state.hasJustFocused,
             clientX: state.clientX,
             clientY: state.clientY
           },
@@ -186,10 +184,12 @@
         const _activatorVNode = context.slots.activator && context.slots.activator({ toggleContent, on });
         activatorVNode = _activatorVNode
 
-        return <div>
+        return <>
           {_activatorVNode}
-          {props.eager ? genContent() : (!state.isFirstRender && genContent())}
-        </div>;
+          <teleport to="div[data-app]">
+            {props.eager ? genContent() : (!state.isFirstRender && genContent())}
+          </teleport>
+        </>;
       }
 
       return {

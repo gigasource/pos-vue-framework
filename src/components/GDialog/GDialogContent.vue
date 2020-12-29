@@ -1,7 +1,6 @@
 <script>
   import { getInternalValue } from '../../mixins/getVModel'
   import { convertToUnit, getZIndex } from '../../utils/helpers'
-  import detachable from '../../mixins/detachable'
   import stackable from '../../mixins/stackable'
   import {
     computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, Transition, watch
@@ -69,7 +68,6 @@
       const content = ref(null)
       const instance = getCurrentInstance()
       const isActive = getInternalValue(props, context)
-      const {attachToRoot, detach} = detachable(props, context, { content })
       const {getMaxZIndex} = stackable(props, context)
 
       // Stacking
@@ -82,11 +80,6 @@
       // TODO: convert to overlayable mixin
       const renderOverlay = computed(() => !props.hideOverlay && !props.fullscreen)
       const getOpenDependentElements = ref(null)
-      function initComponent() {
-        attachToRoot(overlay.value.$el)
-        attachToRoot(wrapper.value)
-        detach(container.value)
-      }
 
       const addDependency = inject('addDependentInstance', () => null)
       const removeDependency = inject('removeDependentInstance', () => null)
@@ -103,12 +96,6 @@
       if (props.isDependent) {
         addDependency && addDependency(instance, dependents.value)
       }
-
-      onMounted(function () {
-        nextTick(() => {
-          initComponent()
-        })
-      })
 
       // Close conditional for click outside directive
       const closeConditional = (e) => {
@@ -290,8 +277,6 @@
       onBeforeUnmount(() => {
         unwatch()
         enableOutsideScroll()
-        wrapper.value && detach(wrapper.value);
-        overlay.value && detach(overlay.value.$el);
       });
 
       // content data
