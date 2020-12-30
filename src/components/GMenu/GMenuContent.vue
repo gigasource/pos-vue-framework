@@ -3,7 +3,6 @@
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
   import { convertToUnit } from '../../utils/helpers';
-  import detachable from '../../mixins/detachable';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
   import stackable from '../../mixins/stackable';
@@ -12,6 +11,7 @@
 
   export default {
     name: 'GMenuContent',
+    emits: ['update:modelValue'],
     directives: {
       ClickOutside,
       Resize
@@ -114,7 +114,6 @@
     },
     setup(props, context) {
       const isActive = getVModel(props, context);
-      const { attachToRoot } = detachable(props, context, { activator: props.activator });
       const {
         updateDimensions, dimensions, computedTop, computedLeft, calcXOverflow, calcYOverFlow, menuableState: state
       } = menuable(props, context);
@@ -178,7 +177,6 @@
 
       onMounted(function () {
         nextTick(() => {
-          rootEl = attachToRoot(contentRef.value)
           updateDimensions(props.activator.value, contentRef)
           if (!resizeObserver.observer) resizeObserver.init()
         })
@@ -186,7 +184,6 @@
 
       onBeforeUnmount(() => {
         resizeObserver.destroy();
-        if (rootEl) rootEl.removeChild(contentRef.value) // menu content is mounted to root element
       })
 
       const calculatedLeft = computed(() => {

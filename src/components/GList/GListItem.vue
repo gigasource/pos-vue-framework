@@ -9,6 +9,7 @@
 
   export default {
     name: 'GListItem',
+    emits: ['click', 'singleItemClick'],
     props: {
       height: String,
       disabled: Boolean,

@@ -64,6 +64,7 @@
       width: [Number, String],
       height: [Number, String]
     },
+    emits: ['close', 'dragStart', 'dragEnd', 'resizeStart', 'resizeEnd', 'update:modelValue'],
     setup(props, context) {
       const wrapper = ref(null)
       const header = ref(null)
@@ -104,7 +105,7 @@
         }
 
         if (!newVal) context.emit('close')
-        context.emit('input', newVal)
+        context.emit('update:modelValue', newVal)
       })
 
       onMounted(() => {
