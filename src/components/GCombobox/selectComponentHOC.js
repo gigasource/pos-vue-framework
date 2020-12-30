@@ -309,7 +309,7 @@ const componentsFactory = (component, componentName) => {
       }
 
       const onBlur = e => {
-        const listRef = currentInstance.refs.menu.$refs.list
+        const listRef = currentInstance.refs.list
         if (listRef && listRef.$el.contains(e.relatedTarget))
           return
         updateValue()
