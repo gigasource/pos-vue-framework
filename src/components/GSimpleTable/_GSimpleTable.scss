@@ -4,7 +4,7 @@
   background-color: #FFFFFF;
   color: rgba(0, 0, 0, 0.87);
 
-  :slotted(colgroup) {
+  :deep(colgroup) {
     .divider {
       border-right: 1px solid rgba(0, 0, 0, 0.12);
     }
@@ -18,7 +18,7 @@
   }
 
 
-  :slotted(thead) {
+  :deep(thead) {
     tr {
       &:last-child th {
         border-bottom: 1px solid rgba(0, 0, 0, 0.12)
@@ -58,17 +58,17 @@
     border-spacing: 0;
   }
 
-  :slotted(td), :slotted(th) {
+  :deep(td), :deep(th) {
     padding: 0 16px;
   }
 
-  :slotted(th) {
+  :deep(th) {
     user-select: none;
     font-size: 12px;
     height: $data-table-regular-header-height;
   }
 
-  :slotted(td) {
+  :deep(td) {
     font-size: 14px;
     height: $data-table-regular-row-height;
   }
