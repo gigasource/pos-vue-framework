@@ -1,11 +1,6 @@
-<template>
-  <div :class="classes" :style="styles" v-if="isItemAdded" tabindex="0" v-on="listItemEvents(item, index)">
-    <slot></slot>
-  </div>
-</template>
-
 <script>
   import { computed, inject } from 'vue';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GListItem',
@@ -61,14 +56,26 @@
         }
       })
 
+      const renderFn = () => {
+        if (isItemAdded) {
+          return <div class={classes} style={styles} tabIndex={0} {...listItemEvents(props.item, index)}>
+            {context.slots.default && context.slots.default()}
+          </div>
+        }
+      }
+
       return {
         index,
         classes,
         styles,
         listItemEvents,
         isItemAdded,
-        singleItemEvents
+        singleItemEvents,
+        renderFn: getScopeIdRender()(renderFn)
       }
+    },
+    render() {
+      return this.renderFn()
     }
   }
 </script>
