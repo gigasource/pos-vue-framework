@@ -123,6 +123,26 @@
                 props.selectable ? onSelect(item) : context.emit('keydown:enter', item)
                 break
             }
+          },
+          // [work-around] [fix-later or never] [refactor required]
+          // The problem is this method has been provided using 'provide' method (see below code)
+          // and later use in GListItem (see inject method).
+          // Calling this method return onClick and onKeydown.
+          // These events doesn't match with Vue event-handler if we use it in vue template (see GListItem <template> section
+          // So to work-around, I added click and keydown event with the same logic of 2 events above
+          click: () => props.selectable ? onSelect(item) : context.emit('click:item', item),
+          keydown: (e) => {
+            switch (e.keyCode) {
+              case keyCodes.down:
+                props.selectable ? onArrowDown(index) : context.emit('keydown:down', index)
+                break
+              case keyCodes.up:
+                props.selectable ? onArrowUp(index) : context.emit('keydown:up', index)
+                break
+              case keyCodes.enter:
+                props.selectable ? onSelect(item) : context.emit('keydown:enter', item)
+                break
+            }
           }
         }
       }
@@ -192,7 +212,7 @@
         </div>
         if (item.append) return <template>{item.append}</template>
       }
-      
+
       function genItemSelectable(item, index) {
         return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
                     tabIndex="0" item={item}

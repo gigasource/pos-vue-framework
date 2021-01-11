@@ -27,8 +27,8 @@
       //handle listItem in selectable list case
       const add = selectable && props.inList ? inject('add') : null
       const { isItemAdded, index } = selectable && props.inList ? add(props.item) : { isItemAdded: true, index: 0 }
-      const isActiveItem = selectable && props.inList ? inject('isActiveItem') : null
-      const inListEvents = selectable && props.inList ? inject('getListEvents') : null
+      const isActiveItem = selectable && props.inList ? inject('isActiveItem') : null //
+      const inListEvents = selectable && props.inList ? inject('getListEvents') : null // Why inject
 
       const singleItemEvents = () => ({
         click: () => {
