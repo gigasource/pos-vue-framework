@@ -1,3 +1,5 @@
+import uuid from 'uuid'
+
 function handleGesture(wrapper) {
   const { touchstartX, touchendX, touchstartY, touchendY } = wrapper;
   const dirRatio = 0.5;
@@ -70,6 +72,7 @@ function createHandlers(value) {
 
 function mounted(el, binding, vnode) {
   const value = binding.value;
+  value.uuid = uuid.v4()
   const target = value.parent ? el.parentElement : el;
   const options = value.options || { passive: true };
 
@@ -80,7 +83,7 @@ function mounted(el, binding, vnode) {
 
   const handlers = createHandlers(binding.value);
   target._touchHandlers = Object(target._touchHandlers);
-  target._touchHandlers[el.__vueParentComponent.uid] = handlers;
+  target._touchHandlers[value.uuid] = handlers;
 
   Object.keys(handlers).forEach(eventName => {
     target.addEventListener(eventName, handlers[eventName], options)
@@ -93,11 +96,11 @@ function unmounted(el, binding, vnode) {
     return;
   }
 
-  const handlers = target._touchHandlers[el.__vueParentComponent.uid];
+  const handlers = target._touchHandlers[binding.value.uuid];
   Object.keys(handlers).forEach(eventName => {
     target.removeEventListener(eventName, handlers[eventName])
   });
-  delete target._touchHandlers[el.__vueParentComponent.uid];
+  delete target._touchHandlers[binding.value.uuid];
 }
 
 export const Touch = {
