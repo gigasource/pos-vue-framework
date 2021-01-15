@@ -72,7 +72,6 @@ function createHandlers(value) {
 
 function mounted(el, binding, vnode) {
   const value = binding.value;
-  value.uuid = uuid.v4()
   const target = value.parent ? el.parentElement : el;
   const options = value.options || { passive: true };
 
@@ -83,7 +82,13 @@ function mounted(el, binding, vnode) {
 
   const handlers = createHandlers(binding.value);
   target._touchHandlers = Object(target._touchHandlers);
-  target._touchHandlers[value.uuid] = handlers;
+  if (!el.__uuid) {
+    Object.defineProperty(el, '__uuid', {
+      value: uuid.v4(),
+      enumerable: false
+    });
+  }
+  target._touchHandlers[el.__uuid] = handlers;
 
   Object.keys(handlers).forEach(eventName => {
     target.addEventListener(eventName, handlers[eventName], options)
@@ -96,11 +101,11 @@ function unmounted(el, binding, vnode) {
     return;
   }
 
-  const handlers = target._touchHandlers[binding.value.uuid];
+  const handlers = target._touchHandlers[el.__uuid];
   Object.keys(handlers).forEach(eventName => {
     target.removeEventListener(eventName, handlers[eventName])
   });
-  delete target._touchHandlers[binding.value.uuid];
+  delete target._touchHandlers[el.__uuid];
 }
 
 export const Touch = {
