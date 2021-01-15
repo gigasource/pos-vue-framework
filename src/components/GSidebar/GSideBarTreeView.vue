@@ -262,7 +262,7 @@ export default {
             </span>
           {appendIcon}
         </a>
-        <g-expand-transition>{children}</g-expand-transition>
+        {children ? <g-expand-transition>{children}</g-expand-transition> : <div></div>}
       </li>
 
       return (context.slots['default']
