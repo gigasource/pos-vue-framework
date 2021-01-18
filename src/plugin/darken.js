@@ -3,7 +3,7 @@ import {getHslColor} from "../utils/colors";
 ;(function (window) {
   'use strict';
 
-  const Darken = Darken || {};
+  const Darken = window.Darken || {};
 
   const Effect = {
     //click
