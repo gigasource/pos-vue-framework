@@ -192,7 +192,7 @@
         </div>
         if (item.append) return <template>{item.append}</template>
       }
-      
+
       function genItemSelectable(item, index) {
         return <GListItem class={['g-list-item', 'waves-effect', 'waves-auto', { 'g-list-item__active': isActiveItem(item), [props.activeClass]: isActiveItem(item) }]}
                     tabIndex="0" item={item}

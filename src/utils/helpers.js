@@ -212,6 +212,9 @@ export function chunk (str, size = 1) {
 }
 
 export function getScopeIdRender() {
-  const { type } = getCurrentInstance();
+  const instance = getCurrentInstance();
+  if (!instance) return withScopeId('');
+
+  const { type } = instance;
   return withScopeId(type.__scopeId)
 }

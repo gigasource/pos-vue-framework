@@ -1,11 +1,6 @@
-<template>
-  <div :class="classes" :style="styles" v-if="isItemAdded" tabindex="0" v-on="listItemEvents(item, index)">
-    <slot></slot>
-  </div>
-</template>
-
 <script>
   import { computed, inject } from 'vue';
+  import { getScopeIdRender } from '../../utils/helpers';
 
   export default {
     name: 'GListItem',
@@ -26,11 +21,11 @@
       //handle listItem in selectable list case
       const add = selectable && props.inList ? inject('add') : null
       const { isItemAdded, index } = selectable && props.inList ? add(props.item) : { isItemAdded: true, index: 0 }
-      const isActiveItem = selectable && props.inList ? inject('isActiveItem') : null
-      const inListEvents = selectable && props.inList ? inject('getListEvents') : null
+      const isActiveItem = selectable && props.inList ? inject('isActiveItem') : null //
+      const inListEvents = selectable && props.inList ? inject('getListEvents') : null // Why inject
 
       const singleItemEvents = () => ({
-        click: () => {
+        onClick: () => {
           context.emit('click', props.item);
           context.emit('singleItemClick', props.item) // legacy, to be removed later
         },
@@ -61,14 +56,26 @@
         }
       })
 
+      const renderFn = () => {
+        if (isItemAdded) {
+          return <div class={classes} style={styles} tabIndex={0} {...listItemEvents(props.item, index)}>
+            {context.slots.default && context.slots.default()}
+          </div>
+        }
+      }
+
       return {
         index,
         classes,
         styles,
         listItemEvents,
         isItemAdded,
-        singleItemEvents
+        singleItemEvents,
+        renderFn: getScopeIdRender()(renderFn)
       }
+    },
+    render() {
+      return this.renderFn()
     }
   }
 </script>

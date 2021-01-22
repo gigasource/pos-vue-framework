@@ -1,4 +1,7 @@
 <script>
+  // TODO:
+  //  - Consider to change props value to modelValue
+
   import GIcon from '../GIcon/GIcon';
   import Ripple from '../../directives/ripple/ripple';
   import GBtn from '../GBtn/GBtn';

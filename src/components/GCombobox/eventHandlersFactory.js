@@ -28,7 +28,7 @@ export function getInputEventHandlers(props, context, state, selectedItem, lazyS
   // change focused element when index changes
   watch(activeListItemIndex, (newVal, oldVal) => {
     if (newVal !== oldVal) {
-      const listRef = currentInstance.refs.menu.$refs.list
+      const listRef = currentInstance.refs.list
 
       if (listRef && renderList.value.length) {
         if (newVal >= 0) {

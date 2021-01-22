@@ -153,9 +153,11 @@ export  function ExpandTransitionGenerator (expandedParentClass = '', x = false)
   }
 
   function resetStyles (el) {
-    const size = el._initialStyle[sizeProperty];
-    el.style.overflow = el._initialStyle.overflow;
-    if (size != null) el.style[sizeProperty] = size;
-    delete el._initialStyle;
+    if (el._initialStyle) {
+      const size = el._initialStyle[sizeProperty];
+      el.style.overflow = el._initialStyle.overflow;
+      if (size != null) el.style[sizeProperty] = size;
+      delete el._initialStyle;
+    }
   }
 }
