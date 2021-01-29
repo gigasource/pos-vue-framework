@@ -1,5 +1,5 @@
 <script>
-  import { computed, inject, Transition } from 'vue'
+  import { computed, inject, Transition , toRaw} from 'vue'
   import {getScopeIdRender} from '../../utils/helpers';
 
   export default {
@@ -9,7 +9,7 @@
     },
     setup(props, context) {
       const model = inject('model');
-      const show = computed(() => (model.value === props.item));
+      const show = computed(() => (toRaw(model.value) === toRaw(props.item)));
       const _transition = inject('transition');
 
       const genTabItem = () =>
