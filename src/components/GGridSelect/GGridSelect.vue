@@ -37,6 +37,7 @@
         default: 3
       }
     },
+    emits: ['update:modelValue'],
     setup(props, context) {
       const internalValue = getInternalValue(props, context)
 
