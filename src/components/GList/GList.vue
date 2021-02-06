@@ -179,7 +179,7 @@
       })
       const genItemContent = (item) => {
         return <div class="g-list-item-content">
-          <div class="g-list-item-text">{getText.value(item) || item}</div>
+          <div class="g-list-item-text">{getText.value(item) || ''}</div>
           {lineNumber.value > 1 ? <div class="g-list-item-text__sub">{item.subtext} </div> : null}
           {lineNumber.value === 3 ? <div class="g-list-item-text__sub"> {item.subtext2}</div> : null}
         </div>
