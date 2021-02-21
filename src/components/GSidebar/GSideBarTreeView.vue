@@ -1,5 +1,5 @@
 <script>
-import {computed, reactive, watch} from 'vue';
+import { computed, nextTick, reactive, watch } from 'vue';
 import GTreeFactory from '../GTreeViewFactory/GTreeFactory';
 import {GExpandTransition} from '../transition/transition';
 import GSpacer from "../GLayout/GSpacer";
@@ -118,25 +118,6 @@ export default {
       return path
     }
 
-    watch(() => props.modelValue, () => {
-      if (!props.modelValue || props.modelValue === prevSelectedPath) return
-
-      if (prevSelectedPath)
-        setNodeState(prevSelectedPath, {
-          selected: false
-        })
-
-      prevSelectedPath = props.modelValue
-      if (!prevOpenPath) prevOpenPath = props.modelValue
-
-      setNodeState(props.modelValue, {
-        selected: true
-      })
-      setParentNodesState(props.modelValue, {
-        collapse: false
-      })
-    })
-
     // generate components
     const rootWrapperClasses = computed(() => ({['elevation-' + (props.flat ? '0' : props.elevation)]: true}))
     const genRootWrapper = function (childrenVNodes) {
@@ -237,7 +218,7 @@ export default {
           ? 'g-treeview-item waves-effect'
           : null,
           props.rounded ? 'g-treeview-item__rounded' : null,
-          (!childrenVNodes || node.clickable) && (treeStates[path].selected || path === props.value)
+          (!childrenVNodes || node.clickable) && (treeStates[path].selected || path === props.modelValue)
             ? 'g-treeview__active'
             : null],
         ...eventListeners,
@@ -306,6 +287,31 @@ export default {
       expandLevel: props.expandLevel,
       treeStates,
     })
+
+    function updateState() {
+      if (!props.modelValue) return
+
+      if (prevSelectedPath)
+        setNodeState(prevSelectedPath, {
+          selected: false
+        })
+
+      prevSelectedPath = props.modelValue
+
+      setNodeState(props.modelValue, {
+        selected: true
+      })
+      setParentNodesState(props.modelValue, {
+        collapse: false
+      })
+    }
+    watch(() => props.modelValue, () => {
+      updateState()
+    }, { immediate: true})
+    watch(() => props.data, async() => {
+      await nextTick() //gen tree
+      updateState()
+    }, { deep: true})
 
     return {treeStates, genTree}
   },
