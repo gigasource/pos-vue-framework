@@ -8,6 +8,7 @@
   import stackable from '../../mixins/stackable';
   import dependent from '../../mixins/dependent';
   import { ResizeObserver as ResizeObserverPolyfill } from '@juggle/resize-observer';
+import { isInside} from '../../../../../plugins/pos-plugin/utils/helpers';
 
   export default {
     name: 'GMenuContent',
@@ -239,7 +240,8 @@
       //callback to close menu when clicked outside
       const closeConditional = (e) => {
         const target = e.target;
-        return isActive.value && contentRef.value && !contentRef.value.contains(target)
+        return isActive.value && contentRef.value && !contentRef.value.contains(target) &&
+          (!window.clickOutsideIgnoreElements && _.every(window.clickOutsideIgnoreElements, el => !isInside(e.clientX, e.clientY, el.value.getBoundingClientRect())))
       }
       const clickOutsideDirective = {
         name: 'click-outside',
