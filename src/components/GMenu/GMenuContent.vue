@@ -241,7 +241,7 @@ import { isInside} from '../../../../../plugins/pos-plugin/utils/helpers';
       const closeConditional = (e) => {
         const target = e.target;
         return isActive.value && contentRef.value && !contentRef.value.contains(target) &&
-          (!window.clickOutsideIgnoreElements && _.every(window.clickOutsideIgnoreElements, el => !isInside(e.clientX, e.clientY, el.value.getBoundingClientRect())))
+          (!window.clickOutsideIgnoreElements || _.every(window.clickOutsideIgnoreElements, el => !isInside(e.clientX, e.clientY, el.value.getBoundingClientRect())))
       }
       const clickOutsideDirective = {
         name: 'click-outside',
