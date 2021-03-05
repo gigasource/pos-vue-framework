@@ -40,7 +40,6 @@
     emits: ['update:modelValue'],
     setup(props, context) {
       const internalValue = getInternalValue(props, context)
-
       const options = computed(() => {
         if (Array.isArray(props.items)) return props.items;
         return _.map(props.items, (v, k) => ({ text: k, value: v }));
@@ -55,6 +54,7 @@
       function toggleSelect(originalItem) {
         const returnItem = convertToReturnItem(originalItem);
         if (props.multiple) {
+          if (!internalValue.value) internalValue.value = []
           if (internalValue.value.length <= 1 && _.includes(internalValue.value, returnItem) && props.mandatory) return
           if (_.includes(internalValue.value, returnItem)) {
             internalValue.value.splice(internalValue.value.indexOf(returnItem), 1);
