@@ -361,6 +361,7 @@ const componentsFactory = (component, componentName) => {
                 v-slots={textFieldScopedSlots.value}
                 style={{ 'flex-wrap': 'wrap' }}
                 class={classes}
+                ref="textfield"
             />
           )
         }

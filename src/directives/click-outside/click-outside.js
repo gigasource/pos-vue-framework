@@ -13,7 +13,8 @@ function directive(e, el, binding) {
   const elements = (binding.arg.include || (() => []))()
   // Add the root element for the component this directive was defined on
   elements.push(el)
-  !elements.some(el => el.contains(e.target)) && setTimeout(() => {
+  // todo: This just a hot fix
+  !elements.some(el => el && el.contains(e.target)) && setTimeout(() => {
     isActive(e) && binding.value && binding.value(e)
   }, 0)
 }
