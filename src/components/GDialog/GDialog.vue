@@ -99,9 +99,10 @@
       }
 
       function genDialog() {
+        const target = document.getElementById('root') ? 'body': 'div[data-app]';
         return <div ref={el} class="g-dialog">
           {genActivator()}
-          <teleport to="div[data-app]">
+          <teleport to={target}>
             {renderContent.value && genDialogContent()}
           </teleport>
         </div>
