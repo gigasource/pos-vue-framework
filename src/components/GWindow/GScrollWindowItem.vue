@@ -37,7 +37,7 @@
           class: 'g-scroll-window-item',
         };
         return withDirectives(h('div', nodeData, context.slots),
-            [[Intersect, intersectCb, { root: undefined, threshold: 0.999 }]]
+            [[Intersect, intersectCb, { root: undefined, threshold: 0.6 }]]
         )
       }
 
