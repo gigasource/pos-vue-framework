@@ -2,7 +2,7 @@
   import { computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
   import menuable from '../../mixins/menuable';
   import getVModel from '../../mixins/getVModel';
-  import { convertToUnit } from '../../utils/helpers';
+  import { convertToUnit, isInside } from '../../utils/helpers';
   import ClickOutside from '../../directives/click-outside/click-outside';
   import Resize from '../../directives/resize/resize';
   import stackable from '../../mixins/stackable';

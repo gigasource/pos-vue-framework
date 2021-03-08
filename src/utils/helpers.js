@@ -218,3 +218,7 @@ export function getScopeIdRender() {
   const { type } = instance;
   return withScopeId(type.__scopeId)
 }
+
+export function isInside(x, y, rec) {
+  return (x >= rec.left && x < rec.left + rec.width) && ( y >= rec.top && y < rec.top + rec.height)
+}
