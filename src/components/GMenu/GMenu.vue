@@ -184,10 +184,10 @@
         const _activatorVNode = context.slots.activator && context.slots.activator({ toggleContent, on });
         activatorVNode = _activatorVNode
 
-        const target = document.getElementById('root') ? '#root': 'div[data-app]';
+        const target = document.getElementById('root') ? 'body': 'div[data-app]';
         return <>
           {_activatorVNode}
-          <teleport to="div[data-app]">
+          <teleport to={target}>
             {props.eager ? genContent() : (!state.isFirstRender && genContent())}
           </teleport>
         </>;
