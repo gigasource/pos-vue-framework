@@ -5,7 +5,10 @@
          @mousedown="e => onMouseDown(item, e)"
          @touchstart="e => onMouseDown(item, e)"
          @mouseup="onMouseUp(item)"
-         @touchend="onMouseUp(item)">
+         @touchend="onMouseUp(item)"
+         @mousemove="e => onMouseMove(item)"
+         @touchmove="e => onMouseMove(item)"
+    >
       <!-- TODO: responsive height for img -->
       <img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
       <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
@@ -137,7 +140,8 @@
         preEle: null,
         caret: null,
         queue: null,
-        deleteHoldTime: null
+        deleteHoldTime: null,
+        lastTimeMouseDownOnDeleteButton: null
       }
     },
     created() {
@@ -189,18 +193,25 @@
         }
 
         if(item.action === 'delete') { //remove whole caret value after holding delete btn 300ms
-          this.deleteHoldTime = new Date()
-          setTimeout(() => {
-            if(this.deleteHoldTime) {
-              this.caret.set(0, this.caret.get().end).insert('');
-              this.caret.element.dispatchEvent(new Event('input'));
-            }
-          }, 300)
-        }
+          this.lastTimeMouseDownOnDeleteButton = new Date()
+        } else this.lastTimeMouseDownOnDeleteButton = null
       },
-      onMouseUp(item) {
-        if(item.action === 'delete') {
-          this.deleteHoldTime = null
+      onMouseUp() {
+        this.lastTimeMouseDownOnDeleteButton = null
+      },
+      onMouseMove(item) {
+        if (item.action !== 'delete') {
+          this.lastTimeMouseDownOnDeleteButton = null
+          return
+        }
+        if (this.lastTimeMouseDownOnDeleteButton) {
+          const curTime = new Date()
+          const duration = curTime.getTime() - this.lastTimeMouseDownOnDeleteButton.getTime()
+          if (duration > 500) {
+            this.caret.set(0, this.caret.get().end).insert('');
+            this.caret.element.dispatchEvent(new Event('input'));
+            this.lastTimeMouseDownOnDeleteButton = null
+          }
         }
       }
     }
