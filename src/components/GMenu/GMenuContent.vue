@@ -8,7 +8,6 @@
   import stackable from '../../mixins/stackable';
   import dependent from '../../mixins/dependent';
   import { ResizeObserver as ResizeObserverPolyfill } from '@juggle/resize-observer';
-import { isInside} from '../../../../../plugins/pos-plugin/utils/helpers';
 
   export default {
     name: 'GMenuContent',
