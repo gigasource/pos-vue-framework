@@ -39,7 +39,7 @@ function textValueSingle(props, context, selectionTexts, addValueFromInput) {
   watch(() => searchText.value, () => tfValueType.value = 'searchText');
 
   watch(() => lastSelectionText.value,
-    () => tfValueType.value = 'selectionText', {immediate: true});
+    () => lastSelectionText.value && (tfValueType.value = 'selectionText'), {immediate: true});
 
   const updateValue = () => {
     if (!searchText.value) return

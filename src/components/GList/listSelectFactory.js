@@ -72,7 +72,8 @@ export function makeListSelectable(props, context, internalItems) {
       let _normalizedVal = _normalize(value, listItems.value, isFromInput)
       if (_normalizedVal)
         return _normalizedVal
-      return value
+      // return value
+      return null
     }
   }
 
