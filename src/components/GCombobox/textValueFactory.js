@@ -5,6 +5,9 @@ export const emitEvents = [ 'update:searchText' ]
 
 function textValueSingle(props, context, selectionTexts, addValueFromInput) {
   const searchText = ref(props.searchText || '')
+  watch(() => props.searchText, () => {
+    searchText.value = props.searchText
+  }, { deep: true})
 
   const isChipDisplay = computed(() => {
     return props.chips || props.deletableChips || props.smallChips
