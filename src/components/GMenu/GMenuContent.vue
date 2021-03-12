@@ -239,8 +239,10 @@
       //callback to close menu when clicked outside
       const closeConditional = (e) => {
         const target = e.target;
+        const ignoreElements = document.getElementsByClassName('ignore-click-outside')
+        // ignoreElements.forEach((el) => console.log(el.getBoundingClientRect()))
         return isActive.value && contentRef.value && !contentRef.value.contains(target) &&
-          (!window.clickOutsideIgnoreElements || _.every(window.clickOutsideIgnoreElements, el => !isInside(e.clientX, e.clientY, el.value.getBoundingClientRect())))
+          (_.every(ignoreElements, el => !isInside(e.clientX, e.clientY, el.getBoundingClientRect())))
       }
       const clickOutsideDirective = {
         name: 'click-outside',
