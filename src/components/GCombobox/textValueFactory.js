@@ -4,7 +4,7 @@ import _ from 'lodash'
 export const emitEvents = [ 'update:searchText' ]
 
 function textValueSingle(props, context, selectionTexts, addValueFromInput) {
-  const searchText = ref('')
+  const searchText = ref(props.searchText || '')
 
   const isChipDisplay = computed(() => {
     return props.chips || props.deletableChips || props.smallChips
@@ -29,7 +29,7 @@ function textValueSingle(props, context, selectionTexts, addValueFromInput) {
     }
   })
 
-  const tfValueType = ref('')
+  const tfValueType = ref('searchText')
   const lastSelectionText = computed(() => {
     if (isChipDisplay.value) return ''
     return selectionTexts.value.length ? `${_.last(selectionTexts.value)}` : ''
@@ -55,7 +55,7 @@ function textValueSingle(props, context, selectionTexts, addValueFromInput) {
 }
 
 function textValueMultiple(props, context, selectionTexts, addValueFromInput) {
-  const searchText = ref('')
+  const searchText = ref(props.searchText || '')
 
   const tfValue = computed({
     get() {
