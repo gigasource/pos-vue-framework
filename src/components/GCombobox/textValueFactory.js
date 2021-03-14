@@ -4,7 +4,10 @@ import _ from 'lodash'
 export const emitEvents = [ 'update:searchText' ]
 
 function textValueSingle(props, context, selectionTexts, addValueFromInput) {
-  const searchText = ref('')
+  const searchText = ref(props.searchText || '')
+  watch(() => props.searchText, () => {
+    searchText.value = props.searchText
+  }, { deep: true})
 
   const isChipDisplay = computed(() => {
     return props.chips || props.deletableChips || props.smallChips
@@ -29,7 +32,7 @@ function textValueSingle(props, context, selectionTexts, addValueFromInput) {
     }
   })
 
-  const tfValueType = ref('')
+  const tfValueType = ref('searchText')
   const lastSelectionText = computed(() => {
     if (isChipDisplay.value) return ''
     return selectionTexts.value.length ? `${_.last(selectionTexts.value)}` : ''
@@ -39,7 +42,7 @@ function textValueSingle(props, context, selectionTexts, addValueFromInput) {
   watch(() => searchText.value, () => tfValueType.value = 'searchText');
 
   watch(() => lastSelectionText.value,
-    () => tfValueType.value = 'selectionText', {immediate: true});
+    () => lastSelectionText.value && (tfValueType.value = 'selectionText'), {immediate: true});
 
   const updateValue = () => {
     if (!searchText.value) return
@@ -55,7 +58,7 @@ function textValueSingle(props, context, selectionTexts, addValueFromInput) {
 }
 
 function textValueMultiple(props, context, selectionTexts, addValueFromInput) {
-  const searchText = ref('')
+  const searchText = ref(props.searchText || '')
 
   const tfValue = computed({
     get() {

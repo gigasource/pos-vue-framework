@@ -129,9 +129,9 @@
         isActive.value = !isActive.value;
       }
 
-      watch(isActive, val => {
+      watch(() => isActive.value, val => {
         if (val && !props.eager && state.isFirstRender) state.isFirstRender = false;
-      }, { lazy: true })
+      }, )
 
       const genContent = () => {
         const contentOptions = {

@@ -350,7 +350,7 @@ const componentsFactory = (component, componentName) => {
             onKeydown: onInputKeyDown,
             'onUpdate:modelValue': e => {
               tfValue.value = e
-              state.showOptions = true
+              state.showOptions = e !== '';
             },
           }
 
@@ -403,7 +403,7 @@ const componentsFactory = (component, componentName) => {
           closeOnClick: !props.keepMenuOnBlur,
           ...props.menuClass && { contentClass: props.menuClass },
           // events
-          'onUpdate:modelValue': (e) => state.showOptions = state.isFocused ? true : e
+          'onUpdate:modelValue': (e) => state.showOptions = e
         }
         const gMenuSlots = {
           activator: ({ toggleContent }) =>

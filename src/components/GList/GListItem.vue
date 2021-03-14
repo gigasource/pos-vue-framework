@@ -58,7 +58,7 @@
 
       const renderFn = () => {
         if (isItemAdded) {
-          return <div class={classes} style={styles} tabIndex={0} {...listItemEvents(props.item, index)}>
+          return <div class={classes.value} style={styles.value} tabIndex={0} {...listItemEvents(props.item, index)}>
             {context.slots.default && context.slots.default()}
           </div>
         }
