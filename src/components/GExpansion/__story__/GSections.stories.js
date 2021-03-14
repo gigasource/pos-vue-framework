@@ -19,7 +19,7 @@ export const DemoAPI1UsingHeaderPropOfGSectionsItem = () => ({
 
   },
   setup() {
-    const activeItem = ref(null)
+    const activeItem = ref()
     const items = ref([
       { title: 'Section 1' },
       { title: 'Section 2' },

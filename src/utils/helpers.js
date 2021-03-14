@@ -219,6 +219,13 @@ export function getScopeIdRender() {
   return withScopeId(type.__scopeId)
 }
 
+export function genScopeId(render, currentInstance) {
+  if (render) {
+    return withScopeId((currentInstance || getCurrentInstance()).type['__scopeId'])(render);
+  }
+  return {[(currentInstance || getCurrentInstance()).type['__scopeId']]: ''};
+}
+
 export function isInside(x, y, rec) {
   return (x >= rec.left && x < rec.left + rec.width) && ( y >= rec.top && y < rec.top + rec.height)
 }

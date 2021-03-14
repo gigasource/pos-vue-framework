@@ -2,6 +2,7 @@
   import { inject } from 'vue';
   import { GExpandTransition } from '../transition/transition';
   import GIcon from '../GIcon/GIcon';
+  import {genScopeId} from "../../utils/helpers";
 
   export default {
     name: 'GSectionsItem',
@@ -28,13 +29,11 @@
         </g-expand-transition>
       }
 
-      const genSectionsItem = function () {
-				return <div class="g-sections-item">
-					{genContent()}
-				</div>
-			}
+      const genSectionsItem = genScopeId(() => <div class="g-sections-item">
+        {genContent()}
+      </div>)
 
-			return {
+      return {
         genSectionsItem
 			}
 		},

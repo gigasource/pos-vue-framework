@@ -4,6 +4,8 @@
   import { provide } from 'vue';
   import GSectionsHeader from './GSectionsHeader';
   import GSectionsItem from './GSectionsItem';
+  import {Fragment} from 'vue';
+  import {genScopeId} from "../../utils/helpers";
 
   export default {
     name: 'GSections',
@@ -11,7 +13,7 @@
     props: {
       mandatory: Boolean,
       multiple: Boolean,
-      value: null,
+      modelValue: null,
 			returnObject: {
         type: Boolean,
 				default: true
@@ -28,22 +30,26 @@
 			provide ('isActiveItem', isActiveItem)
 
 			const genContentSlotDefault = (slotsNodes) => {
-				const headerNodes = _.filter(slotsNodes, node => node.tag && node.tag.indexOf('GSectionsHeader') > -1)
-        const itemNodes = _.filter(slotsNodes, node => node.tag && node.tag.indexOf('GSectionsItem') > -1)
+        if (slotsNodes[0] && slotsNodes[0].type === Fragment) {
+          slotsNodes = slotsNodes[0].children;
+        }
+				const headerNodes = _.filter(slotsNodes, node => node.type && node.type.name.indexOf('GSectionsHeader') > -1)
+        const itemNodes = _.filter(slotsNodes, node => node.type && node.type.name.indexOf('GSectionsItem') > -1)
 
 				for (let i = 0; i < itemNodes.length; i++) {
 					if (headerNodes[i]) {
-            itemNodes[i].componentOptions.propsData.item = i + 1
-					  headerNodes[i].componentOptions.propsData.item = i + 1
+            itemNodes[i].props.item = i + 1
+					  headerNodes[i].props.item = i + 1
 					} else {
-            itemNodes[i].componentOptions.propsData.item = i + 1
+            itemNodes[i].props.item = i + 1
             headerNodes.push(
-              <g-sections-header item={i + 1} header-text={itemNodes[i].componentOptions.propsData.header}/>
+              <g-sections-header item={i + 1} header-text={itemNodes[i].props.header}/>
             )
           }
 				}
 
-				return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
+				const result =  _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
+        return result;
 			}
 
 			const genContentItemHeader = () => {
@@ -64,11 +70,11 @@
         return _.compact(_.flatten(_.zip(headerNodes, itemNodes)))
 			}
 
-      const genSections = () => {
+      const genSections = genScopeId(() => {
 				return <div class='g-sections'>
 					{context.slots.default ? genContentSlotDefault(context.slots.default()) : props.itemHeaders ? genContentItemHeader() : undefined}
 				</div>
-      }
+      })
 
       return {
         genSections

@@ -1,6 +1,6 @@
 <script>
   import { computed, inject } from 'vue';
-  import { convertToUnit } from '../../utils/helpers';
+  import {convertToUnit, genScopeId} from '../../utils/helpers';
   import GIcon from '../GIcon/GIcon';
 
   export default {
@@ -28,14 +28,12 @@
 				]
 			}
 
-      const genHeader = function () {
-        return <div
-          class={['g-sections-header', { 'g-sections-header__active': isActiveItem(props.item) }]}
-          vOn:click={() => toggleItem(props.item)}
-					style={headerStyles.value}>
-					{context.slots.default ? context.slots.default() : genDefaultHeader()}
-        </div>
-      }
+      const genHeader = genScopeId(() => <div
+          class={['g-sections-header', {'g-sections-header__active': isActiveItem(props.item)}]}
+          onClick={() => toggleItem(props.item)}
+          style={headerStyles.value}>
+        {context.slots.default ? context.slots.default() : genDefaultHeader()}
+      </div>)
 
       return {
         genHeader

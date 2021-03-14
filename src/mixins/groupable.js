@@ -45,7 +45,7 @@ function groupable(props, vModel) {
   };
 
   const updateMultiple = (item) => {
-    const clonedValue = _.clone(vModel.value);
+    const clonedValue = _.clone(vModel.value || []);
     const itemIndex = clonedValue.findIndex((i) => i === item);
     //item exists + mandatory
     if (itemIndex > -1 && props.mandatory && clonedValue.length - 1 < 1) {
@@ -70,8 +70,8 @@ function groupable(props, vModel) {
   const isActiveItem = (item) => {
     if (props.multiple) {
       return props.returnObject
-        ? vModel.value.some(element => _.isEqual(element, item))
-        : vModel.value.includes(props.items.indexOf(item));
+        ? (vModel.value || []).some(element => _.isEqual(element, item))
+        : (vModel.value || []).includes(props.items.indexOf(item));
     }
     return props.returnObject
       ? _.isEqual(vModel.value, item)
