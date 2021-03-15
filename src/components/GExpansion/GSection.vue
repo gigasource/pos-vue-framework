@@ -7,6 +7,7 @@ import {getCurrentInstance, onBeforeUnmount, ref} from "vue";
 import GSectionsHeader from "./GSectionsHeader";
 import GSectionsItem from "./GSectionsItem";
 import GSections from "./GSections";
+import _ from 'lodash';
 
 const map = {};
 
@@ -14,15 +15,21 @@ export default {
   name: "GSection",
   components: {GSectionsHeader, GSectionsItem, GSections},
   props: {
-    header: String
+    header: String,
+    getParentUid: Function,
+    multiple: Boolean
   },
   setup(props, {slots}) {
     //region prepare
     const instance = getCurrentInstance();
-    const parentUid = instance.parent.uid;
+    let parentUid = instance.parent.uid;
+    if (props.getParentUid) {
+      parentUid = props.getParentUid(instance);
+    }
+
     const ev = `register:${parentUid}`;
     const isFirstElement = !map[ev];
-    const renderFn = () => <g-sections-item header={props.header}>{slots.default()}</g-sections-item>;
+    const renderFn = () => <g-sections-item header={props.header}>{slots.default && slots.default()}</g-sections-item>;
     //endregion
 
     if (isFirstElement) {
@@ -34,7 +41,7 @@ export default {
 
     return () => {
       if (isFirstElement) {
-        return <g-sections>{map[ev].value.map(r => r())}</g-sections>;
+        return <g-sections multiple={props.multiple}>{map[ev].value.map(r => r())}</g-sections>;
       }
     };
   }

@@ -40,3 +40,9 @@ export {
   GTreeViewJson
 }
 
+import GSection from "./GExpansion/GSection";
+
+export {
+  GSection
+}
+
