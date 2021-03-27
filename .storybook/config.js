@@ -1,7 +1,7 @@
 import { configure, addParameters } from '@andoshin11/storybook-vue3';
 import { themes } from '@storybook/theming';
 import VueRouter, {createRouter, createWebHistory} from 'vue-router';
-// import PortalVue from 'portal-vue';
+import PortalVue from 'portal-vue';
 //import 'github-markdown-css';
 import '../src/style/main.scss'
 //import 'prismjs/themes/prism-tomorrow.css';
@@ -30,6 +30,7 @@ global.root.use(vueRouter);
 // global.root.use(PortalVue);
 
 global.root.use(GigaComponents);
+global.root.use(PortalVue)
 
 import {
   storiesOf, specs, describe, it,

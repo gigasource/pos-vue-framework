@@ -1,17 +1,17 @@
-import { ref, reactive, computed, onMounted} from 'vue';
-import { Point, Circle } from './CoordinateSystem';
-import { getElementPosition } from '../../utils/helpers';
+import {ref, reactive, computed, onMounted, nextTick, watch} from 'vue';
+import {Point, Circle} from './CoordinateSystem';
+import {getElementPosition} from '../../utils/helpers';
 
 export function getConnectionPoint(el, originPoint, zoomState, position) {
   const rect = getElementPosition(el);
   const offsetWidth = el.offsetWidth;
   const offsetHeight = el.offsetHeight;
-  const topPoint = new Point((rect.left - originPoint.x)/zoomState + offsetWidth / 2, (rect.top - originPoint.y)/zoomState, 'top')
-  const leftPoint = new Point((rect.left - originPoint.x)/zoomState, (rect.top - originPoint.y)/zoomState + offsetHeight / 2, 'left')
-  const bottomPoint = new Point((rect.left - originPoint.x)/zoomState + offsetWidth / 2, (rect.top - originPoint.y)/zoomState + offsetHeight, 'bottom')
-  const rightPoint = new Point ((rect.left - originPoint.x)/zoomState + offsetWidth, (rect.top - originPoint.y)/zoomState + offsetHeight / 2, 'right')
+  const topPoint = new Point((rect.left - originPoint.x) / zoomState + offsetWidth / 2, (rect.top - originPoint.y) / zoomState, 'top')
+  const leftPoint = new Point((rect.left - originPoint.x) / zoomState, (rect.top - originPoint.y) / zoomState + offsetHeight / 2, 'left')
+  const bottomPoint = new Point((rect.left - originPoint.x) / zoomState + offsetWidth / 2, (rect.top - originPoint.y) / zoomState + offsetHeight, 'bottom')
+  const rightPoint = new Point((rect.left - originPoint.x) / zoomState + offsetWidth, (rect.top - originPoint.y) / zoomState + offsetHeight / 2, 'right')
 
-  switch(position) {
+  switch (position) {
     case 'top':
       return [topPoint]
     case 'left':
@@ -29,36 +29,29 @@ export function getConnectionPoint(el, originPoint, zoomState, position) {
   }
 }
 
-export default function GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId) {
+export default function GConnectorFactory(props, context, model, id, connectionPoints, zoomState, originCoordinate, activeDrawId, slotVnode) {
   const localConnectionPoints = ref([]);
   const connectionPaths = ref([]);
 
   function updateConnectionPoints() {
-    localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
-    for (let localConnectionPoint of localConnectionPoints.value) {
-      for (let connectionPoint of connectionPoints.value) {
-        if (id.value === connectionPoint.id && localConnectionPoint.position === connectionPoint.position) {
-          connectionPoint.x = localConnectionPoint.x
-          connectionPoint.y = localConnectionPoint.y
-          break
-        }
-      }
+    localConnectionPoints.value = getConnectionPoint(slotVnode.value, originCoordinate, zoomState.value, props.pointPosition)
+    for (let connectionPoint of localConnectionPoints.value) {
+      connectionPoint.value = model.value
+      connectionPoint.id = id.value
+      if (props.startLimit) connectionPoint.startLimit = +props.startLimit
+      if (props.endLimit) connectionPoint.endLimit = +props.endLimit
     }
+    connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
+    console.log(connectionPoints.value.length);
   }
 
-  // Calculate local connection points when mounted
-  onMounted(function () {
-    this.$nextTick(function () {
-      localConnectionPoints.value = getConnectionPoint(context.slots.default()["0"].elm, originCoordinate, zoomState.value, props.pointPosition)
-      for (let connectionPoint of localConnectionPoints.value) {
-        connectionPoint.value = model.value
-        connectionPoint.id = id.value
-        if (props.startLimit) connectionPoint.startLimit = +props.startLimit
-        if (props.endLimit) connectionPoint.endLimit = +props.endLimit
-      }
-      connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
-    })
-  })
+// Calculate local connection points when mounted
+  const debounceUpdate = _.debounce(updateConnectionPoints, 200);
+  onMounted(() => nextTick(() => {
+    debounceUpdate();
+  }))
+
+  watch(originCoordinate, debounceUpdate, {deep: true});
 
   // Connection Region is a circle around a connection point
   const connectionRegions = computed(() => {
@@ -69,7 +62,8 @@ export default function GConnectorFactory(props, context, model, id, connectionP
   // Draw new connection path
 
   function drawStart(e) {
-    const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
+    console.log('drawStart');
+    const mousePoint = new Point((e.pageX - originCoordinate.x) / zoomState.value, (e.pageY - originCoordinate.y) / zoomState.value)
     const targetRegion = mousePoint.isInside(connectionRegions.value)
     if (targetRegion.center.startCount < targetRegion.center.startLimit) {
       targetRegion.center.startCount++
@@ -77,10 +71,10 @@ export default function GConnectorFactory(props, context, model, id, connectionP
         startPoint: targetRegion.center,
         endPoint: targetRegion.center,
         startControlPoint: computed(() => {
-          return new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.startPoint.y)
+          return new Point((tempPath.startPoint.x + tempPath.endPoint.x) / 2, tempPath.startPoint.y)
         }),
         endControlPoint: computed(() => {
-          return new Point((tempPath.startPoint.x + tempPath.endPoint.x)/2, tempPath.endPoint.y)
+          return new Point((tempPath.startPoint.x + tempPath.endPoint.x) / 2, tempPath.endPoint.y)
         }),
       })
       connectionPaths.value.push(tempPath)
@@ -89,14 +83,14 @@ export default function GConnectorFactory(props, context, model, id, connectionP
   }
 
   function draw(e) {
-    const tempPath = connectionPaths.value[connectionPaths.value.length-1]
-    const mousePoint = new Point((e.pageX - originCoordinate.x)/zoomState.value, (e.pageY - originCoordinate.y)/zoomState.value)
+    const tempPath = connectionPaths.value[connectionPaths.value.length - 1]
+    const mousePoint = new Point((e.pageX - originCoordinate.x) / zoomState.value, (e.pageY - originCoordinate.y) / zoomState.value)
     const targetRegion = mousePoint.isInside(connectionRegions.value)
-    tempPath.endPoint =  targetRegion ? targetRegion.center : mousePoint;
+    tempPath.endPoint = targetRegion ? targetRegion.center : mousePoint;
   }
 
   function drawEnd() {
-    const tempPath = connectionPaths.value[connectionPaths.value.length-1]
+    const tempPath = connectionPaths.value[connectionPaths.value.length - 1]
     if (connectionPoints.value.includes(tempPath.endPoint) && tempPath.endPoint !== tempPath.startPoint && tempPath.endPoint.endCount < tempPath.endPoint.endLimit && (!props.filter || (props.filter && props.filter(tempPath.startPoint.value, tempPath.endPoint.value)))) {
       tempPath.endPoint.endCount++
       context.emit('connected', tempPath.endPoint.value)

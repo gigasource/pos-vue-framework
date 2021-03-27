@@ -1,10 +1,10 @@
 <script>
-	import { convertToUnit } from '../../utils/helpers';
-  import { ref, computed, provide, onMounted, onBeforeUnmount } from 'vue';
-  import GDiagramFactory from './GDiagramFactory';
-  import Vue from 'vue';
+import {convertToUnit} from '../../utils/helpers';
+import {computed, getCurrentInstance, onBeforeUnmount, provide, ref} from 'vue';
+import GDiagramFactory from './GDiagramFactory';
+import EventEmitter from 'tiny-emitter';
 
-  export default {
+export default {
     name: 'GDiagram',
     props: {
       width: [Number, String],
@@ -33,12 +33,11 @@
 		},
     setup(props, context) {
       const diagramId = ref('null')
+      diagramId.value = `diagram-${getCurrentInstance().uid}`
 
-      onMounted(function() {
-        diagramId.value = `${this._uid}`
-			})
-
-      const eventEmitter = new Vue()
+      const eventEmitter = new EventEmitter()
+      const container = ref();
+      const svg = ref();
 
 			const {
         connectionPoints,
@@ -52,7 +51,7 @@
         dragStart,
         drag,
         dragEnd
-      } = GDiagramFactory(props, context)
+      } = GDiagramFactory(props, context, {container, svg})
 
       provide('diagramId', diagramId)
       provide('eventEmitter', eventEmitter)
@@ -65,22 +64,22 @@
 
 			const mouseMove = function (e) {
         if (activeDrawId.value) {
-          eventEmitter.$emit(`draw${activeDrawId.value}`, e)
+          eventEmitter.emit(`draw${activeDrawId.value}`, e)
         }
 				if (isDrag.value) {
 				  for (let id of activeDragIds.value) {
-				    eventEmitter.$emit(`drag${id}`)
+				    eventEmitter.emit(`drag${id}`)
 					}
 				}
       }
 
       const mouseUp = function (e) {
         if (activeDrawId.value) {
-          eventEmitter.$emit(`drawEnd${activeDrawId.value}`, e)
+          eventEmitter.emit(`drawEnd${activeDrawId.value}`, e)
         }
         if (isDrag.value) {
           for (let id of activeDragIds.value) {
-            eventEmitter.$emit(`dragEnd${id}`)
+            eventEmitter.emit(`dragEnd${id}`)
           }
         }
       }
@@ -116,14 +115,15 @@
 
 			// Render function
       function genDiagram() {
-        return <div class="g-diagram-container" style={containerStyles.value} vOn:wheel={zoom} vOn:scroll={scroll} scroll-top="500" ref="container">
+        return <div class="g-diagram-container" style={containerStyles.value} onWheel={zoom} onScroll={scroll} scroll-top="500" ref={container}>
           <div class="g-diagram-content" style={contentStyles.value} ref="content">
-            <portal-target name={diagramId.value} width={svgDimension.width} height={svgDimension.height} tag="svg" multiple ref="svg"/>
-						<portal to={diagramId.value} slim>
-							<foreignObject width="100%" height="100%">
-              	{context.slots.default ? context.slots.default({ dragStart }) : undefined}
+            <svg ref={svg} width={svgDimension.width} height={svgDimension.height}>
+              <foreignObject width="100%" height="100%">
+                {context.slots.default ? context.slots.default({ dragStart }) : undefined}
               </foreignObject>
-						</portal>
+
+              <portal-target name={diagramId.value} multiple/>
+            </svg>
           </div>
         </div>
       }
