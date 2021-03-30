@@ -79,7 +79,7 @@ export function makeListSelectable(props, context, internalItems) {
   const normalizedValue = computed(() => {
     let res
     if (!props.multiple)
-      res = (props.modelValue || props.modelValue === 0) ? normalize(props.modelValue) : undefined
+      res = (props.modelValue || props.modelValue === 0 || props.modelValue === '') ? normalize(props.modelValue) : undefined
     else
       res = props.modelValue ? props.modelValue.map(item => normalize(item)) : []
     // context.emit('update:selectedValue', res);
