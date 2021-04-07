@@ -5,6 +5,7 @@
   import GChip from '../GChip/GChip';
   import GConnector from '../GConnector/GConnector';
   import GIcon from '../GIcon/GIcon';
+  import {genScopeId} from "../../utils/helpers";
 
   export default {
     name: 'GBindingDiagramItem',
@@ -47,10 +48,11 @@
         }
 			})
 
-			const computedItemColor = ref(undefined)
+			const computedItemColor = ref()
+      let itemType = ref();
 
 			onMounted(() => {
-			  computedItemColor.value = window.getComputedStyle(context.refs.itemType).getPropertyValue('background-color')
+			  computedItemColor.value = window.getComputedStyle(itemType.value).getPropertyValue('background-color')
 			})
 
 			const startLimit = computed(() => {
@@ -89,15 +91,15 @@
 														point-position="x"
 														path-color={computedItemColor.value}
 														path-width="2"
-														value={connectorModel.value}
+														modelValue={connectorModel.value}
 														start-limit={startLimit.value}
 														end-limit={endLimit.value}
 														filter={filter}
-														vOn:connected={endVal => connect(model.value, endVal)}
-														vOn:disconnected={endVal => disconnect(model.value, endVal)}
-														vOn:dragEnd={() => context.emit('dragEnd')}>
+														onConnected={endVal => connect(model.value, endVal)}
+														onDisconnected={endVal => disconnect(model.value, endVal)}
+														onDragEnd={() => context.emit('dragEnd')}>
           <div class={['g-binding-diagram-item', `b-${itemColor.value}`, `text-${itemColor.value}`]} vShow={model.value.show}>
-            <div class={['g-binding-diagram-item-type', `bg-${itemColor.value}`]} ref="itemType">
+            <div class={['g-binding-diagram-item-type', `bg-${itemColor.value}`]} ref={itemType}>
               {model.value.type}
             </div>
             {model.value.key}
@@ -107,7 +109,7 @@
 			}
 
 			return {
-        genBindingDiagramItem
+        genBindingDiagramItem: genScopeId(genBindingDiagramItem)
 			}
 		},
 		render () {

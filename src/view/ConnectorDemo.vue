@@ -7,7 +7,7 @@
 					<p>props</p>
 					<g-connector v-for="prop in Props"
 											 v-model="prop.value"
-											 point-radius=10
+											 point-radius="10"
 											 point-position="x"
 											 path-color="#118f41"
 											 show-point

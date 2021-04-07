@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash'
   import { fromJSON } from './logic/modelParser'
-  import { onMounted, onUpdated, reactive, ref, watch } from 'vue'
+  import { onMounted, onUpdated, reactive, ref, watch, Text } from 'vue'
   import GridModel from './logic/GridModel';
   import GDialog from '../GDialog/GDialog'
   import GBtn from '../GBtn/GBtn'
@@ -33,11 +33,11 @@
 
       // a unique uid for scoped stylesheet of grid layout instance
       const uid = 'gl-' + (gridLayoutInstanceCounter++)
-      
+
       // vue template ref id
       const refIdWrapperElement = 'el'
       const el = ref(null)
-      
+
       // css generate
       const cssClassPrefix = uid + '-'
       const getAreaClass = name => `${name} ${cssClassPrefix}${name}`
@@ -115,11 +115,11 @@
         namedAreaVNodes = {}
         if (context.slots.default != null) {
           _.each(context.slots.default(), vnode => {
-            if (vnode && vnode.data && vnode.data.attrs && vnode.data.attrs['area']) {
-              if (namedAreaVNodes[vnode.data.attrs['area']]) {
-                namedAreaVNodes[vnode.data.attrs['area']].push(vnode)
+            if (vnode && vnode.props && vnode.props['area']) {
+              if (namedAreaVNodes[vnode.props['area']]) {
+                namedAreaVNodes[vnode.props['area']].push(vnode)
               } else {
-                namedAreaVNodes[vnode.data.attrs['area']] = [vnode]
+                namedAreaVNodes[vnode.props['area']] = [vnode]
               }
             }
           })
@@ -204,7 +204,9 @@
           // single slot with area name or scopedSlot
           if (model.wrapInDiv) {
             vNode = <div key={model.name} class={`${cssClassPrefix}${model.name}`}>{vNode[0]}</div>
-          } else if (!vNode[0].tag) {
+          }
+          //fixme vue 3 has tag text isolate
+          else if (vNode[0].type === Text) {
             // do not render clear text node
             vNode = null
           } else if (_.has(namedSlotVNodes, model.name)) {
@@ -249,7 +251,7 @@
         extractNamedAreaVNodes()
         return processLayout(state.layout)
       }
-      
+
       return {
         el,
         renderFn

@@ -54,7 +54,7 @@
         genNode,
         genWrapper,
         genRootWrapper,
-        data: props.data,
+        data: computed(() => props.data),
         itemChildren: props.itemChildren,
         expandLevel: props.expandLevel
       })

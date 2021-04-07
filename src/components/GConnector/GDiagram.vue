@@ -1,5 +1,5 @@
 <script>
-import {convertToUnit} from '../../utils/helpers';
+import {convertToUnit, genScopeId} from '../../utils/helpers';
 import {computed, getCurrentInstance, onBeforeUnmount, provide, ref} from 'vue';
 import GDiagramFactory from './GDiagramFactory';
 import EventEmitter from 'tiny-emitter';
@@ -129,7 +129,7 @@ export default {
       }
 
       return {
-        genDiagram,
+        genDiagram: genScopeId(genDiagram),
 				connectionPoints
       }
     },

@@ -1,10 +1,11 @@
 <script>
-  import { inject, onMounted } from 'vue';
+import {computed, inject, onMounted} from 'vue';
   import { getInternalValue } from '../../mixins/getVModel';
   import GTreeFactory, { genTextFactory } from '../GTreeViewFactory/GTreeFactory';
 	import GIcon from '../GIcon/GIcon';
 	import _ from 'lodash';
 	import { convertToPath } from './GBindingDiagramFactory';
+import {genScopeId} from "../../utils/helpers";
 
   export default {
     name: 'GBindingDiagramTreeView',
@@ -60,7 +61,7 @@
 
 			const genIcon = function (state) {
 
-        return <g-icon size="10" vOn:click={() => state.collapse = !state.collapse}>
+        return <g-icon size="10" onClick={() => state.collapse = !state.collapse}>
 						{state.collapse ? 'far fa-plus-square' : 'far fa-minus-square'}
 					</g-icon>
 			}
@@ -70,7 +71,7 @@
           <span class="tree-view-prepend">
 						{childrenVNodes && genIcon(state)}
 					</span>
-					<span class={['tree-view-text', {'tree-view-text__active': path === tree.value.activePath, 'tree-view-text__disabled': props.slotted && !isProperAddPath(convertToPath(path)), 'tree-view-text__connected': !props.slotted && isConnectedPath(path)}]} vOn:click={() => togglePath(path)}>
+					<span class={['tree-view-text', {'tree-view-text__active': path === tree.value.activePath, 'tree-view-text__disabled': props.slotted && !isProperAddPath(convertToPath(path)), 'tree-view-text__connected': !props.slotted && isConnectedPath(path)}]} onClick={() => togglePath(path)}>
 						{node.virtualNode ? 'slot:' : ''} {genText.value(node)}
           </span>
           {!state.collapse ? childrenVNodes : null}
@@ -123,7 +124,7 @@
         genNode,
         genWrapper,
         genRootWrapper,
-        data: props.data,
+        data: computed(() => props.data),
         itemChildren,
         itemPath,
         expandLevel: props.expandLevel,
@@ -131,7 +132,7 @@
 
       return {
         treeStates,
-				genTree,
+				genTree: genScopeId(genTree),
       }
     },
     render() {

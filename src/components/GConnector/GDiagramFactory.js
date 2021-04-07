@@ -61,11 +61,8 @@ export default function GDiagramFactory(props, context, {container, svg}) {
 
   function updateOriginCoordinate() {
     const svgRect = getElementPosition(svg.value)
-    console.log(svgRect);
     originCoordinate.x = svgRect.left
     originCoordinate.y = svgRect.top
-    //console.log(originCoordinate);
-    console.log(svg.value);
   }
 
   function updateContainer() {

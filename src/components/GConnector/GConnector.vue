@@ -38,7 +38,7 @@ export default {
 			endLimit: [Number, String],
 			filter: Function
     },
-    emits: ['update:modelValue'],
+    emits: ['update:modelValue', 'connected', 'disconnected', 'dragEnd'],
     setup(props, context) {
       // Connector Id handling
       const id = ref('null')

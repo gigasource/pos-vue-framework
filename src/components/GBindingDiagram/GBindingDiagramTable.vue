@@ -23,7 +23,7 @@
 						<th>{props.slotScopeBinding ? 'SlotScope': 'Root'}</th>
 						<th>Local</th>
 					</tr>
-					{props.value.map((connection) => genBindingConnection(connection))}
+					{props.modelValue.map((connection) => genBindingConnection(connection))}
 				</table>
 			}
 

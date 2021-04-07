@@ -42,7 +42,6 @@ export default function GConnectorFactory(props, context, model, id, connectionP
       if (props.endLimit) connectionPoint.endLimit = +props.endLimit
     }
     connectionPoints.value = [...connectionPoints.value, ...localConnectionPoints.value]
-    console.log(connectionPoints.value.length);
   }
 
 // Calculate local connection points when mounted

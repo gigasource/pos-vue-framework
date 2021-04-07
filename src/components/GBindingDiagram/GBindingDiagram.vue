@@ -1,7 +1,7 @@
 <template>
 	<g-grid-layout :layout="GBindingDiagramLayout" class="container">
 		<div area="diagram">
-			<g-diagram v-for="(diagramData, index) in diagramsData" :key="index">
+			<g-diagram v-for="(diagramData, index) in diagramsData" :key="index" v-show="diagramData.localData.path === selectTreeActivePath">
 				<template v-slot:default="{ dragStart }">
 					<g-binding-diagram-item-group :path="diagramData.localData.path"
 																				:local-path="diagramData.localData.path"
@@ -54,9 +54,9 @@
 			</div>
 			<div class="g-binding-diagram-preview-tables" v-for="(diagramData, index) in diagramsData" v-show="diagramData.localData.path === selectTreeActivePath" :key="index">
 				Binding:
-				<g-binding-diagram-table :value="diagramData.binding"/>
+				<g-binding-diagram-table :model-value="diagramData.binding"/>
 				SlotScopes Binding:
-				<g-binding-diagram-table :value="diagramData.slotScopeBinding" slot-scope-binding/>
+				<g-binding-diagram-table :model-value="diagramData.slotScopeBinding" slot-scope-binding/>
 			</div>
 		</div>
 		<div area="edit" class="g-binding-diagram-edit">
