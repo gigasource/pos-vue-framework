@@ -126,7 +126,8 @@ const componentsFactory = (component, componentName) => {
       normalize: Function,
       keepMenuOnBlur: Boolean,
       menuClass: String,
-      virtualEvent: Boolean
+      virtualEvent: Boolean,
+      filter: Function
     },
     emits: _.union(eventHandlerEmitEvents, textEmitEvents, listEmitEvents, ['input-click']),
     setup: function (props, context) {
