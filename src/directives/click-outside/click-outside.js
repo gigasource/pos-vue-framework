@@ -2,13 +2,16 @@ function closeConditional() {
   return false
 }
 
+// TODO: Increase performance
 function directive(e, el, binding) {
   binding.arg = binding.arg || {}
   const isActive = (binding.arg.closeConditional || closeConditional)
 
   if (!e || isActive(e) === false) return
 
-  if (('isTrusted' in e && !e.isTrusted) || ('pointerType' in e && !e.pointerType)) return
+  if (('isTrusted' in e && !e.isTrusted))  {
+    return
+  }
 
   const elements = (binding.arg.include || (() => []))()
   // Add the root element for the component this directive was defined on
