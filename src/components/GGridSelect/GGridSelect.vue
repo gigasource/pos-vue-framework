@@ -95,11 +95,11 @@
       }
 
       const genWrapper = () => <g-row align-items="start">
-        {options.value.map((item, index) =>
-          isSelected(item)
-            ? genSelectedItem(item, index)
-            : genItem(item, index))}
-      </g-row>
+          {...options.value.map((item, index) =>
+            isSelected(item)
+              ? genSelectedItem(item, index)
+              : genItem(item, index))}
+        </g-row>
 
       return {
         genWrapper,
