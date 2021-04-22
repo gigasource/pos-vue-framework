@@ -60,21 +60,22 @@
       });
 
       function genPrepend() {
-        if (props.filter && !hasAvatarIcon.value) {
+        if (!props.filter)
+          return;
+
+        if (!hasAvatarIcon.value) {
           return <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
         }
 
-        if (props.filter && hasAvatarIcon.value && !props.pill) {
+        if (!props.pill) {
           return <div class="g-chip-overlay">
             <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
           </div>
         }
 
-        if (props.filter && hasAvatarIcon.value && props.pill) {
-          return <div class="g-chip-pill-overlay">
-            <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
-          </div>
-        }
+        return <div class="g-chip-pill-overlay">
+          <g-icon class={'g-icon__left'} size="18px">{props.filterIcon}</g-icon>
+        </div>
       }
 
       function genAppend() {
