@@ -2,30 +2,36 @@
   <div :class="classes">
     <div class="g-chip-group__content">
       <template v-for="(item, index) in items" :key="index">
-        <g-chip :value="item" :active="isActiveItem(item)" @click="toggleItem" :close="item.close" @close="toggleClose"
-                :disabled="item.disabled" :filter="item.filter" :color="item.color" :text-color="item.textColor" v-show="!isClosed(item)">
-          {{ item.text }}
-        </g-chip>
+        <slot name="item" :item="item" :isActiveItem="isActiveItem" :toggleItem="toggleItem" :toggleClose="toggleClose" :isClosed="isClosed">
+          <g-chip :value="item" :active="isActiveItem(item)" @click="toggleItem" :close="item.close" @close="toggleClose"
+                  :disabled="item.disabled" :filter="item.filter" :color="item.color" :text-color="item.textColor" v-show="!isClosed(item)">
+            {{ item.text }}
+          </g-chip>
+        </slot>
       </template>
     </div>
   </div>
 </template>
 
 <script>
-import { isNull, isUndefined } from 'lodash'
-import { computed, ref } from 'vue';
+import {isNull, isUndefined} from 'lodash'
+import {computed, ref} from 'vue';
 import groupable from '../../mixins/groupable';
 import GChip from '../GChip/GChip';
 
 export default {
   name: 'GChipGroup',
-  components: { GChip },
+  components: {GChip},
   props: {
     column: Boolean,
     mandatory: Boolean,
     multiple: Boolean,
     maxSelection: [Number, String],
     modelValue: null,
+    returnObject: {
+      type: Boolean,
+      default: false,
+    },
     items: Array
   },
   emits: ['update:modelValue', 'click:close', 'click'],
@@ -64,7 +70,7 @@ export default {
       return closedList.value.includes(item)
     }
 
-    const { toggleItem, isActiveItem } = groupable(props, model);
+    const {toggleItem, isActiveItem} = groupable(props, model);
     const toggleClose = (value) => {
       closedList.value.push(value)
       if (isActiveItem(value)) {
