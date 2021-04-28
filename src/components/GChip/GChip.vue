@@ -27,6 +27,7 @@
       label: Boolean,
       small: Boolean,
       large: Boolean,
+      xColor: String,
       xSmall: Boolean,
       xLarge: Boolean,
       draggable: Boolean,
@@ -84,7 +85,7 @@
           return <g-icon onClick={(e) => {
             e.stopPropagation();
             context.emit('close', props.value);
-          }} class={'g-icon__right'} size="18px">{props.closeIcon}</g-icon>
+          }} class={'g-icon__right'} size="18px" color={props.xColor}>{props.closeIcon}</g-icon>
         }
       }
 
