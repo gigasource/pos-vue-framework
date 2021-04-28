@@ -39,7 +39,8 @@
       activeClass: {
         type: String,
         default: 'g-chip__active'
-      }
+      },
+      borderRadius: String,
     },
     directives: {
       Ripple
@@ -97,11 +98,11 @@
 
       function genChip() {
         if (props.ripple) {
-          return <span v-ripple draggable={props.draggable} style={styles.value} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+          return <span v-ripple draggable={props.draggable} style={[styles.value, { borderRadius: props.borderRadius }]} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
             {genContent()}
           </span>
         }
-        return <span draggable={props.draggable} style={styles.value} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+        return <span draggable={props.draggable} style={[styles.value, { borderRadius: props.borderRadius }]} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
           {genContent()}
         </span>
       }
