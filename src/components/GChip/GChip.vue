@@ -27,6 +27,7 @@
       label: Boolean,
       small: Boolean,
       large: Boolean,
+      xColor: String,
       xSmall: Boolean,
       xLarge: Boolean,
       draggable: Boolean,
@@ -39,7 +40,8 @@
       activeClass: {
         type: String,
         default: 'g-chip__active'
-      }
+      },
+      borderRadius: String,
     },
     directives: {
       Ripple
@@ -83,7 +85,7 @@
           return <g-icon onClick={(e) => {
             e.stopPropagation();
             context.emit('close', props.value);
-          }} class={'g-icon__right'} size="18px">{props.closeIcon}</g-icon>
+          }} class={'g-icon__right'} size="18px" color={props.xColor}>{props.closeIcon}</g-icon>
         }
       }
 
@@ -97,11 +99,11 @@
 
       function genChip() {
         if (props.ripple) {
-          return <span v-ripple draggable={props.draggable} style={styles.value} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+          return <span v-ripple draggable={props.draggable} style={[styles.value, { borderRadius: props.borderRadius }]} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
             {genContent()}
           </span>
         }
-        return <span draggable={props.draggable} style={styles.value} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
+        return <span draggable={props.draggable} style={[styles.value, { borderRadius: props.borderRadius }]} onClick={() => context.emit('click', props.value)} class={['g-chip', classes.value, getSizeClass()]}>
           {genContent()}
         </span>
       }
