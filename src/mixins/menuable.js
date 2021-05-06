@@ -129,10 +129,17 @@ export default function menuable(props, context) {
       if (!contentRef && !contentRef.value) return
       const contentElement = contentRef.value;
       if (!contentElement || contentElement.style.display !== 'none') {
-        let left = contentElement.style.left
-        contentElement.style.left = '0'
+        // maybe this ugly code using to force re-render
+        const hasContentStyle = contentElement && contentElement.style
+        let left
+        if (hasContentStyle) {
+          left = contentElement.style.left
+          contentElement.style.left = '0'
+        }
         cb();
-        contentElement.style.left = left
+        if (hasContentStyle) {
+          contentElement.style.left = left
+        }
         return;
       }
       contentElement.style.display = 'inline-block';
