@@ -162,7 +162,15 @@ export default function menuable(props, context) {
   }
 
   function getRoundedBoundedClientRect(el) {
-    const rect = el.getBoundingClientRect();
+    let rect
+
+    try {
+      rect = el.getBoundingClientRect()
+    } catch (e) {
+      console.error(e)
+      rect = { top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 }
+    }
+
     return {
       top: Math.round(rect.top),
       left: Math.round(rect.left),
