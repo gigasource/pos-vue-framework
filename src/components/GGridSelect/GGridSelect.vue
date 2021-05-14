@@ -58,9 +58,13 @@
           if (internalValue.value.length <= 1 && _.includes(internalValue.value, returnItem) && props.mandatory) return
           if (_.includes(internalValue.value, returnItem)) {
             internalValue.value.splice(internalValue.value.indexOf(returnItem), 1);
+            context.emit('update:modelValue', internalValue.value)
           } else {
             if (!internalValue.value || !Array.isArray(internalValue.value)) internalValue.value = ref([returnItem]).value
-            else internalValue.value.push(returnItem);
+            else {
+              internalValue.value.push(returnItem);
+              context.emit('update:modelValue', internalValue.value)
+            }
           }
         } else {
           if (internalValue.value === returnItem && props.mandatory) return
