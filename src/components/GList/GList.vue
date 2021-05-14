@@ -200,7 +200,7 @@
         >
           {
             [(context.slots['prepend'] && context.slots['prepend']({ isSelected: isActiveItem(item), item: item })) || genItemPrepend(item),
-              (context.slots['content'] && context.slots['content']()) || genItemContent(item),
+              (context.slots['content'] && context.slots['content'](item)) || genItemContent(item),
               (context.slots['append'] && context.slots['append']({ isSelected: isActiveItem(item), item: item })) || genItemAppend(item),
             ]
           }
