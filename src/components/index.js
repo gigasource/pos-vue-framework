@@ -139,6 +139,7 @@ import GSubheader from './GSubheader/GSubheader';
 import GProgressBar from './GProgressBar/GProgressBar';
 import GSlider from './GSlider/GSlider';
 import GRating from './GRating/GRating';
+import GLoadingScreen from './GLoadingScreen/GLoadingScreen';
 
 import { getInternalValue, getVModel } from '../mixins/getVModel';
 import { getExpansionModel } from './GExpansion/GExpansionFactory';
@@ -362,4 +363,5 @@ export {
   GSections,
   GSectionsItem,
   GSectionsHeader,
+  GLoadingScreen
 }

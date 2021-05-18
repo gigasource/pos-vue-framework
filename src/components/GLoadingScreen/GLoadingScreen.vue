@@ -1,14 +1,41 @@
 <script>
-  import {getScopeIdRender} from "../../utils/helpers";
+  import { computed } from 'vue'
+  import {getScopeIdRender} from '../../utils/helpers'
+  import Spinner from './spinner'
 
   export default {
     name: 'GLoadingScreen',
-    setup(props, { emit }) {
+    components: { Spinner },
+    props: {
+      backgroundColor: String,
+      opacity: Number,
+      blur: {
+        type: String,
+        default: '2px'
+      },
+      width: Number,
+      height: Number
+    },
+    setup(props, context) {
+      const bgStyle = computed(() => {
+        return {
+          background: props.backgroundColor,
+          opacity: props.opacity,
+          backdropFilter: `blur(${props.blur})`
+        }
+      })
+
       const genLoadingScreen = () => {
         return (
           <transition ref="root" name="transition">
             <div class="vld-overlay is-active">
-              <div>ABC</div>
+              <div class="vld-background"
+                style={bgStyle.value}
+              />
+              <div class="vld-icon">
+                <spinner width={props.width} height={props.height}/>
+                {context.slots.default()}
+              </div>
             </div>
           </transition>
         )
@@ -45,6 +72,7 @@
 
 .vld-overlay.is-active {
   display: flex;
+  text-align: center;
 }
 
 .vld-overlay.is-full-page {
