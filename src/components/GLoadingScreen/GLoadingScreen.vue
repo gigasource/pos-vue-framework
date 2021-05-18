@@ -27,17 +27,17 @@
 
       const genLoadingScreen = () => {
         return (
-          <transition ref="root" name="transition">
+          <div class="g-loading-screen">
             <div class="vld-overlay is-active">
               <div class="vld-background"
                 style={bgStyle.value}
               />
-              <div class="vld-icon">
-                <spinner width={props.width} height={props.height}/>
-                {context.slots.default()}
+              <div class="vld-icon row-flex align-items-center">
+                <spinner width={props.width} height={props.height} class="mr-2"/>
+                {context.slots.default && context.slots.default()}
               </div>
             </div>
-          </transition>
+          </div>
         )
       }
 
@@ -53,16 +53,24 @@
 </script>
 
 <style scoped lang="scss">
+.g-loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+}
+
+
+
 .vld-shown {
   overflow: hidden;
 }
 
 .vld-overlay {
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
+  width: 100vw;
+  height: 100vh;
+  float: left;
   align-items: center;
   display: none;
   justify-content: center;
