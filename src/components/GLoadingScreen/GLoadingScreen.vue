@@ -6,7 +6,12 @@
   export default {
     name: 'GLoadingScreen',
     components: { Spinner },
+    emit: ['update:modelValue'],
     props: {
+      modelValue: {
+        type: Boolean,
+        default: false
+      },
       backgroundColor: String,
       opacity: Number,
       blur: {
@@ -28,15 +33,18 @@
       const genLoadingScreen = () => {
         return (
           <div class="g-loading-screen">
-            <div class="vld-overlay is-active">
-              <div class="vld-background"
-                style={bgStyle.value}
-              />
-              <div class="vld-icon row-flex align-items-center">
-                <spinner width={props.width} height={props.height} class="mr-2"/>
-                {context.slots.default && context.slots.default()}
+            {props.modelValue ?
+              <div class="vld-overlay is-active">
+                <div class="vld-background"
+                     style={bgStyle.value}
+                />
+                <div class="vld-icon">
+                  <spinner width={props.width} height={props.height}/>
+                  {context.slots.default()}
+                </div>
               </div>
-            </div>
+              : null
+            }
           </div>
         )
       }
