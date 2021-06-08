@@ -158,10 +158,10 @@
     }
   }
 
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 100px) {
     .g-snack {
       &-wrapper {
-        min-width: 344px;
+        min-width: 100px;
         max-width: 672px;
 
         .g-snack__left & {
