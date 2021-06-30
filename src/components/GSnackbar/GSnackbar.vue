@@ -60,7 +60,7 @@
             }
           }
         }
-      });
+      }, {immediate : true});
 
       // Dynamic classes
       const snackClasses = computed(() => ({
