@@ -473,7 +473,7 @@
 		}
 
 		&-content {
-			flex: 1 1 auto;
+      height: calc(100% - 32px);
 			font-size: 12px;
 			line-height: 22px;
 			backface-visibility: hidden;
