@@ -268,7 +268,7 @@ export function getInternalValue(props, context) {
 // todo: impact: context.refs <-> domRefs
 export function getVirtualCaret(props, context, internalValue, isFocused) {
   const currentInstance = getCurrentInstance()
-  const tfLetters = computed(() => internalValue.value ? internalValue.value.split('') : [])
+  const tfLetters = computed(() => internalValue.value ? internalValue.value.toString().split('') : [])
   const selectLetter = (event, index) => {
     currentInstance.refs['input'].click()
     const target = event.target
