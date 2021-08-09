@@ -40,7 +40,7 @@
                 />
                 <div class="vld-icon">
                   <spinner width={props.width} height={props.height}/>
-                  {context.slots.default()}
+                  {context.slots.default && context.slots.default()}
                 </div>
               </div>
               : null
