@@ -171,7 +171,7 @@
                     try {
                         el.removeChild(ripple);
                     } catch(e) {
-                        return false;
+                      console.error(e)
                     }
                 }, Effect.duration);
             }, delay);
