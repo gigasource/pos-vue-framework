@@ -280,11 +280,10 @@
             if ('ontouchstart' in window) {
                 element.addEventListener('touchend', Effect.hide, false);
                 element.addEventListener('touchcancel', Effect.hide, false);
+            } else {
+              element.addEventListener('mouseup', Effect.hide, false);
+              element.addEventListener('dragend', Effect.hide, false);
             }
-
-            element.addEventListener('mouseup', Effect.hide, false);
-            element.addEventListener('mouseleave', Effect.hide, false);
-            element.addEventListener('dragend', Effect.hide, false);
         }
     }
 
@@ -300,9 +299,9 @@
 
         if ('ontouchstart' in window) {
             document.body.addEventListener('touchstart', showEffect, false);
+        } else {
+          document.body.addEventListener('mousedown', showEffect, false);
         }
-
-        document.body.addEventListener('mousedown', showEffect, false);
     };
 
     /**
@@ -321,9 +320,9 @@
 
         if ('ontouchstart' in window) {
             element.addEventListener('touchstart', showEffect, false);
+        } else {
+          element.addEventListener('mousedown', showEffect, false);
         }
-
-        element.addEventListener('mousedown', showEffect, false);
     };
 
     window.Waves = Waves;
