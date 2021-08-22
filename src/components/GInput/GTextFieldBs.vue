@@ -31,6 +31,7 @@
           <input class="bs-tf-input"
                  style="user-select: text !important; -webkit-user-select: text !important;"
                  ref="input"
+                 :disabled="disabled"
                  :readonly="readonly || virtualEvent"
                  :placeholder="placeholder"
                  :type="state.internalType"
