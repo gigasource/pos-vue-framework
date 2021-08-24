@@ -1,6 +1,6 @@
 <template>
 	<transition name="dialog-transition">
-		<div v-if="isRender" v-show="isActive" class="g-dnddialog-wrapper" :class="wrapperClasses" :style="wrapperStyles" ref="wrapper" @mousedown="dragStart">
+		<div v-if="isRender" v-show="isActive" class="g-dnddialog-wrapper" :class="wrapperClasses" :style="wrapperStyles" ref="wrapper">
 			<div class="g-dnddialog-header" ref="header">
 				<span class="g-dnddialog-title" ref="title">
 					<slot name="title"></slot>
@@ -25,6 +25,7 @@
 </template>
 <script>
   import { convertToUnit, getTransitionDuration } from '../../utils/helpers';
+  import {normalizeEvent} from '../../utils/mouseEventUtil'
   import detachable from '../../mixins/detachable';
   import getVModel from '../../mixins/getVModel';
   import { computed, ref, reactive, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
@@ -207,6 +208,7 @@
 
       function dragStart(e) {
         context.emit('dragStart')
+        normalizeEvent(e)
         if (isMaximize.value) {
           return;
         }
@@ -223,6 +225,7 @@
       }
 
       function drag(e) {
+        normalizeEvent(e)
         if (isDrag.value) {
           const newTop = dialogStartPosition.top - mouseStartPosition.pageY + e.pageY;
           const newLeft = dialogStartPosition.left - mouseStartPosition.pageX + e.pageX;
@@ -243,18 +246,43 @@
 
       function dragEnd(e) {
         context.emit('dragEnd')
+        normalizeEvent(e)
         if (isDrag.value) {
           isDrag.value = false;
           cursor.value = '';
         }
       }
 
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('mouseup', dragEnd);
+      const supportTouch = "ontouchstart" in window
+      function registerDragStart() {
+        if (wrapper.value) {
+          if (supportTouch) {
+            wrapper.value.addEventListener("touchstart", dragStart)
+          } else {
+            wrapper.value.addEventListener("mousedown", dragStart)
+          }
+        } else {
+          nextTick(registerDragStart)
+        }
+      }
+      onMounted(() => registerDragStart())
+
+      if (supportTouch) {
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('touchend', dragEnd);
+      } else {
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+      }
 
       onBeforeUnmount(() => {
-        document.removeEventListener('mousemove', drag);
-        document.removeEventListener('mouseup', dragEnd);
+        if (supportTouch) {
+          document.addEventListener('touchmove', drag);
+          document.addEventListener('touchend', dragEnd);
+        } else {
+          document.removeEventListener('mousemove', drag);
+          document.removeEventListener('mouseup', dragEnd);
+        }
       })
 
       // Resize handlers
