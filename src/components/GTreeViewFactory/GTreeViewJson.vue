@@ -72,7 +72,7 @@
         if (nodeDesc.valueType === 'skip') return null
         if (nodeDesc.valueType === 'object') {
           return [
-            <span class='g-tree-view__item-value-object'>Object &#123;&nbsp;</span>,
+            <span class='g-tree-view__item-value-object'>&#123;&nbsp;</span>,
             nodeDesc.value.outputValues.map(outputValue => [
                 <span class="g-tree-view__item-var-name">{outputValue.varName}</span>,
                 <span class='g-tree-view__item-separate-symbol'>:&nbsp;</span>,
@@ -83,6 +83,8 @@
             nodeDesc.value.moreSymbol ? <span class='g-tree-view__item-separate-symbol'>...</span> : undefined,
             <span class='g-tree-view__item-value-object'> &#125;</span>
           ]
+        } else if (nodeDesc.valueType === 'string') {
+          return <pre class={getNodeClass(nodeDesc)} style="display:inline">{getFormattedNodeContent(nodeDesc)}</pre>
         } else {
           return <span class={getNodeClass(nodeDesc)}>{getFormattedNodeContent(nodeDesc)}</span>
         }
@@ -136,13 +138,13 @@
         let nodeDescription;
         if (isRoot || (typeof node === 'object' && Object.keys(node).length > 1)) {
           if (node === undefined) {
-            nodeDescription = {varName: 'Result', valueType: 'null', value: 'null'}
+            nodeDescription = {valueType: 'null', value: 'null'}
           } else if (Array.isArray(node)) {
-            nodeDescription = {varName: 'Result', valueType: 'array', value: node}
+            nodeDescription = {valueType: 'array', value: node}
           } else if (typeof (node) === 'object') {
-            nodeDescription = {varName: 'Result', valueType: 'object', value: jsonStringifyReplacer(node)}
+            nodeDescription = {valueType: 'object', value: jsonStringifyReplacer(node)}
           } else {
-            nodeDescription = {varName: 'Result', value: node, valueType: typeof node}
+            nodeDescription = {value: node, valueType: typeof node}
           }
         } else {
           if (typeof node === 'object') {
