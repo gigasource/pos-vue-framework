@@ -7,7 +7,7 @@
         <span class="g-switch-thumb"></span>
       </span>
       <slot name="label">
-        <span class="g-switch-label">{{ label }}</span>
+        <span v-if="label" class="g-switch-label">{{ label }}</span>
       </slot>
     </label>
   </div>
