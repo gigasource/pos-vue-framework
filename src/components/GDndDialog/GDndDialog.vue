@@ -262,7 +262,7 @@
             wrapper.value.addEventListener("mousedown", dragStart)
           }
         } else {
-          setInterval(registerDragStart, 500)
+          setTimeout(registerDragStart, 1000)
         }
       }
       onMounted(() => registerDragStart())
