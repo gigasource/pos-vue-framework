@@ -41,6 +41,7 @@
         default: 2
       },
       flat: Boolean,
+      hideScrollBar: Boolean
     },
     setup(props) {
       const {getColorType, convertColorClass} = colorHandler();
@@ -53,6 +54,7 @@
         'g-sidebar__collapsed': props.collapsed,
         'g-sidebar__small': props.small,
         'g-sidebar__medium': props.medium,
+        'hide-scroll-bar': props.hideScrollBar,
         [convertColorClass(props.color, 'background')]: props.color && getColorType(props.color) === 'class'
       }));
 
