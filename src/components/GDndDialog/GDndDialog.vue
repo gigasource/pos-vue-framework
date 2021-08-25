@@ -225,8 +225,8 @@
       }
 
       function drag(e) {
-        normalizeEvent(e)
         if (isDrag.value) {
+          normalizeEvent(e)
           const newTop = dialogStartPosition.top - mouseStartPosition.pageY + e.pageY;
           const newLeft = dialogStartPosition.left - mouseStartPosition.pageX + e.pageX;
 
@@ -262,7 +262,7 @@
             wrapper.value.addEventListener("mousedown", dragStart)
           }
         } else {
-          nextTick(registerDragStart)
+          setInterval(registerDragStart, 500)
         }
       }
       onMounted(() => registerDragStart())
