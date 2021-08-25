@@ -1,11 +1,12 @@
 .g-switch {
   background-color: #1271ff;
-  
+
   &-wrapper {
     margin: 12px 4px;
   }
 
   &-container {
+    display: flex;
     position: relative;
     padding-left: 32px;
     cursor: pointer;
