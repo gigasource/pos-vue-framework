@@ -87,4 +87,8 @@ fieldset {
 a {
   cursor: pointer;
 }
+
+input {
+  user-select: text;
+}
 //TODO: disable default android keyboard
