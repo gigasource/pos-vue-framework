@@ -89,6 +89,7 @@ a {
 }
 
 input {
-  user-select: text;
+  user-select: text !important;
+  -webkit-user-select: text !important;
 }
 //TODO: disable default android keyboard
