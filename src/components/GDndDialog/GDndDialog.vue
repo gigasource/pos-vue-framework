@@ -1,6 +1,6 @@
 <template>
 	<transition name="dialog-transition">
-		<div v-if="isRender" v-show="isActive" class="g-dnddialog-wrapper" :class="wrapperClasses" :style="wrapperStyles" ref="wrapper">
+		<div v-if="isRender" v-show="isActive" class="g-dnddialog-wrapper" :class="wrapperClasses" :style="wrapperStyles" ref="wrapper" @mousedown="dragStart" @touchstart="dragStart">
 			<div class="g-dnddialog-header" ref="header">
 				<span class="g-dnddialog-title" ref="title">
 					<slot name="title"></slot>
@@ -254,18 +254,6 @@
       }
 
       const supportTouch = "ontouchstart" in window
-      function registerDragStart() {
-        if (wrapper.value) {
-          if (supportTouch) {
-            wrapper.value.addEventListener("touchstart", dragStart)
-          } else {
-            wrapper.value.addEventListener("mousedown", dragStart)
-          }
-        } else {
-          setTimeout(registerDragStart, 1000)
-        }
-      }
-      onMounted(() => registerDragStart())
 
       if (supportTouch) {
         document.addEventListener('touchmove', drag);
