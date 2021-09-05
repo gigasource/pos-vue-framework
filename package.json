@@ -84,7 +84,7 @@
     "traverse": "^0.6.6",
     "vue": "^3.2.8",
     "vue-jest": "^3.0.7",
-    "vue-loader": "^15.9.8",
+    "vue-loader": "^16.5.0",
     "vue-router": "^4.0.11"
   },
   "peerDependencies": {

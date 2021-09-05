@@ -1,6 +1,6 @@
 <script>
   import GCardUtils from './logic/GCardUtils';
-  import { getScopeIdRender } from '../../utils/helpers';
+  import {genScopeId, getScopeIdRender} from '../../utils/helpers';
 
   export default {
     name: 'GCard',
@@ -63,7 +63,7 @@
       }
     },
     render() {
-      return getScopeIdRender()(this.genCard)();
+      return genScopeId(this.genCard)();
     }
   }
 </script>
