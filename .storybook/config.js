@@ -1,6 +1,6 @@
-import { configure, addParameters } from '@andoshin11/storybook-vue3';
+import { configure, addParameters, app } from '@storybook/vue3';
 import { themes } from '@storybook/theming';
-import VueRouter, {createRouter, createWebHistory} from 'vue-router';
+import VueRouter from 'vue-router';
 import PortalVue from 'portal-vue';
 //import 'github-markdown-css';
 import '../src/style/main.scss'
@@ -12,11 +12,6 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 import GigaComponents from "../index";
 
-const vueRouter = createRouter({
-  history: createWebHistory(),
-  routes: [],
-});
-
 addParameters({
   options: {
     theme: themes.light,
@@ -26,29 +21,10 @@ addParameters({
   },
 });
 
-global.root.use(vueRouter);
 // global.root.use(PortalVue);
 
-global.root.use(GigaComponents);
-global.root.use(PortalVue)
-
-import {
-  storiesOf, specs, describe, it,
-  after, before, beforeEach, afterEach
-} from './facade';
-
-import expect from 'expect';
-
-global.storiesOf = storiesOf;
-global.specs = specs;
-global.describe = () => {
-};
-global.it = it;
-global.after = after;
-global.before = before;
-global.beforeEach = beforeEach;
-global.afterEach = afterEach;
-global.expect = expect;
+app.use(GigaComponents);
+app.use(PortalVue)
 
 //for jest
 /*import VueTest from 'vue/dist/vue.common.js'

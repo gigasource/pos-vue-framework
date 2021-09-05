@@ -4,7 +4,7 @@ module.exports = {
   ],
   env: {
     test: {
-      plugins: ["require-context-hook", "@vue/babel-plugin-jsx"]
+      plugins: ["@vue/babel-plugin-jsx"]
     }
   }
 }
