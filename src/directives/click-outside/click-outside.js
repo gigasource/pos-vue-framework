@@ -27,15 +27,23 @@ const ClickOutside = {
     const onClick = (e) => directive(e, el, binding)
 
     const app = window
-    app.addEventListener('click', onClick, true)
+    if ('ontouchstart' in window) {
+      app.addEventListener('touchstart', onClick, true)
+    } else {
+      app.addEventListener('click', onClick, true)
+    }
     el._clickOutside = onClick
   },
 
   beforeUnmount(el) {
     if (!el._clickOutside) return
 
-    const app = document.body
-    app && app.removeEventListener('click', el._clickOutside, true)
+    const app = window
+    if ('ontouchstart' in window) {
+      app && app.removeEventListener('touchstart', el._clickOutside, true)
+    } else {
+      app && app.removeEventListener('click', el._clickOutside, true)
+    }
     delete el._clickOutside
   },
 }
