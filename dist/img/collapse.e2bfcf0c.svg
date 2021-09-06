@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>collapse</title>
+    <desc>Created with Sketch.</desc>
+    <g id="2.-Order" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Order-case-1-v2-after-split-1" transform="translate(-988.000000, -126.000000)">
+            <g id="expanded-seat-2" transform="translate(715.000000, 110.000000)">
+                <g id="Group-2" transform="translate(273.000000, 16.000000)">
+                    <g id="collapse">
+                        <circle id="Oval" stroke="#22406D" stroke-width="1" fill="#22406D" cx="12" cy="12" r="11.5"></circle>
+                        <path d="M11.9946309,13.4805369 L7.82818792,9.31409396 C7.40939597,8.89530201 6.73288591,8.89530201 6.31409396,9.31409396 C5.89530201,9.73288591 5.89530201,10.409396 6.31409396,10.8281879 L11.242953,15.757047 C11.661745,16.1758389 12.338255,16.1758389 12.757047,15.757047 L17.685906,10.8281879 C18.104698,10.409396 18.104698,9.73288591 17.685906,9.31409396 C17.2671141,8.90604027 16.5798658,8.89530201 16.1610738,9.31409396 L11.9946309,13.4805369 Z" id="🔹-Icon-Color" fill="#FFFFFF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -2,6 +2,9 @@ const path = require('path');
 module.exports = {
   runtimeCompiler: true,
   outputDir: './dist',
+  configureWebpack: {
+    devtool: process.env.NODE_ENV === 'development'? 'source-map': false,
+  },
   chainWebpack(config) {
     config.module.rule('scss')
     .oneOf('vue')

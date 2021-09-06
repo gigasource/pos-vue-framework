@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="214px" height="20px" viewBox="0 0 214 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>Wall</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M0,417 L204,417 C209.522847,417 214,421.477153 214,427 C214,432.522847 209.522847,437 204,437 L0,437 L0,417 Z" id="path-1"></path>
+        <pattern id="pattern-2" width="150" height="150" x="-150" y="267" patternUnits="userSpaceOnUse">
+            <use xlink:href="#image-3"></use>
+        </pattern>
+        <image id="image-3" width="150" height="150" xlink:href="data:image/png;base64,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"></image>
+    </defs>
+    <g id="1.-Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Home-final-2" transform="translate(-242.000000, -426.000000)">
+            <g id="layout" transform="translate(242.000000, 9.000000)">
+                <g id="Wall">
+                    <use fill="#FFFFFF" xlink:href="#path-1"></use>
+                    <use fill="url(#pattern-2)" xlink:href="#path-1"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
