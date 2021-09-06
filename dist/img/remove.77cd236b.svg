@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Fill 64</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ico/remove" fill="#FF4452">
+            <path d="M8,0 C3.584,0 0,3.584 0,8.0004 C0,12.4164 3.584,16 8,16 C12.416,16 16,12.4164 16,8.0004 C16,3.584 12.416,0 8,0 L8,0 Z M4,7.2 L12,7.2 L12,8.8 L4,8.8 L4,7.2 Z" id="Fill-64"></path>
+        </g>
+    </g>
+</svg>

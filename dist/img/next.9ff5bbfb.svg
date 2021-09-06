@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="24px" viewBox="0 0 20 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Fill 206</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="18 12.5222672 22.9446694 17.4777328 18 22.4331984 19.5222672 23.9554656 23.9587518 19.518981 26 17.4777328 19.5222672 11"></polygon>
+        <filter x="-131.2%" y="-57.9%" width="362.5%" height="262.1%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="3" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.0705882353   0 0 0 0 0.443137255   0 0 0 0 1  0 0 0 0.492597247 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="1.-Sale-Screen" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Order-default" transform="translate(-988.000000, -16.000000)">
+            <g id="Category-+-featured-items" transform="translate(512.000000, 0.000000)">
+                <g id="next/prev" transform="translate(464.000000, 8.000000)">
+                    <g id="btt/next">
+                        <g id="Fill-206">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#1271FF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

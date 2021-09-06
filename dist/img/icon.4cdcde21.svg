@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>Icon 24px</title>
+    <desc>Created with Sketch.</desc>
+    <g id="1.-Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Home-final-2" transform="translate(-215.000000, -102.000000)">
+            <g id="Main-menu" transform="translate(0.000000, 76.000000)">
+                <g id="Group-2">
+                    <g id="ic_chevron_right" transform="translate(221.000000, 30.000000) rotate(-270.000000) translate(-221.000000, -30.000000) translate(209.000000, 18.000000)">
+                        <g id="Icon-24px">
+                            <polygon id="Shape" fill="#EBECEE" points="10 6 8.59 7.41 13.17 12 8.59 16.59 10 18 16 12"></polygon>
+                            <polygon id="Shape" points="0 0 24 0 24 24 0 24"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

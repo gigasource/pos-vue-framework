@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="18px" viewBox="0 0 26 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>technics</title>
+    <desc>Created with Sketch.</desc>
+    <g id="4.-Reservation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Reservation----create-new" transform="translate(-563.000000, -553.000000)">
+            <g id="kitchen-copy-2" transform="translate(542.000000, 541.000000)">
+                <g id="pay">
+                    <g id="deposit" transform="translate(21.000000, 12.000000)">
+                        <g id="money">
+                            <polygon id="Path" fill="#54795E" fill-rule="nonzero" points="0 2.17582418 24.2068966 2.17582418 24.2068966 18 0 18"></polygon>
+                            <polygon id="Path" fill="#6A9876" fill-rule="nonzero" points="1.79310345 0.0342857143 26 0.0342857143 26 15.8584615 1.79310345 15.8584615"></polygon>
+                            <polygon id="Path" fill="#83BD93" fill-rule="nonzero" points="3.5862069 2.14417582 24.2068966 2.14417582 24.2068966 13.7485714 3.5862069 13.7485714"></polygon>
+                            <path d="M1.79310345,0.0342857143 L6.72413793,0.0342857143 C6.72413793,3.23875108 4.51643859,5.83648352 1.79310345,5.83648352 L1.79310345,0.0342857143 L1.79310345,0.0342857143 Z" id="Path" fill="#6A9876" fill-rule="nonzero"></path>
+                            <path d="M1.79310345,10.0562637 C4.51643859,10.0562637 6.72413793,12.6539962 6.72413793,15.8584615 L1.79310345,15.8584615 L1.79310345,10.0562637 L1.79310345,10.0562637 Z" id="Path" fill="#6A9876" fill-rule="nonzero"></path>
+                            <path d="M21.0689655,0.0343516484 C22.3767572,0.0343516484 23.6309851,0.645652876 24.5557334,1.73377604 C25.4804818,2.8218992 26,4.29771092 26,5.83654945 L21.0689655,5.83654945 L21.0689655,0.0343516484 L21.0689655,0.0343516484 Z" id="Path" fill="#6A9876" fill-rule="nonzero" transform="translate(23.534483, 2.935451) rotate(-180.000000) translate(-23.534483, -2.935451) "></path>
+                            <path d="M21.0689655,10.0563297 L26,10.0563297 C26,13.260795 23.7923007,15.8585275 21.0689655,15.8585275 L21.0689655,10.0563297 L21.0689655,10.0563297 Z" id="Path" fill="#6A9876" fill-rule="nonzero" transform="translate(23.534483, 12.957429) rotate(-180.000000) translate(-23.534483, -12.957429) "></path>
+                            <ellipse id="Oval" fill="#6A9876" fill-rule="nonzero" cx="14.7931034" cy="8.07092308" rx="3.13793103" ry="3.69230769"></ellipse>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
