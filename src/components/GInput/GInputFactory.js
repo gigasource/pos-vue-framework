@@ -283,7 +283,7 @@ export function getVirtualCaret(props, context, internalValue, isFocused) {
       target.classList.add('animated-caret')
       document.caretElement.set(index + 1)
     } else {
-      target.previousSibling.classList && target.previousSibling.classList.add('animated-caret')
+      target.previousElementSibling.classList && target.previousElementSibling.classList.add('animated-caret')
       document.caretElement.set(index)
     }
   }
