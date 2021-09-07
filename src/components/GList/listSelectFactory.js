@@ -13,7 +13,7 @@ export function createItemFn(prop) {
         const key = prop.find(Object.keys(item).includes)
         return item[key]
       } else {
-        return item[prop]
+        return _.get(item, prop)
       }
     }
 }
