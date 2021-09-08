@@ -46,6 +46,7 @@
 
 <style scoped>
 	.g-tab-items {
+    height: 100%;
 		contain: layout;
 		flex: 1 1 auto;
 		overflow: hidden;
