@@ -39,7 +39,6 @@ export default function scrollable({scrollTarget, scrollThreshold}, ctx, canScro
   })
 
   function onScroll() {
-    console.log('asdasdasd');
     if (!canScroll.value)
       return
 
@@ -49,13 +48,9 @@ export default function scrollable({scrollTarget, scrollThreshold}, ctx, canScro
     isScrollingUp.value = currentScroll.value < previousScroll.value
     currentThreshold.value = Math.abs(currentScroll.value - computedScrollThreshold.value)
 
-    console.log(isScrollingUp.value, currentThreshold.value);
     nextTick(() => {
-      if (Math.abs(currentScroll.value - savedScroll.value) > computedScrollThreshold.value) {
+      if (Math.abs(currentScroll.value - savedScroll.value) > computedScrollThreshold.value)
         thresholdMet(!isScrollingUp.value)
-      } else {
-        console.log('eee');
-      }
     }).then()
   }
 
