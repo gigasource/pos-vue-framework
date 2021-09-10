@@ -46,9 +46,11 @@
       })
 
       function convertToReturnItem(originalItem) {
-        return (props.returnObject || _.isNumber(originalItem) || _.isString(originalItem))
-          ? originalItem
-          : originalItem[props.itemValue]
+        if (props.returnObject || _.isNumber(originalItem) || _.isString(originalItem)) return originalItem
+        else {
+          if (_.isString(props.itemValue)) return originalItem[props.itemValue]
+          else return props.itemValue(originalItem) //if itemValue is a function; todo: add check function type here
+        }
       }
 
       function toggleSelect(originalItem) {
