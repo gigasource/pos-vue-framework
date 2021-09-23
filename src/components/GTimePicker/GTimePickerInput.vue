@@ -3,17 +3,17 @@
   // Allow the user input value directly without showing time picker dialog
   // Support g-text-field props
 
-  import GTextField from '../GInput/GTextField'
+  import GTextFieldBs from '../GInput/GTextFieldBs'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
   import {reactive, watch, nextTick, ref} from 'vue';
   import _ from 'lodash'
 
-  GMenu.components['GTextField'] = GTextField
+  GMenu.components['GTextFieldBs'] = GTextFieldBs
 
   export default {
     name: 'GTimePickerInput',
-    components: { GMenu, GTimePicker, GTextField },
+    components: { GMenu, GTimePicker, GTextFieldBs },
     props: {
       // common props
       ...{
@@ -37,7 +37,9 @@
         prependIcon: String,
         prependInnerIcon: String,
         appendIcon: String,
-        appendInnerIcon: String
+        appendInnerIcon: String,
+        virtualEvent: Boolean,
+        textFieldClass: String,
       },
 
       // time picker props
@@ -71,7 +73,7 @@
         state.value = value
         context.emit('update:modelValue', value)
       }
-      
+
       const time_picker = ref(null)
       const refIdTimePicker = 'time_picker'
       const openTimePickerDialog = (e, clickHandler) => {
@@ -80,7 +82,7 @@
           time_picker.value && time_picker.value.showHoursPicker()
         })
       }
-      
+
       const closeTimePickerDialog = () => state.showMenu = false
       const renderTimePickerInput = () => {
         return <g-menu
@@ -90,12 +92,14 @@
             nudgeBottom={10}
             v-slots={{
               activator: ({on}) =>
-                  <g-text-field
+                  <g-text-field-bs
+                     class={props.textFieldClass}
+                     style="margin: 0"
                       {...{
                         ..._.pick(props, [
                           'disabled', 'readonly', 'required', 'clearable',
                           'label', 'prependIcon', 'prependInnerIcon', 'appendIcon', 'appendInnerIcon',
-                          'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense'
+                          'filled', 'outlined', 'solo', 'shaped', 'rounded', 'flat', 'dense', 'virtualEvent'
                         ]),
                         ...props.showIcon && { prependIcon: 'access_time' },
                       }}
@@ -127,7 +131,7 @@
         renderTimePickerInput
       }
     },
-    
+
     render() {
       return this.renderTimePickerInput()
     }
