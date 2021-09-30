@@ -169,7 +169,7 @@ export default {
       const badgeScopedSlots = {
         badge: () => <span>{node.badge}</span>
       }
-      const badge = node.badge && <g-badge inline={true} color={node.badgeColor} vSlots={badgeScopedSlots}
+      const badge = node.badge && <g-badge border-radius={node.badgeBorderRadius || 999} inline={true} color={node.badgeColor} vSlots={badgeScopedSlots}
                                            style={childrenVNodes || context.slots['prepend-icon'] || node.appendIcon ? {'margin-right': '4px'} : {'margin-right': '44px'}}/>
 
       const appendIcon = node.appendIcon && <g-icon small class="mx-1">{node.appendIcon}</g-icon>
