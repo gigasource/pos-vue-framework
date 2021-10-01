@@ -29,7 +29,7 @@
           <slot name="input-slot"/>
           <!-- TODO: :type="state.internalType" for some reason, state was not recognized-->
           <input class="bs-tf-input"
-                 style="user-select: text !important; -webkit-user-select: text !important;"
+                 :style="[{'user-select': 'text !important', '-webkit-user-select': 'text !important'}, virtualEvent && { display: 'none' } ]"
                  ref="input"
                  :disabled="disabled"
                  :readonly="readonly || virtualEvent"
@@ -40,12 +40,8 @@
                  @focus="onFocus"
                  @blur="onBlur"
                  @keydown="onKeyDown">
-          <div v-if="virtualEvent" ref="caret" class="bs-tf-input bs-tf-input--fake-caret">
-            <span></span>
-            <template v-for="(letter, i) in tfLetters">
-              <span v-if="letter !== ' '" @click.stop.prevent="e => selectLetter(e, i)">{{ letter }}</span>
-              <span v-else @click.stop.prevent="e => selectLetter(e, i)">i</span> <!-- use i letter because width ~ space -->
-            </template>
+          <div v-if="virtualEvent" ref="caret" class="bs-tf-input bs-tf-input--fake-caret" style="display: inline-block; max-width: 100%; overflow: scroll">
+            <span v-for="(letter, i) in tfLetters" @click.stop.prevent="e => selectLetter(e, i)">{{ type === 'password' ? '*' : letter}}</span>
           </div>
         </component>
         <div class="bs-tf-append-inner"
@@ -624,11 +620,6 @@
 <style lang="scss">
   .bs-tf-input--fake-caret {
     display: flex !important;
-    position: absolute;
-    top: 0;
-    left: 12px;
-    right: 12px;
-    bottom: 0;
     margin: 0;
     cursor: text;
     background-color: transparent !important;
@@ -637,12 +628,12 @@
     scrollbar-width: none; // firefox
     -ms-overflow-style: none; //edge
 
-    &::-webkit-scrollbar {
-      display: none;
+    span {
+      border-right: 1px solid transparent;
     }
 
-    span {
-      color: transparent;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 

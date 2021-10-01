@@ -288,7 +288,7 @@ const componentsFactory = (component, componentName) => {
           slots['append-outer'] = appendOuterSlot
 
         // input
-        slots['input-slot'] = () => <div class="input-slot" style={{display: 'contents'}}>{...genSelectionSlot()}</div>
+        slots['input-slot'] = () => <div class="input-slot" style={{display: 'none'}}>{...genSelectionSlot()}</div>
 
         return slots;
       })
