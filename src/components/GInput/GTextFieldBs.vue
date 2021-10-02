@@ -626,8 +626,6 @@
     display: flex !important;
     position: absolute;
     top: 0;
-    left: 12px;
-    right: 12px;
     bottom: 0;
     margin: 0;
     cursor: text;
