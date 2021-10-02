@@ -634,6 +634,7 @@
     overflow: auto;
     scrollbar-width: none; // firefox
     -ms-overflow-style: none; //edge
+    max-width: 90%;
 
     &::-webkit-scrollbar {
       display: none;
