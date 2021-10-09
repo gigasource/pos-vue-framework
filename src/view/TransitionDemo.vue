@@ -39,7 +39,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	.a {
 		width: 50vh;
 		height: 50vh;

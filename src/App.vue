@@ -23,6 +23,3 @@
     components: { GLayout },
   }
 </script>
-
-<style>
-</style>
