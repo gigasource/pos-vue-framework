@@ -1,7 +1,7 @@
 <script>
   import {ref, computed, watch, onMounted, onUpdated} from 'vue';
   import GIcon from '../GIcon/GIcon';
-  
+
   export default {
     name: "GTextareaJSX",
     components:  {GIcon},
@@ -123,7 +123,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>

@@ -194,7 +194,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .g-list {
     background: #fff;
     margin-left: calc(50% - 180px);

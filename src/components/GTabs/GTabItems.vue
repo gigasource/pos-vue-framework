@@ -44,7 +44,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	.g-tab-items {
     height: 100%;
 		contain: layout;
