@@ -179,7 +179,9 @@ export default {
           e.stopPropagation()
           if (node.type === 'subheader') return
 
-          if (node.clickable || !childrenVNodes) {
+          if (node.unselectable) {
+            context.emit('node-selected', node, path, treeStates[path])
+          } else if (node.clickable || !childrenVNodes) {
             context.emit('node-selected', node, path, treeStates[path])
             context.emit('update:modelValue', path)
 
