@@ -11,7 +11,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	.g-spacer {
 		flex-grow: 1;
 		visibility: hidden;

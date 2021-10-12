@@ -4,7 +4,7 @@
   import { getEvents, getLabel, getSlotEventListeners, getValidate, inputEvents } from './GInputFactory';
   import {getInternalValue} from '../../mixins/getVModel';
   import _ from 'lodash'
-  
+
   export default {
     name: 'GTextFieldRF',
     components: {GIcon},
@@ -212,5 +212,3 @@
     },
   }
 </script>
-<style scoped>
-</style>
