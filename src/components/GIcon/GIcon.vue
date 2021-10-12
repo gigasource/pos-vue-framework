@@ -61,6 +61,12 @@
                     style={iconStyle}/>
       }
 
+      function genBase64Icon(base64, iconClass, iconStyle) {
+        iconStyle['width'] = iconStyle['font-size']
+        iconStyle['height'] = iconStyle['font-size']
+        return <img src={base64} alt="" class={iconClass} style={iconStyle}/>
+      }
+
       function genIcon(icon) {
         // const hasClickListener = !!(getCurrentInstance().vnode.props && getCurrentInstance().vnode.props.onClick);
 
@@ -76,10 +82,15 @@
           // 'g-icon__link': hasClickListener,
         }
 
-        if (typeof icon === 'string' && icon.includes('@')) {
-          const info = icon.split('@')
-          iconName = info[0]
-          iconSize = info[1]
+        let isBase64Image = false;
+        if (typeof icon === 'string') {
+          if (icon.includes('@')) {
+            const info = icon.split('@')
+            iconName = info[0]
+            iconSize = info[1]
+          } else if (icon.includes('base64')) {
+            isBase64Image = true
+          }
         } else {
           iconName = icon
         }
@@ -89,6 +100,7 @@
           'font-size': iconSize ? convertToUnit(iconSize) : getSize(props),
         }
 
+        if (isBase64Image) return genBase64Icon(icon, iconClass, iconStyle)
         if (props.svg || isCustomSVGIcon(iconName)) return genSvgIcon(iconName, iconClass, iconStyle)
         if (isFontAwesome5(iconName)) return genFontAwesomeIcon(iconName, iconClass, iconStyle)
         return genMaterialIcon(iconName, iconClass, iconStyle)
