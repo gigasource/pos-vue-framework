@@ -90,6 +90,9 @@
             iconSize = info[1]
           } else if (icon.includes('base64')) {
             isBase64Image = true
+            iconName = icon
+          } else {
+            iconName = icon
           }
         } else {
           iconName = icon
