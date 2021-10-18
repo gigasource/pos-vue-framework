@@ -94,6 +94,10 @@
       //styling content
       ...{
         contentClass: String,
+        elevation: {
+          type: [String, Number],
+          default: 2
+        }
       }
     },
     setup(props, context) {
@@ -207,14 +211,11 @@
 </script>
 
 <style scoped lang="scss">
-  @import "../../style/elevation";
-
   .g-menu--content {
     position: absolute;
     display: inline-block;
     overflow-y: auto;
     overflow-x: hidden;
     contain: content;
-    @include elevation(2);
   }
 </style>
