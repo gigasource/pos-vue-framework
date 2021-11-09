@@ -109,7 +109,8 @@
       },
       //styling content
       ...{
-        contentClass: String
+        contentClass: String,
+        elevation: Boolean
       }
     },
     setup(props, context) {
@@ -263,6 +264,7 @@
 
       const contentClasses = computed(() => ({
         'g-menu--content': true,
+        [`elevation-${props.elevation}`]: true,
         [props.contentClass]: !!props.contentClass
       }))
 
