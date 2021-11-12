@@ -1,6 +1,6 @@
 <template>
   <div :class="tableClasses">
-    <div class="g-table__wrapper">
+    <div class="g-table__wrapper"  @scroll="scroll">
       <table>
 				<slot>
           <thead>
@@ -40,6 +40,7 @@
       headers: Array,
       items: Array,
     },
+    emits: ['scrolledToBottom'],
     setup(props, context) {
     	const state = reactive({
 				activeItem: null,
@@ -92,13 +93,20 @@
       	context.emit('click:item', item)
 			}
 
+			function scroll(e) {
+        var element = e.target;
+        if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+          context.emit('scrolledToBottom')
+        }
+      }
       return {
         tableClasses,
 				getHeaderStyles,
         getCellStyles,
 				getActiveRow,
 				headerClick,
-				itemClick
+				itemClick,
+        scroll
       }
     }
   }
