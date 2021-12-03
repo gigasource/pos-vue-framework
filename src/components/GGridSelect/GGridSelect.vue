@@ -24,7 +24,7 @@
         default: 'text'
       },
       itemValue: {
-        type: String,
+        type: [String, Function],
         default: 'value'
       },
       returnObject: Boolean,
@@ -74,14 +74,22 @@
         }
       }
 
+      function isSameValue(obj, obj1) {
+        if (typeof props.itemValue === 'string') return _.get(obj, props.itemValue) === _.get(obj1, props.itemValue)
+        else return props.itemValue(obj) === props.itemValue(obj1)
+      }
+
       function isSelected(originalItem) {
         const returnItem = convertToReturnItem(originalItem);
         if (props.multiple) {
           if (_.includes(internalValue.value, returnItem)) {
             return true;
           }
+        } else {
+          if (props.returnObject) {
+            return isSameValue(returnItem, internalValue.value)
+          } else return internalValue.value === returnItem;
         }
-        return internalValue.value === returnItem;
       }
 
       const genItem = (item, index) => {

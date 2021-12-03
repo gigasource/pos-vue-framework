@@ -110,7 +110,7 @@
       //styling content
       ...{
         contentClass: String,
-        elevation: Boolean
+        elevation: Number
       }
     },
     setup(props, context) {
