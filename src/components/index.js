@@ -30,6 +30,7 @@ import GCombobox from './GCombobox/GCombobox';
 import GDatePicker from './GDatePicker/GDatePicker';
 import GDatePickerInput from './GDatePicker/GDatePickerInput';
 import GDateRangePicker from './GDatePicker/GDateRangePicker';
+import GDateSelect from 'pos-vue-framework/src/components/GDatePicker/GDateSelect';
 
 import GDialog from './GDialog/GDialog';
 
@@ -244,6 +245,7 @@ export {
   GDatePicker,
   GDatePickerInput,
   GDateRangePicker,
+  GDateSelect,
   GDialog,
   GDndDialog,
   GEditViewInput,
