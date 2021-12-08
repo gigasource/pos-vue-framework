@@ -1,6 +1,6 @@
 <template>
   <div class="g-radio-wrapper">
-    <div :class="classes" :style="styles" class="g-radio" @click="activate">
+    <div :class="classes" :style="styles" class="g-radio" @click="handleClick">
       <input ref="radio" :name="name" type="radio">
       <span class="g-radio-checkmark"></span>
       <div class="g-radio-hover"></div>
@@ -17,7 +17,7 @@ import colorHandler from '../../utils/helpers';
 
 export default {
   name: 'GRadio',
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'click'],
   props: {
     label: String,
     color: String,
@@ -87,10 +87,16 @@ export default {
         }
       }
 
+      function handleClick() {
+        context.emit('click')
+        activate()
+      }
+
       return {
         name,
         classes,
         styles,
+        handleClick,
         activate,
       }
     }
