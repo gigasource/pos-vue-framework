@@ -1,0 +1,5 @@
+
+$ripple-animation-transition-in: transform 1s cubic-bezier(0.0, 0, 0.2, 1),
+opacity 1s cubic-bezier(0.0, 0, 0.2, 1) !default;
+$ripple-animation-transition-out: opacity 1s cubic-bezier(0.0, 0, 0.2, 1) !default;
+$ripple-animation-visible-opacity: .15 !default;
