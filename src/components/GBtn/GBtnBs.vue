@@ -187,6 +187,7 @@
     border-radius: 4px;
     border: 1px solid transparent;
     position: relative;
+    overflow: hidden;
     & > .g-icon {
       color: inherit;
     }
