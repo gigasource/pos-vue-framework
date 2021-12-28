@@ -186,7 +186,7 @@
     line-height: 24px;
     border-radius: 4px;
     border: 1px solid transparent;
-
+    position: relative;
     & > .g-icon {
       color: inherit;
     }
