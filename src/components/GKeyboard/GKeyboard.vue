@@ -1,6 +1,12 @@
 <template>
 	<div class="keyboard__template" :style="template">
-		<div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key" :style="item.style" @click="click(item)">
+		<div v-for="(item, i) in items"
+         :key="i" :class="[item.classes]"
+         class="key"
+         :style="item.style"
+         @click="click(item)"
+         v-ripple="ripple"
+    >
 			<!-- TODO: responsive height for img -->
 			<img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
       <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
@@ -14,9 +20,11 @@
 
 <script>
   import GIcon from '../GIcon/GIcon';
+  import Ripple from '../../directives/ripple/ripple'
   export default {
     name: 'GKeyboard',
     components: { GIcon },
+    directives: {Ripple},
     props: {
       modelValue: String,
       emits: ['update:modelValue', 'submit', 'edit'],

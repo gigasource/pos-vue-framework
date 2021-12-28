@@ -1,7 +1,7 @@
 <template>
   <div :class="classes"
        :style="styles"
-       v-ripple="ripple"
+       v-ripple
        @click="onclick"
        @mouseleave="onmouseleave"
        @mouseenter="onmouseenter"
