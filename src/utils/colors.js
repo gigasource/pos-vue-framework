@@ -185,15 +185,31 @@ export function parseHex(hex) {
   return `#${hex}`.toUpperCase().substr(0, 9)
 }
 
+const hex2rgba = (hex, alpha = 1) => {
+  const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+  return `rgba(${r},${g},${b},${alpha})`;
+};
+
+
+
 export function getHslColor(color) {
-  let fakeDiv = document.createElement("div");
-  fakeDiv.style.color = color;
-  document.body.appendChild(fakeDiv);
+  // let fakeDiv = document.createElement("div");
+  // fakeDiv.style.color = color;
+  // document.body.appendChild(fakeDiv);
+  //
+  // let cs = window.getComputedStyle(fakeDiv),
+  //     pv = cs.getPropertyValue("color");
+  //
+  // document.body.removeChild(fakeDiv);
+  let pv;
+  if (color.startsWith("rgb")) {
+    pv = color;
+  } else if (color.startsWith('#')) {
+    pv = hex2rgba(color, 1)
+  } else if (color === 'transparent') {
+    pv = 'rgb(0,0,0,0)'
+  }
 
-  let cs = window.getComputedStyle(fakeDiv),
-      pv = cs.getPropertyValue("color");
-
-  document.body.removeChild(fakeDiv);
   let rgb = [], a = 1
   if(_.startsWith(pv, 'rgba')) {
     rgb = pv.substr(5).split(")")[0].split(",")
