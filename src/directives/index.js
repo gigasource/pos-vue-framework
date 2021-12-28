@@ -7,6 +7,7 @@ import Ripple from './ripple/ripple'
 import Touch from './touch/touch'
 import Zoom from './zoom/zoom'
 import DisableOnClick from './disable-on-click/disable-on-click'
+import Darken from './darken/darken'
 
 export {
   ClickOutside,
@@ -17,5 +18,6 @@ export {
   Ripple,
   Touch,
   Zoom,
-  DisableOnClick
+  DisableOnClick,
+  Darken
 }
