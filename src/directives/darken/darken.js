@@ -9,14 +9,13 @@ function isDarkenEnabled(value) {
 function darken(e) {
   const el = e.currentTarget
   if (el) {
-    let backgroundColor
+    let backgroundColor, border, shadow
     if (!el._darken.originalColor) {
-      backgroundColor = el.style.backgroundColor
-      const {border, shadow} = el.style
+      ({backgroundColor, border, shadow} = el.style);
       el._darken.originalColor = {
         backgroundColor, border, shadow
       }
-    } else backgroundColor = el._darken.originalColor.backgroundColor
+    } else ({backgroundColor, border, shadow} = el._darken.originalColor)
     let {h, s, l, a} = getHslColor(backgroundColor)
     if (h === 0 && s === 0) {
       let hsla
