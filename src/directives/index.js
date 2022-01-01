@@ -8,6 +8,7 @@ import Touch from './touch/touch'
 import Zoom from './zoom/zoom'
 import DisableOnClick from './disable-on-click/disable-on-click'
 import Darken from './darken/darken'
+import FastClick from './fast-click/fast-click'
 
 export {
   ClickOutside,
@@ -19,5 +20,6 @@ export {
   Touch,
   Zoom,
   DisableOnClick,
-  Darken
+  Darken,
+  FastClick
 }
