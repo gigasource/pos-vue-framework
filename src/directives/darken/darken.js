@@ -9,13 +9,13 @@ function isDarkenEnabled(value) {
 function darken(e) {
   const el = e.currentTarget
   if (el) {
-    let backgroundColor, border, shadow
+    let backgroundColor, border, boxShadow
     if (!el._darken.originalColor) {
-      ({backgroundColor, border, shadow} = el.style);
+      ({backgroundColor, border, boxShadow} = el.style);
       el._darken.originalColor = {
-        backgroundColor, border, shadow
+        backgroundColor, border, boxShadow
       }
-    } else ({backgroundColor, border, shadow} = el._darken.originalColor)
+    } else ({backgroundColor, border} = el._darken.originalColor)
     let {h, s, l, a} = getHslColor(backgroundColor)
     if (h === 0 && s === 0) {
       let hsla
@@ -39,6 +39,7 @@ function darken(e) {
       el.style.backgroundColor = el._darken.originalColor.backgroundColor
       el.style.borderColor = el._darken.originalColor.borderColor
       el.style.boxShadow = el._darken.originalColor.boxShadow
+      el._darken.darkenTimer = null
     }, el._darken.timeout || DURATION)
   }
 }
