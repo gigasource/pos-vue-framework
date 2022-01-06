@@ -328,7 +328,6 @@
       }
 
       return {
-        container,
         content,
         wrapper,
         overlay,
@@ -346,7 +345,7 @@
 </script>
 
 <template>
-  <div ref="container">
+  <div>
     <div ref="wrapper" v-bind="wrapperData">
       <Transition :name="transitionName">
         <div ref="content" v-bind="contentData" v-show="isActive"

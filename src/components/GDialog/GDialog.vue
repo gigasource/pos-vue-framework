@@ -48,10 +48,7 @@
     },
     emits: ['update:modelValue'],
     setup(props, context) {
-      const activator = ref(null)
-      const el = ref(null)
       const isActive = getInternalValue(props, context);
-
       // Lazy/Eager
       // TODO: convert to bootable mixin
       const isBooted = reactive({
@@ -93,14 +90,14 @@
 			}
 
       function genActivator() {
-        return <div ref={activator} class="g-dialog-activator">
+        return <div class="g-dialog-activator">
           {context.slots.activator && context.slots.activator({ toggleDialog })}
         </div>
       }
 
       function genDialog() {
         const target = document.getElementById('root') ? 'body': 'div[data-app]';
-        return <div ref={el} class="g-dialog">
+        return <div class="g-dialog">
           {genActivator()}
           <teleport to={target}>
             {renderContent.value && genDialogContent()}
@@ -124,8 +121,7 @@
       }
     },
     render() {
-      const scopeIdRender = getScopeIdRender()
-      return scopeIdRender(this.genDialog.bind(this))()
+      return this.genDialog()
     }
   }
 </script>
