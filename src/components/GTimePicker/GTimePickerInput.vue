@@ -6,10 +6,20 @@
   import GTextFieldBs from '../GInput/GTextFieldBs'
   import GTimePicker from './GTimePicker'
   import GMenu from '../GMenu/GMenu'
+  import dayjs from 'dayjs'
   import {reactive, watch, nextTick, ref} from 'vue';
   import _ from 'lodash'
 
   GMenu.components['GTextFieldBs'] = GTextFieldBs
+
+  function get24HourValue(time) {
+    time = _.toLower(time)
+    return _.includes(time, 'm') ? dayjs(time, 'hh:mma').format('HH:mm') : time
+  }
+
+  function get12HourValue(time) {
+    return dayjs(time, 'HH:mm').format('hh:mm A')
+  }
 
   export default {
     name: 'GTimePickerInput',
@@ -62,11 +72,12 @@
     setup(props, context) {
       const state = reactive({
         showMenu: false,
-        value: props.modelValue || '',
+        value: (props.use24Hours ? get24HourValue(props.modelValue) : get12HourValue(props.modelValue)) || '',
       })
 
       watch(() => props.modelValue, newVal => {
-        state.value = newVal ? String(newVal).trim() : ''
+        newVal = String(newVal).trim()
+        state.value = newVal ? props.use24Hours ? get24HourValue(newVal) : get12HourValue(newVal) : ''
       })
 
       const updateInput = (value) => {
