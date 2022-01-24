@@ -207,13 +207,13 @@
             document.addEventListener('click', (e) => {
               const input = currentInstance.refs['input']
               if(e.target === input || e.target === currentInstance.refs['caret'] ||
-                  ((e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) && document.caretElement && document.caretElement.element === input)) {
+                  ((e.target.classList.contains('key') || (e.target.parentElement && e.target.parentElement.classList.contains('key'))) && document.caretElement && document.caretElement.element === input)) {
                 isFocused.value = true
                 const { start } = document.caretElement ? document.caretElement.get() : { start: 0 }
                 if(e.target === input || e.target === currentInstance.refs['caret']) {}
                 document.caretElement = new Caret(input)
                 if(start) document.caretElement.set(start)
-                if(e.target.classList.contains('key') || e.target.parentElement.classList.contains('key')) { //keyboard press
+                if(e.target.classList.contains('key') || (e.target.parentElement && e.target.parentElement.classList.contains('key'))) { //keyboard press
                   const caret = currentInstance.refs['caret']
                   if(caret) {
                     for(const child of caret.children) {
