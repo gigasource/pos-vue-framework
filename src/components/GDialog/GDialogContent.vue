@@ -47,6 +47,8 @@
       //content class for styling
       contentClass: String,
 
+      withoutAnimation: Boolean,
+
       // dependent mixin
       ...{
         closeDependents: {
@@ -280,7 +282,7 @@
       });
 
       // content data
-      const transitionName = computed(() => props.bottom ? 'dialog-bottom-transition' : 'dialog-transition')
+      const transitionName = computed(() => props.withoutAnimation ? '' : (props.bottom ? 'dialog-bottom-transition' : 'dialog-transition'))
       const wrapperData = computed(() => ({
         class: {
           'g-dialog-wrapper__active': isActive.value,

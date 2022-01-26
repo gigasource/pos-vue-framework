@@ -45,6 +45,7 @@
 
       //content class for styling
       contentClass: String,
+      withoutAnimation: Boolean,
     },
     emits: ['update:modelValue'],
     setup(props, context) {
