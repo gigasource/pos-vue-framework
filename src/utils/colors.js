@@ -206,7 +206,7 @@ export function getHslColor(color) {
     pv = color;
   } else if (color.startsWith('#')) {
     pv = hex2rgba(color, 1)
-  } else if (color === 'transparent') {
+  } else if (color.includes('transparent')) {
     pv = 'rgb(0,0,0,0)'
   }
 
@@ -214,8 +214,13 @@ export function getHslColor(color) {
   if(_.startsWith(pv, 'rgba')) {
     rgb = pv.substr(5).split(")")[0].split(",")
     a = rgb[3]
-  } else
-    rgb = pv.substr(4).split(")")[0].split(",")
+  } else {
+    try {
+      rgb = pv.substr(4).split(")")[0].split(",")
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   let r = rgb[0] / 255,
       g = rgb[1] / 255,
