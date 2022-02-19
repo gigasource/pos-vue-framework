@@ -171,7 +171,10 @@
         }
       }
 
-      function gMenuActivatorSlots() {
+      function gMenuActivatorSlots(slots) {
+        if (slots.activator) return {
+          activator: ({toggleContent}) => slots.activator({toggleContent, date: state.value})
+        };
         return {
           activator: gMenuScope =>
               <g-text-field
@@ -194,7 +197,7 @@
               minWidth={300}
               nudgeBottom={10}
               v-model={state.showMenu}
-              v-slots={gMenuActivatorSlots()}>
+              v-slots={gMenuActivatorSlots(context.slots)}>
             <g-date-picker
                 v-show={state.showMenu}
                 {..._.pick(props, ['allowedDates', 'max', 'min', 'events', 'color', 'rangeColor', 'eventColor', 'headerColor', 'fullWidth',
@@ -233,7 +236,7 @@
       visibility: hidden;
     }
   }
-  
+
   ::v-deep {
     .g-menu--activator {
       span {
