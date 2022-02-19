@@ -1,5 +1,5 @@
 <script>
-  import { computed, reactive, watch, ref } from 'vue';
+  import { withModifiers, computed, reactive, watch, ref } from 'vue';
   import { getEventHandler, helperFunctions } from './GSliderFactory';
   import { convertToUnit, getScopeIdRender } from '../../utils/helpers';
   import { getCssColor } from '../../utils/colors';
@@ -219,8 +219,8 @@
         const content = genThumbLabelContent(internalValue.value)
         return <div class={thumbContainerClasses.value} ref={thumbRef}
                     style={thumbContainerStyle.value}
-                    onMouseDown={onThumbMouseDown}
-                    onTouchStart={onThumbMouseDown}>
+                    onMousedown={withModifiers(onThumbMouseDown, ['prevent', 'stop'])}
+                    onTouchstart={withModifiers(onThumbMouseDown, ['prevent', 'stop'])}>
           {genThumb()}
           {showThumbLabel.value && genThumbLabel(content)}
         </div>
