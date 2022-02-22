@@ -35,7 +35,8 @@ const componentsFactory = (component, componentName) => {
           flat: Boolean,
           rounded: Boolean,
           shaped: Boolean,
-          dense: Boolean
+          dense: Boolean,
+          large: Boolean,
         },
         //textfield parts
         clearable: Boolean,
@@ -328,7 +329,7 @@ const componentsFactory = (component, componentName) => {
           const textFieldProps = {
             ..._.pick(props, [
               'disabled', 'readOnly',
-              'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped', 'dense', 'clearable',
+              'filled', 'solo', 'outlined', 'flat', 'rounded', 'shaped', 'dense', 'clearable', 'large',
               'hint', 'persistent',
               'counter', 'placeholder', 'label', /*'prefix',*/ 'suffix',
               'rules',
