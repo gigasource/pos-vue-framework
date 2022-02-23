@@ -143,6 +143,8 @@ import GSlider from './GSlider/GSlider';
 import GRating from './GRating/GRating';
 import GLoadingScreen from './GLoadingScreen/GLoadingScreen';
 
+import GSlideshow from './GSlideshow/GSlideshow';
+
 import { getInternalValue, getVModel } from '../mixins/getVModel';
 import { getExpansionModel } from './GExpansion/GExpansionFactory';
 import colorHandler, { convertToUnit } from '../utils/helpers'
@@ -367,5 +369,6 @@ export {
   GSections,
   GSectionsItem,
   GSectionsHeader,
-  GLoadingScreen
+  GLoadingScreen,
+  GSlideshow
 }
