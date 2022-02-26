@@ -18,7 +18,7 @@
         <div class="inputGroup">
           <div class="input">
             <slot name="input-slot" :inputErrStyles="inputErrStyles"/>
-            <input autocomplete="off"
+            <input :autocomplete="autocomplete"
                    :autofocus="autofocus"
                    class="g-tf-input"
                    :style="inputErrStyles"
@@ -93,7 +93,7 @@
     <component :is="$slots['append-inner'] || appendInnerIcon || clearable ? 'div' : 'pass-through'"
                class="input">
       <slot name="input-slot"/>
-      <input autocomplete="off"
+      <input :autocomplete="autocomplete"
              :autofocus="autofocus"
              class="g-tf-input"
              :style="[inputErrStyles]"
@@ -232,7 +232,11 @@
         default: 'text',
       },
       autofocus: Boolean,
-      virtualEvent: Boolean
+      autocomplete: {
+        type: String,
+        default: 'off'
+      },
+      virtualEvent: Boolean,
     },
     setup(props, context) {
       const currentInstance = getCurrentInstance()
