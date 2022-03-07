@@ -102,6 +102,7 @@
              v-model="internalValue"
              :placeholder="placeholder"
              :readonly="readOnly || virtualEvent"
+             :maxlength="maxlength"
              ref="input"
              @change="onChange"
              @focus="onFocus"
@@ -177,6 +178,7 @@
       ...{//display props
         label: String,
         placeholder: String,
+        maxlength: [Number, String],
         appendIcon: String,
         prependIcon: String,
         prependInnerIcon: String,
