@@ -1,7 +1,7 @@
 import GMenu from '../GMenu/GMenu';
 import { getCurrentInstance, nextTick, resolveComponent } from 'vue'
 import { getSelectionText, makeListSelectable, emitEvents as listEmitEvents } from '../GList/listSelectFactory';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch, withModifiers } from 'vue';
 import { getInputEventHandlers, emitEvents as eventHandlerEmitEvents } from './eventHandlersFactory';
 import GTextField from '../GInput/GTextField';
 import GTextFieldBs from '../GInput/GTextFieldBs';
@@ -325,7 +325,7 @@ const componentsFactory = (component, componentName) => {
       const genTextField = (typeof props.genActivator === 'function' && props.genActivator) ||
         function (toggleContent, props, state, { tfValue, prependText }, eventHandlers, textFieldScopedSlots) {
           const { clearSelection, onInputClick, onInputFocus, onBlur, onInputDelete, onInputEnter, onInputKeyDown } = eventHandlers
-          const classes = props.textFieldClass ? props.textFieldClass : []
+          const classes = ["ignore-click-outside", props.textFieldClass]
           const textFieldProps = {
             ..._.pick(props, [
               'disabled', 'readOnly',

@@ -24,6 +24,7 @@
                     :placeholder="placeholder"
                     :rows="rows"
                     :cols="cols"
+                    :readonly="readonly || virtualEvent"
                     @change="onChange"
                     @input="onInput"
                     @focus="onFocus"
@@ -138,6 +139,10 @@
         default: 1,
         validator: (v) => !isNaN(parseInt(v, 10)),
       },
+      virtualEvent: {
+        type: Boolean,
+        default: true
+      }
     },
     setup(props, context) {
       const currentInstance = getCurrentInstance()

@@ -1,7 +1,7 @@
 <script>
-  import { computed, inject, Transition , toRaw} from 'vue'
+  import { computed, inject, Transition} from 'vue'
   import {getScopeIdRender} from '../../utils/helpers';
-
+  import {isEqual} from 'lodash'
   export default {
     name: 'GTabItem',
     props: {
@@ -9,7 +9,7 @@
     },
     setup(props, context) {
       const model = inject('model');
-      const show = computed(() => (toRaw(model.value) === toRaw(props.item)));
+      const show = computed(() => (isEqual(model.value, props.item)));
       const _transition = inject('transition');
 
       const genTabItem = () =>
