@@ -95,25 +95,15 @@
       const genItem = (item, index) => {
         const defaultSlot = context.slots.default
           && context.slots.default({
-            toggleSelect, item, index
+            toggleSelect, item, index, isSelected: isSelected(item)
           })
         return props.grid ? <g-col cols={props.itemCols}>{defaultSlot}</g-col> : defaultSlot
       }
 
-      const genSelectedItem = (item, index) => {
-        const selectedSlot = context.slots.selected
-          && context.slots.selected({
-            toggleSelect, item, index
-          })
-        return props.grid ? <g-col cols={props.itemCols}>{selectedSlot}</g-col> : selectedSlot
-      }
 
       const genWrapper = () => <g-row align-items="start">
-          {...options.value.map((item, index) =>
-            isSelected(item)
-              ? genSelectedItem(item, index)
-              : genItem(item, index))}
-        </g-row>
+        {options.value.map((item, index) => genItem(item, index))}
+      </g-row>
 
       return {
         genWrapper,
