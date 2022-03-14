@@ -35,6 +35,10 @@
       itemCols: {
         type: [Number, String],
         default: 3
+      },
+      mergeSlots: {
+        type: Boolean,
+        default: false
       }
     },
     emits: ['update:modelValue'],
@@ -93,11 +97,17 @@
       }
 
       const genItem = (item, index) => {
-        const defaultSlot = context.slots.default
-          && context.slots.default({
-            toggleSelect, item, index, isSelected: isSelected(item)
-          })
-        return props.grid ? <g-col cols={props.itemCols}>{defaultSlot}</g-col> : defaultSlot
+        if (props.mergeSlots) {
+          const defaultSlot = context.slots.default
+            && context.slots.default({
+              toggleSelect, item, index, isSelected: isSelected(item)
+            })
+          return props.grid ? <g-col cols={props.itemCols}>{defaultSlot}</g-col> : defaultSlot
+        } else {
+          const slot = isSelected(item) ? context.slots.selected : context.slots.default
+          const itemVNode = slot && slot({toggleSelect, item, index})
+          return props.grid ? <g-col cols={props.itemCols}>{itemVNode}</g-col> : itemVNode
+        }
       }
 
 
