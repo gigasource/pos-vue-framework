@@ -141,7 +141,7 @@
       },
       virtualEvent: {
         type: Boolean,
-        default: true
+        default: false
       }
     },
     setup(props, context) {
