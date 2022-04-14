@@ -56,9 +56,8 @@
   }
 
   &__collapsed {
-    //width: 72px;
     width: auto;
-    max-width: 72px;
+    max-width: 60px;
 
     ::v-deep .g-list-item-content,
     ::v-deep .g-list-item-action {
