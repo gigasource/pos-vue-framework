@@ -86,9 +86,8 @@
       function isSelected(originalItem) {
         const returnItem = convertToReturnItem(originalItem);
         if (props.multiple) {
-          if (_.includes(internalValue.value, returnItem)) {
-            return true;
-          }
+          if (props.returnObject) return _.some(internalValue.value, i => isSameValue(i, returnItem))
+          else return _.includes(internalValue.value, returnItem)
         } else {
           if (props.returnObject) {
             return isSameValue(returnItem, internalValue.value)
