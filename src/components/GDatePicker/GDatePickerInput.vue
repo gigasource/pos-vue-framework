@@ -112,6 +112,7 @@
       range: Boolean,
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
+      virtualEvent: Boolean,
     },
     emits: ['update:modelValue', 'value'],
     setup(props, context) {
@@ -182,6 +183,7 @@
                   label={props.label}
                   prependIcon={props.icon}
                   modelValue={cptTextFieldValue.value}
+                  virtualEvent={props.virtualEvent}
                   onClick={e => {
                     gMenuScope.toggleContent(e)
                     state.tempValue = copyValue(state.value)
