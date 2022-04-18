@@ -114,14 +114,16 @@
       multiple: Boolean,
       virtualEvent: Boolean,
     },
-    emits: ['update:modelValue', 'value'],
+    emits: ['update:modelValue'],
     setup(props, context) {
       let dateFormat = props.type === 'date' ? 'YYYY-MM-dd' : 'YYYY-MM'
       let initialDateValue
-      if (!props.multiple && !props.range)
+
+      if (props.multiple || props.range) {
+        initialDateValue = props.modelValue ? copyValue(props.modelValue) : []
+      } else {
         initialDateValue = props.modelValue ? props.modelValue : dayjs().format(dateFormat)
-      else
-        initialDateValue = props.modelValue ? props.modelValue : []
+      }
 
       const state = reactive({
         value: initialDateValue,
@@ -130,20 +132,26 @@
       })
 
       watch(() => props.modelValue, newValue => {
-        if(state.value !== newValue) {
+        if (state.value !== newValue) {
           state.value = copyValue(newValue)
         }
       })
 
       function copyValue(val) {
-        return (!props.multiple && !props.range) ? val : _.map(val, v => v)
+        if (props.multiple || props.range) {
+          if (Array.isArray(val))
+            return val.map(v => v);
+          throw new Error(`Expect an array, got ${typeof(val)}`);
+        } else {
+          return val;
+        }
       }
 
       const cptTextFieldValue = computed(() => {
         if (props.multiple) {
           return state.value.join(', ')
         } else if (props.range) {
-          return state.value.join(' ~ ')
+          return state.value.join(' -> ')
         } else {
           return state.value
         }
@@ -212,8 +220,7 @@
                 &nbsp;
                 <g-btn flat onClick={e => {
                   state.value = copyValue(state.tempValue);
-                  context.emit('update:modelValue', cptTextFieldValue.value)
-                  context.emit('value', copyValue(state.value))
+                  context.emit('update:modelValue', state.value);
                   state.showMenu = false
                 }}>OK</g-btn>
               </div>
