@@ -26,9 +26,9 @@
 
       // A predicate function which validate date value and return true if input date is valid, otherwise false
       allowedDates: [Function, null],
-      // Date value in ISO format 'YYYY-MM-dd' indicate the maximum selectable date boundary
+      // Date value in ISO format 'YYYY-MM-DD' indicate the maximum selectable date boundary
       max: String,
-      // Date value in ISO format 'YYYY-MM-dd' indicate the minimum selectable date boundary
+      // Date value in ISO format 'YYYY-MM-DD' indicate the minimum selectable date boundary
       min: String,
       // events in calendar
       events: {
@@ -116,7 +116,7 @@
     },
     emits: ['update:modelValue'],
     setup(props, context) {
-      let dateFormat = props.type === 'date' ? 'YYYY-MM-dd' : 'YYYY-MM'
+      let dateFormat = props.type === 'date' ? 'YYYY-MM-DD' : 'YYYY-MM'
       let initialDateValue
 
       if (props.multiple || props.range) {
