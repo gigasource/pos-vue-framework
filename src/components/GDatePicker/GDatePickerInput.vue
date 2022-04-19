@@ -75,7 +75,11 @@
       headerDateFormat: Function,
       // Function formatting currently selected date in the picker title
       titleDateFormat: Function,
-
+      // Function formatting currently date in the picker input
+      inputDateFormat: {
+        type: Function,
+        default: dateInYYYYMMDD => dateInYYYYMMDD
+      },
 
       //// Groups: Visibility
       // Boolean value indicate that whether picker's title will be shown or not
@@ -149,11 +153,11 @@
 
       const cptTextFieldValue = computed(() => {
         if (props.multiple) {
-          return state.value.join(', ')
+          return state.value.map(props.inputDateFormat).join(', ')
         } else if (props.range) {
-          return state.value.join(' -> ')
+          return state.value.map(props.inputDateFormat).join(' -> ')
         } else {
-          return state.value
+          return props.inputDateFormat(state.value);
         }
       })
 
