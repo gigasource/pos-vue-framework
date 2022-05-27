@@ -210,27 +210,43 @@ export function getHslColor(color) {
     pv = 'rgb(0,0,0,0)'
   }
 
-  let rgb = [], a = 1
-  if(_.startsWith(pv, 'rgba')) {
-    rgb = pv.substr(5).split(")")[0].split(",")
-    a = rgb[3]
-  } else {
-    try {
-      rgb = pv.substr(4).split(")")[0].split(",")
-    } catch (e) {
-      console.error(e);
+  const getRGBA = pv => {
+    let rgb = [], a = 1
+    if(_.startsWith(pv, 'rgba')) {
+      rgb = pv.substr(5).split(")")[0].split(",")
+      a = rgb[3]
+    } else {
+      try {
+        rgb = pv.substr(4).split(")")[0].split(",")
+      } catch (e) {
+        return {};
+      }
     }
+    return {rgb, a};
+  }
+  let rgb = [], a = 1;
+  ({rgb, a} = getRGBA(pv));
+  if (!rgb) {
+    let fakeDiv = document.createElement("div");
+    fakeDiv.style.color = color;
+    document.body.appendChild(fakeDiv);
+
+    let cs = window.getComputedStyle(fakeDiv),
+      pv = cs.getPropertyValue("color");
+
+    document.body.removeChild(fakeDiv);
+    ({rgb, a} = getRGBA(pv));
   }
 
   let r = rgb[0] / 255,
-      g = rgb[1] / 255,
-      b = rgb[2] / 255,
-      cmin = Math.min(r,g,b),
-      cmax = Math.max(r,g,b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
+    g = rgb[1] / 255,
+    b = rgb[2] / 255,
+    cmin = Math.min(r,g,b),
+    cmax = Math.max(r,g,b),
+    delta = cmax - cmin,
+    h = 0,
+    s = 0,
+    l = 0;
 
   if (delta === 0)
     h = 0;
