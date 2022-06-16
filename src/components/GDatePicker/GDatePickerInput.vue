@@ -1,5 +1,5 @@
 <script type="text/jsx">
-  import { computed, reactive, watch } from 'vue'
+import {computed, reactive, resolveComponent, watch} from 'vue'
   import GMenu from '../GMenu/GMenu'
   import GDatePicker from '../GDatePicker/GDatePicker'
   import GTextField from '../GInput/GTextField'
@@ -117,6 +117,7 @@
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
       virtualEvent: Boolean,
+      textFieldComponent: [String, Object]
     },
     emits: ['update:modelValue'],
     setup(props, context) {
@@ -188,9 +189,10 @@
         if (slots.activator) return {
           activator: ({toggleContent}) => slots.activator({toggleContent, date: state.value})
         };
+        const txtField = resolveComponent(props.textFieldComponent ? props.textFieldComponent : 'GTextField')
         return {
           activator: gMenuScope =>
-              <g-text-field
+              <txtField
                   class="g-date-picker__activator"
                   label={props.label}
                   prependIcon={props.icon}
@@ -205,7 +207,7 @@
       }
 
       function renderGDatePickerInput() {
-        return <div>
+        return <div class="g-date-picker-input">
           <g-menu
               contentFillWidth={false}
               minWidth={300}
