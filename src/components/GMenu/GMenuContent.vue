@@ -120,7 +120,8 @@ export default {
     updateIntervalMs: {
       type: Number,
       default: 20
-    }
+    },
+    target: String
   },
   setup(props, context) {
     const isActive = getVModel(props, context);
@@ -160,7 +161,7 @@ export default {
 
     const resizeObserver = getResizeObserver(props)
 
-    const parentEl = document.getElementById('root') ? 'body': 'div[data-app]';
+    const parentEl = document.querySelector(props.target);
     const handleScroll = _.throttle(() => updateDimensions(props.activator.value, contentRef), props.updateIntervalMs || 20);
     // update dimensions when toggled on
     watch(() => props.modelValue, newVal => {

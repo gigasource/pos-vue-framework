@@ -137,7 +137,7 @@
         if (val && !props.eager && state.isFirstRender) state.isFirstRender = false;
       }, )
 
-      const genContent = () => {
+      const genContent = (target) => {
         const contentOptions = {
           ...{
             // props
@@ -145,7 +145,8 @@
             modelValue: isActive.value,
             activator: activatorEl,
             clientX: state.clientX,
-            clientY: state.clientY
+            clientY: state.clientY,
+            target
           },
           'onUpdate:modelValue': (e) => {
               isActive.value = e
@@ -192,7 +193,7 @@
         return <>
           {_activatorVNode}
           <teleport to={target}>
-            {props.eager ? genContent() : (!state.isFirstRender && genContent())}
+            {props.eager ? genContent(target) : (!state.isFirstRender && genContent(target))}
           </teleport>
         </>;
       }
