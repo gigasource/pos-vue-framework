@@ -8,6 +8,7 @@ import Resize from '../../directives/resize/resize';
 import stackable from '../../mixins/stackable';
 import dependent from '../../mixins/dependent';
 import {ResizeObserver as ResizeObserverPolyfill} from '@juggle/resize-observer';
+import _ from 'lodash';
 
 export default {
   name: 'GMenuContent',
@@ -111,6 +112,14 @@ export default {
     ...{
       contentClass: String,
       elevation: Number
+    },
+    updateOnScroll: {
+      type: Boolean,
+      default: true
+    },
+    updateIntervalMs: {
+      type: Number,
+      default: 20
     }
   },
   setup(props, context) {
@@ -151,10 +160,19 @@ export default {
 
     const resizeObserver = getResizeObserver(props)
 
+    const parentEl = document.getElementById('root') ? 'body': 'div[data-app]';
+    const handleScroll = _.throttle(() => updateDimensions(props.activator.value, contentRef), props.updateIntervalMs || 20);
     // update dimensions when toggled on
     watch(() => props.modelValue, newVal => {
       if (newVal) {
         nextTick(() => updateDimensions(props.activator.value, contentRef))
+        if (props.updateOnScroll && parentEl) {
+          parentEl.addEventListener('scroll', handleScroll)
+        }
+      } else {
+        if (props.updateOnScroll && parentEl) {
+          parentEl.removeEventListener('scroll', handleScroll)
+        }
       }
     }, {immediate: true})
 
