@@ -7,17 +7,18 @@
       v-bind="props">
       <slot></slot>
     </g-tooltip-content>
-    <div class="g-tooltip__activator" ref="activator">
+    <div class="g-tooltip__activator" ref="activatorWrapper">
       <slot name="activator" :on="activatorListeners"></slot>
     </div>
   </span>
 </template>
 
 <script>
-  import { computed, onMounted, reactive, ref, nextTick } from 'vue'
+  import { computed, onMounted, reactive, ref, nextTick } from 'vue';
   import delayable from '../../mixins/delayable';
   import detachable from '../../mixins/detachable';
   import GTooltipContent from './GTooltipContent';
+  import _ from 'lodash';
 
   export default {
     name: 'GTooltip',
@@ -129,6 +130,7 @@
     setup(props, context) {
       const el = ref(null)
       const activator = ref(null)
+      const activatorWrapper = ref(null)
       const renderContent = ref(false)
       // tooltip state
       const state = reactive({
@@ -140,7 +142,7 @@
       })
 
       const { runDelay } = delayable(props, state)
-      const { attachToParent } = detachable(props, context, { activator, el });
+      const { attachToParent } = detachable(props, context, { activator: activatorWrapper, el });
 
       //// ACTIVATOR
       // This variable will be used by Tooltip content to calculate position
@@ -183,7 +185,15 @@
 
       onMounted(() => {
         nextTick(() => {
-          activator.value && attachToParent(activator.value)
+          if (activatorWrapper.value) {
+            if (_.isEmpty(activatorWrapper.value.children)) {
+              // fallback
+              activator.value = activatorWrapper.value
+            } else {
+              activator.value = activatorWrapper.value.children[0];
+            }
+            attachToParent(activatorWrapper.value)
+          }
         })
       })
 
@@ -192,6 +202,7 @@
         props,
         state,
         activator,
+        activatorWrapper,
         activatorListeners,
         renderContent,
         el,
