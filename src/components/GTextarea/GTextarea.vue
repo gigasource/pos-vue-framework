@@ -96,7 +96,7 @@
         //input states
         clearable: Boolean,
         disabled: Boolean,
-        readOnly: Boolean,
+        readonly: Boolean,
       },
       //rules and validation props
       rules: Array,

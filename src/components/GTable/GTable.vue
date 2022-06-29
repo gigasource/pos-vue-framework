@@ -95,7 +95,7 @@
 
 			function scroll(e) {
         var element = e.target;
-        if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+        if (element.scrollHeight - element.scrollTop <= element.clientHeight + 4) {
           context.emit('scrolledToBottom')
         }
       }

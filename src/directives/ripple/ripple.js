@@ -62,7 +62,7 @@ const calculate = (
 
   let radius = 0
   let scale = 0.3
-  if (el._ripple?.circle) {
+  if (el._ripple && el._ripple.circle) {
     scale = 0.15
     radius = el.clientWidth / 2
     radius = value.center ? radius : radius + Math.sqrt((localX - radius) ** 2 + (localY - radius) ** 2) / 4
