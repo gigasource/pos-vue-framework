@@ -344,6 +344,7 @@
     border-style: solid;
     border-color: inherit;
     border-radius: 4px;
+    background-color: #fff;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     padding-left: 12px;
     padding-right: 12px;
