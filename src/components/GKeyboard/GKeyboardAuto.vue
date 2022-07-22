@@ -1,6 +1,6 @@
 <template>
   <div class="keyboard__template" :style="template">
-    <div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '']" class="key"
+    <div v-for="(item, i) in items" :key="i" :class="[item.classes, ripple ? 'waves-effect' : '', 'key', disabled && 'key--disabled']"
          :style="item.style" @click="click(item)"
          @mousedown="e => onMouseDown(item, e)"
          @touchstart="e => onMouseDown(item, e)"
@@ -13,6 +13,7 @@
       <img v-if="item.img" style="height: 16px" :src="getImg(item.img)">
       <g-icon v-if="item.icon" :svg="item.svg">{{item.icon}}</g-icon>
       <template v-if="item.content">
+        <slot v-if="item.action === 'enter'" name="prepend-enter"/>
         <span v-if="item.content.length > 0 && item.content.length > index" v-html="item.content[index]"></span>
         <span v-else v-html="item.content[0]"></span>
       </template>
@@ -130,8 +131,12 @@
             style: 'grid-area: dot; background-color: #e0e3e5'
           },
           {content: ['?123'], style: 'grid-area: num2; background-color: #e0e3e5', action: () => null},
-        ]
+        ],
       },
+      disabled: {
+        type: Boolean,
+        default: false
+      }
     },
     emits: ['submit'],
     data() {
