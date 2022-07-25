@@ -1,4 +1,4 @@
-const {isSSR} = require('@/utils/ssr');
+const {isSSR} = require('../../utils/ssr');
 const supportTouch = isSSR ? false : 'ontouchstart' in window
 
 function removeListeners(el) {

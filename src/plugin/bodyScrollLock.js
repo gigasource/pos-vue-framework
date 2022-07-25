@@ -3,7 +3,7 @@
 // https://stackoverflow.com/questions/41594997/ios-10-safari-prevent-scrolling-behind-a-fixed-overlay-and-maintain-scroll-posi
 
 // Older browsers don't support event options, feature detect it.
-import {isCSR, isSSR, ssrWarn} from '@/utils/ssr';
+import {isCSR, isSSR, ssrWarn} from '../utils/ssr';
 
 let hasPassiveEvents = false;
 if (isCSR) {

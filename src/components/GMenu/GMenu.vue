@@ -5,7 +5,7 @@
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
   import { getScopeIdRender } from '../../utils/helpers';
-  import {isSSR} from '@/utils/ssr';
+  import {isSSR} from '../../utils/ssr';
 
   export default {
     name: 'GMenu',

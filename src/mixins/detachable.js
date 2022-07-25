@@ -1,6 +1,6 @@
 // requires template refs: activator, content, el
 import { toRefs } from 'vue';
-import {isSSR, ssrWarn} from '@/utils/ssr';
+import {isSSR, ssrWarn} from '../utils/ssr';
 
 export default function detachable(props, context, refs) {
   const { activator, content, el } = refs

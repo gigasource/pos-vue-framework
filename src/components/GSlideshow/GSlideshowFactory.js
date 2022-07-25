@@ -8,7 +8,7 @@ const STATES = {
 }
 
 import {getTransitionDuration, getTransition } from './transition-utils'
-import {isSSR, ssrWarn} from '@/utils/ssr';
+import {isSSR, ssrWarn} from '../../utils/ssr';
 
 export function createSlideNode() {
   if (isSSR) {
