@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "lib": "vue-cli-service build --target lib index.js",
     "compile-sass": "sass src/style/main.scss:public/main.css",
     "watch-sass": "nodemon -e scss -x \" npm run compile-sass\"",
     "test": "jest",
