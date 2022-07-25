@@ -14,7 +14,7 @@
     props: {
       name: {
         type: String,
-        default: name
+        default: "GList"
       },
       inCombobox: Boolean,
       height: String,
