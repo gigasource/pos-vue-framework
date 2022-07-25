@@ -1,4 +1,6 @@
-;(function(window, undefined) {
+import {isCSR} from '../../utils/ssr';
+
+function jsCaret(window, undefined) {
   // Simple IE detection
   var msie = !!window.ActiveXObject;
 
@@ -276,4 +278,7 @@
   };
 
   window.Caret = Caret;
-})(window);
+}
+
+if (isCSR)
+  jsCaret(window);

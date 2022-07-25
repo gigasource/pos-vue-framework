@@ -1,4 +1,5 @@
 import {ref, computed, watch, nextTick, onBeforeUnmount, onMounted} from 'vue'
+import {isSSR} from '../utils/ssr';
 
 export default function scrollable({scrollTarget, scrollThreshold}, ctx, canScroll, thresholdMet) {
   const currentScroll = ref(0)
@@ -39,6 +40,8 @@ export default function scrollable({scrollTarget, scrollThreshold}, ctx, canScro
   })
 
   function onScroll() {
+    if (isSSR)
+      return
     if (!canScroll.value)
       return
 

@@ -1,4 +1,8 @@
+import {isSSR} from '../utils/ssr';
+
 export function smoothScrolling() {
+  if (isSSR)
+    return
   // aliases
   const w = window;
   const d = document;

@@ -1,5 +1,5 @@
 <script>
-import {computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
+import {computed, getCurrentInstance, inject, nextTick, onBeforeMount, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
 import menuable from '../../mixins/menuable';
 import getVModel from '../../mixins/getVModel';
 import {convertToUnit, isInside} from '../../utils/helpers';
@@ -9,6 +9,7 @@ import stackable from '../../mixins/stackable';
 import dependent from '../../mixins/dependent';
 import {ResizeObserver as ResizeObserverPolyfill} from '@juggle/resize-observer';
 import _ from 'lodash';
+import {isCSR} from '../../utils/ssr';
 
 export default {
   name: 'GMenuContent',
@@ -130,12 +131,15 @@ export default {
     } = menuable(props, context);
     const {getMaxZIndex} = stackable(props, context)
     const contentRef = ref(null)
-    const ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill
     const instance = getCurrentInstance()
 
     function toggleValue() {
       isActive.value = false
     }
+
+    let resizeObserver, ResizeObserver;
+    if (isCSR)
+      ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill
 
     function getResizeObserver() {
       let activatorResizeObserver = undefined
@@ -158,8 +162,6 @@ export default {
         observer: activatorResizeObserver, init, destroy
       }
     }
-
-    const resizeObserver = getResizeObserver(props)
 
     const parentEl = document.querySelector(props.target);
     const handleScroll = _.throttle(() => updateDimensions(props.activator.value, contentRef), props.updateIntervalMs || 20);
@@ -197,6 +199,10 @@ export default {
       provide('removeDependentInstance', removeDependentInstance)
     }
 
+    onBeforeMount(() => {
+      resizeObserver = getResizeObserver(props)
+    })
+
     onMounted(function () {
       nextTick(() => {
         updateDimensions(props.activator.value, contentRef)
@@ -206,6 +212,7 @@ export default {
 
     onBeforeUnmount(() => {
       resizeObserver.destroy();
+      resizeObserver = null;
     })
 
     const calculatedLeft = computed(() => {
