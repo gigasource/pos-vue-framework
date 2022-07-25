@@ -5,6 +5,7 @@
   import delayable from '../../mixins/delayable';
   import GMenuContent from './GMenuContent';
   import { getScopeIdRender } from '../../utils/helpers';
+  import {isSSR} from '@/utils/ssr';
 
   export default {
     name: 'GMenu',
@@ -188,6 +189,9 @@
       const genWrapper = function () {
         const _activatorVNode = context.slots.activator && context.slots.activator({ toggleContent, on });
         activatorVNode = _activatorVNode
+
+        if (isSSR)
+          return _activatorVNode // TODO: SSR double check
 
         const target = document.getElementById('root') ? 'body': 'div[data-app]';
         return <>

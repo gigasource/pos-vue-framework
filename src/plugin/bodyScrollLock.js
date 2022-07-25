@@ -3,8 +3,10 @@
 // https://stackoverflow.com/questions/41594997/ios-10-safari-prevent-scrolling-behind-a-fixed-overlay-and-maintain-scroll-posi
 
 // Older browsers don't support event options, feature detect it.
+import {isCSR, isSSR, ssrWarn} from '@/utils/ssr';
+
 let hasPassiveEvents = false;
-if (typeof window !== 'undefined') {
+if (isCSR) {
   const passiveTestOptions = {
     get passive() {
       hasPassiveEvents = true;
@@ -16,7 +18,7 @@ if (typeof window !== 'undefined') {
 }
 
 const isIosDevice =
-    typeof window !== 'undefined' &&
+    isCSR &&
     window.navigator &&
     window.navigator.platform &&
     (/iP(ad|hone|od)/.test(window.navigator.platform) ||
@@ -60,6 +62,10 @@ const setOverflowHidden = (options) => {
   // Setting overflow on body/documentElement synchronously in Desktop Safari slows down
   // the responsiveness for some reason. Setting within a setTimeout fixes this.
   setTimeout(() => {
+    if (isSSR) {
+      ssrWarn('bodyScrollLock.setOverflowHidden.setTimeout')
+      return
+    }
     // If previousBodyPaddingRight is already set, don't set it again.
     if (previousBodyPaddingRight === undefined) {
       const reserveScrollBarGap = !!options && options.reserveScrollBarGap === true;
@@ -83,6 +89,11 @@ const restoreOverflowSetting = () => {
   // Setting overflow on body/documentElement synchronously in Desktop Safari slows down
   // the responsiveness for some reason. Setting within a setTimeout fixes this.
   setTimeout(() => {
+    if (isSSR) {
+      ssrWarn('bodyScrollLock.restoreOverflowSetting.setTimeout')
+      return
+    }
+
     if (previousBodyPaddingRight !== undefined) {
       document.body.style.paddingRight = previousBodyPaddingRight;
 

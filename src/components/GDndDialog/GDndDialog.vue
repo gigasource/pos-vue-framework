@@ -31,6 +31,7 @@
   import { computed, ref, reactive, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
   import GBtn from '../GBtn/GBtn';
   import GIcon from '../GIcon/GIcon';
+  import {isCSR} from '../../utils/ssr';
 
   export default {
     name: 'GDndDialog',
@@ -253,15 +254,17 @@
         }
       }
 
-      const supportTouch = "ontouchstart" in window
+      const supportTouch = isCSR && "ontouchstart" in window;
 
-      if (supportTouch) {
-        document.addEventListener('touchmove', drag);
-        document.addEventListener('touchend', dragEnd);
-      } else {
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', dragEnd);
-      }
+      onMounted(() => {
+        if (supportTouch) {
+          document.addEventListener('touchmove', drag);
+          document.addEventListener('touchend', dragEnd);
+        } else {
+          document.addEventListener('mousemove', drag);
+          document.addEventListener('mouseup', dragEnd);
+        }
+      })
 
       onBeforeUnmount(() => {
         if (supportTouch) {
@@ -405,9 +408,11 @@
         }
       }
 
-      document.addEventListener('mousedown', resizeStart);
-      document.addEventListener('mousemove', resize);
-      document.addEventListener('mouseup', resizeEnd);
+      onMounted(() => {
+        document.addEventListener('mousedown', resizeStart);
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', resizeEnd);
+      })
 
       onBeforeUnmount(() => {
         document.removeEventListener('mousedown', resizeStart);

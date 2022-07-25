@@ -228,11 +228,11 @@ export function getHslColor(color) {
   let rgb = [], a = 1;
   ({rgb, a} = getRGBA(pv));
   if (!rgb) {
-    let fakeDiv = document.createElement("div");
-    fakeDiv.style.color = color;
-    document.body.appendChild(fakeDiv);
-
     if (isCSR) {
+      let fakeDiv = document.createElement("div");
+      fakeDiv.style.color = color;
+      document.body.appendChild(fakeDiv);
+
       let cs = window.getComputedStyle(fakeDiv),
         pv = cs.getPropertyValue("color");
 

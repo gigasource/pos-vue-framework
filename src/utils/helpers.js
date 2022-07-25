@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import { computed, ref, watch, getCurrentInstance, withScopeId, h } from 'vue';
-import {isSSR} from './ssr'
+import {isSSR, ssrWarn} from './ssr'
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -166,6 +166,10 @@ export function getTransitionDuration(el) {
 }
 
 export function openFile(options = { multiple: false, mimeType: '*/*' }, onFileOpened) {
+  if (isSSR) {
+    ssrWarn('utils/helpers.openFile')
+    return
+  }
   const input = document.createElement('input')
   input.type='file'
   input.accept = options.mimeType

@@ -8,8 +8,14 @@ const STATES = {
 }
 
 import {getTransitionDuration, getTransition } from './transition-utils'
+import {isSSR, ssrWarn} from '@/utils/ssr';
 
 export function createSlideNode() {
+  if (isSSR) {
+    ssrWarn('GSlideshowFactory.createSlideNode')
+    return {}
+  }
+
   const slideNode = document.createElement('div')
   slideNode.className = 'g-slideshow-current'
   slideNode.style.position = 'absolute'

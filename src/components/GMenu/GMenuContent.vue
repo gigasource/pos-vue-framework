@@ -9,7 +9,7 @@ import stackable from '../../mixins/stackable';
 import dependent from '../../mixins/dependent';
 import {ResizeObserver as ResizeObserverPolyfill} from '@juggle/resize-observer';
 import _ from 'lodash';
-import {isCSR} from '../../utils/ssr';
+import {isCSR, isSSR, ssrWarn} from '../../utils/ssr';
 
 export default {
   name: 'GMenuContent',
@@ -163,7 +163,7 @@ export default {
       }
     }
 
-    const parentEl = document.querySelector(props.target);
+    const parentEl = isCSR ? document.querySelector(props.target) : null;
     const handleScroll = _.throttle(() => updateDimensions(props.activator.value, contentRef), props.updateIntervalMs || 20);
     // update dimensions when toggled on
     watch(() => props.modelValue, newVal => {
@@ -267,6 +267,10 @@ export default {
 
     //callback to close menu when clicked outside
     const closeConditional = (e) => {
+      if (isSSR) {
+        ssrWarn('GMenuContent.closeConditional')
+        return
+      }
       //todo: optimize, getBoundingClientRect may cause performance leak
       if (e instanceof TouchEvent && e.touches.length > 0) {
         e.clientX = e.touches[0].clientX

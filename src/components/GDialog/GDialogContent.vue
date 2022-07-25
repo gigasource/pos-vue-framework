@@ -8,7 +8,7 @@
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
   import dependent from '../../mixins/dependent';
-  import {isCSR, isSSR} from '../../utils/ssr';
+  import {isCSR, isSSR, ssrWarn} from '../../utils/ssr';
 
   export default {
     name: 'GDialogContent',
@@ -144,6 +144,7 @@
 
           if (el.tagName === 'HTML') {
             if (isCSR) {
+              // TODO: double check in SSR
               path.push(document)
               path.push(window)
             }
@@ -189,8 +190,10 @@
         const path = e.path || composedPath(e)
         let delta = e.deltaY
 
-        if (isSSR)
+        if (isSSR) {
+          ssrWarn('GDialogContent.checkPath')
           return false
+        }
 
         if (e.type === 'keydown' && path[0] === document.body) {
           const dialog = wrapper.value
