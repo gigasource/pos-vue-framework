@@ -8,6 +8,7 @@
   import ClickOutside from '../../directives/click-outside/click-outside'
   import GOverlay from '../GOverlay/GOverlay'
   import dependent from '../../mixins/dependent';
+  import {isCSR, isSSR, ssrWarn} from '../../utils/ssr';
 
   export default {
     name: 'GDialogContent',
@@ -142,8 +143,11 @@
           path.push(el)
 
           if (el.tagName === 'HTML') {
-            path.push(document)
-            path.push(window)
+            if (isCSR) {
+              // TODO: double check in SSR
+              path.push(document)
+              path.push(window)
+            }
 
             return path
           }
@@ -155,6 +159,10 @@
 
       const hasScrollbar = function (el) {
         if (!el || el.nodeType !== Node.ELEMENT_NODE) return false
+
+        if (isSSR)
+          return false
+
         const style = window.getComputedStyle(el)
         return ['auto', 'scroll'].includes(style.overflowY) && el.scrollHeight > el.clientHeight
       }
@@ -181,6 +189,11 @@
       const checkPath = function (e) {
         const path = e.path || composedPath(e)
         let delta = e.deltaY
+
+        if (isSSR) {
+          ssrWarn('GDialogContent.checkPath')
+          return false
+        }
 
         if (e.type === 'keydown' && path[0] === document.body) {
           const dialog = wrapper.value
@@ -253,15 +266,22 @@
       }
 
       const disableOutsideScroll = () => {
+        if (isSSR)
+          return
+
         window.addEventListener('wheel', onWheel, {passive: false})
         window.addEventListener('touchstart', onTouchStart, {passive: false})
         window.addEventListener('touchmove', onTouchMove, {passive: false})
       }
 
       const enableOutsideScroll = () => {
+        if (isSSR)
+          return
+
         window.removeEventListener('wheel', onWheel)
         window.removeEventListener('touchstart', onTouchStart)
         window.removeEventListener('touchmove', onTouchMove)
+
       }
 
       const unwatch = watch(isActive, newVal => {

@@ -1,4 +1,5 @@
-const supportTouch = 'ontouchstart' in window
+const {isSSR} = require('../../utils/ssr');
+const supportTouch = isSSR ? false : 'ontouchstart' in window
 
 function removeListeners(el) {
   if (!el._fastClick || !el._fastClick.fn) return

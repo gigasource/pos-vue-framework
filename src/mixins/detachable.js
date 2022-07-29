@@ -1,9 +1,15 @@
 // requires template refs: activator, content, el
 import { toRefs } from 'vue';
+import {isSSR, ssrWarn} from '../utils/ssr';
 
 export default function detachable(props, context, refs) {
   const { activator, content, el } = refs
   function attachToRoot(node = content && content.value) {
+    if (isSSR) {
+      ssrWarn('detachable.attachToRoot')
+      return
+    }
+
     const target = document.querySelector('[data-app]') || document.body
     if (!target) {
       console.warn('Unable to locate root element');

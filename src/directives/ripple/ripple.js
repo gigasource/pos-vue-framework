@@ -1,5 +1,6 @@
 // Styles
 import './VRipple.sass'
+import {isCSR} from '../../utils/ssr';
 
 const DELAY_RIPPLE = 80
 
@@ -109,7 +110,9 @@ const ripples = {
 
     el.appendChild(container)
 
-    const computed = window.getComputedStyle(el)
+    let computed
+    if (isCSR)
+      computed = window.getComputedStyle(el)
     if (computed && computed.position === 'static') {
       el.style.position = 'relative'
       el.dataset.previousPosition = 'static'

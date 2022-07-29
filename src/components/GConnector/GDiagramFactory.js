@@ -1,8 +1,11 @@
 import {ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch} from 'vue';
 import {getElementPosition} from '../../utils/helpers';
 import {ResizeObserver as ResizeObserverPolyfill} from '@juggle/resize-observer';
+import {isCSR} from '../../utils/ssr';
 
-const ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill
+let ResizeObserver;
+if (isCSR)
+  ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill;
 
 function getConnectorId(el, ids) {
   if (el.classList.contains('g-connector')) ids.push(el.id)
@@ -57,7 +60,8 @@ export default function GDiagramFactory(props, context, {container, svg}) {
     y: 0,
   })
 
-  window.getElementPosition = getElementPosition;
+  if (isCSR)
+    window.getElementPosition = getElementPosition;
 
   function updateOriginCoordinate() {
     const svgRect = getElementPosition(svg.value)
@@ -93,12 +97,14 @@ export default function GDiagramFactory(props, context, {container, svg}) {
     svgObserve.observe(svg.value);
   })
 
-  let svgObserve = new ResizeObserver(() => nextTick(() => {
-    updateOriginCoordinate()
-    startOriginCoordinate.x = originCoordinate.x
-    startOriginCoordinate.y = originCoordinate.y
-  }))
-
+  let svgObserve;
+  if (isCSR) {
+    svgObserve = new ResizeObserver(() => nextTick(() => {
+      updateOriginCoordinate()
+      startOriginCoordinate.x = originCoordinate.x
+      startOriginCoordinate.y = originCoordinate.y
+    }))
+  }
 
   // Update data when resize window
   function updateOnResize() {

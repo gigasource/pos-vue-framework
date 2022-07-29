@@ -129,7 +129,7 @@
         }
       },
       // a tooltip activator
-      activator: [Object, HTMLElement],
+      activator: [Object],
       show: Boolean,
     },
     setup(props, context) {

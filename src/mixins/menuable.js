@@ -1,4 +1,5 @@
 import { computed, reactive } from 'vue';
+import {isCSR, isSSR} from '../utils/ssr';
 
 // calculate top/left and activator/content dimensions
 // requires template refs: activator, content
@@ -86,6 +87,8 @@ export default function menuable(props, context) {
   }
 
   function calcYOverFlow(top) {
+    if (isSSR)
+      return 0
     const { pageYOffset } = menuableState
     const documentHeight = window.innerHeight || document.documentElement.clientHeight
     const toTop = pageYOffset + documentHeight
@@ -106,6 +109,8 @@ export default function menuable(props, context) {
   }
 
   function updateDimensions(activator = context.refs.activator, content) {
+    if (isSSR)
+      return
     if (content) contentRef = content
     menuableState.pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
     menuableState.pageWidth = document.documentElement.clientWidth
@@ -152,10 +157,12 @@ export default function menuable(props, context) {
     if (!el) return
     const rect = getRoundedBoundedClientRect(el);
 
-    if (props.attach) {
-      const style = window.getComputedStyle(el);
-      rect.left = parseInt(style.marginLeft);
-      rect.top = parseInt(style.marginTop);
+    if (isCSR) {
+      if (props.attach) {
+        const style = window.getComputedStyle(el);
+        rect.left = parseInt(style.marginLeft);
+        rect.top = parseInt(style.marginTop);
+      }
     }
 
     return rect

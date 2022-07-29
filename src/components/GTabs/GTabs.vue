@@ -10,6 +10,7 @@ import { colors } from '../../utils/colors';
 import GSlideGroup from '../GSlideGroup/GSlideGroup';
 import Resize from '../../directives/resize/resize';
 import { ResizeObserver as Polyfill } from '@juggle/resize-observer';
+import {isCSR} from '../../utils/ssr';
 
 export default {
   name: 'GTabs',
@@ -44,7 +45,10 @@ export default {
   setup(props, context) {
     const model = getVModel(props, context);
 
-    const ResizeObserver = window.ResizeObserver || Polyfill
+    let ResizeObserver
+    if (isCSR)
+      ResizeObserver = window.ResizeObserver || Polyfill
+
     let sliderResizeObserver
     if (ResizeObserver)
       sliderResizeObserver = new ResizeObserver(calculateSliderStyle)

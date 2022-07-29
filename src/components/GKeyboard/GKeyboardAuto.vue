@@ -23,7 +23,8 @@
 
 <script>
   import GIcon from '../GIcon/GIcon';
-  import './jsCaret'; // this must be import only once
+  import './jsCaret';
+  import {isSSR, ssrWarn} from '../../utils/ssr'; // this must be import only once
   const queue = require('queue')
   /*
       action: null -> insert
@@ -187,6 +188,10 @@
         }
       },
       onMouseDown(item, e) {
+        if (isSSR) {
+          ssrWarn('GKeyboardAuto.onMouseDown')
+          return
+        }
         if (document.caretElement && this.preEle !== document.caretElement.element) {
           this.preEle = document.caretElement.element
           this.caret = document.caretElement

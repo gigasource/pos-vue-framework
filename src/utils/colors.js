@@ -3,6 +3,7 @@ import {isCssColor} from '../mixins/colorable';
 import _ from 'lodash'
 import {chunk, padEnd} from './helpers'
 import {toXYZ} from './transformSRGB'
+import {isCSR} from './ssr'
 
 export const colors = Object.freeze(_.pickBy(colorList, (val, key) => !key.startsWith('gradient-')));
 export const gradientColors = Object.freeze(_.pickBy(colorList, (val, key) => key.startsWith('gradient-')));
@@ -227,15 +228,17 @@ export function getHslColor(color) {
   let rgb = [], a = 1;
   ({rgb, a} = getRGBA(pv));
   if (!rgb) {
-    let fakeDiv = document.createElement("div");
-    fakeDiv.style.color = color;
-    document.body.appendChild(fakeDiv);
+    if (isCSR) {
+      let fakeDiv = document.createElement("div");
+      fakeDiv.style.color = color;
+      document.body.appendChild(fakeDiv);
 
-    let cs = window.getComputedStyle(fakeDiv),
-      pv = cs.getPropertyValue("color");
+      let cs = window.getComputedStyle(fakeDiv),
+        pv = cs.getPropertyValue("color");
 
-    document.body.removeChild(fakeDiv);
-    ({rgb, a} = getRGBA(pv));
+      document.body.removeChild(fakeDiv);
+      ({rgb, a} = getRGBA(pv));
+    }
   }
 
   let r = rgb[0] / 255,

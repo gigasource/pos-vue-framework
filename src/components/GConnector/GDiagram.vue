@@ -1,6 +1,6 @@
 <script>
 import {convertToUnit} from '../../utils/helpers';
-import {computed, getCurrentInstance, onBeforeUnmount, provide, ref} from 'vue';
+import {computed, getCurrentInstance, onMounted, onBeforeUnmount, provide, ref} from 'vue';
 import GDiagramFactory from './GDiagramFactory';
 import EventEmitter from 'tiny-emitter';
 
@@ -84,10 +84,12 @@ export default {
         }
       }
 
-      document.body.addEventListener('mousemove', mouseMove)
-      document.body.addEventListener('mouseup', mouseUp)
-      document.body.addEventListener('mousemove', drag);
-      document.body.addEventListener('mouseup', dragEnd);
+      onMounted(() => {
+        document.body.addEventListener('mousemove', mouseMove)
+        document.body.addEventListener('mouseup', mouseUp)
+        document.body.addEventListener('mousemove', drag);
+        document.body.addEventListener('mouseup', dragEnd);
+      })
 
 			onBeforeUnmount(() => {
         document.body.removeEventListener('mousemove', mouseMove)

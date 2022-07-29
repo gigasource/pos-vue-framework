@@ -1,4 +1,6 @@
 import { nextTick, getCurrentInstance } from 'vue'
+import { computed, reactive, ref, watch } from 'vue';
+import { isSSR, ssrWarn } from '../../utils/ssr';
 
 // impact: next tick
 export function getLabel(context, props, internalValue, isValidInput, isFocused,
@@ -90,8 +92,6 @@ export function getLabel(context, props, internalValue, isValidInput, isFocused,
   return { labelClasses, labelStyles, isDirty, isLabelActive, prefixRef, prependRef }
 }
 
-import { computed, reactive, ref, watch } from 'vue';
-
 export function getValidate(props, isFocused, internalValue, isValidInput, customAlert) {
   //Validation
 
@@ -165,6 +165,10 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
 
   function onClick(event) {
     if (props.disabled) return;
+    if (isSSR) {
+      ssrWarn("GInputFactory.onClick")
+      return
+    }
 
     if (!props.readonly && !props.readOnly) {
       if (!isFocused.value) currentInstance.refs['input'] && currentInstance.refs['input'].focus();
@@ -185,6 +189,10 @@ export function getEvents(props, context, internalValue, isFocused, isValidInput
   }
 
   function onFocus(event) {
+    if (isSSR) {
+      ssrWarn('onFocus')
+      return;
+    }
     if (!currentInstance.refs['input']) return;
     if (document.activeElement !== currentInstance.refs['input']) {
       currentInstance.refs['input'].focus();
@@ -270,6 +278,9 @@ export function getVirtualCaret(props, context, internalValue, isFocused) {
   const currentInstance = getCurrentInstance()
   const tfLetters = computed(() => internalValue.value ? internalValue.value.toString().split('') : [])
   const selectLetter = (event, index) => {
+    if (isSSR)
+      return {} // TODO: SSR
+
     currentInstance.refs['input'].click()
     const target = event.target
     let parent = target.parentElement

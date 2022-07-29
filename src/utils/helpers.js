@@ -1,5 +1,6 @@
 import { defineComponent } from 'vue'
 import { computed, ref, watch, getCurrentInstance, withScopeId, h } from 'vue';
+import {isSSR, ssrWarn} from './ssr'
 
 export const keyCodes = Object.freeze({
   enter: 13,
@@ -30,6 +31,8 @@ export function addOnceEventListener(el, eventName, cb, options) {
 }
 
 export function getZIndex(el) {
+  if (isSSR)
+    return 1
   const index = window.getComputedStyle(el).getPropertyValue('z-index');
   if (!index) {
     return getZIndex(el.parentNode);
@@ -156,11 +159,17 @@ export function kebabCase(str) {
 
 // Return transition duration of an element in millisecond
 export function getTransitionDuration(el) {
+  if (isSSR)
+    return 0
   const duration = window.getComputedStyle(el).getPropertyValue('transition-duration');
   return Math.round(parseFloat(duration) * 1000);
 }
 
 export function openFile(options = { multiple: false, mimeType: '*/*' }, onFileOpened) {
+  if (isSSR) {
+    ssrWarn('utils/helpers.openFile')
+    return
+  }
   const input = document.createElement('input')
   input.type='file'
   input.accept = options.mimeType
@@ -178,6 +187,8 @@ export function openFile(options = { multiple: false, mimeType: '*/*' }, onFileO
  * @param type
  */
 export function saveFile(fileName, content, type) {
+  if (isSSR)
+    return
   const blob = new Blob([content], { type });
   const link = document.createElement('a');
   link.href = window.URL.createObjectURL(blob);
@@ -187,6 +198,8 @@ export function saveFile(fileName, content, type) {
 
 // Return rendered element position
 export function getElementPosition(el) {
+  if (isSSR)
+    return { top: 0, left: 0, bottom: 0, right: 0 }
   const rect = el.getBoundingClientRect(),
     offsetX = window.scrollX || document.documentElement.scrollLeft,
     offsetY = window.scrollY || document.documentElement.scrollTop;

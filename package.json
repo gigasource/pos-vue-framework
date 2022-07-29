@@ -1,11 +1,12 @@
 {
   "name": "pos-vue-framework",
-  "version": "0.1.0",
+  "version": "1.1.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "lib": "vue-cli-service build --target lib index.js",
     "compile-sass": "sass src/style/main.scss:public/main.css",
     "watch-sass": "nodemon -e scss -x \" npm run compile-sass\"",
     "test": "jest",

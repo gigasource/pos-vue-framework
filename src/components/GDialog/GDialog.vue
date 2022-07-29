@@ -4,6 +4,7 @@
   import ClickOutside from '../../directives/click-outside/click-outside';
 	import GDialogContent from './GDialogContent';
   import {getScopeIdRender} from "../../utils/helpers";
+  import {isSSR} from '../../utils/ssr';
 
   export default {
     name: 'GDialog',
@@ -97,6 +98,9 @@
       }
 
       function genDialog() {
+        if (isSSR)
+          return genActivator() // TODO: SSR: double check
+
         const target = document.getElementById('root') ? 'body': 'div[data-app]';
         return <div class="g-dialog">
           {genActivator()}
