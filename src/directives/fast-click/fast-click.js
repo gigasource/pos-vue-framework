@@ -8,7 +8,10 @@ function removeListeners(el) {
     if (fallbackToClickEvent) el.removeEventListener('click', fn)
     else el.removeEventListener('touchstart', fn)
   }
-  else el.removeEventListener('click', fn)
+  else {
+    if (fallbackToClickEvent) el.removeEventListener('click', fn)
+    else el.removeEventListener('mousedown', fn)
+  }
 }
 
 function addListeners(el, fallbackToClickEvent, fn) {
@@ -18,7 +21,10 @@ function addListeners(el, fallbackToClickEvent, fn) {
     if (fallbackToClickEvent) el.addEventListener('click', fn)
     else el.addEventListener('touchstart', fn)
   }
-  else el.addEventListener('click', fn)
+  else {
+    if (fallbackToClickEvent) el.addEventListener('click', fn)
+    else el.addEventListener('mousedown', fn)
+  }
 }
 function updateFastClick(el, binding) {
   const {oldFn, oldFallbackToClickEvent} = binding.oldValue || {}
