@@ -1,4 +1,4 @@
-import {getHslColor} from 'pos-vue-framework/src/utils/colors';
+import {getHslColor} from '../../utils/colors';
 
 const DURATION = 200
 

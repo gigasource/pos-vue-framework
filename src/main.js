@@ -24,7 +24,7 @@ import { createApp } from 'vue';
 import App from '@/App';
 import router from '@/plugin/router';
 require('./style/main.scss')
-require('./plugin/waves');
+// require('./plugin/waves');
 require('./components/index')
 
 const app = createApp(App)
