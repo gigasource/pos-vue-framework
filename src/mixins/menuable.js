@@ -108,8 +108,11 @@ export default function menuable(props, context) {
     return top
   }
 
-  function updateDimensions(activator = context.refs.activator, content) {
+  function updateDimensions(activator, content) {
     if (isSSR)
+      return
+    activator = activator || (context.refs && context.refs.activator)
+    if (!activator)
       return
     if (content) contentRef = content
     menuableState.pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
