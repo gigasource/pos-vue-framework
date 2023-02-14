@@ -5,7 +5,7 @@
         <g-icon :size="iconSize" v-if="labelIcon" class="mr-1">{{labelIcon}}</g-icon>
         <template v-if="required && label">
           {{label}}
-          <span style="color: red">*</span>
+          <span style="color: red">{{mandatoryText}}</span>
         </template>
         <template v-else>{{label}}</template>
       </slot>
@@ -134,6 +134,10 @@
       suffix: String,
       //rules and validation props
       required: Boolean,
+      mandatoryText: {
+        type: String,
+        default: '*'
+      },
       rules: Array,
       hint: String,
       validateOnBlur: Boolean,

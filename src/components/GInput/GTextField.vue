@@ -121,7 +121,7 @@
     <slot name="label">
       <label v-if="!solo && label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
         {{label}}
-        <span v-if="required" style="color: red">*</span>
+        <span v-if="required" style="color: red">{{mandatoryText}}</span>
       </label>
     </slot>
     <span v-if="suffix" class="g-tf-affix" :style="affixStyles">{{suffix}} </span>
@@ -198,6 +198,10 @@
       //rules and validation props
       ...{
         required: Boolean,
+        mandatoryText: {
+          type: String,
+          default: '*'
+        },
         rules: Array,
         hint: String,
         errorCount: {
