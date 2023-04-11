@@ -96,6 +96,7 @@
   import GIcon from '../GIcon/GIcon';
   import {getCssColor} from "../../utils/colors";
   import PassThrough from './PassThrough';
+  import {passiveSupported} from '../../utils/helpers';
 
   export default {
     name: 'GTextFieldBs',
@@ -262,13 +263,13 @@
               let touchOffsetX = 0
               caret.addEventListener('touchstart', (e) => {
                 touchOffsetX = e.touches[0].clientX
-              })
+              }, passiveSupported ? {passive: true} : false)
 
               caret.addEventListener('touchmove', (e) => {
                 const diff = e.touches[0].clientX - touchOffsetX
                 touchOffsetX = e.touches[0].clientX
                 caret.scrollLeft -= diff
-              })
+              }, passiveSupported ? {passive: true} : false)
             }
           }
         })
