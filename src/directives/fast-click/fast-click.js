@@ -1,5 +1,6 @@
-const {isSSR} = require('../../utils/ssr');
-const supportTouch = isSSR ? false : 'ontouchstart' in window
+import {isSSR} from '../../utils/ssr';
+import {passiveSupported} from '../../utils/helpers';
+const supportTouch = isSSR ? false : 'ontouchstart' in window;
 
 function removeListeners(el) {
   if (!el._fastClick || !el._fastClick.fn) return
@@ -7,8 +8,7 @@ function removeListeners(el) {
   if (supportTouch) {
     if (fallbackToClickEvent) el.removeEventListener('click', fn)
     else el.removeEventListener('touchstart', fn)
-  }
-  else {
+  } else {
     if (fallbackToClickEvent) el.removeEventListener('click', fn)
     else el.removeEventListener('mousedown', fn)
   }
@@ -19,11 +19,10 @@ function addListeners(el, fallbackToClickEvent, fn) {
   el._fastClick.fallbackToClickEvent = fallbackToClickEvent
   if (supportTouch) {
     if (fallbackToClickEvent) el.addEventListener('click', fn)
-    else el.addEventListener('touchstart', fn)
-  }
-  else {
+    else el.addEventListener('touchstart', fn, passiveSupported ? {passive: true} : false)
+  } else {
     if (fallbackToClickEvent) el.addEventListener('click', fn)
-    else el.addEventListener('mousedown', fn)
+    else el.addEventListener('mousedown', fn, passiveSupported ? {passive: true} : false)
   }
 }
 function updateFastClick(el, binding) {
