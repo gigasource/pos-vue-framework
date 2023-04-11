@@ -39,7 +39,7 @@ function updateFastClick(el, binding) {
     addListeners(el, fallbackToClickEvent, fn)
   }
 }
-module.exports = {
+export default {
   mounted: (el, binding) => {
     updateFastClick(el, binding)
   },
