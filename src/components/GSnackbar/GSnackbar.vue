@@ -24,10 +24,7 @@
     name: 'GSnackbar',
     props: {
       modelValue: Boolean,
-      timeout: {
-        type: [Number, String],
-        default: 6000,
-      },
+      timeout: [Number, String],
 
       // Positioning
       ...{
@@ -45,23 +42,23 @@
       const isActive = getInternalValue(props, context);
       let activeTimeout;
 
-      // Set close timeout
-      watch(isActive, newVal => {
-        if (newVal) {
-          clearTimeout(activeTimeout)
-          if (_.isNaN(+props.timeout)) {
-            isActive.value = false
-            console.warn(`Timeout prop '${props.timeout}' is not a valid number!`)
-          } else {
-            if (props.timeout > 0) {
-              activeTimeout = setTimeout(() => {
-                isActive.value = false
-              }, +props.timeout)
+      if (props.timeout > 0) {
+        watch(isActive, newVal => {
+          if (newVal) {
+            clearTimeout(activeTimeout)
+            if (_.isNaN(+props.timeout)) {
+              isActive.value = false
+              console.warn(`Timeout prop '${props.timeout}' is not a valid number!`)
+            } else {
+              if (props.timeout > 0) {
+                activeTimeout = setTimeout(() => {
+                  isActive.value = false
+                }, +props.timeout)
+              }
             }
           }
-        }
-      }, {immediate : true});
-
+        }, {immediate : true});
+      }
       // Dynamic classes
       const snackClasses = computed(() => ({
         'g-snack__active': isActive.value,
