@@ -150,10 +150,10 @@ $btn-transition:            opacity 0.2s map-get($transition, 'ease-in-out') !de
 //Button
 $grid-gutter:               $spacer * 6 !default;
 $grid-gutters: (
-        'xs':               $grid-gutter / 12,
-        'sm':               $grid-gutter / 6,
-        'md':               $grid-gutter / 3,
-        'lg':               $grid-gutter * 2/3,
+        'xs':               calc($grid-gutter / 12),
+        'sm':               calc($grid-gutter / 6),
+        'md':               calc($grid-gutter / 3),
+        'lg':               calc($grid-gutter * 2/3),
         'xl':               $grid-gutter
 ) !default;
 

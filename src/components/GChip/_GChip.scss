@@ -233,7 +233,7 @@
 .g-chip {
   @each $name, $size in $chip-icon-sizes {
     &.g-size__#{$name} {
-      border-radius: #{map-get($size, 'height') / 2}px;
+      border-radius: #{calc(map-get($size, 'height') / 2)}px;
       font-size: #{map-get($size, 'font-size')}px;
       height: #{map-get($size, 'height')}px;
     }

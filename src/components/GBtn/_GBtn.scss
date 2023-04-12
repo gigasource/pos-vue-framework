@@ -102,7 +102,7 @@ button {
       &.g-size__#{$name} {
         height: #{$size}px;
         min-width: #{round($size * 1.777777777777778)}px; // default ratio;
-        padding: 0 #{$size / 2.25}px;
+        padding: 0 #{calc($size / 2.25)}px;
       }
     }
   }
@@ -262,11 +262,11 @@ button {
 
     &.g-btn__absolute {
       &.g-btn__bottom {
-        bottom: -#{$size / 2}px;
+        bottom: -#{calc($size / 2)}px;
       }
 
       &.g-btn__top {
-        top: -#{$size / 2}px;
+        top: -#{calc($size / 2)}px;
       }
     }
   }
