@@ -1,3 +1,5 @@
+@use "sass:math";
+
 //12 column grid using flex box
 .row-flex {
   display: flex;
@@ -27,8 +29,8 @@
 
 @for $i from 1 through $grid-columns {
   .col-#{$i} {
-    flex: 0 0 percentage($i/$grid-columns);
-    max-width: percentage($i/$grid-columns);
+    flex: 0 0 percentage(math.div($i, $grid-columns));
+    max-width: percentage(math.div($i, $grid-columns));
   }
 }
 
@@ -46,16 +48,16 @@
     }
     @for $i from 1 through $grid-columns {
       .col-#{$size}-#{$i} {
-        flex: 0 0 percentage($i/$grid-columns);
-        max-width: percentage($i/$grid-columns);
+        flex: 0 0 percentage(math.div($i, $grid-columns));
+        max-width: percentage(math.div($i, $grid-columns));
       }
       .#{$size}-#{$i} {
-        flex: 0 0 percentage($i/$grid-columns);
-        max-width: percentage($i/$grid-columns);
+        flex: 0 0 percentage(math.div($i, $grid-columns));
+        max-width: percentage(math.div($i, $grid-columns));
       }
       .#{$size}#{$i} {
-        flex: 0 0 percentage($i/$grid-columns);
-        max-width: percentage($i/$grid-columns);
+        flex: 0 0 percentage(math.div($i, $grid-columns));
+        max-width: percentage(math.div($i, $grid-columns));
       }
     }
   }
@@ -63,7 +65,7 @@
 
 @for $i from 1 through $grid-columns {
   .offset-#{$i} {
-    margin-left: percentage($i/$grid-columns);
+    margin-left: percentage(math.div($i, $grid-columns));
   }
 }
 
@@ -71,7 +73,7 @@
   @media (min-width: $width) {
     @for $i from 1 through $grid-columns {
       .offset-#{$size}-#{$i} {
-        margin-left: percentage($i/$grid-columns);
+        margin-left: percentage(math.div($i, $grid-columns));
       }
     }
   }
@@ -79,8 +81,8 @@
 
 @for $i from 1 through $grid-columns {
   .row-#{$i} {
-    flex: 0 0 percentage($i/$grid-columns);
-    max-height: percentage($i/$grid-columns);
+    flex: 0 0 percentage(math.div($i, $grid-columns));
+    max-height: percentage(math.div($i, $grid-columns));
   }
 }
 

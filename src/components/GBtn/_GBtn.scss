@@ -1,5 +1,6 @@
 @import "../../style/variables";
 @import "../../style/elevation";
+@use 'sass:math';
 
 button {
   outline: none;
@@ -102,7 +103,7 @@ button {
       &.g-size__#{$name} {
         height: #{$size}px;
         min-width: #{round($size * 1.777777777777778)}px; // default ratio;
-        padding: 0 #{calc($size / 2.25)}px;
+        padding: 0 #{math.div($size, 2.25)}px;
       }
     }
   }
@@ -262,11 +263,11 @@ button {
 
     &.g-btn__absolute {
       &.g-btn__bottom {
-        bottom: -#{calc($size / 2)}px;
+        bottom: -#{math.div($size, 2)}px;
       }
 
       &.g-btn__top {
-        top: -#{calc($size / 2)}px;
+        top: -#{math.div($size, 2)}px;
       }
     }
   }

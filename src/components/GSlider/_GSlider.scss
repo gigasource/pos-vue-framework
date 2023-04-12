@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $slider-track-width: 2px !default;
 $slider-track-border-radius: 0 !default;
 $slider-thumb-size: 12px !default;
@@ -66,7 +68,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
     position: absolute;
     width: $slider-thumb-size;
     height: $slider-thumb-size;
-    left: -#{calc($slider-thumb-size / 2)};
+    left: -#{math.div($slider-thumb-size, 2)};
     top: 50%;
     border-radius: $slider-thumb-border-radius;
     user-select: none;
@@ -84,8 +86,8 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
       background: currentColor;
       opacity: 0.3;
       position: absolute;
-      left: -#{calc($slider-thumb-focused-size-increase / 2)};
-      top: -#{calc($slider-thumb-focused-size-increase / 2)};
+      left: -#{math.div($slider-thumb-focused-size-increase, 2)};
+      top: -#{math.div($slider-thumb-focused-size-increase, 2)};
       transform: scale(0);
       pointer-events: none;
     }
@@ -281,7 +283,7 @@ $secondary-transition: 0.2s map-get($transition, 'ease-in-out') !default;
   .g-slider-thumb {
     width: #{$slider-thumb-size - 4};
     height: #{$slider-thumb-size - 4};
-    left: -#{calc(($slider-thumb-size - 4) / 2)};
+    left: -#{math.div(($slider-thumb-size - 4), 2)};
 
     &:before {
       display: none

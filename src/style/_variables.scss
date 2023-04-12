@@ -3,6 +3,7 @@
 @import "~@fortawesome/fontawesome-free/css/all.css";
 // TODO resolve relative modules for local fonts
 @import "font";
+@use 'sass:math';
 
 //Typography
 //Font
@@ -150,10 +151,10 @@ $btn-transition:            opacity 0.2s map-get($transition, 'ease-in-out') !de
 //Button
 $grid-gutter:               $spacer * 6 !default;
 $grid-gutters: (
-        'xs':               calc($grid-gutter / 12),
-        'sm':               calc($grid-gutter / 6),
-        'md':               calc($grid-gutter / 3),
-        'lg':               calc($grid-gutter * 2/3),
+        'xs':               math.div($grid-gutter, 12),
+        'sm':               math.div($grid-gutter, 6),
+        'md':               math.div($grid-gutter, 3),
+        'lg':               $grid-gutter * math.div(2/3),
         'xl':               $grid-gutter
 ) !default;
 
