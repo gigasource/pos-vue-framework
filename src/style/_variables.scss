@@ -154,7 +154,7 @@ $grid-gutters: (
         'xs':               math.div($grid-gutter, 12),
         'sm':               math.div($grid-gutter, 6),
         'md':               math.div($grid-gutter, 3),
-        'lg':               $grid-gutter * math.div(2/3),
+        'lg':               $grid-gutter * math.div(2,3),
         'xl':               $grid-gutter
 ) !default;
 
