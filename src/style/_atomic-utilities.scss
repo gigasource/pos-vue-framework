@@ -1,3 +1,5 @@
+@use "sass:math";
+
 //Position
 .r {
   position: relative;
@@ -293,7 +295,7 @@
 //Opacity
 @for $i from 1 through 10 {
   .op-#{$i} {
-    opacity: $i/10;
+    opacity: math.div($i, 10);
   }
 }
 
