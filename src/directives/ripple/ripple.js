@@ -1,5 +1,5 @@
 // Styles
-import './VRipple.sass'
+import './VRipple.scss'
 import {isCSR} from '../../utils/ssr';
 
 const DELAY_RIPPLE = 80
