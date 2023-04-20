@@ -32,7 +32,8 @@ export default {
     //custom v-model
     modelValue: null,
     //native value
-    value: null
+    value: null,
+    beforeUpdateInternalValue: Function,
   },
   setup(props, context) {
     const internalValue = computed({
@@ -79,7 +80,12 @@ export default {
         disabled: props.disabled,
       }));
 
-      function toggle() {
+      async function toggle() {
+        if (typeof props.beforeUpdateInternalValue === 'function') {
+          const canUpdate = await props.beforeUpdateInternalValue();
+          if (!canUpdate)
+            return
+        }
         isActive.value = !isActive.value;
         //check whether the switch is in multiple input or
         if (isSelectedArray.value) {
