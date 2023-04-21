@@ -111,7 +111,7 @@
     }
   }
 
-  :deep.g-breadcrumbs-divider {
+  ::v-deep.g-breadcrumbs-divider {
     color: rgba(0, 0, 0, 0.38);
   }
 

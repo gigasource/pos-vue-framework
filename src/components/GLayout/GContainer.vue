@@ -36,7 +36,7 @@
 			max-height: 100%;
 		}
 
-		:deep .g-row {
+		::v-deep .g-row {
 			flex: 1 1 100%;
 			margin: 0 -12px;
 

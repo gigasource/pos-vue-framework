@@ -59,8 +59,8 @@
     width: auto;
     max-width: 60px;
 
-    :deep .g-list-item-content,
-    :deep .g-list-item-action {
+    ::v-deep .g-list-item-content,
+    ::v-deep .g-list-item-action {
       display: none;
     }
 
@@ -73,7 +73,7 @@
       }
     }
 
-    :deep .g-list-header {
+    ::v-deep .g-list-header {
       visibility: hidden;
       position: relative;
       max-width: 24px;
@@ -98,8 +98,8 @@
       width: 256px;
       max-width: 256px;
 
-      :deep .g-list-item-content,
-      :deep .g-list-item-action {
+      ::v-deep .g-list-item-content,
+      ::v-deep .g-list-item-action {
         display: flex;
       }
 
@@ -112,7 +112,7 @@
         }
       }
 
-      :deep .g-list-header {
+      ::v-deep .g-list-header {
         visibility: visible;
         max-width: 100%;
 
@@ -127,7 +127,7 @@
     width: 220px;
     max-width: 220px;
 
-    :deep .g-treeview-icon {
+    ::v-deep .g-treeview-icon {
       margin: 8px 12px;
 
       &__small {
@@ -135,7 +135,7 @@
       }
     }
 
-    :deep .g-treeview-title {
+    ::v-deep .g-treeview-title {
       font-size: 12px;
     }
   }
@@ -144,7 +144,7 @@
     width: 220px;
     max-width: 220px;
 
-    :deep .g-treeview-icon {
+    ::v-deep .g-treeview-icon {
       margin: 10px 14px;
 
       &__small {
@@ -152,7 +152,7 @@
       }
     }
 
-    :deep .g-treeview-title {
+    ::v-deep .g-treeview-title {
       font-size: 14px;
     }
   }

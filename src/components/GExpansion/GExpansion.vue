@@ -189,11 +189,11 @@
 
 			&__active {
 
-				.g-expansion-header-prepend > :deep.g-icon {
+				.g-expansion-header-prepend > ::v-deep.g-icon {
 					transform: rotate(90deg)
 				}
 
-				.g-expansion-header-append > :deep.g-icon {
+				.g-expansion-header-append > ::v-deep.g-icon {
 					transform: rotate(-180deg)
 				}
 			}

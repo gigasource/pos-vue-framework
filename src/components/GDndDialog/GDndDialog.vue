@@ -484,7 +484,7 @@
 			display: flex;
 			align-items: center;
 
-			:deep.g-btn {
+			::v-deep.g-btn {
 				padding: 0 !important;
 
 				&:not(:last-child) {

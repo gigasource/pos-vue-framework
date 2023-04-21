@@ -50,13 +50,13 @@ export default {
   }
 }
 
-:deep img {
+::v-deep img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-:deep video {
+::v-deep video {
   width: 100%;
   height: 100%;
 }

@@ -35,7 +35,7 @@
     emits: ['update:modelValue', 'value'],
     setup(props, context) {
       const iconSources = getIconSources()
-
+      
       const state = reactive({
         // dialog state
         showDialog: false,
@@ -345,7 +345,7 @@
   /* icon paging */
   $size: 40px;
 
-  :deep .icon {
+  ::v-deep .icon {
     display: flex;
     justify-content: center;
     margin: 4px;
@@ -364,7 +364,7 @@
     }
   }
 
-  :deep .icon-wrapper {
+  ::v-deep .icon-wrapper {
     display: flex;
     width: 100%;
     text-align: left;

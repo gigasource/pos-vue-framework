@@ -132,7 +132,7 @@
           </div>
         </g-dialog>
       }
-
+      
       return getScopeIdRender()(renderFn)
     },
   }
@@ -142,7 +142,7 @@
     border: 1px solid #0003;
   }
 
-  :deep .simple-btn {
+  ::v-deep .simple-btn {
     height: 18px;
     border: 1px solid #0003;
     margin: 2px;

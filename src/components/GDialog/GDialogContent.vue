@@ -411,7 +411,7 @@
         width: 100%
       }
 
-      > :deep.g-card {
+      > ::v-deep.g-card {
         height: auto;
         overflow-y: auto;
         flex: 1 1 100%;
@@ -432,7 +432,7 @@
     }
 
     &-content__scrollable {
-      > :deep.g-card {
+      > ::v-deep.g-card {
         display: flex;
         flex: 1 1 100%;
         flex-direction: column;
@@ -461,7 +461,7 @@
       left: 0;
       right: 0;
 
-      > :deep .g-card {
+      > ::v-deep .g-card {
         height: 100%;
         min-height: 100%;
         min-width: 100%;

@@ -1,7 +1,7 @@
 
-.g-combobox :deep,
-.g-autocomplete :deep,
-.g-select :deep{
+.g-combobox ::v-deep,
+.g-autocomplete ::v-deep,
+.g-select ::v-deep{
   .g-chip {
     margin: 2px
   }

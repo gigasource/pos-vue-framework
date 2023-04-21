@@ -260,13 +260,13 @@ import {computed, reactive, resolveComponent, watch} from 'vue'
 </script>
 
 <style scoped lang="scss">
-  :deep .g-date-picker__activator {
+  ::v-deep .g-date-picker__activator {
     .g-tf-input {
       visibility: hidden;
     }
   }
 
-  :deep {
+  ::v-deep {
     .g-menu--activator {
       span {
         margin: 3px

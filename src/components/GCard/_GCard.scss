@@ -76,7 +76,7 @@
   }
 
   //New refactor
-  :deep(.g-card-subtitle),
+  ::v-deep(.g-card-subtitle),
   .g-card-subtitle {
     padding: 16px;
 
@@ -85,8 +85,8 @@
     }
   }
 
-  :deep(.g-card-subtitle),
-  :deep(.g-card-text),
+  ::v-deep(.g-card-subtitle),
+  ::v-deep(.g-card-text),
   .g-card-subtitle,
   .g-card-text {
     font-size: .875rem;
@@ -95,14 +95,14 @@
     letter-spacing: .0071428571em;
   }
 
-  :deep(.g-card-text),
-  :deep(.g-card-title),
+  ::v-deep(.g-card-text),
+  ::v-deep(.g-card-title),
   .g-card-text,
   .g-card-title {
     padding: 16px
   }
 
-  :deep(.g-card-title),
+  ::v-deep(.g-card-title),
   .g-card-title {
     align-items: center;
     display: flex;
@@ -142,12 +142,12 @@
     }
   }
 
-  :deep(.g-card-text),
+  ::v-deep(.g-card-text),
   .g-card-text {
     width: 100%;
   }
 
-  :deep(.g-card-actions),
+  ::v-deep(.g-card-actions),
   .g-card-actions {
     align-items: center;
     display: flex;

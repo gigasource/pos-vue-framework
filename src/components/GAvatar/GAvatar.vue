@@ -83,8 +83,8 @@
 
     img,
     svg,
-    :deep(.g-image),
-    :deep(.g-icon),
+    ::v-deep(.g-image),
+    ::v-deep(.g-icon),
     .g-responsive__content {
       border-radius: 50% !important;
       display: inline-flex;

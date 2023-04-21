@@ -5,11 +5,11 @@
   import GPicker from '../GPicker/GPicker'
   import { setBackgroundColor, setTextColor } from '../../mixins/colorable'
   import { getScopeIdRender } from '../../utils/helpers'
-
+  
   const MINIMUM_WIDTH = 300
   const DEFAULT_COLOR = 'rgb(98, 0, 237)'
   const DEFAULT_RANGE_COLOR = '#ece0fd'
-
+  
   export default {
     name: 'GDatePicker',
     components: { GPicker },
@@ -28,7 +28,7 @@
       },
       // Default value of date-picker
       modelValue: [Array, String],
-
+      
       //// Groups: Color
       // Color for picker-header and selected date
       // if both color and headerColor present, headerColor will be used for header
@@ -381,7 +381,7 @@
             </g-picker>
         )
       }
-
+      
       return {
         titleModel,
         yearModel,
@@ -403,15 +403,15 @@
 <style scoped lang="scss">
   @import "../../style/variables";
   @import "../../style/colors";
-
-
-  :deep button { outline: none; }
-  :deep table { border-collapse: collapse; }
+  
+  
+  ::v-deep button { outline: none; }
+  ::v-deep table { border-collapse: collapse; }
 
   $textDisabled: #9e9e9e;
 
   /*TITLE*/
-  :deep .g-date-picker-title {
+  ::v-deep .g-date-picker-title {
     display: flex;
     flex-direction: column;
     line-height: 1;
@@ -440,7 +440,7 @@
   }
 
   /*YEAR PICKER*/
-  :deep .g-date-picker-years {
+  ::v-deep .g-date-picker-years {
     font-size: 16px;
     font-weight: 400;
     height: 298px;
@@ -471,7 +471,7 @@
   }
 
   /*HEADER*/
-  :deep .g-date-picker-header {
+  ::v-deep .g-date-picker-header {
     padding: 4px 8px;
     display: flex;
     align-items: center;
@@ -534,7 +534,7 @@
   }
 
   /*TABLE*/
-  :deep .g-date-picker-table {
+  ::v-deep .g-date-picker-table {
     position: relative;
     padding: 0 12px;
     height: 254px;
@@ -639,7 +639,7 @@
     }
   }
 
-  :deep .g-date-picker-table--date {
+  ::v-deep .g-date-picker-table--date {
     th {
       padding: 8px 0;
       font-weight: 600;
@@ -670,7 +670,7 @@
     }
   }
 
-  :deep .g-date-picker-table--month {
+  ::v-deep .g-date-picker-table--month {
     td {
       width: 33.333333%;
       height: 56px;

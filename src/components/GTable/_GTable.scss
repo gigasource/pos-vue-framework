@@ -7,20 +7,20 @@ $data-table-dense-header-height: 32px !default;
 .g-table {
   background-color: #FFFFFF;
 
-  :deep(colgroup) {
+  ::v-deep(colgroup) {
     .divider {
       border-right: 1px solid rgba(0, 0, 0, 0.12);
     }
   }
 
   &.g-table__fixed-header {
-    :deep(thead th) {
+    ::v-deep(thead th) {
       box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
     }
   }
 
 
-  :deep(thead) {
+  ::v-deep(thead) {
     tr {
       &:last-child th {
         border-bottom-color: rgba(0, 0, 0, 0.12)
@@ -48,23 +48,23 @@ $data-table-dense-header-height: 32px !default;
     border-spacing: 0;
   }
 
-  :deep(td), :deep(th) {
+  ::v-deep(td), ::v-deep(th) {
     padding: 0 16px;
   }
 
-  :deep(th) {
+  ::v-deep(th) {
     user-select: none;
     font-size: 14px;
     height: $data-table-regular-header-height;
   }
 
-  :deep(td) {
+  ::v-deep(td) {
     font-size: 14px;
     height: $data-table-regular-row-height;
   }
 
   .g-table-row__active {
-    :deep(td) {
+    ::v-deep(td) {
       border-bottom: 1px solid #1271ff;
       border-top: 1px solid #1271ff;
 
@@ -94,7 +94,7 @@ $data-table-dense-header-height: 32px !default;
     overflow-y: auto;
   }
 
-  :deep(thead) {
+  ::v-deep(thead) {
     th {
       border-bottom: 0 !important;
       position: sticky;
@@ -113,13 +113,13 @@ $data-table-dense-header-height: 32px !default;
 }
 
 .g-table__striped {
-  :deep tr:nth-child(even) {
+  ::v-deep tr:nth-child(even) {
     background-color: #f2f2f2;
   }
 }
 
 .g-table__hover {
-  :deep(tbody) {
+  ::v-deep(tbody) {
     tr {
       &:hover {
         background: rgba(176, 190, 197, 0.1);
@@ -134,7 +134,7 @@ $data-table-dense-header-height: 32px !default;
       border-collapse: collapse;
     }
 
-    :deep(th), :deep(td) {
+    ::v-deep(th), ::v-deep(td) {
       border: 0.5px solid #dee2e6;
     }
 
@@ -147,17 +147,17 @@ $data-table-dense-header-height: 32px !default;
 
 // Modifiers
 .g-table__dense {
-  :deep(td) {
+  ::v-deep(td) {
     height: $data-table-dense-row-height
   }
 
-  :deep(th) {
+  ::v-deep(th) {
     height: $data-table-dense-header-height
   }
 }
 
 .g-table__fixed.g-table__dense {
-  :deep(thead) {
+  ::v-deep(thead) {
     tr:nth-child(2) {
       th {
         top: $data-table-dense-header-height
@@ -172,7 +172,7 @@ $data-table-dense-header-height: 32px !default;
     border-bottom: none;
   }
 
-  :deep(th), :deep(td) {
+  ::v-deep(th), ::v-deep(td) {
     border-bottom: 1px solid #dee2e6;
   }
 
@@ -182,7 +182,7 @@ $data-table-dense-header-height: 32px !default;
 }
 
 .g-table__selectable {
-  :deep(th), :deep(td) {
+  ::v-deep(th), ::v-deep(td) {
     cursor: pointer;
   }
 }

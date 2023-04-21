@@ -338,7 +338,7 @@ ul {
   }
 }
 
-.g-treeview-wrapper :deep {
+.g-treeview-wrapper ::v-deep {
   .g-treeview-wrapper {
     overflow-y: auto;
     height: 100%;

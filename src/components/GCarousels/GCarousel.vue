@@ -162,7 +162,7 @@ export default {
 }
 
 // Modifier
-:deep.g-carousel__hide-delimiter-background .g-window-controls {
+::v-deep.g-carousel__hide-delimiter-background .g-window-controls {
   background: transparent;
 }
 </style>
