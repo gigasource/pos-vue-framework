@@ -117,7 +117,8 @@ import {computed, reactive, resolveComponent, watch} from 'vue'
       // Boolean value indicate that whether picker allow multiple select or not
       multiple: Boolean,
       virtualEvent: Boolean,
-      textFieldComponent: [String, Object]
+      textFieldComponent: [String, Object],
+      noInput: Boolean
     },
     emits: ['update:modelValue'],
     setup(props, context) {
@@ -176,22 +177,30 @@ import {computed, reactive, resolveComponent, watch} from 'vue'
         return <span style="height: 32px; line-height: 32px; display: block;">{cptTextFieldValue.value}</span>
       }
 
-      function gTextFieldInputVSlots() {
-        return {
-          'input-slot': ({ inputErrStyles }) =>
-              <div style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
-                { props.multiple ? renderMultipleDates() : renderSingleOrDateRanges()}
-              </div>
-        }
-      }
-
       function gMenuActivatorSlots(slots) {
         if (slots.activator) return {
           activator: ({toggleContent}) => slots.activator({toggleContent, date: state.value})
         };
+
+        if (props.noInput) {
+          return {
+            activator: ({toggleContent}) => (
+                <div class="rf-aic">
+                  {props.icon && <g-icon class="mr-2">{props.icon}</g-icon>}
+                  <div style="color: #1d1d1d" onClick={e => {
+                    toggleContent(e)
+                    state.tempValue = copyValue(state.value)
+                  }}>
+                    { props.multiple ? renderMultipleDates() : renderSingleOrDateRanges()}
+                  </div>
+                </div>
+            )
+          }
+        }
+
         const txtField = resolveComponent(props.textFieldComponent ? props.textFieldComponent : 'GTextField')
         return {
-          activator: gMenuScope =>
+          activator: ({toggleContent}) =>
               <txtField
                   class="g-date-picker__activator"
                   label={props.label}
@@ -199,10 +208,15 @@ import {computed, reactive, resolveComponent, watch} from 'vue'
                   modelValue={cptTextFieldValue.value}
                   virtualEvent={props.virtualEvent}
                   onClick={e => {
-                    gMenuScope.toggleContent(e)
+                    toggleContent(e)
                     state.tempValue = copyValue(state.value)
                   }}
-                  v-slots={gTextFieldInputVSlots()}/>
+                  v-slots={{
+                    'input-slot': ({ inputErrStyles }) =>
+                        <div style={[{ 'color': '#1d1d1d' }, inputErrStyles]}>
+                          { props.multiple ? renderMultipleDates() : renderSingleOrDateRanges()}
+                        </div>
+                  }}/>
         }
       }
 
