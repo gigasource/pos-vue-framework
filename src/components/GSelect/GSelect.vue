@@ -7,7 +7,7 @@
 <style scoped lang="scss">
   @import "../GCombobox/selectComponent";
 
-	.g-select::v-deep {
+	.g-select:deep {
     .g-tf__border-hover.g-tf__dense {
       line-height: 21px;
     }
@@ -27,7 +27,7 @@
     }
 	}
 
-	.g-select__active::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
+	.g-select__active:deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
 			transition: transform 0.4s;
 			transform: rotateZ(180deg);
 	}

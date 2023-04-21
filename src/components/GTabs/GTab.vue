@@ -122,7 +122,7 @@
 		}
 
 		> i,
-		> ::v-deep .g-icon {
+		> :deep .g-icon {
 			order: 0;
 			margin-bottom: 6px;
 		}

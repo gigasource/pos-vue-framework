@@ -7,12 +7,12 @@
 <style scoped lang="scss">
   @import "./selectComponent";
 
-	.g-combobox__active ::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
+	.g-combobox__active :deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
 			transition: transform 0.4s;
 			transform: rotateZ(180deg);
 	}
 
-  .g-combobox ::v-deep {
+  .g-combobox :deep {
     .bs-tf-wrapper {
       .input {
         display: flex;

@@ -7,12 +7,12 @@
 <style scoped lang="scss">
   @import "../GCombobox/selectComponent";
 
-	.g-autocomplete__active ::v-deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
+	.g-autocomplete__active :deep .g-tf-append__inner .g-icon.g-icon__arrow:last-child {
 			transition: transform 0.4s;
 			transform: rotateZ(180deg);
 	}
 
-  .g-autocomplete ::v-deep {
+  .g-autocomplete :deep {
     .bs-tf-wrapper {
       .input {
         display: flex;

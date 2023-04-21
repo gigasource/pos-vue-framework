@@ -82,16 +82,16 @@
 
 			&__active {
 
-				.g-sections-item-header-prepend > ::v-deep.g-icon {
+				.g-sections-item-header-prepend > :deep.g-icon {
 					transform: rotate(90deg)
 				}
 
-				.g-sections-item-header-append > ::v-deep.g-icon {
+				.g-sections-item-header-append > :deep.g-icon {
 					transform: rotate(90deg)
 				}
 			}
 
-			::v-deep.g-icon {
+			:deep.g-icon {
 				transition: .4s map-get($transition, 'ease-in-out');
 			}
 		}

@@ -5,12 +5,12 @@
   flex-direction: column;
   @include elevation(2);
 
-  ::v-deep &-header {
+  :deep &-header {
     display: flex;
     @include elevation(2);
   }
 
-  ::v-deep &-step {
+  :deep &-step {
     white-space: nowrap;
     padding: 16px;
     display: flex;
@@ -34,19 +34,19 @@
     }
   }
 
-  ::v-deep &-contents {
+  :deep &-contents {
     contain: layout;
     padding: 16px;
     overflow: hidden;
     transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
   }
 
-  ::v-deep &-content {
+  :deep &-content {
     margin: 16px;
   }
 
   &__editable {
-    ::v-deep .g-stepper-step {
+    :deep .g-stepper-step {
       pointer-events: initial;
       cursor: pointer;
 
@@ -59,18 +59,18 @@
   &__vertical {
     flex-direction: row;
 
-    ::v-deep .g-stepper-header {
+    :deep .g-stepper-header {
       flex-direction: column;
       flex: 0 1 0;
     }
 
-    ::v-deep .g-stepper-contents {
+    :deep .g-stepper-contents {
       padding: 0;
     }
   }
 
   &__alt-labels {
-    ::v-deep .g-stepper-step {
+    :deep .g-stepper-step {
       flex-direction: column;
       align-items: center;
     }

@@ -25,7 +25,7 @@
     pointer-events: none;
 
     $speechBubble: null;
-    ::v-deep &__speech-bubble {
+    :deep &__speech-bubble {
       $speechBubble: &;
       position: relative;
       width: 100%;
@@ -41,7 +41,7 @@
       }
     }
 
-    ::v-deep &__speech-bubble--top {
+    :deep &__speech-bubble--top {
       &:after {
         top: 0;
         left: 50%;
@@ -52,7 +52,7 @@
       }
     }
 
-    ::v-deep &__speech-bubble--left {
+    :deep &__speech-bubble--left {
       &:after {
         left: 0;
         top: 50%;
@@ -63,7 +63,7 @@
       }
     }
 
-    ::v-deep &__speech-bubble--right {
+    :deep &__speech-bubble--right {
       &:after {
         right: 0;
         top: 50%;
@@ -74,7 +74,7 @@
       }
     }
 
-    ::v-deep &__speech-bubble--bottom {
+    :deep &__speech-bubble--bottom {
       &:after {
         bottom: 0;
         left: 50%;

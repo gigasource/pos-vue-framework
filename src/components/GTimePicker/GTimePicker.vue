@@ -363,7 +363,7 @@
 </script>
 <style scoped lang="scss">
   .g-time-picker {
-    ::v-deep &__title {
+    :deep &__title {
       $inactiveOpacity: 0.6;
       $activeOpacity: 1;
 
@@ -419,14 +419,14 @@
         }
       }
     }
-  
-    ::v-deep &__clock-wrapper {
+
+    :deep &__clock-wrapper {
       width: 100%;
       height: 100%;
       padding: 15px;
     }
-  
-    ::v-deep &__clock {
+
+    :deep &__clock {
       $clockSize: 270px;
       $clockPadding: 25px;
       $clockInnerSize: $clockSize - 2 * $clockPadding;

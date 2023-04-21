@@ -139,7 +139,7 @@
       padding: 8px 16px;
       width: 100%;
 
-      ::v-deep.g-btn {
+      :deep.g-btn {
         color: $snackbar-color;
         flex: 0 0 auto;
         height: auto;

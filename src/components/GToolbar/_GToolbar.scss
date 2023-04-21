@@ -21,19 +21,19 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    ::v-deep .g-btn {
+    :deep .g-btn {
 
       &:hover {
         background-color: rgba(0, 0, 0, 0.1);
       }
     }
 
-    > ::v-deep .g-tabs {
+    > :deep .g-tabs {
       height: inherit;
       margin-top: -4px;
       margin-bottom: -4px;
 
-      ::v-deep .g-tab {
+      :deep .g-tab {
         height: inherit;
 
         &:first-child {
@@ -60,7 +60,7 @@
     contain: strict;
     border-radius: inherit;
 
-    ::v-deep .g-image {
+    :deep .g-image {
       border-radius: inherit;
     }
   }
@@ -98,7 +98,7 @@
   }
 
   &__prominent {
-    ::v-deep .g-btn {
+    :deep .g-btn {
       align-self: flex-start;
     }
 
@@ -128,7 +128,7 @@
   }
 
   //custom materialize search bar in toolbar
-  ::v-deep .g-tf-wrapper {
+  :deep .g-tf-wrapper {
     margin: 0;
     background-color: rgba(230, 230, 230, 0.3);
     color: white;
@@ -157,7 +157,7 @@
   &__filled {
     .g-toolbar-content,
     .g-toolbar-extension {
-      > ::v-deep .g-btn {
+      > :deep .g-btn {
         &:first-child {
           margin-left: -12px;
 
