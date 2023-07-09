@@ -18,7 +18,24 @@
         <div class="inputGroup">
           <div class="input">
             <slot name="input-slot" :inputErrStyles="inputErrStyles"/>
-            <input :autocomplete="autocomplete"
+            <!-- TODO: Merge the same props, handle for both case v-model -->
+            <input v-if="mask"
+                   :autofocus="autofocus"
+                   class="g-tf-input"
+                   :style="[inputErrStyles]"
+                   :type="type"
+                   :label="label"
+                   :placeholder="placeholder"
+                   :readonly="readOnly || virtualEvent"
+                   ref="input"
+                   :maxlength="maxlength"
+                   @focus="onFocus"
+                   @blur="onBlur"
+                   v-mask="config"
+                   :value="display"
+                   @input="onInput"/>
+            <input v-else
+                   :autocomplete="autocomplete"
                    :autofocus="autofocus"
                    class="g-tf-input"
                    :style="inputErrStyles"
@@ -89,17 +106,32 @@
       </slot>
     </div>
     <span v-if="prefix" class="g-tf-affix" :style="affixStyles" ref="prefixRef">{{prefix}} </span>
-
     <component :is="$slots['append-inner'] || appendInnerIcon || clearable ? 'div' : 'pass-through'"
                class="input">
       <slot name="input-slot"/>
-      <input :autocomplete="autocomplete"
+      <!-- TODO: Merge the same props, handle for both case v-model -->
+      <input v-if="mask"
              :autofocus="autofocus"
              class="g-tf-input"
              :style="[inputErrStyles]"
              :type="type"
              :label="label"
-             v-model="internalValue"
+             :placeholder="placeholder"
+             :readonly="readOnly || virtualEvent"
+             ref="input"
+             :maxlength="maxlength"
+             @focus="onFocus"
+             @blur="onBlur"
+             v-mask="config"
+             :value="display"
+             @input="onInput"/>
+      <input v-else
+             :autocomplete="autocomplete"
+             :autofocus="autofocus"
+             class="g-tf-input"
+             :style="[inputErrStyles]"
+             :type="type"
+             :label="label"
              :placeholder="placeholder"
              :readonly="readOnly || virtualEvent"
              :maxlength="maxlength"
@@ -109,6 +141,7 @@
              @blur="onBlur"
              @keydown="onKeyDown"
              v-bind="attrs"
+             v-model="internalValue"
       >
       <div v-if="virtualEvent" ref="caret" class="g-tf-input g-tf-input--fake-caret">
         <span></span>
@@ -153,7 +186,7 @@
 </template>
 
 <script>
-  import {computed, ref, onMounted, nextTick, h, getCurrentInstance} from 'vue';
+import {computed, ref, onMounted, nextTick, h, getCurrentInstance, watch} from 'vue';
   import {
     getEvents,
     getInternalValue,
@@ -167,6 +200,9 @@
   import '../GKeyboard/jsCaret.js';
   import PassThrough from './PassThrough';
   import _ from 'lodash'
+  import mask from './directive'
+  import tokens from './tokens'
+  import masker from './masker'
 
   export default {
     name: 'GTextField',
@@ -243,7 +279,20 @@
         default: 'off'
       },
       virtualEvent: Boolean,
+      mask: {
+        type: [String, Array],
+        required: true
+      },
+      masked: { // by default emits the value unformatted, change to true to format with the mask
+        type: Boolean,
+        default: false // raw
+      },
+      tokens: {
+        type: Object,
+        default: () => tokens
+      }
     },
+    directives: {mask},
     setup(props, context) {
       const currentInstance = getCurrentInstance()
       const tfType = computed(() => {
@@ -400,6 +449,37 @@
 
       const { tfLetters, selectLetter } = getVirtualCaret(props, context, internalValue, isFocused)
 
+      // mask
+      const lastValue = ref('')
+      const display = ref(props.modelValue)
+      watch(() => props.modelValue, newValue => {
+        if (newValue !== lastValue.value) {
+          display.value = newValue
+        }
+      })
+      watch(() => props.masked, () => {
+        refresh(display.value)
+      })
+      const config = computed(() => {
+        return {
+          mask: props.mask,
+          tokens: props.tokens,
+          masked: props.masked
+        }
+      })
+      function onInput(e) {
+        if (e.isTrusted) return // ignore native event
+        refresh(e.target.value)
+      }
+      function refresh (value) {
+        display.value = value
+        var value = masker(value, props.mask, props.masked, props.tokens)
+        if (value !== lastValue.value) {
+          lastValue.value = value
+          context.emit('update:modelValue', value)
+        }
+      }
+
       return {
         attrs,
         //calculated styles and classes
@@ -444,6 +524,12 @@
         prependRef,
         tfErrWrapperClass,
         legendStyles,
+
+        // mask
+        config,
+        display,
+        onInput,
+        refresh,
       }
     }
   }
