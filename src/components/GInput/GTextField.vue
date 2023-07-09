@@ -45,7 +45,7 @@
           <slot name="label">
             <label v-if="label" class="g-tf-label" :class="labelClasses" :style="labelStyles">
               {{label}}
-              <span v-if="required" style="color: red">*</span>
+              <span v-if="required" style="color: red">{{mandatoryText}}</span>
             </label>
           </slot>
         </div>

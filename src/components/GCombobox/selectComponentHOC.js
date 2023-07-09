@@ -17,6 +17,7 @@ const componentsFactory = (component, componentName) => {
     name: `${componentName}`,
     props: {
       required: Boolean,
+      mandatoryText: String,
       component: {
         type: String,
         default: component
@@ -335,7 +336,7 @@ const componentsFactory = (component, componentName) => {
               'rules',
               'type',
               'appendIcon', 'prependIcon', 'prependInnerIcon', 'appendInnerIcon',
-              'clearIconColor', 'required', 'virtualEvent'
+              'clearIconColor', 'required', 'mandatoryText', 'virtualEvent'
             ]),
             modelValue: tfValue.value,
             prependValue: prependText.value,
