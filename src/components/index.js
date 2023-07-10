@@ -67,6 +67,8 @@ import GLayout from './GLayout/GLayout';
 import GRow from './GLayout/GRow';
 import GSpacer from './GLayout/GSpacer';
 
+import GLabelMask from './GLabelMask/GLabelMask';
+
 import GList from './GList/GList';
 import GListItem from './GList/GListItem';
 
@@ -270,6 +272,7 @@ export {
   GLayout,
   GRow,
   GSpacer,
+  GLabelMask,
   GList,
   GListItem,
   List,
