@@ -200,9 +200,9 @@ import {computed, ref, onMounted, nextTick, h, getCurrentInstance, watch} from '
   import '../GKeyboard/jsCaret.js';
   import PassThrough from './PassThrough';
   import _ from 'lodash'
-  import mask from './directive'
-  import tokens from './tokens'
-  import masker from './masker'
+  import mask from '../../directives/mask/mask'
+  import tokens from '../../directives/mask/tokens'
+  import masker from '../../directives/mask/masker'
 
   export default {
     name: 'GTextField',
