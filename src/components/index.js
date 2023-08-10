@@ -123,7 +123,6 @@ import GTabItems from './GTabs/GTabItems';
 import GTabItem from './GTabs/GTabItem';
 
 import GTextarea from './GTextarea/GTextarea';
-import GTextareaJSX from './GTextarea/GTextareaJSX';
 
 import GTimePicker from './GTimePicker/GTimePicker';
 import GTimePickerInput from './GTimePicker/GTimePickerInput';
@@ -310,7 +309,6 @@ export {
   GTabItems,
   GTabItem,
   GTextarea,
-  GTextareaJSX,
   GTimePicker,
   GTimePickerInput,
   GTooltip,
