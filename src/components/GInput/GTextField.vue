@@ -279,10 +279,7 @@ import {computed, ref, onMounted, nextTick, h, getCurrentInstance, watch} from '
         default: 'off'
       },
       virtualEvent: Boolean,
-      mask: {
-        type: [String, Array],
-        required: true
-      },
+      mask: [String, Array],
       masked: { // by default emits the value unformatted, change to true to format with the mask
         type: Boolean,
         default: false // raw
