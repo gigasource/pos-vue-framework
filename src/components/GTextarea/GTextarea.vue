@@ -19,6 +19,7 @@
           <textarea id="tear" ref="input"
                     class="g-tf-input"
                     :style="tearStyles"
+                    style="user-select: text !important; -webkit-user-select: text !important;"
                     :label="label"
                     v-model="internalValue"
                     :placeholder="placeholder"
