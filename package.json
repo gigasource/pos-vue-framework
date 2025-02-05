@@ -51,7 +51,7 @@
     "@vue/babel-preset-jsx": "^1.1.0",
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-service": "^4.5.13",
-    "@vue/compiler-sfc": "3.5.13",
+    "@vue/compiler-sfc": "3.0.2",
     "@vue/test-utils": "^2.0.0-rc.13",
     "autoprefixer": "^9.6.2",
     "babel-core": "^7.0.0-bridge.0",
@@ -83,9 +83,9 @@
     "storybook": "^6.3.8",
     "storybook-addon-specifications": "^2.2.0",
     "traverse": "^0.6.6",
-    "vue": "^3.5.13",
+    "vue": "^3.2.8",
     "vue-jest": "^3.0.7",
-    "vue-loader": "^17.4.2",
+    "vue-loader": "^16.5.0",
     "vue-router": "^4.0.11"
   },
   "peerDependencies": {
